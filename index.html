@@ -3,59 +3,121 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Perfusion Tools — DO₂i & Predicted Hct</title>
-  <meta name="description" content="Modern, fast perfusion calculators with clean UI and mobile-friendly layout. DO₂i and Predicted Hct with live BSA formulas." />
+  <title>Perfusionist Calculators — DO₂i & Predicted Hct | Perfusion Tools</title>
+  <meta name="description" content="Modern perfusionist calculators for DO₂ index (DO₂i) and predicted hematocrit on CPB. Clean, mobile‑friendly UI with live BSA formulas for adult and pediatric patients." />
+  <meta name="keywords" content="perfusion calculator, DO2i calculator, oxygen delivery index, predicted hematocrit, CPB hemodilution, ECMO calculator, perfusionist tools, cardiac surgery, BSA calculator" />
   <link rel="canonical" href="https://perfusion.pro/" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Perfusion Tools — DO₂i & Predicted Hct" />
-  <meta property="og:description" content="Clean, mobile‑friendly perfusion calculators with a modern sidebar layout." />
+  <meta property="og:title" content="Perfusionist Calculators — DO₂i & Predicted Hct" />
+  <meta property="og:description" content="Fast, clinically‑focused perfusion calculators for DO₂i and predicted hematocrit with a modern Deep Navy + Aqua UI." />
   <meta property="og:url" content="https://perfusion.pro/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Perfusionist Calculators — DO₂i & Predicted Hct" />
+  <meta name="twitter:description" content="Perfusion‑focused DO₂i and hemodilution calculators with clean responsive design." />
+  <meta name="theme-color" content="#020617" />
 
   <!-- Tailwind via CDN (no build step) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
-            brand: { 50:'#f8fafc', 100:'#eef2ff', 200:'#e0e7ff', 400:'#818cf8', 500:'#6366f1', 600:'#4f46e5', 700:'#4338ca' }
+            brand: {
+              50: '#0b1120',
+              100: '#020617',
+              200: '#020617',
+              400: '#0f172a',
+              500: '#020617',
+              600: '#020617',
+              700: '#020617',
+              900: '#020617'
+            },
+            accent: {
+              100: '#e0faff',
+              200: '#a5f3fc',
+              300: '#67e8f9',
+              400: '#22d3ee',
+              500: '#06b6d4'
+            }
           },
-          boxShadow: { card: '0 8px 24px rgba(0,0,0,.06)' }
+          boxShadow: {
+            card: '0 14px 40px rgba(15,23,42,0.35)'
+          }
         }
       }
     };
   </script>
   <style>
     :root { color-scheme: light; }
+    html.dark { color-scheme: dark; }
     input[type=number] { appearance: textfield; }
     input[type=number]::-webkit-outer-spin-button,
     input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .nav-link { transition: background-color 0.15s ease, color 0.15s ease, transform 0.12s ease; }
+    .nav-link:hover { transform: translateY(-1px); }
+    .nav-link-active { background-color: rgba(15,23,42,0.9); color: #e0f2fe; }
+    .nav-link-active-mobile { background-color: rgba(15,23,42,1); color: #e0f2fe; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-900 antialiased">
+<body class="bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-50">
   <!-- App Shell -->
-  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200">
+  <header class="sticky top-0 z-30 border-b border-slate-800/60 bg-brand-900/95 dark:bg-slate-950/95 backdrop-blur">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="h-8 w-8 rounded-xl bg-gradient-to-br from-brand-600 to-indigo-400"></div>
-        <span class="font-bold tracking-tight">Perfusion <span class="text-brand-700">Tools</span></span>
+        <!-- CSS logo: circuit + flow motif -->
+        <div class="h-9 w-9 rounded-2xl bg-gradient-to-br from-brand-900 via-slate-900 to-accent-500 border border-accent-400 shadow-md flex items-center justify-center">
+          <div class="h-6 w-6 rounded-full border-[2px] border-accent-300 flex items-center justify-center">
+            <div class="h-2 w-4 rounded-full bg-accent-400/90"></div>
+          </div>
+        </div>
+        <div class="leading-tight">
+          <p class="text-xs uppercase tracking-[0.2em] text-accent-300">Perfusion Tools</p>
+          <h1 class="text-sm md:text-base font-semibold tracking-tight text-slate-50">Perfusionist Calculators</h1>
+        </div>
       </div>
-      <nav class="hidden md:flex items-center gap-6 text-sm">
-        <a href="#/do2i" class="hover:text-brand-700">DO₂i</a>
-        <a href="#/predicted-hct" class="hover:text-brand-700">Predicted Hct</a>
-      </nav>
+      <div class="flex items-center gap-4">
+        <nav class="hidden md:flex items-center gap-4 text-xs font-medium text-slate-200">
+          <a href="#/do2i" data-route="do2i" class="nav-link rounded-full px-3 py-1.5">
+            DO₂i
+          </a>
+          <a href="#/predicted-hct" data-route="hct" class="nav-link rounded-full px-3 py-1.5">
+            Predicted Hct
+          </a>
+          <a href="#/faq" data-route="faq" class="nav-link rounded-full px-3 py-1.5">
+            FAQ
+          </a>
+        </nav>
+        <button id="theme-toggle" class="ml-2 inline-flex items-center gap-1 rounded-full border border-slate-700/80 bg-slate-900/70 px-3 py-1.5 text-xs text-slate-100 hover:border-accent-400 hover:text-accent-200">
+          <span id="theme-icon" aria-hidden="true">🌙</span>
+          <span class="hidden sm:inline" id="theme-label">Dark</span>
+        </button>
+      </div>
     </div>
   </header>
 
   <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr] gap-0">
     <!-- Sidebar -->
-    <aside class="md:border-r border-slate-200 bg-white md:sticky md:top-[57px] md:h-[calc(100vh-57px)] p-4">
-      <div class="mb-3">
-        <input placeholder="Search calculators" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+    <aside class="hidden md:block md:border-r border-slate-800/60 bg-brand-900/95 text-slate-100 md:sticky md:top-[64px] md:h-[calc(100vh-64px)] p-4">
+      <div class="mb-4">
+        <p class="text-[11px] uppercase tracking-[0.18em] text-slate-400 mb-2">Calculators</p>
+        <input placeholder="Search calculators" class="w-full rounded-xl border border-slate-700/80 bg-slate-900/70 px-3 py-2 text-xs placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-accent-400" />
       </div>
       <nav class="space-y-1 text-sm">
-        <a href="#/do2i" class="block px-3 py-2 rounded-lg hover:bg-brand-100">DO₂ Index (DO₂i)</a>
-        <a href="#/predicted-hct" class="block px-3 py-2 rounded-lg hover:bg-brand-100">Predicted Hematocrit</a>
+        <a href="#/do2i" data-route="do2i" class="nav-link block px-3 py-2 rounded-xl text-slate-100/80">
+          DO₂ Index (DO₂i)
+        </a>
+        <a href="#/predicted-hct" data-route="hct" class="nav-link block px-3 py-2 rounded-xl text-slate-100/80">
+          Predicted Hematocrit
+        </a>
+        <div class="mt-4 pt-3 border-t border-slate-800/70 text-[11px] text-slate-500 uppercase tracking-[0.18em]">Info</div>
+        <a href="#/faq" data-route="faq" class="nav-link block px-3 py-2 rounded-xl text-slate-100/80">
+          FAQ & Notes
+        </a>
+        <a href="#/privacy" data-route="privacy" class="nav-link block px-3 py-2 rounded-xl text-slate-100/80 text-xs">Privacy Policy</a>
+        <a href="#/terms" data-route="terms" class="nav-link block px-3 py-2 rounded-xl text-slate-100/80 text-xs">Terms of Use</a>
+        <a href="#/contact" data-route="contact" class="nav-link block px-3 py-2 rounded-xl text-slate-100/80 text-xs">Contact</a>
       </nav>
     </aside>
 
@@ -63,43 +125,43 @@
     <main class="p-4 md:p-8 space-y-8">
       <!-- DO2i -->
       <section id="view-do2i" class="hidden">
-        <div class="rounded-2xl bg-white shadow-card border border-slate-200 p-6">
-          <header class="flex items-center justify-between mb-4">
+        <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 px-5 py-6 sm:px-6 sm:py-7">
+          <header class="flex items-center justify-between mb-4 gap-4">
             <div class="flex items-center gap-3">
               <div>
-                <h2 class="text-xl md:text-2xl font-bold tracking-tight">DO₂ Index (DO₂i)</h2>
-                <span class="text-xs text-slate-500">mL O₂/min/m²</span>
+                <h2 class="text-xl md:text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">DO₂ Index (DO₂i)</h2>
+                <span class="text-[11px] uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">mL O₂ / min / m²</span>
               </div>
               <!-- Mode toggle: Adult(default)/Infant -->
-              <div class="ml-2 inline-flex rounded-lg border border-slate-200 overflow-hidden">
-                <button id="mode-adult" class="px-3 py-1 text-xs font-medium bg-slate-100">Adult</button>
-                <button id="mode-infant" class="px-3 py-1 text-xs font-medium hover:bg-slate-50">Infant</button>
+              <div class="ml-2 inline-flex rounded-full border border-slate-300 dark:border-slate-700 bg-slate-100/70 dark:bg-slate-900/80 overflow-hidden text-[11px] font-medium">
+                <button id="mode-adult" class="px-3 py-1 bg-slate-900/90 text-slate-50">Adult</button>
+                <button id="mode-infant" class="px-3 py-1 text-slate-600 dark:text-slate-300">Infant</button>
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <button id="do2i-reset" class="text-xs px-3 py-1 rounded-lg border border-slate-300 hover:bg-slate-50">Reset all</button>
+              <button id="do2i-reset" class="text-[11px] uppercase tracking-[0.16em] px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/70 text-slate-600 dark:text-slate-300 hover:border-accent-400">Reset</button>
             </div>
           </header>
 
           <div class="grid sm:grid-cols-2 gap-4 items-start">
             <div>
-              <label class="block text-sm font-medium">Height (cm)</label>
-              <input id="h_cm" type="number" step="0.1" placeholder="170" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">Height (cm)</label>
+              <input id="h_cm" type="number" step="0.1" placeholder="170" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm" />
             </div>
             <div>
-              <label class="block text-sm font-medium">Weight (kg)</label>
-              <input id="w_kg" type="number" step="0.1" placeholder="70" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">Weight (kg)</label>
+              <input id="w_kg" type="number" step="0.1" placeholder="70" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm" />
             </div>
 
-            <div class="sm:col-span-2 grid grid-cols-[1fr_auto] gap-2 items-end">
+            <div class="sm:col-span-2 grid grid-cols-[minmax(0,1fr)_auto] gap-2 items-end">
               <div>
-                <label class="block text-sm font-medium">BSA (m²)</label>
-                <input id="bsa" type="number" step="0.01" placeholder="Auto from H/W or enter" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
-                <p id="bsa-hint" class="text-xs text-slate-500 mt-1">Auto if Height & Weight are provided (—)</p>
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">BSA (m²)</label>
+                <input id="bsa" type="number" step="0.01" placeholder="Auto from H/W or enter" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm" />
+                <p id="bsa-hint" class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Auto if height & weight are provided (—)</p>
               </div>
-              <div class="w-[160px] text-sm">
-                <label class="block text-xs text-slate-500">BSA formula</label>
-                <select id="bsa-method" class="mt-1 w-full rounded-lg border border-slate-300 px-2 py-2">
+              <div class="w-[170px] text-sm">
+                <label class="block text-[11px] text-slate-500 dark:text-slate-400">BSA formula</label>
+                <select id="bsa-method" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-2 py-2 text-xs">
                   <option value="Mosteller">Mosteller</option>
                   <option value="DuBois">DuBois & DuBois</option>
                   <option value="Haycock">Haycock</option>
@@ -109,64 +171,85 @@
             </div>
 
             <div>
-              <label class="block text-sm font-medium">Pump Flow (L/min)</label>
-              <input id="flow" type="number" step="0.01" placeholder="4.6" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">Pump Flow (L/min)</label>
+              <input id="flow" type="number" step="0.01" placeholder="4.6" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm" />
             </div>
             <div>
-              <label class="block text-sm font-medium">Hemoglobin (g/dL)</label>
-              <input id="hb" type="number" step="0.1" placeholder="10" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">Hemoglobin (g/dL)</label>
+              <input id="hb" type="number" step="0.1" placeholder="10" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm" />
             </div>
             <div>
-              <label class="block text-sm font-medium">SaO₂ (%)</label>
-              <input id="sao2" type="number" step="0.1" placeholder="100" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">SaO₂ (%)</label>
+              <input id="sao2" type="number" step="0.1" placeholder="100" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm" />
             </div>
             <div>
-              <label class="block text-sm font-medium">PaO₂ (mmHg)</label>
-              <input id="pao2" type="number" step="1" placeholder="" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">PaO₂ (mmHg)</label>
+              <input id="pao2" type="number" step="1" placeholder="" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm" />
             </div>
             <div>
-              <label class="block text-sm font-medium">CaO₂ (mL/dL)</label>
-              <input id="cao2" disabled class="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2" />
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">CaO₂ (mL/dL)</label>
+              <input id="cao2" disabled class="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/70 px-3 py-2 text-sm text-slate-700 dark:text-slate-200" />
             </div>
           </div>
 
-          <div class="mt-5 p-4 rounded-xl bg-slate-50 border border-slate-200">
-            <div class="flex items-center justify-between">
+          <div class="mt-5 p-4 rounded-2xl bg-slate-50/90 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800">
+            <div class="flex items-center justify-between gap-4">
+              <div class="space-y-1">
+                <p class="text-xs font-medium text-slate-600 dark:text-slate-300 flex items-center gap-2">
+                  DO₂i result
+                  <span id="mode-badge" class="ml-1 text-[10px] px-2 py-0.5 rounded-full bg-slate-900 text-slate-50 dark:bg-slate-100 dark:text-slate-900">Adult</span>
+                </p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">Indexed oxygen delivery based on current flow, BSA and CaO₂.</p>
+              </div>
               <div class="text-right ml-auto">
-                <div class="text-sm text-slate-600">DO₂i <span id="mode-badge" class="ml-1 text-xs px-2 py-0.5 rounded bg-slate-200">Adult</span></div>
-                <div id="do2i" class="text-2xl font-extrabold">— mL/min/m²</div>
+                <div id="do2i" class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">— mL/min/m²</div>
               </div>
             </div>
-            <div class="mt-3 h-2 rounded-full bg-slate-200">
-              <div id="do2i-gauge" class="h-2 rounded-full bg-brand-600" style="width:0%"></div>
+            <div class="mt-3 h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+              <div id="do2i-gauge" class="h-2 rounded-full bg-accent-400" style="width:0%"></div>
             </div>
-            <p id="do2i-msg" class="mt-2 text-sm font-medium"></p>
-            <div id="do2i-legend" class="mt-2 text-xs text-slate-600"></div>
+            <p id="do2i-msg" class="mt-2 text-sm font-medium text-slate-700 dark:text-slate-200"></p>
+            <div id="do2i-legend" class="mt-1 text-[11px] text-slate-500 dark:text-slate-400"></div>
           </div>
 
-          <details class="mt-4">
-            <summary class="cursor-pointer text-sm text-slate-600">Methodology</summary>
-            <ul class="text-sm text-slate-600 list-disc pl-5 mt-2">
-              <li><strong>CaO₂</strong> (mL/dL) = 1.34 × Hb × (SaO₂/100) + 0.0031 × PaO₂.</li>
-              <li><strong>DO₂i</strong> (mL/min/m²) = (Pump Flow ÷ BSA) × CaO₂ × 10.</li>
-              <li>Constants: Hüfner factor 1.34 mL O₂/g Hb; dissolved O₂ 0.0031 mL O₂·dL⁻¹·mmHg⁻¹.</li>
-            </ul>
-          </details>
+          <div class="mt-4 grid md:grid-cols-2 gap-4">
+            <details class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 p-3">
+              <summary class="cursor-pointer text-xs font-semibold text-slate-700 dark:text-slate-100">Methodology</summary>
+              <ul class="text-xs text-slate-600 dark:text-slate-300 list-disc pl-4 mt-2 space-y-1">
+                <li><strong>CaO₂</strong> (mL/dL) = 1.34 × Hb × (SaO₂ / 100) + 0.0031 × PaO₂.</li>
+                <li><strong>DO₂i</strong> (mL/min/m²) = (Pump Flow ÷ BSA) × CaO₂ × 10.</li>
+                <li>Constants: Hüfner factor 1.34 mL O₂/g Hb; dissolved O₂ 0.0031 mL·dL⁻¹·mmHg⁻¹.</li>
+              </ul>
+            </details>
+
+            <div class="rounded-xl border border-accent-400/50 bg-accent-100/60 dark:bg-slate-900/80 p-3">
+              <h3 class="text-xs font-semibold text-slate-800 dark:text-accent-200">Clinical notes (educational only)</h3>
+              <ul class="mt-1 text-[11px] text-slate-700 dark:text-slate-200 space-y-1 list-disc pl-4">
+                <li><span class="font-medium">Adult:</span> many centers target DO₂i ≥ 280–300 mL/min/m² on CPB; values &lt; 260 may be considered low.</li>
+                <li><span class="font-medium">Infant/pediatric:</span> higher indexed delivery is typically used; thresholds in this tool are shifted upward (e.g., target ≥ 380 mL/min/m²).</li>
+                <li>Interpret DO₂i together with lactate, SvO₂/ScvO₂, urine output, and overall hemodynamics.</li>
+                <li>This tool is for education and decision support only and does not replace institutional protocols.</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
 
       <!-- Predicted Hct -->
       <section id="view-hct" class="hidden">
-        <div class="rounded-2xl bg-white shadow-card border border-slate-200 p-6">
+        <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 px-5 py-6 sm:px-6 sm:py-7">
           <header class="flex items-center justify-between mb-4">
-            <h2 class="text-xl md:text-2xl font-bold tracking-tight">Predicted Hematocrit on CPB</h2>
-            <span class="text-xs text-slate-500">%</span>
+            <div>
+              <h2 class="text-xl md:text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">Predicted Hematocrit on CPB</h2>
+              <span class="text-[11px] uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">CPB hemodilution</span>
+            </div>
+            <span class="text-xs text-slate-500 dark:text-slate-400">Output in %</span>
           </header>
 
           <div class="grid sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium">Patient Type</label>
-              <select id="pttype" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2">
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">Patient Type</label>
+              <select id="pttype" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm">
                 <option value="adult_m">Adult — Male (70 mL/kg)</option>
                 <option value="adult_f">Adult — Female (65 mL/kg)</option>
                 <option value="child">Child (75 mL/kg)</option>
@@ -175,97 +258,123 @@
               </select>
             </div>
             <div>
-              <label class="block text-sm font-medium">Weight (kg)</label>
-              <input id="wt_hct" type="number" step="0.1" placeholder="70" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
-              <p class="text-xs text-slate-500 mt-1">EBV = weight × coefficient</p>
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">Weight (kg)</label>
+              <input id="wt_hct" type="number" step="0.1" placeholder="70" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm" />
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">EBV = weight × coefficient above.</p>
             </div>
             <div>
-              <label class="block text-sm font-medium">Pre‑CPB Hct (%)</label>
-              <input id="pre_hct" type="number" step="0.1" placeholder="40" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">Pre‑CPB Hct (%)</label>
+              <input id="pre_hct" type="number" step="0.1" placeholder="40" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm" />
             </div>
             <div>
-              <label class="block text-sm font-medium">Circuit Prime (mL)</label>
-              <input id="prime" type="number" step="1" placeholder="1200" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">Circuit Prime (mL)</label>
+              <input id="prime" type="number" step="1" placeholder="1200" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm" />
             </div>
             <div>
-              <label class="block text-sm font-medium">Additional Fluids (mL)</label>
-              <input id="fluids" type="number" step="1" value="0" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">Additional Fluids (mL)</label>
+              <input id="fluids" type="number" step="1" value="0" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm" />
             </div>
             <div>
-              <label class="block text-sm font-medium">Ultrafiltration Removed (mL)</label>
-              <input id="removed" type="number" step="1" value="0" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">Ultrafiltration Removed (mL)</label>
+              <input id="removed" type="number" step="1" value="0" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm" />
             </div>
             <div>
-              <label class="block text-sm font-medium">RBC Units (number)</label>
-              <input id="rbc_units" type="number" step="1" value="0" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">RBC Units (number)</label>
+              <input id="rbc_units" type="number" step="1" value="0" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm" />
             </div>
             <div>
-              <label class="block text-sm font-medium">Per‑Unit Volume (mL)</label>
-              <input id="rbc_unit_vol" type="number" step="1" value="300" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
-              <p class="text-xs text-slate-500 mt-1">Commonly 250–350 mL.</p>
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">Per‑Unit Volume (mL)</label>
+              <input id="rbc_unit_vol" type="number" step="1" value="300" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm" />
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Commonly 250–350 mL.</p>
             </div>
             <div>
-              <label class="block text-sm font-medium">RBC Hct (%)</label>
-              <input id="rbc_hct" type="number" step="1" value="60" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+              <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">RBC Hct (%)</label>
+              <input id="rbc_hct" type="number" step="1" value="60" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm" />
             </div>
           </div>
 
-          <div class="mt-5 p-4 rounded-xl bg-slate-50 border border-slate-200 grid sm:grid-cols-3 gap-4">
+          <div class="mt-5 p-4 rounded-2xl bg-slate-50/90 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 grid sm:grid-cols-3 gap-4">
             <div>
-              <div class="text-sm text-slate-600">Estimated Blood Volume (mL)</div>
-              <div id="ebv" class="text-2xl font-bold">—</div>
+              <div class="text-xs font-medium text-slate-600 dark:text-slate-300">Estimated Blood Volume (mL)</div>
+              <div id="ebv" class="text-2xl font-semibold text-slate-900 dark:text-slate-50">—</div>
             </div>
             <div>
-              <div class="text-sm text-slate-600">Total Volume at Sampling (mL)</div>
-              <div id="total_vol" class="text-2xl font-bold">—</div>
+              <div class="text-xs font-medium text-slate-600 dark:text-slate-300">Total Volume at Sampling (mL)</div>
+              <div id="total_vol" class="text-2xl font-semibold text-slate-900 dark:text-slate-50">—</div>
             </div>
             <div>
-              <div class="text-sm text-slate-600">Predicted Hct (%)</div>
-              <div id="pred_hct" class="text-2xl font-extrabold">—</div>
+              <div class="text-xs font-medium text-slate-600 dark:text-slate-300">Predicted Hct (%)</div>
+              <div id="pred_hct" class="text-2xl font-semibold text-slate-900 dark:text-slate-50">—</div>
             </div>
           </div>
 
-          <details class="mt-4">
-            <summary class="cursor-pointer text-sm text-slate-600">Methodology</summary>
-            <ul class="text-sm text-slate-600 list-disc pl-5 mt-2">
-              <li><strong>EBV</strong> (mL) = Weight × coefficient (Adult M 70; F 65; Child 75; Infant 80; Neonate 90 mL/kg).</li>
-              <li><strong>RBC volume</strong> (mL) = EBV × (Hct_pre/100) + (RBC_units × unit_vol) × (RBC_Hct/100).</li>
-              <li><strong>Total volume at sampling</strong> (mL) = EBV + prime + fluids + (RBC_units × unit_vol) − ultrafiltration.</li>
-              <li><strong>Predicted Hct</strong> (%) = RBC volume ÷ Total volume × 100.</li>
-            </ul>
-          </details>
+          <div class="mt-4 grid md:grid-cols-2 gap-4">
+            <details class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 p-3">
+              <summary class="cursor-pointer text-xs font-semibold text-slate-700 dark:text-slate-100">Methodology</summary>
+              <ul class="text-xs text-slate-600 dark:text-slate-300 list-disc pl-4 mt-2 space-y-1">
+                <li><strong>EBV</strong> (mL) = Weight × coefficient (Adult M 70; F 65; Child 75; Infant 80; Neonate 90 mL/kg).</li>
+                <li><strong>RBC volume</strong> (mL) = EBV × (Hct_pre / 100) + (RBC_units × unit_vol) × (RBC_Hct / 100).</li>
+                <li><strong>Total volume at sampling</strong> (mL) = EBV + prime + fluids + (RBC_units × unit_vol) − ultrafiltration.</li>
+                <li><strong>Predicted Hct</strong> (%) = RBC volume ÷ Total volume × 100.</li>
+              </ul>
+            </details>
+
+            <div class="rounded-xl border border-accent-400/50 bg-accent-100/60 dark:bg-slate-900/80 p-3">
+              <h3 class="text-xs font-semibold text-slate-800 dark:text-accent-200">Clinical notes (educational only)</h3>
+              <ul class="mt-1 text-[11px] text-slate-700 dark:text-slate-200 space-y-1 list-disc pl-4">
+                <li>Many adult programs aim for on‑pump Hct around 22–30% depending on risk profile and institutional strategy.</li>
+                <li>Pediatric and neonatal cases often target higher Hct because of smaller cerebral reserve and different metabolic demands.</li>
+                <li>Increasing prime volume or crystalloid/colloid fluids will dilute Hct; ultrafiltration or RBC addition will raise Hct.</li>
+                <li>This estimate assumes complete mixing and does not account for intra‑operative blood loss or retransfusion.</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
 
       <!-- Self-test results panel -->
       <section id="tests" class="hidden">
-        <div class="rounded-2xl bg-white shadow-card border border-slate-200 p-6">
+        <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 p-6">
           <h3 class="text-lg font-semibold">Self‑tests</h3>
           <ul id="test-log" class="mt-3 space-y-1 text-sm"></ul>
         </div>
       </section>
 
-      <section id="faq" class="">
-        <h3 class="text-xl font-bold tracking-tight">FAQ</h3>
-        <details class="mt-3 rounded-xl border border-slate-200 bg-white p-4 shadow-card">
-          <summary class="font-medium cursor-pointer">What DO₂i target should I use?</summary>
-          <p class="mt-2 text-slate-700 text-sm">Targets vary by institution. Many aim for ≥280–300 mL/min/m² on CPB.</p>
-        </details>
+      <!-- FAQ / Info -->
+      <section id="view-faq" class="hidden">
+        <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 p-6">
+          <h2 class="text-xl font-semibold tracking-tight">FAQ & Educational Notes</h2>
+
+          <details class="mt-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/80 p-4">
+            <summary class="font-medium cursor-pointer text-sm text-slate-800 dark:text-slate-100">What DO₂i targets are commonly used?</summary>
+            <p class="mt-2 text-sm text-slate-700 dark:text-slate-200">Targets vary by institution and patient risk. Many adult centers aim for DO₂i ≥ 280–300 mL/min/m² during CPB, with some using higher thresholds in high‑risk or anemic patients. Pediatric practices often use higher indexed flows and DO₂i targets. Always follow your local protocol.</p>
+          </details>
+
+          <details class="mt-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/80 p-4">
+            <summary class="font-medium cursor-pointer text-sm text-slate-800 dark:text-slate-100">How should I interpret predicted Hct?</summary>
+            <p class="mt-2 text-sm text-slate-700 dark:text-slate-200">The predicted hematocrit is a mixing model estimate based on circulating volume, prime and RBC additions. It is useful for planning but should be checked against actual laboratory results after CPB initiation and during the case.</p>
+          </details>
+
+          <details class="mt-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/80 p-4">
+            <summary class="font-medium cursor-pointer text-sm text-slate-800 dark:text-slate-100">Is this tool a medical device?</summary>
+            <p class="mt-2 text-sm text-slate-700 dark:text-slate-200">No. This site is for educational use by trained healthcare professionals. It does not provide medical advice and is not a regulated medical device. Clinical decisions must follow your institution&rsquo;s guidelines and the judgment of the care team.</p>
+          </details>
+        </div>
       </section>
 
       <!-- Legal/Support pages -->
       <section id="view-privacy" class="hidden">
-        <div class="rounded-2xl bg-white shadow-card border border-slate-200 p-6">
+        <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 p-6">
           <h2 class="text-2xl font-bold tracking-tight">Privacy Policy</h2>
-          <p class="mt-2 text-slate-700 text-sm">Last updated: <span id="privacy-date"></span></p>
-          <div class="prose prose-sm mt-4 max-w-none text-slate-700">
+          <p class="mt-2 text-slate-700 dark:text-slate-300 text-sm">Last updated: <span id="privacy-date"></span></p>
+          <div class="prose prose-sm mt-4 max-w-none text-slate-700 dark:text-slate-300">
             <h3>1. Overview</h3>
             <p>We respect your privacy. This site provides educational calculators for healthcare professionals and collects the minimum data necessary to operate and improve the service.</p>
             <h3>2. Data We Collect</h3>
             <ul>
               <li><strong>Usage data</strong>: anonymized analytics (pages visited, basic device info). No clinical inputs you type (height, weight, labs) are persisted to our servers.</li>
               <li><strong>Cookies</strong>: used only for essential functionality and optional analytics/advertising.</li>
-              <li><strong>Ads</strong>: if Google AdSense is enabled, third‑party vendors may use cookies to serve ads. You can opt out of personalized ads via Google’s Ads Settings.</li>
+              <li><strong>Ads</strong>: if Google AdSense is enabled, third‑party vendors may use cookies to serve ads. You can opt out of personalized ads via Google&rsquo;s Ads Settings.</li>
             </ul>
             <h3>3. How We Use Data</h3>
             <ul>
@@ -292,11 +401,11 @@
       </section>
 
       <section id="view-terms" class="hidden">
-        <div class="rounded-2xl bg-white shadow-card border border-slate-200 p-6">
+        <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 p-6">
           <h2 class="text-2xl font-bold tracking-tight">Terms of Use</h2>
-          <p class="mt-2 text-slate-700 text-sm">Last updated: <span id="terms-date"></span></p>
-          <div class="prose prose-sm mt-4 max-w-none text-slate-700">
-            <h3>1. Purpose & Audience</h3>
+          <p class="mt-2 text-slate-700 dark:text-slate-300 text-sm">Last updated: <span id="terms-date"></span></p>
+          <div class="prose prose-sm mt-4 max-w-none text-slate-700 dark:text-slate-300">
+            <h3>1. Purpose &amp; Audience</h3>
             <p>These tools are for educational use by trained healthcare professionals. They do not replace clinical judgment, institutional policy, or bedside assessment.</p>
             <h3>2. No Medical Advice</h3>
             <p>Outputs are estimates based on formulas and user inputs. You are responsible for verifying results and making clinical decisions. The site owner is not liable for outcomes arising from the use or misuse of the calculators.</p>
@@ -306,8 +415,8 @@
               <li>Do not input any patient‑identifiable information.</li>
               <li>Use the tools in compliance with local laws and hospital policies.</li>
             </ul>
-            <h3>4. Availability & Changes</h3>
-            <p>We may modify or discontinue features at any time. Content is provided “as is” without warranties of any kind.</p>
+            <h3>4. Availability &amp; Changes</h3>
+            <p>We may modify or discontinue features at any time. Content is provided &ldquo;as is&rdquo; without warranties of any kind.</p>
             <h3>5. Intellectual Property</h3>
             <p>Site design, text, and code are owned by the site operator unless otherwise noted. You may link to the site and share screenshots with attribution.</p>
             <h3>6. Third‑Party Services</h3>
@@ -319,41 +428,56 @@
       </section>
 
       <section id="view-contact" class="hidden">
-        <div class="rounded-2xl bg-white shadow-card border border-slate-200 p-6">
+        <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 p-6">
           <h2 class="text-2xl font-bold tracking-tight">Contact</h2>
-          <p class="mt-2 text-slate-700 text-sm">Have feedback or found an issue? Send us a message.</p>
+          <p class="mt-2 text-slate-700 dark:text-slate-300 text-sm">Have feedback or found an issue? Send us a message.</p>
           <form id="contact-form" class="mt-4 grid sm:grid-cols-2 gap-4">
             <div class="sm:col-span-1">
               <label class="block text-sm font-medium">Your Name</label>
-              <input id="c_name" type="text" placeholder="Jane Doe" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" required />
+              <input id="c_name" type="text" placeholder="Jane Doe" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2" required />
             </div>
             <div class="sm:col-span-1">
               <label class="block text-sm font-medium">Email</label>
-              <input id="c_email" type="email" placeholder="you@example.com" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" required />
+              <input id="c_email" type="email" placeholder="you@example.com" class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2" required />
             </div>
             <div class="sm:col-span-2">
               <label class="block text-sm font-medium">Message</label>
-              <textarea id="c_msg" rows="5" placeholder="Tell us about a bug, feature idea, or general feedback." class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"></textarea>
+              <textarea id="c_msg" rows="5" placeholder="Tell us about a bug, feature idea, or general feedback." class="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2"></textarea>
             </div>
             <div class="sm:col-span-2 flex items-center gap-3">
-              <button id="c_send" type="submit" class="px-4 py-2 rounded-lg border border-slate-300 hover:bg-slate-50">Send</button>
-              <a id="c_mailto" href="#" class="text-sm underline text-brand-700">Use mail app</a>
-              <span id="c_status" class="text-sm text-slate-600"></span>
+              <button id="c_send" type="submit" class="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800">Send</button>
+              <a id="c_mailto" href="#" class="text-sm underline text-accent-400">Use mail app</a>
+              <span id="c_status" class="text-sm text-slate-600 dark:text-slate-300"></span>
             </div>
           </form>
-          <p class="mt-4 text-xs text-slate-500">Note: We do not store calculator inputs. For privacy requests, please specify the email and details you previously sent via this form.</p>
+          <p class="mt-4 text-xs text-slate-500 dark:text-slate-400">Note: We do not store calculator inputs. For privacy requests, please specify the email and details you previously sent via this form.</p>
         </div>
       </section>
     </main>
   </div>
 
-  <footer class="mt-10 border-t border-slate-200 bg-white/90 backdrop-blur">
-    <div class="max-w-7xl mx-auto px-4 py-8 text-sm text-slate-600 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-      <p>© <span id="year"></span> Perfusion Tools. Educational use for healthcare professionals.</p>
+  <!-- Mobile bottom nav -->
+  <nav class="md:hidden fixed bottom-0 inset-x-0 border-t border-slate-800/80 bg-brand-900/98 text-xs text-slate-200 z-40">
+    <div class="max-w-7xl mx-auto flex items-stretch justify-around">
+      <a href="#/do2i" data-route="do2i" class="nav-link flex-1 flex flex-col items-center justify-center py-2">
+        <span>DO₂i</span>
+      </a>
+      <a href="#/predicted-hct" data-route="hct" class="nav-link flex-1 flex flex-col items-center justify-center py-2">
+        <span>Hct</span>
+      </a>
+      <a href="#/faq" data-route="faq" class="nav-link flex-1 flex flex-col items-center justify-center py-2">
+        <span>FAQ</span>
+      </a>
+    </div>
+  </nav>
+
+  <footer class="mt-10 border-t border-slate-800/80 bg-brand-900/95 text-slate-300">
+    <div class="max-w-7xl mx-auto px-4 py-6 text-xs flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <p>© <span id="year"></span> Perfusion Tools. Educational use for healthcare professionals only.</p>
       <nav class="flex gap-4 underline-offset-4">
-        <a href="#/privacy" class="hover:underline">Privacy</a>
-        <a href="#/terms" class="hover:underline">Terms</a>
-        <a href="#/contact" class="hover:underline">Contact</a>
+        <a href="#/privacy" data-route="privacy" class="hover:underline">Privacy</a>
+        <a href="#/terms" data-route="terms" class="hover:underline">Terms</a>
+        <a href="#/contact" data-route="contact" class="hover:underline">Contact</a>
       </nav>
     </div>
   </footer>
@@ -420,8 +544,17 @@
 
   function applyModeUI(){
     setText('mode-badge', do2iMode === 'adult' ? 'Adult' : 'Infant');
-    el('mode-adult').className = 'px-3 py-1 text-xs font-medium ' + (do2iMode==='adult' ? 'bg-slate-100' : 'hover:bg-slate-50');
-    el('mode-infant').className = 'px-3 py-1 text-xs font-medium ' + (do2iMode==='infant' ? 'bg-slate-100' : 'hover:bg-slate-50');
+    const adultBtn = el('mode-adult');
+    const infantBtn = el('mode-infant');
+    if (adultBtn && infantBtn) {
+      if (do2iMode === 'adult') {
+        adultBtn.className = 'px-3 py-1 bg-slate-900/90 text-slate-50';
+        infantBtn.className = 'px-3 py-1 text-slate-600 dark:text-slate-300';
+      } else {
+        adultBtn.className = 'px-3 py-1 text-slate-600 dark:text-slate-300';
+        infantBtn.className = 'px-3 py-1 bg-slate-900/90 text-slate-50';
+      }
+    }
     setText('do2i-legend', THRESHOLDS[do2iMode].legend);
   }
 
@@ -429,11 +562,13 @@
     // Auto-overwrite policy: always recompute unless user just edited BSA field itself
     if (lastChangedId === 'bsa') return; 
     const h = num('h_cm'), w = num('w_kg');
-    const method = el('bsa-method').value;
+    const methodSelect = el('bsa-method');
+    const method = methodSelect ? methodSelect.value : 'Mosteller';
     const v = computeBSA(h, w, method);
     const out = v ? v.toFixed(2) : '';
-    el('bsa').value = out;
-    setText('bsa-hint', `Auto if Height & Weight are provided (${out ? 'auto' : '—'})`);
+    const bsaInput = el('bsa');
+    if (bsaInput) bsaInput.value = out;
+    setText('bsa-hint', `Auto if height & weight are provided (${out ? 'auto' : '—'})`);
   }
   function updateDO2i() {
     updateBSA(); // may be no-op if last change was BSA manual edit
@@ -441,37 +576,44 @@
     const flow = num('flow');
     const hb = num('hb');
     const sao2 = num('sao2');
-    const pao2 = parseFloat(el('pao2').value) || 0; // allow blank
+    const pao2Input = el('pao2');
+    const pao2 = pao2Input ? (parseFloat(pao2Input.value) || 0) : 0; // allow blank
     const cao2 = calcCaO2(hb, sao2, pao2);
-    el('cao2').value = cao2 ? cao2.toFixed(2) : '';
+    const cao2El = el('cao2');
+    if (cao2El) cao2El.value = cao2 ? cao2.toFixed(2) : '';
 
     const do2i = calcDO2i(flow, bsa, cao2);
     setText('do2i', do2i ? `${Math.round(do2i)} mL/min/m²` : '— mL/min/m²');
 
     // Gauge & message by mode thresholds
     const t = THRESHOLDS[do2iMode];
-    let gaugePct = 0, msg = '', gaugeColor = 'bg-brand-600';
+    let gaugePct = 0, msg = '', gaugeColor = 'bg-accent-400';
     if (do2i) {
       gaugePct = Math.min(Math.max((do2i / t.max) * 100, 0), 100);
       if (do2i < t.low) { msg = 'Low delivery'; gaugeColor = 'bg-red-500'; }
       else if (do2i < t.borderline) { msg = 'Borderline'; gaugeColor = 'bg-amber-500'; }
-      else if (do2i <= t.upper) { msg = 'Within targets'; gaugeColor = 'bg-emerald-600'; }
-      else { msg = 'Very high — verify'; gaugeColor = 'bg-sky-600'; }
+      else if (do2i <= t.upper) { msg = 'Within targets'; gaugeColor = 'bg-emerald-500'; }
+      else { msg = 'Very high — verify settings and lab values.'; gaugeColor = 'bg-sky-500'; }
     }
     const g = el('do2i-gauge');
-    g.style.width = `${gaugePct}%`;
-    g.className = `h-2 rounded-full ${gaugeColor}`;
+    if (g) {
+      g.style.width = `${gaugePct}%`;
+      g.className = `h-2 rounded-full ${gaugeColor}`;
+    }
     setText('do2i-msg', msg);
   }
   function resetDO2i() {
     ['h_cm','w_kg','bsa','flow','hb','sao2','pao2'].forEach(id => { const n = el(id); if (n) n.value = ''; });
-    el('cao2').value = '';
+    const cao2El = el('cao2');
+    if (cao2El) cao2El.value = '';
     setText('do2i','— mL/min/m²');
     const g = el('do2i-gauge');
-    g.style.width = '0%';
-    g.className = 'h-2 rounded-full bg-brand-600';
+    if (g) {
+      g.style.width = '0%';
+      g.className = 'h-2 rounded-full bg-accent-400';
+    }
     setText('do2i-msg','');
-    setText('bsa-hint','Auto if Height & Weight are provided (—)');
+    setText('bsa-hint','Auto if height & weight are provided (—)');
     do2iMode = 'adult';
     applyModeUI();
   }
@@ -480,7 +622,8 @@
   // Predicted Hct Interaction
   // -----------------------------
   function updateHct() {
-    const pttype = el('pttype').value;
+    const pttypeSelect = el('pttype');
+    const pttype = pttypeSelect ? pttypeSelect.value : 'adult_m';
     const payload = {
       pttype,
       weight: num('wt_hct'),
@@ -499,158 +642,14 @@
   }
 
   // -----------------------------
-  // Router (hash-based)
+  // Theme handling
   // -----------------------------
-  function route() {
-    const hash = location.hash || '#/do2i';
-    const isDO2i = hash.includes('do2i');
-    const isHct = hash.includes('predicted-hct');
-    const isTests = hash.includes('tests');
-    const isPrivacy = hash.includes('privacy');
-    const isTerms = hash.includes('terms');
-    const isContact = hash.includes('contact');
-
-    document.getElementById('view-do2i').classList.toggle('hidden', !isDO2i);
-    document.getElementById('view-hct').classList.toggle('hidden', !isHct);
-    document.getElementById('tests').classList.toggle('hidden', !isTests);
-    document.getElementById('view-privacy').classList.toggle('hidden', !isPrivacy);
-    document.getElementById('view-terms').classList.toggle('hidden', !isTerms);
-    document.getElementById('view-contact').classList.toggle('hidden', !isContact);
-  }
-
-  // -----------------------------
-  // Self Tests (console + optional UI)
-  // -----------------------------
-  function runTests() {
-    const logUl = document.getElementById('test-log');
-    function log(msg, ok) {
-      if (!logUl) return;
-      const li = document.createElement('li');
-      li.textContent = (ok ? '✅ ' : '❌ ') + msg;
-      li.className = ok ? 'text-emerald-700' : 'text-red-600';
-      logUl.appendChild(li);
-      if (!ok) console.warn(msg);
-    }
-    function approxEq(a, b, tol) { return Math.abs(a - b) <= tol; }
-
-    try {
-      // BSA tests
-      const most = Number(computeBSA(170,70,'Mosteller').toFixed(2));
-      log("BSA: Mosteller 170/70 ≈ 1.82", approxEq(most, 1.82, 0.01));
-      const dub = Number(computeBSA(170,70,'DuBois').toFixed(2));
-      log("BSA: DuBois 170/70 ≈ 1.81-1.82", approxEq(dub, 1.81, 0.02));
-      log("BSA: zero/negative → 0", computeBSA(0,70,'Mosteller')===0 && computeBSA(170,-1,'Mosteller')===0);
-
-      // DO2i tests
-      const bsaA = computeBSA(170,70,'Mosteller');
-      const fiA = 4.6 / bsaA; const cao2A = calcCaO2(10, 100, 150); const do2iA = fiA * cao2A * 10;
-      log("DO2i: Case A ≈ 350 mL/min/m²", approxEq(Math.round(do2iA), 351, 1));
-
-      const bsaB = computeBSA(160,60,'Mosteller');
-      const fiB = 3.5 / bsaB; const cao2B = calcCaO2(8, 100, 200); const do2iB = fiB * cao2B * 10;
-      log("DO2i: Case B ≈ 243 mL/min/m²", approxEq(Math.round(do2iB), 243, 1));
-
-      const fiC = 4.6 / bsaA; const cao2C = calcCaO2(10, 100, 0); const do2iC = fiC * cao2C * 10;
-      log("DO2i: Edge PaO2=0 reduces DO2i ≈ 339", approxEq(Math.round(do2iC), 339, 1));
-
-      const cao2Same = calcCaO2(10, 100, 150);
-      const do2iLow = (3.6 / bsaA) * cao2Same * 10;
-      const do2iHigh = (4.6 / bsaA) * cao2Same * 10;
-      log("DO2i: Higher flow increases DO2i", do2iHigh > do2iLow);
-
-      // Predicted Hct tests
-      const rA = computePredictedHct({ pttype:'adult_m', weight:70, pre:40, prime:1200 });
-      log("Hct: Case A ≈ 32.1%", approxEq(Number(rA.hct.toFixed(1)), 32.1, 0.2));
-
-      const rB = computePredictedHct({ pttype:'adult_m', weight:70, pre:40, prime:1200, rbcUnits:1, rbcUnitVol:300, rbcHct:60 });
-      log("Hct: Case B (1 RBC) ≈ 33.4%", approxEq(Number(rB.hct.toFixed(1)), 33.4, 0.2));
-
-      const rC = computePredictedHct({ pttype:'adult_m', weight:70, pre:40, prime:1200, removed:500 });
-      log("Hct: UF 500 → ≈ 35.0%", approxEq(Number(rC.hct.toFixed(1)), 35.0, 0.3));
-
-      const r1 = computePredictedHct({ pttype:'adult_m', weight:70, pre:40, prime:1200, rbcUnits:1, rbcUnitVol:300, rbcHct:60 });
-      const r2 = computePredictedHct({ pttype:'adult_m', weight:70, pre:40, prime:1200, rbcUnits:2, rbcUnitVol:300, rbcHct:60 });
-      log("Hct: 2 RBC units > 1 unit", r2.hct > r1.hct);
-    } catch (e) {
-      console.error(e);
-      if (logUl) log("Unhandled error in tests: " + e.message, false);
-    }
-  }
-
-  // -----------------------------
-  // Wiring
-  // -----------------------------
-  window.addEventListener('hashchange', route);
-  window.addEventListener('DOMContentLoaded', () => {
-    const now = new Date();
-    document.getElementById('year').textContent = now.getFullYear();
-    const iso = now.toISOString().slice(0,10);
-    const pdate = document.getElementById('privacy-date'); if (pdate) pdate.textContent = iso;
-    const tdate = document.getElementById('terms-date'); if (tdate) tdate.textContent = iso;
-
-    route();
-
-    // DO2i listeners (track lastChangedId for BSA overwrite policy)
-    do2iIds.forEach(id => { 
-      const x = el(id); 
-      if (x) {
-        x.addEventListener('input', () => { lastChangedId = id; updateDO2i(); });
-        if (id === 'bsa-method') x.addEventListener('change', () => { lastChangedId = id; updateDO2i(); });
-      }
-    });
-
-    // Mode toggle buttons
-    el('mode-adult').addEventListener('click', () => { do2iMode = 'adult'; applyModeUI(); updateDO2i(); });
-    el('mode-infant').addEventListener('click', () => { do2iMode = 'infant'; applyModeUI(); updateDO2i(); });
-
-    // Reset
-    el('do2i-reset').addEventListener('click', () => { lastChangedId = null; resetDO2i(); });
-
-    // Hct listeners
-    ['pttype','wt_hct','pre_hct','prime','fluids','removed','rbc_units','rbc_unit_vol','rbc_hct'].forEach(id => {
-      const x = el(id); if (x) x.addEventListener('input', updateHct);
-    });
-
-    // Contact form
-    const cform = document.getElementById('contact-form');
-    if (cform) {
-      cform.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = el('c_name').value.trim();
-        const email = el('c_email').value.trim();
-        const msg = el('c_msg').value.trim();
-        const status = el('c_status');
-        if (!name || !email || !msg) { status.textContent = 'Please fill all fields.'; return; }
-        // mailto fallback
-        const subject = encodeURIComponent('Perfusion Tools — Contact');
-        const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${msg}`);
-        const href = `mailto:owner@perfusion.pro?subject=${subject}&body=${body}`;
-        window.location.href = href;
-        status.textContent = 'Opening your mail app…';
-      });
-      const mailto = document.getElementById('c_mailto');
-      if (mailto) {
-        mailto.addEventListener('click', (e) => {
-          e.preventDefault();
-          const name = el('c_name').value.trim() || '(no name)';
-          const email = el('c_email').value.trim() || '(no email)';
-          const msg = el('c_msg').value.trim();
-          const subject = encodeURIComponent('Perfusion Tools — Contact');
-          const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${msg}`);
-          const href = `mailto:owner@perfusion.pro?subject=${subject}&body=${body}`;
-          window.location.href = href;
-        });
-      }
-    }
-
-    // Initialize mode UI and compute (in case hash is on DO2i)
-    applyModeUI();
-    updateDO2i();
-    updateHct();
-
-    // Self-tests (open with #/tests to view list)
-    runTests();
-  });
-  </script>
-</body>
-</html>
+  const THEME_KEY = 'pt-theme';
+  function applyTheme(theme, persist) {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+      const themeColor = document.querySelector('meta[name="theme-color"]');
+      if (themeColor) themeColor.setAttribute('content', '#020617');
+    } else {
+      root
