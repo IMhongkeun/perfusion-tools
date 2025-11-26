@@ -282,7 +282,7 @@ function route() {
   };
 
   document.querySelectorAll('.nav-link, .sidebar-link').forEach(l => {
-    l.classList.remove('bg-primary-800', 'text-accent-400', 'bg-slate-100', 'text-primary-900', 'bg-primary-700');
+    l.classList.remove('bg-primary-800', 'text-accent-400', 'bg-slate-100', 'text-primary-900', 'bg-primary-700', 'dark:bg-primary-800', 'dark:text-accent-400');
   });
   document.querySelectorAll('[id^="mob-"]').forEach(l => {
     l.classList.remove('text-accent-600', 'dark:text-accent-400');
