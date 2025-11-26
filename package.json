@@ -1,0 +1,13 @@
+{
+  "name": "perfusion-tools",
+  "version": "1.0.0",
+  "description": "Professional perfusion calculators for CPB",
+  "scripts": {
+    "build": "echo 'No build needed - static HTML app'",
+    "dev": "echo 'Open index.html in browser'",
+    "start": "echo 'Open index.html in browser'"
+  },
+  "keywords": ["perfusion", "medical", "calculator"],
+  "author": "",
+  "license": "MIT"
+}
