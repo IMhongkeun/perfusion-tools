@@ -69,19 +69,20 @@ function calcDO2i(flowLmin, bsa, cao2) {
   return fi * cao2 * 10;
 }
 
+const PATIENT_TYPE_COEFS = {
+  adult_m: 70,
+  adult_f: 65,
+  child: 75,
+  infant: 80,
+  neonate: 90
+};
+
 function ebvCoef(pttype) {
-  switch (pttype) {
-    case 'adult_m': return 70;
-    case 'adult_f': return 65;
-    case 'child': return 75;
-    case 'infant': return 80;
-    case 'neonate': return 90;
-    default: return 70;
-  }
+  return PATIENT_TYPE_COEFS[pttype] || 70;
 }
 
-function computePredictedHct({ pttype, weight, pre, prime, fluids = 0, removed = 0, rbcUnits = 0, rbcUnitVol = 300, rbcHct = 60 }) {
-  const coef = ebvCoef(pttype);
+function computePredictedHct({ pttype, weight, pre, prime, fluids = 0, removed = 0, rbcUnits = 0, rbcUnitVol = 300, rbcHct = 60, ebvCoefValue }) {
+  const coef = ebvCoefValue || ebvCoef(pttype);
   const ebv = (weight || 0) * coef;
   const rbcVolAdded = (rbcUnits || 0) * (rbcUnitVol || 0);
   const rbcVolume = (ebv * ((pre || 0) / 100)) + (rbcVolAdded * ((rbcHct || 0) / 100));
@@ -226,11 +227,18 @@ function updateHct() {
     rbcUnits: num('rbc_units'),
     rbcUnitVol: num('rbc_unit_vol'),
     rbcHct: num('rbc_hct'),
+    ebvCoefValue: num('ebv_coef')
   };
   const r = computePredictedHct(payload);
   setText('ebv', r.ebv ? r.ebv.toFixed(0) : '0');
   setText('total_vol', r.totalVol ? r.totalVol.toFixed(0) : '0');
   setText('pred_hct', r.hct ? r.hct.toFixed(1) + '%' : '0%');
+}
+
+function applyDefaultEbvCoef(pttype) {
+  const coefInput = el('ebv_coef');
+  if (!coefInput) return;
+  coefInput.value = ebvCoef(pttype);
 }
 
 // -----------------------------
@@ -358,10 +366,19 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   // Predicted Hct event listeners
-  ['pttype', 'wt_hct', 'pre_hct', 'prime', 'fluids', 'removed', 'rbc_units', 'rbc_unit_vol', 'rbc_hct'].forEach(id => {
+  ['pttype', 'wt_hct', 'pre_hct', 'prime', 'fluids', 'removed', 'rbc_units', 'rbc_unit_vol', 'rbc_hct', 'ebv_coef'].forEach(id => {
     const x = el(id);
     if (x) x.addEventListener('input', updateHct);
   });
+
+  const pttypeSelect = el('pttype');
+  if (pttypeSelect) {
+    pttypeSelect.addEventListener('change', () => {
+      applyDefaultEbvCoef(pttypeSelect.value);
+      updateHct();
+    });
+    applyDefaultEbvCoef(pttypeSelect.value);
+  }
 
   // LBM event listeners (NEW)
   ['lbm_h_cm', 'lbm_w_kg', 'lbm_sex', 'lbm_formula'].forEach(id => {
