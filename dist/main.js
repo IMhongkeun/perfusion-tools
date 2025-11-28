@@ -366,7 +366,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   // Predicted Hct event listeners
-  ['pttype', 'wt_hct', 'pre_hct', 'prime', 'fluids', 'removed', 'rbc_units', 'rbc_unit_vol', 'rbc_hct', 'ebv_coef'].forEach(id => {
+  ['wt_hct', 'pre_hct', 'prime', 'fluids', 'removed', 'rbc_units', 'rbc_unit_vol', 'rbc_hct', 'ebv_coef'].forEach(id => {
     const x = el(id);
     if (x) x.addEventListener('input', updateHct);
   });
