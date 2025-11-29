@@ -180,24 +180,32 @@ function updateDO2i() {
   const hb = num('hb');
   const sao2 = num('sao2');
   const pao2 = parseFloat(el('pao2').value) || 0;
-  const temp = parseFloat(el('temp_c')?.value) || 37;
+  const tempRaw = parseFloat(el('temp_c')?.value);
+  const hasTemp = !Number.isNaN(tempRaw);
+  const temp = hasTemp ? tempRaw : 37;
+  const baseThresholds = THRESHOLDS[do2iMode];
+  // temperature-adjusted thresholds for the gauge
+  const factor = hasTemp ? clamp(computeMetabolicFactor(temp), 0.4, 1.1) : 1;
+  const low = baseThresholds.low * factor;
+  const borderline = baseThresholds.borderline * factor;
+  const upper = baseThresholds.upper * factor;
+  const max = baseThresholds.max * factor;
   const cao2 = calcCaO2(hb, sao2, pao2);
   el('cao2').value = cao2 ? cao2.toFixed(2) : '';
   const do2i = calcDO2i(flow, bsa, cao2);
   setText('do2i', do2i ? `${Math.round(do2i)} <span class="text-lg font-normal text-slate-400">mL/min/m²</span>` : '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
-  const t = THRESHOLDS[do2iMode];
   let gaugePct = 0, msg = 'Waiting...', gaugeColor = 'from-accent-600 to-accent-400';
   if (do2i) {
-    gaugePct = Math.min(Math.max((do2i / t.max) * 100, 0), 100);
-    if (do2i < t.low) {
+    gaugePct = Math.min(Math.max((do2i / max) * 100, 0), 100);
+    if (do2i < low) {
       msg = 'Low Delivery';
       gaugeColor = 'from-red-600 to-red-400';
     }
-    else if (do2i < t.borderline) {
+    else if (do2i < borderline) {
       msg = 'Borderline';
       gaugeColor = 'from-amber-500 to-amber-300';
     }
-    else if (do2i <= t.upper) {
+    else if (do2i <= upper) {
       msg = 'Target Range';
       gaugeColor = 'from-emerald-500 to-emerald-300';
     }
@@ -213,18 +221,23 @@ function updateDO2i() {
   setText('do2i-msg', msg);
 
   const msgEl = el('do2i-msg');
-  if (do2i < t.low) msgEl.className = 'text-sm font-bold text-red-400';
-  else if (do2i < t.borderline) msgEl.className = 'text-sm font-bold text-amber-400';
-  else if (do2i <= t.upper) msgEl.className = 'text-sm font-bold text-emerald-400';
+  if (do2i < low) msgEl.className = 'text-sm font-bold text-red-400';
+  else if (do2i < borderline) msgEl.className = 'text-sm font-bold text-amber-400';
+  else if (do2i <= upper) msgEl.className = 'text-sm font-bold text-emerald-400';
   else msgEl.className = 'text-sm font-bold text-sky-400';
 
   // Temperature-adjusted interpretive target (does not alter measured DO₂i)
   const baseTargets = BASE_TARGETS[do2iMode];
-  const metabolicFactor = computeMetabolicFactor(temp);
-  const tempLow = Math.max(baseTargets.low * metabolicFactor, 150);
-  const tempHigh = Math.max(baseTargets.high * metabolicFactor, 150);
-  const factorText = metabolicFactor.toFixed(2);
-  setText('do2i-temp-target', `Equivalent DO₂i target at ${temp.toFixed(1)}°C: ${Math.round(tempLow)}–${Math.round(tempHigh)} mL/min/m² <span class="text-[11px] text-slate-400 dark:text-slate-500">(scaled by metabolic factor ${factorText})</span>`);
+  const tempLow = Math.max(baseTargets.low * factor, 150);
+  const tempHigh = Math.max(baseTargets.high * factor, 150);
+  const factorText = factor.toFixed(2);
+  if (hasTemp) {
+    setText('do2i-temp-target', `Equivalent DO₂i target at ${temp.toFixed(1)}°C: ${Math.round(tempLow)}–${Math.round(tempHigh)} mL/min/m² <span class="text-[11px] text-slate-400 dark:text-slate-500">(scaled by metabolic factor ${factorText}; baseline ${baseTargets.low}–${baseTargets.high} at 37°C)</span>`);
+    setText('do2i-legend', `${do2iMode === 'adult' ? 'Adult' : 'Infant'}, ${temp.toFixed(1)}°C target ≈ ${Math.round(tempLow)}–${Math.round(tempHigh)} mL/min/m² (baseline ${baseTargets.low}–${baseTargets.high} at 37°C)`);
+  } else {
+    setText('do2i-temp-target', `Equivalent DO₂i target at 37.0°C: ${baseTargets.low}–${baseTargets.high} mL/min/m²`);
+    setText('do2i-legend', baseThresholds.legend);
+  }
 }
 
 function resetDO2i() {
