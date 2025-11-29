@@ -153,6 +153,48 @@ const BASE_TARGETS = {
   infant: { low: 350, high: 380 }
 };
 
+const DAMPENED_TEMP_TARGETS_ADULT = [
+  { temp: 37, relVO2: 1.0, recMin: 280, recMax: 300, low: 260, borderline: 300, upper: 450, max: 500 },
+  { temp: 32, relVO2: 0.72, recMin: 240, recMax: 260, low: 210, borderline: 240, upper: 260, max: 520 },
+  { temp: 28, relVO2: 0.57, recMin: 220, recMax: 240, low: 200, borderline: 220, upper: 240, max: 520 }
+];
+
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
+
+// Dampened curve for temperature-aware DO₂i interpretation in adults.
+// Relies on anchor points (37°C, 32°C, 28°C) to avoid over-dropping targets despite VO₂ reductions.
+// Returns temperature-adjusted thresholds + recommended band while enforcing a hard low floor (≥200 mL/min/m²).
+function getTempAdjustedTargets(tempC) {
+  if (Number.isNaN(tempC)) {
+    const base = THRESHOLDS.adult;
+    return { ...base, recMin: BASE_TARGETS.adult.low, recMax: BASE_TARGETS.adult.high, relVO2: 1 };
+  }
+
+  const t = clamp(tempC, DAMPENED_TEMP_TARGETS_ADULT[DAMPENED_TEMP_TARGETS_ADULT.length - 1].temp, DAMPENED_TEMP_TARGETS_ADULT[0].temp);
+  for (let i = 0; i < DAMPENED_TEMP_TARGETS_ADULT.length - 1; i++) {
+    const hi = DAMPENED_TEMP_TARGETS_ADULT[i];
+    const lo = DAMPENED_TEMP_TARGETS_ADULT[i + 1];
+    if (t <= hi.temp && t >= lo.temp) {
+      const ratio = (t - lo.temp) / (hi.temp - lo.temp);
+      const blended = {
+        recMin: lerp(lo.recMin, hi.recMin, ratio),
+        recMax: lerp(lo.recMax, hi.recMax, ratio),
+        low: Math.max(lerp(lo.low, hi.low, ratio), 200),
+        borderline: lerp(lo.borderline, hi.borderline, ratio),
+        upper: lerp(lo.upper, hi.upper, ratio),
+        max: lerp(lo.max, hi.max, ratio),
+        relVO2: clamp(computeMetabolicFactor(t), 0.35, 1.1)
+      };
+      return blended;
+    }
+  }
+
+  const last = DAMPENED_TEMP_TARGETS_ADULT[DAMPENED_TEMP_TARGETS_ADULT.length - 1];
+  return { ...last, low: Math.max(last.low, 200), relVO2: clamp(computeMetabolicFactor(t), 0.35, 1.1) };
+}
+
 function applyModeUI() {
   const isAdult = do2iMode === 'adult';
   el('mode-adult').className = 'px-3 py-1.5 text-xs font-medium rounded-md transition-colors ' + (isAdult ? 'bg-white dark:bg-primary-700 shadow-sm text-primary-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-primary-900');
@@ -175,6 +217,8 @@ function updateBSA() {
 
 function updateDO2i() {
   updateBSA();
+  const h = num('h_cm');
+  const w = num('w_kg');
   const bsa = num('bsa');
   const flow = num('flow');
   const hb = num('hb');
@@ -184,35 +228,58 @@ function updateDO2i() {
   const hasTemp = !Number.isNaN(tempRaw);
   const temp = hasTemp ? tempRaw : 37;
   const baseThresholds = THRESHOLDS[do2iMode];
-  // temperature-adjusted thresholds for the gauge
-  const factor = hasTemp ? clamp(computeMetabolicFactor(temp), 0.4, 1.1) : 1;
-  const low = baseThresholds.low * factor;
-  const borderline = baseThresholds.borderline * factor;
-  const upper = baseThresholds.upper * factor;
-  const max = baseThresholds.max * factor;
-  const cao2 = calcCaO2(hb, sao2, pao2);
-  el('cao2').value = cao2 ? cao2.toFixed(2) : '';
-  const do2i = calcDO2i(flow, bsa, cao2);
-  setText('do2i', do2i ? `${Math.round(do2i)} <span class="text-lg font-normal text-slate-400">mL/min/m²</span>` : '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
-  let gaugePct = 0, msg = 'Waiting...', gaugeColor = 'from-accent-600 to-accent-400';
-  if (do2i) {
-    gaugePct = Math.min(Math.max((do2i / max) * 100, 0), 100);
-    if (do2i < low) {
-      msg = 'Low Delivery';
-      gaugeColor = 'from-red-600 to-red-400';
+  const requiredMissing = [];
+  if (!h) requiredMissing.push('Height');
+  if (!w) requiredMissing.push('Weight');
+  if (!bsa) requiredMissing.push('BSA');
+  if (!flow) requiredMissing.push('Pump Flow');
+  if (!hb) requiredMissing.push('Hemoglobin');
+  if (!sao2) requiredMissing.push('SaO₂');
+  if (!pao2) requiredMissing.push('PaO₂');
+
+  const temperatureTargets = do2iMode === 'adult'
+    ? getTempAdjustedTargets(hasTemp ? temp : NaN)
+    : { ...baseThresholds, recMin: BASE_TARGETS[do2iMode].low, recMax: BASE_TARGETS[do2iMode].high, relVO2: 1 };
+
+  const low = temperatureTargets.low;
+  const borderline = temperatureTargets.borderline;
+  const upper = temperatureTargets.upper;
+  const max = temperatureTargets.max;
+
+  let gaugePct = 0;
+  let msg = 'Waiting for input...';
+  let gaugeColor = 'from-accent-600 to-accent-400';
+  let do2i = 0;
+
+  if (requiredMissing.length === 0) {
+    const cao2 = calcCaO2(hb, sao2, pao2);
+    el('cao2').value = cao2 ? cao2.toFixed(2) : '';
+    do2i = calcDO2i(flow, bsa, cao2);
+    setText('do2i', do2i ? `${Math.round(do2i)} <span class="text-lg font-normal text-slate-400">mL/min/m²</span>` : '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
+
+    if (do2i) {
+      gaugePct = Math.min(Math.max((do2i / max) * 100, 0), 100);
+      if (do2i < low) {
+        msg = 'Low Delivery';
+        gaugeColor = 'from-red-600 to-red-400';
+      }
+      else if (do2i < borderline) {
+        msg = 'Borderline';
+        gaugeColor = 'from-amber-500 to-amber-300';
+      }
+      else if (do2i <= upper) {
+        msg = 'Target Range';
+        gaugeColor = 'from-emerald-500 to-emerald-300';
+      }
+      else {
+        msg = 'High Delivery';
+        gaugeColor = 'from-sky-500 to-sky-300';
+      }
     }
-    else if (do2i < borderline) {
-      msg = 'Borderline';
-      gaugeColor = 'from-amber-500 to-amber-300';
-    }
-    else if (do2i <= upper) {
-      msg = 'Target Range';
-      gaugeColor = 'from-emerald-500 to-emerald-300';
-    }
-    else {
-      msg = 'High Delivery';
-      gaugeColor = 'from-sky-500 to-sky-300';
-    }
+  } else {
+    el('cao2').value = '';
+    setText('do2i', '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
+    msg = `Enter ${requiredMissing.join(', ')} to calculate DO₂i.`;
   }
 
   const g = el('do2i-gauge');
@@ -221,22 +288,37 @@ function updateDO2i() {
   setText('do2i-msg', msg);
 
   const msgEl = el('do2i-msg');
-  if (do2i < low) msgEl.className = 'text-sm font-bold text-red-400';
-  else if (do2i < borderline) msgEl.className = 'text-sm font-bold text-amber-400';
-  else if (do2i <= upper) msgEl.className = 'text-sm font-bold text-emerald-400';
-  else msgEl.className = 'text-sm font-bold text-sky-400';
+  if (do2i && do2i < low) msgEl.className = 'text-sm font-bold text-red-400';
+  else if (do2i && do2i < borderline) msgEl.className = 'text-sm font-bold text-amber-400';
+  else if (do2i && do2i <= upper) msgEl.className = 'text-sm font-bold text-emerald-400';
+  else if (do2i) msgEl.className = 'text-sm font-bold text-sky-400';
+  else msgEl.className = 'text-sm font-bold text-accent-400';
 
-  // Temperature-adjusted interpretive target (does not alter measured DO₂i)
   const baseTargets = BASE_TARGETS[do2iMode];
-  const tempLow = Math.max(baseTargets.low * factor, 150);
-  const tempHigh = Math.max(baseTargets.high * factor, 150);
-  const factorText = factor.toFixed(2);
-  if (hasTemp) {
-    setText('do2i-temp-target', `Equivalent DO₂i target at ${temp.toFixed(1)}°C: ${Math.round(tempLow)}–${Math.round(tempHigh)} mL/min/m² <span class="text-[11px] text-slate-400 dark:text-slate-500">(scaled by metabolic factor ${factorText}; baseline ${baseTargets.low}–${baseTargets.high} at 37°C)</span>`);
-    setText('do2i-legend', `${do2iMode === 'adult' ? 'Adult' : 'Infant'}, ${temp.toFixed(1)}°C target ≈ ${Math.round(tempLow)}–${Math.round(tempHigh)} mL/min/m² (baseline ${baseTargets.low}–${baseTargets.high} at 37°C)`);
+  const roundedRecMin = Math.round(temperatureTargets.recMin);
+  const roundedRecMax = Math.round(temperatureTargets.recMax);
+  const relPct = Math.round((temperatureTargets.relVO2 || 1) * 100);
+
+  if (do2iMode === 'adult' && hasTemp) {
+    setText('do2i-temp-target', `Adult ${temp.toFixed(1)}°C target ≈ ${roundedRecMin}–${roundedRecMax} mL/min/m² (VO₂ ~${relPct}% of normothermia; baseline ${baseTargets.low}–${baseTargets.high} at 37°C)`);
+    setText('do2i-legend', `Target: ${roundedRecMin}–${roundedRecMax} mL/min/m² (VO₂ ↓ ~${100 - relPct}% vs 37°C; dampened safety floor ≥200)`);
   } else {
     setText('do2i-temp-target', `Equivalent DO₂i target at 37.0°C: ${baseTargets.low}–${baseTargets.high} mL/min/m²`);
     setText('do2i-legend', baseThresholds.legend);
+  }
+
+  const explain = el('do2i-temp-explain');
+  if (explain) {
+    if (do2iMode === 'adult' && hasTemp) {
+      const vo2Equivalent = Math.round(BASE_TARGETS.adult.low * (temperatureTargets.relVO2 || 1));
+      explain.innerHTML = `
+        <div class="text-xs text-slate-200 dark:text-slate-300 font-semibold">Current temperature: ${temp.toFixed(1)}°C</div>
+        <div class="text-[11px] text-slate-300 dark:text-slate-400">Estimated VO₂ demand: ~${vo2Equivalent} mL/min/m² equivalent (relVO₂ ${relPct}% of normothermia)</div>
+        <div class="text-[11px] text-slate-300 dark:text-slate-400">Recommended DO₂i target: ${roundedRecMin}–${roundedRecMax} mL/min/m² (dampened curve with safety buffer; do not chase the raw VO₂-equivalent)</div>
+      `;
+    } else {
+      explain.textContent = `Normothermia baseline: target ${baseTargets.low}–${baseTargets.high} mL/min/m².`;
+    }
   }
 }
 
@@ -250,6 +332,7 @@ function resetDO2i() {
   el('do2i-gauge').style.width = '0%';
   setText('do2i-msg', 'Waiting for input...');
   setText('do2i-temp-target', 'Equivalent DO₂i target at 37.0°C: 280–300 mL/min/m²');
+  setText('do2i-temp-explain', 'Normothermia baseline: target 280–300 mL/min/m².');
   do2iMode = 'adult';
   applyModeUI();
 }
