@@ -95,7 +95,46 @@
     .animate-pulse-flow {
       animation: pulse-flow 3s infinite ease-in-out;
     }
+
+    /* Accessibility: High contrast focus states for better keyboard navigation */
+    summary:focus {
+      outline: 2px solid #06b6d4;
+      outline-offset: 2px;
+    }
   </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is DO₂i (Oxygen Delivery Index) and what target range is used during CPB?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "DO₂i (Oxygen Delivery Index) measures how much oxygen the heart delivers to body tissues per minute per square meter of body surface area, expressed in mL O₂/min/m². During normothermic cardiopulmonary bypass, target DO₂i is typically ≥280–300 mL/min/m² to prevent tissue hypoxia and anaerobic metabolism. Infants and neonates often require higher targets (≥350–380 mL/min/m²) due to elevated metabolic rates."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does this perfusion calculator store or send patient data?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. This is a static HTML-based calculator that runs entirely within your browser—all calculations are performed locally. No patient health information (PHI), clinical inputs, or personal data are saved to a database, sent to external servers, or transmitted over the internet. Your privacy and data security are completely protected."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this a medical device or replacement for clinical judgment?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "This perfusion calculator is an educational tool for healthcare professionals and is not a medical device. It does not replace clinical judgment, institutional protocols, or direct patient monitoring. Results are for reference only. Always verify calculations manually and follow your facility's perfusion management guidelines and physician orders when managing oxygen delivery during cardiopulmonary bypass."
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0">
 
@@ -127,7 +166,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
         <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 24.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
         </svg>
       </button>
     </div>
@@ -232,7 +271,12 @@
               <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">SaO₂ (%)</label>
               <input id="sao2" type="number" step="0.1" placeholder="100" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
             </div>
-    
+
+            <div class="space-y-1">
+              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Temperature (°C)</label>
+              <input id="temp_c" type="number" step="0.1" placeholder="36.0" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+            </div>
+
             <div class="space-y-1">
               <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">PaO₂ (mmHg)</label>
               <input id="pao2" type="number" step="1" placeholder="150" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
@@ -259,6 +303,8 @@
                <div id="do2i-msg" class="text-sm font-bold text-accent-400">Waiting for input...</div>
                <div id="do2i-legend" class="text-[10px] text-slate-400">Target > 280</div>
              </div>
+
+             <p id="do2i-temp-target" class="mt-2 text-xs text-slate-300 dark:text-slate-400">Equivalent DO₂i target at 37.0°C: 280–300 mL/min/m²</p>
           </div>
 
           <div class="bg-slate-50 dark:bg-primary-800/30 border-t border-slate-100 dark:border-primary-700/50 p-4">
@@ -279,9 +325,9 @@
           </div>
         </div>
 
-        <details class="mt-4 group">
-          <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
-            <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
+          <details class="mt-4 group">
+            <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+              <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
           </summary>
           <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm">
              <p><strong>CaO₂ (mL/dL)</strong> = 1.34 × Hb × (SaO₂/100) + 0.0031 × PaO₂</p>
@@ -309,6 +355,11 @@
                 <option value="infant">Infant (80 mL/kg)</option>
                 <option value="neonate">Neonate (90 mL/kg)</option>
               </select>
+            </div>
+
+            <div class="space-y-1">
+              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">EBV Coef (mL/kg)</label>
+              <input id="ebv_coef" type="number" step="1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
             </div>
 
             <div class="space-y-1">
@@ -416,9 +467,22 @@
             <div class="space-y-1">
               <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Formula</label>
               <select id="lbm_formula" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white cursor-pointer">
-                <option value="Hume">Hume</option>
                 <option value="Boer">Boer</option>
+                <option value="Hume">Hume</option>
               </select>
+            </div>
+          </div>
+
+          <div class="px-6 pb-4 grid gap-3 sm:grid-cols-2">
+            <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800/40 p-4 shadow-sm">
+              <div class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">BSA (actual)</div>
+              <div id="lbm_bsa_actual" class="text-2xl font-bold text-primary-900 dark:text-white">—</div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Mosteller · actual weight</p>
+            </div>
+            <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800/40 p-4 shadow-sm">
+              <div class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">BSA (lean)</div>
+              <div id="lbm_bsa_lean" class="text-2xl font-bold text-primary-900 dark:text-white">—</div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Mosteller · using LBM</p>
             </div>
           </div>
 
@@ -445,6 +509,28 @@
           </div>
         </div>
 
+        <details class="mt-4 group" id="lbm-flow-details">
+          <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 flex items-center gap-2">
+            <span class="transform transition-transform group-open:rotate-90">▶</span>
+            Flow comparison table (CI 1.0–3.0)
+          </summary>
+          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 shadow-sm overflow-x-auto">
+            <table class="min-w-full text-xs">
+              <thead>
+                <tr class="text-left border-b border-slate-200 dark:border-primary-700">
+                  <th class="py-1 pr-4">Cardiac Index (L/min/m²)</th>
+                  <th class="py-1 pr-4">Flow with BSA(actual) (L/min)</th>
+                  <th class="py-1">Flow with BSA(lean) (L/min)</th>
+                </tr>
+              </thead>
+              <tbody id="lbm-ci-tbody">
+                <!-- rows will be rendered by JS -->
+              </tbody>
+            </table>
+            <p id="lbm-ci-hint" class="mt-2 text-[10px] text-slate-400"></p>
+          </div>
+        </details>
+
         <details class="mt-4 group">
           <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
             <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
@@ -464,21 +550,38 @@
       </section>
 
       <section id="faq" class="hidden animate-in fade-in duration-300">
-        <h2 class="text-2xl font-bold text-primary-900 dark:text-white mb-6">Frequently Asked Questions</h2>
-        <div class="space-y-4">
-          <details class="group bg-white dark:bg-primary-900 rounded-xl shadow-sm border border-slate-200 dark:border-primary-800 p-4">
-            <summary class="font-medium cursor-pointer text-primary-900 dark:text-white flex items-center justify-between">
-              What DO₂i target should I use?
-              <span class="text-accent-500 transform group-open:rotate-180 transition-transform">▼</span>
+        <h2 class="text-2xl font-bold text-primary-900 dark:text-white mb-1">Frequently Asked Questions</h2>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mb-6">Essential answers about the perfusion calculator and oxygen delivery index.</p>
+
+        <div class="space-y-3">
+          <details class="group bg-white dark:bg-primary-900 rounded-xl shadow-sm border border-slate-200 dark:border-primary-800 overflow-hidden hover:border-accent-500/30 dark:hover:border-accent-500/30 transition-colors">
+            <summary class="font-medium cursor-pointer text-primary-900 dark:text-white flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-primary-800/50 transition-colors select-none" tabindex="0" aria-expanded="false">
+              <span>What is DO₂i (Oxygen Delivery Index) and what target range is used during CPB?</span>
+              <span class="text-accent-500 transform group-open:rotate-180 transition-transform ml-4 flex-shrink-0">▼</span>
             </summary>
-            <p class="mt-3 text-slate-600 dark:text-slate-300 text-sm leading-relaxed">Targets vary by institution and temperature. Common targets for normothermic CPB are ≥280–300 mL/min/m² to prevent anaerobic metabolism. Infants may require higher indices (350+).</p>
+            <div class="border-t border-slate-100 dark:border-primary-700/50 px-4 py-3 bg-slate-50/50 dark:bg-primary-800/30">
+              <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">DO₂i (Oxygen Delivery Index) measures how much oxygen the heart delivers to body tissues per minute per square meter of body surface area, expressed in mL O₂/min/m². During normothermic cardiopulmonary bypass, target DO₂i is typically ≥280–300 mL/min/m² to prevent tissue hypoxia and anaerobic metabolism. Infants and neonates often require higher targets (≥350–380 mL/min/m²) due to elevated metabolic rates.</p>
+            </div>
           </details>
-           <details class="group bg-white dark:bg-primary-900 rounded-xl shadow-sm border border-slate-200 dark:border-primary-800 p-4">
-            <summary class="font-medium cursor-pointer text-primary-900 dark:text-white flex items-center justify-between">
-              Does this save patient data?
-              <span class="text-accent-500 transform group-open:rotate-180 transition-transform">▼</span>
+
+          <details class="group bg-white dark:bg-primary-900 rounded-xl shadow-sm border border-slate-200 dark:border-primary-800 overflow-hidden hover:border-accent-500/30 dark:hover:border-accent-500/30 transition-colors">
+            <summary class="font-medium cursor-pointer text-primary-900 dark:text-white flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-primary-800/50 transition-colors select-none" tabindex="0" aria-expanded="false">
+              <span>Does this perfusion calculator store or send patient data?</span>
+              <span class="text-accent-500 transform group-open:rotate-180 transition-transform ml-4 flex-shrink-0">▼</span>
             </summary>
-            <p class="mt-3 text-slate-600 dark:text-slate-300 text-sm leading-relaxed">No. All calculations happen instantly in your browser. No patient health information (PHI) is sent to any server.</p>
+            <div class="border-t border-slate-100 dark:border-primary-700/50 px-4 py-3 bg-slate-50/50 dark:bg-primary-800/30">
+              <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">No. This is a static HTML-based calculator that runs entirely within your browser—all calculations are performed locally. No patient health information (PHI), clinical inputs, or personal data are saved to a database, sent to external servers, or transmitted over the internet. Your privacy and data security are completely protected.</p>
+            </div>
+          </details>
+
+          <details class="group bg-white dark:bg-primary-900 rounded-xl shadow-sm border border-slate-200 dark:border-primary-800 overflow-hidden hover:border-accent-500/30 dark:hover:border-accent-500/30 transition-colors">
+            <summary class="font-medium cursor-pointer text-primary-900 dark:text-white flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-primary-800/50 transition-colors select-none" tabindex="0" aria-expanded="false">
+              <span>Is this a medical device or replacement for clinical judgment?</span>
+              <span class="text-accent-500 transform group-open:rotate-180 transition-transform ml-4 flex-shrink-0">▼</span>
+            </summary>
+            <div class="border-t border-slate-100 dark:border-primary-700/50 px-4 py-3 bg-slate-50/50 dark:bg-primary-800/30">
+              <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">This perfusion calculator is an educational tool for healthcare professionals and is <strong>not a medical device</strong>. It does not replace clinical judgment, institutional protocols, or direct patient monitoring. Results are for reference only. Always verify calculations manually and follow your facility's perfusion management guidelines and physician orders when managing oxygen delivery during cardiopulmonary bypass.</p>
+            </div>
           </details>
         </div>
       </section>

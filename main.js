@@ -69,19 +69,34 @@ function calcDO2i(flowLmin, bsa, cao2) {
   return fi * cao2 * 10;
 }
 
+// Metabolic factor for temperature-adjusted DO₂i interpretation.
+// This simplified Q10 model is derived from CPB hypothermia literature:
+// - Normothermic targets (~280–300 mL/min/m²) correlate with lower AKI/lactate in adult CPB.
+// - VO₂ roughly halves with a 10°C drop during moderate hypothermia (Q10 ≈ 2.0), with reported 6–7% VO₂ change per °C.
+// - We clamp to 20–39°C to avoid extreme extrapolation; factor floors near deep hypothermia are still >= ~0.35 of normothermic demand.
+function computeMetabolicFactor(tempC) {
+  const Q10 = 1.9; // conservative midpoint (literature range ~1.8–2.0) for whole-body VO₂ under CPB hypothermia
+  const t = clamp(tempC || 37, 20, 39);
+  const factor = Math.pow(Q10, (t - 37) / 10);
+  return clamp(factor, 0.35, 1.1);
+}
+// Example scaling: 37°C → 1.00× (280–300); 32°C → ~0.72× (~200–216); 28°C → ~0.57× (~160–171).
+// Educational only — does not replace institutional perfusion targets or metabolic monitoring.
+
+const PATIENT_TYPE_COEFS = {
+  adult_m: 70,
+  adult_f: 65,
+  child: 75,
+  infant: 80,
+  neonate: 90
+};
+
 function ebvCoef(pttype) {
-  switch (pttype) {
-    case 'adult_m': return 70;
-    case 'adult_f': return 65;
-    case 'child': return 75;
-    case 'infant': return 80;
-    case 'neonate': return 90;
-    default: return 70;
-  }
+  return PATIENT_TYPE_COEFS[pttype] || 70;
 }
 
-function computePredictedHct({ pttype, weight, pre, prime, fluids = 0, removed = 0, rbcUnits = 0, rbcUnitVol = 300, rbcHct = 60 }) {
-  const coef = ebvCoef(pttype);
+function computePredictedHct({ pttype, weight, pre, prime, fluids = 0, removed = 0, rbcUnits = 0, rbcUnitVol = 300, rbcHct = 60, ebvCoefValue }) {
+  const coef = ebvCoefValue || ebvCoef(pttype);
   const ebv = (weight || 0) * coef;
   const rbcVolAdded = (rbcUnits || 0) * (rbcUnitVol || 0);
   const rbcVolume = (ebv * ((pre || 0) / 100)) + (rbcVolAdded * ((rbcHct || 0) / 100));
@@ -124,13 +139,18 @@ function setText(id, text) {
 // -----------------------------
 // DO2i Interaction
 // -----------------------------
-const do2iIds = ['h_cm', 'w_kg', 'bsa', 'bsa-method', 'flow', 'hb', 'sao2', 'pao2'];
+const do2iIds = ['h_cm', 'w_kg', 'bsa', 'bsa-method', 'flow', 'hb', 'sao2', 'pao2', 'temp_c'];
 let lastChangedId = null;
 let do2iMode = 'adult';
 
 const THRESHOLDS = {
   adult: { low: 260, borderline: 300, upper: 450, max: 500, legend: 'Target: 280 - 300+' },
   infant: { low: 340, borderline: 380, upper: 520, max: 600, legend: 'Target: 350+' }
+};
+
+const BASE_TARGETS = {
+  adult: { low: 280, high: 300 },
+  infant: { low: 350, high: 380 }
 };
 
 function applyModeUI() {
@@ -160,6 +180,7 @@ function updateDO2i() {
   const hb = num('hb');
   const sao2 = num('sao2');
   const pao2 = parseFloat(el('pao2').value) || 0;
+  const temp = parseFloat(el('temp_c')?.value) || 37;
   const cao2 = calcCaO2(hb, sao2, pao2);
   el('cao2').value = cao2 ? cao2.toFixed(2) : '';
   const do2i = calcDO2i(flow, bsa, cao2);
@@ -196,10 +217,18 @@ function updateDO2i() {
   else if (do2i < t.borderline) msgEl.className = 'text-sm font-bold text-amber-400';
   else if (do2i <= t.upper) msgEl.className = 'text-sm font-bold text-emerald-400';
   else msgEl.className = 'text-sm font-bold text-sky-400';
+
+  // Temperature-adjusted interpretive target (does not alter measured DO₂i)
+  const baseTargets = BASE_TARGETS[do2iMode];
+  const metabolicFactor = computeMetabolicFactor(temp);
+  const tempLow = Math.max(baseTargets.low * metabolicFactor, 150);
+  const tempHigh = Math.max(baseTargets.high * metabolicFactor, 150);
+  const factorText = metabolicFactor.toFixed(2);
+  setText('do2i-temp-target', `Equivalent DO₂i target at ${temp.toFixed(1)}°C: ${Math.round(tempLow)}–${Math.round(tempHigh)} mL/min/m² <span class="text-[11px] text-slate-400 dark:text-slate-500">(scaled by metabolic factor ${factorText})</span>`);
 }
 
 function resetDO2i() {
-  ['h_cm', 'w_kg', 'bsa', 'flow', 'hb', 'sao2', 'pao2'].forEach(id => {
+  ['h_cm', 'w_kg', 'bsa', 'flow', 'hb', 'sao2', 'pao2', 'temp_c'].forEach(id => {
     const n = el(id);
     if (n) n.value = '';
   });
@@ -207,6 +236,7 @@ function resetDO2i() {
   setText('do2i', '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
   el('do2i-gauge').style.width = '0%';
   setText('do2i-msg', 'Waiting for input...');
+  setText('do2i-temp-target', 'Equivalent DO₂i target at 37.0°C: 280–300 mL/min/m²');
   do2iMode = 'adult';
   applyModeUI();
 }
@@ -226,6 +256,7 @@ function updateHct() {
     rbcUnits: num('rbc_units'),
     rbcUnitVol: num('rbc_unit_vol'),
     rbcHct: num('rbc_hct'),
+    ebvCoefValue: num('ebv_coef')
   };
   const r = computePredictedHct(payload);
   setText('ebv', r.ebv ? r.ebv.toFixed(0) : '0');
@@ -233,9 +264,50 @@ function updateHct() {
   setText('pred_hct', r.hct ? r.hct.toFixed(1) + '%' : '0%');
 }
 
+function applyDefaultEbvCoef(pttype) {
+  const coefInput = el('ebv_coef');
+  if (!coefInput) return;
+  coefInput.value = ebvCoef(pttype);
+}
+
 // -----------------------------
 // LBM Interaction (NEW)
 // -----------------------------
+function renderLBMFlowTable(bsaActual, bsaLean) {
+  const tbody = el('lbm-ci-tbody');
+  const hint = el('lbm-ci-hint');
+  if (!tbody || !hint) return;
+
+  if (!bsaActual || bsaActual <= 0) {
+    tbody.innerHTML = '';
+    hint.textContent = 'Enter height and weight to view flow comparison.';
+    return;
+  }
+
+  const hasLean = bsaLean && bsaLean > 0;
+  const rows = [];
+
+  for (let ciTenth = 10; ciTenth <= 30; ciTenth += 2) {
+    const ci = ciTenth / 10;
+    const flowActual = (ci * bsaActual).toFixed(2);
+    const flowLean = hasLean ? (ci * bsaLean).toFixed(2) : null;
+    const highlight = Math.abs(ci - 2.4) < 0.001;
+
+    rows.push(`
+      <tr class="${highlight ? 'bg-accent-500/5 dark:bg-accent-500/10' : ''}">
+        <td class="py-1 pr-4">${ci.toFixed(1)}</td>
+        <td class="py-1 pr-4">${flowActual}</td>
+        <td class="py-1">${flowLean || '—'}</td>
+      </tr>
+    `);
+  }
+
+  tbody.innerHTML = rows.join('');
+  hint.textContent = hasLean
+    ? 'Flows scaled by Mosteller BSA (actual vs. lean).'
+    : 'LBM unavailable — lean-based flow shows —.';
+}
+
 function updateLBM() {
   const h = num('lbm_h_cm');
   const w = num('lbm_w_kg');
@@ -243,12 +315,22 @@ function updateLBM() {
   const formula = el('lbm_formula').value;
 
   const lbm = computeLBM({ sex, h, w, formula });
-  setText(
-    'lbm_result',
-    lbm
-      ? `${lbm.toFixed(1)} <span class="text-lg font-normal text-slate-400">kg</span>`
-      : `0 <span class="text-lg font-normal text-slate-400">kg</span>`
-  );
+  const lbmDisplay = lbm && lbm > 0 ? lbm.toFixed(1) : '0';
+  setText('lbm_result', `${lbmDisplay} <span class="text-lg font-normal text-slate-400">kg</span>`);
+
+  // BSA (Mosteller) using actual weight and lean body mass (if available)
+  const bsaActual = computeBSA(h, w, 'Mosteller');
+  const bsaLean = lbm && lbm > 0 ? computeBSA(h, lbm, 'Mosteller') : 0;
+
+  setText('lbm_bsa_actual', bsaActual && bsaActual > 0
+    ? `${bsaActual.toFixed(2)} <span class="text-sm font-normal text-slate-400 dark:text-slate-500">m²</span>`
+    : '—');
+
+  setText('lbm_bsa_lean', bsaLean && bsaLean > 0
+    ? `${bsaLean.toFixed(2)} <span class="text-sm font-normal text-slate-400 dark:text-slate-500">m²</span>`
+    : '—');
+
+  renderLBMFlowTable(bsaActual, bsaLean);
 }
 
 // -----------------------------
@@ -358,10 +440,19 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   // Predicted Hct event listeners
-  ['pttype', 'wt_hct', 'pre_hct', 'prime', 'fluids', 'removed', 'rbc_units', 'rbc_unit_vol', 'rbc_hct'].forEach(id => {
+  ['wt_hct', 'pre_hct', 'prime', 'fluids', 'removed', 'rbc_units', 'rbc_unit_vol', 'rbc_hct', 'ebv_coef'].forEach(id => {
     const x = el(id);
     if (x) x.addEventListener('input', updateHct);
   });
+
+  const pttypeSelect = el('pttype');
+  if (pttypeSelect) {
+    pttypeSelect.addEventListener('change', () => {
+      applyDefaultEbvCoef(pttypeSelect.value);
+      updateHct();
+    });
+    applyDefaultEbvCoef(pttypeSelect.value);
+  }
 
   // LBM event listeners (NEW)
   ['lbm_h_cm', 'lbm_w_kg', 'lbm_sex', 'lbm_formula'].forEach(id => {
