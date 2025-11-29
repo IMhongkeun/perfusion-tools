@@ -229,8 +229,6 @@ function updateDO2i() {
   const temp = hasTemp ? tempRaw : 37;
   const baseThresholds = THRESHOLDS[do2iMode];
   const requiredMissing = [];
-  if (!h) requiredMissing.push('Height');
-  if (!w) requiredMissing.push('Weight');
   if (!bsa) requiredMissing.push('BSA');
   if (!flow) requiredMissing.push('Pump Flow');
   if (!hb) requiredMissing.push('Hemoglobin');
