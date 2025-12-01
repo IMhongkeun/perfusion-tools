@@ -623,6 +623,25 @@ function wireNowButtons() {
   });
 }
 
+function wirePickerButtons() {
+  document.querySelectorAll('[data-picker-target]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-picker-target');
+      const input = document.getElementById(targetId);
+      if (!input) return;
+      if (typeof input.showPicker === 'function') {
+        try {
+          input.showPicker();
+        } catch (err) {
+          input.focus();
+        }
+      } else {
+        input.focus();
+      }
+    });
+  });
+}
+
 function initTimeCalculator() {
   for (let i = 1; i <= 5; i++) {
     const s = document.getElementById(`time-start-${i}`);
@@ -631,6 +650,7 @@ function initTimeCalculator() {
     if (e) e.addEventListener('input', () => updateTimeRow(i));
   }
   wireNowButtons();
+  wirePickerButtons();
 }
 
 // -----------------------------
