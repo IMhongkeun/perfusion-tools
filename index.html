@@ -177,15 +177,6 @@
   <div class="pt-[var(--header-height)] max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr] gap-0 min-h-screen">
     
     <aside class="hidden md:block border-r border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/50 sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] p-4 overflow-y-auto">
-      <div class="mb-6">
-        <div class="relative">
-          <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input placeholder="Search..." class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 pl-10 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white placeholder-slate-500" />
-        </div>
-      </div>
-      
       <div class="space-y-1">
         <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-3">Calculators</div>
         <a href="#/bsa" id="side-bsa" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
@@ -580,9 +571,28 @@
                 <option value="Hume">Hume</option>
               </select>
             </div>
+
+            <div class="space-y-1 sm:col-span-2">
+              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">BSA Formula</label>
+              <select id="lbm_bsa_formula" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white cursor-pointer">
+                <option value="Mosteller">Mosteller (default)</option>
+                <option value="DuBois">DuBois</option>
+                <option value="Haycock">Haycock</option>
+                <option value="GehanGeorge">Gehan–George</option>
+              </select>
+            </div>
           </div>
 
           <div class="p-6 pt-0 space-y-6">
+            <div class="bg-primary-900 dark:bg-black/20 p-6 text-white relative overflow-hidden rounded-2xl">
+              <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-accent-500 rounded-full opacity-10 blur-3xl"></div>
+
+              <div class="relative z-10 flex items-end justify-between">
+                <div class="text-slate-300 text-sm font-medium">LBM Result</div>
+                <div id="lbm_result" class="text-4xl font-bold tracking-tight text-white">0 <span class="text-lg font-normal text-slate-400">kg</span></div>
+              </div>
+            </div>
+
             <div class="grid md:grid-cols-3 gap-4">
               <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-4">
                 <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400">BMI</div>
@@ -590,41 +600,16 @@
                 <div id="bmi_badge" class="inline-flex mt-2 px-3 py-1 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-primary-800 text-slate-600 dark:text-slate-300">—</div>
               </div>
 
-              <div class="space-y-3">
-                <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-4">
-                  <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400">BSA (Actual)</div>
-                  <div id="bsa_actual_value" class="text-3xl font-bold text-primary-900 dark:text-white mt-1">—</div>
-                  <div class="text-xs text-slate-500 dark:text-slate-400">Mosteller formula</div>
-                </div>
-
-                <div class="bg-slate-50 dark:bg-primary-900/70 border border-slate-200 dark:border-primary-800 rounded-xl p-3 shadow-sm">
-                  <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400 mb-2">BSA Comparison (actual weight)</div>
-                  <div class="grid grid-cols-[1.4fr_auto] gap-y-1 text-sm">
-                    <div class="font-medium text-slate-600 dark:text-slate-300">Mosteller (default)</div>
-                    <div id="bsa_compare_mosteller" class="font-semibold text-primary-900 dark:text-white">—</div>
-                    <div class="text-slate-600 dark:text-slate-300">DuBois</div>
-                    <div id="bsa_compare_dubois" class="text-slate-700 dark:text-slate-200">—</div>
-                    <div class="text-slate-600 dark:text-slate-300">Haycock</div>
-                    <div id="bsa_compare_haycock" class="text-slate-700 dark:text-slate-200">—</div>
-                    <div class="text-slate-600 dark:text-slate-300">Gehan–George</div>
-                    <div id="bsa_compare_gehan" class="text-slate-700 dark:text-slate-200">—</div>
-                  </div>
-                </div>
+              <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-4">
+                <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400">BSA (Actual)</div>
+                <div id="bsa_actual_value" class="text-3xl font-bold text-primary-900 dark:text-white mt-1">—</div>
+                <div id="bsa_actual_note" class="text-xs text-slate-500 dark:text-slate-400">Mosteller formula</div>
               </div>
 
               <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-4">
                 <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400">BSA (Lean)</div>
                 <div id="bsa_lean_value" class="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">—</div>
                 <div id="bsa_lean_note" class="text-xs text-slate-500 dark:text-slate-400">Boer/Hume LBM — kg</div>
-              </div>
-            </div>
-
-            <div class="bg-primary-900 dark:bg-black/20 p-6 text-white relative overflow-hidden rounded-2xl">
-              <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-accent-500 rounded-full opacity-10 blur-3xl"></div>
-
-              <div class="relative z-10 flex items-end justify-between">
-                <div class="text-slate-300 text-sm font-medium">LBM Result</div>
-                <div id="lbm_result" class="text-4xl font-bold tracking-tight text-white">0 <span class="text-lg font-normal text-slate-400">kg</span></div>
               </div>
             </div>
 
@@ -694,21 +679,23 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-start-1" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-1">▾</button>
-                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-1">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <div class="flex items-center gap-2">
+                    <input id="time-start-1" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-start-now-1" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
                     </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-end-1" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-1">▾</button>
-                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-1">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <div class="flex items-center gap-2">
+                    <input id="time-end-1" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-end-now-1" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
                     </button>
                   </div>
                 </div>
@@ -727,21 +714,23 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-start-2" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-2">▾</button>
-                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <div class="flex items-center gap-2">
+                    <input id="time-start-2" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-start-now-2" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
                     </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-end-2" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-2">▾</button>
-                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <div class="flex items-center gap-2">
+                    <input id="time-end-2" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-end-now-2" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
                     </button>
                   </div>
                 </div>
@@ -760,21 +749,23 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-start-3" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-3">▾</button>
-                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <div class="flex items-center gap-2">
+                    <input id="time-start-3" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-start-now-3" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
                     </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-end-3" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-3">▾</button>
-                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <div class="flex items-center gap-2">
+                    <input id="time-end-3" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-end-now-3" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
                     </button>
                   </div>
                 </div>
@@ -793,21 +784,23 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-start-4" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-4">▾</button>
-                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <div class="flex items-center gap-2">
+                    <input id="time-start-4" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-start-now-4" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
                     </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-end-4" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-4">▾</button>
-                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <div class="flex items-center gap-2">
+                    <input id="time-end-4" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-end-now-4" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
                     </button>
                   </div>
                 </div>
@@ -826,21 +819,23 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-start-5" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-5">▾</button>
-                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-5">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <div class="flex items-center gap-2">
+                    <input id="time-start-5" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-start-now-5" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
                     </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-end-5" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-5">▾</button>
-                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-5">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <div class="flex items-center gap-2">
+                    <input id="time-end-5" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-end-now-5" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
                     </button>
                   </div>
                 </div>
@@ -853,37 +848,9 @@
           </div>
 
           <div class="mt-3 text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
-            <p>Use a 24-hour HH:MM format.</p>
-            <p>Overnight cases add 24h automatically; durations beyond a day will display as 25:xx to show rollover.</p>
-            <p>The dropdown arrow opens the picker, and the timer button inserts the current time.</p>
+            <p>Enter a 24-hour HHMM value; it formats to HH:MM after four digits.</p>
+            <p>Only 00:00–23:59 are accepted. If the end time is earlier than the start, the duration assumes it crosses midnight.</p>
           </div>
-
-          <datalist id="time-suggestions">
-            <option value="00:00"></option>
-            <option value="01:00"></option>
-            <option value="02:00"></option>
-            <option value="03:00"></option>
-            <option value="04:00"></option>
-            <option value="05:00"></option>
-            <option value="06:00"></option>
-            <option value="07:00"></option>
-            <option value="08:00"></option>
-            <option value="09:00"></option>
-            <option value="10:00"></option>
-            <option value="11:00"></option>
-            <option value="12:00"></option>
-            <option value="13:00"></option>
-            <option value="14:00"></option>
-            <option value="15:00"></option>
-            <option value="16:00"></option>
-            <option value="17:00"></option>
-            <option value="18:00"></option>
-            <option value="19:00"></option>
-            <option value="20:00"></option>
-            <option value="21:00"></option>
-            <option value="22:00"></option>
-            <option value="23:00"></option>
-          </datalist>
         </div>
       </section>
 

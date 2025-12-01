@@ -54,18 +54,17 @@ function parseTimeToMinutes(str) {
   if (!str) return null;
   const cleaned = str.trim();
   const numericOnly = cleaned.replace(/\D/g, '');
-  if (/^\d{3,4}$/.test(numericOnly)) {
-    const padded = numericOnly.padStart(4, '0').slice(0, 4);
-    const h = Number(padded.slice(0, 2));
-    const m = Number(padded.slice(2, 4));
-    if (h > 47 || m > 59) return null;
+  if (numericOnly.length === 4) {
+    const h = Number(numericOnly.slice(0, 2));
+    const m = Number(numericOnly.slice(2, 4));
+    if (h > 23 || m > 59) return null;
     return h * 60 + m;
   }
   const match = /^(\d{1,2}):([0-5]\d)$/.exec(cleaned);
   if (!match) return null;
   const h = Number(match[1]);
   const m = Number(match[2]);
-  if (h > 47) return null;
+  if (h > 23) return null;
   return h * 60 + m;
 }
 
@@ -85,9 +84,9 @@ function formatMinutesToHHMM(totalMins) {
 
 function getCurrentTimeHHMM() {
   const now = new Date();
-  const h = now.getHours().toString().padStart(2, '0');
-  const m = now.getMinutes().toString().padStart(2, '0');
-  return `${h}:${m}`;
+  const hh = now.getHours().toString().padStart(2, '0');
+  const mm = now.getMinutes().toString().padStart(2, '0');
+  return `${hh}:${mm}`;
 }
 
 const BSA = {
@@ -592,6 +591,14 @@ function updateLBM() {
   const w = num('lbm_w_kg');
   const sex = el('lbm_sex').value;
   const formula = el('lbm_formula').value;
+  const bsaMethod = el('lbm_bsa_formula') ? el('lbm_bsa_formula').value : 'Mosteller';
+
+  const bsaLabelMap = {
+    Mosteller: 'Mosteller formula',
+    DuBois: 'DuBois formula',
+    Haycock: 'Haycock formula',
+    GehanGeorge: 'Gehan–George formula'
+  };
 
   const lbm = computeLBM({ sex, h, w, formula });
   setText(
@@ -606,22 +613,21 @@ function updateLBM() {
   setText('bmi_value', bmi ? bmi.toFixed(1) : '—');
   setText('bmi_badge', bmiCategory(bmi));
 
-  const bsaActual = computeBSA(h, w, 'Mosteller');
-  const bsaLean = lbm ? computeBSA(h, lbm, 'Mosteller') : 0;
+  const bsaActual = computeBSA(h, w, bsaMethod);
+  const bsaLean = lbm ? computeBSA(h, lbm, bsaMethod) : 0;
 
   setText('bsa_actual_value', bsaActual ? `${bsaActual.toFixed(2)} m²` : '—');
+  setText(
+    'bsa_actual_note',
+    bsaActual ? bsaLabelMap[bsaMethod] || 'Mosteller formula' : 'Enter height and weight to calculate BSA'
+  );
   setText('bsa_lean_value', bsaLean ? `${bsaLean.toFixed(2)} m²` : '—');
-  setText('bsa_lean_note', lbm ? `${formula} LBM ${lbm.toFixed(1)} kg` : 'Enter height and weight to calculate LBM');
-
-  const compareMap = {
-    bsa_compare_mosteller: computeBSA(h, w, 'Mosteller'),
-    bsa_compare_dubois: computeBSA(h, w, 'DuBois'),
-    bsa_compare_haycock: computeBSA(h, w, 'Haycock'),
-    bsa_compare_gehan: computeBSA(h, w, 'GehanGeorge')
-  };
-  Object.entries(compareMap).forEach(([id, val]) => {
-    setText(id, val ? val.toFixed(2) : '—');
-  });
+  setText(
+    'bsa_lean_note',
+    lbm
+      ? `${bsaLabelMap[bsaMethod] || 'Mosteller formula'} using ${formula} LBM ${lbm.toFixed(1)} kg`
+      : 'Enter height and weight to calculate LBM'
+  );
 
   const flowBody = el('lbm-flow-rows');
   if (flowBody) {
@@ -633,6 +639,10 @@ function updateLBM() {
     } else {
       for (let ci = 1.0; ci <= 3.0001; ci += 0.2) {
         const tr = document.createElement('tr');
+        const isHighlight = ci >= 2.2 && ci <= 2.4;
+        if (isHighlight) {
+          tr.classList.add('bg-slate-50', 'dark:bg-primary-800/40');
+        }
         const flowActual = bsaActual ? (ci * bsaActual).toFixed(2) : '—';
         const flowLean = bsaLean ? (ci * bsaLean).toFixed(2) : '—';
         tr.innerHTML = `
@@ -646,6 +656,11 @@ function updateLBM() {
   }
 }
 
+function setTimeError(inputEl, hasError) {
+  if (!inputEl) return;
+  ['ring-1', 'ring-rose-400', 'border-rose-400'].forEach(cls => inputEl.classList.toggle(cls, hasError));
+}
+
 function updateTimeRow(idx) {
   const startInput = document.getElementById(`time-start-${idx}`);
   const endInput = document.getElementById(`time-end-${idx}`);
@@ -654,6 +669,17 @@ function updateTimeRow(idx) {
 
   const startMin = parseTimeToMinutes(startInput.value);
   const endMin = parseTimeToMinutes(endInput.value);
+
+  const startRaw = startInput.value.trim();
+  const endRaw = endInput.value.trim();
+  const startDigits = startRaw.replace(/\D/g, '');
+  const endDigits = endRaw.replace(/\D/g, '');
+
+  const startReady = startDigits.length >= 4 || /^\d{1,2}:[0-5]\d$/.test(startRaw);
+  const endReady = endDigits.length >= 4 || /^\d{1,2}:[0-5]\d$/.test(endRaw);
+
+  setTimeError(startInput, startReady && startMin == null);
+  setTimeError(endInput, endReady && endMin == null);
 
   if (startMin == null || endMin == null) {
     resultEl.textContent = '-';
@@ -672,51 +698,27 @@ function updateTimeRow(idx) {
   resultEl.textContent = formatDuration(diff);
 }
 
-function wireNowButtons() {
-  document.querySelectorAll('[data-now-target]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetId = btn.getAttribute('data-now-target');
-      const input = document.getElementById(targetId);
-      if (!input) return;
-      input.value = getCurrentTimeHHMM();
-      autoFormatTimeInput(input);
-      const idx = targetId.split('-').pop();
-      updateTimeRow(idx);
-    });
-  });
-}
-
-function wirePickerButtons() {
-  document.querySelectorAll('[data-picker-target]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetId = btn.getAttribute('data-picker-target');
-      const input = document.getElementById(targetId);
-      if (!input) return;
-      const listId = input.dataset.listId;
-      if (listId) input.setAttribute('list', listId);
-      input.focus();
-      try {
-        input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
-      } catch (err) {
-        // no-op: some browsers may not allow programmatic key events; focus is sufficient
-      }
-    });
-  });
-}
-
 function autoFormatTimeInput(inputEl) {
   if (!inputEl) return;
   const raw = inputEl.value || '';
   const digits = raw.replace(/\D/g, '');
-  if (digits.length >= 3) {
-    const padded = digits.padStart(4, '0').slice(0, 4);
-    const hoursNum = Number(padded.slice(0, 2));
-    const minsNum = Number(padded.slice(2, 4));
-    if (hoursNum > 47 || minsNum > 59) return;
-    const hours = clamp(hoursNum, 0, 47);
-    const mins = clamp(minsNum, 0, 59);
-    inputEl.value = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+
+  if (digits.length === 4) {
+    const hoursNum = Number(digits.slice(0, 2));
+    const minsNum = Number(digits.slice(2, 4));
+
+    if (hoursNum > 23 || minsNum > 59) {
+      inputEl.value = '';
+      setTimeError(inputEl, true);
+      return;
+    }
+
+    inputEl.value = `${hoursNum.toString().padStart(2, '0')}:${minsNum.toString().padStart(2, '0')}`;
+    setTimeError(inputEl, false);
+    return;
   }
+
+  if (!raw.length) setTimeError(inputEl, false);
 }
 
 function initTimeCalculator() {
@@ -731,11 +733,34 @@ function initTimeCalculator() {
   for (let i = 1; i <= 5; i++) {
     const s = document.getElementById(`time-start-${i}`);
     const e = document.getElementById(`time-end-${i}`);
-    if (s) s.addEventListener('input', () => { autoFormatTimeInput(s); updateTimeRow(i); });
-    if (e) e.addEventListener('input', () => { autoFormatTimeInput(e); updateTimeRow(i); });
+    const sNow = document.getElementById(`time-start-now-${i}`);
+    const eNow = document.getElementById(`time-end-now-${i}`);
+    [s, e, sNow, eNow].forEach(elRef => {
+      if (elRef) elRef.removeAttribute('title');
+    });
+    if (s) {
+      s.addEventListener('input', () => { autoFormatTimeInput(s); updateTimeRow(i); });
+      s.addEventListener('blur', () => updateTimeRow(i));
+    }
+    if (e) {
+      e.addEventListener('input', () => { autoFormatTimeInput(e); updateTimeRow(i); });
+      e.addEventListener('blur', () => updateTimeRow(i));
+    }
+    if (s && sNow) {
+      sNow.addEventListener('click', () => {
+        s.value = getCurrentTimeHHMM();
+        setTimeError(s, false);
+        updateTimeRow(i);
+      });
+    }
+    if (e && eNow) {
+      eNow.addEventListener('click', () => {
+        e.value = getCurrentTimeHHMM();
+        setTimeError(e, false);
+        updateTimeRow(i);
+      });
+    }
   }
-  wireNowButtons();
-  wirePickerButtons();
 }
 
 // -----------------------------
@@ -904,11 +929,11 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   // LBM event listeners (NEW)
-  ['lbm_h_cm', 'lbm_w_kg', 'lbm_sex', 'lbm_formula'].forEach(id => {
+  ['lbm_h_cm', 'lbm_w_kg', 'lbm_sex', 'lbm_formula', 'lbm_bsa_formula'].forEach(id => {
     const x = el(id);
     if (x) x.addEventListener('input', updateLBM);
   });
-  ['lbm_sex', 'lbm_formula'].forEach(id => {
+  ['lbm_sex', 'lbm_formula', 'lbm_bsa_formula'].forEach(id => {
     const x = el(id);
     if (x) x.addEventListener('change', updateLBM);
   });
