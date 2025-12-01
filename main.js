@@ -71,14 +71,14 @@ function updateBsaFlowList(bsaVal) {
 
   list.innerHTML = '';
   if (!bsaVal) {
-    list.innerHTML = '<p class="text-xs text-slate-500 dark:text-slate-400">Enter height and weight to populate BFR values.</p>';
+    list.innerHTML = '<p class="text-xs text-slate-500 dark:text-slate-400">Enter height and weight to populate the flow table.</p>';
     return;
   }
 
   for (let ci = 1.0; ci <= 3.0001; ci += 0.1) {
     const flow = ci * bsaVal;
     const row = document.createElement('div');
-    row.className = 'flex items-center justify-between py-1 text-sm border-b border-slate-100 dark:border-primary-800 last:border-0';
+    row.className = 'grid grid-cols-[1fr_auto] items-center py-1.5 text-sm border-b border-slate-100 dark:border-primary-800 last:border-0 gap-3';
     row.innerHTML = `<span class="font-mono text-xs text-slate-500 dark:text-slate-400">CI ${ci.toFixed(1)}</span><span class="font-semibold text-primary-900 dark:text-white">${flow.toFixed(2)} L/min</span>`;
     list.appendChild(row);
   }
@@ -98,6 +98,8 @@ function updateStandaloneBsa() {
   if (resultDisplay) {
     resultDisplay.textContent = v ? `${v.toFixed(2)} m²` : '—';
   }
+  const methodActive = el('bsa-method-active');
+  if (methodActive) methodActive.textContent = method;
 
   updateBsaFlowList(v);
 }

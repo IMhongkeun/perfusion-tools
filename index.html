@@ -337,60 +337,82 @@
       <section id="view-bsa" class="hidden animate-in fade-in duration-300">
         <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
 
-          <div class="p-6 border-b border-slate-100 dark:border-primary-800 bg-slate-50/50 dark:bg-primary-800/30 flex items-center justify-between">
+          <div class="p-6 border-b border-slate-100 dark:border-primary-800 bg-slate-50/50 dark:bg-primary-800/30 flex items-start justify-between gap-4">
             <div>
-              <h2 class="text-xl font-bold text-primary-900 dark:text-white">BSA Calculator</h2>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Real-time body surface area by common formulas</p>
+              <p class="text-[11px] uppercase tracking-widest text-accent-500 font-semibold">Body Surface Area</p>
+              <h2 class="text-xl font-bold text-primary-900 dark:text-white flex items-center gap-2">BSA Calculator <span class="text-xs px-2 py-1 rounded-full bg-accent-500/10 text-accent-500 border border-accent-500/40">Live</span></h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Enter height and weight to calculate BSA and perfusion flow guidance.</p>
             </div>
             <div class="text-right">
-              <div class="text-[10px] uppercase tracking-wider text-slate-400">Result (m²)</div>
+              <div class="text-[10px] uppercase tracking-wider text-slate-400">BSA (m²)</div>
               <div id="bsa-result" class="text-3xl font-bold text-accent-500">0.00</div>
+              <div class="text-[11px] text-slate-400">Updates in real time</div>
             </div>
           </div>
 
-          <div class="p-6 grid md:grid-cols-[1.2fr_0.8fr] gap-6">
-            <div class="grid sm:grid-cols-2 gap-4">
-              <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Height (cm)</label>
-                <input id="bsa_height" type="number" step="0.1" placeholder="170" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
-              </div>
-              <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Weight (kg)</label>
-                <input id="bsa_weight" type="number" step="0.1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
-              </div>
+          <div class="p-6 space-y-6">
+            <div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-6">
+              <div class="space-y-4">
+                <div class="grid sm:grid-cols-2 gap-4">
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Height (cm)</label>
+                    <input id="bsa_height" type="number" step="0.1" placeholder="170" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Weight (kg)</label>
+                    <input id="bsa_weight" type="number" step="0.1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+                  </div>
 
-              <div class="sm:col-span-2 space-y-2">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Formula</label>
-                <select id="bsa-method-standalone" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
-                  <option value="Mosteller">Mosteller — 간단, 임상 표준</option>
-                  <option value="DuBois">DuBois — 역사적 기준</option>
-                  <option value="Haycock">Haycock — 소아 정확</option>
-                  <option value="Boyd">Boyd — 비만 환자</option>
-                </select>
-                <div class="bg-slate-50 dark:bg-primary-800/60 border border-slate-100 dark:border-primary-700/60 rounded-xl p-3 text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
-                  <div class="flex items-start gap-2"><span class="mt-[3px] text-accent-500">•</span><div><strong>Mosteller</strong> — 가장 간단, 임상 표준. 극단적 BMI에서 부정확.</div></div>
-                  <div class="flex items-start gap-2 mt-1"><span class="mt-[3px] text-accent-500">•</span><div><strong>DuBois</strong> — 역사적 기준. 표본 부족, 소아 부정확.</div></div>
-                  <div class="flex items-start gap-2 mt-1"><span class="mt-[3px] text-accent-500">•</span><div><strong>Haycock</strong> — 소아 정확도 최고. 성인 우위 없음.</div></div>
-                  <div class="flex items-start gap-2 mt-1"><span class="mt-[3px] text-accent-500">•</span><div><strong>Boyd</strong> — 비만 환자 정확. 계산 복잡 (BMI&gt;30 권장).</div></div>
+                  <div class="sm:col-span-2 space-y-2">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Formula</label>
+                    <select id="bsa-method-standalone" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
+                      <option value="Mosteller">Mosteller</option>
+                      <option value="DuBois">DuBois</option>
+                      <option value="Haycock">Haycock</option>
+                      <option value="Boyd">Boyd</option>
+                    </select>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Mosteller is the clinical default; switch formulas as needed.</p>
+                  </div>
+                </div>
+
+                <div class="bg-primary-900 dark:bg-black/30 rounded-2xl text-white p-5 shadow-inner">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <div class="text-[11px] uppercase tracking-wider text-slate-300 mb-1">BSA Output</div>
+                      <div class="text-4xl font-bold" id="bsa-result-display">—</div>
+                      <p class="text-[11px] text-slate-300 mt-1">Calculated from height and weight only.</p>
+                    </div>
+                    <div class="text-right text-xs text-slate-300">
+                      <div class="uppercase tracking-wider text-[10px] text-slate-400">Formula</div>
+                      <div class="font-semibold" id="bsa-method-active">Mosteller</div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div class="space-y-3">
-              <div class="bg-primary-900 dark:bg-black/20 rounded-2xl text-white p-5 shadow-inner">
-                <div class="text-xs uppercase tracking-wider text-slate-300 mb-1">BSA Output</div>
-                <div class="text-4xl font-bold" id="bsa-result-display">&nbsp;</div>
-                <p class="text-[11px] text-slate-300 mt-1">Height/Weight 입력 시 실시간으로 계산됩니다.</p>
-              </div>
-
-              <div class="bg-slate-50 dark:bg-primary-800/60 rounded-2xl border border-slate-100 dark:border-primary-700/60 p-4">
-                <div class="flex items-center justify-between mb-2">
-                  <h4 class="text-xs font-bold text-primary-900 dark:text-slate-100 uppercase tracking-wider">Blood Flow Rate by Cardiac Index</h4>
+              <div class="bg-slate-50 dark:bg-primary-800/60 rounded-2xl border border-slate-100 dark:border-primary-700/60 p-5 flex flex-col lg:col-span-2">
+                <div class="flex items-center justify-between mb-3">
+                  <div>
+                    <h4 class="text-xs font-bold text-primary-900 dark:text-slate-100 uppercase tracking-wider">Blood Flow Rate by Cardiac Index</h4>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Scaled from the BSA result below.</p>
+                  </div>
                   <span class="text-[10px] text-slate-400">CI 1.0–3.0</span>
                 </div>
-                <div class="max-h-48 overflow-y-auto pr-1" id="bsa-flow-list"></div>
+                <div class="max-h-80 min-h-[18rem] overflow-y-auto pr-1" id="bsa-flow-list"></div>
               </div>
             </div>
+
+            <details class="group">
+              <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+                <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
+              </summary>
+              <div class="mt-2 p-4 rounded-xl bg-slate-50 dark:bg-primary-800/60 border border-slate-100 dark:border-primary-700/60 text-xs text-slate-600 dark:text-slate-300 leading-relaxed space-y-2">
+                <p><strong>Mosteller</strong>: BSA = √((Height(cm) × Weight(kg)) ÷ 3600). Fast, common clinical default.</p>
+                <p><strong>DuBois</strong>: BSA = 0.007184 × Height(cm)<sup>0.725</sup> × Weight(kg)<sup>0.425</sup>. Historical reference standard.</p>
+                <p><strong>Haycock</strong>: BSA = 0.024265 × Height(cm)<sup>0.3964</sup> × Weight(kg)<sup>0.5378</sup>. Higher accuracy in infants and pediatrics.</p>
+                <p><strong>Boyd</strong>: BSA = 0.0003207 × Height(cm)<sup>0.3</sup> × Weight(g)<sup>0.7285 − 0.0188·log₁₀(Weight(g))</sup>. Useful in obesity (BMI&gt;30) with mass-adjusted exponent.</p>
+              </div>
+            </details>
           </div>
         </div>
       </section>
