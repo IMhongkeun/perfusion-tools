@@ -1038,10 +1038,56 @@
             </div>
           </div>
 
-          <div class="mt-3 text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
-            <p>Enter a 24-hour HHMM value; it formats to HH:MM after four digits.</p>
-            <p>Only 00:00–23:59 are accepted. If the end time is earlier than the start, the duration assumes it crosses midnight.</p>
-          </div>
+          <details class="mt-4 group">
+            <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+              <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
+            </summary>
+            <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">1. Purpose</p>
+                <p>This time calculator is designed to quickly estimate elapsed time in minutes and H:MM format between two clock times. It is intended for tasks such as documenting CPB time, cross-clamp time, cardioplegia intervals, ECMO procedure time blocks, or other peri-operative events where only start and end times are known.</p>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">2. Input format</p>
+                <p>Times are entered in 24-hour format as HH:MM.</p>
+                <p>Valid range: 00:00–23:59.</p>
+                <p>Examples: 07:15, 13:40, 21:05.</p>
+                <p>The fields accept four digits; after four digits are typed (e.g., 1345), the value is auto-formatted to 13:45.</p>
+                <p class="text-slate-500 dark:text-slate-500">Each row is independent and can be labelled (e.g., “CPB on–off”, “Cross-clamp”, “Circulatory arrest”).</p>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">3. Core calculation</p>
+                <p>For each row:</p>
+                <p>Convert start and end times to total minutes from midnight:</p>
+                <p class="font-mono text-[11px]">totalMinutes = 60 × HH + MM</p>
+                <p>If the end time is later or equal to the start time (same day):</p>
+                <p class="font-mono text-[11px]">durationMinutes = endMinutes − startMinutes</p>
+                <p>If the end time is earlier than the start time, the tool assumes the interval crosses midnight and adds 24 hours:</p>
+                <p class="font-mono text-[11px]">durationMinutes = (endMinutes + 24 × 60) − startMinutes</p>
+                <p>The result is reported as:</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Minutes (integer), and</li>
+                  <li>H:MM format, obtained by: <span class="font-mono text-[11px]">hours = floor(durationMinutes ÷ 60)</span> and <span class="font-mono text-[11px]">minutes = durationMinutes mod 60</span>, displayed as H:MM with a leading zero for minutes (e.g., 3:05).</li>
+                </ul>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">4. Validation and rounding</p>
+                <p>Inputs outside 00:00–23:59 are rejected.</p>
+                <p>Seconds are not supported; any sub-minute timing should be rounded to the nearest minute before entry.</p>
+                <p>All durations are exact in minutes; no additional rounding is applied.</p>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">5. Clinical use &amp; limitations</p>
+                <p>Useful for: CPB pump time, cross-clamp time, circulatory arrest time; cardioplegia dosing intervals or ECMO procedure segments; operating room or ICU workflow time stamps.</p>
+                <p>The calculator does not store dates and cannot distinguish different calendar days; any interval longer than 24 hours must be split manually.</p>
+                <p class="text-slate-500 dark:text-slate-500">Results are for documentation and workflow support only and do not replace clinical records, perfusion charts, or institutional time-keeping systems. For educational use only. Not medical advice or a regulated medical device.</p>
+              </div>
+            </div>
+          </details>
         </div>
       </section>
 
