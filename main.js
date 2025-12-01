@@ -6,6 +6,11 @@
 // - Computes CaO₂, current DO₂i (when flow is given), and classifies status vs. the chosen target.
 // - Gauge visual centers around the target DO₂i and shows adequacy bands with inline messaging.
 //
+// Temperature-aware GDP:
+// - TEMP_PROFILES maps temperature bands to CI and DO2i ranges.
+// - getTempProfile(tempC) picks the band.
+// - updateGDP() uses these ranges to evaluate whether current DO2i/CI are adequate
+//   at the given temperature, applying a dampened curve and a hard DO2i floor (200).
 
 // -----------------------------
 // Theme Management (Dark Mode)
@@ -122,6 +127,61 @@ function calcDO2i(flowLmin, bsa, cao2) {
   return fi * cao2 * 10;
 }
 
+const TEMP_PROFILES = [
+  {
+    min: 36,
+    max: 40,
+    label: '37°C (Normothermia)',
+    ciMin: 2.4,
+    ciMax: 2.6,
+    vo2Factor: 1.0,
+    do2Min: 280,
+    do2Max: 300,
+    note: '전체 대사량 유지 필요, 성인 기준 baseline 타깃.'
+  },
+  {
+    min: 32,
+    max: 36,
+    label: '32°C (Mild hypothermia)',
+    ciMin: 2.0,
+    ciMax: 2.2,
+    vo2Factor: 0.72,
+    do2Min: 240,
+    do2Max: 260,
+    note: '대사량이 줄었지만, 신장/장기 보호를 위해 DO₂i 240–260 유지.'
+  },
+  {
+    min: 28,
+    max: 32,
+    label: '28°C (Moderate hypothermia)',
+    ciMin: 1.6,
+    ciMax: 1.8,
+    vo2Factor: 0.57,
+    do2Min: 220,
+    do2Max: 240,
+    note: '대사량 약 50% 감소 시점. DO₂i는 완충 곡선(dampened curve) 적용, 절대 200 mL/min/m² 아래로 내리지 않음.'
+  },
+  {
+    min: 20,
+    max: 28,
+    label: '≤25°C (Deep hypothermia)',
+    ciMin: 1.2,
+    ciMax: 1.5,
+    vo2Factor: 0.45,
+    do2Min: 200,
+    do2Max: 220,
+    note: '최소 유량 유지 구간. 이론상 DO₂ 필요량은 더 낮지만, 장기 허혈을 막기 위해 DO₂i 200 이상 유지하는 hard floor.'
+  }
+];
+
+function getTempProfile(tempC) {
+  if (!tempC && tempC !== 0) return null;
+  for (const p of TEMP_PROFILES) {
+    if (tempC >= p.min && tempC < p.max) return p;
+  }
+  return TEMP_PROFILES[0];
+}
+
 const PATIENT_TYPE_COEFS = {
   adult_m: 70,
   adult_f: 65,
@@ -234,6 +294,7 @@ function updateGDP() {
   const pao2Val = el('pao2').value;
   const flowVal = el('flow').value;
   const tempVal = el('temp_c') ? el('temp_c').value : '';
+  const tempC = tempVal === '' ? null : parseFloat(tempVal);
 
   const warningEl = el('gdp-warning');
   const requiredMissing = [];
@@ -248,11 +309,13 @@ function updateGDP() {
   const hb = parseFloat(hbVal) || 0;
   const sao2 = parseFloat(sao2Val) || 0;
   const pao2 = parseFloat(pao2Val) || 0;
+  const currentCI = bsa ? flow / bsa : 0;
 
   const gauge = el('gdp-gauge');
   const gaugeMsg = el('gdp-gauge-msg');
   const statusText = el('gdp-status-text');
   const statusDetail = el('gdp-status-detail');
+  const ciCommentEl = el('ci-comment');
 
   const cao2 = calcCaO2(hb, sao2, pao2);
   el('cao2').value = cao2 ? cao2.toFixed(2) : '';
@@ -261,6 +324,18 @@ function updateGDP() {
     if (warningEl) {
       warningEl.textContent = `Enter required fields: ${requiredMissing.join(', ')}`;
       warningEl.classList.remove('hidden');
+    }
+    const tempTag = el('temp-note');
+    const tempComment = el('temp-comment');
+    if (tempTag) {
+      tempTag.textContent = (tempC || tempC === 0)
+        ? `Current temperature: ${tempC.toFixed(1)}°C`
+        : 'Temperature optional; interpret DO₂i with the overall clinical picture.';
+    }
+    if (tempComment) {
+      tempComment.innerHTML = (tempC || tempC === 0)
+        ? '<div class="font-semibold mb-1">Temperature note</div><p>Provide remaining required fields to evaluate temperature-adjusted GDP.</p>'
+        : '<div class="font-semibold mb-1">Temperature note</div><p>Fill required inputs to view GDP guidance. Temperature not provided; defaults to normothermic targets.</p>';
     }
     setText('required-flow', '—');
     setText('current-do2i', '—');
@@ -284,41 +359,95 @@ function updateGDP() {
   let detail = 'Enter current pump flow to compare against the target DO₂i.';
   let gaugeColor = 'from-slate-300 to-slate-200 dark:from-primary-800 dark:to-primary-700';
   let gaugeWidth = '0%';
+  let ciComment = '';
 
-  const lowerTarget = targetDO2i * 0.9;
-  const upperTarget = targetDO2i * 1.1;
+  const profile = (tempC || tempC === 0) && !Number.isNaN(tempC) ? getTempProfile(tempC) : null;
+  const recommendedMin = profile ? profile.do2Min : targetDO2i * 0.9;
+  const recommendedMax = profile ? profile.do2Max : targetDO2i * 1.1;
+  const HARD_FLOOR = 200;
+  const tempAdjustedMin = profile ? Math.max(recommendedMin, HARD_FLOOR) : recommendedMin;
+  const tempAdjustedMax = profile ? Math.max(recommendedMax, tempAdjustedMin) : recommendedMax;
+
+  const lowerTarget = profile ? tempAdjustedMin : targetDO2i * 0.9;
+  const upperTarget = profile ? tempAdjustedMax : targetDO2i * 1.1;
 
   if (currentDO2i > 0) {
-    const pct = clamp((currentDO2i / (targetDO2i * 1.2)) * 100, 0, 100);
+    const denom = upperTarget > 0 ? upperTarget * 1.05 : targetDO2i || 1;
+    const pct = clamp((currentDO2i / denom) * 100, 0, 100);
     gaugeWidth = `${pct}%`;
 
     if (currentDO2i < lowerTarget) {
       const deltaFlow = Math.max(requiredFlow - flow, 0);
-      statusLabel = 'Below target';
-      detail = deltaFlow > 0
-        ? `Needs approximately +${deltaFlow.toFixed(2)} L/min to reach the target.`
-        : 'Increase flow to approach the target.';
+      statusLabel = profile ? 'Below temperature-adjusted target' : 'Below target';
+      detail = profile
+        ? `Need DO₂i ≥ ${tempAdjustedMin.toFixed(0)} mL/min/m² for ${profile.label}.${deltaFlow > 0 ? ` ~+${deltaFlow.toFixed(2)} L/min suggested.` : ''}`
+        : (deltaFlow > 0
+          ? `Needs approximately +${deltaFlow.toFixed(2)} L/min to reach the target.`
+          : 'Increase flow to approach the target.');
       gaugeColor = 'from-amber-500 to-red-500';
     } else if (currentDO2i > upperTarget) {
-      statusLabel = 'Above target';
-      detail = 'Above the goal—verify this is intentional and hemodynamically tolerated.';
+      statusLabel = profile ? 'Above temperature-adjusted range' : 'Above target';
+      detail = profile
+        ? 'Above the temperature-adjusted GDP band—verify BP/afterload and hemodynamic tolerance.'
+        : 'Above the goal—verify this is intentional and hemodynamically tolerated.';
       gaugeColor = 'from-sky-500 to-blue-500';
     } else {
-      statusLabel = 'At / near target';
-      detail = 'Current delivery is within ±10% of the selected DO₂i goal.';
+      statusLabel = profile ? 'Within temperature-adjusted GDP range' : 'At / near target';
+      detail = profile
+        ? `${tempAdjustedMin.toFixed(0)}–${tempAdjustedMax.toFixed(0)} mL/min/m² band achieved at this temperature.`
+        : 'Current delivery is within ±10% of the selected DO₂i goal.';
       gaugeColor = 'from-emerald-500 to-emerald-400';
+    }
+  }
+
+  if (profile && currentCI) {
+    if (currentCI < profile.ciMin) {
+      ciComment = `현재 CI ${currentCI.toFixed(2)} L/min/m²: ${profile.label} 권장 범위(${profile.ciMin.toFixed(1)}–${profile.ciMax.toFixed(1)})보다 낮음.`;
+    } else if (currentCI > profile.ciMax) {
+      ciComment = `현재 CI ${currentCI.toFixed(2)} L/min/m²: ${profile.label} 권장 범위보다 높음.`;
+    } else {
+      ciComment = `현재 CI ${currentCI.toFixed(2)} L/min/m²: ${profile.label} 권장 범위 내.`;
     }
   }
 
   statusText.textContent = statusLabel;
   statusDetail.textContent = detail;
+  if (ciCommentEl) ciCommentEl.textContent = ciComment;
   gauge.style.width = gaugeWidth;
   gauge.className = `h-3 rounded-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(34,211,238,0.25)] ${gaugeColor}`;
-  gaugeMsg.textContent = currentDO2i ? `Target ${targetDO2i} mL/min/m² • Current ${Math.round(currentDO2i)} mL/min/m²` : 'Enter current flow to visualize DO₂i vs. target';
+  if (profile) {
+    gaugeMsg.textContent = currentDO2i
+      ? `Temp-adjusted target ${tempAdjustedMin.toFixed(0)}–${tempAdjustedMax.toFixed(0)} • Current ${Math.round(currentDO2i)} mL/min/m²`
+      : 'Enter current flow to visualize DO₂i vs. temperature-adjusted target';
+  } else {
+    gaugeMsg.textContent = currentDO2i
+      ? `Target ${targetDO2i} mL/min/m² • Current ${Math.round(currentDO2i)} mL/min/m²`
+      : 'Enter current flow to visualize DO₂i vs. target';
+  }
 
   const tempTag = el('temp-note');
+  const tempComment = el('temp-comment');
   if (tempTag) {
-    tempTag.textContent = tempVal ? `Current temperature: ${tempVal}°C (interpret DO₂i with your hypothermia strategy).` : 'Temperature optional; interpret DO₂i with the overall clinical picture.';
+    tempTag.textContent = profile
+      ? `Current temperature: ${tempC.toFixed(1)}°C • ${profile.label}`
+      : 'Temperature optional; interpret DO₂i with the overall clinical picture.';
+  }
+
+  if (tempComment) {
+    if (!profile) {
+      tempComment.innerHTML = `<div class="font-semibold mb-1">Temperature note</div>
+        <p>체온이 입력되지 않았습니다. 현재 DO₂i 평가는 37°C 기준 일반 타깃(예: 280 mL/min/m²)을 기준으로 합니다. 저체온에서 유량을 줄이려면 반드시 체온과 SvO₂, lactate를 함께 확인하세요.</p>`;
+    } else {
+      const vo2Pct = Math.round((profile.vo2Factor || 0) * 100);
+      const currentDoText = currentDO2i ? `${Math.round(currentDO2i)} mL/min/m²` : '—';
+      tempComment.innerHTML = `<div class="font-semibold mb-1">Temperature-adjusted GDP comment</div>
+        <p>현재 체온: ${tempC.toFixed(1)}°C (${profile.label})</p>
+        <p>예상 대사량(VO₂): 정상의 약 ${vo2Pct}% 수준.</p>
+        <p>권장 CI 범위: ${profile.ciMin.toFixed(1)}–${profile.ciMax.toFixed(1)} L/min/m²${currentCI ? `, 현재 CI: ${currentCI.toFixed(2)} L/min/m² (${ciComment || '평가 중'})` : ''}.</p>
+        <p>권장 DO₂i 범위: ${tempAdjustedMin.toFixed(0)}–${tempAdjustedMax.toFixed(0)} mL/min/m², 현재 DO₂i: ${currentDoText} (온도 보정 기준 평가).</p>
+        <p>이론상 소모량은 더 낮을 수 있지만, 신장/장기 보호를 위해 DO₂i 200 mL/min/m² 아래로는 내리지 않는 hard floor를 적용합니다.</p>
+        <p>최종 결정은 항상 SvO₂, lactate, urine output 등 실제 조직 관류 지표와 병행해 판단하십시오.</p>`;
+    }
   }
 }
 
