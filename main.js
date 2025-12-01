@@ -665,6 +665,9 @@ function initTimeCalculator() {
     const e = document.getElementById(`time-end-${i}`);
     const sNow = document.getElementById(`time-start-now-${i}`);
     const eNow = document.getElementById(`time-end-now-${i}`);
+    [s, e, sNow, eNow].forEach(elRef => {
+      if (elRef) elRef.removeAttribute('title');
+    });
     if (s) {
       s.addEventListener('input', () => { autoFormatTimeInput(s); updateTimeRow(i); });
       s.addEventListener('blur', () => updateTimeRow(i));
