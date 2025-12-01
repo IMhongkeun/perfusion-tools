@@ -348,10 +348,40 @@
           <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
             <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
           </summary>
-          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-2">
-             <p><strong>CaO₂ (mL/dL)</strong> = 1.34 × Hb × (SaO₂/100) + 0.0031 × PaO₂. Hüfner factor 1.34; dissolved O₂ coefficient 0.0031.</p>
-             <p><strong>DO₂i (mL/min/m²)</strong> = (Flow ÷ BSA) × CaO₂ × 10.</p>
-             <p><strong>Required pump flow</strong> = (Target DO₂i × BSA) ÷ (CaO₂ × 10). Evaluate adequacy around the target band (±10%) and adjust with full clinical context.</p>
+          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+            <ol class="list-decimal pl-4 space-y-3">
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Arterial oxygen content (CaO₂)</p>
+                <p>CaO₂ (mL/dL) = 1.34 × Hb (g/dL) × (SaO₂ / 100) + 0.0031 × PaO₂ (mmHg). We assume a Hüfner constant of 1.34 mL O₂ per gram of Hb and a dissolved O₂ coefficient of 0.0031 mL·dL⁻¹·mmHg⁻¹. The contribution of dissolved O₂ is usually small at normal PaO₂.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Indexed oxygen delivery (DO₂i)</p>
+                <p>DO₂i (mL/min/m²) = (Pump flow ÷ BSA) × CaO₂ × 10. Pump flow is entered in L/min and BSA in m². Multiplying by 10 converts CaO₂ from mL/dL to mL/L so that the final unit is mL O₂ per minute per m².</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Temperature-adjusted metabolic demand</p>
+                <p>Patient temperature strongly affects whole-body oxygen consumption (VO₂). As a simplifying assumption, this calculator applies a Q₁₀-type relationship where VO₂ falls as temperature decreases from 37 °C, but a “dampened” curve is used so that targets do not drop as steeply as metabolic rate. This reflects common clinical practice: hypothermia reduces demand, but we still maintain a safety margin for organs such as the kidney and brain.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Target DO₂i bands (Goal-Directed Perfusion)</p>
+                <p>At normothermia (≈37 °C) many adult CPB programs aim to maintain DO₂i ≥ 280–300 mL/min/m² to reduce the risk of anaerobic metabolism and postoperative acute kidney injury. At lower temperatures the calculator reduces the recommended target range, but never below a conservative lower floor (e.g. around 220 mL/min/m²), even when theoretical VO₂ would allow lower values. Targets are displayed as “Low / Borderline / Target / High” bands on the gauge for quick bedside interpretation.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Required pump flow for a chosen DO₂i goal</p>
+                <p>For a selected DO₂i target, the corresponding pump flow is: Required flow (L/min) = (Target DO₂i × BSA) ÷ (CaO₂ × 10). This is a theoretical value based on current Hb, SaO₂, PaO₂ and BSA. In practice, flow should also respect institutional minimum/maximum flow policies and patient-specific constraints (e.g. cannula size, arterial pressure, ventricular distension).</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Clinical use and limitations</p>
+                <p>The calculator is intended to support goal-directed perfusion, not to replace local protocols or clinical judgment. Final flow and DO₂i settings should always be interpreted together with:</p>
+                <ul class="list-disc pl-4 space-y-1 mt-1">
+                  <li>Mixed or central venous saturation (SvO₂/ScvO₂)</li>
+                  <li>Lactate trends</li>
+                  <li>Urine output and other organ-perfusion markers</li>
+                  <li>Hemodynamics and surgical field conditions</li>
+                </ul>
+                <p class="mt-1">All formulas assume complete mixing in the CPB circuit and do not account for ongoing blood loss, retransfusion, or major changes in oxygen extraction. Values are approximate and for educational use by trained clinicians only.</p>
+              </li>
+            </ol>
           </div>
         </details>
 
