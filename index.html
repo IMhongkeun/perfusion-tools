@@ -4,9 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
   
-  <title>Perfusion Calculator — DO₂i & Predicted Hct | Perfusion Tools</title>
-  <meta name="description" content="Professional perfusion calculators for CPB. Calculate DO₂i (Oxygen Delivery Index) and Predicted Hematocrit with hemodilution logic. Essential tools for perfusionists and ECMO specialists." />
-  <meta name="keywords" content="perfusion calculator, DO2i calculator, predicted Hct, CPB hemodilution, ECMO calculator, cardiac surgery tools, perfusionist, BSA calculator" />
+  <title>Perfusion Calculator — GDP & Predicted Hct | Perfusion Tools</title>
+  <meta name="description" content="Professional perfusion calculators for CPB. Goal-Directed Perfusion (GDP) evaluation and Predicted Hematocrit with hemodilution logic. Essential tools for perfusionists and ECMO specialists." />
+  <meta name="keywords" content="perfusion calculator, GDP calculator, DO2i calculator, predicted Hct, CPB hemodilution, ECMO calculator, cardiac surgery tools, perfusionist, BSA calculator" />
   <meta name="theme-color" content="#0f172a" />
   
   <meta property="og:type" content="website" />
@@ -141,7 +141,7 @@
   <header class="fixed top-0 w-full z-40 bg-primary-900/95 backdrop-blur border-b border-primary-800 text-white shadow-md">
     <div class="max-w-7xl mx-auto px-4 h-[var(--header-height)] flex items-center justify-between">
       
-     <a href="#/do2i" class="flex items-center gap-3 select-none cursor-pointer hover:opacity-80 transition-opacity">
+     <a href="#/bsa" class="flex items-center gap-3 select-none cursor-pointer hover:opacity-80 transition-opacity">
   <div class="relative w-8 h-8 flex items-center justify-center">
     <div class="absolute inset-0 rounded-full border-2 border-accent-500 opacity-80"></div>
    
@@ -155,9 +155,11 @@
 </a>
 
       <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
-        <a href="#/do2i" id="nav-do2i" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">DO₂i</a>
+        <a href="#/bsa" id="nav-bsa" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">BSA</a>
+        <a href="#/do2i" id="nav-do2i" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">GDP</a>
         <a href="#/predicted-hct" id="nav-hct" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Predicted Hct</a>
         <a href="#/lbm" id="nav-lbm" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">LBM</a>
+        <a href="#/timecalc" id="nav-time" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Time</a>
         <a href="#/faq" id="nav-faq" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">FAQ</a>
       </nav>
 
@@ -166,7 +168,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
         <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
         </svg>
       </button>
     </div>
@@ -175,25 +177,22 @@
   <div class="pt-[var(--header-height)] max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr] gap-0 min-h-screen">
     
     <aside class="hidden md:block border-r border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/50 sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] p-4 overflow-y-auto">
-      <div class="mb-6">
-        <div class="relative">
-          <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input placeholder="Search..." class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 pl-10 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white placeholder-slate-500" />
-        </div>
-      </div>
-      
       <div class="space-y-1">
         <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-3">Calculators</div>
+        <a href="#/bsa" id="side-bsa" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
+          BSA Calculator
+        </a>
         <a href="#/do2i" id="side-do2i" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
-          DO₂ Index (DO₂i)
+          GDP Calculator
         </a>
         <a href="#/predicted-hct" id="side-hct" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
           Predicted Hematocrit
         </a>
         <a href="#/lbm" id="side-lbm" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
           Lean Body Mass
+        </a>
+        <a href="#/timecalc" id="side-time" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
+          Time Calculator
         </a>
       </div>
 
@@ -205,137 +204,237 @@
 
     <main class="p-4 md:p-8 max-w-3xl mx-auto w-full space-y-8">
       
-      <section id="view-do2i" class="hidden animate-in fade-in duration-300">
-        
+            <section id="view-do2i" class="hidden animate-in fade-in duration-300">
+
         <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
           <div class="p-6 border-b border-slate-100 dark:border-primary-800 flex flex-wrap items-center justify-between gap-4 bg-slate-50/50 dark:bg-primary-800/30">
             <div>
-              <h2 class="text-xl font-bold text-primary-900 dark:text-white flex items-center gap-2">
-                DO₂ Index 
-                <span class="px-2 py-0.5 rounded text-xs font-bold bg-accent-500/10 text-accent-600 dark:text-accent-400">DO₂i</span>
-              </h2>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Oxygen Delivery Index (mL O₂/min/m²)</p>
+              <h2 class="text-xl font-bold text-primary-900 dark:text-white flex items-center gap-2">Goal-Directed Perfusion (GDP) Calculator</h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Set a DO₂i target and evaluate whether current pump flow is adequate.</p>
             </div>
-            
-            <div class="flex items-center gap-3">
-              <div class="inline-flex rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 p-1">
-                <button id="mode-adult" class="px-3 py-1.5 text-xs font-medium rounded-md transition-colors">Adult</button>
-                <button id="mode-infant" class="px-3 py-1.5 text-xs font-medium rounded-md transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-900 dark:hover:text-white">Infant</button>
-              </div>
-              <button id="do2i-reset" class="p-2 text-slate-400 hover:text-primary-900 dark:hover:text-accent-400 transition-colors" title="Reset Inputs">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-              </button>
-            </div>
+
+            <button id="do2i-reset" class="p-2 text-slate-400 hover:text-primary-900 dark:hover:text-accent-400 transition-colors" title="Reset Inputs">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
           </div>
 
-          <div class="p-6 grid sm:grid-cols-2 gap-6">
-            <div class="space-y-1">
-              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Height (cm)</label>
-              <input id="h_cm" type="number" step="0.1" placeholder="170" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
-            </div>
-            <div class="space-y-1">
-              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Weight (kg)</label>
-              <input id="w_kg" type="number" step="0.1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+          <div class="p-6 space-y-6">
+            <div class="bg-slate-50 dark:bg-primary-800/50 border border-slate-100 dark:border-primary-700/50 rounded-xl p-4 space-y-3">
+              <div class="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <p class="text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">Target DO₂i</p>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Select a preset goal or enter a custom value.</p>
+                </div>
+                <div id="target-pill-row" class="flex flex-wrap items-center gap-2">
+                  <button id="target-260" data-value="260" class="px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors">260 (min)</button>
+                  <button id="target-280" data-value="280" class="px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors">280 (standard)</button>
+                  <button id="target-300" data-value="300" class="px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors">300 (high-normal)</button>
+                  <button id="target-360" data-value="360" class="px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors">360 (pediatric)</button>
+                  <div class="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-semibold transition-colors cursor-pointer bg-white dark:bg-primary-800 border-slate-200 dark:border-primary-700" id="target-custom-pill">
+                    <span>Custom</span>
+                    <input id="target-custom" type="number" min="1" step="1" placeholder="—" class="w-20 bg-transparent border-0 focus:ring-0 focus:outline-none text-right text-sm" aria-label="Custom DO2i" />
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div class="sm:col-span-2 grid grid-cols-[1fr_140px] gap-4 items-end bg-slate-50 dark:bg-primary-800/50 p-4 rounded-xl border border-slate-100 dark:border-primary-700/50">
+            <div class="grid sm:grid-cols-2 gap-6">
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide flex justify-between items-center">
-                  <span class="flex items-center">BSA (m²)<span class="text-red-500 ml-0.5">*</span></span>
-                  <span id="bsa-hint" class="text-[10px] font-normal text-slate-400 lowercase">auto-calc</span>
-                </label>
-                <input id="bsa" type="number" step="0.01" placeholder="—" aria-required="true" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Height (cm)</label>
+                <input id="h_cm" type="number" step="0.1" placeholder="170" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Formula</label>
-                <select id="bsa-method" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
-                  <option value="Mosteller">Mosteller</option>
-                  <option value="DuBois">DuBois</option>
-                  <option value="Haycock">Haycock</option>
-                  <option value="GehanGeorge">Gehan</option>
-                </select>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Weight (kg)</label>
+                <input id="w_kg" type="number" step="0.1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+              </div>
+
+              <div class="sm:col-span-2 grid grid-cols-[1fr_140px] gap-4 items-end bg-slate-50 dark:bg-primary-800/50 p-4 rounded-xl border border-slate-100 dark:border-primary-700/50">
+                <div class="space-y-1">
+                  <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide flex justify-between items-center">
+                    <span class="flex items-center gap-1">BSA (m²) <span class="text-red-500">*</span></span>
+                    <span id="bsa-hint" class="text-[10px] font-normal text-slate-400 lowercase">auto-calc</span>
+                  </label>
+                  <input id="bsa" type="number" step="0.01" placeholder="Auto from H/W or enter" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
+                </div>
+                <div class="space-y-1">
+                  <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Formula</label>
+                  <select id="bsa-method" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
+                    <option value="Mosteller">Mosteller</option>
+                    <option value="DuBois">DuBois</option>
+                    <option value="Haycock">Haycock</option>
+                    <option value="Boyd">Boyd</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Hemoglobin (g/dL) <span class="text-red-500">*</span></label>
+                <input id="hb" type="number" step="0.1" placeholder="10" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Temperature (°C)</label>
+                <input id="temp_c" type="number" step="0.1" placeholder="32" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+              </div>
+
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">PaO₂ (mmHg) <span class="text-red-500">*</span></label>
+                <input id="pao2" type="number" step="1" placeholder="150" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">SaO₂ (%) <span class="text-red-500">*</span></label>
+                <input id="sao2" type="number" step="0.1" placeholder="100" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+              </div>
+
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Current pump flow (L/min)</label>
+                <input id="flow" type="number" step="0.01" placeholder="4.6" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+              </div>
+              <div class="space-y-1 opacity-80">
+                <label class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Calculated CaO₂ (mL/dL)</label>
+                <input id="cao2" disabled class="w-full bg-slate-100 dark:bg-primary-950 border-0 rounded-xl px-4 py-2.5 text-slate-600 dark:text-slate-400 font-mono text-sm" />
               </div>
             </div>
 
-            <div class="space-y-1">
-              <label class="text-xs font-semibold text-primary-700 dark:text-accent-400 uppercase tracking-wide">Pump Flow (L/min)<span class="text-red-500 ml-0.5">*</span></label>
-              <input id="flow" type="number" step="0.01" placeholder="4.6" aria-required="true" class="w-full bg-slate-50 dark:bg-primary-800 border-2 border-accent-500/20 focus:border-accent-500 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white font-medium" />
-            </div>
-            <div class="space-y-1">
-              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Hemoglobin (g/dL)<span class="text-red-500 ml-0.5">*</span></label>
-              <input id="hb" type="number" step="0.1" placeholder="10" aria-required="true" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
-            </div>
-            <div class="space-y-1">
-              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">SaO₂ (%)<span class="text-red-500 ml-0.5">*</span></label>
-              <input id="sao2" type="number" step="0.1" placeholder="100" aria-required="true" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">* Required for DO₂i and target flow calculation. Temperature and current flow are optional.</p>
+            <p id="gdp-warning" class="text-xs text-red-500 hidden">Enter required fields.</p>
+
+            <div class="bg-primary-900 dark:bg-black/20 p-6 text-white rounded-xl relative overflow-hidden">
+              <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-accent-500 rounded-full opacity-10 blur-3xl"></div>
+              <div class="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-900 to-primary-800 opacity-70"></div>
+              <div class="relative z-10 space-y-5">
+                <div class="grid md:grid-cols-3 gap-4">
+                  <div class="bg-white/5 rounded-lg p-4 border border-white/10 shadow-sm">
+                    <div class="text-[11px] uppercase tracking-wider text-slate-300">Required pump flow</div>
+                    <div id="required-flow" class="text-2xl font-bold mt-1">—</div>
+                  </div>
+                  <div class="bg-white/5 rounded-lg p-4 border border-white/10 shadow-sm">
+                    <div class="text-[11px] uppercase tracking-wider text-slate-300">Current DO₂i</div>
+                    <div id="current-do2i" class="text-2xl font-bold mt-1">—</div>
+                  </div>
+                  <div class="bg-white/5 rounded-lg p-4 border border-white/10 shadow-sm">
+                    <div class="text-[11px] uppercase tracking-wider text-slate-300">Status</div>
+                    <div id="gdp-status-text" class="text-lg font-semibold mt-1">Awaiting data</div>
+                    <p id="gdp-status-detail" class="text-xs text-slate-200 mt-1">Provide required inputs to evaluate target vs. current flow.</p>
+                  </div>
+                </div>
+
+                <div class="space-y-2">
+                  <div class="h-3 w-full bg-white/10 rounded-full overflow-hidden shadow-inner">
+                    <div id="gdp-gauge" class="h-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(255,255,255,0.3)] from-accent-600 to-accent-400" style="width: 0%;"></div>
+                  </div>
+                  <div id="gdp-gauge-msg" class="text-xs text-slate-200">Enter current flow to visualize DO₂i vs. target</div>
+                  <div id="ci-comment" class="text-[11px] text-slate-300"></div>
+                </div>
+              </div>
             </div>
 
-            <div class="space-y-1">
-              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Temperature (°C)</label>
-              <input id="temp_c" type="number" step="0.1" placeholder="36.0" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
-            </div>
-
-            <div class="space-y-1">
-              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">PaO₂ (mmHg)<span class="text-red-500 ml-0.5">*</span></label>
-              <input id="pao2" type="number" step="1" placeholder="150" aria-required="true" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
-            </div>
-            <div class="sm:col-span-2 space-y-1 opacity-75">
-              <label class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Calculated CaO₂ (mL/dL)</label>
-              <input id="cao2" disabled class="w-full bg-slate-100 dark:bg-primary-950 border-0 rounded-xl px-4 py-2.5 text-slate-600 dark:text-slate-400 font-mono text-sm" />
+            <div class="bg-slate-50 dark:bg-primary-900/30 rounded-xl border border-slate-100 dark:border-primary-700/50 p-4 space-y-2 text-xs text-slate-600 dark:text-slate-300">
+              <p id="temp-note" class="hidden">Temperature optional; interpret DO₂i with the overall clinical picture.</p>
+              <div id="temp-comment" class="text-[11px] leading-relaxed"></div>
+              <p>This GDP calculator uses standard DO₂i formula: DO₂i = (Flow ÷ BSA) × CaO₂ × 10. Required flow is DO₂i × BSA ÷ (CaO₂ × 10).</p>
+              <p>Clinical decisions must follow institutional protocols and consider lactate, SvO₂/ScvO₂, urine output, and perfusion pressures.</p>
             </div>
           </div>
 
-          <div class="bg-primary-900 dark:bg-black/20 p-6 text-white relative overflow-hidden">
-             <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-accent-500 rounded-full opacity-10 blur-3xl"></div>
-             
-             <div class="relative z-10 flex items-end justify-between mb-4">
-               <div class="text-slate-300 text-sm font-medium">DO₂i Result</div>
-               <div id="do2i" class="text-4xl font-bold tracking-tight text-white">0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span></div>
-             </div>
-
-             <div class="relative h-3 bg-primary-800/50 dark:bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
-               <div id="do2i-gauge" class="h-full bg-gradient-to-r from-accent-600 to-accent-400 transition-all duration-700 ease-out shadow-[0_0_10px_rgba(34,211,238,0.5)]" style="width:0%"></div>
-             </div>
-       
-             <div class="mt-3 flex justify-between items-center">
-               <div id="do2i-msg" class="text-sm font-bold text-accent-400">Waiting for input...</div>
-               <div id="do2i-legend" class="text-[10px] text-slate-400">Target > 280</div>
-             </div>
-
-             <p id="do2i-temp-target" class="mt-2 text-xs text-slate-300 dark:text-slate-400">Equivalent DO₂i target at 37.0°C: 280–300 mL/min/m²</p>
-             <div id="do2i-temp-explain" class="mt-1 text-[11px] text-slate-300 dark:text-slate-400"></div>
-          </div>
-
-          <div class="bg-slate-50 dark:bg-primary-800/30 border-t border-slate-100 dark:border-primary-700/50 p-4">
-            <h4 class="text-xs font-bold text-primary-900 dark:text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-2">
-              <svg class="w-4 h-4 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              Clinical Notes
-            </h4>
-            <div id="clinical-note-adult" class="text-xs text-slate-600 dark:text-slate-400 space-y-1">
-              <p>• <strong>Target:</strong> Typically ≥ 280–300 mL O₂/min/m² during normothermic CPB.</p>
-              <p>• <strong>Low DO₂i:</strong> Associated with AKI and elevated lactate. Consider increasing flow or Hct.</p>
-              <p>• <strong>High DO₂i:</strong> Excess delivery usually benign but may indicate luxury perfusion.</p>
-            </div>
-            <div id="clinical-note-infant" class="hidden text-xs text-slate-600 dark:text-slate-400 space-y-1">
-              <p>• <strong>Target:</strong> Infants typically require higher flows (≥ 2.4–3.0 L/min/m² CI) and DO₂i ≥ 350–380.</p>
-              <p>• <strong>Metabolic Rate:</strong> Higher O₂ consumption necessitates higher delivery thresholds than adults.</p>
-            </div>
-            <p class="mt-3 text-[10px] text-slate-400 italic">For educational use only. Not medical advice.</p>
-          </div>
         </div>
 
-          <details class="mt-4 group">
-            <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
-              <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
+        <details class="mt-4 group">
+          <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+            <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
           </summary>
-          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm">
-             <p><strong>CaO₂ (mL/dL)</strong> = 1.34 × Hb × (SaO₂/100) + 0.0031 × PaO₂</p>
-             <p class="mt-1"><strong>DO₂i (mL/min/m²)</strong> = (Pump Flow ÷ BSA) × CaO₂ × 10</p>
-             <p class="mt-2 text-slate-400">Constants: Hüfner factor 1.34; Dissolved O₂ coefficient 0.0031.</p>
+          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-2">
+             <p><strong>CaO₂ (mL/dL)</strong> = 1.34 × Hb × (SaO₂/100) + 0.0031 × PaO₂. Hüfner factor 1.34; dissolved O₂ coefficient 0.0031.</p>
+             <p><strong>DO₂i (mL/min/m²)</strong> = (Flow ÷ BSA) × CaO₂ × 10.</p>
+             <p><strong>Required pump flow</strong> = (Target DO₂i × BSA) ÷ (CaO₂ × 10). Evaluate adequacy around the target band (±10%) and adjust with full clinical context.</p>
           </div>
         </details>
+
+
+      </section>
+
+      <section id="view-bsa" class="hidden animate-in fade-in duration-300">
+        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
+
+          <div class="p-6 border-b border-slate-100 dark:border-primary-800 bg-slate-50/50 dark:bg-primary-800/30 flex items-start justify-between gap-4">
+            <div>
+              <p class="text-[11px] uppercase tracking-widest text-accent-500 font-semibold">Body Surface Area</p>
+              <h2 class="text-xl font-bold text-primary-900 dark:text-white flex items-center gap-2">BSA Calculator</h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Enter height and weight to calculate BSA and perfusion flow guidance.</p>
+            </div>
+            <div class="text-right">
+              <div class="text-[10px] uppercase tracking-wider text-slate-400">BSA (m²)</div>
+              <div id="bsa-result" class="text-3xl font-bold text-accent-500">0.00</div>
+              <div class="text-[11px] text-slate-400">Updates in real time</div>
+            </div>
+          </div>
+
+          <div class="p-6 space-y-6">
+            <div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-6">
+              <div class="space-y-4">
+                <div class="grid sm:grid-cols-2 gap-4">
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Height (cm)</label>
+                    <input id="bsa_height" type="number" step="0.1" placeholder="170" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Weight (kg)</label>
+                    <input id="bsa_weight" type="number" step="0.1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+                  </div>
+
+                  <div class="sm:col-span-2 space-y-2">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Formula</label>
+                    <select id="bsa-method-standalone" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
+                      <option value="Mosteller">Mosteller</option>
+                      <option value="DuBois">DuBois</option>
+                      <option value="Haycock">Haycock</option>
+                      <option value="Boyd">Boyd</option>
+                    </select>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Mosteller is the clinical default; switch formulas as needed.</p>
+                  </div>
+                </div>
+
+                <div class="bg-primary-900 dark:bg-black/30 rounded-2xl text-white p-5 shadow-inner">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <div class="text-[11px] uppercase tracking-wider text-slate-300 mb-1">BSA Output</div>
+                      <div class="text-4xl font-bold" id="bsa-result-display">—</div>
+                      <p class="text-[11px] text-slate-300 mt-1">Calculated from height and weight only.</p>
+                    </div>
+                    <div class="text-right text-xs text-slate-300">
+                      <div class="uppercase tracking-wider text-[10px] text-slate-400">Formula</div>
+                      <div class="font-semibold" id="bsa-method-active">Mosteller</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-primary-800/60 rounded-2xl border border-slate-100 dark:border-primary-700/60 p-5 flex flex-col lg:col-span-2">
+                <div class="flex items-center justify-between mb-3">
+                  <div>
+                    <h4 class="text-xs font-bold text-primary-900 dark:text-slate-100 uppercase tracking-wider">Blood Flow Rate by Cardiac Index</h4>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Scaled from the BSA result below.</p>
+                  </div>
+                  <span class="text-[10px] text-slate-400">CI 1.0–3.0</span>
+                </div>
+                <div class="max-h-80 min-h-[18rem] overflow-y-auto pr-1" id="bsa-flow-list"></div>
+              </div>
+            </div>
+
+            <details class="group">
+              <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+                <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
+              </summary>
+              <div class="mt-2 p-4 rounded-xl bg-slate-50 dark:bg-primary-800/60 border border-slate-100 dark:border-primary-700/60 text-xs text-slate-600 dark:text-slate-300 leading-relaxed space-y-2">
+                <p><strong>Mosteller</strong>: BSA = √((Height(cm) × Weight(kg)) ÷ 3600). Fast, common clinical default.</p>
+                <p><strong>DuBois</strong>: BSA = 0.007184 × Height(cm)<sup>0.725</sup> × Weight(kg)<sup>0.425</sup>. Historical reference standard.</p>
+                <p><strong>Haycock</strong>: BSA = 0.024265 × Height(cm)<sup>0.3964</sup> × Weight(kg)<sup>0.5378</sup>. Higher accuracy in infants and pediatrics.</p>
+                <p><strong>Boyd</strong>: BSA = 0.0003207 × Height(cm)<sup>0.3</sup> × Weight(g)<sup>0.7285 − 0.0188·log₁₀(Weight(g))</sup>. Useful in obesity (BMI&gt;30) with mass-adjusted exponent.</p>
+              </div>
+            </details>
+          </div>
+        </div>
       </section>
 
       <section id="view-hct" class="hidden animate-in fade-in duration-300">
@@ -472,65 +571,81 @@
                 <option value="Hume">Hume</option>
               </select>
             </div>
-          </div>
 
-          <div class="px-6 pb-4 grid gap-3 sm:grid-cols-2">
-            <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800/40 p-4 shadow-sm">
-              <div class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">BSA (actual)</div>
-              <div id="lbm_bsa_actual" class="text-2xl font-bold text-primary-900 dark:text-white">—</div>
-              <p class="text-[11px] text-slate-500 dark:text-slate-400">Mosteller · actual weight</p>
-            </div>
-            <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800/40 p-4 shadow-sm">
-              <div class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">BSA (lean)</div>
-              <div id="lbm_bsa_lean" class="text-2xl font-bold text-primary-900 dark:text-white">—</div>
-              <p class="text-[11px] text-slate-500 dark:text-slate-400">Mosteller · using LBM</p>
+            <div class="space-y-1 sm:col-span-2">
+              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">BSA Formula</label>
+              <select id="lbm_bsa_formula" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white cursor-pointer">
+                <option value="Mosteller">Mosteller (default)</option>
+                <option value="DuBois">DuBois</option>
+                <option value="Haycock">Haycock</option>
+                <option value="GehanGeorge">Gehan–George</option>
+              </select>
             </div>
           </div>
 
-          <div class="bg-primary-900 dark:bg-black/20 p-6 text-white relative overflow-hidden">
-            <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-accent-500 rounded-full opacity-10 blur-3xl"></div>
+          <div class="p-6 pt-0 space-y-6">
+            <div class="bg-primary-900 dark:bg-black/20 p-6 text-white relative overflow-hidden rounded-2xl">
+              <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-accent-500 rounded-full opacity-10 blur-3xl"></div>
 
-            <div class="relative z-10 flex items-end justify-between">
-              <div class="text-slate-300 text-sm font-medium">LBM Result</div>
-              <div id="lbm_result" class="text-4xl font-bold tracking-tight text-white">0 <span class="text-lg font-normal text-slate-400">kg</span></div>
+              <div class="relative z-10 flex items-end justify-between">
+                <div class="text-slate-300 text-sm font-medium">LBM Result</div>
+                <div id="lbm_result" class="text-4xl font-bold tracking-tight text-white">0 <span class="text-lg font-normal text-slate-400">kg</span></div>
+              </div>
             </div>
-          </div>
 
-          <div class="bg-slate-50 dark:bg-primary-800/30 border-t border-slate-100 dark:border-primary-700/50 p-4">
-            <h4 class="text-xs font-bold text-primary-900 dark:text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-2">
-              <svg class="w-4 h-4 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              Clinical Notes
-            </h4>
-            <div class="text-xs text-slate-600 dark:text-slate-400 space-y-1">
-              <p>• <strong>LBM Definition:</strong> Total body weight minus adipose tissue mass (fat-free mass).</p>
-              <p>• <strong>Clinical Use:</strong> Drug dosing, nutritional assessment, and metabolic calculations.</p>
-              <p>• <strong>Formulas:</strong> Hume (1966) and Boer (1984) equations are commonly used in clinical practice.</p>
+            <div class="grid md:grid-cols-3 gap-4">
+              <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-4">
+                <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400">BMI</div>
+                <div id="bmi_value" class="text-3xl font-bold text-primary-900 dark:text-white mt-1">—</div>
+                <div id="bmi_badge" class="inline-flex mt-2 px-3 py-1 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-primary-800 text-slate-600 dark:text-slate-300">—</div>
+              </div>
+
+              <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-4">
+                <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400">BSA (Actual)</div>
+                <div id="bsa_actual_value" class="text-3xl font-bold text-primary-900 dark:text-white mt-1">—</div>
+                <div id="bsa_actual_note" class="text-xs text-slate-500 dark:text-slate-400">Mosteller formula</div>
+              </div>
+
+              <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-4">
+                <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400">BSA (Lean)</div>
+                <div id="bsa_lean_value" class="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">—</div>
+                <div id="bsa_lean_note" class="text-xs text-slate-500 dark:text-slate-400">Boer/Hume LBM — kg</div>
+              </div>
             </div>
-            <p class="mt-3 text-[10px] text-slate-400 italic">For educational use only. Not medical advice.</p>
+
+            <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800">
+              <div class="p-4 border-b border-slate-100 dark:border-primary-800">
+                <h3 class="text-lg font-semibold text-primary-900 dark:text-white">Flow comparison table (CI 1.0 – 3.0)</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">BSA actual vs BSA lean flow comparison</p>
+              </div>
+              <div class="overflow-x-auto max-h-64">
+                <table class="min-w-full text-sm">
+                  <thead class="bg-slate-50 dark:bg-primary-900/50 text-left text-slate-600 dark:text-slate-300 uppercase text-[11px] tracking-wide">
+                    <tr>
+                      <th class="px-4 py-2">CI</th>
+                      <th class="px-4 py-2">Flow (Actual BSA)</th>
+                      <th class="px-4 py-2">Flow (Lean BSA)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="lbm-flow-rows" class="divide-y divide-slate-100 dark:divide-primary-800"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 dark:bg-primary-800/30 border border-slate-100 dark:border-primary-700/50 p-4 rounded-2xl">
+              <h4 class="text-xs font-bold text-primary-900 dark:text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-2">
+                <svg class="w-4 h-4 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                Clinical Notes
+              </h4>
+              <div class="text-xs text-slate-600 dark:text-slate-400 space-y-1">
+                <p>• <strong>LBM Definition:</strong> Total body weight minus adipose tissue mass (fat-free mass).</p>
+                <p>• <strong>Clinical Use:</strong> Drug dosing, nutritional assessment, and metabolic calculations.</p>
+                <p>• <strong>Formulas:</strong> Hume (1966) and Boer (1984) equations are commonly used in clinical practice.</p>
+              </div>
+              <p class="mt-3 text-[10px] text-slate-400 italic">For educational use only. Not medical advice.</p>
+            </div>
           </div>
         </div>
-
-        <details class="mt-4 group" id="lbm-flow-details">
-          <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 flex items-center gap-2">
-            <span class="transform transition-transform group-open:rotate-90">▶</span>
-            Flow comparison table (CI 1.0–3.0)
-          </summary>
-          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 shadow-sm overflow-x-auto">
-            <table class="min-w-full text-xs">
-              <thead>
-                <tr class="text-left border-b border-slate-200 dark:border-primary-700">
-                  <th class="py-1 pr-4">Cardiac Index (L/min/m²)</th>
-                  <th class="py-1 pr-4">Flow with BSA(actual) (L/min)</th>
-                  <th class="py-1">Flow with BSA(lean) (L/min)</th>
-                </tr>
-              </thead>
-              <tbody id="lbm-ci-tbody">
-                <!-- rows will be rendered by JS -->
-              </tbody>
-            </table>
-            <p id="lbm-ci-hint" class="mt-2 text-[10px] text-slate-400"></p>
-          </div>
-        </details>
 
         <details class="mt-4 group">
           <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
@@ -548,6 +663,195 @@
             <p class="text-slate-400 mt-2">W = weight (kg), H = height (cm)</p>
           </div>
         </details>
+      </section>
+
+      <section id="view-timecalc" class="hidden animate-in fade-in duration-300">
+        <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 p-6">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Time Calculator</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Enter 24-hour start/end times to see elapsed minutes and an H:MM readout.</p>
+
+          <div class="space-y-4" id="time-rows">
+            <div class="time-row rounded-2xl border border-slate-100 dark:border-primary-800/60 bg-white/70 dark:bg-primary-900/40 p-3 space-y-3">
+              <div class="flex items-center gap-2">
+                <div class="text-[11px] text-slate-500 dark:text-slate-400">#1</div>
+                <input id="time-label-1" type="text" inputmode="text" placeholder="Label" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div class="flex flex-col gap-1">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
+                  <div class="flex items-center gap-2">
+                    <input id="time-start-1" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-start-now-1" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
+                  <div class="flex items-center gap-2">
+                    <input id="time-end-1" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-end-now-1" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">Duration</span>
+                  <div id="time-result-1" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">-</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="time-row rounded-2xl border border-slate-100 dark:border-primary-800/60 bg-white/70 dark:bg-primary-900/40 p-3 space-y-3">
+              <div class="flex items-center gap-2">
+                <div class="text-[11px] text-slate-500 dark:text-slate-400">#2</div>
+                <input id="time-label-2" type="text" inputmode="text" placeholder="Label" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div class="flex flex-col gap-1">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
+                  <div class="flex items-center gap-2">
+                    <input id="time-start-2" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-start-now-2" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
+                  <div class="flex items-center gap-2">
+                    <input id="time-end-2" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-end-now-2" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">Duration</span>
+                  <div id="time-result-2" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">-</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="time-row rounded-2xl border border-slate-100 dark:border-primary-800/60 bg-white/70 dark:bg-primary-900/40 p-3 space-y-3">
+              <div class="flex items-center gap-2">
+                <div class="text-[11px] text-slate-500 dark:text-slate-400">#3</div>
+                <input id="time-label-3" type="text" inputmode="text" placeholder="Label" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div class="flex flex-col gap-1">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
+                  <div class="flex items-center gap-2">
+                    <input id="time-start-3" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-start-now-3" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
+                  <div class="flex items-center gap-2">
+                    <input id="time-end-3" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-end-now-3" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">Duration</span>
+                  <div id="time-result-3" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">-</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="time-row rounded-2xl border border-slate-100 dark:border-primary-800/60 bg-white/70 dark:bg-primary-900/40 p-3 space-y-3">
+              <div class="flex items-center gap-2">
+                <div class="text-[11px] text-slate-500 dark:text-slate-400">#4</div>
+                <input id="time-label-4" type="text" inputmode="text" placeholder="Label" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div class="flex flex-col gap-1">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
+                  <div class="flex items-center gap-2">
+                    <input id="time-start-4" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-start-now-4" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
+                  <div class="flex items-center gap-2">
+                    <input id="time-end-4" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-end-now-4" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">Duration</span>
+                  <div id="time-result-4" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">-</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="time-row rounded-2xl border border-slate-100 dark:border-primary-800/60 bg-white/70 dark:bg-primary-900/40 p-3 space-y-3">
+              <div class="flex items-center gap-2">
+                <div class="text-[11px] text-slate-500 dark:text-slate-400">#5</div>
+                <input id="time-label-5" type="text" inputmode="text" placeholder="Label" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div class="flex flex-col gap-1">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
+                  <div class="flex items-center gap-2">
+                    <input id="time-start-5" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-start-now-5" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
+                  <div class="flex items-center gap-2">
+                    <input id="time-end-5" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-end-now-5" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">Duration</span>
+                  <div id="time-result-5" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">-</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
+            <p>Enter a 24-hour HHMM value; it formats to HH:MM after four digits.</p>
+            <p>Only 00:00–23:59 are accepted. If the end time is earlier than the start, the duration assumes it crosses midnight.</p>
+          </div>
+        </div>
       </section>
 
       <section id="faq" class="hidden animate-in fade-in duration-300">
@@ -591,7 +895,10 @@
         <h2 class="text-2xl font-bold text-primary-900 dark:text-white mb-4">Privacy Policy</h2>
         <p class="text-sm mb-4">Last updated: <span id="privacy-date"></span></p>
         <div class="prose prose-sm dark:prose-invert max-w-none">
-          <p>This site collects minimal anonymized usage data. No clinical inputs are stored. [Content truncated for brevity, preserved from original]</p>
+          <p>This site is a static calculator that runs entirely in your browser. No clinical inputs, identifiers, or session data are sent to any server.</p>
+          <p>Anonymous, aggregate analytics may be used to understand feature usage (page views, button clicks) without logging IP addresses or patient information.</p>
+          <p>Inputs remain on-device and disappear when you refresh or close the page. Do not store or print screenshots that contain protected health information (PHI) on shared systems.</p>
+          <p>If you have privacy concerns or wish to report a data issue, please reach out via the contact form below. We will respond promptly with remediation steps.</p>
         </div>
       </section>
       
@@ -599,7 +906,10 @@
         <h2 class="text-2xl font-bold text-primary-900 dark:text-white mb-4">Terms of Use</h2>
         <p class="text-sm mb-4">Last updated: <span id="terms-date"></span></p>
         <div class="prose prose-sm dark:prose-invert max-w-none">
-          <p>For educational use only. Not medical advice. [Content truncated for brevity, preserved from original]</p>
+          <p>This calculator is provided for educational use by healthcare professionals. It is not a medical device and does not replace clinical judgment or institutional protocols.</p>
+          <p>Always confirm calculations manually, correlate with patient data, and follow attending physician orders. Use of this tool is at your own risk.</p>
+          <p>No warranty is provided, express or implied. The developers are not liable for decisions or outcomes arising from use of the calculator.</p>
+          <p>By continuing to use this site, you agree to these terms. If you do not agree, please discontinue use.</p>
         </div>
       </section>
 
@@ -633,9 +943,13 @@
   </footer>
 
   <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-primary-900 border-t border-slate-200 dark:border-primary-800 z-50 flex justify-around items-center h-[var(--bottom-nav-height)] pb-safe">
+    <a href="#/bsa" id="mob-bsa" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.5 9.75A2.25 2.25 0 016.75 7.5h10.5A2.25 2.25 0 0119.5 9.75v4.5A2.25 2.25 0 0117.25 16.5H6.75A2.25 2.25 0 014.5 14.25v-4.5z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 12h7.5M9 9.75v4.5m6-4.5v4.5" /></svg>
+      <span class="text-[10px] font-medium">BSA</span>
+    </a>
     <a href="#/do2i" id="mob-do2i" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-      <span class="text-[10px] font-medium">DO₂i</span>
+      <span class="text-[10px] font-medium">GDP</span>
     </a>
     <a href="#/predicted-hct" id="mob-hct" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
@@ -644,6 +958,10 @@
     <a href="#/lbm" id="mob-lbm" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
       <span class="text-[10px] font-medium">LBM</span>
+    </a>
+    <a href="#/timecalc" id="mob-time" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <span class="text-[10px] font-medium">Time</span>
     </a>
     <a href="#/faq" id="mob-faq" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
