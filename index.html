@@ -689,75 +689,150 @@
             <div class="time-row grid grid-cols-[auto_minmax(0,1fr)_repeat(3,minmax(0,1fr))] gap-4 items-center py-1.5">
               <div class="text-[11px] text-slate-500 dark:text-slate-400">#1</div>
               <input id="time-label-1" type="text" inputmode="text" placeholder="Label" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-              <div class="flex items-center">
-                <input id="time-start-1" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-1">🕒</button>
+              <div class="flex flex-col gap-1">
+                <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
+                <div class="flex items-center">
+                  <div class="relative w-full">
+                    <input id="time-start-1" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 pr-7 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-400">▼</span>
+                  </div>
+                  <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-1">⏲</button>
+                </div>
               </div>
-              <div class="flex items-center">
-                <input id="time-end-1" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-1">🕒</button>
+              <div class="flex flex-col gap-1">
+                <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
+                <div class="flex items-center">
+                  <div class="relative w-full">
+                    <input id="time-end-1" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 pr-7 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-400">▼</span>
+                  </div>
+                  <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-1">⏲</button>
+                </div>
               </div>
-              <div id="time-result-1" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">-</div>
+              <div class="flex flex-col gap-1">
+                <span class="text-[11px] text-slate-500 dark:text-slate-400">Duration</span>
+                <div id="time-result-1" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">-</div>
+              </div>
             </div>
 
             <div class="time-row grid grid-cols-[auto_minmax(0,1fr)_repeat(3,minmax(0,1fr))] gap-4 items-center py-1.5">
               <div class="text-[11px] text-slate-500 dark:text-slate-400">#2</div>
               <input id="time-label-2" type="text" inputmode="text" placeholder="Label" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-              <div class="flex items-center">
-                <input id="time-start-2" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-2">🕒</button>
+              <div class="flex flex-col gap-1">
+                <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
+                <div class="flex items-center">
+                  <div class="relative w-full">
+                    <input id="time-start-2" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 pr-7 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-400">▼</span>
+                  </div>
+                  <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-2">⏲</button>
+                </div>
               </div>
-              <div class="flex items-center">
-                <input id="time-end-2" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-2">🕒</button>
+              <div class="flex flex-col gap-1">
+                <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
+                <div class="flex items-center">
+                  <div class="relative w-full">
+                    <input id="time-end-2" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 pr-7 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-400">▼</span>
+                  </div>
+                  <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-2">⏲</button>
+                </div>
               </div>
-              <div id="time-result-2" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">-</div>
+              <div class="flex flex-col gap-1">
+                <span class="text-[11px] text-slate-500 dark:text-slate-400">Duration</span>
+                <div id="time-result-2" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">-</div>
+              </div>
             </div>
 
             <div class="time-row grid grid-cols-[auto_minmax(0,1fr)_repeat(3,minmax(0,1fr))] gap-4 items-center py-1.5">
               <div class="text-[11px] text-slate-500 dark:text-slate-400">#3</div>
               <input id="time-label-3" type="text" inputmode="text" placeholder="Label" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-              <div class="flex items-center">
-                <input id="time-start-3" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-3">🕒</button>
+              <div class="flex flex-col gap-1">
+                <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
+                <div class="flex items-center">
+                  <div class="relative w-full">
+                    <input id="time-start-3" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 pr-7 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-400">▼</span>
+                  </div>
+                  <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-3">⏲</button>
+                </div>
               </div>
-              <div class="flex items-center">
-                <input id="time-end-3" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-3">🕒</button>
+              <div class="flex flex-col gap-1">
+                <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
+                <div class="flex items-center">
+                  <div class="relative w-full">
+                    <input id="time-end-3" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 pr-7 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-400">▼</span>
+                  </div>
+                  <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-3">⏲</button>
+                </div>
               </div>
-              <div id="time-result-3" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">-</div>
+              <div class="flex flex-col gap-1">
+                <span class="text-[11px] text-slate-500 dark:text-slate-400">Duration</span>
+                <div id="time-result-3" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">-</div>
+              </div>
             </div>
 
             <div class="time-row grid grid-cols-[auto_minmax(0,1fr)_repeat(3,minmax(0,1fr))] gap-4 items-center py-1.5">
               <div class="text-[11px] text-slate-500 dark:text-slate-400">#4</div>
               <input id="time-label-4" type="text" inputmode="text" placeholder="Label" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-              <div class="flex items-center">
-                <input id="time-start-4" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-4">🕒</button>
+              <div class="flex flex-col gap-1">
+                <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
+                <div class="flex items-center">
+                  <div class="relative w-full">
+                    <input id="time-start-4" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 pr-7 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-400">▼</span>
+                  </div>
+                  <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-4">⏲</button>
+                </div>
               </div>
-              <div class="flex items-center">
-                <input id="time-end-4" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-4">🕒</button>
+              <div class="flex flex-col gap-1">
+                <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
+                <div class="flex items-center">
+                  <div class="relative w-full">
+                    <input id="time-end-4" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 pr-7 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-400">▼</span>
+                  </div>
+                  <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-4">⏲</button>
+                </div>
               </div>
-              <div id="time-result-4" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">-</div>
+              <div class="flex flex-col gap-1">
+                <span class="text-[11px] text-slate-500 dark:text-slate-400">Duration</span>
+                <div id="time-result-4" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">-</div>
+              </div>
             </div>
 
             <div class="time-row grid grid-cols-[auto_minmax(0,1fr)_repeat(3,minmax(0,1fr))] gap-4 items-center py-1.5">
               <div class="text-[11px] text-slate-500 dark:text-slate-400">#5</div>
               <input id="time-label-5" type="text" inputmode="text" placeholder="Label" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-              <div class="flex items-center">
-                <input id="time-start-5" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-5">🕒</button>
+              <div class="flex flex-col gap-1">
+                <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
+                <div class="flex items-center">
+                  <div class="relative w-full">
+                    <input id="time-start-5" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 pr-7 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-400">▼</span>
+                  </div>
+                  <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-5">⏲</button>
+                </div>
               </div>
-              <div class="flex items-center">
-                <input id="time-end-5" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-5">🕒</button>
+              <div class="flex flex-col gap-1">
+                <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
+                <div class="flex items-center">
+                  <div class="relative w-full">
+                    <input id="time-end-5" type="time" step="60" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 pr-7 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-400">▼</span>
+                  </div>
+                  <button type="button" class="ml-1 inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-5">⏲</button>
+                </div>
               </div>
-              <div id="time-result-5" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">-</div>
+              <div class="flex flex-col gap-1">
+                <span class="text-[11px] text-slate-500 dark:text-slate-400">Duration</span>
+                <div id="time-result-5" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">-</div>
+              </div>
             </div>
           </div>
 
-          <p class="mt-3 text-[11px] text-slate-500 dark:text-slate-400">Times use a 24-hour HH:MM format. Overnight cases add 24h automatically; durations that extend past a day will be shown as 25:xx to indicate rollover.</p>
+          <p class="mt-3 text-[11px] text-slate-500 dark:text-slate-400">Times use a 24-hour HH:MM format. Overnight cases add 24h automatically; durations that extend past a day will be shown as 25:xx to indicate rollover. Tap the timer icon to insert the current time.</p>
         </div>
       </section>
 
