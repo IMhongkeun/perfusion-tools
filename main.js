@@ -58,13 +58,14 @@ function parseTimeToMinutes(str) {
     const padded = numericOnly.padStart(4, '0').slice(0, 4);
     const h = Number(padded.slice(0, 2));
     const m = Number(padded.slice(2, 4));
-    if (h > 23 || m > 59) return null;
+    if (h > 47 || m > 59) return null;
     return h * 60 + m;
   }
-  const match = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(cleaned);
+  const match = /^(\d{1,2}):([0-5]\d)$/.exec(cleaned);
   if (!match) return null;
   const h = Number(match[1]);
   const m = Number(match[2]);
+  if (h > 47) return null;
   return h * 60 + m;
 }
 
@@ -74,6 +75,12 @@ function formatDuration(mins) {
   const m = mins % 60;
   const mm = m.toString().padStart(2, '0');
   return `${mins} min (${h}:${mm})`;
+}
+
+function formatMinutesToHHMM(totalMins) {
+  const h = Math.floor(totalMins / 60);
+  const m = Math.max(totalMins % 60, 0);
+  return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
 }
 
 function getCurrentTimeHHMM() {
@@ -614,7 +621,13 @@ function updateTimeRow(idx) {
     return;
   }
 
-  let diff = endMin - startMin;
+  let adjustedEnd = endMin;
+  if (endMin < startMin && endMin < 24 * 60 && startMin < 24 * 60) {
+    adjustedEnd = endMin + 24 * 60;
+    endInput.value = formatMinutesToHHMM(adjustedEnd);
+  }
+
+  let diff = adjustedEnd - startMin;
   if (diff < 0) diff += 24 * 60;
 
   resultEl.textContent = formatDuration(diff);
@@ -640,6 +653,8 @@ function wirePickerButtons() {
       const targetId = btn.getAttribute('data-picker-target');
       const input = document.getElementById(targetId);
       if (!input) return;
+      const listId = input.dataset.listId;
+      if (listId) input.setAttribute('list', listId);
       input.focus();
       try {
         input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
@@ -658,14 +673,22 @@ function autoFormatTimeInput(inputEl) {
     const padded = digits.padStart(4, '0').slice(0, 4);
     const hoursNum = Number(padded.slice(0, 2));
     const minsNum = Number(padded.slice(2, 4));
-    if (hoursNum > 23 || minsNum > 59) return;
-    const hours = clamp(hoursNum, 0, 23);
+    if (hoursNum > 47 || minsNum > 59) return;
+    const hours = clamp(hoursNum, 0, 47);
     const mins = clamp(minsNum, 0, 59);
     inputEl.value = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
   }
 }
 
 function initTimeCalculator() {
+  document.querySelectorAll('input[list="time-suggestions"]').forEach(input => {
+    input.dataset.listId = input.getAttribute('list');
+    input.removeAttribute('list');
+    input.addEventListener('blur', () => {
+      if (input.dataset.listId) input.removeAttribute('list');
+    });
+  });
+
   for (let i = 1; i <= 5; i++) {
     const s = document.getElementById(`time-start-${i}`);
     const e = document.getElementById(`time-end-${i}`);
