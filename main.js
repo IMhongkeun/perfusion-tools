@@ -546,6 +546,14 @@ function updateLBM() {
   const w = num('lbm_w_kg');
   const sex = el('lbm_sex').value;
   const formula = el('lbm_formula').value;
+  const bsaMethod = el('lbm_bsa_formula') ? el('lbm_bsa_formula').value : 'Mosteller';
+
+  const bsaLabelMap = {
+    Mosteller: 'Mosteller formula',
+    DuBois: 'DuBois formula',
+    Haycock: 'Haycock formula',
+    GehanGeorge: 'Gehan–George formula'
+  };
 
   const lbm = computeLBM({ sex, h, w, formula });
   setText(
@@ -560,22 +568,21 @@ function updateLBM() {
   setText('bmi_value', bmi ? bmi.toFixed(1) : '—');
   setText('bmi_badge', bmiCategory(bmi));
 
-  const bsaActual = computeBSA(h, w, 'Mosteller');
-  const bsaLean = lbm ? computeBSA(h, lbm, 'Mosteller') : 0;
+  const bsaActual = computeBSA(h, w, bsaMethod);
+  const bsaLean = lbm ? computeBSA(h, lbm, bsaMethod) : 0;
 
   setText('bsa_actual_value', bsaActual ? `${bsaActual.toFixed(2)} m²` : '—');
+  setText(
+    'bsa_actual_note',
+    bsaActual ? bsaLabelMap[bsaMethod] || 'Mosteller formula' : 'Enter height and weight to calculate BSA'
+  );
   setText('bsa_lean_value', bsaLean ? `${bsaLean.toFixed(2)} m²` : '—');
-  setText('bsa_lean_note', lbm ? `${formula} LBM ${lbm.toFixed(1)} kg` : 'Enter height and weight to calculate LBM');
-
-  const compareMap = {
-    bsa_compare_mosteller: computeBSA(h, w, 'Mosteller'),
-    bsa_compare_dubois: computeBSA(h, w, 'DuBois'),
-    bsa_compare_haycock: computeBSA(h, w, 'Haycock'),
-    bsa_compare_gehan: computeBSA(h, w, 'GehanGeorge')
-  };
-  Object.entries(compareMap).forEach(([id, val]) => {
-    setText(id, val ? val.toFixed(2) : '—');
-  });
+  setText(
+    'bsa_lean_note',
+    lbm
+      ? `${bsaLabelMap[bsaMethod] || 'Mosteller formula'} using ${formula} LBM ${lbm.toFixed(1)} kg`
+      : 'Enter height and weight to calculate LBM'
+  );
 
   const flowBody = el('lbm-flow-rows');
   if (flowBody) {
@@ -859,11 +866,11 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   // LBM event listeners (NEW)
-  ['lbm_h_cm', 'lbm_w_kg', 'lbm_sex', 'lbm_formula'].forEach(id => {
+  ['lbm_h_cm', 'lbm_w_kg', 'lbm_sex', 'lbm_formula', 'lbm_bsa_formula'].forEach(id => {
     const x = el(id);
     if (x) x.addEventListener('input', updateLBM);
   });
-  ['lbm_sex', 'lbm_formula'].forEach(id => {
+  ['lbm_sex', 'lbm_formula', 'lbm_bsa_formula'].forEach(id => {
     const x = el(id);
     if (x) x.addEventListener('change', updateLBM);
   });
