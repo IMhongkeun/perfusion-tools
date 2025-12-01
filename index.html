@@ -682,7 +682,7 @@
 
       <section id="view-timecalc" class="hidden animate-in fade-in duration-300">
         <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 p-6">
-          <h2 class="text-xl font-semibold tracking-tight mb-2">Pump Time / Case Time Calculator</h2>
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Time Calculator</h2>
           <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Enter 24-hour start/end times to see elapsed minutes and an H:MM readout.</p>
 
           <div class="space-y-4" id="time-rows">
@@ -695,17 +695,21 @@
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
                   <div class="flex items-center gap-1">
-                    <input id="time-start-1" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <input id="time-start-1" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                     <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-1">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-1">Now</button>
+                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
                   <div class="flex items-center gap-1">
-                    <input id="time-end-1" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <input id="time-end-1" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                     <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-1">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-1">Now</button>
+                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
@@ -724,17 +728,21 @@
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
                   <div class="flex items-center gap-1">
-                    <input id="time-start-2" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <input id="time-start-2" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                     <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-2">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-2">Now</button>
+                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
                   <div class="flex items-center gap-1">
-                    <input id="time-end-2" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <input id="time-end-2" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                     <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-2">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-2">Now</button>
+                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
@@ -753,17 +761,21 @@
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
                   <div class="flex items-center gap-1">
-                    <input id="time-start-3" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <input id="time-start-3" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                     <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-3">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-3">Now</button>
+                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
                   <div class="flex items-center gap-1">
-                    <input id="time-end-3" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <input id="time-end-3" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                     <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-3">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-3">Now</button>
+                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
@@ -782,17 +794,21 @@
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
                   <div class="flex items-center gap-1">
-                    <input id="time-start-4" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <input id="time-start-4" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                     <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-4">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-4">Now</button>
+                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
                   <div class="flex items-center gap-1">
-                    <input id="time-end-4" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <input id="time-end-4" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                     <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-4">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-4">Now</button>
+                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
@@ -811,17 +827,21 @@
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
                   <div class="flex items-center gap-1">
-                    <input id="time-start-5" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <input id="time-start-5" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                     <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-5">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-5">Now</button>
+                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-5">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
                   <div class="flex items-center gap-1">
-                    <input id="time-end-5" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <input id="time-end-5" type="text" inputmode="numeric" pattern="^(?:[0-3]?\\d|4[0-7]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                     <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-5">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-5">Now</button>
+                    <button type="button" aria-label="Insert current time" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-5">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
