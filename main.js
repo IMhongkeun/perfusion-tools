@@ -166,14 +166,35 @@ function updateBSA() {
 
 function updateDO2i() {
   updateBSA();
-  const bsa = num('bsa');
-  const flow = num('flow');
-  const hb = num('hb');
-  const sao2 = num('sao2');
-  const pao2 = parseFloat(el('pao2').value) || 0;
+  const bsaVal = el('bsa').value;
+  const hbVal = el('hb').value;
+  const sao2Val = el('sao2').value;
+  const pao2Val = el('pao2').value;
+  const flowVal = el('flow').value;
+
+  const requiredFilled = [bsaVal, hbVal, sao2Val, pao2Val]
+    .every(v => v !== '' && !Number.isNaN(parseFloat(v)));
+
+  const bsa = parseFloat(bsaVal) || 0;
+  const flow = parseFloat(flowVal) || 0;
+  const hb = parseFloat(hbVal) || 0;
+  const sao2 = parseFloat(sao2Val) || 0;
+  const pao2 = parseFloat(pao2Val) || 0;
+  const g = el('do2i-gauge');
+
+  if (!requiredFilled || !bsa) {
+    el('cao2').value = '';
+    setText('do2i', '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
+    g.style.width = '0%';
+    g.className = 'h-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(255,255,255,0.3)] from-accent-600 to-accent-400';
+    setText('do2i-msg', 'Enter required fields (BSA, Hb, SaO₂, PaO₂)');
+    el('do2i-msg').className = 'text-sm font-bold text-amber-400';
+    return;
+  }
+
   const cao2 = calcCaO2(hb, sao2, pao2);
   el('cao2').value = cao2 ? cao2.toFixed(2) : '';
-  const do2i = calcDO2i(flow, bsa, cao2);
+  const do2i = flow ? calcDO2i(flow, bsa, cao2) : 0;
   setText('do2i', do2i ? `${Math.round(do2i)} <span class="text-lg font-normal text-slate-400">mL/min/m²</span>` : '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
   const t = THRESHOLDS[do2iMode];
   let gaugePct = 0, msg = 'Waiting...', gaugeColor = 'from-accent-600 to-accent-400';
@@ -197,16 +218,22 @@ function updateDO2i() {
     }
   }
 
-  const g = el('do2i-gauge');
+  if (!flow) {
+    msg = 'Enter pump flow to assess adequacy';
+  }
+
   g.style.width = `${gaugePct}%`;
   g.className = `h-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(255,255,255,0.3)] ${gaugeColor}`;
   setText('do2i-msg', msg);
 
   const msgEl = el('do2i-msg');
-  if (do2i < t.low) msgEl.className = 'text-sm font-bold text-red-400';
-  else if (do2i < t.borderline) msgEl.className = 'text-sm font-bold text-amber-400';
-  else if (do2i <= t.upper) msgEl.className = 'text-sm font-bold text-emerald-400';
-  else msgEl.className = 'text-sm font-bold text-sky-400';
+  let msgClass = 'text-sm font-bold text-accent-400';
+  if (!flow) msgClass = 'text-sm font-bold text-amber-400';
+  else if (do2i < t.low) msgClass = 'text-sm font-bold text-red-400';
+  else if (do2i < t.borderline) msgClass = 'text-sm font-bold text-amber-400';
+  else if (do2i <= t.upper) msgClass = 'text-sm font-bold text-emerald-400';
+  else msgClass = 'text-sm font-bold text-sky-400';
+  msgEl.className = msgClass;
 }
 
 function resetDO2i() {
