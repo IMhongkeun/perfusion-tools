@@ -804,16 +804,54 @@
           <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
             <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
           </summary>
-          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm">
-            <p class="font-semibold mb-2">Hume Formula (1966):</p>
-            <p class="mb-1">• Male: 0.32810 × W + 0.33929 × H − 29.5336</p>
-            <p class="mb-3">• Female: 0.29569 × W + 0.41813 × H − 43.2933</p>
+          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+            <div>
+              <p class="font-semibold mb-1">1. Definition of Lean Body Mass (LBM)</p>
+              <p>Lean body mass represents total body weight minus adipose tissue mass (fat-free mass). In perfusion and anesthesia it is often used as a surrogate for metabolically active tissue, which better reflects drug distribution and oxygen demand than total body weight in obese patients.</p>
+            </div>
 
-            <p class="font-semibold mb-2">Boer Formula (1984):</p>
-            <p class="mb-1">• Male: 0.407 × W + 0.267 × H − 19.2</p>
-            <p class="mb-3">• Female: 0.252 × W + 0.473 × H − 48.3</p>
+            <div class="space-y-1">
+              <p class="font-semibold mb-1">2. LBM formulas used in this calculator</p>
+              <p>Two adult LBM equations are provided. Height is in centimeters and weight in kilograms.</p>
+              <p class="font-semibold">Boer (1984) – commonly recommended for adults, including obesity</p>
+              <p>Male: LBM (kg) = 0.407 × Weight + 0.267 × Height − 19.2</p>
+              <p class="mb-2">Female: LBM (kg) = 0.252 × Weight + 0.473 × Height − 48.3</p>
+              <p class="font-semibold">Hume (1966) – earlier reference formula</p>
+              <p>Male: LBM (kg) = 0.32810 × Weight + 0.33929 × Height − 29.5336</p>
+              <p>Female: LBM (kg) = 0.29569 × Weight + 0.41813 × Height − 43.2933</p>
+              <p class="text-slate-500 dark:text-slate-500">The calculator allows switching between Boer and Hume so clinicians can compare results when evaluating very obese or very underweight patients.</p>
+            </div>
 
-            <p class="text-slate-400 mt-2">W = weight (kg), H = height (cm)</p>
+            <div class="space-y-1">
+              <p class="font-semibold mb-1">3. BMI and BSA (actual)</p>
+              <p><strong>BMI (kg/m²)</strong> = Weight (kg) ÷ [Height (m)]². BMI is shown for context only (e.g., normal range 18.5–24.9, obesity ≥30).</p>
+              <p><strong>Actual Body Surface Area – BSA (Mosteller)</strong></p>
+              <p>BSA_actual (m²) = √{ [Height (cm) × Weight (kg)] ÷ 3600 }.</p>
+              <p>Mosteller is widely used in clinical practice because it is simple and performs well across a broad range of body sizes.</p>
+            </div>
+
+            <div class="space-y-1">
+              <p class="font-semibold mb-1">4. Lean BSA based on LBM</p>
+              <p>To approximate the body surface area of lean mass only, the calculator first computes LBM (Boer or Hume) and then applies the same Mosteller structure using lean weight:</p>
+              <p>BSA_lean (m²) = √{ [Height (cm) × LBM (kg)] ÷ 3600 }.</p>
+              <p>This “lean BSA” is not a directly measured parameter, but a derived index that helps visualize how much of the patient’s large BSA is due to fat mass versus lean tissue.</p>
+            </div>
+
+            <div class="space-y-1">
+              <p class="font-semibold mb-1">5. Flow comparison table (CI 1.0–3.0)</p>
+              <p>The flow table shows how perfusion flow requirements change when indexed to actual BSA and lean BSA.</p>
+              <p>Flow_actual (L/min) = CI × BSA_actual</p>
+              <p>Flow_lean (L/min) = CI × BSA_lean</p>
+              <p>This allows quick comparison such as “At CI 2.4 L/min/m², how much flow do I deliver if I index to full BSA?” and “If I index to lean BSA instead, how much lower would the flow be for the same CI?”</p>
+              <p>In markedly obese patients, BSA_actual may suggest very high flows that exceed what is needed for metabolically active tissue, while BSA_lean can illustrate a more physiologic lower bound. Final flow selection must still consider SvO₂, lactate, arterial pressure, and institutional protocols.</p>
+            </div>
+
+            <div class="space-y-1">
+              <p class="font-semibold mb-1">6. Intended use and limitations</p>
+              <p>These formulas are validated for adults; they are not intended for pediatric patients. LBM and lean BSA are estimates, not direct measurements. Fluid shifts, edema, sarcopenia and extreme body habitus can all reduce accuracy.</p>
+              <p>The flow comparison table is a decision-support aid, not a prescription. Perfusion strategy should always be guided by real-time clinical monitoring and local guidelines.</p>
+              <p class="text-slate-500 dark:text-slate-500">For educational use only. Not medical advice or a regulated medical device.</p>
+            </div>
           </div>
         </details>
       </section>
