@@ -54,17 +54,17 @@ function parseTimeToMinutes(str) {
   if (!str) return null;
   const cleaned = str.trim();
   const numericOnly = cleaned.replace(/\D/g, '');
-  if (/^\d{3,4}$/.test(numericOnly)) {
-    const padded = numericOnly.padStart(4, '0').slice(0, 4);
-    const h = Number(padded.slice(0, 2));
-    const m = Number(padded.slice(2, 4));
+  if (numericOnly.length === 4) {
+    const h = Number(numericOnly.slice(0, 2));
+    const m = Number(numericOnly.slice(2, 4));
     if (h > 23 || m > 59) return null;
     return h * 60 + m;
   }
-  const match = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(cleaned);
+  const match = /^(\d{1,2}):([0-5]\d)$/.exec(cleaned);
   if (!match) return null;
   const h = Number(match[1]);
   const m = Number(match[2]);
+  if (h > 23) return null;
   return h * 60 + m;
 }
 
@@ -74,13 +74,6 @@ function formatDuration(mins) {
   const m = mins % 60;
   const mm = m.toString().padStart(2, '0');
   return `${mins} min (${h}:${mm})`;
-}
-
-function getCurrentTimeHHMM() {
-  const now = new Date();
-  const h = now.getHours().toString().padStart(2, '0');
-  const m = now.getMinutes().toString().padStart(2, '0');
-  return `${h}:${m}`;
 }
 
 const BSA = {
@@ -600,6 +593,11 @@ function updateLBM() {
   }
 }
 
+function setTimeError(inputEl, hasError) {
+  if (!inputEl) return;
+  ['ring-1', 'ring-rose-400', 'border-rose-400'].forEach(cls => inputEl.classList.toggle(cls, hasError));
+}
+
 function updateTimeRow(idx) {
   const startInput = document.getElementById(`time-start-${idx}`);
   const endInput = document.getElementById(`time-end-${idx}`);
@@ -608,6 +606,17 @@ function updateTimeRow(idx) {
 
   const startMin = parseTimeToMinutes(startInput.value);
   const endMin = parseTimeToMinutes(endInput.value);
+
+  const startRaw = startInput.value.trim();
+  const endRaw = endInput.value.trim();
+  const startDigits = startRaw.replace(/\D/g, '');
+  const endDigits = endRaw.replace(/\D/g, '');
+
+  const startReady = startDigits.length >= 4 || /^\d{1,2}:[0-5]\d$/.test(startRaw);
+  const endReady = endDigits.length >= 4 || /^\d{1,2}:[0-5]\d$/.test(endRaw);
+
+  setTimeError(startInput, startReady && startMin == null);
+  setTimeError(endInput, endReady && endMin == null);
 
   if (startMin == null || endMin == null) {
     resultEl.textContent = '-';
@@ -620,60 +629,42 @@ function updateTimeRow(idx) {
   resultEl.textContent = formatDuration(diff);
 }
 
-function wireNowButtons() {
-  document.querySelectorAll('[data-now-target]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetId = btn.getAttribute('data-now-target');
-      const input = document.getElementById(targetId);
-      if (!input) return;
-      input.value = getCurrentTimeHHMM();
-      autoFormatTimeInput(input);
-      const idx = targetId.split('-').pop();
-      updateTimeRow(idx);
-    });
-  });
-}
-
-function wirePickerButtons() {
-  document.querySelectorAll('[data-picker-target]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetId = btn.getAttribute('data-picker-target');
-      const input = document.getElementById(targetId);
-      if (!input) return;
-      input.focus();
-      try {
-        input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
-      } catch (err) {
-        // no-op: some browsers may not allow programmatic key events; focus is sufficient
-      }
-    });
-  });
-}
-
 function autoFormatTimeInput(inputEl) {
   if (!inputEl) return;
   const raw = inputEl.value || '';
   const digits = raw.replace(/\D/g, '');
-  if (digits.length >= 3) {
-    const padded = digits.padStart(4, '0').slice(0, 4);
-    const hoursNum = Number(padded.slice(0, 2));
-    const minsNum = Number(padded.slice(2, 4));
-    if (hoursNum > 23 || minsNum > 59) return;
-    const hours = clamp(hoursNum, 0, 23);
-    const mins = clamp(minsNum, 0, 59);
-    inputEl.value = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+
+  if (digits.length === 4) {
+    const hoursNum = Number(digits.slice(0, 2));
+    const minsNum = Number(digits.slice(2, 4));
+
+    if (hoursNum > 23 || minsNum > 59) {
+      inputEl.value = '';
+      setTimeError(inputEl, true);
+      return;
+    }
+
+    inputEl.value = `${hoursNum.toString().padStart(2, '0')}:${minsNum.toString().padStart(2, '0')}`;
+    setTimeError(inputEl, false);
+    return;
   }
+
+  if (!raw.length) setTimeError(inputEl, false);
 }
 
 function initTimeCalculator() {
   for (let i = 1; i <= 5; i++) {
     const s = document.getElementById(`time-start-${i}`);
     const e = document.getElementById(`time-end-${i}`);
-    if (s) s.addEventListener('input', () => { autoFormatTimeInput(s); updateTimeRow(i); });
-    if (e) e.addEventListener('input', () => { autoFormatTimeInput(e); updateTimeRow(i); });
+    if (s) {
+      s.addEventListener('input', () => { autoFormatTimeInput(s); updateTimeRow(i); });
+      s.addEventListener('blur', () => updateTimeRow(i));
+    }
+    if (e) {
+      e.addEventListener('input', () => { autoFormatTimeInput(e); updateTimeRow(i); });
+      e.addEventListener('blur', () => updateTimeRow(i));
+    }
   }
-  wireNowButtons();
-  wirePickerButtons();
 }
 
 // -----------------------------

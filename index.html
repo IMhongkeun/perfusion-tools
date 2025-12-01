@@ -682,7 +682,7 @@
 
       <section id="view-timecalc" class="hidden animate-in fade-in duration-300">
         <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 p-6">
-          <h2 class="text-xl font-semibold tracking-tight mb-2">Pump Time / Case Time Calculator</h2>
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Time Calculator</h2>
           <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Enter 24-hour start/end times to see elapsed minutes and an H:MM readout.</p>
 
           <div class="space-y-4" id="time-rows">
@@ -694,19 +694,11 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-start-1" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-1">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-1">Now</button>
-                  </div>
+                  <input id="time-start-1" type="text" inputmode="numeric" pattern="^(?:[01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-end-1" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-1">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-1">Now</button>
-                  </div>
+                  <input id="time-end-1" type="text" inputmode="numeric" pattern="^(?:[01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Duration</span>
@@ -723,19 +715,11 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-start-2" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-2">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-2">Now</button>
-                  </div>
+                  <input id="time-start-2" type="text" inputmode="numeric" pattern="^(?:[01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-end-2" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-2">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-2">Now</button>
-                  </div>
+                  <input id="time-end-2" type="text" inputmode="numeric" pattern="^(?:[01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Duration</span>
@@ -752,19 +736,11 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-start-3" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-3">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-3">Now</button>
-                  </div>
+                  <input id="time-start-3" type="text" inputmode="numeric" pattern="^(?:[01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-end-3" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-3">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-3">Now</button>
-                  </div>
+                  <input id="time-end-3" type="text" inputmode="numeric" pattern="^(?:[01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Duration</span>
@@ -781,19 +757,11 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-start-4" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-4">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-4">Now</button>
-                  </div>
+                  <input id="time-start-4" type="text" inputmode="numeric" pattern="^(?:[01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-end-4" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-4">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-4">Now</button>
-                  </div>
+                  <input id="time-end-4" type="text" inputmode="numeric" pattern="^(?:[01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Duration</span>
@@ -810,19 +778,11 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-start-5" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-5">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-5">Now</button>
-                  </div>
+                  <input id="time-start-5" type="text" inputmode="numeric" pattern="^(?:[01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-end-5" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-5">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-5">Now</button>
-                  </div>
+                  <input id="time-end-5" type="text" inputmode="numeric" pattern="^(?:[01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Duration</span>
@@ -833,37 +793,9 @@
           </div>
 
           <div class="mt-3 text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
-            <p>Use a 24-hour HH:MM format.</p>
-            <p>Overnight cases add 24h automatically; durations beyond a day will display as 25:xx to show rollover.</p>
-            <p>The dropdown arrow opens the picker, and the timer button inserts the current time.</p>
+            <p>Enter a 24-hour HHMM value; it formats to HH:MM after four digits.</p>
+            <p>Only 00:00–23:59 are accepted. If the end time is earlier than the start, the duration assumes it crosses midnight.</p>
           </div>
-
-          <datalist id="time-suggestions">
-            <option value="00:00"></option>
-            <option value="01:00"></option>
-            <option value="02:00"></option>
-            <option value="03:00"></option>
-            <option value="04:00"></option>
-            <option value="05:00"></option>
-            <option value="06:00"></option>
-            <option value="07:00"></option>
-            <option value="08:00"></option>
-            <option value="09:00"></option>
-            <option value="10:00"></option>
-            <option value="11:00"></option>
-            <option value="12:00"></option>
-            <option value="13:00"></option>
-            <option value="14:00"></option>
-            <option value="15:00"></option>
-            <option value="16:00"></option>
-            <option value="17:00"></option>
-            <option value="18:00"></option>
-            <option value="19:00"></option>
-            <option value="20:00"></option>
-            <option value="21:00"></option>
-            <option value="22:00"></option>
-            <option value="23:00"></option>
-          </datalist>
         </div>
       </section>
 
