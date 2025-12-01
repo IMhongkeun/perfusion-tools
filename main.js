@@ -137,7 +137,7 @@ const TEMP_PROFILES = [
     vo2Factor: 1.0,
     do2Min: 280,
     do2Max: 300,
-    note: '전체 대사량 유지 필요, 성인 기준 baseline 타깃.'
+    note: 'Maintain full metabolic demand; adult baseline target.'
   },
   {
     min: 32,
@@ -148,7 +148,7 @@ const TEMP_PROFILES = [
     vo2Factor: 0.72,
     do2Min: 240,
     do2Max: 260,
-    note: '대사량이 줄었지만, 신장/장기 보호를 위해 DO₂i 240–260 유지.'
+    note: 'Lower metabolism, but keep DO₂i 240–260 for renal/organ protection.'
   },
   {
     min: 28,
@@ -159,7 +159,7 @@ const TEMP_PROFILES = [
     vo2Factor: 0.57,
     do2Min: 220,
     do2Max: 240,
-    note: '대사량 약 50% 감소 시점. DO₂i는 완충 곡선(dampened curve) 적용, 절대 200 mL/min/m² 아래로 내리지 않음.'
+    note: 'Around 50% metabolic reduction; apply a dampened curve and never drop DO₂i below 200 mL/min/m².'
   },
   {
     min: 20,
@@ -170,7 +170,7 @@ const TEMP_PROFILES = [
     vo2Factor: 0.45,
     do2Min: 200,
     do2Max: 220,
-    note: '최소 유량 유지 구간. 이론상 DO₂ 필요량은 더 낮지만, 장기 허혈을 막기 위해 DO₂i 200 이상 유지하는 hard floor.'
+    note: 'Maintain minimum flow; keep DO₂i ≥200 mL/min/m² as a hard floor to protect organs.'
   }
 ];
 
@@ -328,14 +328,13 @@ function updateGDP() {
     const tempTag = el('temp-note');
     const tempComment = el('temp-comment');
     if (tempTag) {
-      tempTag.textContent = (tempC || tempC === 0)
-        ? `Current temperature: ${tempC.toFixed(1)}°C`
-        : 'Temperature optional; interpret DO₂i with the overall clinical picture.';
+      tempTag.textContent = '';
+      tempTag.classList.add('hidden');
     }
     if (tempComment) {
       tempComment.innerHTML = (tempC || tempC === 0)
-        ? '<div class="font-semibold mb-1">Temperature note</div><p>Provide remaining required fields to evaluate temperature-adjusted GDP.</p>'
-        : '<div class="font-semibold mb-1">Temperature note</div><p>Fill required inputs to view GDP guidance. Temperature not provided; defaults to normothermic targets.</p>';
+        ? '<div class="font-semibold mb-1">Temperature note</div><p>Provide the remaining required fields to view temperature-adjusted GDP guidance.</p>'
+        : '<div class="font-semibold mb-1">Temperature note</div><p>No temperature provided. Using standard normothermic targets until temperature is entered.</p>';
     }
     setText('required-flow', '—');
     setText('current-do2i', '—');
@@ -402,11 +401,11 @@ function updateGDP() {
 
   if (profile && currentCI) {
     if (currentCI < profile.ciMin) {
-      ciComment = `현재 CI ${currentCI.toFixed(2)} L/min/m²: ${profile.label} 권장 범위(${profile.ciMin.toFixed(1)}–${profile.ciMax.toFixed(1)})보다 낮음.`;
+      ciComment = `Current CI ${currentCI.toFixed(2)} L/min/m² is below the ${profile.label} range (${profile.ciMin.toFixed(1)}–${profile.ciMax.toFixed(1)}).`;
     } else if (currentCI > profile.ciMax) {
-      ciComment = `현재 CI ${currentCI.toFixed(2)} L/min/m²: ${profile.label} 권장 범위보다 높음.`;
+      ciComment = `Current CI ${currentCI.toFixed(2)} L/min/m² is above the ${profile.label} range.`;
     } else {
-      ciComment = `현재 CI ${currentCI.toFixed(2)} L/min/m²: ${profile.label} 권장 범위 내.`;
+      ciComment = `Current CI ${currentCI.toFixed(2)} L/min/m² is within the ${profile.label} range.`;
     }
   }
 
@@ -428,25 +427,26 @@ function updateGDP() {
   const tempTag = el('temp-note');
   const tempComment = el('temp-comment');
   if (tempTag) {
-    tempTag.textContent = profile
-      ? `Current temperature: ${tempC.toFixed(1)}°C • ${profile.label}`
-      : 'Temperature optional; interpret DO₂i with the overall clinical picture.';
+    tempTag.textContent = '';
+    tempTag.classList.add('hidden');
   }
 
   if (tempComment) {
     if (!profile) {
       tempComment.innerHTML = `<div class="font-semibold mb-1">Temperature note</div>
-        <p>체온이 입력되지 않았습니다. 현재 DO₂i 평가는 37°C 기준 일반 타깃(예: 280 mL/min/m²)을 기준으로 합니다. 저체온에서 유량을 줄이려면 반드시 체온과 SvO₂, lactate를 함께 확인하세요.</p>`;
+        <p>No temperature provided. Using normothermic targets (e.g., 280–300 mL/min/m²) until temperature is entered.</p>
+        <p>When hypothermic, adjust flow with SvO₂, lactate, and perfusion markers in mind.</p>`;
     } else {
       const vo2Pct = Math.round((profile.vo2Factor || 0) * 100);
       const currentDoText = currentDO2i ? `${Math.round(currentDO2i)} mL/min/m²` : '—';
+      const ciLine = currentCI
+        ? `Current CI ${currentCI.toFixed(2)} L/min/m² vs. recommended ${profile.ciMin.toFixed(1)}–${profile.ciMax.toFixed(1)}.`
+        : `Recommended CI: ${profile.ciMin.toFixed(1)}–${profile.ciMax.toFixed(1)} L/min/m².`;
       tempComment.innerHTML = `<div class="font-semibold mb-1">Temperature-adjusted GDP comment</div>
-        <p>현재 체온: ${tempC.toFixed(1)}°C (${profile.label})</p>
-        <p>예상 대사량(VO₂): 정상의 약 ${vo2Pct}% 수준.</p>
-        <p>권장 CI 범위: ${profile.ciMin.toFixed(1)}–${profile.ciMax.toFixed(1)} L/min/m²${currentCI ? `, 현재 CI: ${currentCI.toFixed(2)} L/min/m² (${ciComment || '평가 중'})` : ''}.</p>
-        <p>권장 DO₂i 범위: ${tempAdjustedMin.toFixed(0)}–${tempAdjustedMax.toFixed(0)} mL/min/m², 현재 DO₂i: ${currentDoText} (온도 보정 기준 평가).</p>
-        <p>이론상 소모량은 더 낮을 수 있지만, 신장/장기 보호를 위해 DO₂i 200 mL/min/m² 아래로는 내리지 않는 hard floor를 적용합니다.</p>
-        <p>최종 결정은 항상 SvO₂, lactate, urine output 등 실제 조직 관류 지표와 병행해 판단하십시오.</p>`;
+        <p>${profile.label}; current ${tempC.toFixed(1)}°C. Estimated VO₂ ~${vo2Pct}% of normal.</p>
+        <p>${ciLine}</p>
+        <p>Recommended DO₂i: ${tempAdjustedMin.toFixed(0)}–${tempAdjustedMax.toFixed(0)} mL/min/m²; current: ${currentDoText}.</p>
+        <p>Hard DO₂i floor: 200 mL/min/m². Confirm adequacy with SvO₂, lactate, urine output, and organ perfusion.</p>`;
     }
   }
 }
