@@ -289,7 +289,7 @@ function updateGDP() {
   const upperTarget = targetDO2i * 1.1;
 
   if (currentDO2i > 0) {
-    const pct = clamp((currentDO2i / (targetDO2i * 1.5)) * 100, 0, 100);
+    const pct = clamp((currentDO2i / (targetDO2i * 1.2)) * 100, 0, 100);
     gaugeWidth = `${pct}%`;
 
     if (currentDO2i < lowerTarget) {
