@@ -48,6 +48,12 @@ const BSA = {
   Haycock(h, w) {
     return 0.024265 * Math.pow(h, 0.3964) * Math.pow(w, 0.5378);
   },
+  // Boyd formula uses weight in grams with an exponent adjustment for high BMI accuracy
+  Boyd(h, w) {
+    const wGrams = (w || 0) * 1000;
+    const exponent = 0.7285 - (0.0188 * Math.log10(Math.max(wGrams, 1)));
+    return 0.0003207 * Math.pow(h, 0.3) * Math.pow(wGrams, exponent);
+  },
   GehanGeorge(h, w) {
     return 0.0235 * Math.pow(h, 0.42246) * Math.pow(w, 0.51456);
   },
@@ -55,7 +61,45 @@ const BSA = {
 
 function computeBSA(h, w, method) {
   if (!h || !w || h <= 0 || w <= 0) return 0;
-  return BSA[method || 'Mosteller'](h, w);
+  const fn = BSA[method] || BSA.Mosteller;
+  return fn(h, w);
+}
+
+function updateBsaFlowList(bsaVal) {
+  const list = el('bsa-flow-list');
+  if (!list) return;
+
+  list.innerHTML = '';
+  if (!bsaVal) {
+    list.innerHTML = '<p class="text-xs text-slate-500 dark:text-slate-400">Enter height and weight to populate BFR values.</p>';
+    return;
+  }
+
+  for (let ci = 1.0; ci <= 3.0001; ci += 0.1) {
+    const flow = ci * bsaVal;
+    const row = document.createElement('div');
+    row.className = 'flex items-center justify-between py-1 text-sm border-b border-slate-100 dark:border-primary-800 last:border-0';
+    row.innerHTML = `<span class="font-mono text-xs text-slate-500 dark:text-slate-400">CI ${ci.toFixed(1)}</span><span class="font-semibold text-primary-900 dark:text-white">${flow.toFixed(2)} L/min</span>`;
+    list.appendChild(row);
+  }
+}
+
+function updateStandaloneBsa() {
+  const h = num('bsa_height');
+  const w = num('bsa_weight');
+  const method = el('bsa-method-standalone') ? el('bsa-method-standalone').value : 'Mosteller';
+
+  const v = computeBSA(h, w, method);
+  const resultEl = el('bsa-result');
+  if (resultEl) {
+    resultEl.textContent = v ? v.toFixed(2) : '0.00';
+  }
+  const resultDisplay = el('bsa-result-display');
+  if (resultDisplay) {
+    resultDisplay.textContent = v ? `${v.toFixed(2)} m²` : '—';
+  }
+
+  updateBsaFlowList(v);
 }
 
 function calcCaO2(hb, sao2pct, pao2) {
@@ -303,8 +347,8 @@ function updateLBM() {
 function route() {
   const hash = location.hash || '#/do2i';
 
-  // Updated sections list to include LBM
-  const sections = ['view-do2i', 'view-hct', 'view-lbm', 'faq', 'view-privacy', 'view-terms', 'view-contact'];
+  // Updated sections list to include LBM and standalone BSA
+  const sections = ['view-do2i', 'view-hct', 'view-lbm', 'view-bsa', 'faq', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
     el(sid).classList.add('hidden');
   });
@@ -312,6 +356,7 @@ function route() {
   // Route to appropriate section
   if (hash.includes('do2i')) el('view-do2i').classList.remove('hidden');
   else if (hash.includes('predicted-hct')) el('view-hct').classList.remove('hidden');
+  else if (hash.includes('bsa')) el('view-bsa').classList.remove('hidden');
   else if (hash.includes('lbm')) el('view-lbm').classList.remove('hidden');
   else if (hash.includes('faq')) el('faq').classList.remove('hidden');
   else if (hash.includes('privacy')) el('view-privacy').classList.remove('hidden');
@@ -323,6 +368,7 @@ function route() {
   const navMap = {
     'do2i': ['nav-do2i', 'side-do2i', 'mob-do2i'],
     'predicted-hct': ['nav-hct', 'side-hct', 'mob-hct'],
+    'bsa': ['nav-bsa', 'side-bsa', 'mob-bsa'],
     'lbm': ['nav-lbm', 'side-lbm', 'mob-lbm'],
     'faq': ['nav-faq', 'side-faq', 'mob-faq']
   };
@@ -339,6 +385,7 @@ function route() {
   let key = null;
   if (hash.includes('do2i')) key = 'do2i';
   else if (hash.includes('predicted-hct')) key = 'predicted-hct';
+  else if (hash.includes('bsa')) key = 'bsa';
   else if (hash.includes('lbm')) key = 'lbm';
   else if (hash.includes('faq')) key = 'faq';
 
@@ -406,6 +453,16 @@ window.addEventListener('DOMContentLoaded', () => {
     lastChangedId = null;
     resetDO2i();
   });
+
+  // Standalone BSA event listeners
+  ['bsa_height', 'bsa_weight'].forEach(id => {
+    const x = el(id);
+    if (x) x.addEventListener('input', updateStandaloneBsa);
+  });
+  const bsaMethodStandalone = el('bsa-method-standalone');
+  if (bsaMethodStandalone) bsaMethodStandalone.addEventListener('change', updateStandaloneBsa);
+
+  updateStandaloneBsa();
 
   // Predicted Hct event listeners
   ['wt_hct', 'pre_hct', 'prime', 'fluids', 'removed', 'rbc_units', 'rbc_unit_vol', 'rbc_hct', 'ebv_coef'].forEach(id => {
