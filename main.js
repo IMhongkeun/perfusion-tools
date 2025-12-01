@@ -87,7 +87,8 @@ function updateBsaFlowList(bsaVal) {
     return;
   }
 
-  for (let ci = 1.0; ci <= 3.0001; ci += 0.1) {
+  for (let ciTenths = 10; ciTenths <= 30; ciTenths += 2) {
+    const ci = ciTenths / 10;
     const flow = ci * bsaVal;
     const row = document.createElement('div');
     row.className = 'grid grid-cols-[1fr_auto] items-center py-1.5 text-sm border-b border-slate-100 dark:border-primary-800 last:border-0 gap-3';
