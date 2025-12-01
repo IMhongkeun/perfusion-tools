@@ -614,19 +614,79 @@
             </div>
           </div>
 
-           <div class="bg-slate-50 dark:bg-primary-800/30 border-t border-slate-100 dark:border-primary-700/50 p-4">
-            <h4 class="text-xs font-bold text-primary-900 dark:text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-2">
+            <div class="bg-slate-50 dark:bg-primary-800/30 border-t border-slate-100 dark:border-primary-700/50 p-4">
+             <h4 class="text-xs font-bold text-primary-900 dark:text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-2">
               <svg class="w-4 h-4 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
               Clinical Context
-            </h4>
-            <div class="text-xs text-slate-600 dark:text-slate-400 space-y-1">
+             </h4>
+             <div class="text-xs text-slate-600 dark:text-slate-400 space-y-1">
               <p>• <strong>Target Hct:</strong> Often 21–25% on bypass. Lower Hct reduces viscosity but also oxygen carrying capacity.</p>
               <p>• <strong>Adjustments:</strong> Reducing prime volume (RAP/VAP) or adding RBCs increases Hct. Adding crystalloid decreases Hct.</p>
               <p>• <strong>Hemoconcentration:</strong> Use Ultrafiltration (UF) to remove plasma water and increase Hct.</p>
+             </div>
+             <p class="mt-3 text-[10px] text-slate-400 italic">For educational use only.</p>
             </div>
-            <p class="mt-3 text-[10px] text-slate-400 italic">For educational use only.</p>
           </div>
-        </div>
+        
+        <details class="mt-4 group">
+          <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+            <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
+          </summary>
+          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+            <ol class="list-decimal pl-4 space-y-3">
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Estimated blood volume (EBV)</p>
+                <p>This calculator uses a simple weight-based model for circulating blood volume: EBV (mL) = Weight (kg) × EBV coefficient (mL/kg). Typical default coefficients are:</p>
+                <ul class="list-disc pl-4 space-y-1 mt-1">
+                  <li>Adult male: 70 mL/kg</li>
+                  <li>Adult female: 65 mL/kg</li>
+                  <li>Child: 75 mL/kg</li>
+                  <li>Infant: 80 mL/kg</li>
+                  <li>Neonate: 90 mL/kg</li>
+                </ul>
+                <p class="mt-1">These values are derived from population averages and may be adjusted in this tool when clinical judgment suggests a higher or lower blood volume (e.g. severe obesity, cachexia, fluid overload or dehydration).</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Pre-CPB red cell volume</p>
+                <p>Pre-bypass red cell volume is estimated from the patient’s hematocrit (Hct) and EBV: RBC_patient (mL) = EBV × (Pre-CPB Hct ÷ 100). This assumes the pre-CPB Hct is measured after induction and line placement, and that blood is evenly distributed in the circulation.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Circuit prime and crystalloid / ultrafiltration</p>
+                <p>The total intravascular volume at the time of sampling is modeled as:</p>
+                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">V_total (mL) = EBV + Prime volume + Additional crystalloid / colloid + RBC product volume − Ultrafiltration removed.</p>
+                <p>“Prime volume” includes the cardiopulmonary bypass circuit prime and any pre-bypass volume added directly to the patient through the circuit. “Additional crystalloid” represents fluids such as cardioplegia carrier solution, albumin, mannitol, or other volume expanders that effectively dilute the circulating red cell mass. “Ultrafiltration removed” accounts for hemoconcentration techniques (UF, MUF, Z-BUF) that remove plasma water and reduce total volume.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Packed red blood cell (RBC) products</p>
+                <p>Red cell volume contributed by transfused RBCs is modeled as:</p>
+                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">RBC_products (mL) = (Number of units × Volume per unit) × (Unit Hct ÷ 100).</p>
+                <p>Default values often assume ~300 mL/unit with a unit Hct around 60%, but these may be adjusted to reflect local blood bank characteristics or specific product labels.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Predicted hematocrit on CPB</p>
+                <p>The predicted hematocrit after mixing patient blood, prime, additional fluids and RBC products is:</p>
+                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">Predicted Hct (%) = (RBC_patient + RBC_products) ÷ V_total × 100.</p>
+                <p>This represents a simple mixing model at the time of interest (e.g. shortly after going on CPB or after a planned RBC addition). It assumes complete and rapid mixing in the circuit and does not automatically account for ongoing bleeding, cell saver reinfusion, or major changes in plasma volume after the calculation.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Clinical interpretation and typical targets</p>
+                <p>Many adult programs aim for an on-pump Hct around 21–30%, balancing lower viscosity and improved microcirculatory flow against adequate oxygen carrying capacity. Pediatric and neonatal patients often require higher Hct targets because of limited physiologic reserve and higher relative metabolic demand. Hct targets should be individualized according to patient age, comorbidities (e.g. cerebrovascular disease, coronary disease, pulmonary hypertension), procedural complexity, and institutional policy.</p>
+                <p>This calculator is intended to support planning of prime composition, ultrafiltration strategy and transfusion timing. Final decisions must be based on real-time laboratory measurements, hemodynamics, organ perfusion markers and local protocols.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Limitations</p>
+                <p>This is an approximate model for educational and decision-support use only. It does not replace actual Hct measurement from arterial or venous blood samples, nor does it account for:</p>
+                <ul class="list-disc pl-4 space-y-1 mt-1">
+                  <li>Acute intra-operative blood loss not yet replaced,</li>
+                  <li>Large volume cardiotomy suction return or cell-saver reinfusion,</li>
+                  <li>Rapid shifts between intravascular and extravascular compartments,</li>
+                  <li>Changes in temperature-dependent plasma volume or hemoconcentration beyond the entered UF value.</li>
+                </ul>
+                <p class="mt-1">Always verify predicted values with real laboratory data and use clinical judgment when adjusting CPB flow, prime strategy or transfusion.</p>
+              </li>
+            </ol>
+          </div>
+        </details>
       </section>
 
       <section id="view-lbm" class="hidden animate-in fade-in duration-300">
