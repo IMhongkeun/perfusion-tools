@@ -52,9 +52,10 @@ function clamp(n, min, max) {
 
 function parseTimeToMinutes(str) {
   if (!str) return null;
-  const [h, m] = str.split(':').map(Number);
-  if (Number.isNaN(h) || Number.isNaN(m)) return null;
-  if (m < 0 || m > 59) return null;
+  const match = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(str.trim());
+  if (!match) return null;
+  const h = Number(match[1]);
+  const m = Number(match[2]);
   return h * 60 + m;
 }
 
