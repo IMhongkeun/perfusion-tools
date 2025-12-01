@@ -518,24 +518,24 @@ function updateLBM() {
 // Router & Navigation Styling
 // -----------------------------
 function route() {
-  const hash = location.hash || '#/do2i';
+  const hash = location.hash || '#/bsa';
 
   // Updated sections list to include LBM and standalone BSA
-  const sections = ['view-do2i', 'view-hct', 'view-lbm', 'view-bsa', 'faq', 'view-privacy', 'view-terms', 'view-contact'];
+  const sections = ['view-bsa', 'view-do2i', 'view-hct', 'view-lbm', 'faq', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
     el(sid).classList.add('hidden');
   });
 
   // Route to appropriate section
-  if (hash.includes('do2i')) el('view-do2i').classList.remove('hidden');
+  if (hash.includes('bsa')) el('view-bsa').classList.remove('hidden');
+  else if (hash.includes('do2i')) el('view-do2i').classList.remove('hidden');
   else if (hash.includes('predicted-hct')) el('view-hct').classList.remove('hidden');
-  else if (hash.includes('bsa')) el('view-bsa').classList.remove('hidden');
   else if (hash.includes('lbm')) el('view-lbm').classList.remove('hidden');
   else if (hash.includes('faq')) el('faq').classList.remove('hidden');
   else if (hash.includes('privacy')) el('view-privacy').classList.remove('hidden');
   else if (hash.includes('terms')) el('view-terms').classList.remove('hidden');
   else if (hash.includes('contact')) el('view-contact').classList.remove('hidden');
-  else el('view-do2i').classList.remove('hidden');
+  else el('view-bsa').classList.remove('hidden');
 
   // Updated navMap to include LBM
   const navMap = {
