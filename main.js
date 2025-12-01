@@ -439,6 +439,10 @@ function updateGDP() {
         : 'Current delivery is within ±10% of the selected DO₂i goal.';
       gaugeColor = 'from-emerald-500 to-emerald-400';
     }
+  } else {
+    el('cao2').value = '';
+    setText('do2i', '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
+    msg = `Enter ${requiredMissing.join(', ')} to calculate DO₂i.`;
   }
 
   if (profile && currentCI) {
@@ -541,6 +545,41 @@ function applyDefaultEbvCoef(pttype) {
 // -----------------------------
 // LBM Interaction (NEW)
 // -----------------------------
+function renderLBMFlowTable(bsaActual, bsaLean) {
+  const tbody = el('lbm-ci-tbody');
+  const hint = el('lbm-ci-hint');
+  if (!tbody || !hint) return;
+
+  if (!bsaActual || bsaActual <= 0) {
+    tbody.innerHTML = '';
+    hint.textContent = 'Enter height and weight to view flow comparison.';
+    return;
+  }
+
+  const hasLean = bsaLean && bsaLean > 0;
+  const rows = [];
+
+  for (let ciTenth = 10; ciTenth <= 30; ciTenth += 2) {
+    const ci = ciTenth / 10;
+    const flowActual = (ci * bsaActual).toFixed(2);
+    const flowLean = hasLean ? (ci * bsaLean).toFixed(2) : null;
+    const highlight = Math.abs(ci - 2.4) < 0.001;
+
+    rows.push(`
+      <tr class="${highlight ? 'bg-accent-500/5 dark:bg-accent-500/10' : ''}">
+        <td class="py-1 pr-4">${ci.toFixed(1)}</td>
+        <td class="py-1 pr-4">${flowActual}</td>
+        <td class="py-1">${flowLean || '—'}</td>
+      </tr>
+    `);
+  }
+
+  tbody.innerHTML = rows.join('');
+  hint.textContent = hasLean
+    ? 'Flows scaled by Mosteller BSA (actual vs. lean).'
+    : 'LBM unavailable — lean-based flow shows —.';
+}
+
 function updateLBM() {
   const h = num('lbm_h_cm');
   const w = num('lbm_w_kg');
