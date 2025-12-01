@@ -127,6 +127,7 @@ function setText(id, text) {
 // -----------------------------
 const do2iIds = ['h_cm', 'w_kg', 'bsa', 'bsa-method', 'flow', 'hb', 'sao2', 'pao2'];
 let lastChangedId = null;
+let bsaManualOverride = false;
 let do2iMode = 'adult';
 
 const THRESHOLDS = {
@@ -145,7 +146,16 @@ function applyModeUI() {
 }
 
 function updateBSA() {
-  if (lastChangedId === 'bsa') return;
+  const autoFields = ['h_cm', 'w_kg', 'bsa-method'];
+  if (bsaManualOverride && !autoFields.includes(lastChangedId)) {
+    setText('bsa-hint', el('bsa').value ? 'manual' : 'auto-calc');
+    return;
+  }
+
+  if (autoFields.includes(lastChangedId)) {
+    bsaManualOverride = false;
+  }
+
   const h = num('h_cm'), w = num('w_kg');
   const method = el('bsa-method').value;
   const v = computeBSA(h, w, method);
@@ -204,6 +214,7 @@ function resetDO2i() {
     const n = el(id);
     if (n) n.value = '';
   });
+  bsaManualOverride = false;
   el('cao2').value = '';
   setText('do2i', '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
   el('do2i-gauge').style.width = '0%';
@@ -340,6 +351,10 @@ window.addEventListener('DOMContentLoaded', () => {
     if (x) {
       x.addEventListener('input', () => {
         lastChangedId = id;
+        if (id === 'bsa') {
+          bsaManualOverride = true;
+          setText('bsa-hint', el('bsa').value ? 'manual' : 'auto-calc');
+        }
         updateDO2i();
       });
 
