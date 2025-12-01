@@ -172,7 +172,7 @@ function updateDO2i() {
   const pao2Val = el('pao2').value;
   const flowVal = el('flow').value;
 
-  const requiredFilled = [bsaVal, hbVal, sao2Val, pao2Val]
+  const requiredFilled = [bsaVal, hbVal, sao2Val, pao2Val, flowVal]
     .every(v => v !== '' && !Number.isNaN(parseFloat(v)));
 
   const bsa = parseFloat(bsaVal) || 0;
@@ -187,7 +187,7 @@ function updateDO2i() {
     setText('do2i', '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
     g.style.width = '0%';
     g.className = 'h-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(255,255,255,0.3)] from-accent-600 to-accent-400';
-    setText('do2i-msg', 'Enter required fields (BSA, Hb, SaO₂, PaO₂)');
+    setText('do2i-msg', 'Enter required fields (BSA, Hb, SaO₂, PaO₂, Pump Flow)');
     el('do2i-msg').className = 'text-sm font-bold text-amber-400';
     return;
   }
