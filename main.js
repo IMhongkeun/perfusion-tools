@@ -52,7 +52,16 @@ function clamp(n, min, max) {
 
 function parseTimeToMinutes(str) {
   if (!str) return null;
-  const match = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(str.trim());
+  const cleaned = str.trim();
+  const numericOnly = cleaned.replace(/\D/g, '');
+  if (/^\d{3,4}$/.test(numericOnly)) {
+    const padded = numericOnly.padStart(4, '0').slice(0, 4);
+    const h = Number(padded.slice(0, 2));
+    const m = Number(padded.slice(2, 4));
+    if (h > 23 || m > 59) return null;
+    return h * 60 + m;
+  }
+  const match = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(cleaned);
   if (!match) return null;
   const h = Number(match[1]);
   const m = Number(match[2]);
@@ -618,6 +627,7 @@ function wireNowButtons() {
       const input = document.getElementById(targetId);
       if (!input) return;
       input.value = getCurrentTimeHHMM();
+      autoFormatTimeInput(input);
       const idx = targetId.split('-').pop();
       updateTimeRow(idx);
     });
@@ -630,25 +640,37 @@ function wirePickerButtons() {
       const targetId = btn.getAttribute('data-picker-target');
       const input = document.getElementById(targetId);
       if (!input) return;
-      if (typeof input.showPicker === 'function') {
-        try {
-          input.showPicker();
-        } catch (err) {
-          input.focus();
-        }
-      } else {
-        input.focus();
+      input.focus();
+      try {
+        input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+      } catch (err) {
+        // no-op: some browsers may not allow programmatic key events; focus is sufficient
       }
     });
   });
+}
+
+function autoFormatTimeInput(inputEl) {
+  if (!inputEl) return;
+  const raw = inputEl.value || '';
+  const digits = raw.replace(/\D/g, '');
+  if (digits.length >= 3) {
+    const padded = digits.padStart(4, '0').slice(0, 4);
+    const hoursNum = Number(padded.slice(0, 2));
+    const minsNum = Number(padded.slice(2, 4));
+    if (hoursNum > 23 || minsNum > 59) return;
+    const hours = clamp(hoursNum, 0, 23);
+    const mins = clamp(minsNum, 0, 59);
+    inputEl.value = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+  }
 }
 
 function initTimeCalculator() {
   for (let i = 1; i <= 5; i++) {
     const s = document.getElementById(`time-start-${i}`);
     const e = document.getElementById(`time-end-${i}`);
-    if (s) s.addEventListener('input', () => updateTimeRow(i));
-    if (e) e.addEventListener('input', () => updateTimeRow(i));
+    if (s) s.addEventListener('input', () => { autoFormatTimeInput(s); updateTimeRow(i); });
+    if (e) e.addEventListener('input', () => { autoFormatTimeInput(e); updateTimeRow(i); });
   }
   wireNowButtons();
   wirePickerButtons();
