@@ -54,6 +54,7 @@ function parseTimeToMinutes(str) {
   if (!str) return null;
   const [h, m] = str.split(':').map(Number);
   if (Number.isNaN(h) || Number.isNaN(m)) return null;
+  if (m < 0 || m > 59) return null;
   return h * 60 + m;
 }
 
