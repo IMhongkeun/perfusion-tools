@@ -594,6 +594,10 @@ function updateLBM() {
     } else {
       for (let ci = 1.0; ci <= 3.0001; ci += 0.2) {
         const tr = document.createElement('tr');
+        const isHighlight = ci >= 2.2 && ci <= 2.4;
+        if (isHighlight) {
+          tr.classList.add('bg-slate-50', 'dark:bg-primary-800/40');
+        }
         const flowActual = bsaActual ? (ci * bsaActual).toFixed(2) : '—';
         const flowLean = bsaLean ? (ci * bsaLean).toFixed(2) : '—';
         tr.innerHTML = `
