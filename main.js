@@ -50,6 +50,28 @@ function clamp(n, min, max) {
   return Math.min(Math.max(n, min), max);
 }
 
+function parseTimeToMinutes(str) {
+  if (!str) return null;
+  const [h, m] = str.split(':').map(Number);
+  if (Number.isNaN(h) || Number.isNaN(m)) return null;
+  return h * 60 + m;
+}
+
+function formatDuration(mins) {
+  if (mins == null || mins < 0) return '-';
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  const mm = m.toString().padStart(2, '0');
+  return `${mins} min (${h}:${mm})`;
+}
+
+function getCurrentTimeHHMM() {
+  const now = new Date();
+  const h = now.getHours().toString().padStart(2, '0');
+  const m = now.getMinutes().toString().padStart(2, '0');
+  return `${h}:${m}`;
+}
+
 const BSA = {
   Mosteller(h, w) {
     return Math.sqrt((h * w) / 3600);
@@ -567,6 +589,49 @@ function updateLBM() {
   }
 }
 
+function updateTimeRow(idx) {
+  const startInput = document.getElementById(`time-start-${idx}`);
+  const endInput = document.getElementById(`time-end-${idx}`);
+  const resultEl = document.getElementById(`time-result-${idx}`);
+  if (!startInput || !endInput || !resultEl) return;
+
+  const startMin = parseTimeToMinutes(startInput.value);
+  const endMin = parseTimeToMinutes(endInput.value);
+
+  if (startMin == null || endMin == null) {
+    resultEl.textContent = '-';
+    return;
+  }
+
+  let diff = endMin - startMin;
+  if (diff < 0) diff += 24 * 60;
+
+  resultEl.textContent = formatDuration(diff);
+}
+
+function wireNowButtons() {
+  document.querySelectorAll('[data-now-target]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-now-target');
+      const input = document.getElementById(targetId);
+      if (!input) return;
+      input.value = getCurrentTimeHHMM();
+      const idx = targetId.split('-').pop();
+      updateTimeRow(idx);
+    });
+  });
+}
+
+function initTimeCalculator() {
+  for (let i = 1; i <= 5; i++) {
+    const s = document.getElementById(`time-start-${i}`);
+    const e = document.getElementById(`time-end-${i}`);
+    if (s) s.addEventListener('input', () => updateTimeRow(i));
+    if (e) e.addEventListener('input', () => updateTimeRow(i));
+  }
+  wireNowButtons();
+}
+
 // -----------------------------
 // Router & Navigation Styling
 // -----------------------------
@@ -574,7 +639,7 @@ function route() {
   const hash = location.hash || '#/bsa';
 
   // Updated sections list to include LBM and standalone BSA
-  const sections = ['view-bsa', 'view-do2i', 'view-hct', 'view-lbm', 'faq', 'view-privacy', 'view-terms', 'view-contact'];
+  const sections = ['view-bsa', 'view-do2i', 'view-hct', 'view-lbm', 'view-timecalc', 'faq', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
     el(sid).classList.add('hidden');
   });
@@ -584,6 +649,7 @@ function route() {
   else if (hash.includes('do2i')) el('view-do2i').classList.remove('hidden');
   else if (hash.includes('predicted-hct')) el('view-hct').classList.remove('hidden');
   else if (hash.includes('lbm')) el('view-lbm').classList.remove('hidden');
+  else if (hash.includes('timecalc')) el('view-timecalc').classList.remove('hidden');
   else if (hash.includes('faq')) el('faq').classList.remove('hidden');
   else if (hash.includes('privacy')) el('view-privacy').classList.remove('hidden');
   else if (hash.includes('terms')) el('view-terms').classList.remove('hidden');
@@ -596,6 +662,7 @@ function route() {
     'predicted-hct': ['nav-hct', 'side-hct', 'mob-hct'],
     'bsa': ['nav-bsa', 'side-bsa', 'mob-bsa'],
     'lbm': ['nav-lbm', 'side-lbm', 'mob-lbm'],
+    'timecalc': ['nav-time', 'side-time', 'mob-time'],
     'faq': ['nav-faq', 'side-faq', 'mob-faq']
   };
 
@@ -613,6 +680,7 @@ function route() {
   else if (hash.includes('predicted-hct')) key = 'predicted-hct';
   else if (hash.includes('bsa')) key = 'bsa';
   else if (hash.includes('lbm')) key = 'lbm';
+  else if (hash.includes('timecalc')) key = 'timecalc';
   else if (hash.includes('faq')) key = 'faq';
 
   if (key && navMap[key]) {
@@ -750,6 +818,8 @@ window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => status.textContent = '', 3000);
     });
   }
+
+  initTimeCalculator();
 
   updateTargetDisplay();
   updateGDP();
