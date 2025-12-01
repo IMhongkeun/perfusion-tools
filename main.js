@@ -76,6 +76,13 @@ function formatDuration(mins) {
   return `${mins} min (${h}:${mm})`;
 }
 
+function getCurrentTimeHHMM() {
+  const now = new Date();
+  const hh = now.getHours().toString().padStart(2, '0');
+  const mm = now.getMinutes().toString().padStart(2, '0');
+  return `${hh}:${mm}`;
+}
+
 const BSA = {
   Mosteller(h, w) {
     return Math.sqrt((h * w) / 3600);
@@ -656,6 +663,8 @@ function initTimeCalculator() {
   for (let i = 1; i <= 5; i++) {
     const s = document.getElementById(`time-start-${i}`);
     const e = document.getElementById(`time-end-${i}`);
+    const sNow = document.getElementById(`time-start-now-${i}`);
+    const eNow = document.getElementById(`time-end-now-${i}`);
     if (s) {
       s.addEventListener('input', () => { autoFormatTimeInput(s); updateTimeRow(i); });
       s.addEventListener('blur', () => updateTimeRow(i));
@@ -663,6 +672,20 @@ function initTimeCalculator() {
     if (e) {
       e.addEventListener('input', () => { autoFormatTimeInput(e); updateTimeRow(i); });
       e.addEventListener('blur', () => updateTimeRow(i));
+    }
+    if (s && sNow) {
+      sNow.addEventListener('click', () => {
+        s.value = getCurrentTimeHHMM();
+        setTimeError(s, false);
+        updateTimeRow(i);
+      });
+    }
+    if (e && eNow) {
+      eNow.addEventListener('click', () => {
+        e.value = getCurrentTimeHHMM();
+        setTimeError(e, false);
+        updateTimeRow(i);
+      });
     }
   }
 }
