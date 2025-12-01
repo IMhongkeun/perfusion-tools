@@ -1,5 +1,12 @@
 'use strict';
 
+//
+// GDP Calculator summary
+// - Allows selecting preset or custom target DO₂i values, then calculates required pump flow.
+// - Computes CaO₂, current DO₂i (when flow is given), and classifies status vs. the chosen target.
+// - Gauge visual centers around the target DO₂i and shows adequacy bands with inline messaging.
+//
+
 // -----------------------------
 // Theme Management (Dark Mode)
 // -----------------------------
@@ -169,27 +176,13 @@ function setText(id, text) {
 }
 
 // -----------------------------
-// DO2i Interaction
+// GDP Interaction
 // -----------------------------
-const do2iIds = ['h_cm', 'w_kg', 'bsa', 'bsa-method', 'flow', 'hb', 'sao2', 'pao2'];
+const gdpIds = ['h_cm', 'w_kg', 'bsa', 'bsa-method', 'flow', 'hb', 'sao2', 'pao2', 'temp_c'];
 let lastChangedId = null;
 let bsaManualOverride = false;
-let do2iMode = 'adult';
-
-const THRESHOLDS = {
-  adult: { low: 260, borderline: 300, upper: 450, max: 500, legend: 'Target: 280 - 300+' },
-  infant: { low: 340, borderline: 380, upper: 520, max: 600, legend: 'Target: 350+' }
-};
-
-function applyModeUI() {
-  const isAdult = do2iMode === 'adult';
-  el('mode-adult').className = 'px-3 py-1.5 text-xs font-medium rounded-md transition-colors ' + (isAdult ? 'bg-white dark:bg-primary-700 shadow-sm text-primary-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-primary-900');
-  el('mode-infant').className = 'px-3 py-1.5 text-xs font-medium rounded-md transition-colors ' + (!isAdult ? 'bg-white dark:bg-primary-700 shadow-sm text-primary-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-primary-900');
-  setText('do2i-legend', THRESHOLDS[do2iMode].legend);
-
-  el('clinical-note-adult').classList.toggle('hidden', !isAdult);
-  el('clinical-note-infant').classList.toggle('hidden', isAdult);
-}
+let targetDO2i = 280;
+let targetMode = 'preset'; // 'preset' | 'custom'
 
 function updateBSA() {
   const autoFields = ['h_cm', 'w_kg', 'bsa-method'];
@@ -210,90 +203,139 @@ function updateBSA() {
   setText('bsa-hint', out ? 'calculated' : 'auto-calc');
 }
 
-function updateDO2i() {
+function calcRequiredFlowLmin(target, bsa, cao2) {
+  if (!target || !bsa || !cao2) return 0;
+  // DO2i = (Flow / BSA) * CaO2 * 10  →  Flow = DO2i * BSA / (CaO2 * 10)
+  return (target * bsa) / (cao2 * 10);
+}
+
+function updateTargetDisplay() {
+  ['target-260', 'target-280', 'target-300', 'target-360', 'target-custom-pill'].forEach(id => {
+    const btn = el(id);
+    if (!btn) return;
+    const active =
+      (id === 'target-260' && targetDO2i === 260 && targetMode === 'preset') ||
+      (id === 'target-280' && targetDO2i === 280 && targetMode === 'preset') ||
+      (id === 'target-300' && targetDO2i === 300 && targetMode === 'preset') ||
+      (id === 'target-360' && targetDO2i === 360 && targetMode === 'preset') ||
+      (id === 'target-custom-pill' && targetMode === 'custom');
+    btn.className = 'px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors ' + (active
+      ? 'bg-accent-500/10 border-accent-500 text-accent-600 dark:text-accent-400 shadow-sm'
+      : 'bg-white dark:bg-primary-800 border-slate-200 dark:border-primary-700 text-slate-600 dark:text-slate-300 hover:border-accent-500/50');
+  });
+}
+
+function updateGDP() {
   updateBSA();
+
   const bsaVal = el('bsa').value;
   const hbVal = el('hb').value;
   const sao2Val = el('sao2').value;
   const pao2Val = el('pao2').value;
   const flowVal = el('flow').value;
+  const tempVal = el('temp_c') ? el('temp_c').value : '';
 
-  const requiredFilled = [bsaVal, hbVal, sao2Val, pao2Val, flowVal]
-    .every(v => v !== '' && !Number.isNaN(parseFloat(v)));
+  const warningEl = el('gdp-warning');
+  const requiredMissing = [];
+  if (!bsaVal) requiredMissing.push('BSA');
+  if (!hbVal) requiredMissing.push('Hemoglobin');
+  if (!sao2Val) requiredMissing.push('SaO₂');
+  if (!pao2Val) requiredMissing.push('PaO₂');
+  if (!targetDO2i) requiredMissing.push('Target DO₂i');
 
   const bsa = parseFloat(bsaVal) || 0;
   const flow = parseFloat(flowVal) || 0;
   const hb = parseFloat(hbVal) || 0;
   const sao2 = parseFloat(sao2Val) || 0;
   const pao2 = parseFloat(pao2Val) || 0;
-  const g = el('do2i-gauge');
 
-  if (!requiredFilled || !bsa) {
-    el('cao2').value = '';
-    setText('do2i', '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
-    g.style.width = '0%';
-    g.className = 'h-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(255,255,255,0.3)] from-accent-600 to-accent-400';
-    setText('do2i-msg', 'Enter required fields (BSA, Hb, SaO₂, PaO₂, Pump Flow)');
-    el('do2i-msg').className = 'text-sm font-bold text-amber-400';
-    return;
-  }
+  const gauge = el('gdp-gauge');
+  const gaugeMsg = el('gdp-gauge-msg');
+  const statusText = el('gdp-status-text');
+  const statusDetail = el('gdp-status-detail');
 
   const cao2 = calcCaO2(hb, sao2, pao2);
   el('cao2').value = cao2 ? cao2.toFixed(2) : '';
-  const do2i = flow ? calcDO2i(flow, bsa, cao2) : 0;
-  setText('do2i', do2i ? `${Math.round(do2i)} <span class="text-lg font-normal text-slate-400">mL/min/m²</span>` : '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
-  const t = THRESHOLDS[do2iMode];
-  let gaugePct = 0, msg = 'Waiting...', gaugeColor = 'from-accent-600 to-accent-400';
-  if (do2i) {
-    gaugePct = Math.min(Math.max((do2i / t.max) * 100, 0), 100);
-    if (do2i < t.low) {
-      msg = 'Low Delivery';
-      gaugeColor = 'from-red-600 to-red-400';
+
+  if (requiredMissing.length || !bsa || !hb || !sao2 || !pao2 || !targetDO2i) {
+    if (warningEl) {
+      warningEl.textContent = `Enter required fields: ${requiredMissing.join(', ')}`;
+      warningEl.classList.remove('hidden');
     }
-    else if (do2i < t.borderline) {
-      msg = 'Borderline';
-      gaugeColor = 'from-amber-500 to-amber-300';
-    }
-    else if (do2i <= t.upper) {
-      msg = 'Target Range';
-      gaugeColor = 'from-emerald-500 to-emerald-300';
-    }
-    else {
-      msg = 'High Delivery';
-      gaugeColor = 'from-sky-500 to-sky-300';
+    setText('required-flow', '—');
+    setText('current-do2i', '—');
+    statusText.textContent = 'Awaiting data';
+    statusDetail.textContent = 'Provide required inputs to evaluate target vs. current flow.';
+    gauge.style.width = '0%';
+    gauge.className = 'h-3 rounded-full bg-gradient-to-r from-slate-300 to-slate-200 dark:from-primary-800 dark:to-primary-700 transition-all duration-700 ease-out';
+    gaugeMsg.textContent = 'Enter current flow to visualize DO₂i vs. target';
+    return;
+  }
+
+  if (warningEl) warningEl.classList.add('hidden');
+
+  const requiredFlow = calcRequiredFlowLmin(targetDO2i, bsa, cao2);
+  setText('required-flow', requiredFlow ? `${requiredFlow.toFixed(2)} <span class="text-xs text-slate-500 dark:text-slate-400">L/min</span>` : '—');
+
+  const currentDO2i = flow ? calcDO2i(flow, bsa, cao2) : 0;
+  setText('current-do2i', currentDO2i ? `${Math.round(currentDO2i)} <span class="text-xs text-slate-500 dark:text-slate-400">mL/min/m²</span>` : '—');
+
+  let statusLabel = 'Waiting for current flow';
+  let detail = 'Enter current pump flow to compare against the target DO₂i.';
+  let gaugeColor = 'from-slate-300 to-slate-200 dark:from-primary-800 dark:to-primary-700';
+  let gaugeWidth = '0%';
+
+  const lowerTarget = targetDO2i * 0.9;
+  const upperTarget = targetDO2i * 1.1;
+
+  if (currentDO2i > 0) {
+    const pct = clamp((currentDO2i / (targetDO2i * 1.5)) * 100, 0, 100);
+    gaugeWidth = `${pct}%`;
+
+    if (currentDO2i < lowerTarget) {
+      const deltaFlow = Math.max(requiredFlow - flow, 0);
+      statusLabel = 'Below target';
+      detail = deltaFlow > 0
+        ? `Needs approximately +${deltaFlow.toFixed(2)} L/min to reach the target.`
+        : 'Increase flow to approach the target.';
+      gaugeColor = 'from-amber-500 to-red-500';
+    } else if (currentDO2i > upperTarget) {
+      statusLabel = 'Above target';
+      detail = 'Above the goal—verify this is intentional and hemodynamically tolerated.';
+      gaugeColor = 'from-sky-500 to-blue-500';
+    } else {
+      statusLabel = 'At / near target';
+      detail = 'Current delivery is within ±10% of the selected DO₂i goal.';
+      gaugeColor = 'from-emerald-500 to-emerald-400';
     }
   }
 
-  if (!flow) {
-    msg = 'Enter pump flow to assess adequacy';
+  statusText.textContent = statusLabel;
+  statusDetail.textContent = detail;
+  gauge.style.width = gaugeWidth;
+  gauge.className = `h-3 rounded-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(34,211,238,0.25)] ${gaugeColor}`;
+  gaugeMsg.textContent = currentDO2i ? `Target ${targetDO2i} mL/min/m² • Current ${Math.round(currentDO2i)} mL/min/m²` : 'Enter current flow to visualize DO₂i vs. target';
+
+  const tempTag = el('temp-note');
+  if (tempTag) {
+    tempTag.textContent = tempVal ? `Current temperature: ${tempVal}°C (interpret DO₂i with your hypothermia strategy).` : 'Temperature optional; interpret DO₂i with the overall clinical picture.';
   }
-
-  g.style.width = `${gaugePct}%`;
-  g.className = `h-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(255,255,255,0.3)] ${gaugeColor}`;
-  setText('do2i-msg', msg);
-
-  const msgEl = el('do2i-msg');
-  let msgClass = 'text-sm font-bold text-accent-400';
-  if (!flow) msgClass = 'text-sm font-bold text-amber-400';
-  else if (do2i < t.low) msgClass = 'text-sm font-bold text-red-400';
-  else if (do2i < t.borderline) msgClass = 'text-sm font-bold text-amber-400';
-  else if (do2i <= t.upper) msgClass = 'text-sm font-bold text-emerald-400';
-  else msgClass = 'text-sm font-bold text-sky-400';
-  msgEl.className = msgClass;
 }
 
-function resetDO2i() {
-  ['h_cm', 'w_kg', 'bsa', 'flow', 'hb', 'sao2', 'pao2'].forEach(id => {
+function resetGDP() {
+  ['h_cm', 'w_kg', 'bsa', 'flow', 'hb', 'sao2', 'pao2', 'temp_c'].forEach(id => {
     const n = el(id);
     if (n) n.value = '';
   });
+  const customInput = el('target-custom');
+  if (customInput) customInput.value = '';
+  targetDO2i = 280;
+  targetMode = 'preset';
   bsaManualOverride = false;
-  el('cao2').value = '';
-  setText('do2i', '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
-  el('do2i-gauge').style.width = '0%';
-  setText('do2i-msg', 'Waiting for input...');
-  do2iMode = 'adult';
-  applyModeUI();
+  const cao2El = el('cao2');
+  if (cao2El) cao2El.value = '';
+  updateTargetDisplay();
+  updateGDP();
 }
 
 // -----------------------------
@@ -421,8 +463,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
   route();
 
-  // DO2i event listeners
-  do2iIds.forEach(id => {
+  // GDP event listeners
+  gdpIds.forEach(id => {
     const x = el(id);
     if (x) {
       x.addEventListener('input', () => {
@@ -431,30 +473,54 @@ window.addEventListener('DOMContentLoaded', () => {
           bsaManualOverride = true;
           setText('bsa-hint', el('bsa').value ? 'manual' : 'auto-calc');
         }
-        updateDO2i();
+        updateGDP();
       });
 
       if (id === 'bsa-method') x.addEventListener('change', () => {
         lastChangedId = id;
-        updateDO2i();
+        updateGDP();
       });
     }
   });
 
-  el('mode-adult').addEventListener('click', () => {
-    do2iMode = 'adult';
-    applyModeUI();
-    updateDO2i();
+  ['target-260', 'target-280', 'target-300', 'target-360'].forEach(id => {
+    const btn = el(id);
+    if (btn) {
+      btn.addEventListener('click', () => {
+        targetMode = 'preset';
+        targetDO2i = parseInt(btn.dataset.value, 10) || 0;
+        updateTargetDisplay();
+        updateGDP();
+      });
+    }
   });
-  el('mode-infant').addEventListener('click', () => {
-    do2iMode = 'infant';
-    applyModeUI();
-    updateDO2i();
-  });
-  el('do2i-reset').addEventListener('click', () => {
-    lastChangedId = null;
-    resetDO2i();
-  });
+
+  const targetCustomPill = el('target-custom-pill');
+  const targetCustomInput = el('target-custom');
+  if (targetCustomPill && targetCustomInput) {
+    targetCustomPill.addEventListener('click', () => {
+      targetMode = 'custom';
+      const v = parseFloat(targetCustomInput.value) || 0;
+      targetDO2i = v > 0 ? v : 0;
+      updateTargetDisplay();
+      updateGDP();
+    });
+    targetCustomInput.addEventListener('input', () => {
+      targetMode = 'custom';
+      const v = parseFloat(targetCustomInput.value) || 0;
+      targetDO2i = v > 0 ? v : 0;
+      updateTargetDisplay();
+      updateGDP();
+    });
+  }
+
+  const resetBtn = el('do2i-reset');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      lastChangedId = null;
+      resetGDP();
+    });
+  }
 
   // Standalone BSA event listeners
   ['bsa_height', 'bsa_weight'].forEach(id => {
@@ -499,8 +565,8 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  applyModeUI();
-  updateDO2i();
+  updateTargetDisplay();
+  updateGDP();
   updateHct();
   updateLBM();
 });
