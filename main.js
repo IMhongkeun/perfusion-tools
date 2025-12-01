@@ -219,6 +219,14 @@ function computeLBM({ sex, h, w, formula }) {
   }
 }
 
+function bmiCategory(bmi) {
+  if (!bmi) return '—';
+  if (bmi < 18.5) return 'Underweight';
+  if (bmi < 25) return 'Normal weight';
+  if (bmi < 30) return 'Overweight';
+  return 'Obesity';
+}
+
 // -----------------------------
 // DOM Helpers
 // -----------------------------
@@ -513,6 +521,50 @@ function updateLBM() {
       ? `${lbm.toFixed(1)} <span class="text-lg font-normal text-slate-400">kg</span>`
       : `0 <span class="text-lg font-normal text-slate-400">kg</span>`
   );
+
+  const heightM = h ? h / 100 : 0;
+  const bmi = h && w ? w / (heightM * heightM) : 0;
+  setText('bmi_value', bmi ? bmi.toFixed(1) : '—');
+  setText('bmi_badge', bmiCategory(bmi));
+
+  const bsaActual = computeBSA(h, w, 'Mosteller');
+  const bsaLean = lbm ? computeBSA(h, lbm, 'Mosteller') : 0;
+
+  setText('bsa_actual_value', bsaActual ? `${bsaActual.toFixed(2)} m²` : '—');
+  setText('bsa_lean_value', bsaLean ? `${bsaLean.toFixed(2)} m²` : '—');
+  setText('bsa_lean_note', lbm ? `${formula} LBM ${lbm.toFixed(1)} kg` : 'Enter height and weight to calculate LBM');
+
+  const compareMap = {
+    bsa_compare_mosteller: computeBSA(h, w, 'Mosteller'),
+    bsa_compare_dubois: computeBSA(h, w, 'DuBois'),
+    bsa_compare_haycock: computeBSA(h, w, 'Haycock'),
+    bsa_compare_gehan: computeBSA(h, w, 'GehanGeorge')
+  };
+  Object.entries(compareMap).forEach(([id, val]) => {
+    setText(id, val ? val.toFixed(2) : '—');
+  });
+
+  const flowBody = el('lbm-flow-rows');
+  if (flowBody) {
+    flowBody.innerHTML = '';
+    if (!bsaActual && !bsaLean) {
+      const row = document.createElement('tr');
+      row.innerHTML = '<td class="px-4 py-3 text-sm text-slate-500 dark:text-slate-400" colspan="3">Enter height and weight to populate flows.</td>';
+      flowBody.appendChild(row);
+    } else {
+      for (let ci = 1.0; ci <= 3.0001; ci += 0.2) {
+        const tr = document.createElement('tr');
+        const flowActual = bsaActual ? (ci * bsaActual).toFixed(2) : '—';
+        const flowLean = bsaLean ? (ci * bsaLean).toFixed(2) : '—';
+        tr.innerHTML = `
+          <td class="px-4 py-2 font-mono text-xs text-slate-600 dark:text-slate-300">${ci.toFixed(1)}</td>
+          <td class="px-4 py-2 font-semibold text-primary-900 dark:text-white">${flowActual} L/min</td>
+          <td class="px-4 py-2 font-semibold text-emerald-600 dark:text-emerald-400">${flowLean} L/min</td>
+        `;
+        flowBody.appendChild(tr);
+      }
+    }
+  }
 }
 
 // -----------------------------
@@ -681,6 +733,10 @@ window.addEventListener('DOMContentLoaded', () => {
   ['lbm_h_cm', 'lbm_w_kg', 'lbm_sex', 'lbm_formula'].forEach(id => {
     const x = el(id);
     if (x) x.addEventListener('input', updateLBM);
+  });
+  ['lbm_sex', 'lbm_formula'].forEach(id => {
+    const x = el(id);
+    if (x) x.addEventListener('change', updateLBM);
   });
 
   // Contact form handler
