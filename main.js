@@ -89,6 +89,78 @@ function getCurrentTimeHHMM() {
   return `${hh}:${mm}`;
 }
 
+const CANONICAL_BASE = 'https://perfusion.pro/';
+const SEO_META = {
+  'do2i': {
+    title: 'Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator',
+    description: 'Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets.',
+    canonicalHash: '#/do2i'
+  },
+  'predicted-hct': {
+    title: 'Predicted Hematocrit on CPB — Hemodilution Calculator',
+    description: 'Estimate on-pump hematocrit from EBV, prime, ultrafiltration and RBC units.',
+    canonicalHash: '#/predicted-hct'
+  },
+  'lbm': {
+    title: 'Lean Body Mass Calculator for Perfusion (Boer & Hume)',
+    description: 'Calculate LBM and Lean BSA for CPB flow management and compare actual vs lean flow rates for obese patients.',
+    canonicalHash: '#/lbm'
+  },
+  'bsa': {
+    title: 'Body Surface Area (BSA) Calculator — Perfusion Tools',
+    description: 'Compute BSA using Mosteller, DuBois and other formulas to guide indexed perfusion flows.',
+    canonicalHash: '#/bsa'
+  },
+  'timecalc': {
+    title: 'Time Calculator — Pump Time & Case Time',
+    description: 'Quickly calculate case durations with HH:MM inputs and automatic time formatting.',
+    canonicalHash: '#/timecalc'
+  },
+  'faq': {
+    title: 'Perfusionist Calculators — FAQ & Educational Notes',
+    description: 'Common questions about DO₂i, predicted hematocrit, GDP and lean body mass during CPB.',
+    canonicalHash: '#/faq'
+  },
+  'privacy': {
+    title: 'Privacy Policy — Perfusion Tools',
+    description: 'Learn how Perfusion Tools handles browser-based calculations without storing personal data.',
+    canonicalHash: '#/privacy'
+  },
+  'terms': {
+    title: 'Terms of Service — Perfusion Tools',
+    description: 'Understand the usage terms and disclaimers for the Perfusion Tools calculators.',
+    canonicalHash: '#/terms'
+  },
+  'contact': {
+    title: 'Contact — Perfusion Tools',
+    description: 'Get in touch with Perfusion Tools with questions or feedback about CPB calculators.',
+    canonicalHash: '#/contact'
+  }
+};
+
+function updateMetaForRoute(key) {
+  const meta = SEO_META[key] || SEO_META['do2i'];
+  if (!meta) return;
+
+  document.title = meta.title;
+
+  const setContent = (selector, attr, value) => {
+    const tag = document.querySelector(selector);
+    if (tag && value) tag.setAttribute(attr, value);
+  };
+
+  setContent('meta[name="description"]', 'content', meta.description);
+  setContent('meta[property="og:title"]', 'content', meta.title);
+  setContent('meta[property="og:description"]', 'content', meta.description);
+  setContent('meta[name="twitter:title"]', 'content', meta.title);
+  setContent('meta[name="twitter:description"]', 'content', meta.description);
+
+  const canonicalTag = document.querySelector('link[rel="canonical"]');
+  if (canonicalTag && meta.canonicalHash) {
+    canonicalTag.setAttribute('href', `${CANONICAL_BASE}${meta.canonicalHash}`);
+  }
+}
+
 const BSA = {
   Mosteller(h, w) {
     return Math.sqrt((h * w) / 3600);
@@ -764,6 +836,50 @@ function initTimeCalculator() {
 }
 
 // -----------------------------
+// Contact actions
+// -----------------------------
+function setupContactActions() {
+  const email = 'perfusiontools@gmail.com';
+  const mailLink = el('contact-mailto');
+  const copyBtn = el('contact-copy');
+  const toast = el('contact-toast');
+  const emailText = el('contact-email');
+
+  if (mailLink) mailLink.href = `mailto:${email}`;
+  if (emailText) emailText.textContent = email;
+
+  const showToast = (message) => {
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.remove('opacity-0', 'translate-y-2', 'pointer-events-none', 'hidden');
+    setTimeout(() => {
+      toast.classList.add('opacity-0', 'translate-y-2', 'pointer-events-none');
+      setTimeout(() => toast.classList.add('hidden'), 250);
+    }, 2000);
+  };
+
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      try {
+        if (navigator?.clipboard?.writeText) {
+          await navigator.clipboard.writeText(email);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = email;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        showToast('Copied!');
+      } catch (err) {
+        showToast('Copy failed');
+      }
+    });
+  }
+}
+
+// -----------------------------
 // Router & Navigation Styling
 // -----------------------------
 function route() {
@@ -813,6 +929,11 @@ function route() {
   else if (hash.includes('lbm')) key = 'lbm';
   else if (hash.includes('timecalc')) key = 'timecalc';
   else if (hash.includes('faq')) key = 'faq';
+  else if (hash.includes('privacy')) key = 'privacy';
+  else if (hash.includes('terms')) key = 'terms';
+  else if (hash.includes('contact')) key = 'contact';
+
+  updateMetaForRoute(key || 'do2i');
 
   if (key && navMap[key]) {
     const navEl = el(navMap[key][0]);
@@ -938,17 +1059,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (x) x.addEventListener('change', updateLBM);
   });
 
-  // Contact form handler
-  const cform = document.getElementById('contact-form');
-  if (cform) {
-    cform.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const name = el('c_name').value;
-      const status = el('c_status');
-      status.textContent = `Thanks ${name || 'user'}, opening mail client...`;
-      setTimeout(() => status.textContent = '', 3000);
-    });
-  }
+  setupContactActions();
 
   initTimeCalculator();
 
