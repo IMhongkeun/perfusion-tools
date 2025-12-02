@@ -4,16 +4,20 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
   
-  <title>Perfusion Calculator — GDP & Predicted Hct | Perfusion Tools</title>
-  <meta name="description" content="Professional perfusion calculators for CPB. Goal-Directed Perfusion (GDP) evaluation and Predicted Hematocrit with hemodilution logic. Essential tools for perfusionists and ECMO specialists." />
+  <title>Perfusion Tools – Perfusion Calculator (BSA, CI, DO2i, Pump Flow, Heparin)</title>
+  <meta name="description" content="Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets." />
   <meta name="keywords" content="perfusion calculator, GDP calculator, DO2i calculator, predicted Hct, CPB hemodilution, ECMO calculator, cardiac surgery tools, perfusionist, BSA calculator" />
   <meta name="theme-color" content="#0f172a" />
+
+  <link rel="canonical" href="https://perfusion.pro/#/do2i" />
   
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Perfusion Calculator — DO₂i & Predicted Hct" />
-  <meta property="og:description" content="Clinical tools for calculating Oxygen Delivery Index and Predicted Hematocrit on Bypass. Features Dark Mode and mobile-friendly design." />
+  <meta property="og:title" content="Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator" />
+  <meta property="og:description" content="Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets." />
   <meta property="og:url" content="https://perfusion.pro/" />
   <meta property="og:image" content="https://perfusion.pro/og-image.png" /> <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="twitter:title" content="Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator" />
+  <meta name="twitter:description" content="Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets." />
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -149,9 +153,9 @@
     <div class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-accent-400 rounded-full animate-ping opacity-75" style="animation-duration: 2s;"></div>
   </div>
   
-  <h1 class="text-lg font-bold tracking-tight">
+  <div class="text-lg font-bold tracking-tight">
     Perfusion <span class="text-accent-400">Tools</span>
-  </h1>
+  </div>
 </a>
 
       <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
@@ -177,15 +181,6 @@
   <div class="pt-[var(--header-height)] max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr] gap-0 min-h-screen">
     
     <aside class="hidden md:block border-r border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/50 sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] p-4 overflow-y-auto">
-      <div class="mb-6">
-        <div class="relative">
-          <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input placeholder="Search..." class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 pl-10 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white placeholder-slate-500" />
-        </div>
-      </div>
-      
       <div class="space-y-1">
         <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-3">Calculators</div>
         <a href="#/bsa" id="side-bsa" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
@@ -212,7 +207,14 @@
     </aside>
 
     <main class="p-4 md:p-8 max-w-3xl mx-auto w-full space-y-8">
-      
+
+      <section class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
+        <div class="p-6 space-y-3">
+          <h1 class="text-2xl font-bold text-primary-900 dark:text-white">Perfusion Tools – CPB &amp; ECMO Perfusion Calculator Suite</h1>
+          <p class="text-sm text-slate-600 dark:text-slate-300">Perfusion Tools provides evidence-based calculators for BSA, cardiac index (CI), DO2i, pump flow, and heparin dosing to support goal-directed perfusion during CPB and ECMO.</p>
+        </div>
+      </section>
+
             <section id="view-do2i" class="hidden animate-in fade-in duration-300">
 
         <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
@@ -353,10 +355,40 @@
           <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
             <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
           </summary>
-          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-2">
-             <p><strong>CaO₂ (mL/dL)</strong> = 1.34 × Hb × (SaO₂/100) + 0.0031 × PaO₂. Hüfner factor 1.34; dissolved O₂ coefficient 0.0031.</p>
-             <p><strong>DO₂i (mL/min/m²)</strong> = (Flow ÷ BSA) × CaO₂ × 10.</p>
-             <p><strong>Required pump flow</strong> = (Target DO₂i × BSA) ÷ (CaO₂ × 10). Evaluate adequacy around the target band (±10%) and adjust with full clinical context.</p>
+          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+            <ol class="list-decimal pl-4 space-y-3">
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Arterial oxygen content (CaO₂)</p>
+                <p>CaO₂ (mL/dL) = 1.34 × Hb (g/dL) × (SaO₂ / 100) + 0.0031 × PaO₂ (mmHg). We assume a Hüfner constant of 1.34 mL O₂ per gram of Hb and a dissolved O₂ coefficient of 0.0031 mL·dL⁻¹·mmHg⁻¹. The contribution of dissolved O₂ is usually small at normal PaO₂.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Indexed oxygen delivery (DO₂i)</p>
+                <p>DO₂i (mL/min/m²) = (Pump flow ÷ BSA) × CaO₂ × 10. Pump flow is entered in L/min and BSA in m². Multiplying by 10 converts CaO₂ from mL/dL to mL/L so that the final unit is mL O₂ per minute per m².</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Temperature-adjusted metabolic demand</p>
+                <p>Patient temperature strongly affects whole-body oxygen consumption (VO₂). As a simplifying assumption, this calculator applies a Q₁₀-type relationship where VO₂ falls as temperature decreases from 37 °C, but a “dampened” curve is used so that targets do not drop as steeply as metabolic rate. This reflects common clinical practice: hypothermia reduces demand, but we still maintain a safety margin for organs such as the kidney and brain.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Target DO₂i bands (Goal-Directed Perfusion)</p>
+                <p>At normothermia (≈37 °C) many adult CPB programs aim to maintain DO₂i ≥ 280–300 mL/min/m² to reduce the risk of anaerobic metabolism and postoperative acute kidney injury. At lower temperatures the calculator reduces the recommended target range, but never below a conservative lower floor (e.g. around 220 mL/min/m²), even when theoretical VO₂ would allow lower values. Targets are displayed as “Low / Borderline / Target / High” bands on the gauge for quick bedside interpretation.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Required pump flow for a chosen DO₂i goal</p>
+                <p>For a selected DO₂i target, the corresponding pump flow is: Required flow (L/min) = (Target DO₂i × BSA) ÷ (CaO₂ × 10). This is a theoretical value based on current Hb, SaO₂, PaO₂ and BSA. In practice, flow should also respect institutional minimum/maximum flow policies and patient-specific constraints (e.g. cannula size, arterial pressure, ventricular distension).</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Clinical use and limitations</p>
+                <p>The calculator is intended to support goal-directed perfusion, not to replace local protocols or clinical judgment. Final flow and DO₂i settings should always be interpreted together with:</p>
+                <ul class="list-disc pl-4 space-y-1 mt-1">
+                  <li>Mixed or central venous saturation (SvO₂/ScvO₂)</li>
+                  <li>Lactate trends</li>
+                  <li>Urine output and other organ-perfusion markers</li>
+                  <li>Hemodynamics and surgical field conditions</li>
+                </ul>
+                <p class="mt-1">All formulas assume complete mixing in the CPB circuit and do not account for ongoing blood loss, retransfusion, or major changes in oxygen extraction. Values are approximate and for educational use by trained clinicians only.</p>
+              </li>
+            </ol>
           </div>
         </details>
 
@@ -431,15 +463,74 @@
               </div>
             </div>
 
-            <details class="group">
+              <details class="group">
               <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
                 <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
               </summary>
-              <div class="mt-2 p-4 rounded-xl bg-slate-50 dark:bg-primary-800/60 border border-slate-100 dark:border-primary-700/60 text-xs text-slate-600 dark:text-slate-300 leading-relaxed space-y-2">
-                <p><strong>Mosteller</strong>: BSA = √((Height(cm) × Weight(kg)) ÷ 3600). Fast, common clinical default.</p>
-                <p><strong>DuBois</strong>: BSA = 0.007184 × Height(cm)<sup>0.725</sup> × Weight(kg)<sup>0.425</sup>. Historical reference standard.</p>
-                <p><strong>Haycock</strong>: BSA = 0.024265 × Height(cm)<sup>0.3964</sup> × Weight(kg)<sup>0.5378</sup>. Higher accuracy in infants and pediatrics.</p>
-                <p><strong>Boyd</strong>: BSA = 0.0003207 × Height(cm)<sup>0.3</sup> × Weight(g)<sup>0.7285 − 0.0188·log₁₀(Weight(g))</sup>. Useful in obesity (BMI&gt;30) with mass-adjusted exponent.</p>
+              <div class="mt-2 p-4 rounded-xl bg-slate-50 dark:bg-primary-800/60 border border-slate-100 dark:border-primary-700/60 text-xs text-slate-600 dark:text-slate-300 leading-relaxed space-y-4">
+                <div class="space-y-1">
+                  <h5 class="text-sm font-semibold text-primary-900 dark:text-white">What is BSA and why does it matter?</h5>
+                  <p>Body surface area (BSA) is an estimate of a patient’s external body size. In perfusion it is used to index pump flow, DO₂i, drug dosing and heat-exchange settings. All formulas below use Height in cm and Weight in kg and are empiric fits to population data – they are not exact, but close enough for clinical use when applied consistently.</p>
+                </div>
+
+                <div class="space-y-2">
+                  <h5 class="text-sm font-semibold text-primary-900 dark:text-white">Mosteller formula</h5>
+                  <div class="font-semibold">Mosteller:</div>
+                  <div class="bg-white/80 dark:bg-primary-900/70 border border-slate-200 dark:border-primary-700 rounded-lg px-4 py-2 font-mono text-[11px] text-primary-900 dark:text-slate-100">
+                    BSA = √((Height(cm) × Weight(kg)) / 3600)
+                  </div>
+                  <ul class="list-disc pl-5 space-y-1">
+                    <li>Very simple and fast to calculate (only one square-root).</li>
+                    <li>For most adults with BMI 18–35, it gives values very close to more complex formulas.</li>
+                    <li>Because of its simplicity, it has become a de-facto clinical default in many CPB and ECMO centers.</li>
+                  </ul>
+                </div>
+
+                <div class="space-y-2">
+                  <h5 class="text-sm font-semibold text-primary-900 dark:text-white">DuBois &amp; DuBois formula</h5>
+                  <div class="font-semibold">DuBois:</div>
+                  <div class="bg-white/80 dark:bg-primary-900/70 border border-slate-200 dark:border-primary-700 rounded-lg px-4 py-2 font-mono text-[11px] text-primary-900 dark:text-slate-100">
+                    BSA = 0.007184 × Height(cm)<sup>0.725</sup> × Weight(kg)<sup>0.425</sup>
+                  </div>
+                  <ul class="list-disc pl-5 space-y-1">
+                    <li>Historical “reference standard” derived from direct body-surface measurements on a small adult cohort.</li>
+                    <li>Slightly lower BSA than Mosteller in very light or very heavy patients, but differences are usually &lt;3–5%.</li>
+                    <li>Still used in some pharmacology and physiology papers, so it is useful when you want to reproduce values from the literature.</li>
+                  </ul>
+                </div>
+
+                <div class="space-y-2">
+                  <h5 class="text-sm font-semibold text-primary-900 dark:text-white">Haycock formula</h5>
+                  <div class="font-semibold">Haycock:</div>
+                  <div class="bg-white/80 dark:bg-primary-900/70 border border-slate-200 dark:border-primary-700 rounded-lg px-4 py-2 font-mono text-[11px] text-primary-900 dark:text-slate-100">
+                    BSA = 0.024265 × Height(cm)<sup>0.3964</sup> × Weight(kg)<sup>0.5378</sup>
+                  </div>
+                  <ul class="list-disc pl-5 space-y-1">
+                    <li>Developed from a large pediatric dataset.</li>
+                    <li>Generally considered to have better accuracy in infants and children, especially in low-weight ranges.</li>
+                    <li>Many pediatric cardiac programs prefer Haycock when indexing flow or valve/vascular dimensions.</li>
+                  </ul>
+                </div>
+
+                <div class="space-y-2">
+                  <h5 class="text-sm font-semibold text-primary-900 dark:text-white">Gehan–George / Boyd or other “obesity-friendly” formulas</h5>
+                  <ul class="list-disc pl-5 space-y-1">
+                    <li>These formulas adjust the exponents or constants to behave more realistically in patients with very high body weight or BMI.</li>
+                    <li>They tend to give slightly lower BSA than Mosteller in severe obesity, avoiding extreme indexed values that clearly do not match the patient’s physiologic reserve.</li>
+                    <li>Useful when you want to perform sensitivity analysis in obese patients (e.g. compare “standard BSA” vs “obesity-adjusted BSA”).</li>
+                  </ul>
+                </div>
+
+                <div class="space-y-2">
+                  <h5 class="text-sm font-semibold text-primary-900 dark:text-white">Practical tips for perfusionists</h5>
+                  <ul class="list-disc pl-5 space-y-1">
+                    <li>For general adult CPB/ECMO, using Mosteller as the default is reasonable and widely accepted.</li>
+                    <li>For pediatric cases, consider Haycock (or your institutional standard) and keep the same formula throughout the case and across all flow/DO₂i calculations.</li>
+                    <li>In obese patients (BMI ≥30), you may compare Mosteller vs an obesity-adjusted formula (e.g. Gehan–George / Boyd) to understand how much BSA – and therefore CI/DO₂i – changes.</li>
+                    <li>More important than the “perfect” formula is internal consistency: once your program chooses a BSA formula, use it across perfusion flows, DO₂i targets, drug dosing and documentation.</li>
+                    <li>Remember that BSA is only a surrogate for metabolic demand. Always interpret indexed values together with clinical context (temperature, SvO₂/ScvO₂, lactate, urine output, organ function).</li>
+                  </ul>
+                </div>
               </div>
             </details>
           </div>
@@ -530,19 +621,79 @@
             </div>
           </div>
 
-           <div class="bg-slate-50 dark:bg-primary-800/30 border-t border-slate-100 dark:border-primary-700/50 p-4">
-            <h4 class="text-xs font-bold text-primary-900 dark:text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-2">
+            <div class="bg-slate-50 dark:bg-primary-800/30 border-t border-slate-100 dark:border-primary-700/50 p-4">
+             <h4 class="text-xs font-bold text-primary-900 dark:text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-2">
               <svg class="w-4 h-4 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
               Clinical Context
-            </h4>
-            <div class="text-xs text-slate-600 dark:text-slate-400 space-y-1">
+             </h4>
+             <div class="text-xs text-slate-600 dark:text-slate-400 space-y-1">
               <p>• <strong>Target Hct:</strong> Often 21–25% on bypass. Lower Hct reduces viscosity but also oxygen carrying capacity.</p>
               <p>• <strong>Adjustments:</strong> Reducing prime volume (RAP/VAP) or adding RBCs increases Hct. Adding crystalloid decreases Hct.</p>
               <p>• <strong>Hemoconcentration:</strong> Use Ultrafiltration (UF) to remove plasma water and increase Hct.</p>
+             </div>
+             <p class="mt-3 text-[10px] text-slate-400 italic">For educational use only.</p>
             </div>
-            <p class="mt-3 text-[10px] text-slate-400 italic">For educational use only.</p>
           </div>
-        </div>
+        
+        <details class="mt-4 group">
+          <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+            <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
+          </summary>
+          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+            <ol class="list-decimal pl-4 space-y-3">
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Estimated blood volume (EBV)</p>
+                <p>This calculator uses a simple weight-based model for circulating blood volume: EBV (mL) = Weight (kg) × EBV coefficient (mL/kg). Typical default coefficients are:</p>
+                <ul class="list-disc pl-4 space-y-1 mt-1">
+                  <li>Adult male: 70 mL/kg</li>
+                  <li>Adult female: 65 mL/kg</li>
+                  <li>Child: 75 mL/kg</li>
+                  <li>Infant: 80 mL/kg</li>
+                  <li>Neonate: 90 mL/kg</li>
+                </ul>
+                <p class="mt-1">These values are derived from population averages and may be adjusted in this tool when clinical judgment suggests a higher or lower blood volume (e.g. severe obesity, cachexia, fluid overload or dehydration).</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Pre-CPB red cell volume</p>
+                <p>Pre-bypass red cell volume is estimated from the patient’s hematocrit (Hct) and EBV: RBC_patient (mL) = EBV × (Pre-CPB Hct ÷ 100). This assumes the pre-CPB Hct is measured after induction and line placement, and that blood is evenly distributed in the circulation.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Circuit prime and crystalloid / ultrafiltration</p>
+                <p>The total intravascular volume at the time of sampling is modeled as:</p>
+                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">V_total (mL) = EBV + Prime volume + Additional crystalloid / colloid + RBC product volume − Ultrafiltration removed.</p>
+                <p>“Prime volume” includes the cardiopulmonary bypass circuit prime and any pre-bypass volume added directly to the patient through the circuit. “Additional crystalloid” represents fluids such as cardioplegia carrier solution, albumin, mannitol, or other volume expanders that effectively dilute the circulating red cell mass. “Ultrafiltration removed” accounts for hemoconcentration techniques (UF, MUF, Z-BUF) that remove plasma water and reduce total volume.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Packed red blood cell (RBC) products</p>
+                <p>Red cell volume contributed by transfused RBCs is modeled as:</p>
+                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">RBC_products (mL) = (Number of units × Volume per unit) × (Unit Hct ÷ 100).</p>
+                <p>Default values often assume ~300 mL/unit with a unit Hct around 60%, but these may be adjusted to reflect local blood bank characteristics or specific product labels.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Predicted hematocrit on CPB</p>
+                <p>The predicted hematocrit after mixing patient blood, prime, additional fluids and RBC products is:</p>
+                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">Predicted Hct (%) = (RBC_patient + RBC_products) ÷ V_total × 100.</p>
+                <p>This represents a simple mixing model at the time of interest (e.g. shortly after going on CPB or after a planned RBC addition). It assumes complete and rapid mixing in the circuit and does not automatically account for ongoing bleeding, cell saver reinfusion, or major changes in plasma volume after the calculation.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Clinical interpretation and typical targets</p>
+                <p>Many adult programs aim for an on-pump Hct around 21–30%, balancing lower viscosity and improved microcirculatory flow against adequate oxygen carrying capacity. Pediatric and neonatal patients often require higher Hct targets because of limited physiologic reserve and higher relative metabolic demand. Hct targets should be individualized according to patient age, comorbidities (e.g. cerebrovascular disease, coronary disease, pulmonary hypertension), procedural complexity, and institutional policy.</p>
+                <p>This calculator is intended to support planning of prime composition, ultrafiltration strategy and transfusion timing. Final decisions must be based on real-time laboratory measurements, hemodynamics, organ perfusion markers and local protocols.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Limitations</p>
+                <p>This is an approximate model for educational and decision-support use only. It does not replace actual Hct measurement from arterial or venous blood samples, nor does it account for:</p>
+                <ul class="list-disc pl-4 space-y-1 mt-1">
+                  <li>Acute intra-operative blood loss not yet replaced,</li>
+                  <li>Large volume cardiotomy suction return or cell-saver reinfusion,</li>
+                  <li>Rapid shifts between intravascular and extravascular compartments,</li>
+                  <li>Changes in temperature-dependent plasma volume or hemoconcentration beyond the entered UF value.</li>
+                </ul>
+                <p class="mt-1">Always verify predicted values with real laboratory data and use clinical judgment when adjusting CPB flow, prime strategy or transfusion.</p>
+              </li>
+            </ol>
+          </div>
+        </details>
       </section>
 
       <section id="view-lbm" class="hidden animate-in fade-in duration-300">
@@ -580,9 +731,28 @@
                 <option value="Hume">Hume</option>
               </select>
             </div>
+
+            <div class="space-y-1 sm:col-span-2">
+              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">BSA Formula</label>
+              <select id="lbm_bsa_formula" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white cursor-pointer">
+                <option value="Mosteller">Mosteller (default)</option>
+                <option value="DuBois">DuBois</option>
+                <option value="Haycock">Haycock</option>
+                <option value="GehanGeorge">Gehan–George</option>
+              </select>
+            </div>
           </div>
 
           <div class="p-6 pt-0 space-y-6">
+            <div class="bg-primary-900 dark:bg-black/20 p-6 text-white relative overflow-hidden rounded-2xl">
+              <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-accent-500 rounded-full opacity-10 blur-3xl"></div>
+
+              <div class="relative z-10 flex items-end justify-between">
+                <div class="text-slate-300 text-sm font-medium">LBM Result</div>
+                <div id="lbm_result" class="text-4xl font-bold tracking-tight text-white">0 <span class="text-lg font-normal text-slate-400">kg</span></div>
+              </div>
+            </div>
+
             <div class="grid md:grid-cols-3 gap-4">
               <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-4">
                 <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400">BMI</div>
@@ -590,41 +760,16 @@
                 <div id="bmi_badge" class="inline-flex mt-2 px-3 py-1 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-primary-800 text-slate-600 dark:text-slate-300">—</div>
               </div>
 
-              <div class="space-y-3">
-                <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-4">
-                  <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400">BSA (Actual)</div>
-                  <div id="bsa_actual_value" class="text-3xl font-bold text-primary-900 dark:text-white mt-1">—</div>
-                  <div class="text-xs text-slate-500 dark:text-slate-400">Mosteller formula</div>
-                </div>
-
-                <div class="bg-slate-50 dark:bg-primary-900/70 border border-slate-200 dark:border-primary-800 rounded-xl p-3 shadow-sm">
-                  <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400 mb-2">BSA Comparison (actual weight)</div>
-                  <div class="grid grid-cols-[1.4fr_auto] gap-y-1 text-sm">
-                    <div class="font-medium text-slate-600 dark:text-slate-300">Mosteller (default)</div>
-                    <div id="bsa_compare_mosteller" class="font-semibold text-primary-900 dark:text-white">—</div>
-                    <div class="text-slate-600 dark:text-slate-300">DuBois</div>
-                    <div id="bsa_compare_dubois" class="text-slate-700 dark:text-slate-200">—</div>
-                    <div class="text-slate-600 dark:text-slate-300">Haycock</div>
-                    <div id="bsa_compare_haycock" class="text-slate-700 dark:text-slate-200">—</div>
-                    <div class="text-slate-600 dark:text-slate-300">Gehan–George</div>
-                    <div id="bsa_compare_gehan" class="text-slate-700 dark:text-slate-200">—</div>
-                  </div>
-                </div>
+              <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-4">
+                <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400">BSA (Actual)</div>
+                <div id="bsa_actual_value" class="text-3xl font-bold text-primary-900 dark:text-white mt-1">—</div>
+                <div id="bsa_actual_note" class="text-xs text-slate-500 dark:text-slate-400">Mosteller formula</div>
               </div>
 
               <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-4">
                 <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400">BSA (Lean)</div>
                 <div id="bsa_lean_value" class="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">—</div>
                 <div id="bsa_lean_note" class="text-xs text-slate-500 dark:text-slate-400">Boer/Hume LBM — kg</div>
-              </div>
-            </div>
-
-            <div class="bg-primary-900 dark:bg-black/20 p-6 text-white relative overflow-hidden rounded-2xl">
-              <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-accent-500 rounded-full opacity-10 blur-3xl"></div>
-
-              <div class="relative z-10 flex items-end justify-between">
-                <div class="text-slate-300 text-sm font-medium">LBM Result</div>
-                <div id="lbm_result" class="text-4xl font-bold tracking-tight text-white">0 <span class="text-lg font-normal text-slate-400">kg</span></div>
               </div>
             </div>
 
@@ -666,23 +811,61 @@
           <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
             <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
           </summary>
-          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm">
-            <p class="font-semibold mb-2">Hume Formula (1966):</p>
-            <p class="mb-1">• Male: 0.32810 × W + 0.33929 × H − 29.5336</p>
-            <p class="mb-3">• Female: 0.29569 × W + 0.41813 × H − 43.2933</p>
+          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+            <div>
+              <p class="font-semibold mb-1">1. Definition of Lean Body Mass (LBM)</p>
+              <p>Lean body mass represents total body weight minus adipose tissue mass (fat-free mass). In perfusion and anesthesia it is often used as a surrogate for metabolically active tissue, which better reflects drug distribution and oxygen demand than total body weight in obese patients.</p>
+            </div>
 
-            <p class="font-semibold mb-2">Boer Formula (1984):</p>
-            <p class="mb-1">• Male: 0.407 × W + 0.267 × H − 19.2</p>
-            <p class="mb-3">• Female: 0.252 × W + 0.473 × H − 48.3</p>
+            <div class="space-y-1">
+              <p class="font-semibold mb-1">2. LBM formulas used in this calculator</p>
+              <p>Two adult LBM equations are provided. Height is in centimeters and weight in kilograms.</p>
+              <p class="font-semibold">Boer (1984) – commonly recommended for adults, including obesity</p>
+              <p>Male: LBM (kg) = 0.407 × Weight + 0.267 × Height − 19.2</p>
+              <p class="mb-2">Female: LBM (kg) = 0.252 × Weight + 0.473 × Height − 48.3</p>
+              <p class="font-semibold">Hume (1966) – earlier reference formula</p>
+              <p>Male: LBM (kg) = 0.32810 × Weight + 0.33929 × Height − 29.5336</p>
+              <p>Female: LBM (kg) = 0.29569 × Weight + 0.41813 × Height − 43.2933</p>
+              <p class="text-slate-500 dark:text-slate-500">The calculator allows switching between Boer and Hume so clinicians can compare results when evaluating very obese or very underweight patients.</p>
+            </div>
 
-            <p class="text-slate-400 mt-2">W = weight (kg), H = height (cm)</p>
+            <div class="space-y-1">
+              <p class="font-semibold mb-1">3. BMI and BSA (actual)</p>
+              <p><strong>BMI (kg/m²)</strong> = Weight (kg) ÷ [Height (m)]². BMI is shown for context only (e.g., normal range 18.5–24.9, obesity ≥30).</p>
+              <p><strong>Actual Body Surface Area – BSA (Mosteller)</strong></p>
+              <p>BSA_actual (m²) = √{ [Height (cm) × Weight (kg)] ÷ 3600 }.</p>
+              <p>Mosteller is widely used in clinical practice because it is simple and performs well across a broad range of body sizes.</p>
+            </div>
+
+            <div class="space-y-1">
+              <p class="font-semibold mb-1">4. Lean BSA based on LBM</p>
+              <p>To approximate the body surface area of lean mass only, the calculator first computes LBM (Boer or Hume) and then applies the same Mosteller structure using lean weight:</p>
+              <p>BSA_lean (m²) = √{ [Height (cm) × LBM (kg)] ÷ 3600 }.</p>
+              <p>This “lean BSA” is not a directly measured parameter, but a derived index that helps visualize how much of the patient’s large BSA is due to fat mass versus lean tissue.</p>
+            </div>
+
+            <div class="space-y-1">
+              <p class="font-semibold mb-1">5. Flow comparison table (CI 1.0–3.0)</p>
+              <p>The flow table shows how perfusion flow requirements change when indexed to actual BSA and lean BSA.</p>
+              <p>Flow_actual (L/min) = CI × BSA_actual</p>
+              <p>Flow_lean (L/min) = CI × BSA_lean</p>
+              <p>This allows quick comparison such as “At CI 2.4 L/min/m², how much flow do I deliver if I index to full BSA?” and “If I index to lean BSA instead, how much lower would the flow be for the same CI?”</p>
+              <p>In markedly obese patients, BSA_actual may suggest very high flows that exceed what is needed for metabolically active tissue, while BSA_lean can illustrate a more physiologic lower bound. Final flow selection must still consider SvO₂, lactate, arterial pressure, and institutional protocols.</p>
+            </div>
+
+            <div class="space-y-1">
+              <p class="font-semibold mb-1">6. Intended use and limitations</p>
+              <p>These formulas are validated for adults; they are not intended for pediatric patients. LBM and lean BSA are estimates, not direct measurements. Fluid shifts, edema, sarcopenia and extreme body habitus can all reduce accuracy.</p>
+              <p>The flow comparison table is a decision-support aid, not a prescription. Perfusion strategy should always be guided by real-time clinical monitoring and local guidelines.</p>
+              <p class="text-slate-500 dark:text-slate-500">For educational use only. Not medical advice or a regulated medical device.</p>
+            </div>
           </div>
         </details>
       </section>
 
       <section id="view-timecalc" class="hidden animate-in fade-in duration-300">
         <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 p-6">
-          <h2 class="text-xl font-semibold tracking-tight mb-2">Pump Time / Case Time Calculator</h2>
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Time Calculator</h2>
           <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Enter 24-hour start/end times to see elapsed minutes and an H:MM readout.</p>
 
           <div class="space-y-4" id="time-rows">
@@ -694,18 +877,24 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-start-1" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-1">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-1">Now</button>
+                  <div class="flex items-center gap-2">
+                    <input id="time-start-1" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-start-now-1" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-end-1" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-1">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-1">Now</button>
+                  <div class="flex items-center gap-2">
+                    <input id="time-end-1" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-end-now-1" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
@@ -723,18 +912,24 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-start-2" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-2">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-2">Now</button>
+                  <div class="flex items-center gap-2">
+                    <input id="time-start-2" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-start-now-2" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-end-2" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-2">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-2">Now</button>
+                  <div class="flex items-center gap-2">
+                    <input id="time-end-2" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-end-now-2" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
@@ -752,18 +947,24 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-start-3" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-3">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-3">Now</button>
+                  <div class="flex items-center gap-2">
+                    <input id="time-start-3" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-start-now-3" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-end-3" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-3">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-3">Now</button>
+                  <div class="flex items-center gap-2">
+                    <input id="time-end-3" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-end-now-3" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
@@ -781,18 +982,24 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-start-4" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-4">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-4">Now</button>
+                  <div class="flex items-center gap-2">
+                    <input id="time-start-4" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-start-now-4" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-end-4" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-4">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-4">Now</button>
+                  <div class="flex items-center gap-2">
+                    <input id="time-end-4" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-end-now-4" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
@@ -810,18 +1017,24 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-start-5" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-start-5">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-start-5">Now</button>
+                  <div class="flex items-center gap-2">
+                    <input id="time-start-5" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-start-now-5" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
-                  <div class="flex items-center gap-1">
-                    <input id="time-end-5" type="text" inputmode="numeric" pattern="^([01]?\\d|2[0-3]):[0-5]\\d$" placeholder="13:45" list="time-suggestions" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-picker-target="time-end-5">▾</button>
-                    <button type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-2 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-400" data-now-target="time-end-5">Now</button>
+                  <div class="flex items-center gap-2">
+                    <input id="time-end-5" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <button id="time-end-now-5" type="button" class="p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
@@ -832,38 +1045,56 @@
             </div>
           </div>
 
-          <div class="mt-3 text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
-            <p>Use a 24-hour HH:MM format.</p>
-            <p>Overnight cases add 24h automatically; durations beyond a day will display as 25:xx to show rollover.</p>
-            <p>The dropdown arrow opens the picker, and the timer button inserts the current time.</p>
-          </div>
+          <details class="mt-4 group">
+            <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+              <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
+            </summary>
+            <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">1. Purpose</p>
+                <p>This time calculator is designed to quickly estimate elapsed time in minutes and H:MM format between two clock times. It is intended for tasks such as documenting CPB time, cross-clamp time, cardioplegia intervals, ECMO procedure time blocks, or other peri-operative events where only start and end times are known.</p>
+              </div>
 
-          <datalist id="time-suggestions">
-            <option value="00:00"></option>
-            <option value="01:00"></option>
-            <option value="02:00"></option>
-            <option value="03:00"></option>
-            <option value="04:00"></option>
-            <option value="05:00"></option>
-            <option value="06:00"></option>
-            <option value="07:00"></option>
-            <option value="08:00"></option>
-            <option value="09:00"></option>
-            <option value="10:00"></option>
-            <option value="11:00"></option>
-            <option value="12:00"></option>
-            <option value="13:00"></option>
-            <option value="14:00"></option>
-            <option value="15:00"></option>
-            <option value="16:00"></option>
-            <option value="17:00"></option>
-            <option value="18:00"></option>
-            <option value="19:00"></option>
-            <option value="20:00"></option>
-            <option value="21:00"></option>
-            <option value="22:00"></option>
-            <option value="23:00"></option>
-          </datalist>
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">2. Input format</p>
+                <p>Times are entered in 24-hour format as HH:MM.</p>
+                <p>Valid range: 00:00–23:59.</p>
+                <p>Examples: 07:15, 13:40, 21:05.</p>
+                <p>The fields accept four digits; after four digits are typed (e.g., 1345), the value is auto-formatted to 13:45.</p>
+                <p class="text-slate-500 dark:text-slate-500">Each row is independent and can be labelled (e.g., “CPB on–off”, “Cross-clamp”, “Circulatory arrest”).</p>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">3. Core calculation</p>
+                <p>For each row:</p>
+                <p>Convert start and end times to total minutes from midnight:</p>
+                <p class="font-mono text-[11px]">totalMinutes = 60 × HH + MM</p>
+                <p>If the end time is later or equal to the start time (same day):</p>
+                <p class="font-mono text-[11px]">durationMinutes = endMinutes − startMinutes</p>
+                <p>If the end time is earlier than the start time, the tool assumes the interval crosses midnight and adds 24 hours:</p>
+                <p class="font-mono text-[11px]">durationMinutes = (endMinutes + 24 × 60) − startMinutes</p>
+                <p>The result is reported as:</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Minutes (integer), and</li>
+                  <li>H:MM format, obtained by: <span class="font-mono text-[11px]">hours = floor(durationMinutes ÷ 60)</span> and <span class="font-mono text-[11px]">minutes = durationMinutes mod 60</span>, displayed as H:MM with a leading zero for minutes (e.g., 3:05).</li>
+                </ul>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">4. Validation and rounding</p>
+                <p>Inputs outside 00:00–23:59 are rejected.</p>
+                <p>Seconds are not supported; any sub-minute timing should be rounded to the nearest minute before entry.</p>
+                <p>All durations are exact in minutes; no additional rounding is applied.</p>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">5. Clinical use &amp; limitations</p>
+                <p>Useful for: CPB pump time, cross-clamp time, circulatory arrest time; cardioplegia dosing intervals or ECMO procedure segments; operating room or ICU workflow time stamps.</p>
+                <p>The calculator does not store dates and cannot distinguish different calendar days; any interval longer than 24 hours must be split manually.</p>
+                <p class="text-slate-500 dark:text-slate-500">Results are for documentation and workflow support only and do not replace clinical records, perfusion charts, or institutional time-keeping systems. For educational use only. Not medical advice or a regulated medical device.</p>
+              </div>
+            </div>
+          </details>
         </div>
       </section>
 
@@ -927,17 +1158,34 @@
       </section>
 
       <section id="view-contact" class="hidden animate-in fade-in duration-300">
-        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-6">
-          <h2 class="text-2xl font-bold text-primary-900 dark:text-white mb-2">Contact</h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Feedback or feature requests?</p>
-          <form id="contact-form" class="grid gap-4">
-             <input id="c_name" type="text" placeholder="Name" class="bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-3 dark:text-white outline-none focus:ring-2 focus:ring-accent-500">
-             <input id="c_email" type="email" placeholder="Email" class="bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-3 dark:text-white outline-none focus:ring-2 focus:ring-accent-500">
-             <textarea id="c_msg" rows="4" placeholder="Message" class="bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-3 dark:text-white outline-none focus:ring-2 focus:ring-accent-500"></textarea>
-             <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 rounded-xl transition-colors">Send Message</button>
-             <p id="c_status" class="text-center text-sm text-slate-500"></p>
-             <a id="c_mailto" href="#" class="hidden"></a>
-          </form>
+        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-6 flex flex-col gap-4">
+          <div class="flex flex-col gap-2">
+            <h2 class="text-2xl font-bold text-primary-900 dark:text-white">Contact</h2>
+            <p class="text-sm text-slate-600 dark:text-slate-300">We value your feedback. For feature requests or bug reports, please contact us:</p>
+          </div>
+          <div class="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+            <address class="not-italic text-lg font-semibold text-primary-900 dark:text-white flex items-center gap-2" aria-label="Contact email address">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12H8m8 0V8m0 4v4m4-10v10a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h12a2 2 0 012 2z" />
+              </svg>
+              <span id="contact-email" class="break-all">perfusiontools@gmail.com</span>
+            </address>
+            <div class="flex items-center gap-2">
+              <a id="contact-mailto" href="mailto:perfusiontools@gmail.com" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary-600 text-white text-sm font-medium shadow-sm hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12H8m0 0l4-4m-4 4l4 4" />
+                </svg>
+                <span>Send Email</span>
+              </a>
+              <button id="contact-copy" type="button" class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 text-sm font-medium text-primary-900 dark:text-white shadow-sm hover:border-accent-500 hover:text-accent-500 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8M8 12h8m-5 8h5a2 2 0 002-2V6a2 2 0 00-2-2h-5m-4 4H7a2 2 0 00-2 2v8a2 2 0 002 2h5a2 2 0 002-2v-1" />
+                </svg>
+                <span>Copy Address</span>
+              </button>
+            </div>
+          </div>
+          <div id="contact-toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-primary-900 text-white px-4 py-2 rounded-full shadow-lg text-sm opacity-0 translate-y-2 pointer-events-none transition-all duration-300 hidden">Copied!</div>
         </div>
       </section>
 
