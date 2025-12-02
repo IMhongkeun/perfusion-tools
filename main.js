@@ -777,6 +777,50 @@ function initTimeCalculator() {
 }
 
 // -----------------------------
+// Contact actions
+// -----------------------------
+function setupContactActions() {
+  const email = 'perfusiontools@gmail.com';
+  const mailLink = el('contact-mailto');
+  const copyBtn = el('contact-copy');
+  const toast = el('contact-toast');
+  const emailText = el('contact-email');
+
+  if (mailLink) mailLink.href = `mailto:${email}`;
+  if (emailText) emailText.textContent = email;
+
+  const showToast = (message) => {
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.remove('opacity-0', 'translate-y-2', 'pointer-events-none', 'hidden');
+    setTimeout(() => {
+      toast.classList.add('opacity-0', 'translate-y-2', 'pointer-events-none');
+      setTimeout(() => toast.classList.add('hidden'), 250);
+    }, 2000);
+  };
+
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      try {
+        if (navigator?.clipboard?.writeText) {
+          await navigator.clipboard.writeText(email);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = email;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        showToast('Copied!');
+      } catch (err) {
+        showToast('Copy failed');
+      }
+    });
+  }
+}
+
+// -----------------------------
 // Router & Navigation Styling
 // -----------------------------
 function route() {
@@ -956,17 +1000,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (x) x.addEventListener('change', updateLBM);
   });
 
-  // Contact form handler
-  const cform = document.getElementById('contact-form');
-  if (cform) {
-    cform.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const name = el('c_name').value;
-      const status = el('c_status');
-      status.textContent = `Thanks ${name || 'user'}, opening mail client...`;
-      setTimeout(() => status.textContent = '', 3000);
-    });
-  }
+  setupContactActions();
 
   initTimeCalculator();
 
