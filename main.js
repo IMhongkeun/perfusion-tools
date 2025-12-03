@@ -86,47 +86,47 @@ function getCurrentTimeHHMM() {
 const CANONICAL_BASE = 'https://perfusion.pro/';
 const SEO_META = {
   'do2i': {
-    title: 'Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator',
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
     description: 'Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets.',
     canonicalHash: '#/do2i'
   },
   'predicted-hct': {
-    title: 'Predicted Hematocrit on CPB — Hemodilution Calculator',
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
     description: 'Estimate on-pump hematocrit from EBV, prime, ultrafiltration and RBC units.',
     canonicalHash: '#/predicted-hct'
   },
   'lbm': {
-    title: 'Lean Body Mass Calculator for Perfusion (Boer & Hume)',
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
     description: 'Calculate LBM and Lean BSA for CPB flow management and compare actual vs lean flow rates for obese patients.',
     canonicalHash: '#/lbm'
   },
   'bsa': {
-    title: 'Body Surface Area (BSA) Calculator — Perfusion Tools',
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
     description: 'Compute BSA using Mosteller, DuBois and other formulas to guide indexed perfusion flows.',
     canonicalHash: '#/bsa'
   },
   'timecalc': {
-    title: 'Time Calculator — Pump Time & Case Time',
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
     description: 'Quickly calculate case durations with HH:MM inputs and automatic time formatting.',
     canonicalHash: '#/timecalc'
   },
   'faq': {
-    title: 'Perfusionist Calculators — FAQ & Educational Notes',
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
     description: 'Common questions about DO₂i, predicted hematocrit, GDP and lean body mass during CPB.',
     canonicalHash: '#/faq'
   },
   'privacy': {
-    title: 'Privacy Policy — Perfusion Tools',
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
     description: 'Learn how Perfusion Tools handles browser-based calculations without storing personal data.',
     canonicalHash: '#/privacy'
   },
   'terms': {
-    title: 'Terms of Service — Perfusion Tools',
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
     description: 'Understand the usage terms and disclaimers for the Perfusion Tools calculators.',
     canonicalHash: '#/terms'
   },
   'contact': {
-    title: 'Contact — Perfusion Tools',
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
     description: 'Get in touch with Perfusion Tools with questions or feedback about CPB calculators.',
     canonicalHash: '#/contact'
   }
