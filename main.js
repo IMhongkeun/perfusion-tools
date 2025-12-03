@@ -196,7 +196,8 @@ function updateBsaFlowList(bsaVal) {
     const ci = ciTenths / 10;
     const flow = ci * bsaVal;
     const row = document.createElement('div');
-    row.className = 'grid grid-cols-[1fr_auto] items-center py-1.5 text-sm border-b border-slate-100 dark:border-primary-800 last:border-0 gap-3';
+    const highlight = Math.abs(ci - 2.4) < 0.05;
+    row.className = 'grid grid-cols-[1fr_auto] items-center py-1.5 text-sm border-b border-slate-100 dark:border-primary-800 last:border-0 gap-3' + (highlight ? ' bg-amber-50 dark:bg-amber-900/20 rounded-md px-2' : '');
     row.innerHTML = `<span class="font-mono text-xs text-slate-500 dark:text-slate-400">CI ${ci.toFixed(1)}</span><span class="font-semibold text-primary-900 dark:text-white">${flow.toFixed(2)} L/min</span>`;
     list.appendChild(row);
   }
