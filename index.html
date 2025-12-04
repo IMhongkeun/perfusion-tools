@@ -2,28 +2,23 @@
 <html lang="en" class="scroll-smooth">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WZYBQ2VC7E"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-WZYBQ2VC7E');
-</script>
-  
-  <title>Perfusion Calculator — GDP & Predicted Hct | Perfusion Tools</title>
-  <meta name="description" content="Professional perfusion calculators for CPB. Goal-Directed Perfusion (GDP) evaluation and Predicted Hematocrit with hemodilution logic. Essential tools for perfusionists and ECMO specialists." />
+  <title>Perfusion Tools – CPB &amp; ECMO Perfusion Calculators</title>
+  <meta name="description" content="Perfusion Tools is a CPB &amp; ECMO perfusion calculator suite for perfusionists, including BSA, CI, DO2i, pump flow, heparin management, and more." />
   <meta name="keywords" content="perfusion calculator, GDP calculator, DO2i calculator, predicted Hct, CPB hemodilution, ECMO calculator, cardiac surgery tools, perfusionist, BSA calculator" />
   <meta name="theme-color" content="#0f172a" />
-  
+  <meta name="naver-site-verification" content="2aa598e2e172ada13caa61eb57fc020beef8fc75" />
+
+  <link rel="canonical" href="https://perfusiontools.com/#/do2i" />
+
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Perfusion Calculator — DO₂i & Predicted Hct" />
-  <meta property="og:description" content="Clinical tools for calculating Oxygen Delivery Index and Predicted Hematocrit on Bypass. Features Dark Mode and mobile-friendly design." />
-  <meta property="og:url" content="https://perfusion.pro/" />
+  <meta property="og:title" content="Perfusion Tools – CPB &amp; ECMO Perfusion Calculators" />
+  <meta property="og:description" content="Bedside perfusion calculators for CPB &amp; ECMO: BSA, CI, DO2i, pump flow, heparin management, and more." />
+  <meta property="og:url" content="https://perfusiontools.com" />
   <meta property="og:image" content="https://perfusion.pro/og-image.png" /> <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="twitter:title" content="Perfusion Tools – CPB &amp; ECMO Perfusion Calculators" />
+  <meta name="twitter:description" content="Bedside perfusion calculators for CPB &amp; ECMO: BSA, CI, DO2i, pump flow, heparin management, and more." />
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -145,6 +140,16 @@
     ]
   }
   </script>
+
+  <!-- Google Analytics 4 -->
+  <!-- TODO: Replace G-WZYBQ2VC7E with the real measurement ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZYBQ2VC7E"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-WZYBQ2VC7E');
+  </script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0">
 
@@ -159,14 +164,15 @@
     <div class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-accent-400 rounded-full animate-ping opacity-75" style="animation-duration: 2s;"></div>
   </div>
   
-  <h1 class="text-lg font-bold tracking-tight">
+  <div class="text-lg font-bold tracking-tight">
     Perfusion <span class="text-accent-400">Tools</span>
-  </h1>
+  </div>
 </a>
 
       <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
         <a href="#/bsa" id="nav-bsa" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">BSA</a>
         <a href="#/do2i" id="nav-do2i" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">GDP</a>
+        <a href="#/heparin" id="nav-heparin" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Heparin</a>
         <a href="#/predicted-hct" id="nav-hct" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Predicted Hct</a>
         <a href="#/lbm" id="nav-lbm" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">LBM</a>
         <a href="#/timecalc" id="nav-time" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Time</a>
@@ -195,6 +201,9 @@
         <a href="#/do2i" id="side-do2i" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
           GDP Calculator
         </a>
+        <a href="#/heparin" id="side-heparin" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
+          Heparin Management
+        </a>
         <a href="#/predicted-hct" id="side-hct" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
           Predicted Hematocrit
         </a>
@@ -213,7 +222,14 @@
     </aside>
 
     <main class="p-4 md:p-8 max-w-3xl mx-auto w-full space-y-8">
-      
+
+      <section class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
+        <div class="p-6 space-y-3">
+          <h1 class="text-2xl font-bold text-primary-900 dark:text-white">Perfusion Tools – CPB &amp; ECMO Perfusion Calculators</h1>
+          <p class="text-sm text-slate-600 dark:text-slate-300">Perfusion Tools provides evidence-based calculators for BSA, cardiac index (CI), DO2i, pump flow, and heparin dosing to support goal-directed perfusion during CPB and ECMO.</p>
+        </div>
+      </section>
+
             <section id="view-do2i" class="hidden animate-in fade-in duration-300">
 
         <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
@@ -354,10 +370,40 @@
           <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
             <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
           </summary>
-          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-2">
-             <p><strong>CaO₂ (mL/dL)</strong> = 1.34 × Hb × (SaO₂/100) + 0.0031 × PaO₂. Hüfner factor 1.34; dissolved O₂ coefficient 0.0031.</p>
-             <p><strong>DO₂i (mL/min/m²)</strong> = (Flow ÷ BSA) × CaO₂ × 10.</p>
-             <p><strong>Required pump flow</strong> = (Target DO₂i × BSA) ÷ (CaO₂ × 10). Evaluate adequacy around the target band (±10%) and adjust with full clinical context.</p>
+          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+            <ol class="list-decimal pl-4 space-y-3">
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Arterial oxygen content (CaO₂)</p>
+                <p>CaO₂ (mL/dL) = 1.34 × Hb (g/dL) × (SaO₂ / 100) + 0.0031 × PaO₂ (mmHg). We assume a Hüfner constant of 1.34 mL O₂ per gram of Hb and a dissolved O₂ coefficient of 0.0031 mL·dL⁻¹·mmHg⁻¹. The contribution of dissolved O₂ is usually small at normal PaO₂.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Indexed oxygen delivery (DO₂i)</p>
+                <p>DO₂i (mL/min/m²) = (Pump flow ÷ BSA) × CaO₂ × 10. Pump flow is entered in L/min and BSA in m². Multiplying by 10 converts CaO₂ from mL/dL to mL/L so that the final unit is mL O₂ per minute per m².</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Temperature-adjusted metabolic demand</p>
+                <p>Patient temperature strongly affects whole-body oxygen consumption (VO₂). As a simplifying assumption, this calculator applies a Q₁₀-type relationship where VO₂ falls as temperature decreases from 37 °C, but a “dampened” curve is used so that targets do not drop as steeply as metabolic rate. This reflects common clinical practice: hypothermia reduces demand, but we still maintain a safety margin for organs such as the kidney and brain.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Target DO₂i bands (Goal-Directed Perfusion)</p>
+                <p>At normothermia (≈37 °C) many adult CPB programs aim to maintain DO₂i ≥ 280–300 mL/min/m² to reduce the risk of anaerobic metabolism and postoperative acute kidney injury. At lower temperatures the calculator reduces the recommended target range, but never below a conservative lower floor (e.g. around 220 mL/min/m²), even when theoretical VO₂ would allow lower values. Targets are displayed as “Low / Borderline / Target / High” bands on the gauge for quick bedside interpretation.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Required pump flow for a chosen DO₂i goal</p>
+                <p>For a selected DO₂i target, the corresponding pump flow is: Required flow (L/min) = (Target DO₂i × BSA) ÷ (CaO₂ × 10). This is a theoretical value based on current Hb, SaO₂, PaO₂ and BSA. In practice, flow should also respect institutional minimum/maximum flow policies and patient-specific constraints (e.g. cannula size, arterial pressure, ventricular distension).</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Clinical use and limitations</p>
+                <p>The calculator is intended to support goal-directed perfusion, not to replace local protocols or clinical judgment. Final flow and DO₂i settings should always be interpreted together with:</p>
+                <ul class="list-disc pl-4 space-y-1 mt-1">
+                  <li>Mixed or central venous saturation (SvO₂/ScvO₂)</li>
+                  <li>Lactate trends</li>
+                  <li>Urine output and other organ-perfusion markers</li>
+                  <li>Hemodynamics and surgical field conditions</li>
+                </ul>
+                <p class="mt-1">All formulas assume complete mixing in the CPB circuit and do not account for ongoing blood loss, retransfusion, or major changes in oxygen extraction. Values are approximate and for educational use by trained clinicians only.</p>
+              </li>
+            </ol>
           </div>
         </details>
 
@@ -432,15 +478,74 @@
               </div>
             </div>
 
-            <details class="group">
+              <details class="group">
               <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
                 <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
               </summary>
-              <div class="mt-2 p-4 rounded-xl bg-slate-50 dark:bg-primary-800/60 border border-slate-100 dark:border-primary-700/60 text-xs text-slate-600 dark:text-slate-300 leading-relaxed space-y-2">
-                <p><strong>Mosteller</strong>: BSA = √((Height(cm) × Weight(kg)) ÷ 3600). Fast, common clinical default.</p>
-                <p><strong>DuBois</strong>: BSA = 0.007184 × Height(cm)<sup>0.725</sup> × Weight(kg)<sup>0.425</sup>. Historical reference standard.</p>
-                <p><strong>Haycock</strong>: BSA = 0.024265 × Height(cm)<sup>0.3964</sup> × Weight(kg)<sup>0.5378</sup>. Higher accuracy in infants and pediatrics.</p>
-                <p><strong>Boyd</strong>: BSA = 0.0003207 × Height(cm)<sup>0.3</sup> × Weight(g)<sup>0.7285 − 0.0188·log₁₀(Weight(g))</sup>. Useful in obesity (BMI&gt;30) with mass-adjusted exponent.</p>
+              <div class="mt-2 p-4 rounded-xl bg-slate-50 dark:bg-primary-800/60 border border-slate-100 dark:border-primary-700/60 text-xs text-slate-600 dark:text-slate-300 leading-relaxed space-y-4">
+                <div class="space-y-1">
+                  <h5 class="text-sm font-semibold text-primary-900 dark:text-white">What is BSA and why does it matter?</h5>
+                  <p>Body surface area (BSA) is an estimate of a patient’s external body size. In perfusion it is used to index pump flow, DO₂i, drug dosing and heat-exchange settings. All formulas below use Height in cm and Weight in kg and are empiric fits to population data – they are not exact, but close enough for clinical use when applied consistently.</p>
+                </div>
+
+                <div class="space-y-2">
+                  <h5 class="text-sm font-semibold text-primary-900 dark:text-white">Mosteller formula</h5>
+                  <div class="font-semibold">Mosteller:</div>
+                  <div class="bg-white/80 dark:bg-primary-900/70 border border-slate-200 dark:border-primary-700 rounded-lg px-4 py-2 font-mono text-[11px] text-primary-900 dark:text-slate-100">
+                    BSA = √((Height(cm) × Weight(kg)) / 3600)
+                  </div>
+                  <ul class="list-disc pl-5 space-y-1">
+                    <li>Very simple and fast to calculate (only one square-root).</li>
+                    <li>For most adults with BMI 18–35, it gives values very close to more complex formulas.</li>
+                    <li>Because of its simplicity, it has become a de-facto clinical default in many CPB and ECMO centers.</li>
+                  </ul>
+                </div>
+
+                <div class="space-y-2">
+                  <h5 class="text-sm font-semibold text-primary-900 dark:text-white">DuBois &amp; DuBois formula</h5>
+                  <div class="font-semibold">DuBois:</div>
+                  <div class="bg-white/80 dark:bg-primary-900/70 border border-slate-200 dark:border-primary-700 rounded-lg px-4 py-2 font-mono text-[11px] text-primary-900 dark:text-slate-100">
+                    BSA = 0.007184 × Height(cm)<sup>0.725</sup> × Weight(kg)<sup>0.425</sup>
+                  </div>
+                  <ul class="list-disc pl-5 space-y-1">
+                    <li>Historical “reference standard” derived from direct body-surface measurements on a small adult cohort.</li>
+                    <li>Slightly lower BSA than Mosteller in very light or very heavy patients, but differences are usually &lt;3–5%.</li>
+                    <li>Still used in some pharmacology and physiology papers, so it is useful when you want to reproduce values from the literature.</li>
+                  </ul>
+                </div>
+
+                <div class="space-y-2">
+                  <h5 class="text-sm font-semibold text-primary-900 dark:text-white">Haycock formula</h5>
+                  <div class="font-semibold">Haycock:</div>
+                  <div class="bg-white/80 dark:bg-primary-900/70 border border-slate-200 dark:border-primary-700 rounded-lg px-4 py-2 font-mono text-[11px] text-primary-900 dark:text-slate-100">
+                    BSA = 0.024265 × Height(cm)<sup>0.3964</sup> × Weight(kg)<sup>0.5378</sup>
+                  </div>
+                  <ul class="list-disc pl-5 space-y-1">
+                    <li>Developed from a large pediatric dataset.</li>
+                    <li>Generally considered to have better accuracy in infants and children, especially in low-weight ranges.</li>
+                    <li>Many pediatric cardiac programs prefer Haycock when indexing flow or valve/vascular dimensions.</li>
+                  </ul>
+                </div>
+
+                <div class="space-y-2">
+                  <h5 class="text-sm font-semibold text-primary-900 dark:text-white">Gehan–George / Boyd or other “obesity-friendly” formulas</h5>
+                  <ul class="list-disc pl-5 space-y-1">
+                    <li>These formulas adjust the exponents or constants to behave more realistically in patients with very high body weight or BMI.</li>
+                    <li>They tend to give slightly lower BSA than Mosteller in severe obesity, avoiding extreme indexed values that clearly do not match the patient’s physiologic reserve.</li>
+                    <li>Useful when you want to perform sensitivity analysis in obese patients (e.g. compare “standard BSA” vs “obesity-adjusted BSA”).</li>
+                  </ul>
+                </div>
+
+                <div class="space-y-2">
+                  <h5 class="text-sm font-semibold text-primary-900 dark:text-white">Practical tips for perfusionists</h5>
+                  <ul class="list-disc pl-5 space-y-1">
+                    <li>For general adult CPB/ECMO, using Mosteller as the default is reasonable and widely accepted.</li>
+                    <li>For pediatric cases, consider Haycock (or your institutional standard) and keep the same formula throughout the case and across all flow/DO₂i calculations.</li>
+                    <li>In obese patients (BMI ≥30), you may compare Mosteller vs an obesity-adjusted formula (e.g. Gehan–George / Boyd) to understand how much BSA – and therefore CI/DO₂i – changes.</li>
+                    <li>More important than the “perfect” formula is internal consistency: once your program chooses a BSA formula, use it across perfusion flows, DO₂i targets, drug dosing and documentation.</li>
+                    <li>Remember that BSA is only a surrogate for metabolic demand. Always interpret indexed values together with clinical context (temperature, SvO₂/ScvO₂, lactate, urine output, organ function).</li>
+                  </ul>
+                </div>
               </div>
             </details>
           </div>
@@ -531,19 +636,79 @@
             </div>
           </div>
 
-           <div class="bg-slate-50 dark:bg-primary-800/30 border-t border-slate-100 dark:border-primary-700/50 p-4">
-            <h4 class="text-xs font-bold text-primary-900 dark:text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-2">
+            <div class="bg-slate-50 dark:bg-primary-800/30 border-t border-slate-100 dark:border-primary-700/50 p-4">
+             <h4 class="text-xs font-bold text-primary-900 dark:text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-2">
               <svg class="w-4 h-4 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
               Clinical Context
-            </h4>
-            <div class="text-xs text-slate-600 dark:text-slate-400 space-y-1">
+             </h4>
+             <div class="text-xs text-slate-600 dark:text-slate-400 space-y-1">
               <p>• <strong>Target Hct:</strong> Often 21–25% on bypass. Lower Hct reduces viscosity but also oxygen carrying capacity.</p>
               <p>• <strong>Adjustments:</strong> Reducing prime volume (RAP/VAP) or adding RBCs increases Hct. Adding crystalloid decreases Hct.</p>
               <p>• <strong>Hemoconcentration:</strong> Use Ultrafiltration (UF) to remove plasma water and increase Hct.</p>
+             </div>
+             <p class="mt-3 text-[10px] text-slate-400 italic">For educational use only.</p>
             </div>
-            <p class="mt-3 text-[10px] text-slate-400 italic">For educational use only.</p>
           </div>
-        </div>
+        
+        <details class="mt-4 group">
+          <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+            <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
+          </summary>
+          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+            <ol class="list-decimal pl-4 space-y-3">
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Estimated blood volume (EBV)</p>
+                <p>This calculator uses a simple weight-based model for circulating blood volume: EBV (mL) = Weight (kg) × EBV coefficient (mL/kg). Typical default coefficients are:</p>
+                <ul class="list-disc pl-4 space-y-1 mt-1">
+                  <li>Adult male: 70 mL/kg</li>
+                  <li>Adult female: 65 mL/kg</li>
+                  <li>Child: 75 mL/kg</li>
+                  <li>Infant: 80 mL/kg</li>
+                  <li>Neonate: 90 mL/kg</li>
+                </ul>
+                <p class="mt-1">These values are derived from population averages and may be adjusted in this tool when clinical judgment suggests a higher or lower blood volume (e.g. severe obesity, cachexia, fluid overload or dehydration).</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Pre-CPB red cell volume</p>
+                <p>Pre-bypass red cell volume is estimated from the patient’s hematocrit (Hct) and EBV: RBC_patient (mL) = EBV × (Pre-CPB Hct ÷ 100). This assumes the pre-CPB Hct is measured after induction and line placement, and that blood is evenly distributed in the circulation.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Circuit prime and crystalloid / ultrafiltration</p>
+                <p>The total intravascular volume at the time of sampling is modeled as:</p>
+                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">V_total (mL) = EBV + Prime volume + Additional crystalloid / colloid + RBC product volume − Ultrafiltration removed.</p>
+                <p>“Prime volume” includes the cardiopulmonary bypass circuit prime and any pre-bypass volume added directly to the patient through the circuit. “Additional crystalloid” represents fluids such as cardioplegia carrier solution, albumin, mannitol, or other volume expanders that effectively dilute the circulating red cell mass. “Ultrafiltration removed” accounts for hemoconcentration techniques (UF, MUF, Z-BUF) that remove plasma water and reduce total volume.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Packed red blood cell (RBC) products</p>
+                <p>Red cell volume contributed by transfused RBCs is modeled as:</p>
+                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">RBC_products (mL) = (Number of units × Volume per unit) × (Unit Hct ÷ 100).</p>
+                <p>Default values often assume ~300 mL/unit with a unit Hct around 60%, but these may be adjusted to reflect local blood bank characteristics or specific product labels.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Predicted hematocrit on CPB</p>
+                <p>The predicted hematocrit after mixing patient blood, prime, additional fluids and RBC products is:</p>
+                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">Predicted Hct (%) = (RBC_patient + RBC_products) ÷ V_total × 100.</p>
+                <p>This represents a simple mixing model at the time of interest (e.g. shortly after going on CPB or after a planned RBC addition). It assumes complete and rapid mixing in the circuit and does not automatically account for ongoing bleeding, cell saver reinfusion, or major changes in plasma volume after the calculation.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Clinical interpretation and typical targets</p>
+                <p>Many adult programs aim for an on-pump Hct around 21–30%, balancing lower viscosity and improved microcirculatory flow against adequate oxygen carrying capacity. Pediatric and neonatal patients often require higher Hct targets because of limited physiologic reserve and higher relative metabolic demand. Hct targets should be individualized according to patient age, comorbidities (e.g. cerebrovascular disease, coronary disease, pulmonary hypertension), procedural complexity, and institutional policy.</p>
+                <p>This calculator is intended to support planning of prime composition, ultrafiltration strategy and transfusion timing. Final decisions must be based on real-time laboratory measurements, hemodynamics, organ perfusion markers and local protocols.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Limitations</p>
+                <p>This is an approximate model for educational and decision-support use only. It does not replace actual Hct measurement from arterial or venous blood samples, nor does it account for:</p>
+                <ul class="list-disc pl-4 space-y-1 mt-1">
+                  <li>Acute intra-operative blood loss not yet replaced,</li>
+                  <li>Large volume cardiotomy suction return or cell-saver reinfusion,</li>
+                  <li>Rapid shifts between intravascular and extravascular compartments,</li>
+                  <li>Changes in temperature-dependent plasma volume or hemoconcentration beyond the entered UF value.</li>
+                </ul>
+                <p class="mt-1">Always verify predicted values with real laboratory data and use clinical judgment when adjusting CPB flow, prime strategy or transfusion.</p>
+              </li>
+            </ol>
+          </div>
+        </details>
       </section>
 
       <section id="view-lbm" class="hidden animate-in fade-in duration-300">
@@ -661,16 +826,54 @@
           <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
             <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
           </summary>
-          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm">
-            <p class="font-semibold mb-2">Hume Formula (1966):</p>
-            <p class="mb-1">• Male: 0.32810 × W + 0.33929 × H − 29.5336</p>
-            <p class="mb-3">• Female: 0.29569 × W + 0.41813 × H − 43.2933</p>
+          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+            <div>
+              <p class="font-semibold mb-1">1. Definition of Lean Body Mass (LBM)</p>
+              <p>Lean body mass represents total body weight minus adipose tissue mass (fat-free mass). In perfusion and anesthesia it is often used as a surrogate for metabolically active tissue, which better reflects drug distribution and oxygen demand than total body weight in obese patients.</p>
+            </div>
 
-            <p class="font-semibold mb-2">Boer Formula (1984):</p>
-            <p class="mb-1">• Male: 0.407 × W + 0.267 × H − 19.2</p>
-            <p class="mb-3">• Female: 0.252 × W + 0.473 × H − 48.3</p>
+            <div class="space-y-1">
+              <p class="font-semibold mb-1">2. LBM formulas used in this calculator</p>
+              <p>Two adult LBM equations are provided. Height is in centimeters and weight in kilograms.</p>
+              <p class="font-semibold">Boer (1984) – commonly recommended for adults, including obesity</p>
+              <p>Male: LBM (kg) = 0.407 × Weight + 0.267 × Height − 19.2</p>
+              <p class="mb-2">Female: LBM (kg) = 0.252 × Weight + 0.473 × Height − 48.3</p>
+              <p class="font-semibold">Hume (1966) – earlier reference formula</p>
+              <p>Male: LBM (kg) = 0.32810 × Weight + 0.33929 × Height − 29.5336</p>
+              <p>Female: LBM (kg) = 0.29569 × Weight + 0.41813 × Height − 43.2933</p>
+              <p class="text-slate-500 dark:text-slate-500">The calculator allows switching between Boer and Hume so clinicians can compare results when evaluating very obese or very underweight patients.</p>
+            </div>
 
-            <p class="text-slate-400 mt-2">W = weight (kg), H = height (cm)</p>
+            <div class="space-y-1">
+              <p class="font-semibold mb-1">3. BMI and BSA (actual)</p>
+              <p><strong>BMI (kg/m²)</strong> = Weight (kg) ÷ [Height (m)]². BMI is shown for context only (e.g., normal range 18.5–24.9, obesity ≥30).</p>
+              <p><strong>Actual Body Surface Area – BSA (Mosteller)</strong></p>
+              <p>BSA_actual (m²) = √{ [Height (cm) × Weight (kg)] ÷ 3600 }.</p>
+              <p>Mosteller is widely used in clinical practice because it is simple and performs well across a broad range of body sizes.</p>
+            </div>
+
+            <div class="space-y-1">
+              <p class="font-semibold mb-1">4. Lean BSA based on LBM</p>
+              <p>To approximate the body surface area of lean mass only, the calculator first computes LBM (Boer or Hume) and then applies the same Mosteller structure using lean weight:</p>
+              <p>BSA_lean (m²) = √{ [Height (cm) × LBM (kg)] ÷ 3600 }.</p>
+              <p>This “lean BSA” is not a directly measured parameter, but a derived index that helps visualize how much of the patient’s large BSA is due to fat mass versus lean tissue.</p>
+            </div>
+
+            <div class="space-y-1">
+              <p class="font-semibold mb-1">5. Flow comparison table (CI 1.0–3.0)</p>
+              <p>The flow table shows how perfusion flow requirements change when indexed to actual BSA and lean BSA.</p>
+              <p>Flow_actual (L/min) = CI × BSA_actual</p>
+              <p>Flow_lean (L/min) = CI × BSA_lean</p>
+              <p>This allows quick comparison such as “At CI 2.4 L/min/m², how much flow do I deliver if I index to full BSA?” and “If I index to lean BSA instead, how much lower would the flow be for the same CI?”</p>
+              <p>In markedly obese patients, BSA_actual may suggest very high flows that exceed what is needed for metabolically active tissue, while BSA_lean can illustrate a more physiologic lower bound. Final flow selection must still consider SvO₂, lactate, arterial pressure, and institutional protocols.</p>
+            </div>
+
+            <div class="space-y-1">
+              <p class="font-semibold mb-1">6. Intended use and limitations</p>
+              <p>These formulas are validated for adults; they are not intended for pediatric patients. LBM and lean BSA are estimates, not direct measurements. Fluid shifts, edema, sarcopenia and extreme body habitus can all reduce accuracy.</p>
+              <p>The flow comparison table is a decision-support aid, not a prescription. Perfusion strategy should always be guided by real-time clinical monitoring and local guidelines.</p>
+              <p class="text-slate-500 dark:text-slate-500">For educational use only. Not medical advice or a regulated medical device.</p>
+            </div>
           </div>
         </details>
       </section>
@@ -678,7 +881,8 @@
       <section id="view-timecalc" class="hidden animate-in fade-in duration-300">
         <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 p-6">
           <h2 class="text-xl font-semibold tracking-tight mb-2">Time Calculator</h2>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Enter 24-hour start/end times to see elapsed minutes and an H:MM readout.</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Enter 24-hour start/end times to see elapsed minutes and an H:MM readout.</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">시계 아이콘을 누르면 현재 시간이 입력됩니다.</p>
 
           <div class="space-y-4" id="time-rows">
             <div class="time-row rounded-2xl border border-slate-100 dark:border-primary-800/60 bg-white/70 dark:bg-primary-900/40 p-3 space-y-3">
@@ -857,9 +1061,209 @@
             </div>
           </div>
 
-          <div class="mt-3 text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
-            <p>Enter a 24-hour HHMM value; it formats to HH:MM after four digits.</p>
-            <p>Only 00:00–23:59 are accepted. If the end time is earlier than the start, the duration assumes it crosses midnight.</p>
+          <details class="mt-4 group">
+            <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+              <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
+            </summary>
+            <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">1. Purpose</p>
+                <p>This time calculator is designed to quickly estimate elapsed time in minutes and H:MM format between two clock times. It is intended for tasks such as documenting CPB time, cross-clamp time, cardioplegia intervals, ECMO procedure time blocks, or other peri-operative events where only start and end times are known.</p>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">2. Input format</p>
+                <p>Times are entered in 24-hour format as HH:MM.</p>
+                <p>Valid range: 00:00–23:59.</p>
+                <p>Examples: 07:15, 13:40, 21:05.</p>
+                <p>The fields accept four digits; after four digits are typed (e.g., 1345), the value is auto-formatted to 13:45.</p>
+                <p class="text-slate-500 dark:text-slate-500">Each row is independent and can be labelled (e.g., “CPB on–off”, “Cross-clamp”, “Circulatory arrest”).</p>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">3. Core calculation</p>
+                <p>For each row:</p>
+                <p>Convert start and end times to total minutes from midnight:</p>
+                <p class="font-mono text-[11px]">totalMinutes = 60 × HH + MM</p>
+                <p>If the end time is later or equal to the start time (same day):</p>
+                <p class="font-mono text-[11px]">durationMinutes = endMinutes − startMinutes</p>
+                <p>If the end time is earlier than the start time, the tool assumes the interval crosses midnight and adds 24 hours:</p>
+                <p class="font-mono text-[11px]">durationMinutes = (endMinutes + 24 × 60) − startMinutes</p>
+                <p>The result is reported as:</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Minutes (integer), and</li>
+                  <li>H:MM format, obtained by: <span class="font-mono text-[11px]">hours = floor(durationMinutes ÷ 60)</span> and <span class="font-mono text-[11px]">minutes = durationMinutes mod 60</span>, displayed as H:MM with a leading zero for minutes (e.g., 3:05).</li>
+                </ul>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">4. Validation and rounding</p>
+                <p>Inputs outside 00:00–23:59 are rejected.</p>
+                <p>Seconds are not supported; any sub-minute timing should be rounded to the nearest minute before entry.</p>
+                <p>All durations are exact in minutes; no additional rounding is applied.</p>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">5. Clinical use &amp; limitations</p>
+                <p>Useful for: CPB pump time, cross-clamp time, circulatory arrest time; cardioplegia dosing intervals or ECMO procedure segments; operating room or ICU workflow time stamps.</p>
+                <p>The calculator does not store dates and cannot distinguish different calendar days; any interval longer than 24 hours must be split manually.</p>
+                <p class="text-slate-500 dark:text-slate-500">Results are for documentation and workflow support only and do not replace clinical records, perfusion charts, or institutional time-keeping systems. For educational use only. Not medical advice or a regulated medical device.</p>
+              </div>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <section id="view-heparin" class="hidden animate-in fade-in duration-300">
+        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 overflow-hidden">
+          <div class="p-6 space-y-6">
+            <div class="space-y-1">
+              <h2 class="text-xl font-bold text-primary-900 dark:text-white">Heparin Management (CPB)</h2>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Calculate an initial loading dose for CPB and view an optional risk-adjusted range when heparin resistance factors are present.</p>
+            </div>
+
+            <div class="space-y-4">
+              <h3 class="text-lg font-semibold text-primary-900 dark:text-white">1. Base dose (Standard)</h3>
+              <div class="space-y-3">
+                <div class="flex flex-wrap items-center gap-4">
+                  <label class="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
+                    <input type="radio" name="hepWeightType" value="actual" class="rounded border-slate-300 text-accent-500 focus:ring-accent-500" checked>
+                    <span>Actual body weight</span>
+                  </label>
+                  <label class="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
+                    <input type="radio" name="hepWeightType" value="ideal" class="rounded border-slate-300 text-accent-500 focus:ring-accent-500">
+                    <span>Ideal body weight</span>
+                  </label>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-3">
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Actual weight (kg)</label>
+                    <input id="hep-actual-weight" type="number" step="0.1" placeholder="70" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Ideal weight (kg)</label>
+                    <input id="hep-ideal-weight" type="number" step="0.1" placeholder="65" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                  </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-3">
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide flex items-center gap-1">Height (cm) <span class="text-[10px] text-slate-400 dark:text-slate-500">(IBW calculation, optional)</span></label>
+                    <input id="hep-height" type="number" step="0.5" placeholder="170" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Sex</label>
+                    <select id="hep-sex" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 outline-none">
+                      <option value="none">Not specified</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-3">
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide flex justify-between items-center">
+                      <span>BSA (m²)</span>
+                      <span class="text-[10px] text-slate-400 dark:text-slate-500">copy from BSA tab</span>
+                    </label>
+                    <input id="hep-bsa" type="number" step="0.01" placeholder="1.80" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Target ACT (reference)</label>
+                    <div class="flex items-center gap-2">
+                      <select id="hep-target-act" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 outline-none">
+                        <option value="400">400</option>
+                        <option value="450">450</option>
+                        <option value="480" selected>480</option>
+                        <option value="500">500</option>
+                        <option value="custom">Custom</option>
+                      </select>
+                      <input id="hep-target-act-custom" type="number" step="1" placeholder="Enter" class="w-28 rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none hidden" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-3">
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Heparin protocol</label>
+                    <select id="hep-protocol" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 outline-none">
+                      <option value="300kg" selected>300 U/kg (weight-based)</option>
+                      <option value="400kg">400 U/kg (weight-based)</option>
+                      <option value="bsa250">250 U/m² (BSA-based)</option>
+                      <option value="customKg">Custom U/kg</option>
+                      <option value="customBsa">Custom U/m²</option>
+                    </select>
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Heparin concentration (U/mL)</label>
+                    <input id="hep-concentration" type="number" step="10" placeholder="1000" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">e.g. 1,000 U/mL or 5,000 U/mL</p>
+                  </div>
+                </div>
+
+                <div id="hep-custom-dose-row" class="grid md:grid-cols-2 gap-3 hidden">
+                  <div id="hep-custom-dose-kg-wrapper" class="space-y-1">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Custom dose (U/kg)</label>
+                    <input id="hep-custom-dose-kg" type="number" step="10" placeholder="350" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                  </div>
+                  <div id="hep-custom-dose-bsa-wrapper" class="space-y-1 hidden">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Custom dose (U/m²)</label>
+                    <input id="hep-custom-dose-bsa" type="number" step="10" placeholder="275" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-lg font-semibold text-primary-900 dark:text-white">2. Risk-adjusted dose (Optional)</h3>
+              <p class="text-xs text-slate-600 dark:text-slate-400">Check risk factors that increase heparin resistance. The calculator applies empirical multipliers to display a suggested range rather than a single number.</p>
+              <div class="grid sm:grid-cols-2 gap-2">
+                <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"><input id="rf-sirs" type="checkbox" class="mt-0.5 rounded border-slate-300 text-accent-500 focus:ring-accent-500"> <span>Sepsis / SIRS / CRP &gt; 100 (×1.2–1.4)</span></label>
+                <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"><input id="rf-at3" type="checkbox" class="mt-0.5 rounded border-slate-300 text-accent-500 focus:ring-accent-500"> <span>ATIII &lt; 70% (×1.4–1.8)</span></label>
+                <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"><input id="rf-ped" type="checkbox" class="mt-0.5 rounded border-slate-300 text-accent-500 focus:ring-accent-500"> <span>Pediatric &lt; 15 kg (×1.3–1.5)</span></label>
+                <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"><input id="rf-obesity" type="checkbox" class="mt-0.5 rounded border-slate-300 text-accent-500 focus:ring-accent-500"> <span>Obesity (BMI &gt; 35, IBW-based dosing)</span></label>
+                <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"><input id="rf-lmwh" type="checkbox" class="mt-0.5 rounded border-slate-300 text-accent-500 focus:ring-accent-500"> <span>Recent LMWH use (×1.2–1.5)</span></label>
+              </div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Obesity factor will also encourage IBW dosing when height/sex are provided.</p>
+              <button type="button" class="primary-button" onclick="calculateHeparinManagement()">Calculate heparin dose</button>
+            </div>
+
+            <div id="hep-result" class="result-card bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 rounded-xl p-4 space-y-2 text-sm" style="display:none;">
+              <div class="grid sm:grid-cols-2 gap-3">
+                <div class="space-y-1">
+                  <p class="text-xs uppercase text-slate-500 dark:text-slate-400 font-semibold">Base total dose (U)</p>
+                  <p id="hep-base-dose" class="text-lg font-bold text-primary-900 dark:text-white">-</p>
+                </div>
+                <div class="space-y-1">
+                  <p class="text-xs uppercase text-slate-500 dark:text-slate-400 font-semibold">Base dose per kg (U/kg)</p>
+                  <p id="hep-base-perkg" class="text-lg font-bold text-primary-900 dark:text-white">-</p>
+                </div>
+                <div class="space-y-1">
+                  <p class="text-xs uppercase text-slate-500 dark:text-slate-400 font-semibold">Base volume (mL)</p>
+                  <p id="hep-base-volume" class="text-lg font-bold text-primary-900 dark:text-white">-</p>
+                </div>
+                <div class="space-y-1">
+                  <p class="text-xs uppercase text-slate-500 dark:text-slate-400 font-semibold">Estimated plasma heparin (U/mL)</p>
+                  <p id="hep-base-conc" class="text-lg font-bold text-primary-900 dark:text-white">-</p>
+                </div>
+              </div>
+
+              <div class="space-y-1 pt-2 border-t border-slate-200 dark:border-primary-800">
+                <p class="text-xs uppercase text-slate-500 dark:text-slate-400 font-semibold">Risk-adjusted range</p>
+                <p class="text-sm text-primary-900 dark:text-white">Dose (U): <span id="hep-adj-dose-range" class="font-semibold">-</span></p>
+                <p class="text-sm text-primary-900 dark:text-white">Per kg (U/kg): <span id="hep-adj-perkg-range" class="font-semibold">-</span></p>
+              </div>
+
+              <p id="hep-warning" class="text-sm text-red-600 dark:text-red-400 font-semibold hidden"></p>
+
+              <div class="space-y-1 text-xs text-slate-600 dark:text-slate-400 pt-2 border-t border-slate-200 dark:border-primary-800">
+                <p>Target ACT: <span id="hep-target-act-display" class="font-semibold text-primary-900 dark:text-white">-</span></p>
+                <p>This tool is decision support only. Final dosing must incorporate ACT/HDR responses, ATIII replacement, and institutional CPB protocols.</p>
+                <p>Risk-factor multipliers are empirical ranges based on literature (e.g., Gravlee Cardiopulmonary Bypass) and internal experience.</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -924,17 +1328,34 @@
       </section>
 
       <section id="view-contact" class="hidden animate-in fade-in duration-300">
-        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-6">
-          <h2 class="text-2xl font-bold text-primary-900 dark:text-white mb-2">Contact</h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Feedback or feature requests?</p>
-          <form id="contact-form" class="grid gap-4">
-             <input id="c_name" type="text" placeholder="Name" class="bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-3 dark:text-white outline-none focus:ring-2 focus:ring-accent-500">
-             <input id="c_email" type="email" placeholder="Email" class="bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-3 dark:text-white outline-none focus:ring-2 focus:ring-accent-500">
-             <textarea id="c_msg" rows="4" placeholder="Message" class="bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-3 dark:text-white outline-none focus:ring-2 focus:ring-accent-500"></textarea>
-             <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 rounded-xl transition-colors">Send Message</button>
-             <p id="c_status" class="text-center text-sm text-slate-500"></p>
-             <a id="c_mailto" href="#" class="hidden"></a>
-          </form>
+        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-6 flex flex-col gap-4">
+          <div class="flex flex-col gap-2">
+            <h2 class="text-2xl font-bold text-primary-900 dark:text-white">Contact</h2>
+            <p class="text-sm text-slate-600 dark:text-slate-300">We value your feedback. For feature requests or bug reports, please contact us:</p>
+          </div>
+          <div class="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+            <address class="not-italic text-lg font-semibold text-primary-900 dark:text-white flex items-center gap-2" aria-label="Contact email address">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12H8m8 0V8m0 4v4m4-10v10a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h12a2 2 0 012 2z" />
+              </svg>
+              <span id="contact-email" class="break-all">perfusiontools@gmail.com</span>
+            </address>
+            <div class="flex items-center gap-2">
+              <a id="contact-mailto" href="mailto:perfusiontools@gmail.com" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary-600 text-white text-sm font-medium shadow-sm hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12H8m0 0l4-4m-4 4l4 4" />
+                </svg>
+                <span>Send Email</span>
+              </a>
+              <button id="contact-copy" type="button" class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 text-sm font-medium text-primary-900 dark:text-white shadow-sm hover:border-accent-500 hover:text-accent-500 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8M8 12h8m-5 8h5a2 2 0 002-2V6a2 2 0 00-2-2h-5m-4 4H7a2 2 0 00-2 2v8a2 2 0 002 2h5a2 2 0 002-2v-1" />
+                </svg>
+                <span>Copy Address</span>
+              </button>
+            </div>
+          </div>
+          <div id="contact-toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-primary-900 text-white px-4 py-2 rounded-full shadow-lg text-sm opacity-0 translate-y-2 pointer-events-none transition-all duration-300 hidden">Copied!</div>
         </div>
       </section>
 
@@ -960,6 +1381,10 @@
     <a href="#/do2i" id="mob-do2i" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
       <span class="text-[10px] font-medium">GDP</span>
+    </a>
+    <a href="#/heparin" id="mob-heparin" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <span class="text-[10px] font-medium">Heparin</span>
     </a>
     <a href="#/predicted-hct" id="mob-hct" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
