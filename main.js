@@ -89,6 +89,98 @@ function getCurrentTimeHHMM() {
   return `${hh}:${mm}`;
 }
 
+const CANONICAL_BASE = 'https://perfusiontools.com/';
+const DEFAULT_DESCRIPTION = 'Perfusion Tools is a CPB & ECMO perfusion calculator suite for perfusionists, including BSA, CI, DO2i, pump flow, heparin management, and more.';
+const DEFAULT_OG_DESCRIPTION = 'Bedside perfusion calculators for CPB & ECMO: BSA, CI, DO2i, pump flow, heparin management, and more.';
+const SEO_META = {
+  'do2i': {
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
+    description: DEFAULT_DESCRIPTION,
+    ogDescription: DEFAULT_OG_DESCRIPTION,
+    canonicalHash: '#/do2i'
+  },
+  'predicted-hct': {
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
+    description: DEFAULT_DESCRIPTION,
+    ogDescription: DEFAULT_OG_DESCRIPTION,
+    canonicalHash: '#/predicted-hct'
+  },
+  'lbm': {
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
+    description: DEFAULT_DESCRIPTION,
+    ogDescription: DEFAULT_OG_DESCRIPTION,
+    canonicalHash: '#/lbm'
+  },
+  'bsa': {
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
+    description: DEFAULT_DESCRIPTION,
+    ogDescription: DEFAULT_OG_DESCRIPTION,
+    canonicalHash: '#/bsa'
+  },
+  'heparin': {
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
+    description: DEFAULT_DESCRIPTION,
+    ogDescription: DEFAULT_OG_DESCRIPTION,
+    canonicalHash: '#/heparin'
+  },
+  'timecalc': {
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
+    description: DEFAULT_DESCRIPTION,
+    ogDescription: DEFAULT_OG_DESCRIPTION,
+    canonicalHash: '#/timecalc'
+  },
+  'faq': {
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
+    description: DEFAULT_DESCRIPTION,
+    ogDescription: DEFAULT_OG_DESCRIPTION,
+    canonicalHash: '#/faq'
+  },
+  'privacy': {
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
+    description: DEFAULT_DESCRIPTION,
+    ogDescription: DEFAULT_OG_DESCRIPTION,
+    canonicalHash: '#/privacy'
+  },
+  'terms': {
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
+    description: DEFAULT_DESCRIPTION,
+    ogDescription: DEFAULT_OG_DESCRIPTION,
+    canonicalHash: '#/terms'
+  },
+  'contact': {
+    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
+    description: DEFAULT_DESCRIPTION,
+    ogDescription: DEFAULT_OG_DESCRIPTION,
+    canonicalHash: '#/contact'
+  }
+};
+
+function updateMetaForRoute(key) {
+  const meta = SEO_META[key] || SEO_META['do2i'];
+  if (!meta) return;
+
+  document.title = meta.title;
+
+  const setContent = (selector, attr, value) => {
+    const tag = document.querySelector(selector);
+    if (tag && value) tag.setAttribute(attr, value);
+  };
+
+  const metaDescription = meta.description || DEFAULT_DESCRIPTION;
+  const socialDescription = meta.ogDescription || metaDescription;
+
+  setContent('meta[name="description"]', 'content', metaDescription);
+  setContent('meta[property="og:title"]', 'content', meta.title);
+  setContent('meta[property="og:description"]', 'content', socialDescription);
+  setContent('meta[name="twitter:title"]', 'content', meta.title);
+  setContent('meta[name="twitter:description"]', 'content', socialDescription);
+
+  const canonicalTag = document.querySelector('link[rel="canonical"]');
+  if (canonicalTag && meta.canonicalHash) {
+    canonicalTag.setAttribute('href', `${CANONICAL_BASE}${meta.canonicalHash}`);
+  }
+}
+
 const BSA = {
   Mosteller(h, w) {
     return Math.sqrt((h * w) / 3600);
@@ -130,7 +222,8 @@ function updateBsaFlowList(bsaVal) {
     const ci = ciTenths / 10;
     const flow = ci * bsaVal;
     const row = document.createElement('div');
-    row.className = 'grid grid-cols-[1fr_auto] items-center py-1.5 text-sm border-b border-slate-100 dark:border-primary-800 last:border-0 gap-3';
+    const highlight = Math.abs(ci - 2.4) < 0.05;
+    row.className = 'grid grid-cols-[1fr_auto] items-center py-1.5 text-sm border-b border-slate-100 dark:border-primary-800 last:border-0 gap-3' + (highlight ? ' bg-amber-50 dark:bg-amber-900/20 rounded-md' : '');
     row.innerHTML = `<span class="font-mono text-xs text-slate-500 dark:text-slate-400">CI ${ci.toFixed(1)}</span><span class="font-semibold text-primary-900 dark:text-white">${flow.toFixed(2)} L/min</span>`;
     list.appendChild(row);
   }
@@ -242,6 +335,189 @@ function computePredictedHct({ pttype, weight, pre, prime, fluids = 0, removed =
   const totalVol = ebv + (prime || 0) + (fluids || 0) + rbcVolAdded - (removed || 0);
   const hct = totalVol > 0 ? (rbcVolume / totalVol) * 100 : 0;
   return { ebv, totalVol, hct };
+}
+
+// -----------------------------
+// Heparin Management Calculator
+// -----------------------------
+function computeDevineIbw(heightCm, sex) {
+  if (!heightCm || heightCm <= 0) return null;
+  if (sex === 'male') return 50 + 0.9 * (heightCm - 152);
+  if (sex === 'female') return 45.5 + 0.9 * (heightCm - 152);
+  return null;
+}
+
+function toggleHepActCustom() {
+  const actSelect = el('hep-target-act');
+  const customInput = el('hep-target-act-custom');
+  if (!actSelect || !customInput) return;
+  if (actSelect.value === 'custom') {
+    customInput.classList.remove('hidden');
+  } else {
+    customInput.value = '';
+    customInput.classList.add('hidden');
+  }
+}
+
+function handleHepProtocolChange() {
+  const protocol = el('hep-protocol');
+  const row = el('hep-custom-dose-row');
+  const kgWrap = el('hep-custom-dose-kg-wrapper');
+  const bsaWrap = el('hep-custom-dose-bsa-wrapper');
+  if (!protocol || !row || !kgWrap || !bsaWrap) return;
+
+  const value = protocol.value;
+  if (value === 'customKg') {
+    row.classList.remove('hidden');
+    kgWrap.classList.remove('hidden');
+    bsaWrap.classList.add('hidden');
+  } else if (value === 'customBsa') {
+    row.classList.remove('hidden');
+    bsaWrap.classList.remove('hidden');
+    kgWrap.classList.add('hidden');
+  } else {
+    row.classList.add('hidden');
+    kgWrap.classList.add('hidden');
+    bsaWrap.classList.add('hidden');
+  }
+}
+
+function calculateHeparinManagement() {
+  const getVal = (id) => {
+    const v = parseFloat(el(id)?.value);
+    return Number.isFinite(v) ? v : NaN;
+  };
+
+  const weightType = document.querySelector('input[name="hepWeightType"]:checked')?.value || 'actual';
+  const actualWeight = getVal('hep-actual-weight');
+  const idealWeight = getVal('hep-ideal-weight');
+  const height = getVal('hep-height');
+  const sex = el('hep-sex')?.value;
+  const protocol = el('hep-protocol')?.value || '300kg';
+  const bsa = getVal('hep-bsa');
+  const hepConc = getVal('hep-concentration');
+  const customKg = getVal('hep-custom-dose-kg');
+  const customBsa = getVal('hep-custom-dose-bsa');
+
+  const useIbw = el('rf-obesity')?.checked && height > 0 && (sex === 'male' || sex === 'female');
+  const ibw = useIbw ? computeDevineIbw(height, sex) : null;
+
+  let effectiveWeight = weightType === 'ideal' ? idealWeight : actualWeight;
+  if (useIbw && ibw) effectiveWeight = ibw;
+
+  if (!(effectiveWeight > 0)) {
+    alert('Enter a valid weight for dosing.');
+    return;
+  }
+
+  if ((protocol === 'bsa250' || protocol === 'customBsa') && !(bsa > 0)) {
+    alert('Enter BSA for the selected protocol.');
+    return;
+  }
+
+  if (!(hepConc > 0)) {
+    alert('Enter heparin concentration (U/mL).');
+    return;
+  }
+
+  let totalDoseU = 0;
+  switch (protocol) {
+    case '300kg':
+      totalDoseU = 300 * effectiveWeight;
+      break;
+    case '400kg':
+      totalDoseU = 400 * effectiveWeight;
+      break;
+    case 'bsa250':
+      totalDoseU = 250 * bsa;
+      break;
+    case 'customKg':
+      if (!(customKg > 0)) { alert('Enter custom U/kg dose.'); return; }
+      totalDoseU = customKg * effectiveWeight;
+      break;
+    case 'customBsa':
+      if (!(customBsa > 0)) { alert('Enter custom U/m² dose.'); return; }
+      totalDoseU = customBsa * bsa;
+      break;
+    default:
+      totalDoseU = 300 * effectiveWeight;
+  }
+
+  const volumeMl = totalDoseU / hepConc;
+  const vd = 70 * effectiveWeight; // Distribution volume assumption
+  const plasmaConc = vd > 0 ? totalDoseU / vd : 0;
+  const perKg = totalDoseU / effectiveWeight;
+
+  let minFactor = 1.0;
+  let maxFactor = 1.0;
+  const riskFactors = [
+    { id: 'rf-sirs', min: 1.2, max: 1.4 },
+    { id: 'rf-at3', min: 1.4, max: 1.8 },
+    { id: 'rf-ped', min: 1.3, max: 1.5 },
+    { id: 'rf-obesity', min: 1.05, max: 1.15 },
+    { id: 'rf-lmwh', min: 1.2, max: 1.5 }
+  ];
+
+  riskFactors.forEach(rf => {
+    const box = el(rf.id);
+    if (box && box.checked) {
+      minFactor *= rf.min;
+      maxFactor *= rf.max;
+    }
+  });
+
+  const adjMinDose = totalDoseU * minFactor;
+  const adjMaxDose = totalDoseU * maxFactor;
+  const adjMinPerKg = adjMinDose / effectiveWeight;
+  const adjMaxPerKg = adjMaxDose / effectiveWeight;
+
+  const warningEl = el('hep-warning');
+  const warnings = [];
+  if (adjMaxPerKg > 600) warnings.push('Risk-adjusted 상한 용량이 600 U/kg 을 초과합니다. ATIII 보충, HDR, ACT 추세 등을 재평가하십시오.');
+  if (adjMaxDose > 50000) warnings.push('총 헤파린 용량이 50,000 U 이상입니다. 출혈 및 HIT 위험을 고려해 팀과 재논의가 필요합니다.');
+
+  if (warningEl) {
+    if (warnings.length) {
+      warningEl.textContent = warnings.join(' ');
+      warningEl.classList.remove('hidden');
+    } else {
+      warningEl.textContent = '';
+      warningEl.classList.add('hidden');
+    }
+  }
+
+  const setVal = (id, val) => {
+    const node = el(id);
+    if (node) node.textContent = val;
+  };
+
+  setVal('hep-base-dose', totalDoseU.toFixed(0));
+  setVal('hep-base-perkg', perKg.toFixed(0));
+  setVal('hep-base-volume', volumeMl.toFixed(1));
+  setVal('hep-base-conc', plasmaConc.toFixed(2));
+  setVal('hep-adj-dose-range', `${adjMinDose.toFixed(0)} – ${adjMaxDose.toFixed(0)}`);
+  setVal('hep-adj-perkg-range', `${adjMinPerKg.toFixed(0)} – ${adjMaxPerKg.toFixed(0)}`);
+
+  const actSelect = el('hep-target-act');
+  const actCustom = getVal('hep-target-act-custom');
+  const actDisplay = actSelect?.value === 'custom'
+    ? (actCustom > 0 ? actCustom.toFixed(0) : 'Custom')
+    : (actSelect?.value || 'Custom');
+  setVal('hep-target-act-display', actDisplay);
+
+  const resultCard = el('hep-result');
+  if (resultCard) resultCard.style.display = 'block';
+}
+
+function initHeparinManagement() {
+  toggleHepActCustom();
+  handleHepProtocolChange();
+
+  const actSelect = el('hep-target-act');
+  if (actSelect) actSelect.addEventListener('change', toggleHepActCustom);
+
+  const protocolSelect = el('hep-protocol');
+  if (protocolSelect) protocolSelect.addEventListener('change', handleHepProtocolChange);
 }
 
 // -----------------------------
@@ -764,13 +1040,57 @@ function initTimeCalculator() {
 }
 
 // -----------------------------
+// Contact actions
+// -----------------------------
+function setupContactActions() {
+  const email = 'perfusiontools@gmail.com';
+  const mailLink = el('contact-mailto');
+  const copyBtn = el('contact-copy');
+  const toast = el('contact-toast');
+  const emailText = el('contact-email');
+
+  if (mailLink) mailLink.href = `mailto:${email}`;
+  if (emailText) emailText.textContent = email;
+
+  const showToast = (message) => {
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.remove('opacity-0', 'translate-y-2', 'pointer-events-none', 'hidden');
+    setTimeout(() => {
+      toast.classList.add('opacity-0', 'translate-y-2', 'pointer-events-none');
+      setTimeout(() => toast.classList.add('hidden'), 250);
+    }, 2000);
+  };
+
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      try {
+        if (navigator?.clipboard?.writeText) {
+          await navigator.clipboard.writeText(email);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = email;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        showToast('Copied!');
+      } catch (err) {
+        showToast('Copy failed');
+      }
+    });
+  }
+}
+
+// -----------------------------
 // Router & Navigation Styling
 // -----------------------------
 function route() {
   const hash = location.hash || '#/bsa';
 
   // Updated sections list to include LBM and standalone BSA
-  const sections = ['view-bsa', 'view-do2i', 'view-hct', 'view-lbm', 'view-timecalc', 'faq', 'view-privacy', 'view-terms', 'view-contact'];
+  const sections = ['view-bsa', 'view-do2i', 'view-hct', 'view-lbm', 'view-heparin', 'view-timecalc', 'faq', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
     el(sid).classList.add('hidden');
   });
@@ -780,6 +1100,7 @@ function route() {
   else if (hash.includes('do2i')) el('view-do2i').classList.remove('hidden');
   else if (hash.includes('predicted-hct')) el('view-hct').classList.remove('hidden');
   else if (hash.includes('lbm')) el('view-lbm').classList.remove('hidden');
+  else if (hash.includes('heparin')) el('view-heparin').classList.remove('hidden');
   else if (hash.includes('timecalc')) el('view-timecalc').classList.remove('hidden');
   else if (hash.includes('faq')) el('faq').classList.remove('hidden');
   else if (hash.includes('privacy')) el('view-privacy').classList.remove('hidden');
@@ -793,6 +1114,7 @@ function route() {
     'predicted-hct': ['nav-hct', 'side-hct', 'mob-hct'],
     'bsa': ['nav-bsa', 'side-bsa', 'mob-bsa'],
     'lbm': ['nav-lbm', 'side-lbm', 'mob-lbm'],
+    'heparin': ['nav-heparin', 'side-heparin', 'mob-heparin'],
     'timecalc': ['nav-time', 'side-time', 'mob-time'],
     'faq': ['nav-faq', 'side-faq', 'mob-faq']
   };
@@ -811,8 +1133,14 @@ function route() {
   else if (hash.includes('predicted-hct')) key = 'predicted-hct';
   else if (hash.includes('bsa')) key = 'bsa';
   else if (hash.includes('lbm')) key = 'lbm';
+  else if (hash.includes('heparin')) key = 'heparin';
   else if (hash.includes('timecalc')) key = 'timecalc';
   else if (hash.includes('faq')) key = 'faq';
+  else if (hash.includes('privacy')) key = 'privacy';
+  else if (hash.includes('terms')) key = 'terms';
+  else if (hash.includes('contact')) key = 'contact';
+
+  updateMetaForRoute(key || 'do2i');
 
   if (key && navMap[key]) {
     const navEl = el(navMap[key][0]);
@@ -938,19 +1266,10 @@ window.addEventListener('DOMContentLoaded', () => {
     if (x) x.addEventListener('change', updateLBM);
   });
 
-  // Contact form handler
-  const cform = document.getElementById('contact-form');
-  if (cform) {
-    cform.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const name = el('c_name').value;
-      const status = el('c_status');
-      status.textContent = `Thanks ${name || 'user'}, opening mail client...`;
-      setTimeout(() => status.textContent = '', 3000);
-    });
-  }
+  setupContactActions();
 
   initTimeCalculator();
+  initHeparinManagement();
 
   updateTargetDisplay();
   updateGDP();
