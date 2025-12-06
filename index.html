@@ -106,6 +106,83 @@
       outline: 2px solid #06b6d4;
       outline-offset: 2px;
     }
+
+    /* Heparin management UI helpers */
+    .hep-dose-btn {
+      width: 100%;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      color: #0f172a;
+      border-radius: 0.75rem;
+      padding: 0.6rem 0.75rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .hep-dose-btn:hover { border-color: #06b6d4; color: #0891b2; }
+    .dark .hep-dose-btn { background: #0f172a; border-color: #1e293b; color: #e2e8f0; }
+    .hep-dose-btn.active-dose {
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.25);
+      color: #0891b2;
+      background: rgba(6, 182, 212, 0.08);
+    }
+    .dark .hep-dose-btn.active-dose { background: rgba(8, 145, 178, 0.2); color: #67e8f9; border-color: #0ea5e9; }
+
+    .stat-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      box-shadow: 0 4px 8px -4px rgba(15, 23, 42, 0.25);
+    }
+    .dark .stat-card { background: #0b1220; border-color: #1e293b; box-shadow: none; }
+    .stat-card.highlight { border-color: #0ea5e9; box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.35); }
+    .stat-label { font-size: 0.75rem; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; }
+    .dark .stat-label { color: #94a3b8; }
+    .stat-value { font-size: 1.5rem; font-weight: 700; color: #0f172a; }
+    .dark .stat-value { color: #e2e8f0; }
+    .stat-unit { font-size: 0.9rem; color: #94a3b8; }
+
+    .badge {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(234, 179, 8, 0.15);
+      color: #ca8a04;
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+    }
+
+    .protocol-card, .flow-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.9rem;
+      padding: 1.25rem;
+      box-shadow: 0 4px 10px -6px rgba(15, 23, 42, 0.2);
+    }
+    .dark .protocol-card, .dark .flow-card { background: #0b1220; border-color: #1e293b; box-shadow: none; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      border-radius: 9999px;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .pill-warn { background: rgba(234, 179, 8, 0.15); color: #a16207; }
+    .pill-alert { background: rgba(248, 113, 113, 0.15); color: #b91c1c; }
+
+    .info-block {
+      border-radius: 0.9rem;
+      padding: 1rem 1.1rem;
+      border: 1px solid transparent;
+    }
+    .info-block.warn { background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.35); }
+    .info-block.alert { background: rgba(249, 115, 22, 0.1); border-color: rgba(249, 115, 22, 0.35); }
   </style>
 
   <script type="application/ld+json">
@@ -1117,151 +1194,186 @@
       <section id="view-heparin" class="hidden animate-in fade-in duration-300">
         <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 overflow-hidden">
           <div class="p-6 space-y-6">
-            <div class="space-y-1">
+            <div class="space-y-2">
               <h2 class="text-xl font-bold text-primary-900 dark:text-white">Heparin Management (CPB)</h2>
-              <p class="text-sm text-slate-600 dark:text-slate-300">Calculate an initial loading dose for CPB and view an optional risk-adjusted range when heparin resistance factors are present.</p>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Calculate an initial loading dose with weight strategy safeguards and optional flow targets; toggle resistance cues when ACT response is low.</p>
             </div>
 
-            <div class="space-y-4">
-              <h3 class="text-lg font-semibold text-primary-900 dark:text-white">1. Base dose (Standard)</h3>
-              <div class="space-y-3">
-                <div class="flex flex-wrap items-center gap-4">
-                  <label class="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
-                    <input type="radio" name="hepWeightType" value="actual" class="rounded border-slate-300 text-accent-500 focus:ring-accent-500" checked>
-                    <span>Actual body weight</span>
-                  </label>
-                  <label class="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
-                    <input type="radio" name="hepWeightType" value="ideal" class="rounded border-slate-300 text-accent-500 focus:ring-accent-500">
-                    <span>Ideal body weight</span>
-                  </label>
-                </div>
+            <div class="grid lg:grid-cols-12 gap-6">
+              <div class="lg:col-span-4 space-y-4">
+                <div class="bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 space-y-4">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Patient parameters</h3>
+                    <span class="text-xs text-slate-500 dark:text-slate-400">Adult CPB</span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Height (cm)</label>
+                      <input id="hep2-height" type="number" min="0" step="0.1" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="170" />
+                      <p id="hep2-height-error" class="text-xs text-red-500 mt-1 hidden">Height should be 50–250 cm</p>
+                    </div>
+                    <div>
+                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Weight (kg)</label>
+                      <input id="hep2-weight" type="number" min="0" step="0.1" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="70" />
+                      <p id="hep2-weight-error" class="text-xs text-red-500 mt-1 hidden">Weight should be 20–300 kg</p>
+                    </div>
+                  </div>
 
-                <div class="grid md:grid-cols-2 gap-3">
-                  <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Actual weight (kg)</label>
-                    <input id="hep-actual-weight" type="number" step="0.1" placeholder="70" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                  </div>
-                  <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Ideal weight (kg)</label>
-                    <input id="hep-ideal-weight" type="number" step="0.1" placeholder="65" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                  </div>
-                </div>
-
-                <div class="grid md:grid-cols-2 gap-3">
-                  <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide flex items-center gap-1">Height (cm) <span class="text-[10px] text-slate-400 dark:text-slate-500">(IBW calculation, optional)</span></label>
-                    <input id="hep-height" type="number" step="0.5" placeholder="170" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                  </div>
-                  <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Sex</label>
-                    <select id="hep-sex" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 outline-none">
-                      <option value="none">Not specified</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="grid md:grid-cols-2 gap-3">
-                  <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide flex justify-between items-center">
-                      <span>BSA (m²)</span>
-                      <span class="text-[10px] text-slate-400 dark:text-slate-500">copy from BSA tab</span>
-                    </label>
-                    <input id="hep-bsa" type="number" step="0.01" placeholder="1.80" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                  </div>
-                  <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Target ACT (reference)</label>
-                    <div class="flex items-center gap-2">
-                      <select id="hep-target-act" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 outline-none">
-                        <option value="400">400</option>
-                        <option value="450">450</option>
-                        <option value="480" selected>480</option>
-                        <option value="500">500</option>
-                        <option value="custom">Custom</option>
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Sex</label>
+                      <select id="hep2-sex" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
                       </select>
-                      <input id="hep-target-act-custom" type="number" step="1" placeholder="Enter" class="w-28 rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none hidden" />
+                    </div>
+                    <div>
+                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Target ACT (sec)</label>
+                      <input id="hep2-target-act" type="number" min="200" step="10" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 text-center font-mono" value="480" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Weight strategy</label>
+                    <select id="hep2-weight-strategy" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <option value="auto">Auto-detect (Recommended)</option>
+                      <option value="tbw">Total body weight (TBW)</option>
+                      <option value="abw">Adjusted body weight (ABW)</option>
+                      <option value="ibw">Ideal body weight (IBW)</option>
+                    </select>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Auto switches to ABW when BMI ≥ 30 to reduce overdose risk.</p>
+                  </div>
+
+                  <div class="space-y-2">
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Initial dose (U/kg)</p>
+                    <div class="grid grid-cols-3 gap-2" id="hep2-dose-buttons">
+                      <button type="button" data-hep-dose="300" class="hep-dose-btn active-dose">300</button>
+                      <button type="button" data-hep-dose="350" class="hep-dose-btn">350</button>
+                      <button type="button" data-hep-dose="400" class="hep-dose-btn">400</button>
+                    </div>
+                  </div>
+
+                  <div id="hep2-resistance-toggle" class="p-3 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 flex items-start gap-3 cursor-pointer hover:border-accent-500/60">
+                    <div class="mt-0.5 w-4 h-4 rounded border border-slate-400 flex items-center justify-center" aria-hidden="true">
+                      <span class="hidden text-accent-500">✓</span>
+                    </div>
+                    <div>
+                      <p class="text-sm font-semibold text-primary-900 dark:text-white">Suspected resistance</p>
+                      <p class="text-xs text-slate-500 dark:text-slate-400">ATIII deficiency / prolonged ECMO / liver disease</p>
+                    </div>
+                  </div>
+
+                  <label class="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
+                    <input id="hep2-show-flow" type="checkbox" class="rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
+                    Show flow rate calculator (IBW-based BSA)
+                  </label>
+                </div>
+              </div>
+
+              <div class="lg:col-span-8 space-y-4">
+                <div id="hep2-placeholder" class="h-full flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-200 dark:border-primary-800 rounded-2xl min-h-[360px]">
+                  <p class="text-lg font-semibold">Enter patient parameters to calculate</p>
+                  <p class="text-sm">Height, weight, and dose are required.</p>
+                </div>
+
+                <div id="hep2-results" class="space-y-4 hidden">
+                  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="stat-card">
+                      <p class="stat-label">BMI</p>
+                      <p id="hep2-bmi" class="stat-value">-</p>
+                    </div>
+                    <div class="stat-card">
+                      <p class="stat-label">IBW</p>
+                      <p class="stat-value"><span id="hep2-ibw">-</span> <span class="stat-unit">kg</span></p>
+                    </div>
+                    <div class="stat-card relative">
+                      <p class="stat-label">BSA (Mosteller)</p>
+                      <p class="stat-value text-accent-500"><span id="hep2-bsa">-</span> <span class="stat-unit">m²</span></p>
+                      <span id="hep2-bsa-cap" class="badge hidden">Capped</span>
+                    </div>
+                    <div class="stat-card highlight">
+                      <p class="stat-label">Dosing weight</p>
+                      <p class="stat-value"><span id="hep2-dosing-weight">-</span> <span class="stat-unit">kg</span></p>
+                      <p id="hep2-dosing-note" class="text-[11px] text-slate-500 dark:text-slate-400 truncate"></p>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="protocol-card">
+                      <div class="flex items-start justify-between mb-4">
+                        <div>
+                          <p class="text-xs text-slate-500 dark:text-slate-400">Initial bolus</p>
+                          <p id="hep2-initial-bolus" class="text-4xl font-mono font-bold text-primary-900 dark:text-white">-</p>
+                          <div id="hep2-high-dose" class="pill pill-warn hidden">High dose &gt; 40k U</div>
+                        </div>
+                        <div class="text-right text-xs text-slate-500 dark:text-slate-400">
+                          <p>Target ACT</p>
+                          <p id="hep2-target-act-display" class="font-semibold text-primary-900 dark:text-white">-</p>
+                        </div>
+                      </div>
+                      <div id="hep2-diff-note" class="text-xs text-amber-600 dark:text-amber-300 bg-amber-500/10 rounded px-2 py-1 mb-3 hidden"></div>
+                      <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                          <span class="text-slate-600 dark:text-slate-400">Maintenance</span>
+                          <span id="hep2-maintenance" class="font-mono text-primary-900 dark:text-white">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                          <span class="text-slate-600 dark:text-slate-400">Additional bolus</span>
+                          <span id="hep2-add-bolus" class="font-mono text-primary-900 dark:text-white">-</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div id="hep2-flow-card" class="flow-card hidden">
+                      <p class="text-sm font-semibold text-primary-900 dark:text-white mb-2">Flow targets (CI 2.4)</p>
+                      <p class="text-4xl font-mono font-bold text-primary-900 dark:text-white"><span id="hep2-flow-rate">-</span> <span class="text-lg text-slate-500">L/min</span></p>
+                      <p class="text-xs text-slate-500 dark:text-slate-400">BSA <span id="hep2-flow-bsa">-</span> m² × 2.4 L/min/m²</p>
+                      <div id="hep2-flow-cap" class="pill pill-warn hidden mt-2">Flow capped at BSA 2.5 m² (obesity safety)</div>
+                      <div id="hep2-flow-warning" class="pill pill-alert hidden mt-2">High flow &gt; 6 L/min — check cannula</div>
+                    </div>
+
+                    <div id="hep2-quick-card" class="flow-card">
+                      <p class="text-sm font-semibold text-green-600 dark:text-green-300 mb-2">Quick protocol</p>
+                      <ol class="list-decimal list-inside space-y-1 text-sm text-primary-900 dark:text-slate-200" id="hep2-quick-steps">
+                        <li>Bolus -</li>
+                        <li>Wait 3–5 min → Check ACT</li>
+                        <li>Start maintenance -</li>
+                        <li>Monitor ACT q30min during CPB</li>
+                        <li>If ACT low: + bolus</li>
+                      </ol>
+                    </div>
+                  </div>
+
+                  <div id="hep2-resistance-block" class="info-block warn hidden">
+                    <h4 class="text-sm font-semibold text-red-500 mb-2">Heparin resistance protocol</h4>
+                    <ul class="list-disc list-inside text-sm text-red-200/80 space-y-1">
+                      <li>ACT &lt; 300s after bolus → suspect AT-III deficiency</li>
+                      <li>Treatment: FFP (2–4 units) or AT-III concentrate (500–1000 IU)</li>
+                      <li>Re-check ACT after 10 min; do not start CPB until ACT &gt; 400s</li>
+                      <li>Higher maintenance: <span id="hep2-maintenance-note">-</span> U/hr (18 U/kg/hr)</li>
+                      <li>Consider Anti-Xa monitoring (target 3.0–4.5 IU/mL)</li>
+                    </ul>
+                  </div>
+
+                  <div id="hep2-obesity-warning" class="info-block alert hidden">
+                    <h4 class="text-sm font-semibold text-orange-500 mb-1">Morbid obesity management</h4>
+                    <p class="text-sm text-orange-200/80">Using ABW with 0.3 correction to prevent overdose. Flow capped to reduce hemodilution; monitor SvO₂ and lactate closely.</p>
+                  </div>
+
+                  <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex items-start gap-2">
+                      <div class="mt-1 h-2 w-2 rounded-full bg-accent-500"></div>
+                      <div>
+                        <p class="text-sm font-semibold text-primary-900 dark:text-white">Clinical pearls</p>
+                        <ul class="list-disc list-inside text-sm text-slate-600 dark:text-slate-300 space-y-1 mt-1">
+                          <li>ACT affected by hemodilution, hypothermia, platelet function — consider Anti-Xa in obesity.</li>
+                          <li>Fat has limited heparin distribution; TBW dosing in BMI ≥ 35 raises bleeding risk without better anticoagulation.</li>
+                          <li>Over 40k U total → reassess. May indicate resistance rather than inadequate bolus.</li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </div>
-
-                <div class="grid md:grid-cols-2 gap-3">
-                  <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Heparin protocol</label>
-                    <select id="hep-protocol" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 outline-none">
-                      <option value="300kg" selected>300 U/kg (weight-based)</option>
-                      <option value="400kg">400 U/kg (weight-based)</option>
-                      <option value="bsa250">250 U/m² (BSA-based)</option>
-                      <option value="customKg">Custom U/kg</option>
-                      <option value="customBsa">Custom U/m²</option>
-                    </select>
-                  </div>
-                  <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Heparin concentration (U/mL)</label>
-                    <input id="hep-concentration" type="number" step="10" placeholder="1000" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">e.g. 1,000 U/mL or 5,000 U/mL</p>
-                  </div>
-                </div>
-
-                <div id="hep-custom-dose-row" class="grid md:grid-cols-2 gap-3 hidden">
-                  <div id="hep-custom-dose-kg-wrapper" class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Custom dose (U/kg)</label>
-                    <input id="hep-custom-dose-kg" type="number" step="10" placeholder="350" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                  </div>
-                  <div id="hep-custom-dose-bsa-wrapper" class="space-y-1 hidden">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Custom dose (U/m²)</label>
-                    <input id="hep-custom-dose-bsa" type="number" step="10" placeholder="275" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="space-y-3">
-              <h3 class="text-lg font-semibold text-primary-900 dark:text-white">2. Risk-adjusted dose (Optional)</h3>
-              <p class="text-xs text-slate-600 dark:text-slate-400">Check risk factors that increase heparin resistance. The calculator applies empirical multipliers to display a suggested range rather than a single number.</p>
-              <div class="grid sm:grid-cols-2 gap-2">
-                <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"><input id="rf-sirs" type="checkbox" class="mt-0.5 rounded border-slate-300 text-accent-500 focus:ring-accent-500"> <span>Sepsis / SIRS / CRP &gt; 100 (×1.2–1.4)</span></label>
-                <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"><input id="rf-at3" type="checkbox" class="mt-0.5 rounded border-slate-300 text-accent-500 focus:ring-accent-500"> <span>ATIII &lt; 70% (×1.4–1.8)</span></label>
-                <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"><input id="rf-ped" type="checkbox" class="mt-0.5 rounded border-slate-300 text-accent-500 focus:ring-accent-500"> <span>Pediatric &lt; 15 kg (×1.3–1.5)</span></label>
-                <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"><input id="rf-obesity" type="checkbox" class="mt-0.5 rounded border-slate-300 text-accent-500 focus:ring-accent-500"> <span>Obesity (BMI &gt; 35, IBW-based dosing)</span></label>
-                <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"><input id="rf-lmwh" type="checkbox" class="mt-0.5 rounded border-slate-300 text-accent-500 focus:ring-accent-500"> <span>Recent LMWH use (×1.2–1.5)</span></label>
-              </div>
-              <p class="text-[11px] text-slate-500 dark:text-slate-400">Obesity factor will also encourage IBW dosing when height/sex are provided.</p>
-              <button type="button" class="primary-button" onclick="calculateHeparinManagement()">Calculate heparin dose</button>
-            </div>
-
-            <div id="hep-result" class="result-card bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 rounded-xl p-4 space-y-2 text-sm" style="display:none;">
-              <div class="grid sm:grid-cols-2 gap-3">
-                <div class="space-y-1">
-                  <p class="text-xs uppercase text-slate-500 dark:text-slate-400 font-semibold">Base total dose (U)</p>
-                  <p id="hep-base-dose" class="text-lg font-bold text-primary-900 dark:text-white">-</p>
-                </div>
-                <div class="space-y-1">
-                  <p class="text-xs uppercase text-slate-500 dark:text-slate-400 font-semibold">Base dose per kg (U/kg)</p>
-                  <p id="hep-base-perkg" class="text-lg font-bold text-primary-900 dark:text-white">-</p>
-                </div>
-                <div class="space-y-1">
-                  <p class="text-xs uppercase text-slate-500 dark:text-slate-400 font-semibold">Base volume (mL)</p>
-                  <p id="hep-base-volume" class="text-lg font-bold text-primary-900 dark:text-white">-</p>
-                </div>
-                <div class="space-y-1">
-                  <p class="text-xs uppercase text-slate-500 dark:text-slate-400 font-semibold">Estimated plasma heparin (U/mL)</p>
-                  <p id="hep-base-conc" class="text-lg font-bold text-primary-900 dark:text-white">-</p>
-                </div>
-              </div>
-
-              <div class="space-y-1 pt-2 border-t border-slate-200 dark:border-primary-800">
-                <p class="text-xs uppercase text-slate-500 dark:text-slate-400 font-semibold">Risk-adjusted range</p>
-                <p class="text-sm text-primary-900 dark:text-white">Dose (U): <span id="hep-adj-dose-range" class="font-semibold">-</span></p>
-                <p class="text-sm text-primary-900 dark:text-white">Per kg (U/kg): <span id="hep-adj-perkg-range" class="font-semibold">-</span></p>
-              </div>
-
-              <p id="hep-warning" class="text-sm text-red-600 dark:text-red-400 font-semibold hidden"></p>
-
-              <div class="space-y-1 text-xs text-slate-600 dark:text-slate-400 pt-2 border-t border-slate-200 dark:border-primary-800">
-                <p>Target ACT: <span id="hep-target-act-display" class="font-semibold text-primary-900 dark:text-white">-</span></p>
-                <p>This tool is decision support only. Final dosing must incorporate ACT/HDR responses, ATIII replacement, and institutional CPB protocols.</p>
-                <p>Risk-factor multipliers are empirical ranges based on literature (e.g., Gravlee Cardiopulmonary Bypass) and internal experience.</p>
               </div>
             </div>
           </div>

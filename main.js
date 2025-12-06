@@ -332,186 +332,264 @@ function computePredictedHct({ pttype, weight, pre, prime, fluids = 0, removed =
 }
 
 // -----------------------------
-// Heparin Management Calculator
+// Heparin management (new UI)
 // -----------------------------
 function computeDevineIbw(heightCm, sex) {
-  if (!heightCm || heightCm <= 0) return null;
-  if (sex === 'male') return 50 + 0.9 * (heightCm - 152);
-  if (sex === 'female') return 45.5 + 0.9 * (heightCm - 152);
+  if (!(heightCm > 0)) return null;
+  const offset = heightCm - 152.4;
+  if (sex === 'male') return 50 + 0.91 * offset;
+  if (sex === 'female') return 45.5 + 0.91 * offset;
   return null;
 }
 
-function toggleHepActCustom() {
-  const actSelect = el('hep-target-act');
-  const customInput = el('hep-target-act-custom');
-  if (!actSelect || !customInput) return;
-  if (actSelect.value === 'custom') {
-    customInput.classList.remove('hidden');
-  } else {
-    customInput.value = '';
-    customInput.classList.add('hidden');
-  }
-}
+let hepDoseUnit = 300;
+let hepResistance = false;
+let hepShowFlow = false;
 
-function handleHepProtocolChange() {
-  const protocol = el('hep-protocol');
-  const row = el('hep-custom-dose-row');
-  const kgWrap = el('hep-custom-dose-kg-wrapper');
-  const bsaWrap = el('hep-custom-dose-bsa-wrapper');
-  if (!protocol || !row || !kgWrap || !bsaWrap) return;
-
-  const value = protocol.value;
-  if (value === 'customKg') {
-    row.classList.remove('hidden');
-    kgWrap.classList.remove('hidden');
-    bsaWrap.classList.add('hidden');
-  } else if (value === 'customBsa') {
-    row.classList.remove('hidden');
-    bsaWrap.classList.remove('hidden');
-    kgWrap.classList.add('hidden');
-  } else {
-    row.classList.add('hidden');
-    kgWrap.classList.add('hidden');
-    bsaWrap.classList.add('hidden');
-  }
-}
-
-function calculateHeparinManagement() {
-  const getVal = (id) => {
-    const v = parseFloat(el(id)?.value);
-    return Number.isFinite(v) ? v : NaN;
-  };
-
-  const weightType = document.querySelector('input[name="hepWeightType"]:checked')?.value || 'actual';
-  const actualWeight = getVal('hep-actual-weight');
-  const idealWeight = getVal('hep-ideal-weight');
-  const height = getVal('hep-height');
-  const sex = el('hep-sex')?.value;
-  const protocol = el('hep-protocol')?.value || '300kg';
-  const bsa = getVal('hep-bsa');
-  const hepConc = getVal('hep-concentration');
-  const customKg = getVal('hep-custom-dose-kg');
-  const customBsa = getVal('hep-custom-dose-bsa');
-
-  const useIbw = el('rf-obesity')?.checked && height > 0 && (sex === 'male' || sex === 'female');
-  const ibw = useIbw ? computeDevineIbw(height, sex) : null;
-
-  let effectiveWeight = weightType === 'ideal' ? idealWeight : actualWeight;
-  if (useIbw && ibw) effectiveWeight = ibw;
-
-  if (!(effectiveWeight > 0)) {
-    alert('Enter a valid weight for dosing.');
-    return;
-  }
-
-  if ((protocol === 'bsa250' || protocol === 'customBsa') && !(bsa > 0)) {
-    alert('Enter BSA for the selected protocol.');
-    return;
-  }
-
-  if (!(hepConc > 0)) {
-    alert('Enter heparin concentration (U/mL).');
-    return;
-  }
-
-  let totalDoseU = 0;
-  switch (protocol) {
-    case '300kg':
-      totalDoseU = 300 * effectiveWeight;
-      break;
-    case '400kg':
-      totalDoseU = 400 * effectiveWeight;
-      break;
-    case 'bsa250':
-      totalDoseU = 250 * bsa;
-      break;
-    case 'customKg':
-      if (!(customKg > 0)) { alert('Enter custom U/kg dose.'); return; }
-      totalDoseU = customKg * effectiveWeight;
-      break;
-    case 'customBsa':
-      if (!(customBsa > 0)) { alert('Enter custom U/m² dose.'); return; }
-      totalDoseU = customBsa * bsa;
-      break;
-    default:
-      totalDoseU = 300 * effectiveWeight;
-  }
-
-  const volumeMl = totalDoseU / hepConc;
-  const vd = 70 * effectiveWeight; // Distribution volume assumption
-  const plasmaConc = vd > 0 ? totalDoseU / vd : 0;
-  const perKg = totalDoseU / effectiveWeight;
-
-  let minFactor = 1.0;
-  let maxFactor = 1.0;
-  const riskFactors = [
-    { id: 'rf-sirs', min: 1.2, max: 1.4 },
-    { id: 'rf-at3', min: 1.4, max: 1.8 },
-    { id: 'rf-ped', min: 1.3, max: 1.5 },
-    { id: 'rf-obesity', min: 1.05, max: 1.15 },
-    { id: 'rf-lmwh', min: 1.2, max: 1.5 }
-  ];
-
-  riskFactors.forEach(rf => {
-    const box = el(rf.id);
-    if (box && box.checked) {
-      minFactor *= rf.min;
-      maxFactor *= rf.max;
-    }
+function setHepDoseButtons(activeDose) {
+  document.querySelectorAll('[data-hep-dose]').forEach(btn => {
+    if (!btn.dataset.hepDose) return;
+    const isActive = Number(btn.dataset.hepDose) === activeDose;
+    btn.classList.toggle('active-dose', isActive);
   });
+}
 
-  const adjMinDose = totalDoseU * minFactor;
-  const adjMaxDose = totalDoseU * maxFactor;
-  const adjMinPerKg = adjMinDose / effectiveWeight;
-  const adjMaxPerKg = adjMaxDose / effectiveWeight;
+function renderResistanceToggle() {
+  const toggle = el('hep2-resistance-toggle');
+  if (!toggle) return;
+  const check = toggle.querySelector('span');
+  const activeClasses = ['border-accent-500', 'bg-accent-50', 'dark:bg-primary-800/60'];
+  const inactiveClasses = ['border-slate-200', 'dark:border-primary-700', 'bg-white', 'dark:bg-primary-800'];
+  if (hepResistance) {
+    toggle.classList.add(...activeClasses);
+    toggle.classList.remove('border-slate-200', 'dark:border-primary-700', 'bg-white', 'dark:bg-primary-800');
+    if (check) check.classList.remove('hidden');
+  } else {
+    toggle.classList.remove(...activeClasses);
+    toggle.classList.add(...inactiveClasses);
+    if (check) check.classList.add('hidden');
+  }
+}
 
-  const warningEl = el('hep-warning');
-  const warnings = [];
-  if (adjMaxPerKg > 600) warnings.push('Risk-adjusted 상한 용량이 600 U/kg 을 초과합니다. ATIII 보충, HDR, ACT 추세 등을 재평가하십시오.');
-  if (adjMaxDose > 50000) warnings.push('총 헤파린 용량이 50,000 U 이상입니다. 출혈 및 HIT 위험을 고려해 팀과 재논의가 필요합니다.');
+function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy }) {
+  if (!(heightCm > 0) || !(weightKg > 0)) return null;
+  const bmi = weightKg / Math.pow(heightCm / 100, 2);
+  const ibw = computeDevineIbw(heightCm, sex) || weightKg;
+  const excess = weightKg - ibw;
+  const abwStandard = ibw + 0.4 * excess;
+  const abwSuperObese = ibw + 0.3 * excess;
 
-  if (warningEl) {
-    if (warnings.length) {
-      warningEl.textContent = warnings.join(' ');
-      warningEl.classList.remove('hidden');
+  let dosingWeight = weightKg;
+  let strategyLabel = 'TBW (Standard)';
+  let alertLevel = 'low';
+
+  if (weightStrategy === 'auto') {
+    if (bmi < 30) {
+      dosingWeight = weightKg;
+      strategyLabel = 'TBW (Standard)';
+    } else if (bmi < 40) {
+      dosingWeight = abwStandard;
+      strategyLabel = 'ABW (0.4 correction)';
+      alertLevel = 'medium';
     } else {
-      warningEl.textContent = '';
-      warningEl.classList.add('hidden');
+      dosingWeight = abwSuperObese;
+      strategyLabel = 'ABW (0.3 super-obese)';
+      alertLevel = 'high';
+    }
+  } else if (weightStrategy === 'tbw') {
+    dosingWeight = weightKg;
+    strategyLabel = 'TBW (Manual)';
+  } else if (weightStrategy === 'ibw') {
+    dosingWeight = ibw;
+    strategyLabel = 'IBW (Manual)';
+  } else if (weightStrategy === 'abw') {
+    dosingWeight = bmi >= 40 ? abwSuperObese : abwStandard;
+    strategyLabel = 'ABW (Manual)';
+  }
+
+  const initialBolus = Math.round(dosingWeight * doseUnit);
+  const tbwBolus = Math.round(weightKg * doseUnit);
+  const difference = tbwBolus - initialBolus;
+  const isHighDose = initialBolus > 40000;
+  const maintenanceRate = Math.round(dosingWeight * (hepResistance ? 18 : 12));
+  const additionalBolus = Math.round(dosingWeight * (hepResistance ? 100 : 50));
+
+  // DuBois BSA approximation used here (0.007184 × H^0.725 × W^0.425)
+  const bsaActual = 0.007184 * Math.pow(heightCm, 0.725) * Math.pow(weightKg, 0.425);
+  let bsaUsedForFlow = bsaActual;
+  let bsaCapped = false;
+  if (bmi > 35 && bsaActual > 2.5) {
+    bsaUsedForFlow = 2.5;
+    bsaCapped = true;
+  }
+
+  const targetCI = 2.4;
+  const flowRate = bsaUsedForFlow * targetCI;
+  const flowWarning = flowRate > 6.0;
+
+  return {
+    bmi,
+    ibw,
+    abw: abwStandard,
+    dosingWeight,
+    strategyLabel,
+    alertLevel,
+    initialBolus,
+    tbwBolus,
+    difference,
+    isHighDose,
+    maintenanceRate,
+    additionalBolus,
+    bsaActual,
+    bsaUsedForFlow,
+    bsaCapped,
+    flowRate,
+    flowWarning,
+  };
+}
+
+function updateHeparinUI() {
+  const heightInput = el('hep2-height');
+  const weightInput = el('hep2-weight');
+  const sex = el('hep2-sex')?.value || 'male';
+  const weightStrategy = el('hep2-weight-strategy')?.value || 'auto';
+  const targetActInput = el('hep2-target-act');
+
+  const height = parseFloat(heightInput?.value);
+  const weight = parseFloat(weightInput?.value);
+  const targetAct = parseFloat(targetActInput?.value);
+
+  const heightError = el('hep2-height-error');
+  const weightError = el('hep2-weight-error');
+
+  const hasHeight = heightInput && heightInput.value !== '';
+  const hasWeight = weightInput && weightInput.value !== '';
+
+  const heightValid = height > 50 && height < 250;
+  const weightValid = weight > 20 && weight < 300;
+
+  if (heightError) heightError.classList.toggle('hidden', !hasHeight || heightValid);
+  if (weightError) weightError.classList.toggle('hidden', !hasWeight || weightValid);
+
+  const placeholder = el('hep2-placeholder');
+  const results = el('hep2-results');
+
+  if (!(heightValid && weightValid)) {
+    if (results) results.classList.add('hidden');
+    if (placeholder) placeholder.classList.remove('hidden');
+    return;
+  }
+
+  const plan = computeHeparinPlan({ heightCm: height, weightKg: weight, sex, doseUnit: hepDoseUnit, weightStrategy });
+  if (!plan) {
+    if (results) results.classList.add('hidden');
+    if (placeholder) placeholder.classList.remove('hidden');
+    return;
+  }
+
+  const setText = (id, text) => {
+    const node = el(id);
+    if (node) node.textContent = text;
+  };
+
+  setText('hep2-bmi', plan.bmi.toFixed(1));
+  setText('hep2-ibw', plan.ibw.toFixed(1));
+  setText('hep2-bsa', plan.bsaActual.toFixed(2));
+  setText('hep2-dosing-weight', plan.dosingWeight.toFixed(1));
+  setText('hep2-dosing-note', plan.strategyLabel);
+
+  const capBadge = el('hep2-bsa-cap');
+  if (capBadge) capBadge.classList.toggle('hidden', !plan.bsaCapped);
+
+  setText('hep2-initial-bolus', plan.initialBolus.toLocaleString());
+  setText('hep2-maintenance', `${plan.maintenanceRate} U/hr`);
+  setText('hep2-add-bolus', `${plan.additionalBolus.toLocaleString()} U`);
+  setText('hep2-maintenance-note', `${plan.maintenanceRate} U/hr`);
+  setText('hep2-target-act-display', Number.isFinite(targetAct) ? `${targetAct.toFixed(0)} s` : 'Target');
+
+  const highDose = el('hep2-high-dose');
+  if (highDose) highDose.classList.toggle('hidden', !plan.isHighDose);
+
+  const diffNote = el('hep2-diff-note');
+  if (diffNote) {
+    if (plan.difference !== 0) {
+      const sign = plan.difference > 0 ? '+' : '';
+      diffNote.textContent = `TBW would be ${plan.tbwBolus.toLocaleString()} U (${sign}${plan.difference.toLocaleString()})`;
+      diffNote.classList.remove('hidden');
+    } else {
+      diffNote.textContent = '';
+      diffNote.classList.add('hidden');
     }
   }
 
-  const setVal = (id, val) => {
-    const node = el(id);
-    if (node) node.textContent = val;
-  };
+  if (hepShowFlow) {
+    el('hep2-flow-card')?.classList.remove('hidden');
+    el('hep2-quick-card')?.classList.add('hidden');
+    setText('hep2-flow-rate', plan.flowRate.toFixed(1));
+    setText('hep2-flow-bsa', plan.bsaUsedForFlow.toFixed(2));
+    const cap = el('hep2-flow-cap');
+    if (cap) cap.classList.toggle('hidden', !plan.bsaCapped);
+    const flowWarn = el('hep2-flow-warning');
+    if (flowWarn) flowWarn.classList.toggle('hidden', !plan.flowWarning);
+  } else {
+    el('hep2-flow-card')?.classList.add('hidden');
+    el('hep2-quick-card')?.classList.remove('hidden');
+    const steps = el('hep2-quick-steps')?.querySelectorAll('li');
+    if (steps && steps.length >= 5) {
+      steps[0].textContent = `Bolus ${plan.initialBolus.toLocaleString()} U IV`;
+      steps[2].textContent = `Start maintenance ${plan.maintenanceRate} U/hr`;
+      steps[4].textContent = `If ACT low: +${plan.additionalBolus.toLocaleString()} U bolus`;
+    }
+  }
 
-  setVal('hep-base-dose', totalDoseU.toFixed(0));
-  setVal('hep-base-perkg', perKg.toFixed(0));
-  setVal('hep-base-volume', volumeMl.toFixed(1));
-  setVal('hep-base-conc', plasmaConc.toFixed(2));
-  setVal('hep-adj-dose-range', `${adjMinDose.toFixed(0)} – ${adjMaxDose.toFixed(0)}`);
-  setVal('hep-adj-perkg-range', `${adjMinPerKg.toFixed(0)} – ${adjMaxPerKg.toFixed(0)}`);
+  const resistanceBlock = el('hep2-resistance-block');
+  if (resistanceBlock) resistanceBlock.classList.toggle('hidden', !hepResistance);
 
-  const actSelect = el('hep-target-act');
-  const actCustom = getVal('hep-target-act-custom');
-  const actDisplay = actSelect?.value === 'custom'
-    ? (actCustom > 0 ? actCustom.toFixed(0) : 'Custom')
-    : (actSelect?.value || 'Custom');
-  setVal('hep-target-act-display', actDisplay);
+  const obesityBlock = el('hep2-obesity-warning');
+  if (obesityBlock) obesityBlock.classList.toggle('hidden', hepResistance || plan.alertLevel !== 'high');
 
-  const resultCard = el('hep-result');
-  if (resultCard) resultCard.style.display = 'block';
+  if (results) results.classList.remove('hidden');
+  if (placeholder) placeholder.classList.add('hidden');
 }
 
 function initHeparinManagement() {
-  toggleHepActCustom();
-  handleHepProtocolChange();
+  setHepDoseButtons(hepDoseUnit);
+  renderResistanceToggle();
 
-  const actSelect = el('hep-target-act');
-  if (actSelect) actSelect.addEventListener('change', toggleHepActCustom);
+  document.querySelectorAll('[data-hep-dose]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = Number(btn.dataset.hepDose);
+      hepDoseUnit = Number.isFinite(val) ? val : hepDoseUnit;
+      setHepDoseButtons(hepDoseUnit);
+      updateHeparinUI();
+    });
+  });
 
-  const protocolSelect = el('hep-protocol');
-  if (protocolSelect) protocolSelect.addEventListener('change', handleHepProtocolChange);
+  const resistanceToggle = el('hep2-resistance-toggle');
+  if (resistanceToggle) {
+    resistanceToggle.addEventListener('click', () => {
+      hepResistance = !hepResistance;
+      renderResistanceToggle();
+      updateHeparinUI();
+    });
+  }
+
+  const flowToggle = el('hep2-show-flow');
+  if (flowToggle) {
+    hepShowFlow = flowToggle.checked;
+    flowToggle.addEventListener('change', (e) => {
+      hepShowFlow = e.target.checked;
+      updateHeparinUI();
+    });
+  }
+
+  ['hep2-height', 'hep2-weight', 'hep2-sex', 'hep2-weight-strategy', 'hep2-target-act'].forEach(id => {
+    const node = el(id);
+    if (node) node.addEventListener('input', updateHeparinUI);
+    if (node && node.tagName === 'SELECT') node.addEventListener('change', updateHeparinUI);
+  });
+
+  updateHeparinUI();
 }
 
 // -----------------------------
