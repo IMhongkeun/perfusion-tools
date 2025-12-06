@@ -1242,11 +1242,13 @@
                       <option value="ibw">Ideal body weight (IBW)</option>
                     </select>
                     <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Auto switches to ABW when BMI ≥ 30 to reduce overdose risk.</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Auto logic: BMI &lt; 30 → TBW; BMI 30–39 → ABW (0.4 correction); BMI ≥ 40 → ABW (0.3) with obesity safety cues.</p>
                   </div>
 
                   <div class="space-y-2">
                     <p class="text-xs text-slate-500 dark:text-slate-400">Initial dose (U/kg)</p>
-                    <div class="grid grid-cols-3 gap-2" id="hep2-dose-buttons">
+                    <div class="grid grid-cols-4 gap-2" id="hep2-dose-buttons">
+                      <button type="button" data-hep-dose="250" class="hep-dose-btn">250</button>
                       <button type="button" data-hep-dose="300" class="hep-dose-btn active-dose">300</button>
                       <button type="button" data-hep-dose="350" class="hep-dose-btn">350</button>
                       <button type="button" data-hep-dose="400" class="hep-dose-btn">400</button>
