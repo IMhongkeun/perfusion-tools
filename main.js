@@ -461,12 +461,7 @@ function updateHeparinUI() {
   const height = parseFloat(heightInput?.value);
   const weight = parseFloat(weightInput?.value);
   const rawTargetAct = parseFloat(targetActInput?.value);
-  const targetAct = Number.isFinite(rawTargetAct)
-    ? Math.min(1000, Math.max(300, rawTargetAct))
-    : NaN;
-  if (targetActInput && Number.isFinite(targetAct) && targetAct !== rawTargetAct) {
-    targetActInput.value = targetAct.toFixed(0);
-  }
+  const targetAct = Number.isFinite(rawTargetAct) ? rawTargetAct : NaN;
 
   const heightError = el('hep2-height-error');
   const weightError = el('hep2-weight-error');
