@@ -334,6 +334,9 @@ function computePredictedHct({ pttype, weight, pre, prime, fluids = 0, removed =
 // -----------------------------
 // Heparin management (new UI)
 // -----------------------------
+// Devine Ideal Body Weight (IBW) formula using metric inputs:
+// Male: 50 + 0.91 × (height_cm − 152.4)
+// Female: 45.5 + 0.91 × (height_cm − 152.4)
 function computeDevineIbw(heightCm, sex) {
   if (!(heightCm > 0)) return null;
   const offset = heightCm - 152.4;
@@ -457,7 +460,13 @@ function updateHeparinUI() {
 
   const height = parseFloat(heightInput?.value);
   const weight = parseFloat(weightInput?.value);
-  const targetAct = parseFloat(targetActInput?.value);
+  const rawTargetAct = parseFloat(targetActInput?.value);
+  const targetAct = Number.isFinite(rawTargetAct)
+    ? Math.min(1000, Math.max(300, rawTargetAct))
+    : NaN;
+  if (targetActInput && Number.isFinite(targetAct) && targetAct !== rawTargetAct) {
+    targetActInput.value = targetAct.toFixed(0);
+  }
 
   const heightError = el('hep2-height-error');
   const weightError = el('hep2-weight-error');

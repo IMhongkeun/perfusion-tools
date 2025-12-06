@@ -1229,7 +1229,7 @@
                     </div>
                     <div>
                       <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Target ACT (sec)</label>
-                      <input id="hep2-target-act" type="number" min="200" step="10" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 text-center font-mono" value="480" />
+                      <input id="hep2-target-act" type="number" min="300" max="1000" step="10" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 text-center font-mono" value="480" />
                     </div>
                   </div>
 
@@ -1283,13 +1283,14 @@
                       <p id="hep2-bmi" class="stat-value">-</p>
                     </div>
                     <div class="stat-card">
-                      <p class="stat-label">IBW</p>
+                      <p class="stat-label">IBW (Devine)</p>
                       <p class="stat-value"><span id="hep2-ibw">-</span> <span class="stat-unit">kg</span></p>
+                      <p class="text-[11px] text-slate-500 dark:text-slate-400">Devine formula</p>
                     </div>
                     <div class="stat-card relative">
                       <p class="stat-label">BSA (Mosteller)</p>
                       <p class="stat-value text-accent-500"><span id="hep2-bsa">-</span> <span class="stat-unit">m²</span></p>
-                      <span id="hep2-bsa-cap" class="badge hidden">Capped</span>
+                      <span id="hep2-bsa-cap" class="badge hidden">Capped for Safety (Obesity)</span>
                     </div>
                     <div class="stat-card highlight">
                       <p class="stat-label">Dosing weight</p>
@@ -1328,7 +1329,7 @@
                       <p class="text-sm font-semibold text-primary-900 dark:text-white mb-2">Flow targets (CI 2.4)</p>
                       <p class="text-4xl font-mono font-bold text-primary-900 dark:text-white"><span id="hep2-flow-rate">-</span> <span class="text-lg text-slate-500">L/min</span></p>
                       <p class="text-xs text-slate-500 dark:text-slate-400">BSA <span id="hep2-flow-bsa">-</span> m² × 2.4 L/min/m²</p>
-                      <div id="hep2-flow-cap" class="pill pill-warn hidden mt-2">Flow capped at BSA 2.5 m² (obesity safety)</div>
+                      <div id="hep2-flow-cap" class="pill pill-warn hidden mt-2">Flow capped for safety (obesity)</div>
                       <div id="hep2-flow-warning" class="pill pill-alert hidden mt-2">High flow &gt; 6 L/min — check cannula</div>
                     </div>
 
