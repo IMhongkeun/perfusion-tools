@@ -106,6 +106,83 @@
       outline: 2px solid #06b6d4;
       outline-offset: 2px;
     }
+
+    /* Heparin management UI helpers */
+    .hep-dose-btn {
+      width: 100%;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      color: #0f172a;
+      border-radius: 0.75rem;
+      padding: 0.6rem 0.75rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .hep-dose-btn:hover { border-color: #06b6d4; color: #0891b2; }
+    .dark .hep-dose-btn { background: #0f172a; border-color: #1e293b; color: #e2e8f0; }
+    .hep-dose-btn.active-dose {
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.25);
+      color: #0891b2;
+      background: rgba(6, 182, 212, 0.08);
+    }
+    .dark .hep-dose-btn.active-dose { background: rgba(8, 145, 178, 0.2); color: #67e8f9; border-color: #0ea5e9; }
+
+    .stat-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      box-shadow: 0 4px 8px -4px rgba(15, 23, 42, 0.25);
+    }
+    .dark .stat-card { background: #0b1220; border-color: #1e293b; box-shadow: none; }
+    .stat-card.highlight { border-color: #0ea5e9; box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.35); }
+    .stat-label { font-size: 0.75rem; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; }
+    .dark .stat-label { color: #94a3b8; }
+    .stat-value { font-size: 1.5rem; font-weight: 700; color: #0f172a; }
+    .dark .stat-value { color: #e2e8f0; }
+    .stat-unit { font-size: 0.9rem; color: #94a3b8; }
+
+    .badge {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(234, 179, 8, 0.15);
+      color: #ca8a04;
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+    }
+
+    .protocol-card, .flow-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.9rem;
+      padding: 1.25rem;
+      box-shadow: 0 4px 10px -6px rgba(15, 23, 42, 0.2);
+    }
+    .dark .protocol-card, .dark .flow-card { background: #0b1220; border-color: #1e293b; box-shadow: none; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      border-radius: 9999px;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .pill-warn { background: rgba(234, 179, 8, 0.15); color: #a16207; }
+    .pill-alert { background: rgba(248, 113, 113, 0.15); color: #b91c1c; }
+
+    .info-block {
+      border-radius: 0.9rem;
+      padding: 1rem 1.1rem;
+      border: 1px solid transparent;
+    }
+    .info-block.warn { background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.35); }
+    .info-block.alert { background: rgba(249, 115, 22, 0.1); border-color: rgba(249, 115, 22, 0.35); }
   </style>
 
   <script type="application/ld+json">
@@ -118,7 +195,7 @@
         "name": "What is DO₂i (Oxygen Delivery Index) and what target range is used during CPB?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "DO₂i (Oxygen Delivery Index) measures how much oxygen the heart delivers to body tissues per minute per square meter of body surface area, expressed in mL O₂/min/m². During normothermic cardiopulmonary bypass, target DO₂i is typically ≥280–300 mL/min/m² to prevent tissue hypoxia and anaerobic metabolism. Infants and neonates often require higher targets (≥350–380 mL/min/m²) due to elevated metabolic rates."
+          "text": "DO₂i (Oxygen Delivery Index) measures how much oxygen the heart delivers to body tissues per minute per square meter of body surface area, expressed in ml O₂/min/m². During normothermic cardiopulmonary bypass, target DO₂i is typically ≥280–300 ml/min/m² to prevent tissue hypoxia and anaerobic metabolism. Infants and neonates often require higher targets (≥350–380 ml/min/m²) due to elevated metabolic rates."
         }
       },
       {
@@ -296,7 +373,7 @@
               </div>
 
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Hemoglobin (g/dL) <span class="text-red-500">*</span></label>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Hemoglobin (g/dl) <span class="text-red-500">*</span></label>
                 <input id="hb" type="number" step="0.1" placeholder="10" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
               <div class="space-y-1">
@@ -305,7 +382,7 @@
               </div>
 
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">PaO₂ (mmHg) <span class="text-red-500">*</span></label>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">PaO₂ (mmhg) <span class="text-red-500">*</span></label>
                 <input id="pao2" type="number" step="1" placeholder="150" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
               <div class="space-y-1">
@@ -314,11 +391,11 @@
               </div>
 
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Current pump flow (L/min)</label>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Current pump flow (l/min)</label>
                 <input id="flow" type="number" step="0.01" placeholder="4.6" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
               <div class="space-y-1 opacity-80">
-                <label class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Calculated CaO₂ (mL/dL)</label>
+                <label class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Calculated CaO₂ (ml/dl)</label>
                 <input id="cao2" disabled class="w-full bg-slate-100 dark:bg-primary-950 border-0 rounded-xl px-4 py-2.5 text-slate-600 dark:text-slate-400 font-mono text-sm" />
               </div>
             </div>
@@ -374,11 +451,11 @@
             <ol class="list-decimal pl-4 space-y-3">
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Arterial oxygen content (CaO₂)</p>
-                <p>CaO₂ (mL/dL) = 1.34 × Hb (g/dL) × (SaO₂ / 100) + 0.0031 × PaO₂ (mmHg). We assume a Hüfner constant of 1.34 mL O₂ per gram of Hb and a dissolved O₂ coefficient of 0.0031 mL·dL⁻¹·mmHg⁻¹. The contribution of dissolved O₂ is usually small at normal PaO₂.</p>
+                <p>CaO₂ (ml/dl) = 1.34 × Hb (g/dl) × (SaO₂ / 100) + 0.0031 × PaO₂ (mmhg). We assume a Hüfner constant of 1.34 ml O₂ per gram of Hb and a dissolved O₂ coefficient of 0.0031 ml·dl⁻¹·mmhg⁻¹. The contribution of dissolved O₂ is usually small at normal PaO₂.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Indexed oxygen delivery (DO₂i)</p>
-                <p>DO₂i (mL/min/m²) = (Pump flow ÷ BSA) × CaO₂ × 10. Pump flow is entered in L/min and BSA in m². Multiplying by 10 converts CaO₂ from mL/dL to mL/L so that the final unit is mL O₂ per minute per m².</p>
+                <p>DO₂i (ml/min/m²) = (Pump flow ÷ BSA) × CaO₂ × 10. Pump flow is entered in l/min and BSA in m². Multiplying by 10 converts CaO₂ from ml/dl to ml/l so that the final unit is ml O₂ per minute per m².</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Temperature-adjusted metabolic demand</p>
@@ -386,11 +463,11 @@
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Target DO₂i bands (Goal-Directed Perfusion)</p>
-                <p>At normothermia (≈37 °C) many adult CPB programs aim to maintain DO₂i ≥ 280–300 mL/min/m² to reduce the risk of anaerobic metabolism and postoperative acute kidney injury. At lower temperatures the calculator reduces the recommended target range, but never below a conservative lower floor (e.g. around 220 mL/min/m²), even when theoretical VO₂ would allow lower values. Targets are displayed as “Low / Borderline / Target / High” bands on the gauge for quick bedside interpretation.</p>
+                <p>At normothermia (≈37 °C) many adult CPB programs aim to maintain DO₂i ≥ 280–300 ml/min/m² to reduce the risk of anaerobic metabolism and postoperative acute kidney injury. At lower temperatures the calculator reduces the recommended target range, but never below a conservative lower floor (e.g. around 220 ml/min/m²), even when theoretical VO₂ would allow lower values. Targets are displayed as “Low / Borderline / Target / High” bands on the gauge for quick bedside interpretation.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Required pump flow for a chosen DO₂i goal</p>
-                <p>For a selected DO₂i target, the corresponding pump flow is: Required flow (L/min) = (Target DO₂i × BSA) ÷ (CaO₂ × 10). This is a theoretical value based on current Hb, SaO₂, PaO₂ and BSA. In practice, flow should also respect institutional minimum/maximum flow policies and patient-specific constraints (e.g. cannula size, arterial pressure, ventricular distension).</p>
+                <p>For a selected DO₂i target, the corresponding pump flow is: Required flow (l/min) = (Target DO₂i × BSA) ÷ (CaO₂ × 10). This is a theoretical value based on current Hb, SaO₂, PaO₂ and BSA. In practice, flow should also respect institutional minimum/maximum flow policies and patient-specific constraints (e.g. cannula size, arterial pressure, ventricular distension).</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Clinical use and limitations</p>
@@ -564,16 +641,16 @@
             <div class="sm:col-span-2">
               <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Patient Type (EBV Coef)</label>
               <select id="pttype" class="mt-1 w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white cursor-pointer">
-                <option value="adult_m">Adult — Male (70 mL/kg)</option>
-                <option value="adult_f">Adult — Female (65 mL/kg)</option>
-                <option value="child">Child (75 mL/kg)</option>
-                <option value="infant">Infant (80 mL/kg)</option>
-                <option value="neonate">Neonate (90 mL/kg)</option>
+                <option value="adult_m">Adult — Male (70 ml/kg)</option>
+                <option value="adult_f">Adult — Female (65 ml/kg)</option>
+                <option value="child">Child (75 ml/kg)</option>
+                <option value="infant">Infant (80 ml/kg)</option>
+                <option value="neonate">Neonate (90 ml/kg)</option>
               </select>
             </div>
 
             <div class="space-y-1">
-              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">EBV Coef (mL/kg)</label>
+              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">EBV Coef (ml/kg)</label>
               <input id="ebv_coef" type="number" step="1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
             </div>
 
@@ -589,15 +666,15 @@
             <div class="bg-slate-50 dark:bg-primary-800/50 p-4 rounded-xl border border-slate-100 dark:border-primary-700/50 sm:col-span-2 grid sm:grid-cols-2 gap-4">
                <div class="sm:col-span-2 text-xs font-bold text-primary-900 dark:text-accent-400 uppercase tracking-wide mb-1">Circuit Volumes</div>
                <div class="space-y-1">
-                 <label class="text-xs text-slate-500 dark:text-slate-400">Prime Volume (mL)</label>
+                 <label class="text-xs text-slate-500 dark:text-slate-400">Prime Volume (ml)</label>
                  <input id="prime" type="number" step="1" placeholder="1200" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
                </div>
                <div class="space-y-1">
-                 <label class="text-xs text-slate-500 dark:text-slate-400">Addl. Crystalloid (mL)</label>
+                 <label class="text-xs text-slate-500 dark:text-slate-400">Addl. Crystalloid (ml)</label>
                  <input id="fluids" type="number" step="1" value="0" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
                </div>
                <div class="space-y-1">
-                 <label class="text-xs text-slate-500 dark:text-slate-400">Ultrafiltration Removed (mL)</label>
+                 <label class="text-xs text-slate-500 dark:text-slate-400">Ultrafiltration Removed (ml)</label>
                  <input id="removed" type="number" step="1" value="0" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
                </div>
             </div>
@@ -609,7 +686,7 @@
                  <input id="rbc_units" type="number" step="1" value="0" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
               </div>
               <div class="space-y-1">
-                 <label class="text-xs text-slate-500 dark:text-slate-400">Vol/Unit (mL)</label>
+                 <label class="text-xs text-slate-500 dark:text-slate-400">Vol/Unit (ml)</label>
                  <input id="rbc_unit_vol" type="number" step="1" value="300" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
               </div>
               <div class="space-y-1">
@@ -623,12 +700,12 @@
             <div>
               <div class="text-[10px] uppercase tracking-wider text-slate-400 mb-1">EBV</div>
               <div id="ebv" class="text-lg font-mono font-medium">0</div>
-              <div class="text-[10px] text-slate-500">mL</div>
+              <div class="text-[10px] text-slate-500">ml</div>
             </div>
             <div>
               <div class="text-[10px] uppercase tracking-wider text-slate-400 mb-1">Total Vol</div>
               <div id="total_vol" class="text-lg font-mono font-medium">0</div>
-              <div class="text-[10px] text-slate-500">mL</div>
+              <div class="text-[10px] text-slate-500">ml</div>
             </div>
             <div class="relative">
               <div class="text-[10px] uppercase tracking-wider text-accent-400 mb-1 font-bold">Result Hct</div>
@@ -658,31 +735,31 @@
             <ol class="list-decimal pl-4 space-y-3">
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Estimated blood volume (EBV)</p>
-                <p>This calculator uses a simple weight-based model for circulating blood volume: EBV (mL) = Weight (kg) × EBV coefficient (mL/kg). Typical default coefficients are:</p>
+                <p>This calculator uses a simple weight-based model for circulating blood volume: EBV (ml) = Weight (kg) × EBV coefficient (ml/kg). Typical default coefficients are:</p>
                 <ul class="list-disc pl-4 space-y-1 mt-1">
-                  <li>Adult male: 70 mL/kg</li>
-                  <li>Adult female: 65 mL/kg</li>
-                  <li>Child: 75 mL/kg</li>
-                  <li>Infant: 80 mL/kg</li>
-                  <li>Neonate: 90 mL/kg</li>
+                  <li>Adult male: 70 ml/kg</li>
+                  <li>Adult female: 65 ml/kg</li>
+                  <li>Child: 75 ml/kg</li>
+                  <li>Infant: 80 ml/kg</li>
+                  <li>Neonate: 90 ml/kg</li>
                 </ul>
                 <p class="mt-1">These values are derived from population averages and may be adjusted in this tool when clinical judgment suggests a higher or lower blood volume (e.g. severe obesity, cachexia, fluid overload or dehydration).</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Pre-CPB red cell volume</p>
-                <p>Pre-bypass red cell volume is estimated from the patient’s hematocrit (Hct) and EBV: RBC_patient (mL) = EBV × (Pre-CPB Hct ÷ 100). This assumes the pre-CPB Hct is measured after induction and line placement, and that blood is evenly distributed in the circulation.</p>
+                <p>Pre-bypass red cell volume is estimated from the patient’s hematocrit (Hct) and EBV: RBC_patient (ml) = EBV × (Pre-CPB Hct ÷ 100). This assumes the pre-CPB Hct is measured after induction and line placement, and that blood is evenly distributed in the circulation.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Circuit prime and crystalloid / ultrafiltration</p>
                 <p>The total intravascular volume at the time of sampling is modeled as:</p>
-                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">V_total (mL) = EBV + Prime volume + Additional crystalloid / colloid + RBC product volume − Ultrafiltration removed.</p>
+                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">V_total (ml) = EBV + Prime volume + Additional crystalloid / colloid + RBC product volume − Ultrafiltration removed.</p>
                 <p>“Prime volume” includes the cardiopulmonary bypass circuit prime and any pre-bypass volume added directly to the patient through the circuit. “Additional crystalloid” represents fluids such as cardioplegia carrier solution, albumin, mannitol, or other volume expanders that effectively dilute the circulating red cell mass. “Ultrafiltration removed” accounts for hemoconcentration techniques (UF, MUF, Z-BUF) that remove plasma water and reduce total volume.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Packed red blood cell (RBC) products</p>
                 <p>Red cell volume contributed by transfused RBCs is modeled as:</p>
-                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">RBC_products (mL) = (Number of units × Volume per unit) × (Unit Hct ÷ 100).</p>
-                <p>Default values often assume ~300 mL/unit with a unit Hct around 60%, but these may be adjusted to reflect local blood bank characteristics or specific product labels.</p>
+                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">RBC_products (ml) = (Number of units × Volume per unit) × (Unit Hct ÷ 100).</p>
+                <p>Default values often assume ~300 ml/unit with a unit Hct around 60%, but these may be adjusted to reflect local blood bank characteristics or specific product labels.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Predicted hematocrit on CPB</p>
@@ -862,9 +939,9 @@
             <div class="space-y-1">
               <p class="font-semibold mb-1">5. Flow comparison table (CI 1.0–3.0)</p>
               <p>The flow table shows how perfusion flow requirements change when indexed to actual BSA and lean BSA.</p>
-              <p>Flow_actual (L/min) = CI × BSA_actual</p>
-              <p>Flow_lean (L/min) = CI × BSA_lean</p>
-              <p>This allows quick comparison such as “At CI 2.4 L/min/m², how much flow do I deliver if I index to full BSA?” and “If I index to lean BSA instead, how much lower would the flow be for the same CI?”</p>
+              <p>Flow_actual (l/min) = CI × BSA_actual</p>
+              <p>Flow_lean (l/min) = CI × BSA_lean</p>
+              <p>This allows quick comparison such as “At CI 2.4 l/min/m², how much flow do I deliver if I index to full BSA?” and “If I index to lean BSA instead, how much lower would the flow be for the same CI?”</p>
               <p>In markedly obese patients, BSA_actual may suggest very high flows that exceed what is needed for metabolically active tissue, while BSA_lean can illustrate a more physiologic lower bound. Final flow selection must still consider SvO₂, lactate, arterial pressure, and institutional protocols.</p>
             </div>
 
@@ -1117,151 +1194,262 @@
       <section id="view-heparin" class="hidden animate-in fade-in duration-300">
         <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 overflow-hidden">
           <div class="p-6 space-y-6">
-            <div class="space-y-1">
+            <div class="space-y-2">
               <h2 class="text-xl font-bold text-primary-900 dark:text-white">Heparin Management (CPB)</h2>
-              <p class="text-sm text-slate-600 dark:text-slate-300">Calculate an initial loading dose for CPB and view an optional risk-adjusted range when heparin resistance factors are present.</p>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Calculate an initial loading dose with weight strategy safeguards and optional flow targets; toggle resistance cues when ACT response is low.</p>
             </div>
 
-            <div class="space-y-4">
-              <h3 class="text-lg font-semibold text-primary-900 dark:text-white">1. Base dose (Standard)</h3>
-              <div class="space-y-3">
-                <div class="flex flex-wrap items-center gap-4">
-                  <label class="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
-                    <input type="radio" name="hepWeightType" value="actual" class="rounded border-slate-300 text-accent-500 focus:ring-accent-500" checked>
-                    <span>Actual body weight</span>
-                  </label>
-                  <label class="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
-                    <input type="radio" name="hepWeightType" value="ideal" class="rounded border-slate-300 text-accent-500 focus:ring-accent-500">
-                    <span>Ideal body weight</span>
-                  </label>
-                </div>
-
-                <div class="grid md:grid-cols-2 gap-3">
-                  <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Actual weight (kg)</label>
-                    <input id="hep-actual-weight" type="number" step="0.1" placeholder="70" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+            <div class="space-y-6">
+              <div class="space-y-4">
+                <div class="bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 space-y-4">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Patient parameters</h3>
+                    <span class="text-xs text-slate-500 dark:text-slate-400">Adult CPB</span>
                   </div>
-                  <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Ideal weight (kg)</label>
-                    <input id="hep-ideal-weight" type="number" step="0.1" placeholder="65" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                  </div>
-                </div>
-
-                <div class="grid md:grid-cols-2 gap-3">
-                  <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide flex items-center gap-1">Height (cm) <span class="text-[10px] text-slate-400 dark:text-slate-500">(IBW calculation, optional)</span></label>
-                    <input id="hep-height" type="number" step="0.5" placeholder="170" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                  </div>
-                  <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Sex</label>
-                    <select id="hep-sex" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 outline-none">
-                      <option value="none">Not specified</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="grid md:grid-cols-2 gap-3">
-                  <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide flex justify-between items-center">
-                      <span>BSA (m²)</span>
-                      <span class="text-[10px] text-slate-400 dark:text-slate-500">copy from BSA tab</span>
-                    </label>
-                    <input id="hep-bsa" type="number" step="0.01" placeholder="1.80" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                  </div>
-                  <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Target ACT (reference)</label>
-                    <div class="flex items-center gap-2">
-                      <select id="hep-target-act" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 outline-none">
-                        <option value="400">400</option>
-                        <option value="450">450</option>
-                        <option value="480" selected>480</option>
-                        <option value="500">500</option>
-                        <option value="custom">Custom</option>
-                      </select>
-                      <input id="hep-target-act-custom" type="number" step="1" placeholder="Enter" class="w-28 rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none hidden" />
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Height (cm)</label>
+                      <input id="hep2-height" type="number" min="0" step="0.1" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="170" />
+                      <p id="hep2-height-error" class="text-xs text-red-500 mt-1 hidden">Height should be 50–250 cm</p>
+                    </div>
+                    <div>
+                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Weight (kg)</label>
+                      <input id="hep2-weight" type="number" min="0" step="0.1" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="70" />
+                      <p id="hep2-weight-error" class="text-xs text-red-500 mt-1 hidden">Weight should be 20–300 kg</p>
                     </div>
                   </div>
-                </div>
 
-                <div class="grid md:grid-cols-2 gap-3">
-                  <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Heparin protocol</label>
-                    <select id="hep-protocol" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 outline-none">
-                      <option value="300kg" selected>300 U/kg (weight-based)</option>
-                      <option value="400kg">400 U/kg (weight-based)</option>
-                      <option value="bsa250">250 U/m² (BSA-based)</option>
-                      <option value="customKg">Custom U/kg</option>
-                      <option value="customBsa">Custom U/m²</option>
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Sex</label>
+                      <select id="hep2-sex" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                      </select>
+                    </div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center">ACT monitoring per protocol</div>
+                  </div>
+
+                  <div>
+                    <div class="flex items-center gap-2 mb-1">
+                      <label class="text-xs text-slate-500 dark:text-slate-400">Weight strategy</label>
+                      <button id="hep2-weight-info-toggle" type="button" class="text-[11px] text-accent-600 dark:text-accent-400 underline-offset-2 hover:underline">ⓘ</button>
+                    </div>
+                    <select id="hep2-weight-strategy" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500">
+                      <option value="auto">Auto-detect (Recommended)</option>
+                      <option value="tbw">Total body weight (TBW)</option>
+                      <option value="abw">Adjusted body weight (ABW)</option>
+                      <option value="ibw">Ideal body weight (IBW)</option>
                     </select>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Auto switches to ABW when BMI ≥ 30 to reduce overdose risk.</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Auto logic: BMI &lt; 30 → TBW; BMI 30–39 → ABW (0.4 correction); BMI ≥ 40 → ABW (0.3) with obesity safety cues.</p>
+                    <div id="hep2-weight-info" class="hidden mt-2 text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-100 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-xl p-3 space-y-1">
+                      <p><strong class="text-primary-900 dark:text-white">Devine IBW:</strong> Male = 50 + 0.91 × (cm − 152.4), Female = 45.5 + 0.91 × (cm − 152.4).</p>
+                      <p><strong class="text-primary-900 dark:text-white">ABW 0.4 / 0.3 rules:</strong> ABW = IBW + factor × (TBW − IBW); factor 0.4 when BMI 30–39, factor 0.3 when BMI ≥ 40.</p>
+                      <p><strong class="text-primary-900 dark:text-white">Safety cap:</strong> Obesity flows/doses use IBW/ABW and may cap BSA to avoid extreme UFH and hemodilution.</p>
+                    </div>
                   </div>
-                  <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Heparin concentration (U/mL)</label>
-                    <input id="hep-concentration" type="number" step="10" placeholder="1000" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">e.g. 1,000 U/mL or 5,000 U/mL</p>
-                  </div>
-                </div>
 
-                <div id="hep-custom-dose-row" class="grid md:grid-cols-2 gap-3 hidden">
-                  <div id="hep-custom-dose-kg-wrapper" class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Custom dose (U/kg)</label>
-                    <input id="hep-custom-dose-kg" type="number" step="10" placeholder="350" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                  <div class="space-y-2">
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Initial dose (u/kg)</p>
+                    <div class="grid grid-cols-4 gap-2" id="hep2-dose-buttons">
+                      <button type="button" data-hep-dose="250" class="hep-dose-btn">250</button>
+                      <button type="button" data-hep-dose="300" class="hep-dose-btn active-dose">300</button>
+                      <button type="button" data-hep-dose="350" class="hep-dose-btn">350</button>
+                      <button type="button" data-hep-dose="400" class="hep-dose-btn">400</button>
+                    </div>
                   </div>
-                  <div id="hep-custom-dose-bsa-wrapper" class="space-y-1 hidden">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Custom dose (U/m²)</label>
-                    <input id="hep-custom-dose-bsa" type="number" step="10" placeholder="275" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+
+                  <div id="hep2-resistance-toggle" class="p-3 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 flex items-start gap-3 cursor-pointer hover:border-accent-500/60">
+                    <div class="mt-0.5 w-4 h-4 rounded border border-slate-400 flex items-center justify-center" aria-hidden="true">
+                      <span class="hidden text-accent-500">✓</span>
+                    </div>
+                    <div>
+                      <p class="text-sm font-semibold text-primary-900 dark:text-white">Suspected resistance</p>
+                      <p class="text-xs text-slate-500 dark:text-slate-400">ATIII deficiency / prolonged ECMO / liver disease</p>
+                    </div>
                   </div>
+
+                  <div class="bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 rounded-xl p-3 space-y-2">
+                    <p class="text-xs font-semibold text-primary-900 dark:text-white">Heparin resistance risk factors (check all)</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700 dark:text-slate-200">
+                      <label class="flex items-start gap-2">
+                        <input id="hep2-rf-sirs" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
+                        <span>Ongoing sepsis / SIRS</span>
+                      </label>
+                      <label class="flex items-start gap-2">
+                        <input id="hep2-rf-lmwh" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
+                        <span>Recent LMWH within 12–24 h</span>
+                      </label>
+                      <label class="flex items-start gap-2">
+                        <input id="hep2-rf-ecmo" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
+                        <span>Prolonged pre-CPB ECMO / VAD</span>
+                      </label>
+                      <label class="flex items-start gap-2">
+                        <input id="hep2-rf-at3" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
+                        <span>Known AT-III deficiency / cirrhosis</span>
+                      </label>
+                      <label class="flex items-start gap-2">
+                        <input id="hep2-rf-history" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
+                        <span>Prior high-dose heparin requirement</span>
+                      </label>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+                      <span id="hep2-risk-chip" class="px-2 py-1 rounded-full bg-slate-200 dark:bg-primary-800 text-primary-900 dark:text-white font-semibold text-[11px]">Resistance risk: —</span>
+                      <span id="hep2-risk-note">Check factors to estimate risk (0–5 points → Low/Moderate/High).</span>
+                    </div>
+                  </div>
+
+                  <label class="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
+                    <input id="hep2-show-flow" type="checkbox" class="rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
+                    Show flow rate calculator (IBW-based BSA)
+                  </label>
                 </div>
               </div>
-            </div>
 
-            <div class="space-y-3">
-              <h3 class="text-lg font-semibold text-primary-900 dark:text-white">2. Risk-adjusted dose (Optional)</h3>
-              <p class="text-xs text-slate-600 dark:text-slate-400">Check risk factors that increase heparin resistance. The calculator applies empirical multipliers to display a suggested range rather than a single number.</p>
-              <div class="grid sm:grid-cols-2 gap-2">
-                <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"><input id="rf-sirs" type="checkbox" class="mt-0.5 rounded border-slate-300 text-accent-500 focus:ring-accent-500"> <span>Sepsis / SIRS / CRP &gt; 100 (×1.2–1.4)</span></label>
-                <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"><input id="rf-at3" type="checkbox" class="mt-0.5 rounded border-slate-300 text-accent-500 focus:ring-accent-500"> <span>ATIII &lt; 70% (×1.4–1.8)</span></label>
-                <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"><input id="rf-ped" type="checkbox" class="mt-0.5 rounded border-slate-300 text-accent-500 focus:ring-accent-500"> <span>Pediatric &lt; 15 kg (×1.3–1.5)</span></label>
-                <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"><input id="rf-obesity" type="checkbox" class="mt-0.5 rounded border-slate-300 text-accent-500 focus:ring-accent-500"> <span>Obesity (BMI &gt; 35, IBW-based dosing)</span></label>
-                <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200"><input id="rf-lmwh" type="checkbox" class="mt-0.5 rounded border-slate-300 text-accent-500 focus:ring-accent-500"> <span>Recent LMWH use (×1.2–1.5)</span></label>
-              </div>
-              <p class="text-[11px] text-slate-500 dark:text-slate-400">Obesity factor will also encourage IBW dosing when height/sex are provided.</p>
-              <button type="button" class="primary-button" onclick="calculateHeparinManagement()">Calculate heparin dose</button>
-            </div>
-
-            <div id="hep-result" class="result-card bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 rounded-xl p-4 space-y-2 text-sm" style="display:none;">
-              <div class="grid sm:grid-cols-2 gap-3">
-                <div class="space-y-1">
-                  <p class="text-xs uppercase text-slate-500 dark:text-slate-400 font-semibold">Base total dose (U)</p>
-                  <p id="hep-base-dose" class="text-lg font-bold text-primary-900 dark:text-white">-</p>
+              <div class="space-y-4">
+                <div id="hep2-placeholder" class="h-full flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-200 dark:border-primary-800 rounded-2xl min-h-[360px]">
+                  <p class="text-lg font-semibold">Enter patient parameters to calculate</p>
+                  <p class="text-sm">Height, weight, and dose are required.</p>
                 </div>
-                <div class="space-y-1">
-                  <p class="text-xs uppercase text-slate-500 dark:text-slate-400 font-semibold">Base dose per kg (U/kg)</p>
-                  <p id="hep-base-perkg" class="text-lg font-bold text-primary-900 dark:text-white">-</p>
-                </div>
-                <div class="space-y-1">
-                  <p class="text-xs uppercase text-slate-500 dark:text-slate-400 font-semibold">Base volume (mL)</p>
-                  <p id="hep-base-volume" class="text-lg font-bold text-primary-900 dark:text-white">-</p>
-                </div>
-                <div class="space-y-1">
-                  <p class="text-xs uppercase text-slate-500 dark:text-slate-400 font-semibold">Estimated plasma heparin (U/mL)</p>
-                  <p id="hep-base-conc" class="text-lg font-bold text-primary-900 dark:text-white">-</p>
-                </div>
-              </div>
 
-              <div class="space-y-1 pt-2 border-t border-slate-200 dark:border-primary-800">
-                <p class="text-xs uppercase text-slate-500 dark:text-slate-400 font-semibold">Risk-adjusted range</p>
-                <p class="text-sm text-primary-900 dark:text-white">Dose (U): <span id="hep-adj-dose-range" class="font-semibold">-</span></p>
-                <p class="text-sm text-primary-900 dark:text-white">Per kg (U/kg): <span id="hep-adj-perkg-range" class="font-semibold">-</span></p>
-              </div>
+                <div id="hep2-results" class="space-y-4 hidden">
+                  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="stat-card">
+                      <p class="stat-label">BMI</p>
+                      <p id="hep2-bmi" class="stat-value">-</p>
+                    </div>
+                    <div class="stat-card">
+                      <p class="stat-label">IBW (Devine)</p>
+                      <p class="stat-value"><span id="hep2-ibw">-</span> <span class="stat-unit">kg</span></p>
+                      <p class="text-[11px] text-slate-500 dark:text-slate-400">Devine formula</p>
+                    </div>
+                    <div class="stat-card relative">
+                      <p class="stat-label">BSA (Mosteller)</p>
+                      <p class="stat-value text-accent-500"><span id="hep2-bsa">-</span> <span class="stat-unit">m²</span></p>
+                      <span id="hep2-bsa-cap" class="badge hidden">Capped for Safety (Obesity)</span>
+                    </div>
+                    <div class="stat-card highlight">
+                      <p class="stat-label">Dosing weight</p>
+                      <p class="stat-value"><span id="hep2-dosing-weight">-</span> <span class="stat-unit">kg</span></p>
+                      <p id="hep2-dosing-note" class="text-[11px] text-slate-500 dark:text-slate-400 truncate"></p>
+                    </div>
+                  </div>
 
-              <p id="hep-warning" class="text-sm text-red-600 dark:text-red-400 font-semibold hidden"></p>
+                  <div id="hep2-weight-breakdown" class="hidden text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 rounded-xl p-3 leading-relaxed"></div>
 
-              <div class="space-y-1 text-xs text-slate-600 dark:text-slate-400 pt-2 border-t border-slate-200 dark:border-primary-800">
-                <p>Target ACT: <span id="hep-target-act-display" class="font-semibold text-primary-900 dark:text-white">-</span></p>
-                <p>This tool is decision support only. Final dosing must incorporate ACT/HDR responses, ATIII replacement, and institutional CPB protocols.</p>
-                <p>Risk-factor multipliers are empirical ranges based on literature (e.g., Gravlee Cardiopulmonary Bypass) and internal experience.</p>
+                  <div id="hep2-peds-warning" class="hidden info-block warn">
+                    <h4 class="text-sm font-semibold text-red-500 mb-1">Pediatric safety notice</h4>
+                    <p class="text-sm text-red-200/80">This calculator is validated for adult CPB only. For patients &lt; 20 kg or height &lt; 120 cm, follow institutional pediatric protocols.</p>
+                  </div>
+
+                  <div id="hep2-extreme-obesity" class="hidden info-block alert">
+                    <h4 class="text-sm font-semibold text-orange-500 mb-1">Extreme obesity safety notice</h4>
+                    <p class="text-sm text-orange-200/80">BMI ≥ 50 kg/m². Dosing weight uses ABW (0.3) to avoid extreme UFH doses. Consider Anti-Xa or heparin concentration monitoring rather than ACT alone.</p>
+                  </div>
+
+                  <div class="space-y-4">
+                    <div class="protocol-card">
+                      <div class="flex items-start mb-4">
+                        <div>
+                          <p class="text-xs text-slate-500 dark:text-slate-400">Initial bolus</p>
+                          <p id="hep2-initial-bolus" class="text-4xl font-mono font-bold text-primary-900 dark:text-white">-</p>
+                          <div id="hep2-high-dose" class="pill pill-warn hidden">High dose &gt; 40k U</div>
+                        </div>
+                      </div>
+                      <div id="hep2-diff-note" class="text-xs text-amber-600 dark:text-amber-300 bg-amber-500/10 rounded px-2 py-1 mb-3 hidden"></div>
+                      <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                          <span class="text-slate-600 dark:text-slate-400">Additional bolus</span>
+                          <span id="hep2-add-bolus" class="font-mono text-primary-900 dark:text-white">-</span>
+                        </div>
+                      </div>
+
+                      <div id="hep2-sensitivity" class="mt-3 bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-lg p-3 text-xs text-slate-700 dark:text-slate-200 space-y-2">
+                        <p class="font-semibold text-primary-900 dark:text-white">Sensitivity (weight strategy vs dose @300 u/kg)</p>
+                        <div class="grid grid-cols-3 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                          <span>Strategy</span><span>Weight</span><span>Dose / Δ</span>
+                        </div>
+                        <div class="grid grid-cols-3 text-sm">
+                          <span>TBW</span><span id="hep2-sens-tbw-wt">-</span><span id="hep2-sens-tbw-dose">-</span>
+                        </div>
+                        <div class="grid grid-cols-3 text-sm">
+                          <span>ABW (0.4)</span><span id="hep2-sens-abw-wt">-</span><span id="hep2-sens-abw-dose">-</span>
+                        </div>
+                        <div class="grid grid-cols-3 text-sm">
+                          <span>IBW</span><span id="hep2-sens-ibw-wt">-</span><span id="hep2-sens-ibw-dose">-</span>
+                        </div>
+                        <p class="text-[11px] text-amber-600 dark:text-amber-300">In severe obesity, TBW-based dosing can exceed 40,000 U; reassess dosing when values climb this high.</p>
+                      </div>
+                    </div>
+
+                    <div id="hep2-flow-card" class="flow-card hidden">
+                      <p class="text-sm font-semibold text-primary-900 dark:text-white mb-2">Flow targets (CI 2.4)</p>
+                      <p class="text-4xl font-mono font-bold text-primary-900 dark:text-white"><span id="hep2-flow-rate">-</span> <span class="text-lg text-slate-500">l/min</span></p>
+                      <p class="text-xs text-slate-500 dark:text-slate-400">BSA <span id="hep2-flow-bsa">-</span> m² × 2.4 l/min/m²</p>
+                      <div id="hep2-flow-cap" class="pill pill-warn hidden mt-2">Flow capped for safety (obesity)</div>
+                      <div id="hep2-flow-warning" class="pill pill-alert hidden mt-2">High flow &gt; 6 l/min — check cannula</div>
+                    </div>
+
+                      <div id="hep2-quick-card" class="flow-card">
+                      <p class="text-sm font-semibold text-green-600 dark:text-green-300 mb-2">Quick protocol</p>
+                      <ol class="list-decimal list-inside space-y-1 text-sm text-primary-900 dark:text-slate-200" id="hep2-quick-steps">
+                        <li>Bolus -</li>
+                        <li>Wait 3–5 min → Check ACT</li>
+                        <li>Monitor ACT q30min during CPB</li>
+                        <li>If ACT low: + bolus</li>
+                      </ol>
+                    </div>
+                  </div>
+
+                  <div id="hep2-resistance-block" class="info-block warn hidden">
+                    <h4 class="text-sm font-semibold text-red-500 mb-2">Heparin resistance protocol</h4>
+                    <ul class="list-disc list-inside text-sm text-red-200/80 space-y-1">
+                      <li>ACT &lt; 300s after bolus → suspect AT-III deficiency</li>
+                      <li>Treatment: FFP (2–4 units) or AT-III concentrate (500–1000 iu)</li>
+                      <li>Re-check ACT after 10 min; do not start CPB until ACT &gt; 400s</li>
+                      <li>Consider Anti-Xa monitoring (target 3.0–4.5 iu/ml)</li>
+                    </ul>
+                  </div>
+
+                  <div id="hep2-risk-advice" class="hidden bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-200 space-y-2">
+                    <p id="hep2-risk-summary" class="font-semibold text-primary-900 dark:text-white">Resistance risk: —</p>
+                    <p class="text-slate-600 dark:text-slate-300 text-xs leading-relaxed">High-risk cardiac surgery cohorts (2022–2025) note that some patients may need ~1.2–1.5× initial dosing to reach ACT targets, but this should be guided by Anti-Xa or heparin concentration assays rather than ACT alone.</p>
+                    <ul class="list-disc list-inside text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                      <li>Consider early AT-III assay/concentrate (STS/SCA/AmSECT updates).</li>
+                      <li>Anti-Xa monitoring where available, especially in obesity/resistance.</li>
+                    </ul>
+                  </div>
+
+                  <div id="hep2-obesity-warning" class="info-block alert hidden">
+                    <h4 class="text-sm font-semibold text-orange-500 mb-1">Morbid obesity management</h4>
+                    <p class="text-sm text-orange-200/80">Using ABW with 0.3 correction to prevent overdose. Flow capped to reduce hemodilution; monitor SvO₂ and lactate closely.</p>
+                  </div>
+
+                  <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex items-start gap-2">
+                      <div class="mt-1 h-2 w-2 rounded-full bg-accent-500"></div>
+                      <div>
+                        <p class="text-sm font-semibold text-primary-900 dark:text-white">Clinical pearls</p>
+                        <ul class="list-disc list-inside text-sm text-slate-600 dark:text-slate-300 space-y-1 mt-1">
+                          <li>ACT affected by hemodilution, hypothermia, platelet function — consider Anti-Xa in obesity.</li>
+                          <li>Fat has limited heparin distribution; TBW dosing in BMI ≥ 35 raises bleeding risk without better anticoagulation.</li>
+                          <li>Over 40k U total → reassess. May indicate resistance rather than inadequate bolus.</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-200 space-y-2">
+                    <p class="text-sm font-semibold text-primary-900 dark:text-white">Guideline anchors (summary)</p>
+                    <ul class="list-disc list-inside space-y-1">
+                      <li>STS/SCA/AmSECT 2018: Initial bolus 300–400 u/kg with ACT ≥ 400–480 s; consider heparin concentration / Anti-Xa monitoring.</li>
+                      <li>2021 update: Early AT-III concentrate in AT-III–mediated resistance to reduce FFP use.</li>
+                      <li>2018–2024 obesity/IBW data: IBW/ABW heparin regimens reduce overdose risk without compromising anticoagulation.</li>
+                      <li>2025 EACTS/EACTA/EBCP updates: Emphasize Anti-Xa and individualized dosing, especially in obesity/resistance.</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1279,7 +1467,7 @@
               <span class="text-accent-500 transform group-open:rotate-180 transition-transform ml-4 flex-shrink-0">▼</span>
             </summary>
             <div class="border-t border-slate-100 dark:border-primary-700/50 px-4 py-3 bg-slate-50/50 dark:bg-primary-800/30">
-              <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">DO₂i (Oxygen Delivery Index) measures how much oxygen the heart delivers to body tissues per minute per square meter of body surface area, expressed in mL O₂/min/m². During normothermic cardiopulmonary bypass, target DO₂i is typically ≥280–300 mL/min/m² to prevent tissue hypoxia and anaerobic metabolism. Infants and neonates often require higher targets (≥350–380 mL/min/m²) due to elevated metabolic rates.</p>
+              <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">DO₂i (Oxygen Delivery Index) measures how much oxygen the heart delivers to body tissues per minute per square meter of body surface area, expressed in ml O₂/min/m². During normothermic cardiopulmonary bypass, target DO₂i is typically ≥280–300 ml/min/m² to prevent tissue hypoxia and anaerobic metabolism. Infants and neonates often require higher targets (≥350–380 ml/min/m²) due to elevated metabolic rates.</p>
             </div>
           </details>
 
