@@ -395,7 +395,7 @@
                 <input id="flow" type="number" step="0.01" placeholder="4.6" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
               <div class="space-y-1 opacity-80">
-                <label class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Calculated CaO (ml/dl)</label>
+                <label class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Calculated CaO₂ (ml/dl)</label>
                 <input id="cao2" disabled class="w-full bg-slate-100 dark:bg-primary-950 border-0 rounded-xl px-4 py-2.5 text-slate-600 dark:text-slate-400 font-mono text-sm" />
               </div>
             </div>
@@ -436,7 +436,7 @@
             <div class="bg-slate-50 dark:bg-primary-900/30 rounded-xl border border-slate-100 dark:border-primary-700/50 p-4 space-y-2 text-xs text-slate-600 dark:text-slate-300">
               <p id="temp-note" class="hidden">Temperature optional; interpret DO₂i with the overall clinical picture.</p>
               <div id="temp-comment" class="text-[11px] leading-relaxed"></div>
-              <p>This GDP calculator uses standard DO₂i formula: DO₂i = (Flow ÷ BSA) × CaO × 10. Required flow is DO₂i × BSA ÷ (CaO × 10).</p>
+              <p>This GDP calculator uses standard DO₂i formula: DO₂i = (Flow ÷ BSA) × CaO₂ × 10. Required flow is DO₂i × BSA ÷ (CaO₂ × 10).</p>
               <p>Clinical decisions must follow institutional protocols and consider lactate, SvO₂/ScvO₂, urine output, and perfusion pressures.</p>
             </div>
           </div>
@@ -450,12 +450,12 @@
           <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
             <ol class="list-decimal pl-4 space-y-3">
               <li>
-                <p class="font-semibold text-slate-700 dark:text-slate-200">Arterial oxygen content (CaO)</p>
-                <p>CaO (ml/dl) = 1.34 × Hb (g/dl) × (SaO₂ / 100) + 0.0031 × PaO₂ (mmhg). We assume a Hüfner constant of 1.34 ml O₂ per gram of Hb and a dissolved O₂ coefficient of 0.0031 ml·dl⁻¹·mmhg⁻¹. The contribution of dissolved O₂ is usually small at normal PaO₂.</p>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Arterial oxygen content (CaO₂)</p>
+                <p>CaO₂ (ml/dl) = 1.34 × Hb (g/dl) × (SaO₂ / 100) + 0.0031 × PaO₂ (mmhg). We assume a Hüfner constant of 1.34 ml O₂ per gram of Hb and a dissolved O₂ coefficient of 0.0031 ml·dl⁻¹·mmhg⁻¹. The contribution of dissolved O₂ is usually small at normal PaO₂.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Indexed oxygen delivery (DO₂i)</p>
-                <p>DO₂i (ml/min/m²) = (Pump flow ÷ BSA) × CaO × 10. Pump flow is entered in l/min and BSA in m². Multiplying by 10 converts CaO from ml/dl to ml/l so that the final unit is ml O₂ per minute per m².</p>
+                <p>DO₂i (ml/min/m²) = (Pump flow ÷ BSA) × CaO₂ × 10. Pump flow is entered in l/min and BSA in m². Multiplying by 10 converts CaO₂ from ml/dl to ml/l so that the final unit is ml O₂ per minute per m².</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Temperature-adjusted metabolic demand</p>
@@ -467,7 +467,7 @@
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Required pump flow for a chosen DO₂i goal</p>
-                <p>For a selected DO₂i target, the corresponding pump flow is: Required flow (l/min) = (Target DO₂i × BSA) ÷ (CaO × 10). This is a theoretical value based on current Hb, SaO₂, PaO₂ and BSA. In practice, flow should also respect institutional minimum/maximum flow policies and patient-specific constraints (e.g. cannula size, arterial pressure, ventricular distension).</p>
+                <p>For a selected DO₂i target, the corresponding pump flow is: Required flow (l/min) = (Target DO₂i × BSA) ÷ (CaO₂ × 10). This is a theoretical value based on current Hb, SaO₂, PaO₂ and BSA. In practice, flow should also respect institutional minimum/maximum flow policies and patient-specific constraints (e.g. cannula size, arterial pressure, ventricular distension).</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Clinical use and limitations</p>
