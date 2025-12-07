@@ -458,12 +458,9 @@ function updateHeparinUI() {
   const weightInput = el('hep2-weight');
   const sex = el('hep2-sex')?.value || 'male';
   const weightStrategy = el('hep2-weight-strategy')?.value || 'auto';
-  const targetActInput = el('hep2-target-act');
 
   const height = parseFloat(heightInput?.value);
   const weight = parseFloat(weightInput?.value);
-  const rawTargetAct = parseFloat(targetActInput?.value);
-  const targetAct = Number.isFinite(rawTargetAct) ? rawTargetAct : NaN;
 
   const heightError = el('hep2-height-error');
   const weightError = el('hep2-weight-error');
@@ -511,7 +508,6 @@ function updateHeparinUI() {
   setText('hep2-maintenance', `${plan.maintenanceRate} U/hr`);
   setText('hep2-add-bolus', `${plan.additionalBolus.toLocaleString()} U`);
   setText('hep2-maintenance-note', `${plan.maintenanceRate} U/hr`);
-  setText('hep2-target-act-display', Number.isFinite(targetAct) ? `${targetAct.toFixed(0)} s` : 'Target');
 
   const maintDetail = el('hep2-maint-detail');
   if (maintDetail) {
@@ -674,7 +670,7 @@ function initHeparinManagement() {
     });
   }
 
-  ['hep2-height', 'hep2-weight', 'hep2-sex', 'hep2-weight-strategy', 'hep2-target-act', 'hep2-rf-sirs', 'hep2-rf-lmwh', 'hep2-rf-ecmo', 'hep2-rf-at3', 'hep2-rf-history'].forEach(id => {
+  ['hep2-height', 'hep2-weight', 'hep2-sex', 'hep2-weight-strategy', 'hep2-rf-sirs', 'hep2-rf-lmwh', 'hep2-rf-ecmo', 'hep2-rf-at3', 'hep2-rf-history'].forEach(id => {
     const node = el(id);
     if (node) node.addEventListener('input', updateHeparinUI);
     if (node && node.tagName === 'SELECT') node.addEventListener('change', updateHeparinUI);
