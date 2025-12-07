@@ -195,7 +195,7 @@
         "name": "What is DO₂i (Oxygen Delivery Index) and what target range is used during CPB?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "DO₂i (Oxygen Delivery Index) measures how much oxygen the heart delivers to body tissues per minute per square meter of body surface area, expressed in mL O₂/min/m². During normothermic cardiopulmonary bypass, target DO₂i is typically ≥280–300 mL/min/m² to prevent tissue hypoxia and anaerobic metabolism. Infants and neonates often require higher targets (≥350–380 mL/min/m²) due to elevated metabolic rates."
+          "text": "DO₂i (Oxygen Delivery Index) measures how much oxygen the heart delivers to body tissues per minute per square meter of body surface area, expressed in ml O₂/min/m². During normothermic cardiopulmonary bypass, target DO₂i is typically ≥280–300 ml/min/m² to prevent tissue hypoxia and anaerobic metabolism. Infants and neonates often require higher targets (≥350–380 ml/min/m²) due to elevated metabolic rates."
         }
       },
       {
@@ -373,7 +373,7 @@
               </div>
 
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Hemoglobin (g/dL) <span class="text-red-500">*</span></label>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Hemoglobin (g/dl) <span class="text-red-500">*</span></label>
                 <input id="hb" type="number" step="0.1" placeholder="10" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
               <div class="space-y-1">
@@ -382,7 +382,7 @@
               </div>
 
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">PaO₂ (mmHg) <span class="text-red-500">*</span></label>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">PaO₂ (mmhg) <span class="text-red-500">*</span></label>
                 <input id="pao2" type="number" step="1" placeholder="150" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
               <div class="space-y-1">
@@ -391,11 +391,11 @@
               </div>
 
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Current pump flow (L/min)</label>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Current pump flow (l/min)</label>
                 <input id="flow" type="number" step="0.01" placeholder="4.6" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
               <div class="space-y-1 opacity-80">
-                <label class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Calculated CaO₂ (mL/dL)</label>
+                <label class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Calculated CaO (ml/dl)</label>
                 <input id="cao2" disabled class="w-full bg-slate-100 dark:bg-primary-950 border-0 rounded-xl px-4 py-2.5 text-slate-600 dark:text-slate-400 font-mono text-sm" />
               </div>
             </div>
@@ -436,7 +436,7 @@
             <div class="bg-slate-50 dark:bg-primary-900/30 rounded-xl border border-slate-100 dark:border-primary-700/50 p-4 space-y-2 text-xs text-slate-600 dark:text-slate-300">
               <p id="temp-note" class="hidden">Temperature optional; interpret DO₂i with the overall clinical picture.</p>
               <div id="temp-comment" class="text-[11px] leading-relaxed"></div>
-              <p>This GDP calculator uses standard DO₂i formula: DO₂i = (Flow ÷ BSA) × CaO₂ × 10. Required flow is DO₂i × BSA ÷ (CaO₂ × 10).</p>
+              <p>This GDP calculator uses standard DO₂i formula: DO₂i = (Flow ÷ BSA) × CaO × 10. Required flow is DO₂i × BSA ÷ (CaO × 10).</p>
               <p>Clinical decisions must follow institutional protocols and consider lactate, SvO₂/ScvO₂, urine output, and perfusion pressures.</p>
             </div>
           </div>
@@ -450,12 +450,12 @@
           <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
             <ol class="list-decimal pl-4 space-y-3">
               <li>
-                <p class="font-semibold text-slate-700 dark:text-slate-200">Arterial oxygen content (CaO₂)</p>
-                <p>CaO₂ (mL/dL) = 1.34 × Hb (g/dL) × (SaO₂ / 100) + 0.0031 × PaO₂ (mmHg). We assume a Hüfner constant of 1.34 mL O₂ per gram of Hb and a dissolved O₂ coefficient of 0.0031 mL·dL⁻¹·mmHg⁻¹. The contribution of dissolved O₂ is usually small at normal PaO₂.</p>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Arterial oxygen content (CaO)</p>
+                <p>CaO (ml/dl) = 1.34 × Hb (g/dl) × (SaO₂ / 100) + 0.0031 × PaO₂ (mmhg). We assume a Hüfner constant of 1.34 ml O₂ per gram of Hb and a dissolved O₂ coefficient of 0.0031 ml·dl⁻¹·mmhg⁻¹. The contribution of dissolved O₂ is usually small at normal PaO₂.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Indexed oxygen delivery (DO₂i)</p>
-                <p>DO₂i (mL/min/m²) = (Pump flow ÷ BSA) × CaO₂ × 10. Pump flow is entered in L/min and BSA in m². Multiplying by 10 converts CaO₂ from mL/dL to mL/L so that the final unit is mL O₂ per minute per m².</p>
+                <p>DO₂i (ml/min/m²) = (Pump flow ÷ BSA) × CaO × 10. Pump flow is entered in l/min and BSA in m². Multiplying by 10 converts CaO from ml/dl to ml/l so that the final unit is ml O₂ per minute per m².</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Temperature-adjusted metabolic demand</p>
@@ -463,11 +463,11 @@
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Target DO₂i bands (Goal-Directed Perfusion)</p>
-                <p>At normothermia (≈37 °C) many adult CPB programs aim to maintain DO₂i ≥ 280–300 mL/min/m² to reduce the risk of anaerobic metabolism and postoperative acute kidney injury. At lower temperatures the calculator reduces the recommended target range, but never below a conservative lower floor (e.g. around 220 mL/min/m²), even when theoretical VO₂ would allow lower values. Targets are displayed as “Low / Borderline / Target / High” bands on the gauge for quick bedside interpretation.</p>
+                <p>At normothermia (≈37 °C) many adult CPB programs aim to maintain DO₂i ≥ 280–300 ml/min/m² to reduce the risk of anaerobic metabolism and postoperative acute kidney injury. At lower temperatures the calculator reduces the recommended target range, but never below a conservative lower floor (e.g. around 220 ml/min/m²), even when theoretical VO₂ would allow lower values. Targets are displayed as “Low / Borderline / Target / High” bands on the gauge for quick bedside interpretation.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Required pump flow for a chosen DO₂i goal</p>
-                <p>For a selected DO₂i target, the corresponding pump flow is: Required flow (L/min) = (Target DO₂i × BSA) ÷ (CaO₂ × 10). This is a theoretical value based on current Hb, SaO₂, PaO₂ and BSA. In practice, flow should also respect institutional minimum/maximum flow policies and patient-specific constraints (e.g. cannula size, arterial pressure, ventricular distension).</p>
+                <p>For a selected DO₂i target, the corresponding pump flow is: Required flow (l/min) = (Target DO₂i × BSA) ÷ (CaO × 10). This is a theoretical value based on current Hb, SaO₂, PaO₂ and BSA. In practice, flow should also respect institutional minimum/maximum flow policies and patient-specific constraints (e.g. cannula size, arterial pressure, ventricular distension).</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Clinical use and limitations</p>
@@ -641,16 +641,16 @@
             <div class="sm:col-span-2">
               <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Patient Type (EBV Coef)</label>
               <select id="pttype" class="mt-1 w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white cursor-pointer">
-                <option value="adult_m">Adult — Male (70 mL/kg)</option>
-                <option value="adult_f">Adult — Female (65 mL/kg)</option>
-                <option value="child">Child (75 mL/kg)</option>
-                <option value="infant">Infant (80 mL/kg)</option>
-                <option value="neonate">Neonate (90 mL/kg)</option>
+                <option value="adult_m">Adult — Male (70 ml/kg)</option>
+                <option value="adult_f">Adult — Female (65 ml/kg)</option>
+                <option value="child">Child (75 ml/kg)</option>
+                <option value="infant">Infant (80 ml/kg)</option>
+                <option value="neonate">Neonate (90 ml/kg)</option>
               </select>
             </div>
 
             <div class="space-y-1">
-              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">EBV Coef (mL/kg)</label>
+              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">EBV Coef (ml/kg)</label>
               <input id="ebv_coef" type="number" step="1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
             </div>
 
@@ -666,15 +666,15 @@
             <div class="bg-slate-50 dark:bg-primary-800/50 p-4 rounded-xl border border-slate-100 dark:border-primary-700/50 sm:col-span-2 grid sm:grid-cols-2 gap-4">
                <div class="sm:col-span-2 text-xs font-bold text-primary-900 dark:text-accent-400 uppercase tracking-wide mb-1">Circuit Volumes</div>
                <div class="space-y-1">
-                 <label class="text-xs text-slate-500 dark:text-slate-400">Prime Volume (mL)</label>
+                 <label class="text-xs text-slate-500 dark:text-slate-400">Prime Volume (ml)</label>
                  <input id="prime" type="number" step="1" placeholder="1200" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
                </div>
                <div class="space-y-1">
-                 <label class="text-xs text-slate-500 dark:text-slate-400">Addl. Crystalloid (mL)</label>
+                 <label class="text-xs text-slate-500 dark:text-slate-400">Addl. Crystalloid (ml)</label>
                  <input id="fluids" type="number" step="1" value="0" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
                </div>
                <div class="space-y-1">
-                 <label class="text-xs text-slate-500 dark:text-slate-400">Ultrafiltration Removed (mL)</label>
+                 <label class="text-xs text-slate-500 dark:text-slate-400">Ultrafiltration Removed (ml)</label>
                  <input id="removed" type="number" step="1" value="0" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
                </div>
             </div>
@@ -686,7 +686,7 @@
                  <input id="rbc_units" type="number" step="1" value="0" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
               </div>
               <div class="space-y-1">
-                 <label class="text-xs text-slate-500 dark:text-slate-400">Vol/Unit (mL)</label>
+                 <label class="text-xs text-slate-500 dark:text-slate-400">Vol/Unit (ml)</label>
                  <input id="rbc_unit_vol" type="number" step="1" value="300" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
               </div>
               <div class="space-y-1">
@@ -700,12 +700,12 @@
             <div>
               <div class="text-[10px] uppercase tracking-wider text-slate-400 mb-1">EBV</div>
               <div id="ebv" class="text-lg font-mono font-medium">0</div>
-              <div class="text-[10px] text-slate-500">mL</div>
+              <div class="text-[10px] text-slate-500">ml</div>
             </div>
             <div>
               <div class="text-[10px] uppercase tracking-wider text-slate-400 mb-1">Total Vol</div>
               <div id="total_vol" class="text-lg font-mono font-medium">0</div>
-              <div class="text-[10px] text-slate-500">mL</div>
+              <div class="text-[10px] text-slate-500">ml</div>
             </div>
             <div class="relative">
               <div class="text-[10px] uppercase tracking-wider text-accent-400 mb-1 font-bold">Result Hct</div>
@@ -735,31 +735,31 @@
             <ol class="list-decimal pl-4 space-y-3">
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Estimated blood volume (EBV)</p>
-                <p>This calculator uses a simple weight-based model for circulating blood volume: EBV (mL) = Weight (kg) × EBV coefficient (mL/kg). Typical default coefficients are:</p>
+                <p>This calculator uses a simple weight-based model for circulating blood volume: EBV (ml) = Weight (kg) × EBV coefficient (ml/kg). Typical default coefficients are:</p>
                 <ul class="list-disc pl-4 space-y-1 mt-1">
-                  <li>Adult male: 70 mL/kg</li>
-                  <li>Adult female: 65 mL/kg</li>
-                  <li>Child: 75 mL/kg</li>
-                  <li>Infant: 80 mL/kg</li>
-                  <li>Neonate: 90 mL/kg</li>
+                  <li>Adult male: 70 ml/kg</li>
+                  <li>Adult female: 65 ml/kg</li>
+                  <li>Child: 75 ml/kg</li>
+                  <li>Infant: 80 ml/kg</li>
+                  <li>Neonate: 90 ml/kg</li>
                 </ul>
                 <p class="mt-1">These values are derived from population averages and may be adjusted in this tool when clinical judgment suggests a higher or lower blood volume (e.g. severe obesity, cachexia, fluid overload or dehydration).</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Pre-CPB red cell volume</p>
-                <p>Pre-bypass red cell volume is estimated from the patient’s hematocrit (Hct) and EBV: RBC_patient (mL) = EBV × (Pre-CPB Hct ÷ 100). This assumes the pre-CPB Hct is measured after induction and line placement, and that blood is evenly distributed in the circulation.</p>
+                <p>Pre-bypass red cell volume is estimated from the patient’s hematocrit (Hct) and EBV: RBC_patient (ml) = EBV × (Pre-CPB Hct ÷ 100). This assumes the pre-CPB Hct is measured after induction and line placement, and that blood is evenly distributed in the circulation.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Circuit prime and crystalloid / ultrafiltration</p>
                 <p>The total intravascular volume at the time of sampling is modeled as:</p>
-                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">V_total (mL) = EBV + Prime volume + Additional crystalloid / colloid + RBC product volume − Ultrafiltration removed.</p>
+                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">V_total (ml) = EBV + Prime volume + Additional crystalloid / colloid + RBC product volume − Ultrafiltration removed.</p>
                 <p>“Prime volume” includes the cardiopulmonary bypass circuit prime and any pre-bypass volume added directly to the patient through the circuit. “Additional crystalloid” represents fluids such as cardioplegia carrier solution, albumin, mannitol, or other volume expanders that effectively dilute the circulating red cell mass. “Ultrafiltration removed” accounts for hemoconcentration techniques (UF, MUF, Z-BUF) that remove plasma water and reduce total volume.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Packed red blood cell (RBC) products</p>
                 <p>Red cell volume contributed by transfused RBCs is modeled as:</p>
-                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">RBC_products (mL) = (Number of units × Volume per unit) × (Unit Hct ÷ 100).</p>
-                <p>Default values often assume ~300 mL/unit with a unit Hct around 60%, but these may be adjusted to reflect local blood bank characteristics or specific product labels.</p>
+                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">RBC_products (ml) = (Number of units × Volume per unit) × (Unit Hct ÷ 100).</p>
+                <p>Default values often assume ~300 ml/unit with a unit Hct around 60%, but these may be adjusted to reflect local blood bank characteristics or specific product labels.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Predicted hematocrit on CPB</p>
@@ -939,9 +939,9 @@
             <div class="space-y-1">
               <p class="font-semibold mb-1">5. Flow comparison table (CI 1.0–3.0)</p>
               <p>The flow table shows how perfusion flow requirements change when indexed to actual BSA and lean BSA.</p>
-              <p>Flow_actual (L/min) = CI × BSA_actual</p>
-              <p>Flow_lean (L/min) = CI × BSA_lean</p>
-              <p>This allows quick comparison such as “At CI 2.4 L/min/m², how much flow do I deliver if I index to full BSA?” and “If I index to lean BSA instead, how much lower would the flow be for the same CI?”</p>
+              <p>Flow_actual (l/min) = CI × BSA_actual</p>
+              <p>Flow_lean (l/min) = CI × BSA_lean</p>
+              <p>This allows quick comparison such as “At CI 2.4 l/min/m², how much flow do I deliver if I index to full BSA?” and “If I index to lean BSA instead, how much lower would the flow be for the same CI?”</p>
               <p>In markedly obese patients, BSA_actual may suggest very high flows that exceed what is needed for metabolically active tissue, while BSA_lean can illustrate a more physiologic lower bound. Final flow selection must still consider SvO₂, lactate, arterial pressure, and institutional protocols.</p>
             </div>
 
@@ -1251,7 +1251,7 @@
                   </div>
 
                   <div class="space-y-2">
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Initial dose (U/kg)</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Initial dose (u/kg)</p>
                     <div class="grid grid-cols-4 gap-2" id="hep2-dose-buttons">
                       <button type="button" data-hep-dose="250" class="hep-dose-btn">250</button>
                       <button type="button" data-hep-dose="300" class="hep-dose-btn active-dose">300</button>
@@ -1366,7 +1366,7 @@
                       </div>
 
                       <div id="hep2-sensitivity" class="mt-3 bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-lg p-3 text-xs text-slate-700 dark:text-slate-200 space-y-2">
-                        <p class="font-semibold text-primary-900 dark:text-white">Sensitivity (weight strategy vs dose @300 U/kg)</p>
+                        <p class="font-semibold text-primary-900 dark:text-white">Sensitivity (weight strategy vs dose @300 u/kg)</p>
                         <div class="grid grid-cols-3 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
                           <span>Strategy</span><span>Weight</span><span>Dose / Δ</span>
                         </div>
@@ -1385,10 +1385,10 @@
 
                     <div id="hep2-flow-card" class="flow-card hidden">
                       <p class="text-sm font-semibold text-primary-900 dark:text-white mb-2">Flow targets (CI 2.4)</p>
-                      <p class="text-4xl font-mono font-bold text-primary-900 dark:text-white"><span id="hep2-flow-rate">-</span> <span class="text-lg text-slate-500">L/min</span></p>
-                      <p class="text-xs text-slate-500 dark:text-slate-400">BSA <span id="hep2-flow-bsa">-</span> m² × 2.4 L/min/m²</p>
+                      <p class="text-4xl font-mono font-bold text-primary-900 dark:text-white"><span id="hep2-flow-rate">-</span> <span class="text-lg text-slate-500">l/min</span></p>
+                      <p class="text-xs text-slate-500 dark:text-slate-400">BSA <span id="hep2-flow-bsa">-</span> m² × 2.4 l/min/m²</p>
                       <div id="hep2-flow-cap" class="pill pill-warn hidden mt-2">Flow capped for safety (obesity)</div>
-                      <div id="hep2-flow-warning" class="pill pill-alert hidden mt-2">High flow &gt; 6 L/min — check cannula</div>
+                      <div id="hep2-flow-warning" class="pill pill-alert hidden mt-2">High flow &gt; 6 l/min — check cannula</div>
                     </div>
 
                       <div id="hep2-quick-card" class="flow-card">
@@ -1406,9 +1406,9 @@
                     <h4 class="text-sm font-semibold text-red-500 mb-2">Heparin resistance protocol</h4>
                     <ul class="list-disc list-inside text-sm text-red-200/80 space-y-1">
                       <li>ACT &lt; 300s after bolus → suspect AT-III deficiency</li>
-                      <li>Treatment: FFP (2–4 units) or AT-III concentrate (500–1000 IU)</li>
+                      <li>Treatment: FFP (2–4 units) or AT-III concentrate (500–1000 iu)</li>
                       <li>Re-check ACT after 10 min; do not start CPB until ACT &gt; 400s</li>
-                      <li>Consider Anti-Xa monitoring (target 3.0–4.5 IU/mL)</li>
+                      <li>Consider Anti-Xa monitoring (target 3.0–4.5 iu/ml)</li>
                     </ul>
                   </div>
 
@@ -1443,7 +1443,7 @@
                   <div class="bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-200 space-y-2">
                     <p class="text-sm font-semibold text-primary-900 dark:text-white">Guideline anchors (summary)</p>
                     <ul class="list-disc list-inside space-y-1">
-                      <li>STS/SCA/AmSECT 2018: Initial bolus 300–400 U/kg with ACT ≥ 400–480 s; consider heparin concentration / Anti-Xa monitoring.</li>
+                      <li>STS/SCA/AmSECT 2018: Initial bolus 300–400 u/kg with ACT ≥ 400–480 s; consider heparin concentration / Anti-Xa monitoring.</li>
                       <li>2021 update: Early AT-III concentrate in AT-III–mediated resistance to reduce FFP use.</li>
                       <li>2018–2024 obesity/IBW data: IBW/ABW heparin regimens reduce overdose risk without compromising anticoagulation.</li>
                       <li>2025 EACTS/EACTA/EBCP updates: Emphasize Anti-Xa and individualized dosing, especially in obesity/resistance.</li>
@@ -1467,7 +1467,7 @@
               <span class="text-accent-500 transform group-open:rotate-180 transition-transform ml-4 flex-shrink-0">▼</span>
             </summary>
             <div class="border-t border-slate-100 dark:border-primary-700/50 px-4 py-3 bg-slate-50/50 dark:bg-primary-800/30">
-              <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">DO₂i (Oxygen Delivery Index) measures how much oxygen the heart delivers to body tissues per minute per square meter of body surface area, expressed in mL O₂/min/m². During normothermic cardiopulmonary bypass, target DO₂i is typically ≥280–300 mL/min/m² to prevent tissue hypoxia and anaerobic metabolism. Infants and neonates often require higher targets (≥350–380 mL/min/m²) due to elevated metabolic rates.</p>
+              <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">DO₂i (Oxygen Delivery Index) measures how much oxygen the heart delivers to body tissues per minute per square meter of body surface area, expressed in ml O₂/min/m². During normothermic cardiopulmonary bypass, target DO₂i is typically ≥280–300 ml/min/m² to prevent tissue hypoxia and anaerobic metabolism. Infants and neonates often require higher targets (≥350–380 ml/min/m²) due to elevated metabolic rates.</p>
             </div>
           </details>
 

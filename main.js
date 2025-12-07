@@ -218,7 +218,7 @@ function updateBsaFlowList(bsaVal) {
     const row = document.createElement('div');
     const highlight = Math.abs(ci - 2.4) < 0.05;
     row.className = 'grid grid-cols-[1fr_auto] items-center py-1.5 px-2 text-sm border-b border-slate-100 dark:border-primary-800 last:border-0 gap-3' + (highlight ? ' bg-amber-50 dark:bg-amber-900/20' : '');
-    row.innerHTML = `<span class="font-mono text-xs text-slate-500 dark:text-slate-400">CI ${ci.toFixed(1)}</span><span class="font-mono font-semibold text-right text-primary-900 dark:text-white">${flow.toFixed(2)} L/min</span>`;
+    row.innerHTML = `<span class="font-mono text-xs text-slate-500 dark:text-slate-400">CI ${ci.toFixed(1)}</span><span class="font-mono font-semibold text-right text-primary-900 dark:text-white">${flow.toFixed(2)} l/min</span>`;
     list.appendChild(row);
   }
 }
@@ -286,7 +286,7 @@ const TEMP_PROFILES = [
     vo2Factor: 0.57,
     do2Min: 220,
     do2Max: 240,
-    note: 'Around 50% metabolic reduction; apply a dampened curve and never drop DO₂i below 200 mL/min/m².'
+    note: 'Around 50% metabolic reduction; apply a dampened curve and never drop DO₂i below 200 ml/min/m².'
   },
   {
     min: 20,
@@ -297,7 +297,7 @@ const TEMP_PROFILES = [
     vo2Factor: 0.45,
     do2Min: 200,
     do2Max: 220,
-    note: 'Maintain minimum flow; keep DO₂i ≥200 mL/min/m² as a hard floor to protect organs.'
+    note: 'Maintain minimum flow; keep DO₂i ≥200 ml/min/m² as a hard floor to protect organs.'
   }
 ];
 
@@ -822,10 +822,10 @@ function updateGDP() {
   if (warningEl) warningEl.classList.add('hidden');
 
   const requiredFlow = calcRequiredFlowLmin(targetDO2i, bsa, cao2);
-  setText('required-flow', requiredFlow ? `${requiredFlow.toFixed(2)} <span class="text-xs text-slate-500 dark:text-slate-400">L/min</span>` : '—');
+  setText('required-flow', requiredFlow ? `${requiredFlow.toFixed(2)} <span class="text-xs text-slate-500 dark:text-slate-400">l/min</span>` : '—');
 
   const currentDO2i = flow ? calcDO2i(flow, bsa, cao2) : 0;
-  setText('current-do2i', currentDO2i ? `${Math.round(currentDO2i)} <span class="text-xs text-slate-500 dark:text-slate-400">mL/min/m²</span>` : '—');
+  setText('current-do2i', currentDO2i ? `${Math.round(currentDO2i)} <span class="text-xs text-slate-500 dark:text-slate-400">ml/min/m²</span>` : '—');
 
   let statusLabel = 'Waiting for current flow';
   let detail = 'Enter current pump flow to compare against the target DO₂i.';
@@ -852,9 +852,9 @@ function updateGDP() {
       const deltaFlow = Math.max(requiredFlow - flow, 0);
       statusLabel = profile ? 'Below temperature-adjusted target' : 'Below target';
       detail = profile
-        ? `Need DO₂i ≥ ${tempAdjustedMin.toFixed(0)} mL/min/m² for ${profile.label}.${deltaFlow > 0 ? ` ~+${deltaFlow.toFixed(2)} L/min suggested.` : ''}`
+        ? `Need DO₂i ≥ ${tempAdjustedMin.toFixed(0)} ml/min/m² for ${profile.label}.${deltaFlow > 0 ? ` ~+${deltaFlow.toFixed(2)} l/min suggested.` : ''}`
         : (deltaFlow > 0
-          ? `Needs approximately +${deltaFlow.toFixed(2)} L/min to reach the target.`
+          ? `Needs approximately +${deltaFlow.toFixed(2)} l/min to reach the target.`
           : 'Increase flow to approach the target.');
       gaugeColor = 'from-amber-500 to-red-500';
     } else if (currentDO2i > upperTarget) {
@@ -866,7 +866,7 @@ function updateGDP() {
     } else {
       statusLabel = profile ? 'Within temperature-adjusted GDP range' : 'At / near target';
       detail = profile
-        ? `${tempAdjustedMin.toFixed(0)}–${tempAdjustedMax.toFixed(0)} mL/min/m² band achieved at this temperature.`
+        ? `${tempAdjustedMin.toFixed(0)}–${tempAdjustedMax.toFixed(0)} ml/min/m² band achieved at this temperature.`
         : 'Current delivery is within ±10% of the selected DO₂i goal.';
       gaugeColor = 'from-emerald-500 to-emerald-400';
     }
@@ -874,11 +874,11 @@ function updateGDP() {
 
   if (profile && currentCI) {
     if (currentCI < profile.ciMin) {
-      ciComment = `Current CI ${currentCI.toFixed(2)} L/min/m² is below the ${profile.label} range (${profile.ciMin.toFixed(1)}–${profile.ciMax.toFixed(1)}).`;
+      ciComment = `Current CI ${currentCI.toFixed(2)} l/min/m² is below the ${profile.label} range (${profile.ciMin.toFixed(1)}–${profile.ciMax.toFixed(1)}).`;
     } else if (currentCI > profile.ciMax) {
-      ciComment = `Current CI ${currentCI.toFixed(2)} L/min/m² is above the ${profile.label} range.`;
+      ciComment = `Current CI ${currentCI.toFixed(2)} l/min/m² is above the ${profile.label} range.`;
     } else {
-      ciComment = `Current CI ${currentCI.toFixed(2)} L/min/m² is within the ${profile.label} range.`;
+      ciComment = `Current CI ${currentCI.toFixed(2)} l/min/m² is within the ${profile.label} range.`;
     }
   }
 
@@ -889,11 +889,11 @@ function updateGDP() {
   gauge.className = `h-3 rounded-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(34,211,238,0.25)] ${gaugeColor}`;
   if (profile) {
     gaugeMsg.textContent = currentDO2i
-      ? `Temp-adjusted target ${tempAdjustedMin.toFixed(0)}–${tempAdjustedMax.toFixed(0)} • Current ${Math.round(currentDO2i)} mL/min/m²`
+      ? `Temp-adjusted target ${tempAdjustedMin.toFixed(0)}–${tempAdjustedMax.toFixed(0)} • Current ${Math.round(currentDO2i)} ml/min/m²`
       : 'Enter current flow to visualize DO₂i vs. temperature-adjusted target';
   } else {
     gaugeMsg.textContent = currentDO2i
-      ? `Target ${targetDO2i} mL/min/m² • Current ${Math.round(currentDO2i)} mL/min/m²`
+      ? `Target ${targetDO2i} ml/min/m² • Current ${Math.round(currentDO2i)} ml/min/m²`
       : 'Enter current flow to visualize DO₂i vs. target';
   }
 
@@ -907,19 +907,19 @@ function updateGDP() {
   if (tempComment) {
     if (!profile) {
       tempComment.innerHTML = `<div class="font-semibold mb-1">Temperature note</div>
-        <p>No temperature provided. Using normothermic targets (e.g., 280–300 mL/min/m²) until temperature is entered.</p>
+        <p>No temperature provided. Using normothermic targets (e.g., 280–300 ml/min/m²) until temperature is entered.</p>
         <p>When hypothermic, adjust flow with SvO₂, lactate, and perfusion markers in mind.</p>`;
     } else {
       const vo2Pct = Math.round((profile.vo2Factor || 0) * 100);
-      const currentDoText = currentDO2i ? `${Math.round(currentDO2i)} mL/min/m²` : '—';
+      const currentDoText = currentDO2i ? `${Math.round(currentDO2i)} ml/min/m²` : '—';
       const ciLine = currentCI
-        ? `Current CI ${currentCI.toFixed(2)} L/min/m² vs. recommended ${profile.ciMin.toFixed(1)}–${profile.ciMax.toFixed(1)}.`
-        : `Recommended CI: ${profile.ciMin.toFixed(1)}–${profile.ciMax.toFixed(1)} L/min/m².`;
+        ? `Current CI ${currentCI.toFixed(2)} l/min/m² vs. recommended ${profile.ciMin.toFixed(1)}–${profile.ciMax.toFixed(1)}.`
+        : `Recommended CI: ${profile.ciMin.toFixed(1)}–${profile.ciMax.toFixed(1)} l/min/m².`;
       tempComment.innerHTML = `<div class="font-semibold mb-1">Temperature-adjusted GDP comment</div>
         <p>${profile.label}; current ${tempC.toFixed(1)}°C. Estimated VO₂ ~${vo2Pct}% of normal.</p>
         <p>${ciLine}</p>
-        <p>Recommended DO₂i: ${tempAdjustedMin.toFixed(0)}–${tempAdjustedMax.toFixed(0)} mL/min/m²; current: ${currentDoText}.</p>
-        <p>Hard DO₂i floor: 200 mL/min/m². Confirm adequacy with SvO₂, lactate, urine output, and organ perfusion.</p>`;
+        <p>Recommended DO₂i: ${tempAdjustedMin.toFixed(0)}–${tempAdjustedMax.toFixed(0)} ml/min/m²; current: ${currentDoText}.</p>
+        <p>Hard DO₂i floor: 200 ml/min/m². Confirm adequacy with SvO₂, lactate, urine output, and organ perfusion.</p>`;
     }
   }
 }
@@ -1033,8 +1033,8 @@ function updateLBM() {
         const flowLean = bsaLean ? (ci * bsaLean).toFixed(2) : '—';
         tr.innerHTML = `
           <td class="px-4 py-2 font-mono text-xs text-slate-600 dark:text-slate-300">${ci.toFixed(1)}</td>
-          <td class="px-4 py-2 font-semibold text-primary-900 dark:text-white">${flowActual} L/min</td>
-          <td class="px-4 py-2 font-semibold text-emerald-600 dark:text-emerald-400">${flowLean} L/min</td>
+          <td class="px-4 py-2 font-semibold text-primary-900 dark:text-white">${flowActual} l/min</td>
+          <td class="px-4 py-2 font-semibold text-emerald-600 dark:text-emerald-400">${flowLean} l/min</td>
         `;
         flowBody.appendChild(tr);
       }
