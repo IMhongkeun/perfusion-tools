@@ -434,6 +434,8 @@ function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy 
     bmi,
     ibw,
     abw: abwStandard,
+    abwSuper: abwSuperObese,
+    tbw: weightKg,
     dosingWeight,
     strategyLabel,
     alertLevel,
@@ -511,6 +513,38 @@ function updateHeparinUI() {
   setText('hep2-maintenance-note', `${plan.maintenanceRate} U/hr`);
   setText('hep2-target-act-display', Number.isFinite(targetAct) ? `${targetAct.toFixed(0)} s` : 'Target');
 
+  const maintDetail = el('hep2-maint-detail');
+  if (maintDetail) {
+    const standardRate = Math.round(plan.dosingWeight * 12);
+    const resistRate = Math.round(plan.dosingWeight * 18);
+    setText('hep2-maint-standard', `• Standard: 12 U/kg/hr → ${standardRate.toLocaleString()} U/hr (based on ${plan.dosingWeight.toFixed(1)} kg)`);
+    setText('hep2-maint-resist', `• Resistance toggle ON: 18 U/kg/hr → ${resistRate.toLocaleString()} U/hr (based on ${plan.dosingWeight.toFixed(1)} kg)`);
+  }
+
+  const weightBreakdown = el('hep2-weight-breakdown');
+  if (weightBreakdown) {
+    const tbw = plan.tbw.toFixed(1);
+    const ibw = plan.ibw.toFixed(1);
+    const abw04 = plan.abw.toFixed(1);
+    const abw03 = plan.abwSuper.toFixed(1);
+    if (weightStrategy === 'auto') {
+      if (plan.bmi < 30) {
+        weightBreakdown.innerHTML = `Dosing weight = TBW = ${tbw} kg (BMI < 30 → TBW used).`;
+      } else if (plan.bmi < 40) {
+        weightBreakdown.innerHTML = `ABW (0.4 rule) = IBW + 0.4 × (TBW − IBW)<br>= ${ibw} kg + 0.4 × (${tbw} − ${ibw}) kg<br>= ${abw04} kg`;
+      } else {
+        weightBreakdown.innerHTML = `ABW (0.3 super-obese) = IBW + 0.3 × (TBW − IBW)<br>= ${ibw} kg + 0.3 × (${tbw} − ${ibw}) kg<br>= ${abw03} kg`;
+      }
+    } else if (weightStrategy === 'tbw') {
+      weightBreakdown.innerHTML = `Dosing weight = TBW = ${tbw} kg (manual choice).`;
+    } else if (weightStrategy === 'ibw') {
+      weightBreakdown.innerHTML = `Dosing weight = IBW (Devine) = ${ibw} kg.`;
+    } else {
+      weightBreakdown.innerHTML = `Dosing weight = ABW (manual) = ${abw04} kg (BMI < 40) or ${abw03} kg (BMI ≥ 40).`;
+    }
+    weightBreakdown.classList.remove('hidden');
+  }
+
   const highDose = el('hep2-high-dose');
   if (highDose) highDose.classList.toggle('hidden', !plan.isHighDose);
 
@@ -546,11 +580,56 @@ function updateHeparinUI() {
     }
   }
 
+  const sensAbwDose = Math.round(plan.abw * 300);
+  const sensTbwDose = Math.round(plan.tbw * 300);
+  const sensIbwDose = Math.round(plan.ibw * 300);
+  setText('hep2-sens-abw-wt', `${plan.abw.toFixed(1)} kg`);
+  setText('hep2-sens-abw-dose', `${sensAbwDose.toLocaleString()} U (reference)`);
+  setText('hep2-sens-tbw-wt', `${plan.tbw.toFixed(1)} kg`);
+  setText('hep2-sens-tbw-dose', `${sensTbwDose.toLocaleString()} U (${(sensTbwDose - sensAbwDose >= 0 ? '+' : '')}${(sensTbwDose - sensAbwDose).toLocaleString()} vs ABW)`);
+  setText('hep2-sens-ibw-wt', `${plan.ibw.toFixed(1)} kg`);
+  setText('hep2-sens-ibw-dose', `${sensIbwDose.toLocaleString()} U (${(sensIbwDose - sensAbwDose >= 0 ? '+' : '')}${(sensIbwDose - sensAbwDose).toLocaleString()} vs ABW)`);
+
+  const pedsWarning = el('hep2-peds-warning');
+  if (pedsWarning) pedsWarning.classList.toggle('hidden', !(weight < 20 || height < 120));
+
+  const extremeObesity = el('hep2-extreme-obesity');
+  if (extremeObesity) extremeObesity.classList.toggle('hidden', plan.bmi < 50);
+
   const resistanceBlock = el('hep2-resistance-block');
   if (resistanceBlock) resistanceBlock.classList.toggle('hidden', !hepResistance);
 
   const obesityBlock = el('hep2-obesity-warning');
   if (obesityBlock) obesityBlock.classList.toggle('hidden', hepResistance || plan.alertLevel !== 'high');
+
+  const riskFactors = [
+    el('hep2-rf-sirs')?.checked,
+    el('hep2-rf-lmwh')?.checked,
+    el('hep2-rf-ecmo')?.checked,
+    el('hep2-rf-at3')?.checked,
+    el('hep2-rf-history')?.checked,
+  ].filter(Boolean).length;
+
+  const riskChip = el('hep2-risk-chip');
+  const riskNote = el('hep2-risk-note');
+  const riskAdvice = el('hep2-risk-advice');
+  const riskSummary = el('hep2-risk-summary');
+  if (riskChip) {
+    let level = 'Low';
+    let colorClasses = ['bg-slate-200', 'dark:bg-primary-800', 'text-primary-900', 'dark:text-white'];
+    if (riskFactors >= 4) {
+      level = 'High';
+      colorClasses = ['bg-red-500/20', 'dark:bg-red-900/40', 'text-red-700', 'dark:text-red-200'];
+    } else if (riskFactors >= 2) {
+      level = 'Moderate';
+      colorClasses = ['bg-amber-200/60', 'dark:bg-amber-900/40', 'text-amber-700', 'dark:text-amber-200'];
+    }
+    riskChip.textContent = `Resistance risk: ${level} (${riskFactors}/5)`;
+    riskChip.className = `px-2 py-1 rounded-full font-semibold text-[11px] ${colorClasses.join(' ')}`;
+    if (riskNote) riskNote.textContent = 'Checked risk factors help anticipate Anti-Xa/AT-III needs; dosing is not automatically multiplied.';
+  }
+  if (riskSummary) riskSummary.textContent = `Resistance risk: ${riskFactors}/5 selected`;
+  if (riskAdvice) riskAdvice.classList.toggle('hidden', riskFactors === 0);
 
   if (results) results.classList.remove('hidden');
   if (placeholder) placeholder.classList.add('hidden');
@@ -587,10 +666,19 @@ function initHeparinManagement() {
     });
   }
 
-  ['hep2-height', 'hep2-weight', 'hep2-sex', 'hep2-weight-strategy', 'hep2-target-act'].forEach(id => {
+  const weightInfoToggle = el('hep2-weight-info-toggle');
+  const weightInfo = el('hep2-weight-info');
+  if (weightInfoToggle && weightInfo) {
+    weightInfoToggle.addEventListener('click', () => {
+      weightInfo.classList.toggle('hidden');
+    });
+  }
+
+  ['hep2-height', 'hep2-weight', 'hep2-sex', 'hep2-weight-strategy', 'hep2-target-act', 'hep2-rf-sirs', 'hep2-rf-lmwh', 'hep2-rf-ecmo', 'hep2-rf-at3', 'hep2-rf-history'].forEach(id => {
     const node = el(id);
     if (node) node.addEventListener('input', updateHeparinUI);
     if (node && node.tagName === 'SELECT') node.addEventListener('change', updateHeparinUI);
+    if (node && node.type === 'checkbox') node.addEventListener('change', updateHeparinUI);
   });
 
   updateHeparinUI();
