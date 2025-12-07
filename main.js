@@ -414,7 +414,6 @@ function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy 
   const tbwBolus = Math.round(weightKg * doseUnit);
   const difference = tbwBolus - initialBolus;
   const isHighDose = initialBolus > 40000;
-  const maintenanceRate = Math.round(dosingWeight * (hepResistance ? 18 : 12));
   const additionalBolus = Math.round(dosingWeight * (hepResistance ? 100 : 50));
 
   // DuBois BSA approximation used here (0.007184 × H^0.725 × W^0.425)
@@ -443,7 +442,6 @@ function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy 
     tbwBolus,
     difference,
     isHighDose,
-    maintenanceRate,
     additionalBolus,
     bsaActual,
     bsaUsedForFlow,
@@ -505,17 +503,7 @@ function updateHeparinUI() {
   if (capBadge) capBadge.classList.toggle('hidden', !plan.bsaCapped);
 
   setText('hep2-initial-bolus', plan.initialBolus.toLocaleString());
-  setText('hep2-maintenance', `${plan.maintenanceRate} U/hr`);
   setText('hep2-add-bolus', `${plan.additionalBolus.toLocaleString()} U`);
-  setText('hep2-maintenance-note', `${plan.maintenanceRate} U/hr`);
-
-  const maintDetail = el('hep2-maint-detail');
-  if (maintDetail) {
-    const standardRate = Math.round(plan.dosingWeight * 12);
-    const resistRate = Math.round(plan.dosingWeight * 18);
-    setText('hep2-maint-standard', `• Standard: 12 U/kg/hr → ${standardRate.toLocaleString()} U/hr (based on ${plan.dosingWeight.toFixed(1)} kg)`);
-    setText('hep2-maint-resist', `• Resistance toggle ON: 18 U/kg/hr → ${resistRate.toLocaleString()} U/hr (based on ${plan.dosingWeight.toFixed(1)} kg)`);
-  }
 
   const weightBreakdown = el('hep2-weight-breakdown');
   if (weightBreakdown) {
@@ -569,10 +557,11 @@ function updateHeparinUI() {
     el('hep2-flow-card')?.classList.add('hidden');
     el('hep2-quick-card')?.classList.remove('hidden');
     const steps = el('hep2-quick-steps')?.querySelectorAll('li');
-    if (steps && steps.length >= 5) {
+    if (steps && steps.length >= 4) {
       steps[0].textContent = `Bolus ${plan.initialBolus.toLocaleString()} U IV`;
-      steps[2].textContent = `Start maintenance ${plan.maintenanceRate} U/hr`;
-      steps[4].textContent = `If ACT low: +${plan.additionalBolus.toLocaleString()} U bolus`;
+      steps[1].textContent = 'Wait 3–5 min → Check ACT';
+      steps[2].textContent = 'Monitor ACT q30min during CPB';
+      steps[3].textContent = `If ACT low: +${plan.additionalBolus.toLocaleString()} U bolus`;
     }
   }
 

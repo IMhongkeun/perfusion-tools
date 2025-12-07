@@ -1360,20 +1360,9 @@
                       <div id="hep2-diff-note" class="text-xs text-amber-600 dark:text-amber-300 bg-amber-500/10 rounded px-2 py-1 mb-3 hidden"></div>
                       <div class="space-y-2 text-sm">
                         <div class="flex justify-between">
-                          <span class="text-slate-600 dark:text-slate-400">Maintenance</span>
-                          <span id="hep2-maintenance" class="font-mono text-primary-900 dark:text-white">-</span>
-                        </div>
-                        <div class="flex justify-between">
                           <span class="text-slate-600 dark:text-slate-400">Additional bolus</span>
                           <span id="hep2-add-bolus" class="font-mono text-primary-900 dark:text-white">-</span>
                         </div>
-                      </div>
-
-                      <div id="hep2-maint-detail" class="mt-3 text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-lg p-3 space-y-1 leading-relaxed">
-                        <p class="font-semibold text-primary-900 dark:text-white">Maintenance (optional infusion)</p>
-                        <p id="hep2-maint-standard">• Standard: —</p>
-                        <p id="hep2-maint-resist">• Resistance toggle ON: —</p>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Reference from systemic UFH therapy (CHEST/UpToDate); most CPB programs still rely on bolus + ACT/Anti-Xa.</p>
                       </div>
 
                       <div id="hep2-sensitivity" class="mt-3 bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-lg p-3 text-xs text-slate-700 dark:text-slate-200 space-y-2">
@@ -1402,12 +1391,11 @@
                       <div id="hep2-flow-warning" class="pill pill-alert hidden mt-2">High flow &gt; 6 L/min — check cannula</div>
                     </div>
 
-                    <div id="hep2-quick-card" class="flow-card">
+                      <div id="hep2-quick-card" class="flow-card">
                       <p class="text-sm font-semibold text-green-600 dark:text-green-300 mb-2">Quick protocol</p>
                       <ol class="list-decimal list-inside space-y-1 text-sm text-primary-900 dark:text-slate-200" id="hep2-quick-steps">
                         <li>Bolus -</li>
                         <li>Wait 3–5 min → Check ACT</li>
-                        <li>Start maintenance -</li>
                         <li>Monitor ACT q30min during CPB</li>
                         <li>If ACT low: + bolus</li>
                       </ol>
@@ -1420,7 +1408,6 @@
                       <li>ACT &lt; 300s after bolus → suspect AT-III deficiency</li>
                       <li>Treatment: FFP (2–4 units) or AT-III concentrate (500–1000 IU)</li>
                       <li>Re-check ACT after 10 min; do not start CPB until ACT &gt; 400s</li>
-                      <li>Higher maintenance: <span id="hep2-maintenance-note">-</span> U/hr (18 U/kg/hr)</li>
                       <li>Consider Anti-Xa monitoring (target 3.0–4.5 IU/mL)</li>
                     </ul>
                   </div>
