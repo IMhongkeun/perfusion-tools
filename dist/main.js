@@ -69,6 +69,20 @@ function calcDO2i(flowLmin, bsa, cao2) {
   return fi * cao2 * 10;
 }
 
+// Metabolic factor for temperature-adjusted DO₂i interpretation.
+// This simplified Q10 model is derived from CPB hypothermia literature:
+// - Normothermic targets (~280–300 mL/min/m²) correlate with lower AKI/lactate in adult CPB.
+// - VO₂ roughly halves with a 10°C drop during moderate hypothermia (Q10 ≈ 2.0), with reported 6–7% VO₂ change per °C.
+// - We clamp to 20–39°C to avoid extreme extrapolation; factor floors near deep hypothermia are still >= ~0.35 of normothermic demand.
+function computeMetabolicFactor(tempC) {
+  const Q10 = 1.9; // conservative midpoint (literature range ~1.8–2.0) for whole-body VO₂ under CPB hypothermia
+  const t = clamp(tempC || 37, 20, 39);
+  const factor = Math.pow(Q10, (t - 37) / 10);
+  return clamp(factor, 0.35, 1.1);
+}
+// Example scaling: 37°C → 1.00× (280–300); 32°C → ~0.72× (~200–216); 28°C → ~0.57× (~160–171).
+// Educational only — does not replace institutional perfusion targets or metabolic monitoring.
+
 const PATIENT_TYPE_COEFS = {
   adult_m: 70,
   adult_f: 65,
@@ -125,7 +139,7 @@ function setText(id, text) {
 // -----------------------------
 // DO2i Interaction
 // -----------------------------
-const do2iIds = ['h_cm', 'w_kg', 'bsa', 'bsa-method', 'flow', 'hb', 'sao2', 'pao2'];
+const do2iIds = ['h_cm', 'w_kg', 'bsa', 'bsa-method', 'flow', 'hb', 'sao2', 'pao2', 'temp_c'];
 let lastChangedId = null;
 let do2iMode = 'adult';
 
@@ -133,6 +147,53 @@ const THRESHOLDS = {
   adult: { low: 260, borderline: 300, upper: 450, max: 500, legend: 'Target: 280 - 300+' },
   infant: { low: 340, borderline: 380, upper: 520, max: 600, legend: 'Target: 350+' }
 };
+
+const BASE_TARGETS = {
+  adult: { low: 280, high: 300 },
+  infant: { low: 350, high: 380 }
+};
+
+const DAMPENED_TEMP_TARGETS_ADULT = [
+  { temp: 37, relVO2: 1.0, recMin: 280, recMax: 300, low: 260, borderline: 300, upper: 450, max: 500 },
+  { temp: 32, relVO2: 0.72, recMin: 240, recMax: 260, low: 210, borderline: 240, upper: 260, max: 520 },
+  { temp: 28, relVO2: 0.57, recMin: 220, recMax: 240, low: 200, borderline: 220, upper: 240, max: 520 }
+];
+
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
+
+// Dampened curve for temperature-aware DO₂i interpretation in adults.
+// Relies on anchor points (37°C, 32°C, 28°C) to avoid over-dropping targets despite VO₂ reductions.
+// Returns temperature-adjusted thresholds + recommended band while enforcing a hard low floor (≥200 mL/min/m²).
+function getTempAdjustedTargets(tempC) {
+  if (Number.isNaN(tempC)) {
+    const base = THRESHOLDS.adult;
+    return { ...base, recMin: BASE_TARGETS.adult.low, recMax: BASE_TARGETS.adult.high, relVO2: 1 };
+  }
+
+  const t = clamp(tempC, DAMPENED_TEMP_TARGETS_ADULT[DAMPENED_TEMP_TARGETS_ADULT.length - 1].temp, DAMPENED_TEMP_TARGETS_ADULT[0].temp);
+  for (let i = 0; i < DAMPENED_TEMP_TARGETS_ADULT.length - 1; i++) {
+    const hi = DAMPENED_TEMP_TARGETS_ADULT[i];
+    const lo = DAMPENED_TEMP_TARGETS_ADULT[i + 1];
+    if (t <= hi.temp && t >= lo.temp) {
+      const ratio = (t - lo.temp) / (hi.temp - lo.temp);
+      const blended = {
+        recMin: lerp(lo.recMin, hi.recMin, ratio),
+        recMax: lerp(lo.recMax, hi.recMax, ratio),
+        low: Math.max(lerp(lo.low, hi.low, ratio), 200),
+        borderline: lerp(lo.borderline, hi.borderline, ratio),
+        upper: lerp(lo.upper, hi.upper, ratio),
+        max: lerp(lo.max, hi.max, ratio),
+        relVO2: clamp(computeMetabolicFactor(t), 0.35, 1.1)
+      };
+      return blended;
+    }
+  }
+
+  const last = DAMPENED_TEMP_TARGETS_ADULT[DAMPENED_TEMP_TARGETS_ADULT.length - 1];
+  return { ...last, low: Math.max(last.low, 200), relVO2: clamp(computeMetabolicFactor(t), 0.35, 1.1) };
+}
 
 function applyModeUI() {
   const isAdult = do2iMode === 'adult';
@@ -156,35 +217,67 @@ function updateBSA() {
 
 function updateDO2i() {
   updateBSA();
+  const h = num('h_cm');
+  const w = num('w_kg');
   const bsa = num('bsa');
   const flow = num('flow');
   const hb = num('hb');
   const sao2 = num('sao2');
   const pao2 = parseFloat(el('pao2').value) || 0;
-  const cao2 = calcCaO2(hb, sao2, pao2);
-  el('cao2').value = cao2 ? cao2.toFixed(2) : '';
-  const do2i = calcDO2i(flow, bsa, cao2);
-  setText('do2i', do2i ? `${Math.round(do2i)} <span class="text-lg font-normal text-slate-400">mL/min/m²</span>` : '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
-  const t = THRESHOLDS[do2iMode];
-  let gaugePct = 0, msg = 'Waiting...', gaugeColor = 'from-accent-600 to-accent-400';
-  if (do2i) {
-    gaugePct = Math.min(Math.max((do2i / t.max) * 100, 0), 100);
-    if (do2i < t.low) {
-      msg = 'Low Delivery';
-      gaugeColor = 'from-red-600 to-red-400';
+  const tempRaw = parseFloat(el('temp_c')?.value);
+  const hasTemp = !Number.isNaN(tempRaw);
+  const temp = hasTemp ? tempRaw : 37;
+  const baseThresholds = THRESHOLDS[do2iMode];
+  const requiredMissing = [];
+  if (!bsa) requiredMissing.push('BSA');
+  if (!flow) requiredMissing.push('Pump Flow');
+  if (!hb) requiredMissing.push('Hemoglobin');
+  if (!sao2) requiredMissing.push('SaO₂');
+  if (!pao2) requiredMissing.push('PaO₂');
+
+  const temperatureTargets = do2iMode === 'adult'
+    ? getTempAdjustedTargets(hasTemp ? temp : NaN)
+    : { ...baseThresholds, recMin: BASE_TARGETS[do2iMode].low, recMax: BASE_TARGETS[do2iMode].high, relVO2: 1 };
+
+  const low = temperatureTargets.low;
+  const borderline = temperatureTargets.borderline;
+  const upper = temperatureTargets.upper;
+  const max = temperatureTargets.max;
+
+  let gaugePct = 0;
+  let msg = 'Waiting for input...';
+  let gaugeColor = 'from-accent-600 to-accent-400';
+  let do2i = 0;
+
+  if (requiredMissing.length === 0) {
+    const cao2 = calcCaO2(hb, sao2, pao2);
+    el('cao2').value = cao2 ? cao2.toFixed(2) : '';
+    do2i = calcDO2i(flow, bsa, cao2);
+    setText('do2i', do2i ? `${Math.round(do2i)} <span class="text-lg font-normal text-slate-400">mL/min/m²</span>` : '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
+
+    if (do2i) {
+      gaugePct = Math.min(Math.max((do2i / max) * 100, 0), 100);
+      if (do2i < low) {
+        msg = 'Low Delivery';
+        gaugeColor = 'from-red-600 to-red-400';
+      }
+      else if (do2i < borderline) {
+        msg = 'Borderline';
+        gaugeColor = 'from-amber-500 to-amber-300';
+      }
+      else if (do2i <= upper) {
+        msg = 'Target Range';
+        gaugeColor = 'from-emerald-500 to-emerald-300';
+      }
+      else {
+        msg = 'High Delivery';
+        gaugeColor = 'from-sky-500 to-sky-300';
+      }
     }
-    else if (do2i < t.borderline) {
-      msg = 'Borderline';
-      gaugeColor = 'from-amber-500 to-amber-300';
-    }
-    else if (do2i <= t.upper) {
-      msg = 'Target Range';
-      gaugeColor = 'from-emerald-500 to-emerald-300';
-    }
-    else {
-      msg = 'High Delivery';
-      gaugeColor = 'from-sky-500 to-sky-300';
-    }
+  } else {
+    el('cao2').value = '';
+    setText('do2i', '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
+    msg = `Enter ${requiredMissing.join(', ')} to calculate DO₂i.`;
   }
 
   const g = el('do2i-gauge');
@@ -193,14 +286,42 @@ function updateDO2i() {
   setText('do2i-msg', msg);
 
   const msgEl = el('do2i-msg');
-  if (do2i < t.low) msgEl.className = 'text-sm font-bold text-red-400';
-  else if (do2i < t.borderline) msgEl.className = 'text-sm font-bold text-amber-400';
-  else if (do2i <= t.upper) msgEl.className = 'text-sm font-bold text-emerald-400';
-  else msgEl.className = 'text-sm font-bold text-sky-400';
+  if (do2i && do2i < low) msgEl.className = 'text-sm font-bold text-red-400';
+  else if (do2i && do2i < borderline) msgEl.className = 'text-sm font-bold text-amber-400';
+  else if (do2i && do2i <= upper) msgEl.className = 'text-sm font-bold text-emerald-400';
+  else if (do2i) msgEl.className = 'text-sm font-bold text-sky-400';
+  else msgEl.className = 'text-sm font-bold text-accent-400';
+
+  const baseTargets = BASE_TARGETS[do2iMode];
+  const roundedRecMin = Math.round(temperatureTargets.recMin);
+  const roundedRecMax = Math.round(temperatureTargets.recMax);
+  const relPct = Math.round((temperatureTargets.relVO2 || 1) * 100);
+
+  if (do2iMode === 'adult' && hasTemp) {
+    setText('do2i-temp-target', `Adult ${temp.toFixed(1)}°C target ≈ ${roundedRecMin}–${roundedRecMax} mL/min/m² (VO₂ ~${relPct}% of normothermia; baseline ${baseTargets.low}–${baseTargets.high} at 37°C)`);
+    setText('do2i-legend', `Target: ${roundedRecMin}–${roundedRecMax} mL/min/m² (VO₂ ↓ ~${100 - relPct}% vs 37°C; dampened safety floor ≥200)`);
+  } else {
+    setText('do2i-temp-target', `Equivalent DO₂i target at 37.0°C: ${baseTargets.low}–${baseTargets.high} mL/min/m²`);
+    setText('do2i-legend', baseThresholds.legend);
+  }
+
+  const explain = el('do2i-temp-explain');
+  if (explain) {
+    if (do2iMode === 'adult' && hasTemp) {
+      const vo2Equivalent = Math.round(BASE_TARGETS.adult.low * (temperatureTargets.relVO2 || 1));
+      explain.innerHTML = `
+        <div class="text-xs text-slate-200 dark:text-slate-300 font-semibold">Current temperature: ${temp.toFixed(1)}°C</div>
+        <div class="text-[11px] text-slate-300 dark:text-slate-400">Estimated VO₂ demand: ~${vo2Equivalent} mL/min/m² equivalent (relVO₂ ${relPct}% of normothermia)</div>
+        <div class="text-[11px] text-slate-300 dark:text-slate-400">Recommended DO₂i target: ${roundedRecMin}–${roundedRecMax} mL/min/m² (dampened curve with safety buffer; do not chase the raw VO₂-equivalent)</div>
+      `;
+    } else {
+      explain.textContent = `Normothermia baseline: target ${baseTargets.low}–${baseTargets.high} mL/min/m².`;
+    }
+  }
 }
 
 function resetDO2i() {
-  ['h_cm', 'w_kg', 'bsa', 'flow', 'hb', 'sao2', 'pao2'].forEach(id => {
+  ['h_cm', 'w_kg', 'bsa', 'flow', 'hb', 'sao2', 'pao2', 'temp_c'].forEach(id => {
     const n = el(id);
     if (n) n.value = '';
   });
@@ -208,6 +329,8 @@ function resetDO2i() {
   setText('do2i', '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
   el('do2i-gauge').style.width = '0%';
   setText('do2i-msg', 'Waiting for input...');
+  setText('do2i-temp-target', 'Equivalent DO₂i target at 37.0°C: 280–300 mL/min/m²');
+  setText('do2i-temp-explain', 'Normothermia baseline: target 280–300 mL/min/m².');
   do2iMode = 'adult';
   applyModeUI();
 }
@@ -244,6 +367,41 @@ function applyDefaultEbvCoef(pttype) {
 // -----------------------------
 // LBM Interaction (NEW)
 // -----------------------------
+function renderLBMFlowTable(bsaActual, bsaLean) {
+  const tbody = el('lbm-ci-tbody');
+  const hint = el('lbm-ci-hint');
+  if (!tbody || !hint) return;
+
+  if (!bsaActual || bsaActual <= 0) {
+    tbody.innerHTML = '';
+    hint.textContent = 'Enter height and weight to view flow comparison.';
+    return;
+  }
+
+  const hasLean = bsaLean && bsaLean > 0;
+  const rows = [];
+
+  for (let ciTenth = 10; ciTenth <= 30; ciTenth += 2) {
+    const ci = ciTenth / 10;
+    const flowActual = (ci * bsaActual).toFixed(2);
+    const flowLean = hasLean ? (ci * bsaLean).toFixed(2) : null;
+    const highlight = Math.abs(ci - 2.4) < 0.001;
+
+    rows.push(`
+      <tr class="${highlight ? 'bg-accent-500/5 dark:bg-accent-500/10' : ''}">
+        <td class="py-1 pr-4">${ci.toFixed(1)}</td>
+        <td class="py-1 pr-4">${flowActual}</td>
+        <td class="py-1">${flowLean || '—'}</td>
+      </tr>
+    `);
+  }
+
+  tbody.innerHTML = rows.join('');
+  hint.textContent = hasLean
+    ? 'Flows scaled by Mosteller BSA (actual vs. lean).'
+    : 'LBM unavailable — lean-based flow shows —.';
+}
+
 function updateLBM() {
   const h = num('lbm_h_cm');
   const w = num('lbm_w_kg');
@@ -251,12 +409,22 @@ function updateLBM() {
   const formula = el('lbm_formula').value;
 
   const lbm = computeLBM({ sex, h, w, formula });
-  setText(
-    'lbm_result',
-    lbm
-      ? `${lbm.toFixed(1)} <span class="text-lg font-normal text-slate-400">kg</span>`
-      : `0 <span class="text-lg font-normal text-slate-400">kg</span>`
-  );
+  const lbmDisplay = lbm && lbm > 0 ? lbm.toFixed(1) : '0';
+  setText('lbm_result', `${lbmDisplay} <span class="text-lg font-normal text-slate-400">kg</span>`);
+
+  // BSA (Mosteller) using actual weight and lean body mass (if available)
+  const bsaActual = computeBSA(h, w, 'Mosteller');
+  const bsaLean = lbm && lbm > 0 ? computeBSA(h, lbm, 'Mosteller') : 0;
+
+  setText('lbm_bsa_actual', bsaActual && bsaActual > 0
+    ? `${bsaActual.toFixed(2)} <span class="text-sm font-normal text-slate-400 dark:text-slate-500">m²</span>`
+    : '—');
+
+  setText('lbm_bsa_lean', bsaLean && bsaLean > 0
+    ? `${bsaLean.toFixed(2)} <span class="text-sm font-normal text-slate-400 dark:text-slate-500">m²</span>`
+    : '—');
+
+  renderLBMFlowTable(bsaActual, bsaLean);
 }
 
 // -----------------------------
