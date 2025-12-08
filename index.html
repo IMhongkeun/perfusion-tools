@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-  
-  <title>Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator</title>
-  <meta name="description" content="Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets." />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Perfusion Tools – CPB & ECMO Perfusion Calculators</title>
+  <meta name="description" content="Perfusion calculators for CPB and ECMO, including BSA, DO2i, heparin dosing and more." />
   <meta name="keywords" content="perfusion calculator, GDP calculator, DO2i calculator, predicted Hct, CPB hemodilution, ECMO calculator, cardiac surgery tools, perfusionist, BSA calculator" />
   <meta name="theme-color" content="#0f172a" />
 
@@ -225,6 +225,61 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-WZYBQ2VC7E');
+  </script>
+
+  <script>
+    // Mapping between hash-based routes and their SEO meta info
+    const routeMeta = {
+      "/": {
+        title: "Perfusion Tools – CPB & ECMO Perfusion Calculators",
+        description:
+          "A comprehensive set of perfusion calculators for CPB and ECMO, including BSA, DO2i, heparin dosing, and more."
+      },
+      "/bsa": {
+        title: "BSA Calculator – Perfusion Tools",
+        description:
+          "Accurate Body Surface Area (BSA) calculator for perfusionists, supporting multiple formula methods."
+      },
+      "/heparin": {
+        title: "Heparin Dosing Calculator – Perfusion Tools",
+        description:
+          "Weight-based and resistance-adjusted heparin dosing calculator for CPB operations."
+      },
+      "/info": {
+        title: "About Us – Perfusion Tools",
+        description:
+          "About Perfusion Tools, a collection of perfusion calculators for ECMO and CPB clinicians."
+      }
+    };
+
+    function setMetaForRoute() {
+      // Our SPA uses hash-based routing like #/bsa, #/heparin, etc.
+      let path = window.location.hash.replace("#", "");
+
+      if (!path || path === "") {
+        path = "/";
+      }
+
+      const meta = routeMeta[path] || routeMeta["/"];
+
+      // Update document title
+      document.title = meta.title;
+
+      // Update meta description (create one if missing)
+      let descTag = document.querySelector('meta[name="description"]');
+      if (!descTag) {
+        descTag = document.createElement("meta");
+        descTag.setAttribute("name", "description");
+        document.head.appendChild(descTag);
+      }
+      descTag.setAttribute("content", meta.description);
+    }
+
+    // Apply on first load
+    setMetaForRoute();
+
+    // Apply whenever the route changes via hash
+    window.addEventListener("hashchange", setMetaForRoute);
   </script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0">
