@@ -829,7 +829,7 @@ function updateGDP() {
     }
   } else {
     el('cao2').value = '';
-    setText('do2i', '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
+    setText('do2i', '0 <span class="text-lg font-normal text-slate-400">ml/min/m²</span>');
     msg = `Enter ${requiredMissing.join(', ')} to calculate DO₂i.`;
   }
 
