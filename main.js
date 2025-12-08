@@ -1260,6 +1260,19 @@ window.addEventListener('hashchange', () => {
   if (location.hash.includes('heparin')) initHeparinManagement();
 });
 window.addEventListener('DOMContentLoaded', () => {
+  const brandHome = document.getElementById('brand-home');
+  if (brandHome) {
+    brandHome.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetHash = '#/';
+      if (window.location.hash !== targetHash) {
+        window.location.hash = targetHash;
+      } else {
+        route();
+      }
+    });
+  }
+
   const now = new Date();
   document.getElementById('year').textContent = now.getFullYear();
   const iso = now.toISOString().slice(0, 10);
