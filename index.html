@@ -2,23 +2,22 @@
 <html lang="en" class="scroll-smooth">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>Perfusion Tools – CPB &amp; ECMO Perfusion Calculators</title>
-  <meta name="description" content="Perfusion Tools is a CPB &amp; ECMO perfusion calculator suite for perfusionists, including BSA, CI, DO2i, pump flow, heparin management, and more." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+  
+  <title>Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator</title>
+  <meta name="description" content="Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets." />
   <meta name="keywords" content="perfusion calculator, GDP calculator, DO2i calculator, predicted Hct, CPB hemodilution, ECMO calculator, cardiac surgery tools, perfusionist, BSA calculator" />
   <meta name="theme-color" content="#0f172a" />
-  <meta name="naver-site-verification" content="2aa598e2e172ada13caa61eb57fc020beef8fc75" />
 
-  <link rel="canonical" href="https://perfusiontools.com/#/do2i" />
-
+  <link rel="canonical" href="https://perfusion.pro/#/do2i" />
+  
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Perfusion Tools – CPB &amp; ECMO Perfusion Calculators" />
-  <meta property="og:description" content="Bedside perfusion calculators for CPB &amp; ECMO: BSA, CI, DO2i, pump flow, heparin management, and more." />
-  <meta property="og:url" content="https://perfusiontools.com" />
+  <meta property="og:title" content="Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator" />
+  <meta property="og:description" content="Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets." />
+  <meta property="og:url" content="https://perfusion.pro/" />
   <meta property="og:image" content="https://perfusion.pro/og-image.png" /> <script src="https://cdn.tailwindcss.com"></script>
-  <meta name="twitter:title" content="Perfusion Tools – CPB &amp; ECMO Perfusion Calculators" />
-  <meta name="twitter:description" content="Bedside perfusion calculators for CPB &amp; ECMO: BSA, CI, DO2i, pump flow, heparin management, and more." />
+  <meta name="twitter:title" content="Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator" />
+  <meta name="twitter:description" content="Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets." />
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -451,11 +450,11 @@
             <ol class="list-decimal pl-4 space-y-3">
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Arterial oxygen content (CaO₂)</p>
-                <p>CaO₂ (ml/dl) = 1.34 × Hb (g/dl) × (SaO₂ / 100) + 0.0031 × PaO₂ (mmhg). We assume a Hüfner constant of 1.34 ml O₂ per gram of Hb and a dissolved O₂ coefficient of 0.0031 ml·dl⁻¹·mmhg⁻¹. The contribution of dissolved O₂ is usually small at normal PaO₂.</p>
+                <p>CaO₂ (mL/dL) = 1.34 × Hb (g/dL) × (SaO₂ / 100) + 0.0031 × PaO₂ (mmHg). We assume a Hüfner constant of 1.34 mL O₂ per gram of Hb and a dissolved O₂ coefficient of 0.0031 mL·dL⁻¹·mmHg⁻¹. The contribution of dissolved O₂ is usually small at normal PaO₂.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Indexed oxygen delivery (DO₂i)</p>
-                <p>DO₂i (ml/min/m²) = (Pump flow ÷ BSA) × CaO₂ × 10. Pump flow is entered in l/min and BSA in m². Multiplying by 10 converts CaO₂ from ml/dl to ml/l so that the final unit is ml O₂ per minute per m².</p>
+                <p>DO₂i (mL/min/m²) = (Pump flow ÷ BSA) × CaO₂ × 10. Pump flow is entered in L/min and BSA in m². Multiplying by 10 converts CaO₂ from mL/dL to mL/L so that the final unit is mL O₂ per minute per m².</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Temperature-adjusted metabolic demand</p>
@@ -463,11 +462,11 @@
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Target DO₂i bands (Goal-Directed Perfusion)</p>
-                <p>At normothermia (≈37 °C) many adult CPB programs aim to maintain DO₂i ≥ 280–300 ml/min/m² to reduce the risk of anaerobic metabolism and postoperative acute kidney injury. At lower temperatures the calculator reduces the recommended target range, but never below a conservative lower floor (e.g. around 220 ml/min/m²), even when theoretical VO₂ would allow lower values. Targets are displayed as “Low / Borderline / Target / High” bands on the gauge for quick bedside interpretation.</p>
+                <p>At normothermia (≈37 °C) many adult CPB programs aim to maintain DO₂i ≥ 280–300 mL/min/m² to reduce the risk of anaerobic metabolism and postoperative acute kidney injury. At lower temperatures the calculator reduces the recommended target range, but never below a conservative lower floor (e.g. around 220 mL/min/m²), even when theoretical VO₂ would allow lower values. Targets are displayed as “Low / Borderline / Target / High” bands on the gauge for quick bedside interpretation.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Required pump flow for a chosen DO₂i goal</p>
-                <p>For a selected DO₂i target, the corresponding pump flow is: Required flow (l/min) = (Target DO₂i × BSA) ÷ (CaO₂ × 10). This is a theoretical value based on current Hb, SaO₂, PaO₂ and BSA. In practice, flow should also respect institutional minimum/maximum flow policies and patient-specific constraints (e.g. cannula size, arterial pressure, ventricular distension).</p>
+                <p>For a selected DO₂i target, the corresponding pump flow is: Required flow (L/min) = (Target DO₂i × BSA) ÷ (CaO₂ × 10). This is a theoretical value based on current Hb, SaO₂, PaO₂ and BSA. In practice, flow should also respect institutional minimum/maximum flow policies and patient-specific constraints (e.g. cannula size, arterial pressure, ventricular distension).</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Clinical use and limitations</p>
@@ -735,31 +734,31 @@
             <ol class="list-decimal pl-4 space-y-3">
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Estimated blood volume (EBV)</p>
-                <p>This calculator uses a simple weight-based model for circulating blood volume: EBV (ml) = Weight (kg) × EBV coefficient (ml/kg). Typical default coefficients are:</p>
+                <p>This calculator uses a simple weight-based model for circulating blood volume: EBV (mL) = Weight (kg) × EBV coefficient (mL/kg). Typical default coefficients are:</p>
                 <ul class="list-disc pl-4 space-y-1 mt-1">
-                  <li>Adult male: 70 ml/kg</li>
-                  <li>Adult female: 65 ml/kg</li>
-                  <li>Child: 75 ml/kg</li>
-                  <li>Infant: 80 ml/kg</li>
-                  <li>Neonate: 90 ml/kg</li>
+                  <li>Adult male: 70 mL/kg</li>
+                  <li>Adult female: 65 mL/kg</li>
+                  <li>Child: 75 mL/kg</li>
+                  <li>Infant: 80 mL/kg</li>
+                  <li>Neonate: 90 mL/kg</li>
                 </ul>
                 <p class="mt-1">These values are derived from population averages and may be adjusted in this tool when clinical judgment suggests a higher or lower blood volume (e.g. severe obesity, cachexia, fluid overload or dehydration).</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Pre-CPB red cell volume</p>
-                <p>Pre-bypass red cell volume is estimated from the patient’s hematocrit (Hct) and EBV: RBC_patient (ml) = EBV × (Pre-CPB Hct ÷ 100). This assumes the pre-CPB Hct is measured after induction and line placement, and that blood is evenly distributed in the circulation.</p>
+                <p>Pre-bypass red cell volume is estimated from the patient’s hematocrit (Hct) and EBV: RBC_patient (mL) = EBV × (Pre-CPB Hct ÷ 100). This assumes the pre-CPB Hct is measured after induction and line placement, and that blood is evenly distributed in the circulation.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Circuit prime and crystalloid / ultrafiltration</p>
                 <p>The total intravascular volume at the time of sampling is modeled as:</p>
-                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">V_total (ml) = EBV + Prime volume + Additional crystalloid / colloid + RBC product volume − Ultrafiltration removed.</p>
+                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">V_total (mL) = EBV + Prime volume + Additional crystalloid / colloid + RBC product volume − Ultrafiltration removed.</p>
                 <p>“Prime volume” includes the cardiopulmonary bypass circuit prime and any pre-bypass volume added directly to the patient through the circuit. “Additional crystalloid” represents fluids such as cardioplegia carrier solution, albumin, mannitol, or other volume expanders that effectively dilute the circulating red cell mass. “Ultrafiltration removed” accounts for hemoconcentration techniques (UF, MUF, Z-BUF) that remove plasma water and reduce total volume.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Packed red blood cell (RBC) products</p>
                 <p>Red cell volume contributed by transfused RBCs is modeled as:</p>
-                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">RBC_products (ml) = (Number of units × Volume per unit) × (Unit Hct ÷ 100).</p>
-                <p>Default values often assume ~300 ml/unit with a unit Hct around 60%, but these may be adjusted to reflect local blood bank characteristics or specific product labels.</p>
+                <p class="font-mono bg-slate-50 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 text-[11px] text-primary-900 dark:text-slate-100">RBC_products (mL) = (Number of units × Volume per unit) × (Unit Hct ÷ 100).</p>
+                <p>Default values often assume ~300 mL/unit with a unit Hct around 60%, but these may be adjusted to reflect local blood bank characteristics or specific product labels.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Predicted hematocrit on CPB</p>

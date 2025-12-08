@@ -89,68 +89,51 @@ function getCurrentTimeHHMM() {
   return `${hh}:${mm}`;
 }
 
-const CANONICAL_BASE = 'https://perfusiontools.com/';
-const DEFAULT_DESCRIPTION = 'Perfusion Tools is a CPB & ECMO perfusion calculator suite for perfusionists, including BSA, CI, DO2i, pump flow, heparin management, and more.';
-const DEFAULT_OG_DESCRIPTION = 'Bedside perfusion calculators for CPB & ECMO: BSA, CI, DO2i, pump flow, heparin management, and more.';
+const CANONICAL_BASE = 'https://perfusion.pro/';
 const SEO_META = {
   'do2i': {
-    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
-    description: DEFAULT_DESCRIPTION,
-    ogDescription: DEFAULT_OG_DESCRIPTION,
+    title: 'Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator',
+    description: 'Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets.',
     canonicalHash: '#/do2i'
   },
   'predicted-hct': {
-    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
-    description: DEFAULT_DESCRIPTION,
-    ogDescription: DEFAULT_OG_DESCRIPTION,
+    title: 'Predicted Hematocrit on CPB — Hemodilution Calculator',
+    description: 'Estimate on-pump hematocrit from EBV, prime, ultrafiltration and RBC units.',
     canonicalHash: '#/predicted-hct'
   },
   'lbm': {
-    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
-    description: DEFAULT_DESCRIPTION,
-    ogDescription: DEFAULT_OG_DESCRIPTION,
+    title: 'Lean Body Mass Calculator for Perfusion (Boer & Hume)',
+    description: 'Calculate LBM and Lean BSA for CPB flow management and compare actual vs lean flow rates for obese patients.',
     canonicalHash: '#/lbm'
   },
   'bsa': {
-    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
-    description: DEFAULT_DESCRIPTION,
-    ogDescription: DEFAULT_OG_DESCRIPTION,
+    title: 'Body Surface Area (BSA) Calculator — Perfusion Tools',
+    description: 'Compute BSA using Mosteller, DuBois and other formulas to guide indexed perfusion flows.',
     canonicalHash: '#/bsa'
   },
-  'heparin': {
-    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
-    description: DEFAULT_DESCRIPTION,
-    ogDescription: DEFAULT_OG_DESCRIPTION,
-    canonicalHash: '#/heparin'
-  },
   'timecalc': {
-    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
-    description: DEFAULT_DESCRIPTION,
-    ogDescription: DEFAULT_OG_DESCRIPTION,
+    title: 'Time Calculator — Pump Time & Case Time',
+    description: 'Quickly calculate case durations with HH:MM inputs and automatic time formatting.',
     canonicalHash: '#/timecalc'
   },
   'faq': {
-    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
-    description: DEFAULT_DESCRIPTION,
-    ogDescription: DEFAULT_OG_DESCRIPTION,
+    title: 'Perfusionist Calculators — FAQ & Educational Notes',
+    description: 'Common questions about DO₂i, predicted hematocrit, GDP and lean body mass during CPB.',
     canonicalHash: '#/faq'
   },
   'privacy': {
-    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
-    description: DEFAULT_DESCRIPTION,
-    ogDescription: DEFAULT_OG_DESCRIPTION,
+    title: 'Privacy Policy — Perfusion Tools',
+    description: 'Learn how Perfusion Tools handles browser-based calculations without storing personal data.',
     canonicalHash: '#/privacy'
   },
   'terms': {
-    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
-    description: DEFAULT_DESCRIPTION,
-    ogDescription: DEFAULT_OG_DESCRIPTION,
+    title: 'Terms of Service — Perfusion Tools',
+    description: 'Understand the usage terms and disclaimers for the Perfusion Tools calculators.',
     canonicalHash: '#/terms'
   },
   'contact': {
-    title: 'Perfusion Tools – CPB & ECMO Perfusion Calculators',
-    description: DEFAULT_DESCRIPTION,
-    ogDescription: DEFAULT_OG_DESCRIPTION,
+    title: 'Contact — Perfusion Tools',
+    description: 'Get in touch with Perfusion Tools with questions or feedback about CPB calculators.',
     canonicalHash: '#/contact'
   }
 };
@@ -166,14 +149,11 @@ function updateMetaForRoute(key) {
     if (tag && value) tag.setAttribute(attr, value);
   };
 
-  const metaDescription = meta.description || DEFAULT_DESCRIPTION;
-  const socialDescription = meta.ogDescription || metaDescription;
-
-  setContent('meta[name="description"]', 'content', metaDescription);
+  setContent('meta[name="description"]', 'content', meta.description);
   setContent('meta[property="og:title"]', 'content', meta.title);
-  setContent('meta[property="og:description"]', 'content', socialDescription);
+  setContent('meta[property="og:description"]', 'content', meta.description);
   setContent('meta[name="twitter:title"]', 'content', meta.title);
-  setContent('meta[name="twitter:description"]', 'content', socialDescription);
+  setContent('meta[name="twitter:description"]', 'content', meta.description);
 
   const canonicalTag = document.querySelector('link[rel="canonical"]');
   if (canonicalTag && meta.canonicalHash) {
