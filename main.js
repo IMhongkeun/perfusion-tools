@@ -607,6 +607,13 @@ function updateHeparinUI() {
 }
 
 function initHeparinManagement() {
+  // Avoid double-binding listeners if this initializer runs more than once (e.g., repeated hash navigation)
+  if (initHeparinManagement.initialized) {
+    updateHeparinUI();
+    return;
+  }
+  initHeparinManagement.initialized = true;
+
   setHepDoseButtons(hepDoseUnit);
   renderResistanceToggle();
 
@@ -654,6 +661,7 @@ function initHeparinManagement() {
 
   updateHeparinUI();
 }
+initHeparinManagement.initialized = false;
 
 // -----------------------------
 // LBM Calculation (NEW)
@@ -1296,6 +1304,9 @@ function route() {
 // Event Wiring
 // -----------------------------
 window.addEventListener('hashchange', route);
+window.addEventListener('hashchange', () => {
+  if (location.hash.includes('heparin')) initHeparinManagement();
+});
 window.addEventListener('DOMContentLoaded', () => {
   const now = new Date();
   document.getElementById('year').textContent = now.getFullYear();
