@@ -89,11 +89,11 @@ function getCurrentTimeHHMM() {
   return `${hh}:${mm}`;
 }
 
-const CANONICAL_BASE = 'https://perfusion.pro/';
+const CANONICAL_BASE = 'https://perfusiontools.com';
 const FALLBACK_META = {
   title: 'Calculator – Perfusion Tools',
   description: 'Comprehensive perfusion calculators for CPB & ECMO including BSA, Heparin dosing, and more.',
-  canonicalHash: '#/'
+  canonicalPath: '/'
 };
 
 function getRouteMeta(path) {
@@ -120,7 +120,8 @@ function updateMetaForRoute(path) {
 
   const canonicalTag = document.querySelector('link[rel="canonical"]');
   if (canonicalTag) {
-    canonicalTag.setAttribute('href', `${CANONICAL_BASE}${meta.canonicalHash || FALLBACK_META.canonicalHash || ''}`);
+    const canonicalPath = meta.canonicalPath || FALLBACK_META.canonicalPath || '/';
+    canonicalTag.setAttribute('href', `${CANONICAL_BASE}${canonicalPath}`);
   }
 }
 
@@ -1192,8 +1193,32 @@ function setupContactActions() {
 // -----------------------------
 // Router & Navigation Styling
 // -----------------------------
+function getActivePath() {
+  const rawPath = window.location.pathname || '/';
+  const normalizedPath = window.normalizeRoute ? window.normalizeRoute(rawPath) : rawPath;
+
+  if ((normalizedPath === '/' || normalizedPath === '/index.html') && window.location.hash) {
+    const legacy = window.normalizeRoute ? window.normalizeRoute(window.location.hash) : window.location.hash.replace('#', '/');
+    history.replaceState({}, '', legacy);
+    return legacy;
+  }
+
+  if (normalizedPath === '/index.html') return '/';
+  return normalizedPath || '/';
+}
+
+function navigateTo(path) {
+  const target = window.normalizeRoute ? window.normalizeRoute(path) : (path || '/');
+  const current = getActivePath();
+
+  if (current !== target) {
+    history.pushState({}, '', target);
+  }
+  route();
+}
+
 function route() {
-  const path = window.normalizeRoute ? window.normalizeRoute(location.hash) : (location.hash ? location.hash.replace('#', '/') : '/');
+  const path = getActivePath();
 
   const sections = ['view-home', 'view-bsa', 'view-do2i', 'view-hct', 'view-lbm', 'view-heparin', 'view-timecalc', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
@@ -1203,7 +1228,7 @@ function route() {
   let key = 'home';
 
   if (path.includes('bsa')) { el('view-bsa').classList.remove('hidden'); key = 'bsa'; }
-  else if (path.includes('do2i')) { el('view-do2i').classList.remove('hidden'); key = 'do2i'; }
+  else if (path.includes('do2i') || path.includes('gdp')) { el('view-do2i').classList.remove('hidden'); key = 'do2i'; }
   else if (path.includes('predicted-hct')) { el('view-hct').classList.remove('hidden'); key = 'predicted-hct'; }
   else if (path.includes('lbm')) { el('view-lbm').classList.remove('hidden'); key = 'lbm'; }
   else if (path.includes('heparin')) { el('view-heparin').classList.remove('hidden'); key = 'heparin'; }
@@ -1250,28 +1275,38 @@ function route() {
       mobEl.classList.add('text-accent-600', 'dark:text-accent-400');
     }
   }
+
+  if (key === 'heparin') {
+    initHeparinManagement();
+  }
 }
 
 // -----------------------------
 // Event Wiring
 // -----------------------------
-window.addEventListener('hashchange', route);
-window.addEventListener('hashchange', () => {
-  if (location.hash.includes('heparin')) initHeparinManagement();
-});
+window.addEventListener('popstate', route);
 window.addEventListener('DOMContentLoaded', () => {
   const brandHome = document.getElementById('brand-home');
   if (brandHome) {
     brandHome.addEventListener('click', (e) => {
-      e.preventDefault();
-      const targetHash = '#/';
-      if (window.location.hash !== targetHash) {
-        window.location.hash = targetHash;
-      } else {
-        route();
+      const href = brandHome.getAttribute('href');
+      if (href && href.startsWith('/')) {
+        e.preventDefault();
+        navigateTo(href);
       }
     });
   }
+
+  document.querySelectorAll('a[data-route]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (!href || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+      if (href.startsWith('/')) {
+        e.preventDefault();
+        navigateTo(href);
+      }
+    });
+  });
 
   const now = new Date();
   document.getElementById('year').textContent = now.getFullYear();
