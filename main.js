@@ -90,74 +90,37 @@ function getCurrentTimeHHMM() {
 }
 
 const CANONICAL_BASE = 'https://perfusion.pro/';
-const SEO_META = {
-  'do2i': {
-    title: 'Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator',
-    description: 'Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets.',
-    canonicalHash: '#/do2i'
-  },
-  'predicted-hct': {
-    title: 'Predicted Hematocrit on CPB — Hemodilution Calculator',
-    description: 'Estimate on-pump hematocrit from EBV, prime, ultrafiltration and RBC units.',
-    canonicalHash: '#/predicted-hct'
-  },
-  'lbm': {
-    title: 'Lean Body Mass Calculator for Perfusion (Boer & Hume)',
-    description: 'Calculate LBM and Lean BSA for CPB flow management and compare actual vs lean flow rates for obese patients.',
-    canonicalHash: '#/lbm'
-  },
-  'bsa': {
-    title: 'Body Surface Area (BSA) Calculator — Perfusion Tools',
-    description: 'Compute BSA using Mosteller, DuBois and other formulas to guide indexed perfusion flows.',
-    canonicalHash: '#/bsa'
-  },
-  'timecalc': {
-    title: 'Time Calculator — Pump Time & Case Time',
-    description: 'Quickly calculate case durations with HH:MM inputs and automatic time formatting.',
-    canonicalHash: '#/timecalc'
-  },
-  'faq': {
-    title: 'Perfusionist Calculators — FAQ & Educational Notes',
-    description: 'Common questions about DO₂i, predicted hematocrit, GDP and lean body mass during CPB.',
-    canonicalHash: '#/faq'
-  },
-  'privacy': {
-    title: 'Privacy Policy — Perfusion Tools',
-    description: 'Learn how Perfusion Tools handles browser-based calculations without storing personal data.',
-    canonicalHash: '#/privacy'
-  },
-  'terms': {
-    title: 'Terms of Service — Perfusion Tools',
-    description: 'Understand the usage terms and disclaimers for the Perfusion Tools calculators.',
-    canonicalHash: '#/terms'
-  },
-  'contact': {
-    title: 'Contact — Perfusion Tools',
-    description: 'Get in touch with Perfusion Tools with questions or feedback about CPB calculators.',
-    canonicalHash: '#/contact'
-  }
+const FALLBACK_META = {
+  title: 'Calculator – Perfusion Tools',
+  description: 'Comprehensive perfusion calculators for CPB & ECMO including BSA, Heparin dosing, and more.',
+  canonicalHash: '#/'
 };
 
-function updateMetaForRoute(key) {
-  const meta = SEO_META[key] || SEO_META['do2i'];
-  if (!meta) return;
+function getRouteMeta(path) {
+  const metaSource = window.routeMeta || {};
+  const normalized = window.normalizeRoute ? window.normalizeRoute(path) : path;
+  return metaSource[normalized] || metaSource['/'] || FALLBACK_META;
+}
 
-  document.title = meta.title;
+function updateMetaForRoute(path) {
+  const meta = getRouteMeta(path);
+
+  if (window.applyRouteMeta) window.applyRouteMeta(path);
 
   const setContent = (selector, attr, value) => {
     const tag = document.querySelector(selector);
     if (tag && value) tag.setAttribute(attr, value);
   };
 
-  setContent('meta[name="description"]', 'content', meta.description);
-  setContent('meta[property="og:title"]', 'content', meta.title);
-  setContent('meta[property="og:description"]', 'content', meta.description);
-  setContent('meta[name="twitter:title"]', 'content', meta.title);
-  setContent('meta[name="twitter:description"]', 'content', meta.description);
+  setContent('meta[name="description"]', 'content', meta.description || FALLBACK_META.description);
+  setContent('meta[property="og:title"]', 'content', meta.title || FALLBACK_META.title);
+  setContent('meta[property="og:description"]', 'content', meta.description || FALLBACK_META.description);
+  setContent('meta[name="twitter:title"]', 'content', meta.title || FALLBACK_META.title);
+  setContent('meta[name="twitter:description"]', 'content', meta.description || FALLBACK_META.description);
 
   const canonicalTag = document.querySelector('link[rel="canonical"]');
-  if (canonicalTag && meta.canonicalHash) {
-    canonicalTag.setAttribute('href', `${CANONICAL_BASE}${meta.canonicalHash}`);
+  if (canonicalTag) {
+    canonicalTag.setAttribute('href', `${CANONICAL_BASE}${meta.canonicalHash || FALLBACK_META.canonicalHash || ''}`);
   }
 }
 
@@ -607,6 +570,13 @@ function updateHeparinUI() {
 }
 
 function initHeparinManagement() {
+  // Avoid double-binding listeners if this initializer runs more than once (e.g., repeated hash navigation)
+  if (initHeparinManagement.initialized) {
+    updateHeparinUI();
+    return;
+  }
+  initHeparinManagement.initialized = true;
+
   setHepDoseButtons(hepDoseUnit);
   renderResistanceToggle();
 
@@ -654,6 +624,7 @@ function initHeparinManagement() {
 
   updateHeparinUI();
 }
+initHeparinManagement.initialized = false;
 
 // -----------------------------
 // LBM Calculation (NEW)
@@ -858,7 +829,7 @@ function updateGDP() {
     }
   } else {
     el('cao2').value = '';
-    setText('do2i', '0 <span class="text-lg font-normal text-slate-400">mL/min/m²</span>');
+    setText('do2i', '0 <span class="text-lg font-normal text-slate-400">ml/min/m²</span>');
     msg = `Enter ${requiredMissing.join(', ')} to calculate DO₂i.`;
   }
 
@@ -1222,36 +1193,38 @@ function setupContactActions() {
 // Router & Navigation Styling
 // -----------------------------
 function route() {
-  const hash = location.hash || '#/bsa';
+  const path = window.normalizeRoute ? window.normalizeRoute(location.hash) : (location.hash ? location.hash.replace('#', '/') : '/');
 
-  // Updated sections list to include LBM and standalone BSA
-  const sections = ['view-bsa', 'view-do2i', 'view-hct', 'view-lbm', 'view-heparin', 'view-timecalc', 'faq', 'view-privacy', 'view-terms', 'view-contact'];
+  const sections = ['view-home', 'view-bsa', 'view-do2i', 'view-hct', 'view-lbm', 'view-heparin', 'view-timecalc', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
     el(sid).classList.add('hidden');
   });
 
-  // Route to appropriate section
-  if (hash.includes('bsa')) el('view-bsa').classList.remove('hidden');
-  else if (hash.includes('do2i')) el('view-do2i').classList.remove('hidden');
-  else if (hash.includes('predicted-hct')) el('view-hct').classList.remove('hidden');
-  else if (hash.includes('lbm')) el('view-lbm').classList.remove('hidden');
-  else if (hash.includes('heparin')) el('view-heparin').classList.remove('hidden');
-  else if (hash.includes('timecalc')) el('view-timecalc').classList.remove('hidden');
-  else if (hash.includes('faq')) el('faq').classList.remove('hidden');
-  else if (hash.includes('privacy')) el('view-privacy').classList.remove('hidden');
-  else if (hash.includes('terms')) el('view-terms').classList.remove('hidden');
-  else if (hash.includes('contact')) el('view-contact').classList.remove('hidden');
-  else el('view-bsa').classList.remove('hidden');
+  let key = 'home';
 
-  // Updated navMap to include LBM
+  if (path.includes('bsa')) { el('view-bsa').classList.remove('hidden'); key = 'bsa'; }
+  else if (path.includes('do2i')) { el('view-do2i').classList.remove('hidden'); key = 'do2i'; }
+  else if (path.includes('predicted-hct')) { el('view-hct').classList.remove('hidden'); key = 'predicted-hct'; }
+  else if (path.includes('lbm')) { el('view-lbm').classList.remove('hidden'); key = 'lbm'; }
+  else if (path.includes('heparin')) { el('view-heparin').classList.remove('hidden'); key = 'heparin'; }
+  else if (path.includes('timecalc')) { el('view-timecalc').classList.remove('hidden'); key = 'timecalc'; }
+  else if (path.includes('faq')) { el('faq').classList.remove('hidden'); key = 'faq'; }
+  else if (path.includes('info')) { el('view-info').classList.remove('hidden'); key = 'info'; }
+  else if (path.includes('privacy')) { el('view-privacy').classList.remove('hidden'); key = 'privacy'; }
+  else if (path.includes('terms')) { el('view-terms').classList.remove('hidden'); key = 'terms'; }
+  else if (path.includes('contact')) { el('view-contact').classList.remove('hidden'); key = 'contact'; }
+  else { el('view-home').classList.remove('hidden'); key = 'home'; }
+
   const navMap = {
+    'home': ['nav-home', 'side-home', 'mob-home'],
     'do2i': ['nav-do2i', 'side-do2i', 'mob-do2i'],
     'predicted-hct': ['nav-hct', 'side-hct', 'mob-hct'],
     'bsa': ['nav-bsa', 'side-bsa', 'mob-bsa'],
     'lbm': ['nav-lbm', 'side-lbm', 'mob-lbm'],
     'heparin': ['nav-heparin', 'side-heparin', 'mob-heparin'],
     'timecalc': ['nav-time', 'side-time', 'mob-time'],
-    'faq': ['nav-faq', 'side-faq', 'mob-faq']
+    'faq': ['nav-faq', 'side-faq', null],
+    'info': ['nav-info', 'side-info', 'mob-info']
   };
 
   document.querySelectorAll('.nav-link, .sidebar-link').forEach(l => {
@@ -1262,20 +1235,7 @@ function route() {
     l.classList.add('text-slate-400', 'dark:text-slate-500');
   });
 
-  // Determine active key
-  let key = null;
-  if (hash.includes('do2i')) key = 'do2i';
-  else if (hash.includes('predicted-hct')) key = 'predicted-hct';
-  else if (hash.includes('bsa')) key = 'bsa';
-  else if (hash.includes('lbm')) key = 'lbm';
-  else if (hash.includes('heparin')) key = 'heparin';
-  else if (hash.includes('timecalc')) key = 'timecalc';
-  else if (hash.includes('faq')) key = 'faq';
-  else if (hash.includes('privacy')) key = 'privacy';
-  else if (hash.includes('terms')) key = 'terms';
-  else if (hash.includes('contact')) key = 'contact';
-
-  updateMetaForRoute(key || 'do2i');
+  updateMetaForRoute(path || '/');
 
   if (key && navMap[key]) {
     const navEl = el(navMap[key][0]);
@@ -1296,14 +1256,25 @@ function route() {
 // Event Wiring
 // -----------------------------
 window.addEventListener('hashchange', route);
+window.addEventListener('hashchange', () => {
+  if (location.hash.includes('heparin')) initHeparinManagement();
+});
 window.addEventListener('DOMContentLoaded', () => {
+  const brandHome = document.getElementById('brand-home');
+  if (brandHome) {
+    brandHome.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetHash = '#/';
+      if (window.location.hash !== targetHash) {
+        window.location.hash = targetHash;
+      } else {
+        route();
+      }
+    });
+  }
+
   const now = new Date();
   document.getElementById('year').textContent = now.getFullYear();
-  const iso = now.toISOString().slice(0, 10);
-  const pdate = document.getElementById('privacy-date');
-  if (pdate) pdate.textContent = iso;
-  const tdate = document.getElementById('terms-date');
-  if (tdate) tdate.textContent = iso;
 
   route();
 

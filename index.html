@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-  
-  <title>Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator</title>
-  <meta name="description" content="Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets." />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Perfusion Tools – CPB & ECMO Perfusion Calculators</title>
+  <meta name="description" content="Comprehensive perfusion calculators for CPB & ECMO including BSA, Heparin dosing, and more." />
   <meta name="keywords" content="perfusion calculator, GDP calculator, DO2i calculator, predicted Hct, CPB hemodilution, ECMO calculator, cardiac surgery tools, perfusionist, BSA calculator" />
   <meta name="theme-color" content="#0f172a" />
 
@@ -226,13 +226,151 @@
     gtag('js', new Date());
     gtag('config', 'G-WZYBQ2VC7E');
   </script>
+
+  <script>
+    const routeMeta = {
+      "/": {
+        title: "Perfusion Tools – CPB & ECMO Perfusion Calculators",
+        h1: "Perfusion Tools – CPB & ECMO Perfusion Calculators",
+        description: "Comprehensive perfusion calculators for CPB & ECMO including BSA, Heparin dosing, and more.",
+        headingDescription: "Evidence-based calculators for BSA, cardiac index, heparin dosing, and timekeeping to support goal-directed perfusion.",
+        canonicalHash: "#/"
+      },
+      "/home": {
+        title: "Perfusion Tools – CPB & ECMO Perfusion Calculators",
+        h1: "Perfusion Tools – CPB & ECMO Perfusion Calculators",
+        description: "Comprehensive perfusion calculators for CPB & ECMO including BSA, Heparin dosing, and more.",
+        headingDescription: "Evidence-based calculators for BSA, cardiac index, heparin dosing, and timekeeping to support goal-directed perfusion.",
+        canonicalHash: "#/"
+      },
+      "/bsa": {
+        title: "BSA Calculator – Perfusion Tools",
+        h1: "BSA Calculator",
+        description: "Accurate Body Surface Area (BSA) calculator for perfusionists, supporting multiple formula methods.",
+        headingDescription: "Calculate body surface area with Mosteller, DuBois, Haycock, and Boyd options.",
+        canonicalHash: "#/bsa"
+      },
+      "/heparin": {
+        title: "Heparin Dosing Calculator – Perfusion Tools",
+        h1: "Heparin Dosing Calculator",
+        description: "Weight-based and resistance-adjusted heparin dosing calculator for CPB operations.",
+        headingDescription: "Estimate bolus doses with adjustable resistance and clinical guidance.",
+        canonicalHash: "#/heparin"
+      },
+      "/do2i": {
+        title: "Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator",
+        h1: "Goal-Directed Perfusion (GDP) Calculator",
+        description: "Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets.",
+        headingDescription: "Set a DO₂i target and evaluate whether current pump flow is adequate.",
+        canonicalHash: "#/do2i"
+      },
+      "/predicted-hct": {
+        title: "Predicted Hematocrit on CPB — Hemodilution Calculator",
+        h1: "Predicted Hematocrit Calculator",
+        description: "Estimate on-pump hematocrit from EBV, prime, ultrafiltration and RBC units.",
+        headingDescription: "Forecast CPB hematocrit based on EBV, prime, and transfusion inputs.",
+        canonicalHash: "#/predicted-hct"
+      },
+      "/lbm": {
+        title: "Lean Body Mass Calculator for Perfusion (Boer & Hume)",
+        h1: "Lean Body Mass Calculator",
+        description: "Calculate LBM and Lean BSA for CPB flow management and compare actual vs lean flow rates for obese patients.",
+        headingDescription: "Compute lean mass and lean BSA to guide indexed perfusion flows.",
+        canonicalHash: "#/lbm"
+      },
+      "/timecalc": {
+        title: "Time Calculator — Pump Time & Case Time",
+        h1: "Time Calculator",
+        description: "Quickly calculate case durations with HH:MM inputs and automatic time formatting.",
+        headingDescription: "Track pump and case times with automatic formatting helpers.",
+        canonicalHash: "#/timecalc"
+      },
+      "/faq": {
+        title: "Perfusionist Calculators — FAQ & Educational Notes",
+        h1: "Frequently Asked Questions",
+        description: "Common questions about DO₂i, predicted hematocrit, GDP and lean body mass during CPB.",
+        headingDescription: "Read common questions and clarifications about perfusion calculators.",
+        canonicalHash: "#/faq"
+      },
+      "/info": {
+        title: "About Us – Perfusion Tools",
+        h1: "About Us",
+        description: "About Perfusion Tools, a collection of perfusion calculators for ECMO and CPB clinicians.",
+        headingDescription: "Learn about the mission behind Perfusion Tools and how to reach us.",
+        canonicalHash: "#/info"
+      },
+      "/privacy": {
+        title: "Privacy Policy — Perfusion Tools",
+        h1: "Privacy Policy",
+        description: "Learn how Perfusion Tools handles browser-based calculations without storing personal data.",
+        headingDescription: "Understand how your inputs stay on-device and private.",
+        canonicalHash: "#/privacy"
+      },
+      "/terms": {
+        title: "Terms of Service — Perfusion Tools",
+        h1: "Terms of Service",
+        description: "Understand the usage terms and disclaimers for the Perfusion Tools calculators.",
+        headingDescription: "Review the educational-use terms for these calculators.",
+        canonicalHash: "#/terms"
+      },
+      "/contact": {
+        title: "Contact — Perfusion Tools",
+        h1: "Contact",
+        description: "Get in touch with Perfusion Tools with questions or feedback about CPB calculators.",
+        headingDescription: "Reach out with questions or feedback about Perfusion Tools.",
+        canonicalHash: "#/contact"
+      }
+    };
+
+    function normalizeRoute(rawHash) {
+      const cleaned = (rawHash || '').replace('#', '').trim();
+      if (!cleaned || cleaned === '/') return '/';
+      return cleaned.startsWith('/') ? cleaned : `/${cleaned}`;
+    }
+
+    function applyRouteMeta(rawHash) {
+      const path = normalizeRoute(rawHash || window.location.hash);
+      const fallback = {
+        title: 'Calculator – Perfusion Tools',
+        description: routeMeta['/']?.description || 'Perfusion calculators for CPB and ECMO.',
+        h1: routeMeta['/']?.h1 || 'Perfusion Tools'
+      };
+
+      const meta = routeMeta[path] || routeMeta['/'] || fallback;
+
+      document.title = meta.title || fallback.title;
+
+      let descTag = document.querySelector('meta[name="description"]');
+      if (!descTag) {
+        descTag = document.createElement('meta');
+        descTag.setAttribute('name', 'description');
+        document.head.appendChild(descTag);
+      }
+      descTag.setAttribute('content', meta.description || fallback.description);
+
+      const headingEl = document.getElementById('page-heading');
+      if (headingEl) headingEl.textContent = meta.h1 || meta.title || fallback.h1;
+
+      const subtitleEl = document.getElementById('page-subtitle');
+      if (subtitleEl) subtitleEl.textContent = meta.headingDescription || meta.description || '';
+
+      return path;
+    }
+
+    window.routeMeta = routeMeta;
+    window.normalizeRoute = normalizeRoute;
+    window.applyRouteMeta = applyRouteMeta;
+
+    window.addEventListener('hashchange', () => applyRouteMeta());
+    window.addEventListener('load', () => applyRouteMeta());
+  </script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0">
 
   <header class="fixed top-0 w-full z-40 bg-primary-900/95 backdrop-blur border-b border-primary-800 text-white shadow-md">
     <div class="max-w-7xl mx-auto px-4 h-[var(--header-height)] flex items-center justify-between">
       
-     <a href="#/bsa" class="flex items-center gap-3 select-none cursor-pointer hover:opacity-80 transition-opacity">
+     <a href="#/" id="brand-home" class="flex items-center gap-3 select-none cursor-pointer hover:opacity-80 transition-opacity">
   <div class="relative w-8 h-8 flex items-center justify-center">
     <div class="absolute inset-0 rounded-full border-2 border-accent-500 opacity-80"></div>
    
@@ -246,12 +384,14 @@
 </a>
 
       <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
+        <a href="#/" id="nav-home" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Home</a>
         <a href="#/bsa" id="nav-bsa" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">BSA</a>
         <a href="#/do2i" id="nav-do2i" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">GDP</a>
         <a href="#/heparin" id="nav-heparin" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Heparin</a>
         <a href="#/predicted-hct" id="nav-hct" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Predicted Hct</a>
         <a href="#/lbm" id="nav-lbm" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">LBM</a>
         <a href="#/timecalc" id="nav-time" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Time</a>
+        <a href="#/info" id="nav-info" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Info</a>
         <a href="#/faq" id="nav-faq" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">FAQ</a>
       </nav>
 
@@ -271,6 +411,9 @@
     <aside class="hidden md:block border-r border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/50 sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] p-4 overflow-y-auto">
       <div class="space-y-1">
         <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-3">Calculators</div>
+        <a href="#/" id="side-home" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
+          Home
+        </a>
         <a href="#/bsa" id="side-bsa" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
           BSA Calculator
         </a>
@@ -293,6 +436,7 @@
 
       <div class="mt-8 space-y-1">
         <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-3">Info</div>
+        <a href="#/info" id="side-info" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 transition-all">About</a>
         <a href="#/faq" id="side-faq" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 transition-all">FAQ</a>
       </div>
     </aside>
@@ -301,8 +445,64 @@
 
       <section class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
         <div class="p-6 space-y-3">
-          <h1 class="text-2xl font-bold text-primary-900 dark:text-white">Perfusion Tools – CPB &amp; ECMO Perfusion Calculators</h1>
-          <p class="text-sm text-slate-600 dark:text-slate-300">Perfusion Tools provides evidence-based calculators for BSA, cardiac index (CI), DO2i, pump flow, and heparin dosing to support goal-directed perfusion during CPB and ECMO.</p>
+          <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Perfusion Tools – CPB &amp; ECMO Perfusion Calculators</h1>
+          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Evidence-based calculators for BSA, cardiac index (CI), DO2i, pump flow, and heparin dosing to support goal-directed perfusion during CPB and ECMO.</p>
+        </div>
+      </section>
+
+      <section id="view-home" class="hidden animate-in fade-in duration-300">
+        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
+          <div class="p-6 space-y-4">
+            <div class="space-y-2">
+              <p class="text-[11px] uppercase tracking-wider text-accent-500 font-semibold">Start here</p>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Choose a calculator below or explore our heparin management, BSA, GDP, hematocrit, lean mass, and time tools built for perfusion teams.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-3">
+              <a href="#/bsa" class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
+                <div>
+                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
+                  <div class="text-base font-semibold text-primary-900 dark:text-white">BSA Calculator</div>
+                </div>
+                <span class="text-accent-500">→</span>
+              </a>
+              <a href="#/heparin" class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
+                <div>
+                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
+                  <div class="text-base font-semibold text-primary-900 dark:text-white">Heparin Management</div>
+                </div>
+                <span class="text-accent-500">→</span>
+              </a>
+              <a href="#/do2i" class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
+                <div>
+                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
+                  <div class="text-base font-semibold text-primary-900 dark:text-white">GDP (DO₂i) Calculator</div>
+                </div>
+                <span class="text-accent-500">→</span>
+              </a>
+              <a href="#/predicted-hct" class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
+                <div>
+                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
+                  <div class="text-base font-semibold text-primary-900 dark:text-white">Predicted Hematocrit</div>
+                </div>
+                <span class="text-accent-500">→</span>
+              </a>
+              <a href="#/lbm" class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
+                <div>
+                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
+                  <div class="text-base font-semibold text-primary-900 dark:text-white">Lean Body Mass</div>
+                </div>
+                <span class="text-accent-500">→</span>
+              </a>
+              <a href="#/timecalc" class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
+                <div>
+                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
+                  <div class="text-base font-semibold text-primary-900 dark:text-white">Time Calculator</div>
+                </div>
+                <span class="text-accent-500">→</span>
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -344,17 +544,17 @@
 
             <div class="grid sm:grid-cols-2 gap-6">
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Height (cm)</label>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Height (cm)</label>
                 <input id="h_cm" type="number" step="0.1" placeholder="170" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Weight (kg)</label>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Weight (kg)</label>
                 <input id="w_kg" type="number" step="0.1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
 
               <div class="sm:col-span-2 grid grid-cols-[1fr_140px] gap-4 items-end bg-slate-50 dark:bg-primary-800/50 p-4 rounded-xl border border-slate-100 dark:border-primary-700/50">
                 <div class="space-y-1">
-                  <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide flex justify-between items-center">
+                  <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide flex justify-between items-center">
                     <span class="flex items-center gap-1">BSA (m²) <span class="text-red-500">*</span></span>
                     <span id="bsa-hint" class="text-[10px] font-normal text-slate-400 lowercase">auto-calc</span>
                   </label>
@@ -372,29 +572,29 @@
               </div>
 
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Hemoglobin (g/dl) <span class="text-red-500">*</span></label>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Hemoglobin (g/dL) <span class="text-red-500">*</span></label>
                 <input id="hb" type="number" step="0.1" placeholder="10" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Temperature (°C)</label>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Temperature (°C)</label>
                 <input id="temp_c" type="number" step="0.1" placeholder="32" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
 
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">PaO₂ (mmhg) <span class="text-red-500">*</span></label>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">PaO<sub>2</sub> (mmHg) <span class="text-red-500">*</span></label>
                 <input id="pao2" type="number" step="1" placeholder="150" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">SaO₂ (%) <span class="text-red-500">*</span></label>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">SaO<sub>2</sub> (%) <span class="text-red-500">*</span></label>
                 <input id="sao2" type="number" step="0.1" placeholder="100" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
 
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Current pump flow (l/min)</label>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Current pump flow (L/min)</label>
                 <input id="flow" type="number" step="0.01" placeholder="4.6" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
               <div class="space-y-1 opacity-80">
-                <label class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Calculated CaO₂ (ml/dl)</label>
+                <label class="text-xs font-semibold text-slate-400 dark:text-slate-500 tracking-wide">Calculated CaO<sub>2</sub> (mL/dL)</label>
                 <input id="cao2" disabled class="w-full bg-slate-100 dark:bg-primary-950 border-0 rounded-xl px-4 py-2.5 text-slate-600 dark:text-slate-400 font-mono text-sm" />
               </div>
             </div>
@@ -450,11 +650,11 @@
             <ol class="list-decimal pl-4 space-y-3">
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Arterial oxygen content (CaO₂)</p>
-                <p>CaO₂ (mL/dL) = 1.34 × Hb (g/dL) × (SaO₂ / 100) + 0.0031 × PaO₂ (mmHg). We assume a Hüfner constant of 1.34 mL O₂ per gram of Hb and a dissolved O₂ coefficient of 0.0031 mL·dL⁻¹·mmHg⁻¹. The contribution of dissolved O₂ is usually small at normal PaO₂.</p>
+                <p>CaO₂ (ml/dl) = 1.34 × Hb (g/dl) × (SaO₂ / 100) + 0.0031 × PaO₂ (mmhg). We assume a Hüfner constant of 1.34 ml O₂ per gram of Hb and a dissolved O₂ coefficient of 0.0031 ml·dl⁻¹·mmhg⁻¹. The contribution of dissolved O₂ is usually small at normal PaO₂.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Indexed oxygen delivery (DO₂i)</p>
-                <p>DO₂i (mL/min/m²) = (Pump flow ÷ BSA) × CaO₂ × 10. Pump flow is entered in L/min and BSA in m². Multiplying by 10 converts CaO₂ from mL/dL to mL/L so that the final unit is mL O₂ per minute per m².</p>
+                <p>DO₂i (ml/min/m²) = (Pump flow ÷ BSA) × CaO₂ × 10. Pump flow is entered in l/min and BSA in m². Multiplying by 10 converts CaO₂ from ml/dl to ml/l so that the final unit is ml O₂ per minute per m².</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Temperature-adjusted metabolic demand</p>
@@ -462,11 +662,11 @@
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Target DO₂i bands (Goal-Directed Perfusion)</p>
-                <p>At normothermia (≈37 °C) many adult CPB programs aim to maintain DO₂i ≥ 280–300 mL/min/m² to reduce the risk of anaerobic metabolism and postoperative acute kidney injury. At lower temperatures the calculator reduces the recommended target range, but never below a conservative lower floor (e.g. around 220 mL/min/m²), even when theoretical VO₂ would allow lower values. Targets are displayed as “Low / Borderline / Target / High” bands on the gauge for quick bedside interpretation.</p>
+                <p>At normothermia (≈37 °C) many adult CPB programs aim to maintain DO₂i ≥ 280–300 ml/min/m² to reduce the risk of anaerobic metabolism and postoperative acute kidney injury. At lower temperatures the calculator reduces the recommended target range, but never below a conservative lower floor (e.g. around 220 ml/min/m²), even when theoretical VO₂ would allow lower values. Targets are displayed as “Low / Borderline / Target / High” bands on the gauge for quick bedside interpretation.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Required pump flow for a chosen DO₂i goal</p>
-                <p>For a selected DO₂i target, the corresponding pump flow is: Required flow (L/min) = (Target DO₂i × BSA) ÷ (CaO₂ × 10). This is a theoretical value based on current Hb, SaO₂, PaO₂ and BSA. In practice, flow should also respect institutional minimum/maximum flow policies and patient-specific constraints (e.g. cannula size, arterial pressure, ventricular distension).</p>
+                <p>For a selected DO₂i target, the corresponding pump flow is: Required flow (l/min) = (Target DO₂i × BSA) ÷ (CaO₂ × 10). This is a theoretical value based on current Hb, SaO₂, PaO₂ and BSA. In practice, flow should also respect institutional minimum/maximum flow policies and patient-specific constraints (e.g. cannula size, arterial pressure, ventricular distension).</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Clinical use and limitations</p>
@@ -1455,6 +1655,36 @@
         </div>
       </section>
 
+      <section id="view-info" class="hidden animate-in fade-in duration-300">
+        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
+          <div class="p-6 space-y-3 border-b border-slate-100 dark:border-primary-800 bg-slate-50/50 dark:bg-primary-800/30">
+            <p class="text-[11px] uppercase tracking-wider text-accent-500 font-semibold">About Perfusion Tools</p>
+            <h2 class="text-xl font-bold text-primary-900 dark:text-white">About Us</h2>
+            <p class="text-sm text-slate-600 dark:text-slate-300">Perfusion Tools is a lightweight, browser-based collection of calculators for perfusionists working in CPB and ECMO. We focus on transparent formulas, educational annotations, and privacy-friendly design that keeps all calculations on your device.</p>
+          </div>
+          <div class="p-6 space-y-4 text-sm text-slate-700 dark:text-slate-300">
+            <div class="grid md:grid-cols-2 gap-3">
+              <div class="bg-slate-50 dark:bg-primary-800/50 border border-slate-200 dark:border-primary-800 rounded-xl p-4 space-y-1">
+                <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Mission</p>
+                <p>Provide evidence-based perfusion calculators that respect clinician privacy and align with contemporary CPB/ECMO best practices.</p>
+              </div>
+              <div class="bg-slate-50 dark:bg-primary-800/50 border border-slate-200 dark:border-primary-800 rounded-xl p-4 space-y-1">
+                <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">What we cover</p>
+                <p>BSA, GDP/DO₂i, heparin dosing, predicted hemodilution, lean body mass, and case timing tools with concise clinical context.</p>
+              </div>
+            </div>
+            <div class="bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-xl p-4 space-y-2">
+              <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Questions or feedback?</p>
+              <p>We welcome suggestions from perfusion teams. Visit the FAQ for quick answers or head to the contact form to send a note.</p>
+              <div class="flex flex-wrap gap-2">
+                <a href="#/faq" class="px-4 py-2 rounded-lg bg-primary-900 text-white text-sm font-semibold hover:bg-primary-800 transition-colors dark:bg-accent-600 dark:hover:bg-accent-500">View FAQ</a>
+                <a href="#/contact" class="px-4 py-2 rounded-lg bg-slate-100 text-primary-900 text-sm font-semibold hover:bg-slate-200 transition-colors dark:bg-primary-800 dark:text-slate-100 dark:hover:bg-primary-700">Contact</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="faq" class="hidden animate-in fade-in duration-300">
         <h2 class="text-2xl font-bold text-primary-900 dark:text-white mb-1">Frequently Asked Questions</h2>
         <p class="text-sm text-slate-600 dark:text-slate-400 mb-6">Essential answers about the perfusion calculator and oxygen delivery index.</p>
@@ -1494,7 +1724,6 @@
 
       <section id="view-privacy" class="hidden p-6 bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 text-slate-700 dark:text-slate-300">
         <h2 class="text-2xl font-bold text-primary-900 dark:text-white mb-4">Privacy Policy</h2>
-        <p class="text-sm mb-4">Last updated: <span id="privacy-date"></span></p>
         <div class="prose prose-sm dark:prose-invert max-w-none">
           <p>This site is a static calculator that runs entirely in your browser. No clinical inputs, identifiers, or session data are sent to any server.</p>
           <p>Anonymous, aggregate analytics may be used to understand feature usage (page views, button clicks) without logging IP addresses or patient information.</p>
@@ -1505,7 +1734,6 @@
       
       <section id="view-terms" class="hidden p-6 bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 text-slate-700 dark:text-slate-300">
         <h2 class="text-2xl font-bold text-primary-900 dark:text-white mb-4">Terms of Use</h2>
-        <p class="text-sm mb-4">Last updated: <span id="terms-date"></span></p>
         <div class="prose prose-sm dark:prose-invert max-w-none">
           <p>This calculator is provided for educational use by healthcare professionals. It is not a medical device and does not replace clinical judgment or institutional protocols.</p>
           <p>Always confirm calculations manually, correlate with patient data, and follow attending physician orders. Use of this tool is at your own risk.</p>
@@ -1561,6 +1789,10 @@
   </footer>
 
   <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-primary-900 border-t border-slate-200 dark:border-primary-800 z-50 flex justify-around items-center h-[var(--bottom-nav-height)] pb-safe">
+    <a href="#/" id="mob-home" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9.75l9-6 9 6V19.5A1.5 1.5 0 0119.5 21h-15A1.5 1.5 0 013 19.5V9.75z" /></svg>
+      <span class="text-[10px] font-medium">Home</span>
+    </a>
     <a href="#/bsa" id="mob-bsa" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.5 9.75A2.25 2.25 0 016.75 7.5h10.5A2.25 2.25 0 0119.5 9.75v4.5A2.25 2.25 0 0117.25 16.5H6.75A2.25 2.25 0 014.5 14.25v-4.5z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 12h7.5M9 9.75v4.5m6-4.5v4.5" /></svg>
       <span class="text-[10px] font-medium">BSA</span>
@@ -1585,7 +1817,7 @@
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
       <span class="text-[10px] font-medium">Time</span>
     </a>
-    <a href="#/faq" id="mob-faq" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+    <a href="#/info" id="mob-info" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
       <span class="text-[10px] font-medium">Info</span>
     </a>
