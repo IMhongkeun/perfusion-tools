@@ -1,8 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Home -->
   <url>
     <loc>https://perfusiontools.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+
+  <!-- BSA Calculator -->
+  <url>
+    <loc>https://perfusiontools.com/bsa</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- GDP / DO2 Calculator -->
+  <url>
+    <loc>https://perfusiontools.com/gdp</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Heparin Calculator -->
+  <url>
+    <loc>https://perfusiontools.com/heparin</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Predicted Hematocrit Calculator -->
+  <url>
+    <loc>https://perfusiontools.com/predicted-hct</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Lean Body Mass Calculator -->
+  <url>
+    <loc>https://perfusiontools.com/lbm</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Time Calculator -->
+  <url>
+    <loc>https://perfusiontools.com/timecalc</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- About / Info Page -->
+  <url>
+    <loc>https://perfusiontools.com/info</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- FAQ -->
+  <url>
+    <loc>https://perfusiontools.com/faq</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
 </urlset>
