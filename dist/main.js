@@ -494,11 +494,6 @@ window.addEventListener('hashchange', route);
 window.addEventListener('DOMContentLoaded', () => {
   const now = new Date();
   document.getElementById('year').textContent = now.getFullYear();
-  const iso = now.toISOString().slice(0, 10);
-  const pdate = document.getElementById('privacy-date');
-  if (pdate) pdate.textContent = iso;
-  const tdate = document.getElementById('terms-date');
-  if (tdate) tdate.textContent = iso;
 
   route();
 
