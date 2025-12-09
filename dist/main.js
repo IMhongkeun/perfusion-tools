@@ -430,26 +430,33 @@ function updateLBM() {
 // -----------------------------
 // Router & Navigation Styling
 // -----------------------------
-function route() {
-  const hash = location.hash || '#/do2i';
+function getActivePath() {
+  const rawPath = location.pathname || '/';
+  if ((rawPath === '/' || rawPath === '/index.html') && location.hash) {
+    const next = location.hash.replace('#', '/');
+    history.replaceState({}, '', next);
+    return next;
+  }
+  return rawPath === '/index.html' ? '/' : rawPath;
+}
 
-  // Updated sections list to include LBM
+function route() {
+  const path = getActivePath() || '/';
+
   const sections = ['view-do2i', 'view-hct', 'view-lbm', 'faq', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
     el(sid).classList.add('hidden');
   });
 
-  // Route to appropriate section
-  if (hash.includes('do2i')) el('view-do2i').classList.remove('hidden');
-  else if (hash.includes('predicted-hct')) el('view-hct').classList.remove('hidden');
-  else if (hash.includes('lbm')) el('view-lbm').classList.remove('hidden');
-  else if (hash.includes('faq')) el('faq').classList.remove('hidden');
-  else if (hash.includes('privacy')) el('view-privacy').classList.remove('hidden');
-  else if (hash.includes('terms')) el('view-terms').classList.remove('hidden');
-  else if (hash.includes('contact')) el('view-contact').classList.remove('hidden');
+  if (path.includes('do2i') || path === '/') el('view-do2i').classList.remove('hidden');
+  else if (path.includes('predicted-hct')) el('view-hct').classList.remove('hidden');
+  else if (path.includes('lbm')) el('view-lbm').classList.remove('hidden');
+  else if (path.includes('faq')) el('faq').classList.remove('hidden');
+  else if (path.includes('privacy')) el('view-privacy').classList.remove('hidden');
+  else if (path.includes('terms')) el('view-terms').classList.remove('hidden');
+  else if (path.includes('contact')) el('view-contact').classList.remove('hidden');
   else el('view-do2i').classList.remove('hidden');
 
-  // Updated navMap to include LBM
   const navMap = {
     'do2i': ['nav-do2i', 'side-do2i', 'mob-do2i'],
     'predicted-hct': ['nav-hct', 'side-hct', 'mob-hct'],
@@ -465,12 +472,11 @@ function route() {
     l.classList.add('text-slate-400', 'dark:text-slate-500');
   });
 
-  // Determine active key
   let key = null;
-  if (hash.includes('do2i')) key = 'do2i';
-  else if (hash.includes('predicted-hct')) key = 'predicted-hct';
-  else if (hash.includes('lbm')) key = 'lbm';
-  else if (hash.includes('faq')) key = 'faq';
+  if (path.includes('do2i') || path === '/') key = 'do2i';
+  else if (path.includes('predicted-hct')) key = 'predicted-hct';
+  else if (path.includes('lbm')) key = 'lbm';
+  else if (path.includes('faq')) key = 'faq';
 
   if (key && navMap[key]) {
     const navEl = el(navMap[key][0]);
@@ -490,8 +496,18 @@ function route() {
 // -----------------------------
 // Event Wiring
 // -----------------------------
-window.addEventListener('hashchange', route);
+window.addEventListener('popstate', route);
 window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('a[href^="/"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (!href || href.startsWith('http') || link.target === '_blank') return;
+      e.preventDefault();
+      if (location.pathname !== href) history.pushState({}, '', href);
+      route();
+    });
+  });
+
   const now = new Date();
   document.getElementById('year').textContent = now.getFullYear();
 
