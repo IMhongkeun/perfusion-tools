@@ -204,6 +204,16 @@ function calcDO2i(flowLmin, bsa, cao2) {
   return fi * cao2 * 10;
 }
 
+// Temperature adjustment factor for DO₂i targets
+// ≥36°C → 1.0; 32–35.9°C → 0.8; 28–31.9°C → 0.6; <28°C → 0.5
+function getTempFactor(tempC) {
+  if (!tempC && tempC !== 0) return 1;
+  if (tempC >= 36) return 1.0;
+  if (tempC >= 32) return 0.8;
+  if (tempC >= 28) return 0.6;
+  return 0.5; // Deep hypothermia safety floor
+}
+
 const TEMP_PROFILES = [
   {
     min: 36,
@@ -785,21 +795,29 @@ function updateGDP() {
   const currentDO2i = flow ? calcDO2i(flow, bsa, cao2) : 0;
   setText('current-do2i', currentDO2i ? `${Math.round(currentDO2i)} <span class="text-xs text-slate-500 dark:text-slate-400">ml/min/m²</span>` : '—');
 
+  const hasTemp = tempVal !== '' && !Number.isNaN(tempC);
+  const tempFactor = hasTemp ? getTempFactor(tempC) : 1;
+  const baseTarget = targetDO2i * tempFactor;
+  const calcTempAdjustedMin = Math.round(baseTarget * 0.9);
+  const calcTempAdjustedMax = Math.round(baseTarget * 1.1);
+  const HARD_FLOOR = 200;
+  const tempAdjustedMin = hasTemp ? Math.max(calcTempAdjustedMin, HARD_FLOOR) : Math.round(targetDO2i * 0.9);
+  const tempAdjustedMax = hasTemp ? Math.max(calcTempAdjustedMax, tempAdjustedMin) : Math.round(targetDO2i * 1.1);
+
   let statusLabel = 'Waiting for current flow';
   let detail = 'Enter current pump flow to compare against the target DO₂i.';
   let gaugeColor = 'from-slate-300 to-slate-200 dark:from-primary-800 dark:to-primary-700';
   let gaugeWidth = '0%';
   let ciComment = '';
 
-  const profile = (tempC || tempC === 0) && !Number.isNaN(tempC) ? getTempProfile(tempC) : null;
-  const recommendedMin = profile ? profile.do2Min : targetDO2i * 0.9;
-  const recommendedMax = profile ? profile.do2Max : targetDO2i * 1.1;
-  const HARD_FLOOR = 200;
-  const tempAdjustedMin = profile ? Math.max(recommendedMin, HARD_FLOOR) : recommendedMin;
-  const tempAdjustedMax = profile ? Math.max(recommendedMax, tempAdjustedMin) : recommendedMax;
+  const profile = hasTemp ? getTempProfile(tempC) : null;
+  const normothermicMin = targetDO2i * 0.9;
+  const normothermicMax = targetDO2i * 1.1;
+  const recommendedMin = hasTemp ? tempAdjustedMin : normothermicMin;
+  const recommendedMax = hasTemp ? tempAdjustedMax : normothermicMax;
 
-  const lowerTarget = profile ? tempAdjustedMin : targetDO2i * 0.9;
-  const upperTarget = profile ? tempAdjustedMax : targetDO2i * 1.1;
+  const lowerTarget = recommendedMin;
+  const upperTarget = recommendedMax;
 
   if (currentDO2i > 0) {
     const denom = upperTarget > 0 ? upperTarget * 1.05 : targetDO2i || 1;
@@ -849,14 +867,13 @@ function updateGDP() {
   if (ciCommentEl) ciCommentEl.textContent = ciComment;
   gauge.style.width = gaugeWidth;
   gauge.className = `h-3 rounded-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(34,211,238,0.25)] ${gaugeColor}`;
-  if (profile) {
-    gaugeMsg.textContent = currentDO2i
-      ? `Temp-adjusted target ${tempAdjustedMin.toFixed(0)}–${tempAdjustedMax.toFixed(0)} • Current ${Math.round(currentDO2i)} ml/min/m²`
-      : 'Enter current flow to visualize DO₂i vs. temperature-adjusted target';
-  } else {
-    gaugeMsg.textContent = currentDO2i
-      ? `Target ${targetDO2i} ml/min/m² • Current ${Math.round(currentDO2i)} ml/min/m²`
-      : 'Enter current flow to visualize DO₂i vs. target';
+  if (gaugeMsg) {
+    const guidelineLine = '<p>Guideline DO₂i (37°C): 280–300 ml/min/m²</p>';
+    const userAdjustedLine = `<p>Temp-adjusted target (user): ${tempAdjustedMin}–${tempAdjustedMax} ml/min/m²</p>`;
+    const flowLine = currentDO2i
+      ? `<p class="text-[11px] text-slate-200/80">Current DO₂i: ${Math.round(currentDO2i)} ml/min/m²</p>`
+      : '<p class="text-[11px] text-slate-200/70">Enter current flow to visualize DO₂i against targets.</p>';
+    gaugeMsg.innerHTML = `${guidelineLine}${userAdjustedLine}${flowLine}`;
   }
 
   const tempTag = el('temp-note');
@@ -869,7 +886,7 @@ function updateGDP() {
   if (tempComment) {
     if (!profile) {
       tempComment.innerHTML = `<div class="font-semibold mb-1">Temperature note</div>
-        <p>No temperature provided. Using normothermic targets (e.g., 280–300 ml/min/m²) until temperature is entered.</p>
+        <p>No temperature provided. Using your selected DO₂i target until temperature is entered.</p>
         <p>When hypothermic, adjust flow with SvO₂, lactate, and perfusion markers in mind.</p>`;
     } else {
       const vo2Pct = Math.round((profile.vo2Factor || 0) * 100);
