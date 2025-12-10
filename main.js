@@ -10,7 +10,7 @@
 // - TEMP_PROFILES maps temperature bands to CI and DO2i ranges.
 // - getTempProfile(tempC) picks the band.
 // - updateGDP() uses these ranges to evaluate whether current DO2i/CI are adequate
-//   at the given temperature, applying a dampened curve and a hard DO2i floor (200).
+//   at the given temperature.
 
 // -----------------------------
 // Theme Management (Dark Mode)
@@ -247,7 +247,7 @@ const TEMP_PROFILES = [
     vo2Factor: 0.45,
     do2Min: 200,
     do2Max: 220,
-    note: 'Maintain minimum flow; keep DO₂i ≥200 ml/min/m² as a hard floor to protect organs.'
+    note: 'Maintain minimum flow; adjust delivery with perfusion markers during deep hypothermia.'
   }
 ];
 
@@ -674,24 +674,25 @@ let lastChangedId = null;
 let bsaManualOverride = false;
 let targetDO2i = 280;
 let targetMode = 'preset'; // 'preset' | 'custom'
-let tempAdjustmentMode = 'full'; // 'none' | 'hypothermia' | 'full'
 
-// Temperature adjustment factor for DO₂i targets using ±7% VO₂ per °C around 37°C
-// factor = 1 + 0.07 × (temp - 37), clamped to 28–39°C for full adjustments
-function computeTempAdjustmentFactor(tempC, mode = 'full') {
-  if (!tempC && tempC !== 0) return 1;
-  if (mode === 'none') return 1;
+// Q10-based temperature adjustment
+// factor = Q10 ** ((T_used - 37) / 10), where T_used is clamped to [T_MIN, T_MAX].
+// At deep hypothermia (<28°C), the factor naturally reduces the target and may fall below 200 ml/min/m².
+const Q10 = 2.3;
+const T_MIN = 20;
+const T_MAX = 39;
 
-  if (mode === 'hypothermia') {
-    if (tempC > 37) return 1;
-    const clampedTemp = clamp(tempC, 28, 39);
-    const hypothermicDelta = Math.min(clampedTemp, 37) - 37; // negative or zero
-    return 1 + 0.07 * hypothermicDelta;
+function computeTempAdjustment(tempC) {
+  const tempProvided = tempC || tempC === 0;
+  if (!tempProvided) {
+    return { factor: 1, tempUsed: 37, tempProvided: false, tempClamped: false };
   }
 
-  const clampedTemp = clamp(tempC, 28, 39);
-  const delta = clampedTemp - 37;
-  return 1 + 0.07 * delta;
+  const tempUsed = clamp(tempC, T_MIN, T_MAX);
+  const tempClamped = tempUsed !== tempC;
+  const factor = Math.pow(Q10, (tempUsed - 37) / 10);
+
+  return { factor, tempUsed, tempProvided: true, tempClamped };
 }
 
 function getGdpInputs() {
@@ -722,16 +723,15 @@ function computeGdpResults(inputs) {
   const pao2 = parseFloat(inputs.pao2Val) || 0;
   const currentCI = bsa ? flow / bsa : 0;
   const cao2 = calcCaO2(hb, sao2, pao2);
-  const requiredFlow = calcRequiredFlowLmin(targetDO2i, bsa, cao2);
   const currentDO2i = flow ? calcDO2i(flow, bsa, cao2) : 0;
-  const tempFactor = inputs.tempProvided ? computeTempAdjustmentFactor(inputs.temperature, tempAdjustmentMode) : 1;
+  const { factor: tempFactor, tempUsed, tempProvided, tempClamped } = computeTempAdjustment(inputs.temperature);
   const baseTarget = targetDO2i * tempFactor;
-  const HARD_FLOOR = 200;
-  const tempAdjustedMin = Math.max(Math.round(baseTarget * 0.9), HARD_FLOOR);
-  const tempAdjustedMax = Math.max(Math.round(baseTarget * 1.1), tempAdjustedMin);
-  const normothermicMin = Math.max(Math.round(targetDO2i * 0.9), HARD_FLOOR);
-  const normothermicMax = Math.max(Math.round(targetDO2i * 1.1), normothermicMin);
-  const profile = inputs.tempProvided ? getTempProfile(inputs.temperature) : null;
+  const tempAdjustedMin = Math.round(baseTarget * 0.9);
+  const tempAdjustedMax = Math.round(baseTarget * 1.1);
+  const normothermicMin = Math.round(targetDO2i * 0.9);
+  const normothermicMax = Math.round(targetDO2i * 1.1);
+  const requiredFlow = calcRequiredFlowLmin(baseTarget, bsa, cao2);
+  const profile = tempProvided ? getTempProfile(tempUsed) : null;
 
   return {
     bsa,
@@ -740,7 +740,9 @@ function computeGdpResults(inputs) {
     pao2,
     flow,
     temperature: inputs.temperature,
-    tempProvided: inputs.tempProvided,
+    tempProvided,
+    tempUsed,
+    tempClamped,
     currentCI,
     cao2,
     requiredFlow,
@@ -751,8 +753,8 @@ function computeGdpResults(inputs) {
     tempAdjustedMax,
     normothermicMin,
     normothermicMax,
-    recommendedMin: inputs.tempProvided ? tempAdjustedMin : normothermicMin,
-    recommendedMax: inputs.tempProvided ? tempAdjustedMax : normothermicMax,
+    recommendedMin: tempProvided ? tempAdjustedMin : normothermicMin,
+    recommendedMax: tempProvided ? tempAdjustedMax : normothermicMax,
     profile
   };
 }
@@ -907,11 +909,20 @@ function updateGDP() {
   gauge.className = `h-3 rounded-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(34,211,238,0.25)] ${gaugeColor}`;
   if (gaugeMsg) {
     const guidelineLine = '<p>Guideline DO₂i (37°C): 280–300 ml/min/m²</p>';
-    const userAdjustedLine = `<p>Temp-adjusted target (user): ${results.tempAdjustedMin}–${results.tempAdjustedMax} ml/min/m²</p>`;
+    const userAdjustedLine = `<p>Temp-adjusted target (user, Q10): ${results.tempAdjustedMin}–${results.tempAdjustedMax} ml/min/m²</p>`;
+    const factorLine = results.tempProvided
+      ? `<p class="text-[11px] text-slate-200/80">Auto temp factor (Q10=2.3): ${results.tempFactor.toFixed(2)} (baseline 37°C → input ${results.temperature?.toFixed(1)}°C, used ${results.tempUsed.toFixed(1)}°C)</p>`
+      : '<p class="text-[11px] text-slate-200/80">Auto temp factor (Q10=2.3): 1.00 (baseline 37°C; no temperature entered)</p>';
     const flowLine = results.currentDO2i
       ? `<p class="text-[11px] text-slate-200/80">Current DO₂i: ${Math.round(results.currentDO2i)} ml/min/m²</p>`
       : '<p class="text-[11px] text-slate-200/70">Enter current flow to visualize DO₂i against targets.</p>';
-    gaugeMsg.innerHTML = `${guidelineLine}${userAdjustedLine}${flowLine}`;
+    const deepNote = results.tempProvided && results.tempUsed <= 28
+      ? '<p class="text-[11px] text-amber-100/90">Note: At deep hypothermia, temperature-adjusted targets can be &lt;200 and this is expected (informational). During TOTAL circulatory arrest, DO₂i is not applicable; follow institutional ACP/NIRS/flow protocols.</p>'
+      : '';
+    const clampNote = results.tempProvided && results.tempClamped
+      ? `<p class="text-[11px] text-slate-200/80">Adjustment clamps temperature to 20–39°C (input ${results.temperature?.toFixed(1)}°C → used ${results.tempUsed.toFixed(1)}°C).</p>`
+      : '';
+    gaugeMsg.innerHTML = `${guidelineLine}${userAdjustedLine}${factorLine}${flowLine}${deepNote}${clampNote}`;
   }
 
   const tempTag = el('temp-note');
@@ -925,18 +936,25 @@ function updateGDP() {
     if (!results.profile) {
       tempComment.innerHTML = `<div class="font-semibold mb-1">Temperature note</div>
         <p>No temperature provided. Using your selected DO₂i target until temperature is entered.</p>
-        <p>When hypothermic, adjust flow with SvO₂, lactate, and perfusion markers in mind.</p>`;
+        <p>Auto temp factor (Q10=2.3): 1.00 (baseline 37°C; no temperature entered).</p>`;
     } else {
       const vo2Pct = Math.round((results.profile.vo2Factor || 0) * 100);
       const currentDoText = results.currentDO2i ? `${Math.round(results.currentDO2i)} ml/min/m²` : '—';
       const ciLine = results.currentCI
         ? `Current CI ${results.currentCI.toFixed(2)} l/min/m² vs. recommended ${results.profile.ciMin.toFixed(1)}–${results.profile.ciMax.toFixed(1)}.`
         : `Recommended CI: ${results.profile.ciMin.toFixed(1)}–${results.profile.ciMax.toFixed(1)} l/min/m².`;
+      const clampLine = results.tempClamped
+        ? `<p>Adjustment clamps temperature to 20–39°C (input ${results.temperature?.toFixed(1)}°C → used ${results.tempUsed.toFixed(1)}°C).</p>`
+        : '';
+      const deepLine = results.tempUsed <= 28
+        ? '<p>Note: At deep hypothermia, temperature-adjusted targets can be &lt;200 and this is expected (informational). During TOTAL circulatory arrest, DO₂i is not applicable; follow institutional ACP/NIRS/flow protocols.</p>'
+        : '';
       tempComment.innerHTML = `<div class="font-semibold mb-1">Temperature-adjusted GDP comment</div>
-        <p>${results.profile.label}; current ${results.temperature.toFixed(1)}°C. Estimated VO₂ ~${vo2Pct}% of normal.</p>
+        <p>${results.profile.label}; input ${results.temperature?.toFixed(1)}°C → used ${results.tempUsed.toFixed(1)}°C. Estimated VO₂ ~${vo2Pct}% of normal.</p>
+        <p>Auto temp factor (Q10=2.3): ${results.tempFactor.toFixed(2)}. Temp-adjusted DO₂i: ${results.tempAdjustedMin.toFixed(0)}–${results.tempAdjustedMax.toFixed(0)} ml/min/m²; current: ${currentDoText}.</p>
         <p>${ciLine}</p>
-        <p>Recommended DO₂i: ${results.tempAdjustedMin.toFixed(0)}–${results.tempAdjustedMax.toFixed(0)} ml/min/m²; current: ${currentDoText}.</p>
-        <p>Hard DO₂i floor: 200 ml/min/m². Confirm adequacy with SvO₂, lactate, urine output, and organ perfusion.</p>`;
+        ${clampLine}
+        ${deepLine}`;
     }
   }
 }
@@ -950,15 +968,6 @@ function resetGDP() {
   if (customInput) customInput.value = '';
   targetDO2i = 280;
   targetMode = 'preset';
-  tempAdjustmentMode = 'full';
-  const tempAdjustmentInputs = {
-    none: el('temp-adjustment-none'),
-    hypothermia: el('temp-adjustment-hypothermia'),
-    full: el('temp-adjustment-full')
-  };
-  if (tempAdjustmentInputs.full) tempAdjustmentInputs.full.checked = true;
-  if (tempAdjustmentInputs.none) tempAdjustmentInputs.none.checked = false;
-  if (tempAdjustmentInputs.hypothermia) tempAdjustmentInputs.hypothermia.checked = false;
   bsaManualOverride = false;
   const cao2El = el('cao2');
   if (cao2El) cao2El.value = '';
@@ -1408,21 +1417,6 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     }
   });
-
-  ['temp-adjustment-none', 'temp-adjustment-hypothermia', 'temp-adjustment-full'].forEach(id => {
-    const input = el(id);
-    if (input) {
-      input.addEventListener('change', () => {
-        if (input.checked) {
-          tempAdjustmentMode = input.value;
-          updateGDP();
-        }
-      });
-    }
-  });
-
-  const defaultTempAdjustment = document.querySelector('input[name="temp-adjustment"]:checked');
-  if (defaultTempAdjustment) tempAdjustmentMode = defaultTempAdjustment.value;
 
   const targetCustomPill = el('target-custom-pill');
   const targetCustomInput = el('target-custom');

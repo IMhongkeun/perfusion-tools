@@ -591,24 +591,6 @@
                 <input id="temp_c" type="number" step="0.1" placeholder="32" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
 
-              <div class="space-y-2 sm:col-span-2">
-                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Temperature adjustment</p>
-                <div class="grid md:grid-cols-3 gap-2 text-xs">
-                  <label class="flex items-center gap-2 bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 cursor-pointer hover:border-accent-500/60">
-                    <input type="radio" name="temp-adjustment" id="temp-adjustment-none" value="none" class="accent-accent-500" />
-                    <span>None (use 37°C baseline)</span>
-                  </label>
-                  <label class="flex items-center gap-2 bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 cursor-pointer hover:border-accent-500/60">
-                    <input type="radio" name="temp-adjustment" id="temp-adjustment-hypothermia" value="hypothermia" class="accent-accent-500" />
-                    <span>Hypothermia only (≤37°C)</span>
-                  </label>
-                  <label class="flex items-center gap-2 bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 cursor-pointer hover:border-accent-500/60">
-                    <input type="radio" name="temp-adjustment" id="temp-adjustment-full" value="full" class="accent-accent-500" checked />
-                    <span>Full (includes hyperthermia to 39°C)</span>
-                  </label>
-                </div>
-              </div>
-
               <div class="space-y-1">
                 <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">PaO<sub>2</sub> (mmHg) <span class="text-red-500">*</span></label>
                 <input id="pao2" type="number" step="1" placeholder="150" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
