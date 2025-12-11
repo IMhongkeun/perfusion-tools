@@ -10,7 +10,7 @@
 // - TEMP_PROFILES maps temperature bands to CI and DO2i ranges.
 // - getTempProfile(tempC) picks the band.
 // - updateGDP() uses these ranges to evaluate whether current DO2i/CI are adequate
-//   at the given temperature, applying a dampened curve and a hard DO2i floor (200).
+//   at the given temperature.
 
 // -----------------------------
 // Theme Management (Dark Mode)
@@ -247,7 +247,7 @@ const TEMP_PROFILES = [
     vo2Factor: 0.45,
     do2Min: 200,
     do2Max: 220,
-    note: 'Maintain minimum flow; keep DO₂i ≥200 ml/min/m² as a hard floor to protect organs.'
+    note: 'Maintain minimum flow; adjust delivery with perfusion markers during deep hypothermia.'
   }
 ];
 
@@ -675,6 +675,92 @@ let bsaManualOverride = false;
 let targetDO2i = 280;
 let targetMode = 'preset'; // 'preset' | 'custom'
 
+// Q10-based temperature adjustment
+// factor = Q10 ** ((T_used - 37) / 10), where T_used is clamped to [T_MIN, T_MAX].
+// At deep hypothermia (<28°C), the factor naturally reduces the target and may fall below 200 ml/min/m².
+const Q10 = 2.3;
+const T_MIN = 20;
+const T_MAX = 39;
+
+function computeTempAdjustment(tempC) {
+  const tempProvided = tempC || tempC === 0;
+  if (!tempProvided) {
+    return { factor: 1, tempUsed: 37, tempProvided: false, tempClamped: false };
+  }
+
+  const tempUsed = clamp(tempC, T_MIN, T_MAX);
+  const tempClamped = tempUsed !== tempC;
+  const factor = Math.pow(Q10, (tempUsed - 37) / 10);
+
+  return { factor, tempUsed, tempProvided: true, tempClamped };
+}
+
+function getGdpInputs() {
+  const bsaVal = el('bsa').value;
+  const hbVal = el('hb').value;
+  const sao2Val = el('sao2').value;
+  const pao2Val = el('pao2').value;
+  const flowVal = el('flow').value;
+  const tempVal = el('temp_c') ? el('temp_c').value : '';
+  const tempC = tempVal === '' ? null : parseFloat(tempVal);
+
+  return {
+    bsaVal,
+    hbVal,
+    sao2Val,
+    pao2Val,
+    flowVal,
+    temperature: tempC,
+    tempProvided: tempVal !== '' && !Number.isNaN(tempC)
+  };
+}
+
+function computeGdpResults(inputs) {
+  const bsa = parseFloat(inputs.bsaVal) || 0;
+  const flow = parseFloat(inputs.flowVal) || 0;
+  const hb = parseFloat(inputs.hbVal) || 0;
+  const sao2 = parseFloat(inputs.sao2Val) || 0;
+  const pao2 = parseFloat(inputs.pao2Val) || 0;
+  const currentCI = bsa ? flow / bsa : 0;
+  const cao2 = calcCaO2(hb, sao2, pao2);
+  const currentDO2i = flow ? calcDO2i(flow, bsa, cao2) : 0;
+  const { factor: tempFactor, tempUsed, tempProvided, tempClamped } = computeTempAdjustment(inputs.temperature);
+  const baseTarget = targetDO2i * tempFactor;
+  const tempAdjustedMin = Math.round(baseTarget * 0.9);
+  const tempAdjustedMax = Math.round(baseTarget * 1.1);
+  // Use the midpoint of the adjusted band as the operative DO₂i target for flow calculations
+  const flowTargetDo2i = (tempAdjustedMin + tempAdjustedMax) / 2;
+  const normothermicMin = Math.round(targetDO2i * 0.9);
+  const normothermicMax = Math.round(targetDO2i * 1.1);
+  const requiredFlow = calcRequiredFlowLmin(flowTargetDo2i, bsa, cao2);
+  const profile = tempProvided ? getTempProfile(tempUsed) : null;
+
+  return {
+    bsa,
+    hb,
+    sao2,
+    pao2,
+    flow,
+    temperature: inputs.temperature,
+    tempProvided,
+    tempUsed,
+    tempClamped,
+    currentCI,
+    cao2,
+    requiredFlow,
+    currentDO2i,
+    tempFactor,
+    baseTarget,
+    tempAdjustedMin,
+    tempAdjustedMax,
+    normothermicMin,
+    normothermicMax,
+    recommendedMin: tempProvided ? tempAdjustedMin : normothermicMin,
+    recommendedMax: tempProvided ? tempAdjustedMax : normothermicMax,
+    profile
+  };
+}
+
 function updateBSA() {
   const autoFields = ['h_cm', 'w_kg', 'bsa-method'];
   if (bsaManualOverride && !autoFields.includes(lastChangedId)) {
@@ -719,28 +805,16 @@ function updateTargetDisplay() {
 function updateGDP() {
   updateBSA();
 
-  const bsaVal = el('bsa').value;
-  const hbVal = el('hb').value;
-  const sao2Val = el('sao2').value;
-  const pao2Val = el('pao2').value;
-  const flowVal = el('flow').value;
-  const tempVal = el('temp_c') ? el('temp_c').value : '';
-  const tempC = tempVal === '' ? null : parseFloat(tempVal);
+  const inputs = getGdpInputs();
+  const results = computeGdpResults(inputs);
 
   const warningEl = el('gdp-warning');
   const requiredMissing = [];
-  if (!bsaVal) requiredMissing.push('BSA');
-  if (!hbVal) requiredMissing.push('Hemoglobin');
-  if (!sao2Val) requiredMissing.push('SaO₂');
-  if (!pao2Val) requiredMissing.push('PaO₂');
+  if (!inputs.bsaVal) requiredMissing.push('BSA');
+  if (!inputs.hbVal) requiredMissing.push('Hemoglobin');
+  if (!inputs.sao2Val) requiredMissing.push('SaO₂');
+  if (!inputs.pao2Val) requiredMissing.push('PaO₂');
   if (!targetDO2i) requiredMissing.push('Target DO₂i');
-
-  const bsa = parseFloat(bsaVal) || 0;
-  const flow = parseFloat(flowVal) || 0;
-  const hb = parseFloat(hbVal) || 0;
-  const sao2 = parseFloat(sao2Val) || 0;
-  const pao2 = parseFloat(pao2Val) || 0;
-  const currentCI = bsa ? flow / bsa : 0;
 
   const gauge = el('gdp-gauge');
   const gaugeMsg = el('gdp-gauge-msg');
@@ -748,10 +822,9 @@ function updateGDP() {
   const statusDetail = el('gdp-status-detail');
   const ciCommentEl = el('ci-comment');
 
-  const cao2 = calcCaO2(hb, sao2, pao2);
-  el('cao2').value = cao2 ? cao2.toFixed(2) : '';
+  el('cao2').value = results.cao2 ? results.cao2.toFixed(2) : '';
 
-  if (requiredMissing.length || !bsa || !hb || !sao2 || !pao2 || !targetDO2i) {
+  if (requiredMissing.length || !results.bsa || !results.hb || !results.sao2 || !results.pao2 || !targetDO2i) {
     if (warningEl) {
       warningEl.textContent = `Enter required fields: ${requiredMissing.join(', ')}`;
       warningEl.classList.remove('hidden');
@@ -763,7 +836,7 @@ function updateGDP() {
       tempTag.classList.add('hidden');
     }
     if (tempComment) {
-      tempComment.innerHTML = (tempC || tempC === 0)
+      tempComment.innerHTML = (inputs.temperature || inputs.temperature === 0)
         ? '<div class="font-semibold mb-1">Temperature note</div><p>Provide the remaining required fields to view temperature-adjusted GDP guidance.</p>'
         : '<div class="font-semibold mb-1">Temperature note</div><p>No temperature provided. Using standard normothermic targets until temperature is entered.</p>';
     }
@@ -779,11 +852,9 @@ function updateGDP() {
 
   if (warningEl) warningEl.classList.add('hidden');
 
-  const requiredFlow = calcRequiredFlowLmin(targetDO2i, bsa, cao2);
-  setText('required-flow', requiredFlow ? `${requiredFlow.toFixed(2)} <span class="text-xs text-slate-500 dark:text-slate-400">l/min</span>` : '—');
+  setText('required-flow', results.requiredFlow ? `${results.requiredFlow.toFixed(2)} <span class="text-xs text-slate-500 dark:text-slate-400">l/min</span>` : '—');
 
-  const currentDO2i = flow ? calcDO2i(flow, bsa, cao2) : 0;
-  setText('current-do2i', currentDO2i ? `${Math.round(currentDO2i)} <span class="text-xs text-slate-500 dark:text-slate-400">ml/min/m²</span>` : '—');
+  setText('current-do2i', results.currentDO2i ? `${Math.round(results.currentDO2i)} <span class="text-xs text-slate-500 dark:text-slate-400">ml/min/m²</span>` : '—');
 
   let statusLabel = 'Waiting for current flow';
   let detail = 'Enter current pump flow to compare against the target DO₂i.';
@@ -791,56 +862,45 @@ function updateGDP() {
   let gaugeWidth = '0%';
   let ciComment = '';
 
-  const profile = (tempC || tempC === 0) && !Number.isNaN(tempC) ? getTempProfile(tempC) : null;
-  const recommendedMin = profile ? profile.do2Min : targetDO2i * 0.9;
-  const recommendedMax = profile ? profile.do2Max : targetDO2i * 1.1;
-  const HARD_FLOOR = 200;
-  const tempAdjustedMin = profile ? Math.max(recommendedMin, HARD_FLOOR) : recommendedMin;
-  const tempAdjustedMax = profile ? Math.max(recommendedMax, tempAdjustedMin) : recommendedMax;
+  const lowerTarget = results.recommendedMin;
+  const upperTarget = results.recommendedMax;
 
-  const lowerTarget = profile ? tempAdjustedMin : targetDO2i * 0.9;
-  const upperTarget = profile ? tempAdjustedMax : targetDO2i * 1.1;
-
-  if (currentDO2i > 0) {
+  if (results.currentDO2i > 0) {
     const denom = upperTarget > 0 ? upperTarget * 1.05 : targetDO2i || 1;
-    const pct = clamp((currentDO2i / denom) * 100, 0, 100);
+    const pct = clamp((results.currentDO2i / denom) * 100, 0, 100);
     gaugeWidth = `${pct}%`;
 
-    if (currentDO2i < lowerTarget) {
-      const deltaFlow = Math.max(requiredFlow - flow, 0);
-      statusLabel = profile ? 'Below temperature-adjusted target' : 'Below target';
-      detail = profile
-        ? `Need DO₂i ≥ ${tempAdjustedMin.toFixed(0)} ml/min/m² for ${profile.label}.${deltaFlow > 0 ? ` ~+${deltaFlow.toFixed(2)} l/min suggested.` : ''}`
+    if (results.currentDO2i < lowerTarget) {
+      const deltaFlow = Math.max(results.requiredFlow - results.flow, 0);
+      statusLabel = results.profile ? 'Below temperature-adjusted target' : 'Below target';
+      detail = results.profile
+        ? `Need DO₂i ≥ ${results.tempAdjustedMin.toFixed(0)} ml/min/m² for ${results.profile.label}.${deltaFlow > 0 ? ` ~+${deltaFlow.toFixed(2)} l/min suggested.` : ''}`
         : (deltaFlow > 0
           ? `Needs approximately +${deltaFlow.toFixed(2)} l/min to reach the target.`
           : 'Increase flow to approach the target.');
       gaugeColor = 'from-amber-500 to-red-500';
-    } else if (currentDO2i > upperTarget) {
-      statusLabel = profile ? 'Above temperature-adjusted range' : 'Above target';
-      detail = profile
+    } else if (results.currentDO2i > upperTarget) {
+      statusLabel = results.profile ? 'Above temperature-adjusted range' : 'Above target';
+      detail = results.profile
         ? 'Above the temperature-adjusted GDP band—verify BP/afterload and hemodynamic tolerance.'
         : 'Above the goal—verify this is intentional and hemodynamically tolerated.';
       gaugeColor = 'from-sky-500 to-blue-500';
     } else {
-      statusLabel = profile ? 'Within temperature-adjusted GDP range' : 'At / near target';
-      detail = profile
-        ? `${tempAdjustedMin.toFixed(0)}–${tempAdjustedMax.toFixed(0)} ml/min/m² band achieved at this temperature.`
+      statusLabel = results.profile ? 'Within temperature-adjusted GDP range' : 'At / near target';
+      detail = results.profile
+        ? `${results.tempAdjustedMin.toFixed(0)}–${results.tempAdjustedMax.toFixed(0)} ml/min/m² band achieved at this temperature.`
         : 'Current delivery is within ±10% of the selected DO₂i goal.';
       gaugeColor = 'from-emerald-500 to-emerald-400';
     }
-  } else {
-    el('cao2').value = '';
-    setText('do2i', '0 <span class="text-lg font-normal text-slate-400">ml/min/m²</span>');
-    msg = `Enter ${requiredMissing.join(', ')} to calculate DO₂i.`;
   }
 
-  if (profile && currentCI) {
-    if (currentCI < profile.ciMin) {
-      ciComment = `Current CI ${currentCI.toFixed(2)} l/min/m² is below the ${profile.label} range (${profile.ciMin.toFixed(1)}–${profile.ciMax.toFixed(1)}).`;
-    } else if (currentCI > profile.ciMax) {
-      ciComment = `Current CI ${currentCI.toFixed(2)} l/min/m² is above the ${profile.label} range.`;
+  if (results.profile && results.currentCI) {
+    if (results.currentCI < results.profile.ciMin) {
+      ciComment = `Current CI ${results.currentCI.toFixed(2)} l/min/m² is below the ${results.profile.label} range (${results.profile.ciMin.toFixed(1)}–${results.profile.ciMax.toFixed(1)}).`;
+    } else if (results.currentCI > results.profile.ciMax) {
+      ciComment = `Current CI ${results.currentCI.toFixed(2)} l/min/m² is above the ${results.profile.label} range.`;
     } else {
-      ciComment = `Current CI ${currentCI.toFixed(2)} l/min/m² is within the ${profile.label} range.`;
+      ciComment = `Current CI ${results.currentCI.toFixed(2)} l/min/m² is within the ${results.profile.label} range.`;
     }
   }
 
@@ -849,14 +909,22 @@ function updateGDP() {
   if (ciCommentEl) ciCommentEl.textContent = ciComment;
   gauge.style.width = gaugeWidth;
   gauge.className = `h-3 rounded-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(34,211,238,0.25)] ${gaugeColor}`;
-  if (profile) {
-    gaugeMsg.textContent = currentDO2i
-      ? `Temp-adjusted target ${tempAdjustedMin.toFixed(0)}–${tempAdjustedMax.toFixed(0)} • Current ${Math.round(currentDO2i)} ml/min/m²`
-      : 'Enter current flow to visualize DO₂i vs. temperature-adjusted target';
-  } else {
-    gaugeMsg.textContent = currentDO2i
-      ? `Target ${targetDO2i} ml/min/m² • Current ${Math.round(currentDO2i)} ml/min/m²`
-      : 'Enter current flow to visualize DO₂i vs. target';
+  if (gaugeMsg) {
+    const guidelineLine = '<p>Guideline DO₂i (37°C): 280–300 ml/min/m²</p>';
+    const userAdjustedLine = `<p>Temp-adjusted target (user, Q10): ${results.tempAdjustedMin}–${results.tempAdjustedMax} ml/min/m²</p>`;
+    const factorLine = results.tempProvided
+      ? `<p class="text-[11px] text-slate-200/80">Auto temp factor (Q10=2.3): ${results.tempFactor.toFixed(2)} (baseline 37°C → input ${results.temperature?.toFixed(1)}°C, used ${results.tempUsed.toFixed(1)}°C)</p>`
+      : '<p class="text-[11px] text-slate-200/80">Auto temp factor (Q10=2.3): 1.00 (baseline 37°C; no temperature entered)</p>';
+    const flowLine = results.currentDO2i
+      ? `<p class="text-[11px] text-slate-200/80">Current DO₂i: ${Math.round(results.currentDO2i)} ml/min/m²</p>`
+      : '<p class="text-[11px] text-slate-200/70">Enter current flow to visualize DO₂i against targets.</p>';
+    const deepNote = results.tempProvided && results.tempUsed <= 28
+      ? '<p class="text-[11px] text-amber-100/90">Note: At deep hypothermia, temperature-adjusted targets can be &lt;200 and this is expected (informational). During TOTAL circulatory arrest, DO₂i is not applicable; follow institutional ACP/NIRS/flow protocols.</p>'
+      : '';
+    const clampNote = results.tempProvided && results.tempClamped
+      ? `<p class="text-[11px] text-slate-200/80">Adjustment clamps temperature to 20–39°C (input ${results.temperature?.toFixed(1)}°C → used ${results.tempUsed.toFixed(1)}°C).</p>`
+      : '';
+    gaugeMsg.innerHTML = `${guidelineLine}${userAdjustedLine}${factorLine}${flowLine}${deepNote}${clampNote}`;
   }
 
   const tempTag = el('temp-note');
@@ -867,21 +935,28 @@ function updateGDP() {
   }
 
   if (tempComment) {
-    if (!profile) {
+    if (!results.profile) {
       tempComment.innerHTML = `<div class="font-semibold mb-1">Temperature note</div>
-        <p>No temperature provided. Using normothermic targets (e.g., 280–300 ml/min/m²) until temperature is entered.</p>
-        <p>When hypothermic, adjust flow with SvO₂, lactate, and perfusion markers in mind.</p>`;
+        <p>No temperature provided. Using your selected DO₂i target until temperature is entered.</p>
+        <p>Auto temp factor (Q10=2.3): 1.00 (baseline 37°C; no temperature entered).</p>`;
     } else {
-      const vo2Pct = Math.round((profile.vo2Factor || 0) * 100);
-      const currentDoText = currentDO2i ? `${Math.round(currentDO2i)} ml/min/m²` : '—';
-      const ciLine = currentCI
-        ? `Current CI ${currentCI.toFixed(2)} l/min/m² vs. recommended ${profile.ciMin.toFixed(1)}–${profile.ciMax.toFixed(1)}.`
-        : `Recommended CI: ${profile.ciMin.toFixed(1)}–${profile.ciMax.toFixed(1)} l/min/m².`;
+      const vo2Pct = Math.round((results.profile.vo2Factor || 0) * 100);
+      const currentDoText = results.currentDO2i ? `${Math.round(results.currentDO2i)} ml/min/m²` : '—';
+      const ciLine = results.currentCI
+        ? `Current CI ${results.currentCI.toFixed(2)} l/min/m² vs. recommended ${results.profile.ciMin.toFixed(1)}–${results.profile.ciMax.toFixed(1)}.`
+        : `Recommended CI: ${results.profile.ciMin.toFixed(1)}–${results.profile.ciMax.toFixed(1)} l/min/m².`;
+      const clampLine = results.tempClamped
+        ? `<p>Adjustment clamps temperature to 20–39°C (input ${results.temperature?.toFixed(1)}°C → used ${results.tempUsed.toFixed(1)}°C).</p>`
+        : '';
+      const deepLine = results.tempUsed <= 28
+        ? '<p>Note: At deep hypothermia, temperature-adjusted targets can be &lt;200 and this is expected (informational). During TOTAL circulatory arrest, DO₂i is not applicable; follow institutional ACP/NIRS/flow protocols.</p>'
+        : '';
       tempComment.innerHTML = `<div class="font-semibold mb-1">Temperature-adjusted GDP comment</div>
-        <p>${profile.label}; current ${tempC.toFixed(1)}°C. Estimated VO₂ ~${vo2Pct}% of normal.</p>
+        <p>${results.profile.label}; input ${results.temperature?.toFixed(1)}°C → used ${results.tempUsed.toFixed(1)}°C. Estimated VO₂ ~${vo2Pct}% of normal.</p>
+        <p>Auto temp factor (Q10=2.3): ${results.tempFactor.toFixed(2)}. Temp-adjusted DO₂i: ${results.tempAdjustedMin.toFixed(0)}–${results.tempAdjustedMax.toFixed(0)} ml/min/m²; current: ${currentDoText}.</p>
         <p>${ciLine}</p>
-        <p>Recommended DO₂i: ${tempAdjustedMin.toFixed(0)}–${tempAdjustedMax.toFixed(0)} ml/min/m²; current: ${currentDoText}.</p>
-        <p>Hard DO₂i floor: 200 ml/min/m². Confirm adequacy with SvO₂, lactate, urine output, and organ perfusion.</p>`;
+        ${clampLine}
+        ${deepLine}`;
     }
   }
 }
