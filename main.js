@@ -728,9 +728,11 @@ function computeGdpResults(inputs) {
   const baseTarget = targetDO2i * tempFactor;
   const tempAdjustedMin = Math.round(baseTarget * 0.9);
   const tempAdjustedMax = Math.round(baseTarget * 1.1);
+  // Use the midpoint of the adjusted band as the operative DO₂i target for flow calculations
+  const flowTargetDo2i = (tempAdjustedMin + tempAdjustedMax) / 2;
   const normothermicMin = Math.round(targetDO2i * 0.9);
   const normothermicMax = Math.round(targetDO2i * 1.1);
-  const requiredFlow = calcRequiredFlowLmin(baseTarget, bsa, cao2);
+  const requiredFlow = calcRequiredFlowLmin(flowTargetDo2i, bsa, cao2);
   const profile = tempProvided ? getTempProfile(tempUsed) : null;
 
   return {
