@@ -390,7 +390,7 @@ function updateHeparinUI() {
   const sex = el('hep2-sex')?.value || 'male';
   const weightStrategy = el('hep2-weight-strategy')?.value || 'auto';
 
-  hepResistance = Boolean(el('hep2-resistance-flag')?.checked);
+  hepResistance = false;
 
   const height = parseFloat(heightInput?.value);
   const weight = parseFloat(weightInput?.value);
@@ -516,39 +516,8 @@ function updateHeparinUI() {
   const extremeObesity = el('hep2-extreme-obesity');
   if (extremeObesity) extremeObesity.classList.toggle('hidden', plan.bmi < 50);
 
-  const resistanceBlock = el('hep2-resistance-block');
-  if (resistanceBlock) resistanceBlock.classList.toggle('hidden', !hepResistance);
-
   const obesityBlock = el('hep2-obesity-warning');
-  if (obesityBlock) obesityBlock.classList.toggle('hidden', hepResistance || plan.alertLevel !== 'high');
-
-  const riskFactors = [
-    el('hep2-rf-sirs')?.checked,
-    el('hep2-rf-lmwh')?.checked,
-    el('hep2-rf-ecmo')?.checked,
-    el('hep2-rf-at3')?.checked,
-    el('hep2-rf-history')?.checked,
-  ].filter(Boolean).length;
-
-  const riskLevel = riskFactors >= 4 ? 'High' : riskFactors >= 2 ? 'Moderate' : 'Low';
-
-  const riskChip = el('hep2-risk-chip');
-  const riskNote = el('hep2-risk-note');
-  const riskAdvice = el('hep2-risk-advice');
-  const riskSummary = el('hep2-risk-summary');
-  if (riskChip) {
-    let colorClasses = ['bg-slate-200', 'dark:bg-primary-800', 'text-primary-900', 'dark:text-white'];
-    if (riskLevel === 'High') {
-      colorClasses = ['bg-red-500/20', 'dark:bg-red-900/40', 'text-red-700', 'dark:text-red-200'];
-    } else if (riskLevel === 'Moderate') {
-      colorClasses = ['bg-amber-200/60', 'dark:bg-amber-900/40', 'text-amber-700', 'dark:text-amber-200'];
-    }
-    riskChip.textContent = `Resistance risk: ${riskLevel} (${riskFactors}/5)`;
-    riskChip.className = `px-2 py-1 rounded-full font-semibold text-[11px] ${colorClasses.join(' ')}`;
-    if (riskNote) riskNote.textContent = 'Checked risk factors help anticipate Anti-Xa/AT-III needs; dosing is not automatically multiplied.';
-  }
-  if (riskSummary) riskSummary.textContent = `Resistance risk: ${riskLevel} (${riskFactors}/5 selected)`;
-  if (riskAdvice) riskAdvice.classList.toggle('hidden', riskFactors < 4);
+  if (obesityBlock) obesityBlock.classList.toggle('hidden', plan.alertLevel !== 'high');
 
   if (results) results.classList.remove('hidden');
   if (placeholder) placeholder.classList.add('hidden');
@@ -590,7 +559,21 @@ function initHeparinManagement() {
     });
   }
 
-  ['hep2-height', 'hep2-weight', 'hep2-sex', 'hep2-weight-strategy', 'hep2-resistance-flag', 'hep2-rf-sirs', 'hep2-rf-lmwh', 'hep2-rf-ecmo', 'hep2-rf-at3', 'hep2-rf-history'].forEach(id => {
+  const resistanceToggle = el('hep2-resistance-toggle');
+  const resistanceContent = el('hep2-resistance-content');
+  if (resistanceToggle && resistanceContent) {
+    resistanceToggle.setAttribute('aria-expanded', 'false');
+    resistanceToggle.addEventListener('click', () => {
+      const isExpanded = resistanceToggle.getAttribute('aria-expanded') === 'true';
+      const nextState = !isExpanded;
+      resistanceToggle.setAttribute('aria-expanded', String(nextState));
+      resistanceContent.classList.toggle('hidden', !nextState);
+      const chevron = resistanceToggle.querySelector('[data-chevron]');
+      if (chevron) chevron.classList.toggle('rotate-180', nextState);
+    });
+  }
+
+  ['hep2-height', 'hep2-weight', 'hep2-sex', 'hep2-weight-strategy', 'hep2-rf-sirs', 'hep2-rf-lmwh', 'hep2-rf-ecmo', 'hep2-rf-at3', 'hep2-rf-history'].forEach(id => {
     const node = el(id);
     if (node) node.addEventListener('input', updateHeparinUI);
     if (node && node.tagName === 'SELECT') node.addEventListener('change', updateHeparinUI);
