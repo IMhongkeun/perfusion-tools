@@ -307,23 +307,6 @@ function setHepDoseButtons(activeDose) {
   });
 }
 
-function renderResistanceToggle() {
-  const toggle = el('hep2-resistance-toggle');
-  if (!toggle) return;
-  const check = toggle.querySelector('span');
-  const activeClasses = ['border-accent-500', 'bg-accent-50', 'dark:bg-primary-800/60'];
-  const inactiveClasses = ['border-slate-200', 'dark:border-primary-700', 'bg-white', 'dark:bg-primary-800'];
-  if (hepResistance) {
-    toggle.classList.add(...activeClasses);
-    toggle.classList.remove('border-slate-200', 'dark:border-primary-700', 'bg-white', 'dark:bg-primary-800');
-    if (check) check.classList.remove('hidden');
-  } else {
-    toggle.classList.remove(...activeClasses);
-    toggle.classList.add(...inactiveClasses);
-    if (check) check.classList.add('hidden');
-  }
-}
-
 function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy }) {
   if (!(heightCm > 0) || !(weightKg > 0)) return null;
   const bmi = weightKg / Math.pow(heightCm / 100, 2);
@@ -406,6 +389,8 @@ function updateHeparinUI() {
   const weightInput = el('hep2-weight');
   const sex = el('hep2-sex')?.value || 'male';
   const weightStrategy = el('hep2-weight-strategy')?.value || 'auto';
+
+  hepResistance = Boolean(el('hep2-resistance-flag')?.checked);
 
   const height = parseFloat(heightInput?.value);
   const weight = parseFloat(weightInput?.value);
@@ -545,26 +530,25 @@ function updateHeparinUI() {
     el('hep2-rf-history')?.checked,
   ].filter(Boolean).length;
 
+  const riskLevel = riskFactors >= 4 ? 'High' : riskFactors >= 2 ? 'Moderate' : 'Low';
+
   const riskChip = el('hep2-risk-chip');
   const riskNote = el('hep2-risk-note');
   const riskAdvice = el('hep2-risk-advice');
   const riskSummary = el('hep2-risk-summary');
   if (riskChip) {
-    let level = 'Low';
     let colorClasses = ['bg-slate-200', 'dark:bg-primary-800', 'text-primary-900', 'dark:text-white'];
-    if (riskFactors >= 4) {
-      level = 'High';
+    if (riskLevel === 'High') {
       colorClasses = ['bg-red-500/20', 'dark:bg-red-900/40', 'text-red-700', 'dark:text-red-200'];
-    } else if (riskFactors >= 2) {
-      level = 'Moderate';
+    } else if (riskLevel === 'Moderate') {
       colorClasses = ['bg-amber-200/60', 'dark:bg-amber-900/40', 'text-amber-700', 'dark:text-amber-200'];
     }
-    riskChip.textContent = `Resistance risk: ${level} (${riskFactors}/5)`;
+    riskChip.textContent = `Resistance risk: ${riskLevel} (${riskFactors}/5)`;
     riskChip.className = `px-2 py-1 rounded-full font-semibold text-[11px] ${colorClasses.join(' ')}`;
     if (riskNote) riskNote.textContent = 'Checked risk factors help anticipate Anti-Xa/AT-III needs; dosing is not automatically multiplied.';
   }
-  if (riskSummary) riskSummary.textContent = `Resistance risk: ${riskFactors}/5 selected`;
-  if (riskAdvice) riskAdvice.classList.toggle('hidden', riskFactors === 0);
+  if (riskSummary) riskSummary.textContent = `Resistance risk: ${riskLevel} (${riskFactors}/5 selected)`;
+  if (riskAdvice) riskAdvice.classList.toggle('hidden', riskFactors < 4);
 
   if (results) results.classList.remove('hidden');
   if (placeholder) placeholder.classList.add('hidden');
@@ -579,7 +563,6 @@ function initHeparinManagement() {
   initHeparinManagement.initialized = true;
 
   setHepDoseButtons(hepDoseUnit);
-  renderResistanceToggle();
 
   document.querySelectorAll('[data-hep-dose]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -589,15 +572,6 @@ function initHeparinManagement() {
       updateHeparinUI();
     });
   });
-
-  const resistanceToggle = el('hep2-resistance-toggle');
-  if (resistanceToggle) {
-    resistanceToggle.addEventListener('click', () => {
-      hepResistance = !hepResistance;
-      renderResistanceToggle();
-      updateHeparinUI();
-    });
-  }
 
   const flowToggle = el('hep2-show-flow');
   if (flowToggle) {
@@ -616,7 +590,7 @@ function initHeparinManagement() {
     });
   }
 
-  ['hep2-height', 'hep2-weight', 'hep2-sex', 'hep2-weight-strategy', 'hep2-rf-sirs', 'hep2-rf-lmwh', 'hep2-rf-ecmo', 'hep2-rf-at3', 'hep2-rf-history'].forEach(id => {
+  ['hep2-height', 'hep2-weight', 'hep2-sex', 'hep2-weight-strategy', 'hep2-resistance-flag', 'hep2-rf-sirs', 'hep2-rf-lmwh', 'hep2-rf-ecmo', 'hep2-rf-at3', 'hep2-rf-history'].forEach(id => {
     const node = el(id);
     if (node) node.addEventListener('input', updateHeparinUI);
     if (node && node.tagName === 'SELECT') node.addEventListener('change', updateHeparinUI);
