@@ -13,11 +13,11 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator" />
-  <meta property="og:description" content="Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets." />
+  <meta property="og:description" content="Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB using normothermic GDP targets." />
   <meta property="og:url" content="https://perfusion.pro/" />
   <meta property="og:image" content="https://perfusion.pro/og-image.png" />
   <meta name="twitter:title" content="Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator" />
-  <meta name="twitter:description" content="Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets." />
+  <meta name="twitter:description" content="Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB using normothermic GDP targets." />
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2705461910278176" crossorigin="anonymous"></script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -263,14 +263,14 @@
       "/do2i": {
         title: "Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator",
         h1: "Goal-Directed Perfusion (GDP) Calculator",
-        description: "Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets.",
+        description: "Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with normothermic GDP targets.",
         headingDescription: "Set a DO₂i target and evaluate whether current pump flow is adequate.",
         canonicalPath: "/do2i"
       },
       "/gdp": {
         title: "Oxygen Delivery (DO₂) Calculator – Perfusion Tools",
         h1: "Goal-Directed Perfusion (GDP) Calculator",
-        description: "Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets.",
+        description: "Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with normothermic GDP targets.",
         headingDescription: "Set a DO₂i target and evaluate whether current pump flow is adequate.",
         canonicalPath: "/gdp"
       },
@@ -587,11 +587,6 @@
                 <input id="hb" type="number" step="0.1" placeholder="10" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Temperature (°C)</label>
-                <input id="temp_c" type="number" step="0.1" placeholder="32" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
-              </div>
-
-              <div class="space-y-1">
                 <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">PaO<sub>2</sub> (mmHg) <span class="text-red-500">*</span></label>
                 <input id="pao2" type="number" step="1" placeholder="150" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
@@ -610,7 +605,7 @@
               </div>
             </div>
 
-            <p class="text-[11px] text-slate-500 dark:text-slate-400">* Required for DO₂i and target flow calculation. Temperature and current flow are optional.</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">* Required for DO₂i and target flow calculation. Current flow is optional.</p>
             <p id="gdp-warning" class="text-xs text-red-500 hidden">Enter required fields.</p>
 
             <div class="bg-primary-900 dark:bg-black/20 p-6 text-white rounded-xl relative overflow-hidden">
@@ -643,12 +638,10 @@
               </div>
             </div>
 
-            <div class="bg-slate-50 dark:bg-primary-900/30 rounded-xl border border-slate-100 dark:border-primary-700/50 p-4 space-y-2 text-xs text-slate-600 dark:text-slate-300">
-              <p id="temp-note" class="hidden">Temperature optional; interpret DO₂i with the overall clinical picture.</p>
-              <div id="temp-comment" class="text-[11px] leading-relaxed"></div>
-              <p>This GDP calculator uses standard DO₂i formula: DO₂i = (Flow ÷ BSA) × CaO₂ × 10. Required flow is DO₂i × BSA ÷ (CaO₂ × 10).</p>
-              <p>Clinical decisions must follow institutional protocols and consider lactate, SvO₂/ScvO₂, urine output, and perfusion pressures.</p>
-            </div>
+              <div class="bg-slate-50 dark:bg-primary-900/30 rounded-xl border border-slate-100 dark:border-primary-700/50 p-4 space-y-2 text-xs text-slate-600 dark:text-slate-300">
+                <p>This GDP calculator uses standard DO₂i formula: DO₂i = (Flow ÷ BSA) × CaO₂ × 10. Required flow is DO₂i × BSA ÷ (CaO₂ × 10).</p>
+                <p>Clinical decisions must follow institutional protocols and consider lactate, SvO₂/ScvO₂, urine output, and perfusion pressures.</p>
+              </div>
           </div>
 
         </div>
@@ -668,12 +661,8 @@
                 <p>DO₂i (ml/min/m²) = (Pump flow ÷ BSA) × CaO₂ × 10. Pump flow is entered in l/min and BSA in m². Multiplying by 10 converts CaO₂ from ml/dl to ml/l so that the final unit is ml O₂ per minute per m².</p>
               </li>
               <li>
-                <p class="font-semibold text-slate-700 dark:text-slate-200">Temperature-adjusted metabolic demand</p>
-                <p>Patient temperature strongly affects whole-body oxygen consumption (VO₂). As a simplifying assumption, this calculator applies a Q₁₀-type relationship where VO₂ falls as temperature decreases from 37 °C, but a “dampened” curve is used so that targets do not drop as steeply as metabolic rate. This reflects common clinical practice: hypothermia reduces demand, but we still maintain a safety margin for organs such as the kidney and brain.</p>
-              </li>
-              <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Target DO₂i bands (Goal-Directed Perfusion)</p>
-                <p>At normothermia (≈37 °C) many adult CPB programs aim to maintain DO₂i ≥ 280–300 ml/min/m² to reduce the risk of anaerobic metabolism and postoperative acute kidney injury. At lower temperatures the calculator reduces the recommended target range, but never below a conservative lower floor (e.g. around 220 ml/min/m²), even when theoretical VO₂ would allow lower values. Targets are displayed as “Low / Borderline / Target / High” bands on the gauge for quick bedside interpretation.</p>
+                <p>At normothermia (≈37 °C) many adult CPB programs aim to maintain DO₂i ≥ 280–300 ml/min/m² to reduce the risk of anaerobic metabolism and postoperative acute kidney injury. The gauge displays “Low / Borderline / Target / High” bands for quick bedside interpretation using normothermic goals.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Required pump flow for a chosen DO₂i goal</p>
