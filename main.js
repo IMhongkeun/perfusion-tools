@@ -237,7 +237,6 @@ function computeDevineIbw(heightCm, sex) {
 
 let hepDoseUnit = 300;
 let hepResistance = false;
-let hepShowFlow = false;
 
 function setHepDoseButtons(activeDose) {
   document.querySelectorAll('[data-hep-dose]').forEach(btn => {
@@ -291,16 +290,10 @@ function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy 
 
   // DuBois BSA approximation used here (0.007184 × H^0.725 × W^0.425)
   const bsaActual = 0.007184 * Math.pow(heightCm, 0.725) * Math.pow(weightKg, 0.425);
-  let bsaUsedForFlow = bsaActual;
   let bsaCapped = false;
   if (bmi > 35 && bsaActual > 2.5) {
-    bsaUsedForFlow = 2.5;
     bsaCapped = true;
   }
-
-  const targetCI = 2.4;
-  const flowRate = bsaUsedForFlow * targetCI;
-  const flowWarning = flowRate > 6.0;
 
   return {
     bmi,
@@ -317,10 +310,7 @@ function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy 
     isHighDose,
     additionalBolus,
     bsaActual,
-    bsaUsedForFlow,
     bsaCapped,
-    flowRate,
-    flowWarning,
   };
 }
 
@@ -419,25 +409,12 @@ function updateHeparinUI() {
     }
   }
 
-  if (hepShowFlow) {
-    el('hep2-flow-card')?.classList.remove('hidden');
-    el('hep2-quick-card')?.classList.add('hidden');
-    setText('hep2-flow-rate', plan.flowRate.toFixed(1));
-    setText('hep2-flow-bsa', plan.bsaUsedForFlow.toFixed(2));
-    const cap = el('hep2-flow-cap');
-    if (cap) cap.classList.toggle('hidden', !plan.bsaCapped);
-    const flowWarn = el('hep2-flow-warning');
-    if (flowWarn) flowWarn.classList.toggle('hidden', !plan.flowWarning);
-  } else {
-    el('hep2-flow-card')?.classList.add('hidden');
-    el('hep2-quick-card')?.classList.remove('hidden');
-    const steps = el('hep2-quick-steps')?.querySelectorAll('li');
-    if (steps && steps.length >= 4) {
-      steps[0].textContent = `Bolus ${plan.initialBolus.toLocaleString()} U IV`;
-      steps[1].textContent = 'Wait 3–5 min → Check ACT';
-      steps[2].textContent = 'Monitor ACT q30min during CPB';
-      steps[3].textContent = `If ACT low: +${plan.additionalBolus.toLocaleString()} U bolus`;
-    }
+  const steps = el('hep2-quick-steps')?.querySelectorAll('li');
+  if (steps && steps.length >= 4) {
+    steps[0].textContent = `Bolus ${plan.initialBolus.toLocaleString()} U IV`;
+    steps[1].textContent = 'Wait 3–5 min → Check ACT';
+    steps[2].textContent = 'Monitor ACT q30min during CPB';
+    steps[3].textContent = `If ACT low: +${plan.additionalBolus.toLocaleString()} U bolus`;
   }
 
   const sensAbwDose = Math.round(plan.abw * 300);
@@ -481,15 +458,6 @@ function initHeparinManagement() {
       updateHeparinUI();
     });
   });
-
-  const flowToggle = el('hep2-show-flow');
-  if (flowToggle) {
-    hepShowFlow = flowToggle.checked;
-    flowToggle.addEventListener('change', (e) => {
-      hepShowFlow = e.target.checked;
-      updateHeparinUI();
-    });
-  }
 
   const weightInfoToggle = el('hep2-weight-info-toggle');
   const weightInfo = el('hep2-weight-info');

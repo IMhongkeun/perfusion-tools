@@ -1508,10 +1508,6 @@
                     </div>
                   </div>
 
-                  <label class="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
-                    <input id="hep2-show-flow" type="checkbox" class="rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
-                    Show flow rate calculator (IBW-based BSA)
-                  </label>
                 </div>
               </div>
 
@@ -1591,18 +1587,10 @@
                       </div>
                     </div>
 
-                    <div id="hep2-flow-card" class="flow-card hidden">
-                      <p class="text-sm font-semibold text-primary-900 dark:text-white mb-2">Flow targets (CI 2.4)</p>
-                      <p class="text-4xl font-mono font-bold text-primary-900 dark:text-white"><span id="hep2-flow-rate">-</span> <span class="text-lg text-slate-500">l/min</span></p>
-                      <p class="text-xs text-slate-500 dark:text-slate-400">BSA <span id="hep2-flow-bsa">-</span> m² × 2.4 l/min/m²</p>
-                      <div id="hep2-flow-cap" class="pill pill-warn hidden mt-2">Flow capped for safety (obesity)</div>
-                      <div id="hep2-flow-warning" class="pill pill-alert hidden mt-2">High flow &gt; 6 l/min — check cannula</div>
-                    </div>
-
-                      <div id="hep2-quick-card" class="flow-card">
-                      <p class="text-sm font-semibold text-green-600 dark:text-green-300 mb-2">Quick protocol</p>
-                      <ol class="list-decimal list-inside space-y-1 text-sm text-primary-900 dark:text-slate-200" id="hep2-quick-steps">
-                        <li>Bolus -</li>
+                    <div id="hep2-quick-card" class="flow-card">
+                    <p class="text-sm font-semibold text-green-600 dark:text-green-300 mb-2">Quick protocol</p>
+                    <ol class="list-decimal list-inside space-y-1 text-sm text-primary-900 dark:text-slate-200" id="hep2-quick-steps">
+                      <li>Bolus -</li>
                         <li>Wait 3–5 min → Check ACT</li>
                         <li>Monitor ACT q30min during CPB</li>
                         <li>If ACT low: + bolus</li>
