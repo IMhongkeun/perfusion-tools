@@ -13,11 +13,11 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator" />
-  <meta property="og:description" content="Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets." />
+  <meta property="og:description" content="Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB using normothermic GDP targets." />
   <meta property="og:url" content="https://perfusion.pro/" />
   <meta property="og:image" content="https://perfusion.pro/og-image.png" />
   <meta name="twitter:title" content="Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator" />
-  <meta name="twitter:description" content="Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets." />
+  <meta name="twitter:description" content="Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB using normothermic GDP targets." />
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2705461910278176" crossorigin="anonymous"></script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -263,14 +263,14 @@
       "/do2i": {
         title: "Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator",
         h1: "Goal-Directed Perfusion (GDP) Calculator",
-        description: "Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets.",
+        description: "Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with normothermic GDP targets.",
         headingDescription: "Set a DO₂i target and evaluate whether current pump flow is adequate.",
         canonicalPath: "/do2i"
       },
       "/gdp": {
         title: "Oxygen Delivery (DO₂) Calculator – Perfusion Tools",
         h1: "Goal-Directed Perfusion (GDP) Calculator",
-        description: "Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with temperature-adjusted GDP targets.",
+        description: "Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with normothermic GDP targets.",
         headingDescription: "Set a DO₂i target and evaluate whether current pump flow is adequate.",
         canonicalPath: "/gdp"
       },
@@ -605,11 +605,6 @@
                 <input id="hb" type="number" step="0.1" placeholder="10" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Temperature (°C)</label>
-                <input id="temp_c" type="number" step="0.1" placeholder="32" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
-              </div>
-
-              <div class="space-y-1">
                 <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">PaO<sub>2</sub> (mmHg) <span class="text-red-500">*</span></label>
                 <input id="pao2" type="number" step="1" placeholder="150" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
               </div>
@@ -628,7 +623,7 @@
               </div>
             </div>
 
-            <p class="text-[11px] text-slate-500 dark:text-slate-400">* Required for DO₂i and target flow calculation. Temperature and current flow are optional.</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">* Required for DO₂i and target flow calculation. Current flow is optional.</p>
             <p id="gdp-warning" class="text-xs text-red-500 hidden">Enter required fields.</p>
 
             <div class="bg-primary-900 dark:bg-black/20 p-6 text-white rounded-xl relative overflow-hidden">
@@ -661,12 +656,10 @@
               </div>
             </div>
 
-            <div class="bg-slate-50 dark:bg-primary-900/30 rounded-xl border border-slate-100 dark:border-primary-700/50 p-4 space-y-2 text-xs text-slate-600 dark:text-slate-300">
-              <p id="temp-note" class="hidden">Temperature optional; interpret DO₂i with the overall clinical picture.</p>
-              <div id="temp-comment" class="text-[11px] leading-relaxed"></div>
-              <p>This GDP calculator uses standard DO₂i formula: DO₂i = (Flow ÷ BSA) × CaO₂ × 10. Required flow is DO₂i × BSA ÷ (CaO₂ × 10).</p>
-              <p>Clinical decisions must follow institutional protocols and consider lactate, SvO₂/ScvO₂, urine output, and perfusion pressures.</p>
-            </div>
+              <div class="bg-slate-50 dark:bg-primary-900/30 rounded-xl border border-slate-100 dark:border-primary-700/50 p-4 space-y-2 text-xs text-slate-600 dark:text-slate-300">
+                <p>This GDP calculator uses standard DO₂i formula: DO₂i = (Flow ÷ BSA) × CaO₂ × 10. Required flow is DO₂i × BSA ÷ (CaO₂ × 10).</p>
+                <p>Clinical decisions must follow institutional protocols and consider lactate, SvO₂/ScvO₂, urine output, and perfusion pressures.</p>
+              </div>
           </div>
 
         </div>
@@ -686,12 +679,8 @@
                 <p>DO₂i (ml/min/m²) = (Pump flow ÷ BSA) × CaO₂ × 10. Pump flow is entered in l/min and BSA in m². Multiplying by 10 converts CaO₂ from ml/dl to ml/l so that the final unit is ml O₂ per minute per m².</p>
               </li>
               <li>
-                <p class="font-semibold text-slate-700 dark:text-slate-200">Temperature-adjusted metabolic demand</p>
-                <p>Patient temperature strongly affects whole-body oxygen consumption (VO₂). As a simplifying assumption, this calculator applies a Q₁₀-type relationship where VO₂ falls as temperature decreases from 37 °C, but a “dampened” curve is used so that targets do not drop as steeply as metabolic rate. This reflects common clinical practice: hypothermia reduces demand, but we still maintain a safety margin for organs such as the kidney and brain.</p>
-              </li>
-              <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Target DO₂i bands (Goal-Directed Perfusion)</p>
-                <p>At normothermia (≈37 °C) many adult CPB programs aim to maintain DO₂i ≥ 280–300 ml/min/m² to reduce the risk of anaerobic metabolism and postoperative acute kidney injury. At lower temperatures the calculator reduces the recommended target range, but never below a conservative lower floor (e.g. around 220 ml/min/m²), even when theoretical VO₂ would allow lower values. Targets are displayed as “Low / Borderline / Target / High” bands on the gauge for quick bedside interpretation.</p>
+                <p>At normothermia (≈37 °C) many adult CPB programs aim to maintain DO₂i ≥ 280–300 ml/min/m² to reduce the risk of anaerobic metabolism and postoperative acute kidney injury. The gauge displays “Low / Borderline / Target / High” bands for quick bedside interpretation using normothermic goals.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Required pump flow for a chosen DO₂i goal</p>
@@ -1392,7 +1381,7 @@
                 <p class="font-mono text-[11px]">totalMinutes = 60 × HH + MM</p>
                 <p>If the end time is later or equal to the start time (same day):</p>
                 <p class="font-mono text-[11px]">durationMinutes = endMinutes − startMinutes</p>
-                <p>If the end time is earlier than the start time, the tool assumes the interval crosses midnight and adds 24 hours:</p>
+                <p><strong>If the end time is earlier than the start time, the tool assumes the interval crosses midnight and adds 24 hours:</strong></p>
                 <p class="font-mono text-[11px]">durationMinutes = (endMinutes + 24 × 60) − startMinutes</p>
                 <p>The result is reported as:</p>
                 <ul class="list-disc pl-4 space-y-1">
@@ -1488,50 +1477,55 @@
                     </div>
                   </div>
 
-                  <div id="hep2-resistance-toggle" class="p-3 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 flex items-start gap-3 cursor-pointer hover:border-accent-500/60">
-                    <div class="mt-0.5 w-4 h-4 rounded border border-slate-400 flex items-center justify-center" aria-hidden="true">
-                      <span class="hidden text-accent-500">✓</span>
-                    </div>
-                    <div>
-                      <p class="text-sm font-semibold text-primary-900 dark:text-white">Suspected resistance</p>
-                      <p class="text-xs text-slate-500 dark:text-slate-400">ATIII deficiency / prolonged ECMO / liver disease</p>
+                  <div class="bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 rounded-xl">
+                    <button id="hep2-resistance-toggle" type="button" class="w-full flex items-center justify-between gap-3 px-4 py-3 text-left">
+                      <div>
+                        <p class="text-sm font-semibold text-primary-900 dark:text-white">Suspect heparin resistance?</p>
+                        <p class="text-[11px] text-slate-600 dark:text-slate-300">Reference checklist when ACT response is lower than expected.</p>
+                      </div>
+                      <svg data-chevron class="h-4 w-4 text-slate-500 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
+                    </button>
+                    <div id="hep2-resistance-content" class="hidden border-t border-slate-200 dark:border-primary-800 px-4 py-4 space-y-4">
+                      <div class="space-y-2">
+                        <p class="text-xs font-semibold text-primary-900 dark:text-white">Risk factors (check all)</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700 dark:text-slate-200">
+                          <label class="flex items-start gap-2">
+                            <input id="hep2-rf-sirs" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
+                            <span>Ongoing sepsis / SIRS</span>
+                          </label>
+                          <label class="flex items-start gap-2">
+                            <input id="hep2-rf-lmwh" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
+                            <span>Recent LMWH within 12–24 h</span>
+                          </label>
+                          <label class="flex items-start gap-2">
+                            <input id="hep2-rf-ecmo" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
+                            <span>Prolonged pre-CPB ECMO / VAD</span>
+                          </label>
+                          <label class="flex items-start gap-2">
+                            <input id="hep2-rf-at3" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
+                            <span>Known AT-III deficiency / cirrhosis</span>
+                          </label>
+                          <label class="flex items-start gap-2">
+                            <input id="hep2-rf-history" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
+                            <span>Prior high-dose heparin requirement</span>
+                          </label>
+                        </div>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Selecting risk factors does not automatically change dosing. (Reference only)</p>
+                      </div>
+                      <div class="space-y-2">
+                        <p class="text-xs font-semibold text-primary-900 dark:text-white">Next steps (reference)</p>
+                        <ul class="list-disc list-inside text-sm text-slate-700 dark:text-slate-200 space-y-1">
+                          <li>Rule out basics: confirm heparin delivery, sampling/ACT device issues, temperature/hemodilution.</li>
+                          <li>Recheck ACT at 3–5 min; if below target, consider additional UFH per local protocol.</li>
+                          <li>If inadequate response persists, consider checking AT activity and/or anti-Xa (or heparin concentration) and prepare AT supplementation (FFP if AT concentrate not available) per protocol.</li>
+                          <li>Special situations (e.g., HIT) → follow institutional DTI protocol.</li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
 
-                  <div class="bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 rounded-xl p-3 space-y-2">
-                    <p class="text-xs font-semibold text-primary-900 dark:text-white">Heparin resistance risk factors (check all)</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700 dark:text-slate-200">
-                      <label class="flex items-start gap-2">
-                        <input id="hep2-rf-sirs" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
-                        <span>Ongoing sepsis / SIRS</span>
-                      </label>
-                      <label class="flex items-start gap-2">
-                        <input id="hep2-rf-lmwh" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
-                        <span>Recent LMWH within 12–24 h</span>
-                      </label>
-                      <label class="flex items-start gap-2">
-                        <input id="hep2-rf-ecmo" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
-                        <span>Prolonged pre-CPB ECMO / VAD</span>
-                      </label>
-                      <label class="flex items-start gap-2">
-                        <input id="hep2-rf-at3" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
-                        <span>Known AT-III deficiency / cirrhosis</span>
-                      </label>
-                      <label class="flex items-start gap-2">
-                        <input id="hep2-rf-history" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
-                        <span>Prior high-dose heparin requirement</span>
-                      </label>
-                    </div>
-                    <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
-                      <span id="hep2-risk-chip" class="px-2 py-1 rounded-full bg-slate-200 dark:bg-primary-800 text-primary-900 dark:text-white font-semibold text-[11px]">Resistance risk: —</span>
-                      <span id="hep2-risk-note">Check factors to estimate risk (0–5 points → Low/Moderate/High).</span>
-                    </div>
-                  </div>
-
-                  <label class="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
-                    <input id="hep2-show-flow" type="checkbox" class="rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
-                    Show flow rate calculator (IBW-based BSA)
-                  </label>
                 </div>
               </div>
 
@@ -1611,42 +1605,15 @@
                       </div>
                     </div>
 
-                    <div id="hep2-flow-card" class="flow-card hidden">
-                      <p class="text-sm font-semibold text-primary-900 dark:text-white mb-2">Flow targets (CI 2.4)</p>
-                      <p class="text-4xl font-mono font-bold text-primary-900 dark:text-white"><span id="hep2-flow-rate">-</span> <span class="text-lg text-slate-500">l/min</span></p>
-                      <p class="text-xs text-slate-500 dark:text-slate-400">BSA <span id="hep2-flow-bsa">-</span> m² × 2.4 l/min/m²</p>
-                      <div id="hep2-flow-cap" class="pill pill-warn hidden mt-2">Flow capped for safety (obesity)</div>
-                      <div id="hep2-flow-warning" class="pill pill-alert hidden mt-2">High flow &gt; 6 l/min — check cannula</div>
-                    </div>
-
-                      <div id="hep2-quick-card" class="flow-card">
-                      <p class="text-sm font-semibold text-green-600 dark:text-green-300 mb-2">Quick protocol</p>
-                      <ol class="list-decimal list-inside space-y-1 text-sm text-primary-900 dark:text-slate-200" id="hep2-quick-steps">
-                        <li>Bolus -</li>
+                    <div id="hep2-quick-card" class="flow-card">
+                    <p class="text-sm font-semibold text-green-600 dark:text-green-300 mb-2">Quick protocol</p>
+                    <ol class="list-decimal list-inside space-y-1 text-sm text-primary-900 dark:text-slate-200" id="hep2-quick-steps">
+                      <li>Bolus -</li>
                         <li>Wait 3–5 min → Check ACT</li>
                         <li>Monitor ACT q30min during CPB</li>
                         <li>If ACT low: + bolus</li>
                       </ol>
                     </div>
-                  </div>
-
-                  <div id="hep2-resistance-block" class="info-block warn hidden">
-                    <h4 class="text-sm font-semibold text-red-500 mb-2">Heparin resistance protocol</h4>
-                    <ul class="list-disc list-inside text-sm text-red-200/80 space-y-1">
-                      <li>ACT &lt; 300s after bolus → suspect AT-III deficiency</li>
-                      <li>Treatment: FFP (2–4 units) or AT-III concentrate (500–1000 iu)</li>
-                      <li>Re-check ACT after 10 min; do not start CPB until ACT &gt; 400s</li>
-                      <li>Consider Anti-Xa monitoring (target 3.0–4.5 iu/ml)</li>
-                    </ul>
-                  </div>
-
-                  <div id="hep2-risk-advice" class="hidden bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-200 space-y-2">
-                    <p id="hep2-risk-summary" class="font-semibold text-primary-900 dark:text-white">Resistance risk: —</p>
-                    <p class="text-slate-600 dark:text-slate-300 text-xs leading-relaxed">High-risk cardiac surgery cohorts (2022–2025) note that some patients may need ~1.2–1.5× initial dosing to reach ACT targets, but this should be guided by Anti-Xa or heparin concentration assays rather than ACT alone.</p>
-                    <ul class="list-disc list-inside text-xs text-slate-600 dark:text-slate-300 space-y-1">
-                      <li>Consider early AT-III assay/concentrate (STS/SCA/AmSECT updates).</li>
-                      <li>Anti-Xa monitoring where available, especially in obesity/resistance.</li>
-                    </ul>
                   </div>
 
                   <div id="hep2-obesity-warning" class="info-block alert hidden">
