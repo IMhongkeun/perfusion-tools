@@ -281,6 +281,13 @@
         headingDescription: "Forecast CPB hematocrit based on EBV, prime, and transfusion inputs.",
         canonicalPath: "/predicted-hct"
       },
+      "/priming-volume": {
+        title: "Priming Volume Calculator (Tube ID) – Perfusion Tools",
+        h1: "Priming Volume Calculator (Tube ID)",
+        description: "Calculate tubing priming volume using standard perfusion tubing IDs and length conversions.",
+        headingDescription: "Select a tubing ID and length to compute priming volume with unit conversions.",
+        canonicalPath: "/priming-volume"
+      },
       "/lbm": {
         title: "Lean Body Mass Calculator for Perfusion (Boer & Hume)",
         h1: "Lean Body Mass Calculator",
@@ -401,6 +408,7 @@
         <a href="/heparin" data-route id="nav-heparin" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Heparin</a>
         <a href="/predicted-hct" data-route id="nav-hct" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Predicted Hct</a>
         <a href="/lbm" data-route id="nav-lbm" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">LBM</a>
+        <a href="/priming-volume" data-route id="nav-priming" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Priming Volume</a>
         <a href="/timecalc" data-route id="nav-time" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Time</a>
         <a href="/info" data-route id="nav-info" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Info</a>
         <a href="/faq" data-route id="nav-faq" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">FAQ</a>
@@ -439,6 +447,9 @@
         </a>
         <a href="/lbm" data-route id="side-lbm" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
           Lean Body Mass
+        </a>
+        <a href="/priming-volume" data-route id="side-priming" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
+          Priming Volume
         </a>
         <a href="/timecalc" data-route id="side-time" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
           Time Calculator
@@ -502,6 +513,13 @@
                 <div>
                   <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
                   <div class="text-base font-semibold text-primary-900 dark:text-white">Lean Body Mass</div>
+                </div>
+                <span class="text-accent-500">→</span>
+              </a>
+              <a href="/priming-volume" data-route class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
+                <div>
+                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
+                  <div class="text-base font-semibold text-primary-900 dark:text-white">Priming Volume</div>
                 </div>
                 <span class="text-accent-500">→</span>
               </a>
@@ -1664,6 +1682,137 @@
             </div>
           </div>
         </div>
+      </section>
+
+      <section id="view-priming-volume" class="hidden animate-in fade-in duration-300">
+        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-6 space-y-6">
+          <div class="space-y-2">
+            <h2 class="text-xl font-semibold tracking-tight">Priming Volume Calculator (Tube ID)</h2>
+            <p class="text-sm text-slate-600 dark:text-slate-300">Select a standard tubing ID and length to calculate priming volume. ID is the inner diameter (wall thickness not included).</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label for="priming-id" class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Tube ID</label>
+              <select id="priming-id" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
+                <option value="">Select ID</option>
+                <option value="1/2">1/2"</option>
+                <option value="3/8">3/8"</option>
+                <option value="1/4">1/4"</option>
+                <option value="3/16">3/16"</option>
+                <option value="3/32">3/32"</option>
+                <option value="1/16">1/16"</option>
+              </select>
+              <div class="rounded-xl border border-slate-100 dark:border-primary-800 bg-slate-50 dark:bg-primary-800/60 p-3 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                <div class="flex justify-between">
+                  <span>ID (mm)</span>
+                  <span id="priming-id-mm" class="font-semibold text-primary-900 dark:text-white">—</span>
+                </div>
+                <div class="flex justify-between">
+                  <span>mL/m</span>
+                  <span id="priming-ml-per-m" class="font-semibold text-primary-900 dark:text-white">—</span>
+                </div>
+                <div class="flex justify-between">
+                  <span>mL/cm</span>
+                  <span id="priming-ml-per-cm" class="font-semibold text-primary-900 dark:text-white">—</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label for="priming-length" class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Length</label>
+              <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
+                <input id="priming-length" type="number" min="0" step="0.01" placeholder="Enter length" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
+                <select id="priming-length-unit" class="w-full sm:w-28 bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
+                  <option value="cm">cm</option>
+                  <option value="m" selected>m</option>
+                  <option value="ft">ft</option>
+                  <option value="in">in</option>
+                </select>
+              </div>
+              <p id="priming-length-error" class="text-xs text-red-500 hidden">Length must be 0 or greater.</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Length (m): <span id="priming-length-m" class="font-semibold text-slate-700 dark:text-slate-200">—</span></p>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-800/50 p-4 text-center space-y-1">
+            <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Priming Volume</div>
+            <div id="priming-volume" class="text-3xl md:text-4xl font-bold text-accent-500">—</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">mL</div>
+          </div>
+
+          <div class="text-xs text-slate-500 dark:text-slate-400 space-y-1">
+            <p class="font-semibold text-slate-600 dark:text-slate-300">Formula</p>
+            <p>V(mL) = (π/4) × ID(mm)<sup>2</sup> × Length(m)</p>
+          </div>
+        </div>
+
+        <details class="mt-4 group">
+          <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+            <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
+          </summary>
+          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+            <ol class="list-decimal pl-4 space-y-3">
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Purpose</p>
+                <p>This calculator estimates priming volume (internal fluid volume) of perfusion tubing based on tubing inner diameter (ID) and tubing length. It is intended for quick circuit planning and documentation when you need an approximate volume contribution from tubing segments.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Input format</p>
+                <p class="font-semibold text-slate-600 dark:text-slate-300 mt-1">2.1 Tube ID selection (standard perfusion tubing)</p>
+                <p>Select one of the common tubing inner diameter (ID) sizes from the dropdown:</p>
+                <ul class="list-disc pl-4 space-y-1 mt-1">
+                  <li>1/16" (ID 1.5875 mm)</li>
+                  <li>3/32" (ID 2.38125 mm)</li>
+                  <li>3/16" (ID 4.7625 mm)</li>
+                  <li>1/4" (ID 6.35 mm)</li>
+                  <li>3/8" (ID 9.525 mm)</li>
+                  <li>1/2" (ID 12.7 mm)</li>
+                </ul>
+                <p class="mt-1">The calculator displays ID in mm and reference volumes (mL/m, mL/cm).</p>
+                <p class="font-semibold text-slate-600 dark:text-slate-300 mt-2">2.2 Length entry</p>
+                <p>Enter tubing length as a numeric value (decimals allowed) and choose a unit: cm / m / ft / in.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Core calculation</p>
+                <p class="font-semibold text-slate-600 dark:text-slate-300 mt-1">3.1 Unit conversion</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>cm → m: L(m) = L(cm) / 100</li>
+                  <li>m → m: L(m) = L(m)</li>
+                  <li>in → m: L(m) = L(in) × 0.0254</li>
+                  <li>ft → m: L(m) = L(ft) × 0.3048</li>
+                </ul>
+                <p class="font-semibold text-slate-600 dark:text-slate-300 mt-2">3.2 Tube internal volume (cylinder model)</p>
+                <p>Assuming uniform cylinder geometry with inner diameter ID(mm):</p>
+                <p>V(mL) = (π/4) × [ID(mm)]<sup>2</sup> × L(m)</p>
+                <p class="mt-1">This works directly in mL because 1 mm³ = 0.001 mL, and the formula is arranged to use ID in mm and length in m.</p>
+                <p class="font-semibold text-slate-600 dark:text-slate-300 mt-2">3.3 Reference values shown to the user</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>mL/m = (π/4) × [ID(mm)]<sup>2</sup></li>
+                  <li>mL/cm = (mL/m) / 100</li>
+                </ul>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Validation and rounding</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Length must be 0 or greater.</li>
+                  <li>If length is blank or invalid, the result is not calculated.</li>
+                  <li>Results are displayed in mL and rounded for readability (e.g., 0.1 mL).</li>
+                  <li>This tool calculates geometric internal volume only; no clinical correction factors are applied.</li>
+                </ul>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Clinical use &amp; limitations</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Internal volume depends on inner diameter and length.</li>
+                  <li>Wall thickness does not change internal volume if the ID is already known (wall thickness matters only if deriving ID from an outer diameter spec).</li>
+                  <li>Real-world priming volume can differ due to manufacturing tolerances and additional circuit components (connectors, stopcocks, reservoirs/filters/oxygenator volumes), partial collapse/kinks, and measurement conditions.</li>
+                </ul>
+                <p class="mt-1">This calculator is for workflow support and estimation only and does not replace institutional perfusion records, manufacturer specifications, or regulated medical device calculations.</p>
+              </li>
+            </ol>
+          </div>
+        </details>
       </section>
 
       <section id="view-info" class="hidden animate-in fade-in duration-300">

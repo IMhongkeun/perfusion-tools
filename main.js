@@ -1114,6 +1114,91 @@ function updateLBM() {
   }
 }
 
+// -----------------------------
+// Priming Volume Calculator
+// -----------------------------
+const PRIMING_TUBE_IDS = [
+  { key: '1/2', label: '1/2"', idInch: 0.5, idMm: 12.7 },
+  { key: '3/8', label: '3/8"', idInch: 0.375, idMm: 9.525 },
+  { key: '1/4', label: '1/4"', idInch: 0.25, idMm: 6.35 },
+  { key: '3/16', label: '3/16"', idInch: 0.1875, idMm: 4.7625 },
+  { key: '3/32', label: '3/32"', idInch: 0.09375, idMm: 2.38125 },
+  { key: '1/16', label: '1/16"', idInch: 0.0625, idMm: 1.5875 }
+];
+
+function convertLengthToMeters(length, unit) {
+  if (!length && length !== 0) return null;
+  switch (unit) {
+    case 'cm':
+      return length / 100;
+    case 'm':
+      return length;
+    case 'ft':
+      return length * 0.3048;
+    case 'in':
+      return length * 0.0254;
+    default:
+      return length;
+  }
+}
+
+function calculatePrimingVolumeMl(idMm, lengthM) {
+  if (idMm == null || lengthM == null) return null;
+  // Formula: V(mL) = (π/4) × ID(mm)^2 × Length(m)
+  return (Math.PI / 4) * Math.pow(idMm, 2) * lengthM;
+}
+
+function updatePrimingVolume() {
+  const idSelect = el('priming-id');
+  const lengthInput = el('priming-length');
+  const unitSelect = el('priming-length-unit');
+  const idMmEl = el('priming-id-mm');
+  const mlPerMEl = el('priming-ml-per-m');
+  const mlPerCmEl = el('priming-ml-per-cm');
+  const lengthMEl = el('priming-length-m');
+  const volumeEl = el('priming-volume');
+  const lengthError = el('priming-length-error');
+
+  if (!idSelect || !lengthInput || !unitSelect) return;
+
+  const tube = PRIMING_TUBE_IDS.find(item => item.key === idSelect.value);
+  if (tube) {
+    const mlPerM = (Math.PI / 4) * Math.pow(tube.idMm, 2);
+    const mlPerCm = mlPerM / 100;
+    if (idMmEl) idMmEl.textContent = tube.idMm.toFixed(4);
+    if (mlPerMEl) mlPerMEl.textContent = mlPerM.toFixed(2);
+    if (mlPerCmEl) mlPerCmEl.textContent = mlPerCm.toFixed(3);
+  } else {
+    if (idMmEl) idMmEl.textContent = '—';
+    if (mlPerMEl) mlPerMEl.textContent = '—';
+    if (mlPerCmEl) mlPerCmEl.textContent = '—';
+  }
+
+  const lengthRaw = lengthInput.value.trim();
+  const lengthProvided = lengthRaw !== '';
+  const lengthValue = lengthProvided ? parseFloat(lengthRaw) : null;
+  const lengthInvalid = lengthProvided && (Number.isNaN(lengthValue) || lengthValue < 0);
+
+  if (lengthError) lengthError.classList.toggle('hidden', !lengthInvalid);
+
+  if (lengthInvalid || !lengthProvided) {
+    if (lengthMEl) lengthMEl.textContent = '—';
+    if (volumeEl) volumeEl.textContent = '—';
+    return;
+  }
+
+  const lengthM = convertLengthToMeters(lengthValue, unitSelect.value);
+  if (lengthMEl) lengthMEl.textContent = lengthM != null ? lengthM.toFixed(4) : '—';
+
+  if (!tube || lengthM == null) {
+    if (volumeEl) volumeEl.textContent = '—';
+    return;
+  }
+
+  const volumeMl = calculatePrimingVolumeMl(tube.idMm, lengthM);
+  if (volumeEl) volumeEl.textContent = volumeMl != null ? volumeMl.toFixed(1) : '—';
+}
+
 function setTimeError(inputEl, hasError) {
   if (!inputEl) return;
   ['ring-1', 'ring-rose-400', 'border-rose-400'].forEach(cls => inputEl.classList.toggle(cls, hasError));
@@ -1295,7 +1380,7 @@ function navigateTo(path) {
 function route() {
   const path = getActivePath();
 
-  const sections = ['view-home', 'view-bsa', 'view-do2i', 'view-hct', 'view-lbm', 'view-heparin', 'view-timecalc', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
+  const sections = ['view-home', 'view-bsa', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
     el(sid).classList.add('hidden');
   });
@@ -1306,6 +1391,7 @@ function route() {
   else if (path.includes('do2i') || path.includes('gdp')) { el('view-do2i').classList.remove('hidden'); key = 'do2i'; }
   else if (path.includes('predicted-hct')) { el('view-hct').classList.remove('hidden'); key = 'predicted-hct'; }
   else if (path.includes('lbm')) { el('view-lbm').classList.remove('hidden'); key = 'lbm'; }
+  else if (path.includes('priming-volume')) { el('view-priming-volume').classList.remove('hidden'); key = 'priming-volume'; }
   else if (path.includes('heparin')) { el('view-heparin').classList.remove('hidden'); key = 'heparin'; }
   else if (path.includes('timecalc')) { el('view-timecalc').classList.remove('hidden'); key = 'timecalc'; }
   else if (path.includes('faq')) { el('faq').classList.remove('hidden'); key = 'faq'; }
@@ -1322,6 +1408,7 @@ function route() {
     'bsa': ['nav-bsa', 'side-bsa', 'mob-bsa'],
     'lbm': ['nav-lbm', 'side-lbm', 'mob-lbm'],
     'heparin': ['nav-heparin', 'side-heparin', 'mob-heparin'],
+    'priming-volume': ['nav-priming', 'side-priming', null],
     'timecalc': ['nav-time', 'side-time', 'mob-time'],
     'faq': ['nav-faq', 'side-faq', null],
     'info': ['nav-info', 'side-info', 'mob-info']
@@ -1482,6 +1569,14 @@ window.addEventListener('DOMContentLoaded', () => {
     if (x) x.addEventListener('change', updateLBM);
   });
 
+  ['priming-id', 'priming-length', 'priming-length-unit'].forEach(id => {
+    const x = el(id);
+    if (x) {
+      x.addEventListener('input', updatePrimingVolume);
+      x.addEventListener('change', updatePrimingVolume);
+    }
+  });
+
   setupContactActions();
 
   initTimeCalculator();
@@ -1491,4 +1586,5 @@ window.addEventListener('DOMContentLoaded', () => {
   updateGDP();
   updateHct();
   updateLBM();
+  updatePrimingVolume();
 });
