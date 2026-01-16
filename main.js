@@ -1118,12 +1118,12 @@ function updateLBM() {
 // Priming Volume Calculator
 // -----------------------------
 const PRIMING_TUBE_IDS = [
-  { key: '1/16', label: '1/16"', idInch: 0.0625, idMm: 1.5875 },
-  { key: '3/32', label: '3/32"', idInch: 0.09375, idMm: 2.38125 },
-  { key: '3/16', label: '3/16"', idInch: 0.1875, idMm: 4.7625 },
-  { key: '1/4', label: '1/4"', idInch: 0.25, idMm: 6.35 },
+  { key: '1/2', label: '1/2"', idInch: 0.5, idMm: 12.7 },
   { key: '3/8', label: '3/8"', idInch: 0.375, idMm: 9.525 },
-  { key: '1/2', label: '1/2"', idInch: 0.5, idMm: 12.7 }
+  { key: '1/4', label: '1/4"', idInch: 0.25, idMm: 6.35 },
+  { key: '3/16', label: '3/16"', idInch: 0.1875, idMm: 4.7625 },
+  { key: '3/32', label: '3/32"', idInch: 0.09375, idMm: 2.38125 },
+  { key: '1/16', label: '1/16"', idInch: 0.0625, idMm: 1.5875 }
 ];
 
 function convertLengthToMeters(length, unit) {
