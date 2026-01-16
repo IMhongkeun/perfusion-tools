@@ -1746,6 +1746,73 @@
             <p>V(mL) = (π/4) × ID(mm)<sup>2</sup> × Length(m)</p>
           </div>
         </div>
+
+        <details class="mt-4 group">
+          <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+            <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
+          </summary>
+          <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+            <ol class="list-decimal pl-4 space-y-3">
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Purpose</p>
+                <p>This calculator estimates priming volume (internal fluid volume) of perfusion tubing based on tubing inner diameter (ID) and tubing length. It is intended for quick circuit planning and documentation when you need an approximate volume contribution from tubing segments.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Input format</p>
+                <p class="font-semibold text-slate-600 dark:text-slate-300 mt-1">2.1 Tube ID selection (standard perfusion tubing)</p>
+                <p>Select one of the common tubing inner diameter (ID) sizes from the dropdown:</p>
+                <ul class="list-disc pl-4 space-y-1 mt-1">
+                  <li>1/16" (ID 1.5875 mm)</li>
+                  <li>3/32" (ID 2.38125 mm)</li>
+                  <li>3/16" (ID 4.7625 mm)</li>
+                  <li>1/4" (ID 6.35 mm)</li>
+                  <li>3/8" (ID 9.525 mm)</li>
+                  <li>1/2" (ID 12.7 mm)</li>
+                </ul>
+                <p class="mt-1">The calculator displays ID in mm and reference volumes (mL/m, mL/cm).</p>
+                <p class="font-semibold text-slate-600 dark:text-slate-300 mt-2">2.2 Length entry</p>
+                <p>Enter tubing length as a numeric value (decimals allowed) and choose a unit: cm / m / ft / in.</p>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Core calculation</p>
+                <p class="font-semibold text-slate-600 dark:text-slate-300 mt-1">3.1 Unit conversion</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>cm → m: L(m) = L(cm) / 100</li>
+                  <li>m → m: L(m) = L(m)</li>
+                  <li>in → m: L(m) = L(in) × 0.0254</li>
+                  <li>ft → m: L(m) = L(ft) × 0.3048</li>
+                </ul>
+                <p class="font-semibold text-slate-600 dark:text-slate-300 mt-2">3.2 Tube internal volume (cylinder model)</p>
+                <p>Assuming uniform cylinder geometry with inner diameter ID(mm):</p>
+                <p>V(mL) = (π/4) × [ID(mm)]<sup>2</sup> × L(m)</p>
+                <p class="mt-1">This works directly in mL because 1 mm³ = 0.001 mL, and the formula is arranged to use ID in mm and length in m.</p>
+                <p class="font-semibold text-slate-600 dark:text-slate-300 mt-2">3.3 Reference values shown to the user</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>mL/m = (π/4) × [ID(mm)]<sup>2</sup></li>
+                  <li>mL/cm = (mL/m) / 100</li>
+                </ul>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Validation and rounding</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Length must be 0 or greater.</li>
+                  <li>If length is blank or invalid, the result is not calculated.</li>
+                  <li>Results are displayed in mL and rounded for readability (e.g., 0.1 mL).</li>
+                  <li>This tool calculates geometric internal volume only; no clinical correction factors are applied.</li>
+                </ul>
+              </li>
+              <li>
+                <p class="font-semibold text-slate-700 dark:text-slate-200">Clinical use &amp; limitations</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Internal volume depends on inner diameter and length.</li>
+                  <li>Wall thickness does not change internal volume if the ID is already known (wall thickness matters only if deriving ID from an outer diameter spec).</li>
+                  <li>Real-world priming volume can differ due to manufacturing tolerances and additional circuit components (connectors, stopcocks, reservoirs/filters/oxygenator volumes), partial collapse/kinks, and measurement conditions.</li>
+                </ul>
+                <p class="mt-1">This calculator is for workflow support and estimation only and does not replace institutional perfusion records, manufacturer specifications, or regulated medical device calculations.</p>
+              </li>
+            </ol>
+          </div>
+        </details>
       </section>
 
       <section id="view-info" class="hidden animate-in fade-in duration-300">
