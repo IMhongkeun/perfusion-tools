@@ -1109,6 +1109,240 @@ function setupContactActions() {
 }
 
 // -----------------------------
+// Quick Reference (tabs + cards)
+// -----------------------------
+let quickReferenceInitialized = false;
+
+function getQuickReferenceData() {
+  return window.quickReferenceData || { tabs: [] };
+}
+
+function getLatestReviewedDate(tabs) {
+  const dates = [];
+  tabs.forEach(tab => {
+    (tab.cards || []).forEach(card => {
+      if (card.lastReviewed) dates.push(card.lastReviewed);
+    });
+  });
+  if (!dates.length) return '—';
+  return dates.sort().slice(-1)[0];
+}
+
+function buildQuickReferenceCopyText(card) {
+  const unitText = card.unit ? ` ${card.unit}` : '';
+  const base = card.copyText || `${card.title}: ${card.value}${unitText}`.trim();
+  return card.notes ? `${base} — ${card.notes}` : base;
+}
+
+function createQuickReferenceCard(card) {
+  const cardEl = document.createElement('div');
+  cardEl.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/70 p-4 shadow-sm flex flex-col gap-2';
+
+  const header = document.createElement('div');
+  header.className = 'flex items-start justify-between gap-3';
+
+  const title = document.createElement('div');
+  title.className = 'text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400';
+  title.textContent = card.title;
+
+  const copyBtn = document.createElement('button');
+  copyBtn.type = 'button';
+  copyBtn.className = 'text-[11px] font-semibold text-slate-500 dark:text-slate-300 border border-slate-200 dark:border-primary-700 rounded-full px-2.5 py-1 hover:text-accent-600 hover:border-accent-500 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-primary-900';
+  copyBtn.textContent = 'Copy';
+  copyBtn.setAttribute('aria-label', `Copy ${card.title}`);
+
+  header.appendChild(title);
+  header.appendChild(copyBtn);
+
+  const value = document.createElement('div');
+  value.className = 'text-2xl font-bold text-primary-900 dark:text-white flex flex-wrap items-baseline gap-2';
+  value.innerHTML = `<span>${card.value}</span>${card.unit ? `<span class=\"text-sm font-semibold text-slate-500 dark:text-slate-400\">${card.unit}</span>` : ''}`;
+
+  const notes = document.createElement('div');
+  notes.className = 'text-xs text-slate-500 dark:text-slate-400';
+  notes.textContent = card.notes || '';
+
+  cardEl.appendChild(header);
+  cardEl.appendChild(value);
+  if (card.notes) cardEl.appendChild(notes);
+
+  copyBtn.addEventListener('click', async () => {
+    const text = buildQuickReferenceCopyText(card);
+    const original = copyBtn.textContent;
+    copyBtn.textContent = 'Copied!';
+    copyBtn.classList.add('text-accent-600', 'border-accent-500');
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+    } catch (err) {
+      copyBtn.textContent = 'Copy failed';
+      copyBtn.classList.add('text-red-500', 'border-red-300');
+    } finally {
+      setTimeout(() => {
+        copyBtn.textContent = original;
+        copyBtn.classList.remove('text-accent-600', 'border-accent-500', 'text-red-500', 'border-red-300');
+      }, 1500);
+    }
+  });
+
+  return cardEl;
+}
+
+function createAcpFlowCalculator(flowRange) {
+  const container = document.createElement('div');
+  container.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/60 p-4 space-y-3';
+  container.innerHTML = `
+    <div class="flex flex-col md:flex-row md:items-end gap-3">
+      <div class="flex-1 space-y-1">
+        <label for="quick-reference-weight" class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Weight (kg)</label>
+        <input id="quick-reference-weight" type="number" min="0" step="0.1" placeholder="Enter weight" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+      </div>
+      <div class="flex-1 space-y-1">
+        <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">ACP Flow Range</div>
+        <div id="quick-reference-flow-ml" class="text-lg font-semibold text-primary-900 dark:text-white">—</div>
+        <div id="quick-reference-flow-l" class="text-xs text-slate-500 dark:text-slate-400">—</div>
+      </div>
+    </div>
+    <p class="text-[11px] text-slate-500 dark:text-slate-400">Computed from the ACP flow range in the reference cards.</p>
+  `;
+
+  const weightInput = container.querySelector('#quick-reference-weight');
+  const flowMl = container.querySelector('#quick-reference-flow-ml');
+  const flowL = container.querySelector('#quick-reference-flow-l');
+
+  const updateFlow = () => {
+    const weight = parseFloat(weightInput.value);
+    if (!flowRange || !(weight > 0)) {
+      flowMl.textContent = '—';
+      flowL.textContent = '—';
+      return;
+    }
+    // ACP flow calculation: (mL/kg/min) × kg = mL/min; divide by 1000 for L/min.
+    const minMl = flowRange.min * weight;
+    const maxMl = flowRange.max * weight;
+    const minL = minMl / 1000;
+    const maxL = maxMl / 1000;
+    flowMl.textContent = `${Math.round(minMl)}–${Math.round(maxMl)} mL/min`;
+    flowL.textContent = `${minL.toFixed(2)}–${maxL.toFixed(2)} L/min`;
+  };
+
+  weightInput.addEventListener('input', updateFlow);
+  updateFlow();
+
+  return container;
+}
+
+function initQuickReference() {
+  if (quickReferenceInitialized) return;
+
+  const data = getQuickReferenceData();
+  const tabs = data.tabs || [];
+  const tabList = el('quick-reference-tabs');
+  const panelContainer = el('quick-reference-panels');
+  const lastReviewedEl = el('quick-reference-last-reviewed');
+
+  if (!tabList || !panelContainer || !tabs.length) return;
+
+  tabList.innerHTML = '';
+  panelContainer.innerHTML = '';
+
+  const activeClasses = ['bg-primary-900', 'text-white', 'border-primary-900', 'dark:bg-accent-500', 'dark:text-slate-900', 'dark:border-accent-500'];
+  const inactiveClasses = ['bg-white', 'text-slate-600', 'border-slate-200', 'dark:bg-primary-900', 'dark:text-slate-300', 'dark:border-primary-700'];
+
+  const setActiveTab = (tabId, focusTab = false) => {
+    const buttons = tabList.querySelectorAll('[role=\"tab\"]');
+    const panels = panelContainer.querySelectorAll('[role=\"tabpanel\"]');
+    buttons.forEach(button => {
+      const isActive = button.dataset.tabId === tabId;
+      button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      button.setAttribute('tabindex', isActive ? '0' : '-1');
+      button.classList.remove(...activeClasses, ...inactiveClasses);
+      button.classList.add(...(isActive ? activeClasses : inactiveClasses));
+      if (isActive && focusTab) button.focus();
+    });
+    panels.forEach(panel => {
+      if (panel.dataset.tabId === tabId) {
+        panel.removeAttribute('hidden');
+      } else {
+        panel.setAttribute('hidden', '');
+      }
+    });
+  };
+
+  tabs.forEach((tab, index) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.id = `quick-tab-${tab.id}`;
+    button.dataset.tabId = tab.id;
+    button.setAttribute('role', 'tab');
+    button.setAttribute('aria-controls', `quick-panel-${tab.id}`);
+    button.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
+    button.setAttribute('tabindex', index === 0 ? '0' : '-1');
+    button.className = 'px-4 py-2 rounded-full text-sm font-semibold border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-primary-900';
+    button.classList.add(...(index === 0 ? activeClasses : inactiveClasses));
+    button.textContent = tab.label;
+
+    tabList.appendChild(button);
+
+    const panel = document.createElement('div');
+    panel.id = `quick-panel-${tab.id}`;
+    panel.dataset.tabId = tab.id;
+    panel.setAttribute('role', 'tabpanel');
+    panel.setAttribute('aria-labelledby', button.id);
+    panel.className = 'space-y-4';
+    if (index !== 0) panel.setAttribute('hidden', '');
+
+    if (tab.id === 'acp') {
+      const flowCard = (tab.cards || []).find(card => card.id === 'acp-flow');
+      const flowRange = flowCard && flowCard.range ? flowCard.range : null;
+      panel.appendChild(createAcpFlowCalculator(flowRange));
+    }
+
+    const grid = document.createElement('div');
+    grid.className = 'grid gap-4 md:grid-cols-2';
+    (tab.cards || []).forEach(card => {
+      grid.appendChild(createQuickReferenceCard(card));
+    });
+
+    panel.appendChild(grid);
+    panelContainer.appendChild(panel);
+  });
+
+  tabList.addEventListener('click', (event) => {
+    const button = event.target.closest('[role=\"tab\"]');
+    if (!button) return;
+    setActiveTab(button.dataset.tabId);
+  });
+
+  tabList.addEventListener('keydown', (event) => {
+    const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End'];
+    if (!keys.includes(event.key)) return;
+    const buttons = Array.from(tabList.querySelectorAll('[role=\"tab\"]'));
+    const currentIndex = buttons.findIndex(button => button.getAttribute('aria-selected') === 'true');
+    let nextIndex = currentIndex;
+    if (event.key === 'ArrowRight') nextIndex = (currentIndex + 1) % buttons.length;
+    if (event.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+    if (event.key === 'Home') nextIndex = 0;
+    if (event.key === 'End') nextIndex = buttons.length - 1;
+    event.preventDefault();
+    const nextButton = buttons[nextIndex];
+    if (nextButton) setActiveTab(nextButton.dataset.tabId, true);
+  });
+
+  if (lastReviewedEl) lastReviewedEl.textContent = getLatestReviewedDate(tabs);
+
+  quickReferenceInitialized = true;
+}
+
+// -----------------------------
 // Router & Navigation Styling
 // -----------------------------
 function getActivePath() {
@@ -1138,7 +1372,7 @@ function navigateTo(path) {
 function route() {
   const path = getActivePath();
 
-  const sections = ['view-home', 'view-bsa', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
+  const sections = ['view-home', 'view-bsa', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'view-quick-reference', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
     el(sid).classList.add('hidden');
   });
@@ -1152,6 +1386,7 @@ function route() {
   else if (path.includes('priming-volume')) { el('view-priming-volume').classList.remove('hidden'); key = 'priming-volume'; }
   else if (path.includes('heparin')) { el('view-heparin').classList.remove('hidden'); key = 'heparin'; }
   else if (path.includes('timecalc')) { el('view-timecalc').classList.remove('hidden'); key = 'timecalc'; }
+  else if (path.includes('quick-reference')) { el('view-quick-reference').classList.remove('hidden'); key = 'quick-reference'; }
   else if (path.includes('faq')) { el('faq').classList.remove('hidden'); key = 'faq'; }
   else if (path.includes('info')) { el('view-info').classList.remove('hidden'); key = 'info'; }
   else if (path.includes('privacy')) { el('view-privacy').classList.remove('hidden'); key = 'privacy'; }
@@ -1168,6 +1403,7 @@ function route() {
     'heparin': ['nav-heparin', 'side-heparin', 'mob-heparin'],
     'priming-volume': ['nav-priming', 'side-priming', null],
     'timecalc': ['nav-time', 'side-time', 'mob-time'],
+    'quick-reference': ['nav-quick-reference', 'side-quick-reference', 'mob-quick-reference'],
     'faq': ['nav-faq', 'side-faq', null],
     'info': ['nav-info', 'side-info', 'mob-info']
   };
@@ -1198,6 +1434,9 @@ function route() {
 
   if (key === 'heparin') {
     initHeparinManagement();
+  }
+  if (key === 'quick-reference') {
+    initQuickReference();
   }
 }
 
