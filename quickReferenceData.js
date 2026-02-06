@@ -194,7 +194,7 @@ window.quickReferenceData = {
     },
     {
       id: 'tca',
-      label: 'HCA Safety Time',
+      label: 'HCA',
       headerTitle: 'HCA Safety Time by Temperature (Conservative Estimates)',
       tableRows: [
         {
