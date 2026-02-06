@@ -43,14 +43,6 @@ window.quickReferenceData = {
           range: { min: 10, max: 15 }
         },
         {
-          id: 'acp-flow-nirs',
-          title: 'Flow rate (NIRS monitoring)',
-          value: '40–60',
-          unit: 'mL/kg/min',
-          notes: 'Used in select studies with NIRS monitoring',
-          lastReviewed: '2024-11-15'
-        },
-        {
           id: 'acp-pressure',
           title: 'Perfusion pressure',
           value: '40–70',
