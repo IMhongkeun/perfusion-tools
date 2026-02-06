@@ -75,8 +75,8 @@ window.quickReferenceData = {
             title: 'Duration',
             value: 'Up to 80',
             unit: 'min (reference)',
-            notes: 'Elective cases',
-            info: 'If >40–50 min, consider bilateral ACP.',
+            notes: 'Varies by center/monitoring/bilateral ACP',
+            info: 'Reported durations vary; if >40–50 min, consider bilateral ACP.',
             lastReviewed: '2024-11-15'
           },
           {
@@ -109,9 +109,10 @@ window.quickReferenceData = {
           {
             id: 'acp-peds-pressure',
             title: 'Perfusion pressure',
-            value: '20–25',
-            unit: 'mmHg',
-            info: 'Lower pressures may be adequate in neonates; some protocols use 40–60.',
+            value: 'Titrate',
+            unit: '',
+            notes: 'Often 20–25 mmHg reported',
+            info: 'Higher MAP targets are used in some centers; adjust per protocol/monitoring site.',
             lastReviewed: '2024-11-15'
           },
           {
@@ -141,9 +142,10 @@ window.quickReferenceData = {
           {
             id: 'acp-peds-monitoring',
             title: 'Monitoring',
-            value: 'NIRS, TCD',
+            value: 'NIRS, EEG',
             unit: '',
-            info: 'Target rSO₂ 90–95%; TCD velocity 18–25 cm/sec; EEG for seizures.',
+            notes: 'TCD optional',
+            info: 'Use baseline/trend changes and bilateral symmetry rather than absolute values.',
             lastReviewed: '2024-11-15'
           },
           {
@@ -170,34 +172,34 @@ window.quickReferenceData = {
           info: 'Excess pressure increases brain edema risk.',
           lastReviewed: '2024-11-15'
         },
-        {
-          id: 'rcp-flow',
-          title: 'Flow rate',
-          value: '100–500',
-          unit: 'mL/min',
-          notes: 'Prefer 150–300',
-          info: 'Max 500 mL/min; adjust based on pressure.',
-          lastReviewed: '2024-11-15'
-        },
-        {
-          id: 'rcp-monitoring',
-          title: 'Monitoring',
-          value: 'NIRS, EEG',
-          unit: '',
-          notes: 'TCD optional',
-          info: 'rScO₂ >60–70% bilateral; EEG for burst suppression/ischemia.',
-          lastReviewed: '2024-11-15'
-        }
+          {
+            id: 'rcp-flow',
+            title: 'Flow rate',
+            value: '300–500',
+            unit: 'mL/min',
+            notes: 'Pressure-driven (SVC <25)',
+            info: 'Flow is titrated to pressure; 300–500 mL/min is commonly cited.',
+            lastReviewed: '2024-11-15'
+          },
+          {
+            id: 'rcp-monitoring',
+            title: 'Monitoring',
+            value: 'NIRS, EEG',
+            unit: '',
+            notes: 'TCD optional',
+            info: 'Use baseline/trend changes and bilateral symmetry rather than absolute values.',
+            lastReviewed: '2024-11-15'
+          }
       ]
     },
     {
       id: 'tca',
-      label: 'HCA Safety Time',
+      label: 'HCA',
       headerTitle: 'HCA Safety Time by Temperature (Conservative Estimates)',
       tableRows: [
         {
           id: 'hca-28-30',
-          temperature: '28–30 (Mild–Moderate)',
+          temperature: '28–30<br>(Mild–Moderate)',
           duration: '10–15 (conservative)',
           notes: '<strong>MHCA + ACP</strong> ≤40 min possible; shorter CPB time, less coagulopathy',
           severity: 'safe',
@@ -213,7 +215,7 @@ window.quickReferenceData = {
         },
         {
           id: 'hca-20-24',
-          temperature: '20–24 (Low–Moderate)',
+          temperature: '20–24<br>(Low–Moderate)',
           duration: '20–30',
           notes: '<strong>ACP</strong> shows non-inferior cognitive outcomes vs DHCA',
           severity: 'caution',
