@@ -51,7 +51,7 @@ window.quickReferenceData = {
             title: 'Perfusion pressure',
             value: '40–60',
             unit: 'mmHg',
-            info: 'Use radial artery pressure reference.',
+            info: 'Right radial artery pressure reference.',
             lastReviewed: '2024-11-15'
           },
           {
