@@ -1230,6 +1230,51 @@ function createAcpFlowCalculator(flowRange) {
   return container;
 }
 
+function createAcpProfileToggle(activeProfile, onChange) {
+  const toggle = document.createElement('div');
+  toggle.className = 'flex flex-wrap gap-2';
+
+  const profiles = [
+    { id: 'adult', label: 'Adult' },
+    { id: 'pediatric', label: 'Pediatric' }
+  ];
+
+  profiles.forEach(profile => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.dataset.profile = profile.id;
+    button.className = 'px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-primary-900';
+    const isActive = profile.id === activeProfile;
+    if (isActive) {
+      button.classList.add('bg-primary-900', 'text-white', 'border-primary-900', 'dark:bg-accent-500', 'dark:text-slate-900', 'dark:border-accent-500');
+    } else {
+      button.classList.add('bg-white', 'text-slate-600', 'border-slate-200', 'dark:bg-primary-900', 'dark:text-slate-300', 'dark:border-primary-700');
+    }
+    button.textContent = profile.label;
+    button.addEventListener('click', () => onChange(profile.id));
+    toggle.appendChild(button);
+  });
+
+  return toggle;
+}
+
+function renderAcpProfile(panel, cards, activeProfile, onChangeProfile) {
+  panel.innerHTML = '';
+  const flowCard = cards.find(card => card.range);
+  const flowRange = flowCard && flowCard.range ? flowCard.range : null;
+  panel.appendChild(createAcpFlowCalculator(flowRange));
+
+  const profileToggle = createAcpProfileToggle(activeProfile, onChangeProfile);
+  panel.appendChild(profileToggle);
+
+  const grid = document.createElement('div');
+  grid.className = 'grid gap-4 md:grid-cols-2';
+  cards.forEach(card => {
+    grid.appendChild(createQuickReferenceCard(card));
+  });
+  panel.appendChild(grid);
+}
+
 function initQuickReference() {
   if (quickReferenceInitialized) return;
 
@@ -1291,9 +1336,16 @@ function initQuickReference() {
     if (index !== 0) panel.setAttribute('hidden', '');
 
     if (tab.id === 'acp') {
-      const flowCard = (tab.cards || []).find(card => card.range);
-      const flowRange = flowCard && flowCard.range ? flowCard.range : null;
-      panel.appendChild(createAcpFlowCalculator(flowRange));
+      const profiles = tab.profiles || {};
+      let activeProfile = profiles.adult ? 'adult' : 'pediatric';
+      const renderProfile = (profileId) => {
+        activeProfile = profileId;
+        const cards = profiles[profileId] || [];
+        renderAcpProfile(panel, cards, activeProfile, renderProfile);
+      };
+      renderProfile(activeProfile);
+      panelContainer.appendChild(panel);
+      return;
     }
 
     const grid = document.createElement('div');
