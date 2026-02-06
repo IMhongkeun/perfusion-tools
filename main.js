@@ -1328,20 +1328,7 @@ function renderHcaTable(panel, tab) {
   tableWrap.appendChild(table);
   panel.appendChild(tableWrap);
 
-  const noteBlock = document.createElement('div');
-  noteBlock.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/60 p-4 space-y-2';
-  noteBlock.innerHTML = `
-    <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Note</div>
-  `;
-  const noteList = document.createElement('ul');
-  noteList.className = 'list-disc pl-4 text-xs text-slate-600 dark:text-slate-300 space-y-1';
-  (tab.noteLines || []).forEach(line => {
-    const li = document.createElement('li');
-    li.textContent = line;
-    noteList.appendChild(li);
-  });
-  noteBlock.appendChild(noteList);
-  panel.appendChild(noteBlock);
+  return;
 }
 
 function initQuickReference() {

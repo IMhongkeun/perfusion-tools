@@ -227,13 +227,6 @@ window.quickReferenceData = {
           severity: 'high',
           tooltip: 'Profound hypothermia is uncommon due to bleeding risk.'
         }
-      ],
-      noteLines: [
-        'Varies by center, patient factors (age, comorbidities), neuromonitoring (NIRS rSO₂ >50–60%, EEG), and use of ACP/RCP.',
-        'Always minimize circulatory arrest time.',
-        'Cooling time: at least 20–50 min; Rewarming: ≤0.5°C/min recommended.',
-        'Reference: 2024 EACTS/EACTAIC/EBCP Guidelines (conservative estimates).',
-        'Follow institutional protocols and patient monitoring; educational use only.'
       ]
     }
   ]
