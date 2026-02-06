@@ -13,6 +13,7 @@
  * @property {string} value
  * @property {string} unit
  * @property {string=} notes
+ * @property {string=} info
  * @property {string=} copyText
  * @property {{label: string, url?: string}[]=} references
  * @property {string=} lastReviewed
@@ -35,25 +36,53 @@ window.quickReferenceData = {
       cards: [
         {
           id: 'acp-flow-standard',
-          title: 'Flow rate (general)',
-          value: '10–15',
+          title: 'Flow rate',
+          value: '8–12',
           unit: 'mL/kg/min',
-          notes: 'General recommendation',
+          notes: 'Adult ACP target',
+          info: 'High-flow may increase cerebral edema risk; titrate with monitoring.',
           lastReviewed: '2024-11-15',
-          range: { min: 10, max: 15 }
+          range: { min: 8, max: 12 }
         },
         {
           id: 'acp-pressure',
           title: 'Perfusion pressure',
-          value: '40–70',
+          value: '40–60',
           unit: 'mmHg',
+          info: 'Use radial artery pressure reference.',
           lastReviewed: '2024-11-15'
         },
         {
           id: 'acp-temp',
           title: 'Perfusate temp',
-          value: '20–28',
+          value: '23–28',
           unit: '°C',
+          notes: 'Moderate hypothermia',
+          info: 'Moderate hypothermia is often favored over deep for neurologic outcomes.',
+          lastReviewed: '2024-11-15'
+        },
+        {
+          id: 'acp-ph',
+          title: 'pH management',
+          value: 'Alpha-stat',
+          unit: '',
+          info: 'Preserves cerebral autoregulation; reduces embolization risk.',
+          lastReviewed: '2024-11-15'
+        },
+        {
+          id: 'acp-duration',
+          title: 'Duration',
+          value: 'Up to 80',
+          unit: 'min (elective)',
+          info: 'If >40–50 min, consider bilateral ACP.',
+          lastReviewed: '2024-11-15'
+        },
+        {
+          id: 'acp-monitoring',
+          title: 'Monitoring',
+          value: 'NIRS (rSO₂), EEG',
+          unit: '',
+          info: 'Confirm left-right balance with bilateral NIRS.',
           lastReviewed: '2024-11-15'
         },
         {

@@ -1132,9 +1132,44 @@ function createQuickReferenceCard(card) {
   const cardEl = document.createElement('div');
   cardEl.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/70 p-4 shadow-sm flex flex-col gap-2';
 
+  const header = document.createElement('div');
+  header.className = 'flex items-center justify-between gap-2';
+
   const title = document.createElement('div');
   title.className = 'text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400';
   title.textContent = card.title;
+
+  header.appendChild(title);
+
+  if (card.info) {
+    const infoWrap = document.createElement('div');
+    infoWrap.className = 'relative';
+
+    const infoButton = document.createElement('button');
+    infoButton.type = 'button';
+    infoButton.className = 'w-6 h-6 rounded-full border border-slate-200 dark:border-primary-700 text-xs font-semibold text-slate-500 dark:text-slate-300 hover:text-accent-600 hover:border-accent-500 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-primary-900';
+    infoButton.textContent = 'i';
+    infoButton.setAttribute('aria-label', `More info for ${card.title}`);
+
+    const infoPanel = document.createElement('div');
+    infoPanel.className = 'hidden absolute right-0 mt-2 w-56 rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900 shadow-lg p-3 text-xs text-slate-600 dark:text-slate-300';
+    infoPanel.textContent = card.info;
+
+    infoButton.addEventListener('click', () => {
+      const isHidden = infoPanel.classList.contains('hidden');
+      document.querySelectorAll('.quick-ref-info-panel').forEach(panel => {
+        panel.classList.add('hidden');
+      });
+      if (isHidden) {
+        infoPanel.classList.remove('hidden');
+      }
+    });
+
+    infoPanel.classList.add('quick-ref-info-panel');
+    infoWrap.appendChild(infoButton);
+    infoWrap.appendChild(infoPanel);
+    header.appendChild(infoWrap);
+  }
 
   const value = document.createElement('div');
   value.className = 'text-2xl font-bold text-primary-900 dark:text-white flex flex-wrap items-baseline gap-2';
@@ -1144,7 +1179,7 @@ function createQuickReferenceCard(card) {
   notes.className = 'text-xs text-slate-500 dark:text-slate-400';
   notes.textContent = card.notes || '';
 
-  cardEl.appendChild(title);
+  cardEl.appendChild(header);
   cardEl.appendChild(value);
   if (card.notes) cardEl.appendChild(notes);
 
@@ -1290,6 +1325,14 @@ function initQuickReference() {
     event.preventDefault();
     const nextButton = buttons[nextIndex];
     if (nextButton) setActiveTab(nextButton.dataset.tabId, true);
+  });
+
+  document.addEventListener('click', (event) => {
+    if (event.target.closest('.quick-ref-info-panel')) return;
+    if (event.target.closest('button')) return;
+    document.querySelectorAll('.quick-ref-info-panel').forEach(panel => {
+      panel.classList.add('hidden');
+    });
   });
 
   if (lastReviewedEl) lastReviewedEl.textContent = getLatestReviewedDate(tabs);
