@@ -75,7 +75,8 @@ window.quickReferenceData = {
             id: 'acp-adult-duration',
             title: 'Duration',
             value: 'Up to 80',
-            unit: 'min (elective)',
+            unit: 'min (reference)',
+            notes: 'Elective cases',
             info: 'If >40–50 min, consider bilateral ACP.',
             lastReviewed: '2024-11-15'
           },
@@ -101,7 +102,7 @@ window.quickReferenceData = {
             title: 'Flow rate',
             value: '40–80',
             unit: 'mL/kg/min',
-            notes: 'Median 50–64',
+            notes: 'Reference 50–64',
             info: 'Neonates: ~46 ± 6 mL/kg/min; <30 mL/kg/min risks hypoxic injury.',
             lastReviewed: '2024-11-15',
             range: { min: 40, max: 80 }
@@ -116,7 +117,7 @@ window.quickReferenceData = {
           },
           {
             id: 'acp-peds-temp',
-            title: 'Temperature',
+            title: 'Perfusate temp',
             value: '18–25',
             unit: '°C',
             info: '25°C moderate hypothermia preserves rSO₂; moderate often favored vs deep.',
@@ -142,7 +143,7 @@ window.quickReferenceData = {
             id: 'acp-peds-duration',
             title: 'Duration',
             value: '20–48',
-            unit: 'min (median)',
+            unit: 'min (reference)',
             info: 'Up to ~123 min reported; >45 min DHCA avoidance is common.',
             lastReviewed: '2024-11-15'
           },
