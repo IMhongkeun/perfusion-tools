@@ -41,7 +41,6 @@ window.quickReferenceData = {
             title: 'Flow rate',
             value: '8–12',
             unit: 'mL/kg/min',
-            notes: 'Adult ACP target',
             info: 'High-flow may increase cerebral edema risk; titrate with monitoring.',
             lastReviewed: '2024-11-15',
             range: { min: 8, max: 12 }
