@@ -131,6 +131,14 @@ window.quickReferenceData = {
             lastReviewed: '2024-11-15'
           },
           {
+            id: 'acp-peds-hct',
+            title: 'Hct',
+            value: '30–35',
+            unit: '%',
+            info: 'Neonatal/infant arch ACP + hypothermia commonly uses Hct 30–35% (adjust per protocol/NIRS/EEG).',
+            lastReviewed: '2024-11-15'
+          },
+          {
             id: 'acp-peds-duration',
             title: 'Duration',
             value: '20–48',
