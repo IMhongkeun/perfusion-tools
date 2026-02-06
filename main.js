@@ -1275,6 +1275,75 @@ function renderAcpProfile(panel, cards, activeProfile, onChangeProfile) {
   panel.appendChild(grid);
 }
 
+function renderHcaTable(panel, tab) {
+  panel.innerHTML = '';
+
+  const header = document.createElement('div');
+  header.className = 'text-sm font-semibold text-primary-900 dark:text-white';
+  header.textContent = tab.headerTitle || 'HCA Safety Time by Temperature';
+  panel.appendChild(header);
+
+  const tableWrap = document.createElement('div');
+  tableWrap.className = 'overflow-x-auto';
+
+  const table = document.createElement('table');
+  table.className = 'min-w-[640px] w-full text-xs border border-slate-200 dark:border-primary-800 rounded-xl overflow-hidden';
+  table.innerHTML = `
+    <thead class="bg-slate-50 dark:bg-primary-900/70 text-slate-600 dark:text-slate-300">
+      <tr>
+        <th class="text-left px-3 py-2">Temperature (°C)</th>
+        <th class="text-left px-3 py-2">Safe Duration (min)</th>
+        <th class="text-left px-3 py-2">Notes</th>
+      </tr>
+    </thead>
+  `;
+
+  const tbody = document.createElement('tbody');
+  (tab.tableRows || []).forEach(row => {
+    const tr = document.createElement('tr');
+    tr.className = 'border-t border-slate-100 dark:border-primary-800 hover:bg-slate-50/70 dark:hover:bg-primary-900/60';
+    if (row.tooltip) tr.title = row.tooltip;
+
+    const severityMap = {
+      safe: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300',
+      caution: 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300',
+      high: 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300'
+    };
+    const severityClass = severityMap[row.severity] || 'bg-slate-100 text-slate-600 dark:bg-primary-800 dark:text-slate-300';
+
+    tr.innerHTML = `
+      <td class="px-3 py-2 font-semibold text-slate-700 dark:text-slate-200">
+        <span class="inline-flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full ${severityClass}"></span>
+          <span>${row.temperature}</span>
+        </span>
+      </td>
+      <td class="px-3 py-2 text-slate-700 dark:text-slate-200">${row.duration}</td>
+      <td class="px-3 py-2 text-slate-600 dark:text-slate-300">${row.notes}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+  tableWrap.appendChild(table);
+  panel.appendChild(tableWrap);
+
+  const noteBlock = document.createElement('div');
+  noteBlock.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/60 p-4 space-y-2';
+  noteBlock.innerHTML = `
+    <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Note</div>
+  `;
+  const noteList = document.createElement('ul');
+  noteList.className = 'list-disc pl-4 text-xs text-slate-600 dark:text-slate-300 space-y-1';
+  (tab.noteLines || []).forEach(line => {
+    const li = document.createElement('li');
+    li.textContent = line;
+    noteList.appendChild(li);
+  });
+  noteBlock.appendChild(noteList);
+  panel.appendChild(noteBlock);
+}
+
 function initQuickReference() {
   if (quickReferenceInitialized) return;
 
@@ -1344,6 +1413,12 @@ function initQuickReference() {
         renderAcpProfile(panel, cards, activeProfile, renderProfile);
       };
       renderProfile(activeProfile);
+      panelContainer.appendChild(panel);
+      return;
+    }
+
+    if (tab.id === 'tca' && tab.tableRows) {
+      renderHcaTable(panel, tab);
       panelContainer.appendChild(panel);
       return;
     }
