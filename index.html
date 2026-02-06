@@ -309,6 +309,13 @@
         headingDescription: "Track pump and case times with automatic formatting helpers.",
         canonicalPath: "/timecalc"
       },
+      "/quick-reference": {
+        title: "Quick Reference — Perfusion Tools",
+        h1: "Quick Reference",
+        description: "Fast intraoperative lookup references for ACP, RCP, and TCA safety time.",
+        headingDescription: "Fast intraoperative lookup (reference only)",
+        canonicalPath: "/quick-reference"
+      },
       "/faq": {
         title: "Perfusionist Calculators — FAQ & Educational Notes",
         h1: "Frequently Asked Questions",
@@ -417,6 +424,7 @@
         <a href="/lbm" data-route id="nav-lbm" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">LBM</a>
         <a href="/priming-volume" data-route id="nav-priming" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Priming Volume</a>
         <a href="/timecalc" data-route id="nav-time" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Time</a>
+        <a href="/quick-reference" data-route id="nav-quick-reference" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Quick Reference</a>
         <a href="/info" data-route id="nav-info" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Info</a>
         <a href="/faq" data-route id="nav-faq" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">FAQ</a>
       </nav>
@@ -460,6 +468,9 @@
         </a>
         <a href="/timecalc" data-route id="side-time" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
           Time Calculator
+        </a>
+        <a href="/quick-reference" data-route id="side-quick-reference" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
+          Quick Reference
         </a>
       </div>
 
@@ -1789,6 +1800,92 @@
         </details>
       </section>
 
+      <section id="view-quick-reference" class="hidden animate-in fade-in duration-300">
+        <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 p-6 space-y-6">
+          <div class="space-y-2">
+            <h2 class="text-xl font-semibold tracking-tight text-primary-900 dark:text-white">Quick Reference</h2>
+            <p class="text-sm text-slate-600 dark:text-slate-300">Fast intraoperative lookup (reference only)</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Follow institutional protocols and patient monitoring; educational use only.</p>
+          </div>
+
+          <div class="space-y-4">
+            <div id="quick-reference-tabs" role="tablist" aria-label="Quick reference tabs" class="flex flex-wrap gap-2"></div>
+            <div id="quick-reference-panels"></div>
+          </div>
+
+          <details class="mt-4 group">
+            <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+              <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
+            </summary>
+            <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Quick reference guidance</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>These cards provide rapid lookup values for intraoperative use.</li>
+                  <li>Ranges vary by protocol, patient physiology, and monitoring targets.</li>
+                  <li>Always integrate pressure, NIRS/EEG, and lab trends when titrating flow.</li>
+                  <li>This tool is not a medical device and does not replace clinical judgment.</li>
+                  <li>Content is data-driven for easy updates and includes last-reviewed dates.</li>
+                  <li>Educational use only; follow institutional and surgeon-directed protocols.</li>
+                </ul>
+              </div>
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">ACP detail (adult reference)</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Flow rate: 8–12 mL/kg/min (≈0.6 mL/min/g cerebral tissue in some references).</li>
+                  <li>Perfusion pressure: 40–60 mmHg (right radial artery reference).</li>
+                  <li>Temperature: 23–28°C moderate hypothermia.</li>
+                  <li>pH management: Alpha-stat to support cerebral autoregulation.</li>
+                  <li>Duration: up to ~80 min (reference, elective cases); &gt;40–50 min consider bilateral ACP.</li>
+                  <li>Monitoring: NIRS (rSO₂) and EEG; confirm left-right balance with bilateral NIRS.</li>
+                </ul>
+              </div>
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">ACP right radial pressure rationale</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Most studies and protocols (Annals of Thoracic Surgery, EJCTS, AmSECT) use right radial artery pressure as a surrogate for cerebral perfusion pressure.</li>
+                  <li>Unilateral ACP (often via innominate or right axillary/subclavian) directly supplies the right carotid/right brain.</li>
+                  <li>Consensus target: adjust flow to keep right radial pressure ~40–60 mmHg (or 40–70).</li>
+                  <li>Left radial artery pressure can be lower due to collateral flow and may under-represent left-sided perfusion during unilateral ACP.</li>
+                </ul>
+              </div>
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">ACP detail (pediatric reference)</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Flow rate: 40–80 mL/kg/min (reference ~50–64); neonates ~46 ± 6 mL/kg/min.</li>
+                  <li>Perfusion pressure: commonly 20–25 mmHg (range depends on protocol/measurement site).</li>
+                  <li>Perfusate temp: 18–25°C; many ACP programs favor ~25°C moderate hypothermia.</li>
+                  <li>pH management: pH-stat is frequently used for neonatal/infant cerebral protection during hypothermia.</li>
+                  <li>Duration: ~20–48 min (reference); prolonged times reported in selected cases—if longer expected, avoid DHCA when possible and plan ACP strategy.</li>
+                  <li>Monitoring: Bilateral NIRS (trend-focused) ± EEG; TCD optional (availability dependent).</li>
+                  <li>Hct: neonatal/infant arch ACP + hypothermia commonly uses <strong>~30–35%</strong> as a reference range.</li>
+                  <li>Higher Hct raises O₂ content but increases viscosity—adjust with pressure/flow plus NIRS/EEG response and follow institutional protocols.</li>
+                </ul>
+              </div>
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">RCP detail (reference)</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>SVC pressure: 20–30 mmHg (target 20–25); excessive pressure risks brain edema.</li>
+                  <li>Flow: 100–500 mL/min (prefer 150–300); max 500 with pressure-based adjustment.</li>
+                  <li>Monitoring: NIRS rScO₂ &gt;60–70% bilateral; EEG for burst suppression/ischemia detection.</li>
+                  <li>TCD can be added to track cerebral blood flow velocity.</li>
+                </ul>
+              </div>
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">HCA safety-time notes</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Varies by center, patient factors (age, comorbidities), neuromonitoring (NIRS rSO₂ &gt;50–60%, EEG), and use of ACP/RCP.</li>
+                  <li>Always minimize circulatory arrest time.</li>
+                  <li>Cooling time: at least 20–50 min; Rewarming: ≤0.5°C/min recommended.</li>
+                  <li>Reference: 2024 EACTS/EACTAIC/EBCP Guidelines (conservative estimates).</li>
+                  <li>Follow institutional protocols and patient monitoring; educational use only.</li>
+                </ul>
+              </div>
+            </div>
+          </details>
+        </div>
+      </section>
+
       <section id="view-info" class="hidden animate-in fade-in duration-300">
         <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
           <div class="p-6 space-y-3 border-b border-slate-100 dark:border-primary-800 bg-slate-50/50 dark:bg-primary-800/30">
@@ -1951,12 +2048,17 @@
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
       <span class="text-[10px] font-medium">Time</span>
     </a>
+    <a href="/quick-reference" data-route id="mob-quick-reference" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6.75A2.75 2.75 0 016.75 4h10.5A2.75 2.75 0 0120 6.75v10.5A2.75 2.75 0 0117.25 20H6.75A2.75 2.75 0 014 17.25V6.75z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9h8M8 13h8M8 17h5" /></svg>
+      <span class="text-[10px] font-medium">Quick Ref</span>
+    </a>
     <a href="/info" data-route id="mob-info" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
       <span class="text-[10px] font-medium">Info</span>
     </a>
   </nav>
 
+  <script src="quickReferenceData.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
