@@ -1128,31 +1128,13 @@ function getLatestReviewedDate(tabs) {
   return dates.sort().slice(-1)[0];
 }
 
-function buildQuickReferenceCopyText(card) {
-  const unitText = card.unit ? ` ${card.unit}` : '';
-  const base = card.copyText || `${card.title}: ${card.value}${unitText}`.trim();
-  return card.notes ? `${base} — ${card.notes}` : base;
-}
-
 function createQuickReferenceCard(card) {
   const cardEl = document.createElement('div');
   cardEl.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/70 p-4 shadow-sm flex flex-col gap-2';
 
-  const header = document.createElement('div');
-  header.className = 'flex items-start justify-between gap-3';
-
   const title = document.createElement('div');
   title.className = 'text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400';
   title.textContent = card.title;
-
-  const copyBtn = document.createElement('button');
-  copyBtn.type = 'button';
-  copyBtn.className = 'text-[11px] font-semibold text-slate-500 dark:text-slate-300 border border-slate-200 dark:border-primary-700 rounded-full px-2.5 py-1 hover:text-accent-600 hover:border-accent-500 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-primary-900';
-  copyBtn.textContent = 'Copy';
-  copyBtn.setAttribute('aria-label', `Copy ${card.title}`);
-
-  header.appendChild(title);
-  header.appendChild(copyBtn);
 
   const value = document.createElement('div');
   value.className = 'text-2xl font-bold text-primary-900 dark:text-white flex flex-wrap items-baseline gap-2';
@@ -1162,36 +1144,9 @@ function createQuickReferenceCard(card) {
   notes.className = 'text-xs text-slate-500 dark:text-slate-400';
   notes.textContent = card.notes || '';
 
-  cardEl.appendChild(header);
+  cardEl.appendChild(title);
   cardEl.appendChild(value);
   if (card.notes) cardEl.appendChild(notes);
-
-  copyBtn.addEventListener('click', async () => {
-    const text = buildQuickReferenceCopyText(card);
-    const original = copyBtn.textContent;
-    copyBtn.textContent = 'Copied!';
-    copyBtn.classList.add('text-accent-600', 'border-accent-500');
-    try {
-      if (navigator?.clipboard?.writeText) {
-        await navigator.clipboard.writeText(text);
-      } else {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-      }
-    } catch (err) {
-      copyBtn.textContent = 'Copy failed';
-      copyBtn.classList.add('text-red-500', 'border-red-300');
-    } finally {
-      setTimeout(() => {
-        copyBtn.textContent = original;
-        copyBtn.classList.remove('text-accent-600', 'border-accent-500', 'text-red-500', 'border-red-300');
-      }, 1500);
-    }
-  });
 
   return cardEl;
 }
@@ -1301,7 +1256,7 @@ function initQuickReference() {
     if (index !== 0) panel.setAttribute('hidden', '');
 
     if (tab.id === 'acp') {
-      const flowCard = (tab.cards || []).find(card => card.id === 'acp-flow');
+      const flowCard = (tab.cards || []).find(card => card.range);
       const flowRange = flowCard && flowCard.range ? flowCard.range : null;
       panel.appendChild(createAcpFlowCalculator(flowRange));
     }

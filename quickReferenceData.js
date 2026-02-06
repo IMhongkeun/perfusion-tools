@@ -34,18 +34,26 @@ window.quickReferenceData = {
       label: 'ACP',
       cards: [
         {
-          id: 'acp-flow',
-          title: 'Flow',
-          value: '6–10',
+          id: 'acp-flow-standard',
+          title: 'Flow rate (general)',
+          value: '10–15',
           unit: 'mL/kg/min',
-          notes: 'Adjust to pressure + NIRS/EEG',
+          notes: 'General recommendation',
           lastReviewed: '2024-11-15',
-          range: { min: 6, max: 10 }
+          range: { min: 10, max: 15 }
+        },
+        {
+          id: 'acp-flow-nirs',
+          title: 'Flow rate (NIRS monitoring)',
+          value: '40–60',
+          unit: 'mL/kg/min',
+          notes: 'Used in select studies with NIRS monitoring',
+          lastReviewed: '2024-11-15'
         },
         {
           id: 'acp-pressure',
-          title: 'Pressure',
-          value: '40–60',
+          title: 'Perfusion pressure',
+          value: '40–70',
           unit: 'mmHg',
           lastReviewed: '2024-11-15'
         },
