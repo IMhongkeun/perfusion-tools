@@ -41,7 +41,6 @@ window.quickReferenceData = {
             title: 'Flow rate',
             value: '8–12',
             unit: 'mL/kg/min',
-            notes: 'Adult ACP target',
             info: 'High-flow may increase cerebral edema risk; titrate with monitoring.',
             lastReviewed: '2024-11-15',
             range: { min: 8, max: 12 }
@@ -75,7 +74,8 @@ window.quickReferenceData = {
             id: 'acp-adult-duration',
             title: 'Duration',
             value: 'Up to 80',
-            unit: 'min (elective)',
+            unit: 'min (reference)',
+            notes: 'Elective cases',
             info: 'If >40–50 min, consider bilateral ACP.',
             lastReviewed: '2024-11-15'
           },
@@ -101,7 +101,7 @@ window.quickReferenceData = {
             title: 'Flow rate',
             value: '40–80',
             unit: 'mL/kg/min',
-            notes: 'Median 50–64',
+            notes: 'Reference 50–64',
             info: 'Neonates: ~46 ± 6 mL/kg/min; <30 mL/kg/min risks hypoxic injury.',
             lastReviewed: '2024-11-15',
             range: { min: 40, max: 80 }
@@ -116,7 +116,7 @@ window.quickReferenceData = {
           },
           {
             id: 'acp-peds-temp',
-            title: 'Temperature',
+            title: 'Perfusate temp',
             value: '18–25',
             unit: '°C',
             info: '25°C moderate hypothermia preserves rSO₂; moderate often favored vs deep.',
@@ -134,7 +134,7 @@ window.quickReferenceData = {
             id: 'acp-peds-duration',
             title: 'Duration',
             value: '20–48',
-            unit: 'min (median)',
+            unit: 'min (reference)',
             info: 'Up to ~123 min reported; >45 min DHCA avoidance is common.',
             lastReviewed: '2024-11-15'
           },
@@ -144,6 +144,14 @@ window.quickReferenceData = {
             value: 'NIRS, TCD',
             unit: '',
             info: 'Target rSO₂ 90–95%; TCD velocity 18–25 cm/sec; EEG for seizures.',
+            lastReviewed: '2024-11-15'
+          },
+          {
+            id: 'acp-peds-hct',
+            title: 'Hct',
+            value: '30–35',
+            unit: '%',
+            info: 'Neonatal/infant arch ACP + hypothermia commonly uses Hct 30–35% (adjust per protocol/NIRS/EEG).',
             lastReviewed: '2024-11-15'
           }
         ]
@@ -227,13 +235,6 @@ window.quickReferenceData = {
           severity: 'high',
           tooltip: 'Profound hypothermia is uncommon due to bleeding risk.'
         }
-      ],
-      noteLines: [
-        'Varies by center, patient factors (age, comorbidities), neuromonitoring (NIRS rSO₂ >50–60%, EEG), and use of ACP/RCP.',
-        'Always minimize circulatory arrest time.',
-        'Cooling time: at least 20–50 min; Rewarming: ≤0.5°C/min recommended.',
-        'Reference: 2024 EACTS/EACTAIC/EBCP Guidelines (conservative estimates).',
-        'Follow institutional protocols and patient monitoring; educational use only.'
       ]
     }
   ]
