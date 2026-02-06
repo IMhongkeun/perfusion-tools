@@ -155,25 +155,29 @@ window.quickReferenceData = {
       cards: [
         {
           id: 'rcp-svc-pressure',
-          title: 'SVC Pressure limit',
-          value: '≤ 25',
+          title: 'SVC pressure',
+          value: '20–30',
           unit: 'mmHg',
-          notes: 'Pressure-first strategy',
+          notes: 'Target 20–25',
+          info: 'Excess pressure increases brain edema risk.',
           lastReviewed: '2024-11-15'
         },
         {
           id: 'rcp-flow',
-          title: 'Typical adult flow',
-          value: '300–500',
+          title: 'Flow rate',
+          value: '100–500',
           unit: 'mL/min',
-          notes: 'Adjust to keep SVC pressure ≤25',
+          notes: 'Prefer 150–300',
+          info: 'Max 500 mL/min; adjust based on pressure.',
           lastReviewed: '2024-11-15'
         },
         {
-          id: 'rcp-note',
-          title: 'Note',
-          value: 'Titrate to monitoring response (NIRS/EEG)',
+          id: 'rcp-monitoring',
+          title: 'Monitoring',
+          value: 'NIRS, EEG',
           unit: '',
+          notes: 'TCD optional',
+          info: 'rScO₂ >60–70% bilateral; EEG for burst suppression/ischemia.',
           lastReviewed: '2024-11-15'
         }
       ]
