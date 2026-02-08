@@ -1280,7 +1280,7 @@ function renderHcaTable(panel, tab) {
 
   const header = document.createElement('div');
   header.className = 'text-sm font-semibold text-primary-900 dark:text-white';
-  header.textContent = tab.headerTitle || 'HCA Safety Time by Temperature';
+  header.textContent = tab.headerTitle || 'HCA by Temperature';
   panel.appendChild(header);
 
   const tableWrap = document.createElement('div');
