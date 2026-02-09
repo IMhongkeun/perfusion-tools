@@ -26,6 +26,7 @@
  * @property {string} label
  * @property {QuickReferenceCard[]} cards
  * @property {{adult?: QuickReferenceCard[], pediatric?: QuickReferenceCard[]}=} profiles
+ * @property {{durations: number[], defaultDuration: number, endpointText: string}=} calculator
  */
 
 /** @type {{tabs: QuickReferenceTab[]}} */
@@ -190,6 +191,66 @@ window.quickReferenceData = {
             info: 'Use baseline/trend changes and bilateral symmetry rather than absolute values.',
             lastReviewed: '2024-11-15'
           }
+      ]
+    },
+    {
+      id: 'muf',
+      label: 'MUF',
+      calculator: {
+        durations: [10, 15, 20],
+        defaultDuration: 15,
+        endpointText: 'Practical endpoint: remove ≥ prime volume'
+      },
+      cards: [
+        {
+          id: 'muf-flow',
+          title: 'MUF Pump Flow',
+          value: '10–20',
+          unit: 'mL/kg/min',
+          notes: 'Increase gradually; keep arterial line pressure positive.',
+          info: 'Gradually increase MUF flow to 10–20 mL/kg/min while keeping arterial line pressure positive.',
+          range: { min: 10, max: 20 }
+        },
+        {
+          id: 'muf-duration-typical',
+          title: 'Duration (Typical)',
+          value: '10–15',
+          unit: 'min',
+          notes: 'Immediately post-CPB is common.',
+          info: 'MUF is commonly performed in the first 10–15 minutes after CPB.'
+        },
+        {
+          id: 'muf-duration-variant',
+          title: 'Duration (Variant)',
+          value: '20',
+          unit: 'min',
+          notes: 'Selected protocols.',
+          info: 'Some protocols run MUF for 20 min (reported to allow filtration of ≥50% net bypass-volume balance).'
+        },
+        {
+          id: 'muf-volume-endpoint',
+          title: 'Volume Endpoint',
+          value: '≥ prime',
+          unit: 'volume',
+          notes: 'Practical endpoint; titrate to hemodynamics.',
+          info: 'A practical MUF endpoint is removing at least the circuit prime volume.'
+        },
+        {
+          id: 'muf-safety-pressure',
+          title: 'Safety (Pressure)',
+          value: 'Avoid negative',
+          unit: 'arterial line',
+          notes: 'Air/de-priming/embolism risk.',
+          info: 'Avoid negative arterial line pressure to prevent air entrainment and embolic risk.'
+        },
+        {
+          id: 'muf-stop-titrate',
+          title: 'Stop / Titrate',
+          value: 'Air / instability / circuit issue',
+          unit: '',
+          notes: 'Titrate to MAP/CVP + NIRS trend; maintain anticoagulation.',
+          info: 'Hemodynamic instability may require pausing/stopping MUF; ensure adequate anticoagulation throughout.'
+        }
       ]
     },
     {
