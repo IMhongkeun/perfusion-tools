@@ -1308,10 +1308,7 @@ function renderMufTab(panel, tab) {
   const tbody = document.createElement('tbody');
   (tab.tableRows || []).forEach(row => {
     const tr = document.createElement('tr');
-    tr.className = 'border-t border-slate-100 dark:border-primary-800';
-    if (row.highlight === 'pediatric') {
-      tr.classList.add('bg-emerald-50/70', 'dark:bg-emerald-500/10');
-    }
+    tr.className = 'border-t border-slate-100 dark:border-primary-800 hover:bg-slate-50/70 dark:hover:bg-primary-900/60';
     tr.innerHTML = `
       <td class="px-3 py-2 font-semibold text-slate-700 dark:text-slate-200">${row.label}</td>
       <td class="px-3 py-2 text-slate-700 dark:text-slate-200">${row.pediatric}</td>
