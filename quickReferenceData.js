@@ -27,6 +27,11 @@
  * @property {QuickReferenceCard[]} cards
  * @property {{adult?: QuickReferenceCard[], pediatric?: QuickReferenceCard[]}=} profiles
  * @property {{durations: number[], defaultDuration: number, endpointText: string}=} calculator
+ * @property {{title: string, subtitle: string, guidance: string}=} intro
+ * @property {{label: string, value: string, unit?: string}=} tableColumns
+ * @property {{id: string, label: string, pediatric: string, adult: string, notes?: string, highlight?: string}[]=} tableRows
+ * @property {{title: string, items: string[]}=} keyNotes
+ * @property {string=} checklist
  */
 
 /** @type {{tabs: QuickReferenceTab[]}} */
@@ -196,62 +201,71 @@ window.quickReferenceData = {
     {
       id: 'muf',
       label: 'MUF',
-      calculator: {
-        durations: [10, 15, 20],
-        defaultDuration: 15,
-        endpointText: 'Practical endpoint: remove ≥ prime volume'
+      intro: {
+        title: 'MUF (Modified Ultrafiltration)',
+        subtitle: 'Post-CPB hemoconcentration & fluid removal',
+        guidance: '(Pediatric strongly recommended / Adult selective)'
       },
-      cards: [
+      tableColumns: {
+        label: 'Parameter',
+        pediatric: 'Pediatric (Strongly Recommended)',
+        adult: 'Adult (Selective Use)',
+        notes: 'Notes'
+      },
+      tableRows: [
         {
-          id: 'muf-flow',
-          title: 'MUF Pump Flow',
-          value: '10–20',
-          unit: 'mL/kg/min',
-          notes: 'Increase gradually; keep arterial line pressure positive.',
-          info: 'Gradually increase MUF flow to 10–20 mL/kg/min while keeping arterial line pressure positive.',
-          range: { min: 10, max: 20 }
+          id: 'muf-flow-rate',
+          label: 'Flow Rate',
+          pediatric: '10–20 mL/kg/min',
+          adult: '150–300 mL/min (or 5–10 mL/kg/min)',
+          notes: 'Start slow, titrate to hemodynamics',
+          highlight: 'pediatric'
         },
         {
-          id: 'muf-duration-typical',
-          title: 'Duration (Typical)',
-          value: '10–15',
-          unit: 'min',
-          notes: 'Immediately post-CPB is common.',
-          info: 'MUF is commonly performed in the first 10–15 minutes after CPB.'
+          id: 'muf-duration',
+          label: 'Duration',
+          pediatric: '10–20 min or until goal',
+          adult: '10–15 min',
+          notes: 'Until target Hct or volume removed',
+          highlight: 'pediatric'
         },
         {
-          id: 'muf-duration-variant',
-          title: 'Duration (Variant)',
-          value: '20',
-          unit: 'min',
-          notes: 'Selected protocols.',
-          info: 'Some protocols run MUF for 20 min (reported to allow filtration of ≥50% net bypass-volume balance).'
+          id: 'muf-target-hct',
+          label: 'Target Hct',
+          pediatric: '≥35–40%',
+          adult: '≥30–35%',
+          notes: 'Or minimize transfusion/bleeding',
+          highlight: 'pediatric'
         },
         {
-          id: 'muf-volume-endpoint',
-          title: 'Volume Endpoint',
-          value: '≥ prime',
-          unit: 'volume',
-          notes: 'Practical endpoint; titrate to hemodynamics.',
-          info: 'A practical MUF endpoint is removing at least the circuit prime volume.'
+          id: 'muf-circuit',
+          label: 'Circuit',
+          pediatric: 'A-V MUF (preferred)',
+          adult: 'A-V or similar',
+          notes: 'Heat exchanger required',
+          highlight: 'pediatric'
         },
         {
-          id: 'muf-safety-pressure',
-          title: 'Safety (Pressure)',
-          value: 'Avoid negative',
-          unit: 'arterial line',
-          notes: 'Air/de-priming/embolism risk.',
-          info: 'Avoid negative arterial line pressure to prevent air entrainment and embolic risk.'
-        },
-        {
-          id: 'muf-stop-titrate',
-          title: 'Stop / Titrate',
-          value: 'Air / instability / circuit issue',
-          unit: '',
-          notes: 'Titrate to MAP/CVP + NIRS trend; maintain anticoagulation.',
-          info: 'Hemodynamic instability may require pausing/stopping MUF; ensure adequate anticoagulation throughout.'
+          id: 'muf-pressure',
+          label: 'Pressure',
+          pediatric: 'Arterial line always positive',
+          adult: 'Arterial line always positive',
+          notes: 'Negative pressure → air embolism risk!',
+          highlight: 'pediatric'
         }
-      ]
+      ],
+      checklist: 'Pre-MUF checklist: Unslave pump, warm exchanger, confirm air-free circuit, maintain positive arterial pressure.',
+      keyNotes: {
+        title: 'Key Notes',
+        items: [
+          'Indications: 예상 fluid overload, low Hct post-CPB, pediatric congenital (unless contraindicated).',
+          'Monitoring: NIRS, CVP, arterial pressure, hemodynamics 지속. NIRS drop 시 flow ↓ or pause.',
+          'Anticoagulation: Adequate 유지 (ACT 모니터링).',
+          'Reference: AmSECT Pediatric Guideline 16.1 (2019~), 2024 EACTS Adult CPB Guidelines (blood conservation part).',
+          'Follow institutional protocols; educational use only.'
+        ]
+      },
+      cards: []
     },
     {
       id: 'tca',

@@ -1230,144 +1230,120 @@ function createAcpFlowCalculator(flowRange) {
   return container;
 }
 
-function createMufCalculator(flowRange, calculatorConfig) {
-  const durations = (calculatorConfig && calculatorConfig.durations && calculatorConfig.durations.length)
-    ? calculatorConfig.durations
-    : [10, 15, 20];
-  const defaultDuration = (calculatorConfig && Number.isFinite(calculatorConfig.defaultDuration))
-    ? calculatorConfig.defaultDuration
-    : durations[0];
-  const endpointText = calculatorConfig && calculatorConfig.endpointText
-    ? calculatorConfig.endpointText
-    : 'Practical endpoint: remove ≥ prime volume';
+function renderMufTab(panel, tab) {
+  panel.innerHTML = '';
 
-  const container = document.createElement('div');
-  container.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/60 p-4 space-y-4';
-  container.innerHTML = `
-    <div class="grid gap-3 md:grid-cols-4">
-      <div class="space-y-1">
-        <label for="muf-weight" class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Weight (kg)</label>
-        <input id="muf-weight" type="number" min="0" step="0.1" placeholder="Enter weight" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
-      </div>
-      <div class="space-y-1">
-        <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Duration (min)</div>
-        <div id="muf-duration-buttons" class="flex flex-wrap gap-2"></div>
-      </div>
-      <div class="space-y-1">
-        <label for="muf-prime-volume" class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Prime volume (mL)</label>
-        <input id="muf-prime-volume" type="number" min="0" step="1" placeholder="Optional" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
-      </div>
-      <div class="space-y-1">
-        <label for="muf-effluent-rate" class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Effluent rate (mL/min)</label>
-        <input id="muf-effluent-rate" type="number" min="0" step="1" placeholder="Optional" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
-      </div>
-    </div>
-    <div class="grid gap-3 md:grid-cols-2">
-      <div class="rounded-lg border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900 p-3 space-y-1">
-        <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">MUF pump flow range</div>
-        <div id="muf-flow-ml" class="text-lg font-semibold text-primary-900 dark:text-white">—</div>
-        <div id="muf-flow-l" class="text-xs text-slate-500 dark:text-slate-400">—</div>
-      </div>
-      <div class="rounded-lg border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900 p-3 space-y-1">
-        <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Processed blood volume (NOT effluent)</div>
-        <div id="muf-processed-ml" class="text-lg font-semibold text-primary-900 dark:text-white">—</div>
-        <div id="muf-processed-l" class="text-xs text-slate-500 dark:text-slate-400">—</div>
-      </div>
-    </div>
-    <div class="space-y-1">
-      <div id="muf-endpoint" class="text-xs text-slate-500 dark:text-slate-400 hidden"></div>
-      <div id="muf-prime-time" class="text-xs text-slate-500 dark:text-slate-400 hidden"></div>
-    </div>
-    <p class="text-[11px] text-slate-500 dark:text-slate-400">Computed from the MUF flow range in the reference cards.</p>
+  const header = document.createElement('div');
+  header.className = 'flex flex-wrap items-center justify-between gap-3';
+
+  const titleBlock = document.createElement('div');
+  titleBlock.className = 'space-y-1';
+  const title = document.createElement('p');
+  title.className = 'text-sm font-semibold text-primary-900 dark:text-white';
+  title.textContent = tab.intro?.title || 'MUF (Modified Ultrafiltration)';
+
+  const subtitle = document.createElement('p');
+  subtitle.className = 'text-xs text-slate-500 dark:text-slate-400';
+  subtitle.textContent = tab.intro?.subtitle || '';
+
+  const guidance = document.createElement('p');
+  guidance.className = 'text-xs text-slate-500 dark:text-slate-400';
+  guidance.textContent = tab.intro?.guidance || '';
+
+  titleBlock.appendChild(title);
+  if (subtitle.textContent) titleBlock.appendChild(subtitle);
+  if (guidance.textContent) titleBlock.appendChild(guidance);
+
+  header.appendChild(titleBlock);
+
+  if (tab.checklist) {
+    const infoWrap = document.createElement('div');
+    infoWrap.className = 'relative';
+    const infoButton = document.createElement('button');
+    infoButton.type = 'button';
+    infoButton.className = 'quick-ref-info-button w-7 h-7 rounded-full border border-slate-200 dark:border-primary-700 text-xs font-semibold text-slate-500 dark:text-slate-300 hover:text-accent-600 hover:border-accent-500 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-primary-900';
+    infoButton.textContent = 'ⓘ';
+    infoButton.setAttribute('aria-label', 'Pre-MUF checklist');
+
+    const infoPanel = document.createElement('div');
+    infoPanel.className = 'hidden absolute right-0 mt-2 w-64 rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900 shadow-lg p-3 text-xs text-slate-600 dark:text-slate-300';
+    infoPanel.textContent = tab.checklist;
+    infoPanel.classList.add('quick-ref-info-panel');
+
+    infoButton.addEventListener('click', () => {
+      const isHidden = infoPanel.classList.contains('hidden');
+      document.querySelectorAll('.quick-ref-info-panel').forEach(panelEl => {
+        panelEl.classList.add('hidden');
+      });
+      if (isHidden) {
+        infoPanel.classList.remove('hidden');
+      }
+    });
+
+    infoWrap.appendChild(infoButton);
+    infoWrap.appendChild(infoPanel);
+    header.appendChild(infoWrap);
+  }
+
+  panel.appendChild(header);
+
+  const tableWrap = document.createElement('div');
+  tableWrap.className = 'overflow-x-auto';
+
+  const table = document.createElement('table');
+  table.className = 'min-w-[720px] w-full text-xs border border-slate-200 dark:border-primary-800 rounded-xl overflow-hidden';
+
+  const columnLabels = tab.tableColumns || {};
+  table.innerHTML = `
+    <thead class="bg-slate-50 dark:bg-primary-900/70 text-slate-600 dark:text-slate-300">
+      <tr>
+        <th class="text-left px-3 py-2">${columnLabels.label || 'Parameter'}</th>
+        <th class="text-left px-3 py-2">${columnLabels.pediatric || 'Pediatric'}</th>
+        <th class="text-left px-3 py-2">${columnLabels.adult || 'Adult'}</th>
+        <th class="text-left px-3 py-2">${columnLabels.notes || 'Notes'}</th>
+      </tr>
+    </thead>
   `;
 
-  const weightInput = container.querySelector('#muf-weight');
-  const durationButtons = container.querySelector('#muf-duration-buttons');
-  const primeInput = container.querySelector('#muf-prime-volume');
-  const effluentInput = container.querySelector('#muf-effluent-rate');
-  const flowMl = container.querySelector('#muf-flow-ml');
-  const flowL = container.querySelector('#muf-flow-l');
-  const processedMl = container.querySelector('#muf-processed-ml');
-  const processedL = container.querySelector('#muf-processed-l');
-  const endpointEl = container.querySelector('#muf-endpoint');
-  const primeTimeEl = container.querySelector('#muf-prime-time');
-
-  const activeClasses = ['bg-primary-900', 'text-white', 'border-primary-900', 'dark:bg-accent-500', 'dark:text-slate-900', 'dark:border-accent-500'];
-  const inactiveClasses = ['bg-white', 'text-slate-600', 'border-slate-200', 'dark:bg-primary-900', 'dark:text-slate-300', 'dark:border-primary-700'];
-
-  const state = { duration: defaultDuration };
-
-  durations.forEach(duration => {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.dataset.duration = duration;
-    button.className = 'px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-primary-900';
-    const isActive = duration === state.duration;
-    button.classList.add(...(isActive ? activeClasses : inactiveClasses));
-    button.textContent = `${duration}`;
-    button.addEventListener('click', () => {
-      state.duration = duration;
-      durationButtons.querySelectorAll('button').forEach(btn => {
-        const active = Number(btn.dataset.duration) === duration;
-        btn.classList.remove(...activeClasses, ...inactiveClasses);
-        btn.classList.add(...(active ? activeClasses : inactiveClasses));
-      });
-      updateOutputs();
-    });
-    durationButtons.appendChild(button);
+  const tbody = document.createElement('tbody');
+  (tab.tableRows || []).forEach(row => {
+    const tr = document.createElement('tr');
+    tr.className = 'border-t border-slate-100 dark:border-primary-800';
+    if (row.highlight === 'pediatric') {
+      tr.classList.add('bg-emerald-50/70', 'dark:bg-emerald-500/10');
+    }
+    tr.innerHTML = `
+      <td class="px-3 py-2 font-semibold text-slate-700 dark:text-slate-200">${row.label}</td>
+      <td class="px-3 py-2 text-slate-700 dark:text-slate-200">${row.pediatric}</td>
+      <td class="px-3 py-2 text-slate-700 dark:text-slate-200">${row.adult}</td>
+      <td class="px-3 py-2 text-slate-600 dark:text-slate-300">${row.notes || ''}</td>
+    `;
+    tbody.appendChild(tr);
   });
 
-  const updateOutputs = () => {
-    const weight = parseFloat(weightInput.value);
-    const duration = state.duration;
-    if (!flowRange || !(weight > 0) || !(duration > 0)) {
-      flowMl.textContent = '—';
-      flowL.textContent = '—';
-      processedMl.textContent = '—';
-      processedL.textContent = '—';
-    } else {
-      // MUF pump flow: (mL/kg/min) × kg = mL/min; divide by 1000 for L/min.
-      const minFlowMl = flowRange.min * weight;
-      const maxFlowMl = flowRange.max * weight;
-      const minFlowL = minFlowMl / 1000;
-      const maxFlowL = maxFlowMl / 1000;
-      // Processed blood volume: flow (mL/min) × duration (min) = mL; divide by 1000 for L.
-      const minProcessedMl = minFlowMl * duration;
-      const maxProcessedMl = maxFlowMl * duration;
-      const minProcessedL = minProcessedMl / 1000;
-      const maxProcessedL = maxProcessedMl / 1000;
+  table.appendChild(tbody);
+  tableWrap.appendChild(table);
+  panel.appendChild(tableWrap);
 
-      flowMl.textContent = `${Math.round(minFlowMl)}–${Math.round(maxFlowMl)} mL/min`;
-      flowL.textContent = `${minFlowL.toFixed(2)}–${maxFlowL.toFixed(2)} L/min`;
-      processedMl.textContent = `${Math.round(minProcessedMl)}–${Math.round(maxProcessedMl)} mL`;
-      processedL.textContent = `${minProcessedL.toFixed(2)}–${maxProcessedL.toFixed(2)} L`;
-    }
+  if (tab.keyNotes && tab.keyNotes.items && tab.keyNotes.items.length) {
+    const notesWrap = document.createElement('div');
+    notesWrap.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/70 p-4';
 
-    const primeVolume = parseFloat(primeInput.value);
-    if (primeVolume > 0) {
-      endpointEl.textContent = endpointText;
-      endpointEl.classList.remove('hidden');
-    } else {
-      endpointEl.classList.add('hidden');
-    }
+    const notesTitle = document.createElement('div');
+    notesTitle.className = 'text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2';
+    notesTitle.textContent = tab.keyNotes.title || 'Key Notes';
+    notesWrap.appendChild(notesTitle);
 
-    const effluentRate = parseFloat(effluentInput.value);
-    if (primeVolume > 0 && effluentRate > 0) {
-      // Estimated time to remove prime: prime volume (mL) ÷ effluent rate (mL/min) = minutes.
-      const minutesToRemove = primeVolume / effluentRate;
-      primeTimeEl.textContent = `Estimated time to remove prime: ${minutesToRemove.toFixed(1)} min`;
-      primeTimeEl.classList.remove('hidden');
-    } else {
-      primeTimeEl.classList.add('hidden');
-    }
-  };
-
-  weightInput.addEventListener('input', updateOutputs);
-  primeInput.addEventListener('input', updateOutputs);
-  effluentInput.addEventListener('input', updateOutputs);
-  updateOutputs();
-
-  return container;
+    const list = document.createElement('ul');
+    list.className = 'list-disc pl-4 space-y-1 text-xs text-slate-600 dark:text-slate-300';
+    tab.keyNotes.items.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      list.appendChild(li);
+    });
+    notesWrap.appendChild(list);
+    panel.appendChild(notesWrap);
+  }
 }
 
 function createAcpProfileToggle(activeProfile, onChange) {
@@ -1545,16 +1521,7 @@ function initQuickReference() {
     }
 
     if (tab.id === 'muf') {
-      const flowCard = (tab.cards || []).find(card => card.range);
-      const flowRange = flowCard && flowCard.range ? flowCard.range : null;
-      panel.appendChild(createMufCalculator(flowRange, tab.calculator));
-
-      const grid = document.createElement('div');
-      grid.className = 'grid gap-4 md:grid-cols-2';
-      (tab.cards || []).forEach(card => {
-        grid.appendChild(createQuickReferenceCard(card));
-      });
-      panel.appendChild(grid);
+      renderMufTab(panel, tab);
       panelContainer.appendChild(panel);
       return;
     }
