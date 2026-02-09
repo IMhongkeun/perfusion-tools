@@ -200,6 +200,53 @@ window.quickReferenceData = {
       ]
     },
     {
+      id: 'tca',
+      label: 'HCA',
+      headerTitle: 'HCA by Temperature (Conservative Estimates)',
+      tableRows: [
+        {
+          id: 'hca-28-30',
+          temperature: '28–30<br>(Mild–Moderate)',
+          duration: '10–15 (conservative)',
+          notes: '<strong>MHCA + ACP</strong> ≤40 min possible; shorter CPB time, less coagulopathy',
+          severity: 'safe',
+          tooltip: 'Mild-moderate hypothermia with ACP can extend safe duration.'
+        },
+        {
+          id: 'hca-24-28',
+          temperature: '24–28 (Moderate)',
+          duration: '15–20 (conservative)',
+          notes: '<strong>ACP/RCP required</strong>; recent trend with lower stroke risk',
+          severity: 'caution',
+          tooltip: 'Moderate hypothermia commonly paired with ACP/RCP.'
+        },
+        {
+          id: 'hca-20-24',
+          temperature: '20–24<br>(Low–Moderate)',
+          duration: '20–30',
+          notes: '<strong>ACP</strong> shows non-inferior cognitive outcomes vs DHCA',
+          severity: 'caution',
+          tooltip: 'Low-moderate ranges benefit from ACP support.'
+        },
+        {
+          id: 'hca-18-20',
+          temperature: '18–20 (Deep)',
+          duration: '~30 (conservative; up to 40 with caution)',
+          notes: 'Isolated DHCA: limit 30; >40 ↑ neurologic injury risk',
+          severity: 'high',
+          tooltip: 'Deep hypothermia has higher risk beyond 30–40 minutes.'
+        },
+        {
+          id: 'hca-<18',
+          temperature: '<18 (Profound)',
+          duration: '30–45',
+          notes: 'High coagulopathy risk; rarely used',
+          severity: 'high',
+          tooltip: 'Profound hypothermia is uncommon due to bleeding risk.'
+        }
+      ]
+    },
+    {
       id: 'muf',
       label: 'MUF',
       intro: {
@@ -273,53 +320,6 @@ window.quickReferenceData = {
         ]
       },
       cards: []
-    },
-    {
-      id: 'tca',
-      label: 'HCA',
-      headerTitle: 'HCA by Temperature (Conservative Estimates)',
-      tableRows: [
-        {
-          id: 'hca-28-30',
-          temperature: '28–30<br>(Mild–Moderate)',
-          duration: '10–15 (conservative)',
-          notes: '<strong>MHCA + ACP</strong> ≤40 min possible; shorter CPB time, less coagulopathy',
-          severity: 'safe',
-          tooltip: 'Mild-moderate hypothermia with ACP can extend safe duration.'
-        },
-        {
-          id: 'hca-24-28',
-          temperature: '24–28 (Moderate)',
-          duration: '15–20 (conservative)',
-          notes: '<strong>ACP/RCP required</strong>; recent trend with lower stroke risk',
-          severity: 'caution',
-          tooltip: 'Moderate hypothermia commonly paired with ACP/RCP.'
-        },
-        {
-          id: 'hca-20-24',
-          temperature: '20–24<br>(Low–Moderate)',
-          duration: '20–30',
-          notes: '<strong>ACP</strong> shows non-inferior cognitive outcomes vs DHCA',
-          severity: 'caution',
-          tooltip: 'Low-moderate ranges benefit from ACP support.'
-        },
-        {
-          id: 'hca-18-20',
-          temperature: '18–20 (Deep)',
-          duration: '~30 (conservative; up to 40 with caution)',
-          notes: 'Isolated DHCA: limit 30; >40 ↑ neurologic injury risk',
-          severity: 'high',
-          tooltip: 'Deep hypothermia has higher risk beyond 30–40 minutes.'
-        },
-        {
-          id: 'hca-<18',
-          temperature: '<18 (Profound)',
-          duration: '30–45',
-          notes: 'High coagulopathy risk; rarely used',
-          severity: 'high',
-          tooltip: 'Profound hypothermia is uncommon due to bleeding risk.'
-        }
-      ]
     }
   ]
 };
