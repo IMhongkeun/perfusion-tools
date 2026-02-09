@@ -312,9 +312,15 @@ window.quickReferenceData = {
       keyNotes: {
         title: 'Key Notes',
         items: [
-          'Indications: anticipated fluid overload, low Hct post-CPB, pediatric congenital (unless contraindicated).',
-          'Monitoring: NIRS, CVP, arterial pressure, continuous hemodynamics; decrease flow or pause if NIRS drops.',
+          'Indications: pediatric/congenital when no contraindications; adult use is selective for blood conservation and volume management.',
+          'Flow: pediatric 10–20 mL/kg/min; adult 150–300 mL/min. Neonates/low-weight infants should avoid abrupt flow changes.',
+          'Safety: maintain positive arterial line pressure at all times; titrate based on NIRS/CVP/arterial pressure trends.',
+          'Duration/endpoint: 10–20 min (adult often ~10–15 min) until target Hct or desired net fluid removal; adjust to hemodynamics.',
+          'Stop criteria: air entrainment risk, inability to maintain positive pressure, or hemodynamic instability.',
           'Anticoagulation: maintain adequate levels with ACT monitoring.',
+          'Inflammation: MUF may reduce cytokines (IL-6/IL-8), but emphasis remains fluid removal and hemoconcentration.',
+          'Edema/neurologic (peds): supports edema reduction and may reduce cerebral water content.',
+          'Temperature: monitor core temperature; consider a heat exchanger for runs >~10 min.',
           'Reference: AmSECT Pediatric Guideline 16.1 (2019~), 2024 EACTS Adult CPB Guidelines (blood conservation section).',
           'Follow institutional protocols; educational use only.'
         ]
