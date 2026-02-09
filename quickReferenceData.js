@@ -29,6 +29,7 @@
  * @property {{durations: number[], defaultDuration: number, endpointText: string}=} calculator
  * @property {{title: string, subtitle: string, guidance: string}=} intro
  * @property {{label: string, value: string, unit?: string}=} tableColumns
+ * @property {{label: string, rangeLabel: string, unitLabel: string, range: {min: number, max: number}}=} miniCalculator
  * @property {{id: string, label: string, pediatric: string, adult: string, notes?: string, highlight?: string}[]=} tableRows
  * @property {{title: string, items: string[]}=} keyNotes
  * @property {string=} checklist
@@ -212,12 +213,18 @@ window.quickReferenceData = {
         adult: 'Adult (Selective Use)',
         notes: 'Notes'
       },
+      miniCalculator: {
+        label: 'Pediatric MUF flow range',
+        rangeLabel: 'Flow range',
+        unitLabel: 'mL/min',
+        range: { min: 10, max: 20 }
+      },
       tableRows: [
         {
           id: 'muf-flow-rate',
           label: 'Flow Rate',
           pediatric: '10–20 mL/kg/min',
-          adult: '150–300 mL/min (or 5–10 mL/kg/min)',
+          adult: '150–300 mL/min',
           notes: 'Start slow, titrate to hemodynamics',
           highlight: 'pediatric'
         },
@@ -258,10 +265,10 @@ window.quickReferenceData = {
       keyNotes: {
         title: 'Key Notes',
         items: [
-          'Indications: 예상 fluid overload, low Hct post-CPB, pediatric congenital (unless contraindicated).',
-          'Monitoring: NIRS, CVP, arterial pressure, hemodynamics 지속. NIRS drop 시 flow ↓ or pause.',
-          'Anticoagulation: Adequate 유지 (ACT 모니터링).',
-          'Reference: AmSECT Pediatric Guideline 16.1 (2019~), 2024 EACTS Adult CPB Guidelines (blood conservation part).',
+          'Indications: anticipated fluid overload, low Hct post-CPB, pediatric congenital (unless contraindicated).',
+          'Monitoring: NIRS, CVP, arterial pressure, continuous hemodynamics; decrease flow or pause if NIRS drops.',
+          'Anticoagulation: maintain adequate levels with ACT monitoring.',
+          'Reference: AmSECT Pediatric Guideline 16.1 (2019~), 2024 EACTS Adult CPB Guidelines (blood conservation section).',
           'Follow institutional protocols; educational use only.'
         ]
       },

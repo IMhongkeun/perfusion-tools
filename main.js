@@ -1287,6 +1287,44 @@ function renderMufTab(panel, tab) {
 
   panel.appendChild(header);
 
+  if (tab.miniCalculator && tab.miniCalculator.range) {
+    const miniCalc = document.createElement('div');
+    miniCalc.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/60 p-4';
+    miniCalc.innerHTML = `
+      <div class="grid gap-3 md:grid-cols-[1fr_2fr] items-end">
+        <div class="space-y-1">
+          <label for="muf-mini-weight" class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Weight (kg)</label>
+          <input id="muf-mini-weight" type="number" min="0" step="0.1" placeholder="Enter weight" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+        </div>
+        <div class="space-y-1">
+          <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">${tab.miniCalculator.label || 'Pediatric MUF flow range'}</div>
+          <div id="muf-mini-flow" class="text-lg font-semibold text-primary-900 dark:text-white">—</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400">${tab.miniCalculator.rangeLabel || 'Flow range'} (${tab.miniCalculator.unitLabel || 'mL/min'})</div>
+        </div>
+      </div>
+    `;
+
+    const miniWeightInput = miniCalc.querySelector('#muf-mini-weight');
+    const miniFlowOutput = miniCalc.querySelector('#muf-mini-flow');
+
+    const updateMiniFlow = () => {
+      const weight = parseFloat(miniWeightInput.value);
+      if (!(weight > 0)) {
+        miniFlowOutput.textContent = '—';
+        return;
+      }
+      // Pediatric MUF flow range: (mL/kg/min) × kg = mL/min.
+      const minFlow = tab.miniCalculator.range.min * weight;
+      const maxFlow = tab.miniCalculator.range.max * weight;
+      miniFlowOutput.textContent = `${Math.round(minFlow)}–${Math.round(maxFlow)} ${tab.miniCalculator.unitLabel || 'mL/min'}`;
+    };
+
+    miniWeightInput.addEventListener('input', updateMiniFlow);
+    updateMiniFlow();
+
+    panel.appendChild(miniCalc);
+  }
+
   const tableWrap = document.createElement('div');
   tableWrap.className = 'overflow-x-auto';
 
