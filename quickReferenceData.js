@@ -31,7 +31,6 @@
  * @property {{label: string, value: string, unit?: string}=} tableColumns
  * @property {{label: string, rangeLabel: string, unitLabel: string, range: {min: number, max: number}}=} miniCalculator
  * @property {{id: string, label: string, pediatric: string, adult: string, notes?: string, highlight?: string}[]=} tableRows
- * @property {{title: string, items: string[]}=} keyNotes
  * @property {string=} checklist
  */
 
@@ -309,22 +308,6 @@ window.quickReferenceData = {
         }
       ],
       checklist: 'Pre-MUF checklist: Unslave pump, warm exchanger, confirm air-free circuit, maintain positive arterial pressure.',
-      keyNotes: {
-        title: 'Key Notes',
-        items: [
-          'Indications: pediatric/congenital when no contraindications; adult use is selective for blood conservation and volume management.',
-          'Flow: pediatric 10–20 mL/kg/min; adult 150–300 mL/min. Neonates/low-weight infants should avoid abrupt flow changes.',
-          'Safety: maintain positive arterial line pressure at all times; titrate based on NIRS/CVP/arterial pressure trends.',
-          'Duration/endpoint: 10–20 min (adult often ~10–15 min) until target Hct or desired net fluid removal; adjust to hemodynamics.',
-          'Stop criteria: air entrainment risk, inability to maintain positive pressure, or hemodynamic instability.',
-          'Anticoagulation: maintain adequate levels with ACT monitoring.',
-          'Inflammation: MUF may reduce cytokines (IL-6/IL-8), but emphasis remains fluid removal and hemoconcentration.',
-          'Edema/neurologic (peds): supports edema reduction and may reduce cerebral water content.',
-          'Temperature: monitor core temperature; consider a heat exchanger for runs >~10 min.',
-          'Reference: AmSECT Pediatric Guideline 16.1 (2019~), 2024 EACTS Adult CPB Guidelines (blood conservation section).',
-          'Follow institutional protocols; educational use only.'
-        ]
-      },
       cards: []
     }
   ]

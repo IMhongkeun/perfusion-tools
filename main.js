@@ -1360,25 +1360,6 @@ function renderMufTab(panel, tab) {
   tableWrap.appendChild(table);
   panel.appendChild(tableWrap);
 
-  if (tab.keyNotes && tab.keyNotes.items && tab.keyNotes.items.length) {
-    const notesWrap = document.createElement('div');
-    notesWrap.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/70 p-4';
-
-    const notesTitle = document.createElement('div');
-    notesTitle.className = 'text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2';
-    notesTitle.textContent = tab.keyNotes.title || 'Key Notes';
-    notesWrap.appendChild(notesTitle);
-
-    const list = document.createElement('ul');
-    list.className = 'list-disc pl-4 space-y-1 text-xs text-slate-600 dark:text-slate-300';
-    tab.keyNotes.items.forEach(item => {
-      const li = document.createElement('li');
-      li.textContent = item;
-      list.appendChild(li);
-    });
-    notesWrap.appendChild(list);
-    panel.appendChild(notesWrap);
-  }
 }
 
 function createAcpProfileToggle(activeProfile, onChange) {
