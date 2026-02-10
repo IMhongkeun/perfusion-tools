@@ -26,6 +26,12 @@
  * @property {string} label
  * @property {QuickReferenceCard[]} cards
  * @property {{adult?: QuickReferenceCard[], pediatric?: QuickReferenceCard[]}=} profiles
+ * @property {{durations: number[], defaultDuration: number, endpointText: string}=} calculator
+ * @property {{title: string, subtitle: string, guidance: string}=} intro
+ * @property {{label: string, value: string, unit?: string}=} tableColumns
+ * @property {{label: string, rangeLabel: string, unitLabel: string, range: {min: number, max: number}}=} miniCalculator
+ * @property {{id: string, label: string, pediatric: string, adult: string, notes?: string, highlight?: string}[]=} tableRows
+ * @property {string=} checklist
  */
 
 /** @type {{tabs: QuickReferenceTab[]}} */
@@ -238,6 +244,71 @@ window.quickReferenceData = {
           tooltip: 'Profound hypothermia is uncommon due to bleeding risk.'
         }
       ]
+    },
+    {
+      id: 'muf',
+      label: 'MUF',
+      intro: {
+        title: 'MUF (Modified Ultrafiltration)',
+        subtitle: 'Post-CPB hemoconcentration & fluid removal',
+        guidance: '(Pediatric strongly recommended / Adult selective)'
+      },
+      tableColumns: {
+        label: 'Parameter',
+        pediatric: 'Pediatric (Strongly Recommended)',
+        adult: 'Adult (Selective Use)',
+        notes: 'Notes'
+      },
+      miniCalculator: {
+        label: 'Pediatric MUF flow range',
+        rangeLabel: 'Flow range',
+        unitLabel: 'mL/min',
+        range: { min: 10, max: 20 }
+      },
+      tableRows: [
+        {
+          id: 'muf-flow-rate',
+          label: 'Flow Rate',
+          pediatric: '10–20 mL/kg/min',
+          adult: '150–300 mL/min',
+          notes: 'Start slow, titrate to hemodynamics',
+          highlight: 'pediatric'
+        },
+        {
+          id: 'muf-duration',
+          label: 'Duration',
+          pediatric: '10–20 min or until goal',
+          adult: '10–15 min',
+          notes: 'Until target Hct or volume removed',
+          highlight: 'pediatric'
+        },
+        {
+          id: 'muf-target-hct',
+          label: 'Target Hct',
+          pediatric: '≥35–40%',
+          adult: '≥30–35%',
+          notes: 'Or minimize transfusion/bleeding',
+          highlight: 'pediatric'
+        },
+        {
+          id: 'muf-circuit',
+          label: 'Circuit',
+          pediatric: 'A-V MUF (preferred)',
+          adult: 'A-V or similar',
+          notes: 'Heat exchanger required',
+          highlight: 'pediatric'
+        },
+        {
+          id: 'muf-pressure',
+          label: 'Pressure',
+          pediatric: 'Arterial line always positive',
+          adult: 'Arterial line always positive',
+          notes: 'Negative pressure → air embolism risk!',
+          highlight: 'pediatric'
+        }
+      ],
+      checklist: 'Pre-MUF checklist: Unslave pump, warm exchanger, confirm air-free circuit, maintain positive arterial pressure.',
+      cards: []
     }
   ]
 };
