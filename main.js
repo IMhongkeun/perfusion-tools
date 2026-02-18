@@ -1147,8 +1147,8 @@ function createQuickReferenceCard(card) {
 
     const infoButton = document.createElement('button');
     infoButton.type = 'button';
-    infoButton.className = 'w-6 h-6 rounded-full border border-slate-200 dark:border-primary-700 text-xs font-semibold text-slate-500 dark:text-slate-300 hover:text-accent-600 hover:border-accent-500 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-primary-900';
-    infoButton.textContent = 'i';
+    infoButton.className = 'quick-ref-info-button w-6 h-6 rounded-full border border-slate-200 dark:border-primary-700 text-xs font-semibold text-slate-500 dark:text-slate-300 hover:text-accent-600 hover:border-accent-500 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-primary-900';
+    infoButton.textContent = 'ⓘ';
     infoButton.setAttribute('aria-label', `More info for ${card.title}`);
 
     const infoPanel = document.createElement('div');
@@ -1228,6 +1228,138 @@ function createAcpFlowCalculator(flowRange) {
   updateFlow();
 
   return container;
+}
+
+function renderMufTab(panel, tab) {
+  panel.innerHTML = '';
+
+  const header = document.createElement('div');
+  header.className = 'flex flex-wrap items-center justify-between gap-3';
+
+  const titleBlock = document.createElement('div');
+  titleBlock.className = 'space-y-1';
+  const title = document.createElement('p');
+  title.className = 'text-sm font-semibold text-primary-900 dark:text-white';
+  title.textContent = tab.intro?.title || 'MUF (Modified Ultrafiltration)';
+
+  const subtitle = document.createElement('p');
+  subtitle.className = 'text-xs text-slate-500 dark:text-slate-400';
+  subtitle.textContent = tab.intro?.subtitle || '';
+
+  const guidance = document.createElement('p');
+  guidance.className = 'text-xs text-slate-500 dark:text-slate-400';
+  guidance.textContent = tab.intro?.guidance || '';
+
+  titleBlock.appendChild(title);
+  if (subtitle.textContent) titleBlock.appendChild(subtitle);
+  if (guidance.textContent) titleBlock.appendChild(guidance);
+
+  header.appendChild(titleBlock);
+
+  if (tab.checklist) {
+    const infoWrap = document.createElement('div');
+    infoWrap.className = 'relative';
+    const infoButton = document.createElement('button');
+    infoButton.type = 'button';
+    infoButton.className = 'quick-ref-info-button w-7 h-7 rounded-full border border-slate-200 dark:border-primary-700 text-xs font-semibold text-slate-500 dark:text-slate-300 hover:text-accent-600 hover:border-accent-500 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-primary-900';
+    infoButton.textContent = 'ⓘ';
+    infoButton.setAttribute('aria-label', 'Pre-MUF checklist');
+
+    const infoPanel = document.createElement('div');
+    infoPanel.className = 'hidden absolute right-0 mt-2 w-64 rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900 shadow-lg p-3 text-xs text-slate-600 dark:text-slate-300';
+    infoPanel.textContent = tab.checklist;
+    infoPanel.classList.add('quick-ref-info-panel');
+
+    infoButton.addEventListener('click', () => {
+      const isHidden = infoPanel.classList.contains('hidden');
+      document.querySelectorAll('.quick-ref-info-panel').forEach(panelEl => {
+        panelEl.classList.add('hidden');
+      });
+      if (isHidden) {
+        infoPanel.classList.remove('hidden');
+      }
+    });
+
+    infoWrap.appendChild(infoButton);
+    infoWrap.appendChild(infoPanel);
+    header.appendChild(infoWrap);
+  }
+
+  panel.appendChild(header);
+
+  if (tab.miniCalculator && tab.miniCalculator.range) {
+    const miniCalc = document.createElement('div');
+    miniCalc.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/60 p-4';
+    miniCalc.innerHTML = `
+      <div class="grid gap-3 md:grid-cols-[1fr_2fr] items-end">
+        <div class="space-y-1">
+          <label for="muf-mini-weight" class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Weight (kg)</label>
+          <input id="muf-mini-weight" type="number" min="0" step="0.1" placeholder="Enter weight" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+        </div>
+        <div class="space-y-1">
+          <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">${tab.miniCalculator.label || 'Pediatric MUF flow range'}</div>
+          <div id="muf-mini-flow" class="text-lg font-semibold text-primary-900 dark:text-white">—</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400">${tab.miniCalculator.rangeLabel || 'Flow range'} (${tab.miniCalculator.unitLabel || 'mL/min'})</div>
+        </div>
+      </div>
+    `;
+
+    const miniWeightInput = miniCalc.querySelector('#muf-mini-weight');
+    const miniFlowOutput = miniCalc.querySelector('#muf-mini-flow');
+
+    const updateMiniFlow = () => {
+      const weight = parseFloat(miniWeightInput.value);
+      if (!(weight > 0)) {
+        miniFlowOutput.textContent = '—';
+        return;
+      }
+      // Pediatric MUF flow range: (mL/kg/min) × kg = mL/min.
+      const minFlow = tab.miniCalculator.range.min * weight;
+      const maxFlow = tab.miniCalculator.range.max * weight;
+      miniFlowOutput.textContent = `${Math.round(minFlow)}–${Math.round(maxFlow)} ${tab.miniCalculator.unitLabel || 'mL/min'}`;
+    };
+
+    miniWeightInput.addEventListener('input', updateMiniFlow);
+    updateMiniFlow();
+
+    panel.appendChild(miniCalc);
+  }
+
+  const tableWrap = document.createElement('div');
+  tableWrap.className = 'overflow-x-auto';
+
+  const table = document.createElement('table');
+  table.className = 'min-w-[720px] w-full text-xs border border-slate-200 dark:border-primary-800 rounded-xl overflow-hidden';
+
+  const columnLabels = tab.tableColumns || {};
+  table.innerHTML = `
+    <thead class="bg-slate-50 dark:bg-primary-900/70 text-slate-600 dark:text-slate-300">
+      <tr>
+        <th class="text-left px-3 py-2">${columnLabels.label || 'Parameter'}</th>
+        <th class="text-left px-3 py-2">${columnLabels.pediatric || 'Pediatric'}</th>
+        <th class="text-left px-3 py-2">${columnLabels.adult || 'Adult'}</th>
+        <th class="text-left px-3 py-2">${columnLabels.notes || 'Notes'}</th>
+      </tr>
+    </thead>
+  `;
+
+  const tbody = document.createElement('tbody');
+  (tab.tableRows || []).forEach(row => {
+    const tr = document.createElement('tr');
+    tr.className = 'border-t border-slate-100 dark:border-primary-800 hover:bg-slate-50/70 dark:hover:bg-primary-900/60';
+    tr.innerHTML = `
+      <td class="px-3 py-2 font-semibold text-slate-700 dark:text-slate-200">${row.label}</td>
+      <td class="px-3 py-2 text-slate-700 dark:text-slate-200">${row.pediatric}</td>
+      <td class="px-3 py-2 text-slate-700 dark:text-slate-200">${row.adult}</td>
+      <td class="px-3 py-2 text-slate-600 dark:text-slate-300">${row.notes || ''}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+  tableWrap.appendChild(table);
+  panel.appendChild(tableWrap);
+
 }
 
 function createAcpProfileToggle(activeProfile, onChange) {
@@ -1404,6 +1536,12 @@ function initQuickReference() {
       return;
     }
 
+    if (tab.id === 'muf') {
+      renderMufTab(panel, tab);
+      panelContainer.appendChild(panel);
+      return;
+    }
+
     if (tab.id === 'tca' && tab.tableRows) {
       renderHcaTable(panel, tab);
       panelContainer.appendChild(panel);
@@ -1443,7 +1581,14 @@ function initQuickReference() {
 
   document.addEventListener('click', (event) => {
     if (event.target.closest('.quick-ref-info-panel')) return;
-    if (event.target.closest('button')) return;
+    if (event.target.closest('.quick-ref-info-button')) return;
+    document.querySelectorAll('.quick-ref-info-panel').forEach(panel => {
+      panel.classList.add('hidden');
+    });
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
     document.querySelectorAll('.quick-ref-info-panel').forEach(panel => {
       panel.classList.add('hidden');
     });
