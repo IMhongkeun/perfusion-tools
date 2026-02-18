@@ -229,6 +229,83 @@ function updateUnitConverterFlow() {
   mlKgMinOutput.textContent = `${flowMlKgMin.toFixed(2)} ml/kg/min`;
 }
 
+function setUnitConverterTab(activeTab) {
+  const flowTabButton = el('unit-tab-flow');
+  const pressureTabButton = el('unit-tab-pressure');
+  const flowPanel = el('unit-panel-flow');
+  const pressurePanel = el('unit-panel-pressure');
+  if (!flowTabButton || !pressureTabButton || !flowPanel || !pressurePanel) return;
+
+  const isFlowActive = activeTab !== 'pressure';
+
+  flowPanel.classList.toggle('hidden', !isFlowActive);
+  pressurePanel.classList.toggle('hidden', isFlowActive);
+
+  flowTabButton.classList.toggle('bg-accent-500/15', isFlowActive);
+  flowTabButton.classList.toggle('text-accent-700', isFlowActive);
+  flowTabButton.classList.toggle('dark:text-accent-300', isFlowActive);
+  flowTabButton.classList.toggle('text-slate-600', !isFlowActive);
+  flowTabButton.classList.toggle('dark:text-slate-300', !isFlowActive);
+
+  pressureTabButton.classList.toggle('bg-accent-500/15', !isFlowActive);
+  pressureTabButton.classList.toggle('text-accent-700', !isFlowActive);
+  pressureTabButton.classList.toggle('dark:text-accent-300', !isFlowActive);
+  pressureTabButton.classList.toggle('text-slate-600', isFlowActive);
+  pressureTabButton.classList.toggle('dark:text-slate-300', isFlowActive);
+}
+
+function updateUnitConverterPressure() {
+  const valueInput = el('unit-pressure-value');
+  const fromUnitSelect = el('unit-pressure-from');
+  const mmhgOutput = el('unit-pressure-mmhg');
+  const kpaClinicalOutput = el('unit-pressure-kpa-clinical');
+  const cmh2oOutput = el('unit-pressure-cmh2o');
+  const psiOutput = el('unit-pressure-psi');
+  const kpaGasOutput = el('unit-pressure-kpa-gas');
+  const barOutput = el('unit-pressure-bar');
+
+  if (!valueInput || !fromUnitSelect || !mmhgOutput || !kpaClinicalOutput || !cmh2oOutput || !psiOutput || !kpaGasOutput || !barOutput) return;
+
+  const inputValue = parseFloat(valueInput.value);
+  if (!Number.isFinite(inputValue)) {
+    [mmhgOutput, kpaClinicalOutput, cmh2oOutput, psiOutput, kpaGasOutput, barOutput].forEach(output => {
+      output.textContent = '—';
+    });
+    return;
+  }
+
+  const fromUnit = fromUnitSelect.value;
+  let kpaValue = 0;
+
+  // Pressure conversion uses kpa as canonical unit.
+  // mmhg -> kpa: kpa = mmhg × 0.133322
+  // cmh2o -> mmhg: mmhg = cmh2o × 0.735559, then mmhg -> kpa
+  // psi -> kpa: kpa = psi × 6.89476
+  // bar -> kpa: kpa = bar × 100
+  if (fromUnit === 'mmhg') kpaValue = inputValue * 0.133322;
+  else if (fromUnit === 'kpa') kpaValue = inputValue;
+  else if (fromUnit === 'cmh2o') kpaValue = (inputValue * 0.735559) * 0.133322;
+  else if (fromUnit === 'psi') kpaValue = inputValue * 6.89476;
+  else if (fromUnit === 'bar') kpaValue = inputValue * 100;
+
+  // kpa -> mmhg: mmhg = kpa × 7.50062
+  // mmhg -> cmh2o: cmh2o = mmhg × 1.35951
+  // kpa -> psi: psi = kpa / 6.89476
+  // kpa -> bar: bar = kpa / 100
+  const mmhgValue = kpaValue * 7.50062;
+  const cmh2oValue = mmhgValue * 1.35951;
+  const psiValue = kpaValue / 6.89476;
+  const barValue = kpaValue / 100;
+
+  mmhgOutput.textContent = `${mmhgValue.toFixed(1)} mmhg`;
+  kpaClinicalOutput.textContent = `${kpaValue.toFixed(2)} kpa`;
+  cmh2oOutput.textContent = `${cmh2oValue.toFixed(1)} cmh2o`;
+  psiOutput.textContent = `${psiValue.toFixed(2)} psi`;
+  kpaGasOutput.textContent = `${kpaValue.toFixed(2)} kpa`;
+  barOutput.textContent = `${barValue.toFixed(2)} bar`;
+}
+
+
 const PATIENT_TYPE_COEFS = {
   adult_m: 70,
   adult_f: 65,
@@ -1868,6 +1945,19 @@ window.addEventListener('DOMContentLoaded', () => {
     if (x) x.addEventListener('input', updateUnitConverterFlow);
   });
 
+  ['unit-pressure-value', 'unit-pressure-from'].forEach(id => {
+    const x = el(id);
+    if (!x) return;
+    const eventName = id === 'unit-pressure-from' ? 'change' : 'input';
+    x.addEventListener(eventName, updateUnitConverterPressure);
+  });
+
+  document.querySelectorAll('[data-unit-tab]').forEach(button => {
+    button.addEventListener('click', () => {
+      setUnitConverterTab(button.dataset.unitTab || 'flow');
+    });
+  });
+
   setupContactActions();
 
   initTimeCalculator();
@@ -1879,4 +1969,6 @@ window.addEventListener('DOMContentLoaded', () => {
   updateLBM();
   updatePrimingVolume();
   updateUnitConverterFlow();
+  updateUnitConverterPressure();
+  setUnitConverterTab('flow');
 });
