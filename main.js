@@ -223,6 +223,12 @@ function initUnitConverterLabels() {
   const pressurePsiLabel = el('unit-label-pressure-psi');
   const pressureKpaGasLabel = el('unit-label-pressure-kpa-gas');
   const pressureBarLabel = el('unit-label-pressure-bar');
+  const pressureMmhgUnit = el('unit-pressure-mmhg-unit');
+  const pressureKpaClinicalUnit = el('unit-pressure-kpa-clinical-unit');
+  const pressureCmh2oUnit = el('unit-pressure-cmh2o-unit');
+  const pressurePsiUnit = el('unit-pressure-psi-unit');
+  const pressureKpaGasUnit = el('unit-pressure-kpa-gas-unit');
+  const pressureBarUnit = el('unit-pressure-bar-unit');
   const flowFormulaMlMin = el('unit-flow-formula-mlmin');
   const flowFormulaMlKgMin = el('unit-flow-formula-mlkgmin');
   const pressureFromSelect = el('unit-pressure-from');
@@ -237,6 +243,12 @@ function initUnitConverterLabels() {
   if (pressurePsiLabel) pressurePsiLabel.textContent = UNIT_LABELS.pressurePsi;
   if (pressureKpaGasLabel) pressureKpaGasLabel.textContent = UNIT_LABELS.pressureKpa;
   if (pressureBarLabel) pressureBarLabel.textContent = UNIT_LABELS.pressureBar;
+  if (pressureMmhgUnit) pressureMmhgUnit.textContent = UNIT_LABELS.pressureMmhg;
+  if (pressureKpaClinicalUnit) pressureKpaClinicalUnit.textContent = UNIT_LABELS.pressureKpa;
+  if (pressureCmh2oUnit) pressureCmh2oUnit.textContent = UNIT_LABELS.pressureCmh2o;
+  if (pressurePsiUnit) pressurePsiUnit.textContent = UNIT_LABELS.pressurePsi;
+  if (pressureKpaGasUnit) pressureKpaGasUnit.textContent = UNIT_LABELS.pressureKpa;
+  if (pressureBarUnit) pressureBarUnit.textContent = UNIT_LABELS.pressureBar;
 
   if (flowFormulaMlMin) {
     flowFormulaMlMin.innerHTML = `<strong>Formula:</strong> ${UNIT_LABELS.flowOutputMlMin} = ${UNIT_LABELS.flowInput} × 1000`;
@@ -317,12 +329,12 @@ function setUnitConverterTab(activeTab) {
 function updateUnitConverterPressure() {
   const valueInput = el('unit-pressure-value');
   const fromUnitSelect = el('unit-pressure-from');
-  const mmhgOutput = el('unit-pressure-mmhg');
-  const kpaClinicalOutput = el('unit-pressure-kpa-clinical');
-  const cmh2oOutput = el('unit-pressure-cmh2o');
-  const psiOutput = el('unit-pressure-psi');
-  const kpaGasOutput = el('unit-pressure-kpa-gas');
-  const barOutput = el('unit-pressure-bar');
+  const mmhgOutput = el('unit-pressure-mmhg-value');
+  const kpaClinicalOutput = el('unit-pressure-kpa-clinical-value');
+  const cmh2oOutput = el('unit-pressure-cmh2o-value');
+  const psiOutput = el('unit-pressure-psi-value');
+  const kpaGasOutput = el('unit-pressure-kpa-gas-value');
+  const barOutput = el('unit-pressure-bar-value');
 
   if (!valueInput || !fromUnitSelect || !mmhgOutput || !kpaClinicalOutput || !cmh2oOutput || !psiOutput || !kpaGasOutput || !barOutput) return;
 
@@ -357,12 +369,12 @@ function updateUnitConverterPressure() {
   const psiValue = kpaValue / 6.89476;
   const barValue = kpaValue / 100;
 
-  mmhgOutput.textContent = `${mmhgValue.toFixed(1)} ${UNIT_LABELS.pressureMmhg}`;
-  kpaClinicalOutput.textContent = `${kpaValue.toFixed(2)} ${UNIT_LABELS.pressureKpa}`;
-  cmh2oOutput.textContent = `${cmh2oValue.toFixed(1)} ${UNIT_LABELS.pressureCmh2o}`;
-  psiOutput.textContent = `${psiValue.toFixed(2)} ${UNIT_LABELS.pressurePsi}`;
-  kpaGasOutput.textContent = `${kpaValue.toFixed(2)} ${UNIT_LABELS.pressureKpa}`;
-  barOutput.textContent = `${barValue.toFixed(2)} ${UNIT_LABELS.pressureBar}`;
+  mmhgOutput.textContent = mmhgValue.toFixed(1);
+  kpaClinicalOutput.textContent = kpaValue.toFixed(2);
+  cmh2oOutput.textContent = cmh2oValue.toFixed(1);
+  psiOutput.textContent = psiValue.toFixed(2);
+  kpaGasOutput.textContent = kpaValue.toFixed(2);
+  barOutput.textContent = barValue.toFixed(2);
 }
 
 
