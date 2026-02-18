@@ -199,6 +199,66 @@ function calcDO2i(flowLmin, bsa, cao2) {
   return fi * cao2 * 10;
 }
 
+
+const UNIT_LABELS = {
+  flowInput: 'L/min',
+  flowOutputMlMin: 'mL/min',
+  flowOutputMlKgMin: 'mL/kg/min',
+  flowWeightInput: 'kg',
+  pressureMmhg: 'mmHg',
+  pressureKpa: 'kPa',
+  pressureCmh2o: 'cmH₂O',
+  pressurePsi: 'psi',
+  pressureBar: 'bar'
+};
+
+function initUnitConverterLabels() {
+  const flowInputLabel = el('unit-label-flow-input');
+  const flowWeightLabel = el('unit-label-flow-weight-input');
+  const flowOutputMlMinLabel = el('unit-label-flow-output-mlmin');
+  const flowOutputMlKgMinLabel = el('unit-label-flow-output-mlkgmin');
+  const pressureMmhgLabel = el('unit-label-pressure-mmhg');
+  const pressureKpaClinicalLabel = el('unit-label-pressure-kpa-clinical');
+  const pressureCmh2oLabel = el('unit-label-pressure-cmh2o');
+  const pressurePsiLabel = el('unit-label-pressure-psi');
+  const pressureKpaGasLabel = el('unit-label-pressure-kpa-gas');
+  const pressureBarLabel = el('unit-label-pressure-bar');
+  const flowFormulaMlMin = el('unit-flow-formula-mlmin');
+  const flowFormulaMlKgMin = el('unit-flow-formula-mlkgmin');
+  const pressureFromSelect = el('unit-pressure-from');
+
+  if (flowInputLabel) flowInputLabel.textContent = `Flow (${UNIT_LABELS.flowInput})`;
+  if (flowWeightLabel) flowWeightLabel.textContent = `Weight (${UNIT_LABELS.flowWeightInput})`;
+  if (flowOutputMlMinLabel) flowOutputMlMinLabel.textContent = UNIT_LABELS.flowOutputMlMin;
+  if (flowOutputMlKgMinLabel) flowOutputMlKgMinLabel.textContent = UNIT_LABELS.flowOutputMlKgMin;
+  if (pressureMmhgLabel) pressureMmhgLabel.textContent = UNIT_LABELS.pressureMmhg;
+  if (pressureKpaClinicalLabel) pressureKpaClinicalLabel.textContent = UNIT_LABELS.pressureKpa;
+  if (pressureCmh2oLabel) pressureCmh2oLabel.textContent = UNIT_LABELS.pressureCmh2o;
+  if (pressurePsiLabel) pressurePsiLabel.textContent = UNIT_LABELS.pressurePsi;
+  if (pressureKpaGasLabel) pressureKpaGasLabel.textContent = UNIT_LABELS.pressureKpa;
+  if (pressureBarLabel) pressureBarLabel.textContent = UNIT_LABELS.pressureBar;
+
+  if (flowFormulaMlMin) {
+    flowFormulaMlMin.innerHTML = `<strong>Formula:</strong> ${UNIT_LABELS.flowOutputMlMin} = ${UNIT_LABELS.flowInput} × 1000`;
+  }
+  if (flowFormulaMlKgMin) {
+    flowFormulaMlKgMin.innerHTML = `<strong>Formula:</strong> ${UNIT_LABELS.flowOutputMlKgMin} = (${UNIT_LABELS.flowInput} × 1000) / weight(kg)`;
+  }
+
+  if (pressureFromSelect) {
+    const labelsByValue = {
+      mmhg: UNIT_LABELS.pressureMmhg,
+      kpa: UNIT_LABELS.pressureKpa,
+      cmh2o: UNIT_LABELS.pressureCmh2o,
+      psi: UNIT_LABELS.pressurePsi,
+      bar: UNIT_LABELS.pressureBar
+    };
+    Array.from(pressureFromSelect.options).forEach(option => {
+      const label = labelsByValue[option.value];
+      if (label) option.textContent = label;
+    });
+  }
+}
 function updateUnitConverterFlow() {
   const flowLminInput = el('unit-flow-lmin');
   const weightInput = el('unit-flow-weight');
@@ -215,18 +275,18 @@ function updateUnitConverterFlow() {
     return;
   }
 
-  // Base conversion formula: ml/min = l/min × 1000.
+  // Base conversion formula: mL/min = L/min × 1000.
   const flowMlMin = flowLmin * 1000;
-  mlMinOutput.textContent = `${flowMlMin.toFixed(0)} ml/min`;
+  mlMinOutput.textContent = `${flowMlMin.toFixed(0)} ${UNIT_LABELS.flowOutputMlMin}`;
 
   if (!(weightKg > 0)) {
     mlKgMinOutput.textContent = 'Weight required';
     return;
   }
 
-  // Flow index formula: ml/kg/min = (l/min × 1000) / weight(kg).
+  // Flow index formula: mL/kg/min = (L/min × 1000) / weight(kg).
   const flowMlKgMin = flowMlMin / weightKg;
-  mlKgMinOutput.textContent = `${flowMlKgMin.toFixed(2)} ml/kg/min`;
+  mlKgMinOutput.textContent = `${flowMlKgMin.toFixed(2)} ${UNIT_LABELS.flowOutputMlKgMin}`;
 }
 
 function setUnitConverterTab(activeTab) {
@@ -297,12 +357,12 @@ function updateUnitConverterPressure() {
   const psiValue = kpaValue / 6.89476;
   const barValue = kpaValue / 100;
 
-  mmhgOutput.textContent = `${mmhgValue.toFixed(1)} mmhg`;
-  kpaClinicalOutput.textContent = `${kpaValue.toFixed(2)} kpa`;
-  cmh2oOutput.textContent = `${cmh2oValue.toFixed(1)} cmh2o`;
-  psiOutput.textContent = `${psiValue.toFixed(2)} psi`;
-  kpaGasOutput.textContent = `${kpaValue.toFixed(2)} kpa`;
-  barOutput.textContent = `${barValue.toFixed(2)} bar`;
+  mmhgOutput.textContent = `${mmhgValue.toFixed(1)} ${UNIT_LABELS.pressureMmhg}`;
+  kpaClinicalOutput.textContent = `${kpaValue.toFixed(2)} ${UNIT_LABELS.pressureKpa}`;
+  cmh2oOutput.textContent = `${cmh2oValue.toFixed(1)} ${UNIT_LABELS.pressureCmh2o}`;
+  psiOutput.textContent = `${psiValue.toFixed(2)} ${UNIT_LABELS.pressurePsi}`;
+  kpaGasOutput.textContent = `${kpaValue.toFixed(2)} ${UNIT_LABELS.pressureKpa}`;
+  barOutput.textContent = `${barValue.toFixed(2)} ${UNIT_LABELS.pressureBar}`;
 }
 
 
@@ -1968,6 +2028,7 @@ window.addEventListener('DOMContentLoaded', () => {
   updateHct();
   updateLBM();
   updatePrimingVolume();
+  initUnitConverterLabels();
   updateUnitConverterFlow();
   updateUnitConverterPressure();
   setUnitConverterTab('flow');
