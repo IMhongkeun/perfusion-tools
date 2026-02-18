@@ -199,6 +199,36 @@ function calcDO2i(flowLmin, bsa, cao2) {
   return fi * cao2 * 10;
 }
 
+function updateUnitConverterFlow() {
+  const flowLminInput = el('unit-flow-lmin');
+  const weightInput = el('unit-flow-weight');
+  const mlMinOutput = el('unit-flow-mlmin');
+  const mlKgMinOutput = el('unit-flow-mlkgmin');
+  if (!flowLminInput || !weightInput || !mlMinOutput || !mlKgMinOutput) return;
+
+  const flowLmin = parseFloat(flowLminInput.value);
+  const weightKg = parseFloat(weightInput.value);
+
+  if (!(flowLmin >= 0)) {
+    mlMinOutput.textContent = '—';
+    mlKgMinOutput.textContent = '체중 입력 필요';
+    return;
+  }
+
+  // Base conversion formula: mL/min = L/min × 1000.
+  const flowMlMin = flowLmin * 1000;
+  mlMinOutput.textContent = `${flowMlMin.toFixed(0)} mL/min`;
+
+  if (!(weightKg > 0)) {
+    mlKgMinOutput.textContent = '체중 입력 필요';
+    return;
+  }
+
+  // Flow index formula: mL/kg/min = (L/min × 1000) / weight(kg).
+  const flowMlKgMin = flowMlMin / weightKg;
+  mlKgMinOutput.textContent = `${flowMlKgMin.toFixed(2)} mL/kg/min`;
+}
+
 const PATIENT_TYPE_COEFS = {
   adult_m: 70,
   adult_f: 65,
@@ -1629,7 +1659,7 @@ function navigateTo(path) {
 function route() {
   const path = getActivePath();
 
-  const sections = ['view-home', 'view-bsa', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'view-quick-reference', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
+  const sections = ['view-home', 'view-bsa', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'view-unit-converter', 'view-quick-reference', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
     el(sid).classList.add('hidden');
   });
@@ -1643,6 +1673,7 @@ function route() {
   else if (path.includes('priming-volume')) { el('view-priming-volume').classList.remove('hidden'); key = 'priming-volume'; }
   else if (path.includes('heparin')) { el('view-heparin').classList.remove('hidden'); key = 'heparin'; }
   else if (path.includes('timecalc')) { el('view-timecalc').classList.remove('hidden'); key = 'timecalc'; }
+  else if (path.includes('unit-converter')) { el('view-unit-converter').classList.remove('hidden'); key = 'unit-converter'; }
   else if (path.includes('quick-reference')) { el('view-quick-reference').classList.remove('hidden'); key = 'quick-reference'; }
   else if (path.includes('faq')) { el('faq').classList.remove('hidden'); key = 'faq'; }
   else if (path.includes('info')) { el('view-info').classList.remove('hidden'); key = 'info'; }
@@ -1660,6 +1691,7 @@ function route() {
     'heparin': ['nav-heparin', 'side-heparin', 'mob-heparin'],
     'priming-volume': ['nav-priming', 'side-priming', null],
     'timecalc': ['nav-time', 'side-time', 'mob-time'],
+    'unit-converter': ['nav-unit-converter', 'side-unit-converter', null],
     'quick-reference': ['nav-quick-reference', 'side-quick-reference', 'mob-quick-reference'],
     'faq': ['nav-faq', 'side-faq', null],
     'info': ['nav-info', 'side-info', 'mob-info']
@@ -1831,6 +1863,11 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  ['unit-flow-lmin', 'unit-flow-weight'].forEach(id => {
+    const x = el(id);
+    if (x) x.addEventListener('input', updateUnitConverterFlow);
+  });
+
   setupContactActions();
 
   initTimeCalculator();
@@ -1841,4 +1878,5 @@ window.addEventListener('DOMContentLoaded', () => {
   updateHct();
   updateLBM();
   updatePrimingVolume();
+  updateUnitConverterFlow();
 });

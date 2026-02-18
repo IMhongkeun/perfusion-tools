@@ -309,6 +309,13 @@
         headingDescription: "Track pump and case times with automatic formatting helpers.",
         canonicalPath: "/timecalc"
       },
+      "/unit-converter": {
+        title: "Unit Converter — Perfusion Tools",
+        h1: "Unit Converter",
+        description: "Convert perfusion flow units between L/min, mL/min, and mL/kg/min.",
+        headingDescription: "Quickly convert flow units for ECMO and perfusion workflows.",
+        canonicalPath: "/unit-converter"
+      },
       "/quick-reference": {
         title: "Quick Reference — Perfusion Tools",
         h1: "Quick Reference",
@@ -424,6 +431,7 @@
         <a href="/lbm" data-route id="nav-lbm" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">LBM</a>
         <a href="/priming-volume" data-route id="nav-priming" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Priming Volume</a>
         <a href="/timecalc" data-route id="nav-time" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Time</a>
+        <a href="/unit-converter" data-route id="nav-unit-converter" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Unit converter</a>
         <a href="/quick-reference" data-route id="nav-quick-reference" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Quick Reference</a>
         <a href="/info" data-route id="nav-info" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Info</a>
         <a href="/faq" data-route id="nav-faq" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">FAQ</a>
@@ -468,6 +476,9 @@
         </a>
         <a href="/timecalc" data-route id="side-time" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
           Time Calculator
+        </a>
+        <a href="/unit-converter" data-route id="side-unit-converter" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
+          Unit converter
         </a>
         <a href="/quick-reference" data-route id="side-quick-reference" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
           Quick Reference
@@ -545,6 +556,13 @@
                 <div>
                   <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
                   <div class="text-base font-semibold text-primary-900 dark:text-white">Time Calculator</div>
+                </div>
+                <span class="text-accent-500">→</span>
+              </a>
+              <a href="/unit-converter" data-route class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
+                <div>
+                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
+                  <div class="text-base font-semibold text-primary-900 dark:text-white">Unit converter</div>
                 </div>
                 <span class="text-accent-500">→</span>
               </a>
@@ -1798,6 +1816,55 @@
             </ol>
           </div>
         </details>
+      </section>
+
+      <section id="view-unit-converter" class="hidden animate-in fade-in duration-300">
+        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
+          <div class="p-6 border-b border-slate-100 dark:border-primary-800 bg-slate-50/50 dark:bg-primary-800/30">
+            <div class="text-xs uppercase tracking-wider text-accent-500 font-semibold">Calculator</div>
+            <h2 class="text-lg font-semibold text-primary-900 dark:text-white mt-1">Unit converter</h2>
+            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Simple base-input flow conversion for perfusion practice.</p>
+          </div>
+
+          <div class="p-6 space-y-6">
+            <div class="flex items-center gap-2 border-b border-slate-100 dark:border-primary-800 pb-3">
+              <button type="button" class="px-3 py-1.5 rounded-lg bg-accent-500/15 text-accent-700 dark:text-accent-300 text-sm font-semibold">flow</button>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="space-y-4">
+                <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Inputs</h3>
+                <label class="block space-y-1">
+                  <span class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Flow (L/min)</span>
+                  <input id="unit-flow-lmin" type="number" step="0.01" min="0" placeholder="4.5" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+                </label>
+                <label class="block space-y-1">
+                  <span class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Weight (kg)</span>
+                  <input id="unit-flow-weight" type="number" step="0.1" min="0" placeholder="70" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+                </label>
+              </div>
+
+              <div class="space-y-4">
+                <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Outputs</h3>
+                <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 p-4 space-y-3">
+                  <div>
+                    <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">mL/min</div>
+                    <div id="unit-flow-mlmin" class="text-xl font-bold text-primary-900 dark:text-white">—</div>
+                  </div>
+                  <div>
+                    <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">mL/kg/min</div>
+                    <div id="unit-flow-mlkgmin" class="text-xl font-bold text-primary-900 dark:text-white">체중 입력 필요</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-xs text-slate-500 dark:text-slate-400 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/70 dark:bg-primary-900/40 p-3 space-y-1">
+              <p><strong>Formula:</strong> mL/min = L/min × 1000</p>
+              <p><strong>Formula:</strong> mL/kg/min = (L/min × 1000) / weight(kg)</p>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="view-quick-reference" class="hidden animate-in fade-in duration-300">
