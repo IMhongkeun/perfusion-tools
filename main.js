@@ -163,7 +163,7 @@ function updateBsaFlowList(bsaVal) {
     const row = document.createElement('div');
     const highlight = Math.abs(ci - 2.4) < 0.05;
     row.className = 'grid grid-cols-[1fr_auto] items-center py-1.5 px-2 text-sm border-b border-slate-100 dark:border-primary-800 last:border-0 gap-3' + (highlight ? ' bg-amber-50 dark:bg-amber-900/20' : '');
-    row.innerHTML = `<span class="font-mono text-xs text-slate-500 dark:text-slate-400">CI ${ci.toFixed(1)}</span><span class="font-mono font-semibold text-right text-primary-900 dark:text-white">${flow.toFixed(2)} l/min</span>`;
+    row.innerHTML = `<span class="font-mono text-xs text-slate-500 dark:text-slate-400">CI ${ci.toFixed(1)}</span><span class="font-mono font-semibold text-right text-primary-900 dark:text-white">${flow.toFixed(2)} L/min</span>`;
     list.appendChild(row);
   }
 }
@@ -337,21 +337,21 @@ function updateUnitConverterPressure() {
   const fromUnit = fromUnitSelect.value;
   let kpaValue = 0;
 
-  // Pressure conversion uses kpa as canonical unit.
-  // mmhg -> kpa: kpa = mmhg × 0.133322
-  // cmh2o -> mmhg: mmhg = cmh2o × 0.735559, then mmhg -> kpa
-  // psi -> kpa: kpa = psi × 6.89476
-  // bar -> kpa: kpa = bar × 100
+  // Pressure conversion uses kPa as canonical unit.
+  // mmHg -> kPa: kPa = mmHg × 0.133322
+  // cmH₂O -> mmHg: mmHg = cmH₂O × 0.735559, then mmHg -> kPa
+  // psi -> kPa: kPa = psi × 6.89476
+  // bar -> kPa: kPa = bar × 100
   if (fromUnit === 'mmhg') kpaValue = inputValue * 0.133322;
   else if (fromUnit === 'kpa') kpaValue = inputValue;
   else if (fromUnit === 'cmh2o') kpaValue = (inputValue * 0.735559) * 0.133322;
   else if (fromUnit === 'psi') kpaValue = inputValue * 6.89476;
   else if (fromUnit === 'bar') kpaValue = inputValue * 100;
 
-  // kpa -> mmhg: mmhg = kpa × 7.50062
-  // mmhg -> cmh2o: cmh2o = mmhg × 1.35951
-  // kpa -> psi: psi = kpa / 6.89476
-  // kpa -> bar: bar = kpa / 100
+  // kPa -> mmHg: mmHg = kPa × 7.50062
+  // mmHg -> cmH₂O: cmH₂O = mmHg × 1.35951
+  // kPa -> psi: psi = kPa / 6.89476
+  // kPa -> bar: bar = kPa / 100
   const mmhgValue = kpaValue * 7.50062;
   const cmh2oValue = mmhgValue * 1.35951;
   const psiValue = kpaValue / 6.89476;
@@ -364,6 +364,7 @@ function updateUnitConverterPressure() {
   kpaGasOutput.textContent = `${kpaValue.toFixed(2)} ${UNIT_LABELS.pressureKpa}`;
   barOutput.textContent = `${barValue.toFixed(2)} ${UNIT_LABELS.pressureBar}`;
 }
+
 
 
 const PATIENT_TYPE_COEFS = {
@@ -836,14 +837,14 @@ function updateGDP() {
 
   if (warningEl) warningEl.classList.add('hidden');
 
-  setText('required-flow', results.requiredFlow ? `${results.requiredFlow.toFixed(2)} <span class="text-xs text-slate-500 dark:text-slate-400">l/min</span>` : '—');
-  setText('current-do2i', results.currentDO2i ? `${Math.round(results.currentDO2i)} <span class="text-xs text-slate-500 dark:text-slate-400">ml/min/m²</span>` : '—');
+  setText('required-flow', results.requiredFlow ? `${results.requiredFlow.toFixed(2)} <span class="text-xs text-slate-500 dark:text-slate-400">L/min</span>` : '—');
+  setText('current-do2i', results.currentDO2i ? `${Math.round(results.currentDO2i)} <span class="text-xs text-slate-500 dark:text-slate-400">mL/min/m²</span>` : '—');
 
   let statusLabel = 'Waiting for current flow';
   let detail = 'Enter current pump flow to compare against the target DO₂i.';
   let gaugeColor = 'from-slate-300 to-slate-200 dark:from-primary-800 dark:to-primary-700';
   let gaugeWidth = '0%';
-  let ciComment = results.currentCI ? `Current CI ${results.currentCI.toFixed(2)} l/min/m².` : '';
+  let ciComment = results.currentCI ? `Current CI ${results.currentCI.toFixed(2)} L/min/m².` : '';
 
   const lowerTarget = results.recommendedMin;
   const upperTarget = results.recommendedMax;
@@ -857,7 +858,7 @@ function updateGDP() {
       const deltaFlow = Math.max(results.requiredFlow - results.flow, 0);
       statusLabel = 'Below target';
       detail = deltaFlow > 0
-        ? `Needs approximately +${deltaFlow.toFixed(2)} l/min to reach the target.`
+        ? `Needs approximately +${deltaFlow.toFixed(2)} L/min to reach the target.`
         : 'Increase flow to approach the target.';
       gaugeColor = 'from-amber-500 to-red-500';
     } else if (results.currentDO2i > upperTarget) {
@@ -877,10 +878,10 @@ function updateGDP() {
   gauge.style.width = gaugeWidth;
   gauge.className = `h-3 rounded-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(34,211,238,0.25)] ${gaugeColor}`;
   if (gaugeMsg) {
-    const guidelineLine = '<p>Guideline DO₂i (37°C): 280–300 ml/min/m²</p>';
-    const userAdjustedLine = `<p>Selected DO₂i target range: ${results.recommendedMin}–${results.recommendedMax} ml/min/m²</p>`;
+    const guidelineLine = '<p>Guideline DO₂i (37°C): 280–300 mL/min/m²</p>';
+    const userAdjustedLine = `<p>Selected DO₂i target range: ${results.recommendedMin}–${results.recommendedMax} mL/min/m²</p>`;
     const flowLine = results.currentDO2i
-      ? `<p class="text-[11px] text-slate-200/80">Current DO₂i: ${Math.round(results.currentDO2i)} ml/min/m²</p>`
+      ? `<p class="text-[11px] text-slate-200/80">Current DO₂i: ${Math.round(results.currentDO2i)} mL/min/m²</p>`
       : '<p class="text-[11px] text-slate-200/70">Enter current flow to visualize DO₂i against targets.</p>';
     gaugeMsg.innerHTML = `${guidelineLine}${userAdjustedLine}${flowLine}`;
   }
@@ -1030,8 +1031,8 @@ function updateLBM() {
         const flowLean = bsaLean ? (ci * bsaLean).toFixed(2) : '—';
         tr.innerHTML = `
           <td class="px-4 py-2 font-mono text-xs text-slate-600 dark:text-slate-300">${ci.toFixed(1)}</td>
-          <td class="px-4 py-2 font-semibold text-primary-900 dark:text-white">${flowActual} l/min</td>
-          <td class="px-4 py-2 font-semibold text-emerald-600 dark:text-emerald-400">${flowLean} l/min</td>
+          <td class="px-4 py-2 font-semibold text-primary-900 dark:text-white">${flowActual} L/min</td>
+          <td class="px-4 py-2 font-semibold text-emerald-600 dark:text-emerald-400">${flowLean} L/min</td>
         `;
         flowBody.appendChild(tr);
       }
