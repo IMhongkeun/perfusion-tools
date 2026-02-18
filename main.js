@@ -211,22 +211,22 @@ function updateUnitConverterFlow() {
 
   if (!(flowLmin >= 0)) {
     mlMinOutput.textContent = '—';
-    mlKgMinOutput.textContent = '체중 입력 필요';
+    mlKgMinOutput.textContent = 'Weight required';
     return;
   }
 
-  // Base conversion formula: mL/min = L/min × 1000.
+  // Base conversion formula: ml/min = l/min × 1000.
   const flowMlMin = flowLmin * 1000;
-  mlMinOutput.textContent = `${flowMlMin.toFixed(0)} mL/min`;
+  mlMinOutput.textContent = `${flowMlMin.toFixed(0)} ml/min`;
 
   if (!(weightKg > 0)) {
-    mlKgMinOutput.textContent = '체중 입력 필요';
+    mlKgMinOutput.textContent = 'Weight required';
     return;
   }
 
-  // Flow index formula: mL/kg/min = (L/min × 1000) / weight(kg).
+  // Flow index formula: ml/kg/min = (l/min × 1000) / weight(kg).
   const flowMlKgMin = flowMlMin / weightKg;
-  mlKgMinOutput.textContent = `${flowMlKgMin.toFixed(2)} mL/kg/min`;
+  mlKgMinOutput.textContent = `${flowMlKgMin.toFixed(2)} ml/kg/min`;
 }
 
 const PATIENT_TYPE_COEFS = {

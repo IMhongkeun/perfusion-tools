@@ -312,7 +312,7 @@
       "/unit-converter": {
         title: "Unit Converter — Perfusion Tools",
         h1: "Unit Converter",
-        description: "Convert perfusion flow units between L/min, mL/min, and mL/kg/min.",
+        description: "Convert perfusion flow units between L/min, ml/min, and ml/kg/min.",
         headingDescription: "Quickly convert flow units for ECMO and perfusion workflows.",
         canonicalPath: "/unit-converter"
       },
@@ -1835,7 +1835,7 @@
               <div class="space-y-4">
                 <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Inputs</h3>
                 <label class="block space-y-1">
-                  <span class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Flow (L/min)</span>
+                  <span class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Flow (l/min)</span>
                   <input id="unit-flow-lmin" type="number" step="0.01" min="0" placeholder="4.5" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
                 </label>
                 <label class="block space-y-1">
@@ -1848,20 +1848,20 @@
                 <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Outputs</h3>
                 <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 p-4 space-y-3">
                   <div>
-                    <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">mL/min</div>
+                    <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">ml/min</div>
                     <div id="unit-flow-mlmin" class="text-xl font-bold text-primary-900 dark:text-white">—</div>
                   </div>
                   <div>
-                    <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">mL/kg/min</div>
-                    <div id="unit-flow-mlkgmin" class="text-xl font-bold text-primary-900 dark:text-white">체중 입력 필요</div>
+                    <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">ml/kg/min</div>
+                    <div id="unit-flow-mlkgmin" class="text-xl font-bold text-primary-900 dark:text-white">Weight required</div>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="text-xs text-slate-500 dark:text-slate-400 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/70 dark:bg-primary-900/40 p-3 space-y-1">
-              <p><strong>Formula:</strong> mL/min = L/min × 1000</p>
-              <p><strong>Formula:</strong> mL/kg/min = (L/min × 1000) / weight(kg)</p>
+              <p><strong>Formula:</strong> ml/min = l/min × 1000</p>
+              <p><strong>Formula:</strong> ml/kg/min = (l/min × 1000) / weight(kg)</p>
             </div>
           </div>
         </div>
@@ -1908,7 +1908,7 @@
               <div class="space-y-1">
                 <p class="font-semibold mb-1">ACP detail (adult reference)</p>
                 <ul class="list-disc pl-4 space-y-1">
-                  <li>Flow rate: 8–12 mL/kg/min (≈0.6 mL/min/g cerebral tissue in some references).</li>
+                  <li>Flow rate: 8–12 ml/kg/min (≈0.6 ml/min/g cerebral tissue in some references).</li>
                   <li>Perfusion pressure: 40–60 mmHg (right radial artery reference).</li>
                   <li>Temperature: 23–28°C moderate hypothermia.</li>
                   <li>pH management: Alpha-stat to support cerebral autoregulation.</li>
@@ -1919,7 +1919,7 @@
               <div class="space-y-1">
                 <p class="font-semibold mb-1">ACP detail (pediatric reference)</p>
                 <ul class="list-disc pl-4 space-y-1">
-                  <li>Flow rate: 40–80 mL/kg/min (reference ~50–64); neonates ~46 ± 6 mL/kg/min.</li>
+                  <li>Flow rate: 40–80 ml/kg/min (reference ~50–64); neonates ~46 ± 6 ml/kg/min.</li>
                   <li>Perfusion pressure: titrate (often 20–25 mmHg reported; higher MAP targets used in some centers).</li>
                   <li>Perfusate temp: 18–25°C; many ACP programs favor ~25°C moderate hypothermia.</li>
                   <li>pH management: pH-stat is frequently used for neonatal/infant cerebral protection during hypothermia.</li>
@@ -1933,7 +1933,7 @@
                 <p class="font-semibold mb-1">RCP detail (reference)</p>
                 <ul class="list-disc pl-4 space-y-1">
                   <li>SVC pressure: 20–30 mmHg (target 20–25); excessive pressure risks brain edema.</li>
-                  <li>Flow: pressure-driven; 300–500 mL/min commonly cited to maintain SVC pressure &lt;25.</li>
+                  <li>Flow: pressure-driven; 300–500 ml/min commonly cited to maintain SVC pressure &lt;25.</li>
                   <li>Monitoring: NIRS/EEG with baseline/trend focus and bilateral symmetry.</li>
                   <li>TCD can be added to track cerebral blood flow velocity.</li>
                 </ul>
@@ -1952,7 +1952,7 @@
                 <p class="font-semibold mb-1">MUF detail (clinical reference)</p>
                 <ul class="list-disc pl-4 space-y-1">
                   <li><strong>Role / Indication:</strong> Pediatric &amp; congenital: Recommended when no contraindications exist. Adult: Selective use for blood conservation and volume management.</li>
-                  <li><strong>Flow rate (typical practice):</strong> Pediatric: 10–20 mL/kg/min. Adult: 150–300 mL/min. Neonates/low-weight infants: Avoid abrupt flow changes; titrate carefully to monitoring trends.</li>
+                  <li><strong>Flow rate (typical practice):</strong> Pediatric: 10–20 ml/kg/min. Adult: 150–300 ml/min. Neonates/low-weight infants: Avoid abrupt flow changes; titrate carefully to monitoring trends.</li>
                   <li><strong>Monitoring / Titration (practical):</strong> Titrate MUF to NIRS + CVP + arterial pressure trends and overall hemodynamics.</li>
                   <li><strong>Core safety rule (critical):</strong> Maintain positive arterial line pressure at all times to reduce air entrainment/embolism risk. Practical controls may include shunt/clamp management and centrifugal pump RPM adjustments to preserve a favorable pressure gradient.</li>
                   <li><strong>Duration / Endpoint:</strong> Typical duration: 10–20 min (adult commonly ~10–15 min). Continue until target Hct and/or desired net fluid removal is achieved; adjust to hemodynamics and monitoring trends. Suggested Hct endpoints (reference): Pediatric ≥35–40%; Adult ≥30–35%.</li>
