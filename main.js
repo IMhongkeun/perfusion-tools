@@ -278,12 +278,24 @@ function updateUnitConverterFlow() {
   const mlKgMinOutput = el('unit-flow-mlkgmin');
   if (!flowLminInput || !weightInput || !mlMinOutput || !mlKgMinOutput) return;
 
+  const setWeightRequiredStyle = (isRequired) => {
+    mlKgMinOutput.classList.toggle('text-sm', isRequired);
+    mlKgMinOutput.classList.toggle('font-medium', isRequired);
+    mlKgMinOutput.classList.toggle('text-slate-400', isRequired);
+    mlKgMinOutput.classList.toggle('dark:text-slate-500', isRequired);
+    mlKgMinOutput.classList.toggle('text-xl', !isRequired);
+    mlKgMinOutput.classList.toggle('font-bold', !isRequired);
+    mlKgMinOutput.classList.toggle('text-primary-900', !isRequired);
+    mlKgMinOutput.classList.toggle('dark:text-white', !isRequired);
+  };
+
   const flowLmin = parseFloat(flowLminInput.value);
   const weightKg = parseFloat(weightInput.value);
 
   if (!(flowLmin >= 0)) {
     mlMinOutput.textContent = '—';
     mlKgMinOutput.textContent = 'Weight required';
+    setWeightRequiredStyle(true);
     return;
   }
 
@@ -293,12 +305,14 @@ function updateUnitConverterFlow() {
 
   if (!(weightKg > 0)) {
     mlKgMinOutput.textContent = 'Weight required';
+    setWeightRequiredStyle(true);
     return;
   }
 
   // Flow index formula: mL/kg/min = (L/min × 1000) / weight(kg).
   const flowMlKgMin = flowMlMin / weightKg;
   mlKgMinOutput.textContent = `${flowMlKgMin.toFixed(2)} ${UNIT_LABELS.flowOutputMlKgMin}`;
+  setWeightRequiredStyle(false);
 }
 
 function setUnitConverterTab(activeTab) {
