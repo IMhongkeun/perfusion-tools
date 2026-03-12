@@ -1796,7 +1796,7 @@ function initQuickReference() {
 
 
 // -----------------------------
-// PHN Pediatric Echo Predictor
+// PHN Pediatric Echo Z-score Calculator
 // -----------------------------
 let phnCalculatedBsa = null;
 
@@ -1879,14 +1879,28 @@ function updatePhnMeasuredStructureOptions() {
   });
 }
 
+function clearPhnOutputs() {
+  const resultsEl = el('phn-results');
+  if (resultsEl) resultsEl.innerHTML = '';
+  const displayEl = el('phn-bsa-display');
+  if (displayEl) displayEl.textContent = '—';
+  renderPhnWarnings([]);
+}
+
 function updatePhnEchoPredictor() {
   const bsaInput = el('phn-bsa-input');
   if (!bsaInput || !window.PhnCalculator) return;
 
+  if (!bsaInput.value || bsaInput.value.trim() === '') {
+    setPhnError('');
+    clearPhnOutputs();
+    return;
+  }
+
   const bsaValue = Number(bsaInput.value);
   if (!Number.isFinite(bsaValue) || bsaValue <= 0) {
     setPhnError('BSA must be a positive number.');
-    renderPhnWarnings([]);
+    clearPhnOutputs();
     return;
   }
 
@@ -1899,21 +1913,32 @@ function updatePhnEchoPredictor() {
   updatePhnDebugPanel(bsaValue, rows);
 }
 
-function calculatePhnHaycockFromInputs() {
+function calculatePhnBsaFromInputs() {
   const heightValue = Number(el('phn-height-cm') ? el('phn-height-cm').value : NaN);
   const weightValue = Number(el('phn-weight-kg') ? el('phn-weight-kg').value : NaN);
+  const methodSelect = el('phn-bsa-method');
+  const selectedMethod = methodSelect ? methodSelect.value : 'Haycock';
   const display = el('phn-calculated-bsa');
 
-  try {
-    const result = window.PhnCalculator.calculateHaycockBSA(heightValue, weightValue);
-    phnCalculatedBsa = result;
-    if (display) display.textContent = `Calculated BSA: ${result.toFixed(4)} m² (Haycock)`;
-    setPhnError('');
-  } catch (error) {
+  if (!(heightValue > 0) || !(weightValue > 0)) {
     phnCalculatedBsa = null;
     if (display) display.textContent = 'Calculated BSA: —';
-    setPhnError(error.message || 'Unable to calculate BSA.');
+    return;
   }
+
+  // Uses existing shared BSA formulas in this app (Mosteller, DuBois, Haycock, Boyd).
+  const result = computeBSA(heightValue, weightValue, selectedMethod);
+
+  if (!(result > 0) || !Number.isFinite(result)) {
+    phnCalculatedBsa = null;
+    if (display) display.textContent = 'Calculated BSA: —';
+    setPhnError('Unable to calculate BSA with selected formula.');
+    return;
+  }
+
+  phnCalculatedBsa = result;
+  if (display) display.textContent = `Calculated BSA: ${result.toFixed(4)} m² (${selectedMethod})`;
+  setPhnError('');
 }
 
 function usePhnCalculatedBsa() {
@@ -2157,15 +2182,18 @@ window.addEventListener('DOMContentLoaded', () => {
   if (phnBsaInput) phnBsaInput.addEventListener('input', updatePhnEchoPredictor);
 
   const phnCalcBsaBtn = el('phn-calc-bsa-btn');
-  if (phnCalcBsaBtn) phnCalcBsaBtn.addEventListener('click', calculatePhnHaycockFromInputs);
+  if (phnCalcBsaBtn) phnCalcBsaBtn.addEventListener('click', calculatePhnBsaFromInputs);
 
   const phnUseBsaBtn = el('phn-use-bsa-btn');
   if (phnUseBsaBtn) phnUseBsaBtn.addEventListener('click', usePhnCalculatedBsa);
 
   ['phn-height-cm', 'phn-weight-kg'].forEach((id) => {
     const node = el(id);
-    if (node) node.addEventListener('input', calculatePhnHaycockFromInputs);
+    if (node) node.addEventListener('input', calculatePhnBsaFromInputs);
   });
+
+  const phnBsaMethod = el('phn-bsa-method');
+  if (phnBsaMethod) phnBsaMethod.addEventListener('change', calculatePhnBsaFromInputs);
 
   const phnMeasuredButton = el('phn-measured-calc-btn');
   if (phnMeasuredButton) phnMeasuredButton.addEventListener('click', calculatePhnMeasuredZ);
