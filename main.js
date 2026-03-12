@@ -1793,6 +1793,161 @@ function initQuickReference() {
   quickReferenceInitialized = true;
 }
 
+
+
+// -----------------------------
+// PHN Pediatric Echo Predictor
+// -----------------------------
+let phnCalculatedBsa = null;
+
+function setPhnError(message) {
+  const box = el('phn-error');
+  if (!box) return;
+  if (!message) {
+    box.classList.add('hidden');
+    box.textContent = '';
+    return;
+  }
+  box.textContent = message;
+  box.classList.remove('hidden');
+}
+
+function renderPhnWarnings(warnings) {
+  const wrap = el('phn-warnings');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  (warnings || []).forEach((text) => {
+    const item = document.createElement('div');
+    item.className = 'rounded-lg border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 px-3 py-2 text-xs text-amber-800 dark:text-amber-200';
+    item.textContent = text;
+    wrap.appendChild(item);
+  });
+}
+
+function renderPhnRows(rows) {
+  const resultsEl = el('phn-results');
+  if (!resultsEl) return;
+  resultsEl.innerHTML = '';
+
+  rows.forEach((row) => {
+    const zNeg2DisplayMm = window.PhnCalculator.clampToDisplayMm(row.range.zNeg2Mm);
+    const line = document.createElement('div');
+    line.className = 'grid grid-cols-4 gap-2 px-3 py-2 text-sm items-center';
+    line.innerHTML = `
+      <div class="text-primary-900 dark:text-white font-medium text-xs leading-tight">${row.coeff.label}</div>
+      <div class="text-center font-mono text-slate-700 dark:text-slate-200">${window.PhnCalculator.formatMm(zNeg2DisplayMm)}</div>
+      <div class="text-center font-mono font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50/80 dark:bg-emerald-900/20 rounded py-1">${window.PhnCalculator.formatMm(row.range.z0Mm)}</div>
+      <div class="text-center font-mono text-slate-700 dark:text-slate-200">${window.PhnCalculator.formatMm(row.range.zPos2Mm)}</div>
+    `;
+    resultsEl.appendChild(line);
+  });
+}
+
+function updatePhnDebugPanel(bsaValue, rows) {
+  const panel = el('phn-debug-panel');
+  const output = el('phn-debug-output');
+  if (!panel || !output) return;
+
+  const isDevMode = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  panel.classList.toggle('hidden', !isDevMode);
+  if (!isDevMode) return;
+
+  const lines = rows.map((row) => {
+    const regression = window.PhnCalculator.calculateRegressionReferenceCm(
+      bsaValue,
+      window.PhnCalculator.PHN_REGRESSION[row.key]
+    );
+    return `${row.coeff.label}
+  BSA^alpha: ${row.range.bsaPowAlpha.toFixed(6)}
+  inverse z0 (cm): ${row.range.z0Cm.toFixed(6)}
+  regression ref (cm): ${regression.toFixed(6)}
+`;
+  });
+
+  output.textContent = lines.join('\n');
+}
+
+function updatePhnMeasuredStructureOptions() {
+  const select = el('phn-measured-structure');
+  if (!select || select.options.length > 0) return;
+  window.PhnCalculator.PHN_STRUCTURE_ORDER.forEach((key) => {
+    const coeff = window.PhnCalculator.PHN_STRUCTURES[key];
+    const option = document.createElement('option');
+    option.value = key;
+    option.textContent = coeff.label;
+    select.appendChild(option);
+  });
+}
+
+function updatePhnEchoPredictor() {
+  const bsaInput = el('phn-bsa-input');
+  if (!bsaInput || !window.PhnCalculator) return;
+
+  const bsaValue = Number(bsaInput.value);
+  if (!Number.isFinite(bsaValue) || bsaValue <= 0) {
+    setPhnError('BSA must be a positive number.');
+    renderPhnWarnings([]);
+    return;
+  }
+
+  setPhnError('');
+  el('phn-bsa-display').textContent = bsaValue.toFixed(2);
+
+  const rows = window.PhnCalculator.createRowsForBsa(bsaValue);
+  renderPhnRows(rows);
+  renderPhnWarnings(window.PhnCalculator.getBsaWarnings(bsaValue));
+  updatePhnDebugPanel(bsaValue, rows);
+}
+
+function calculatePhnHaycockFromInputs() {
+  const heightValue = Number(el('phn-height-cm') ? el('phn-height-cm').value : NaN);
+  const weightValue = Number(el('phn-weight-kg') ? el('phn-weight-kg').value : NaN);
+  const display = el('phn-calculated-bsa');
+
+  try {
+    const result = window.PhnCalculator.calculateHaycockBSA(heightValue, weightValue);
+    phnCalculatedBsa = result;
+    if (display) display.textContent = `Calculated BSA: ${result.toFixed(4)} m² (Haycock)`;
+    setPhnError('');
+  } catch (error) {
+    phnCalculatedBsa = null;
+    if (display) display.textContent = 'Calculated BSA: —';
+    setPhnError(error.message || 'Unable to calculate BSA.');
+  }
+}
+
+function usePhnCalculatedBsa() {
+  const bsaInput = el('phn-bsa-input');
+  if (!bsaInput) return;
+  if (!Number.isFinite(phnCalculatedBsa) || phnCalculatedBsa <= 0) {
+    setPhnError('Calculate BSA first, then apply it.');
+    return;
+  }
+
+  bsaInput.value = phnCalculatedBsa.toFixed(4);
+  updatePhnEchoPredictor();
+}
+
+function calculatePhnMeasuredZ() {
+  const output = el('phn-measured-z');
+  const structureSelect = el('phn-measured-structure');
+  const measuredMm = Number(el('phn-measured-mm') ? el('phn-measured-mm').value : NaN);
+  const bsaValue = Number(el('phn-bsa-input') ? el('phn-bsa-input').value : NaN);
+
+  if (!output || !structureSelect) return;
+
+  try {
+    const key = structureSelect.value;
+    const coeff = window.PhnCalculator.PHN_STRUCTURES[key];
+    const measuredCm = measuredMm / 10;
+    const zScore = window.PhnCalculator.calculateForwardZScore(measuredCm, bsaValue, coeff);
+    output.textContent = `Measured Z-score: ${zScore.toFixed(2)}`;
+    setPhnError('');
+  } catch (error) {
+    output.textContent = 'Measured Z-score: —';
+    setPhnError(error.message || 'Unable to compute measured Z-score.');
+  }
+}
 // -----------------------------
 // Router & Navigation Styling
 // -----------------------------
@@ -1823,14 +1978,15 @@ function navigateTo(path) {
 function route() {
   const path = getActivePath();
 
-  const sections = ['view-home', 'view-bsa', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'view-unit-converter', 'view-quick-reference', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
+  const sections = ['view-home', 'view-bsa', 'view-phn-echo', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'view-unit-converter', 'view-quick-reference', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
     el(sid).classList.add('hidden');
   });
 
   let key = 'home';
 
-  if (path.includes('bsa')) { el('view-bsa').classList.remove('hidden'); key = 'bsa'; }
+  if (path.includes('phn-echo')) { el('view-phn-echo').classList.remove('hidden'); key = 'phn-echo'; }
+  else if (path.includes('bsa')) { el('view-bsa').classList.remove('hidden'); key = 'bsa'; }
   else if (path.includes('do2i') || path.includes('gdp')) { el('view-do2i').classList.remove('hidden'); key = 'do2i'; }
   else if (path.includes('predicted-hct')) { el('view-hct').classList.remove('hidden'); key = 'predicted-hct'; }
   else if (path.includes('lbm')) { el('view-lbm').classList.remove('hidden'); key = 'lbm'; }
@@ -1851,6 +2007,7 @@ function route() {
     'do2i': ['nav-do2i', 'side-do2i', 'mob-do2i'],
     'predicted-hct': ['nav-hct', 'side-hct', 'mob-hct'],
     'bsa': ['nav-bsa', 'side-bsa', 'mob-bsa'],
+    'phn-echo': ['nav-phn-echo', 'side-phn-echo', 'mob-phn-echo'],
     'lbm': ['nav-lbm', 'side-lbm', 'mob-lbm'],
     'heparin': ['nav-heparin', 'side-heparin', 'mob-heparin'],
     'priming-volume': ['nav-priming', 'side-priming', null],
@@ -1993,6 +2150,27 @@ window.addEventListener('DOMContentLoaded', () => {
   if (bsaMethodStandalone) bsaMethodStandalone.addEventListener('change', updateStandaloneBsa);
 
   updateStandaloneBsa();
+
+  // PHN pediatric echo predictor listeners
+  updatePhnMeasuredStructureOptions();
+  const phnBsaInput = el('phn-bsa-input');
+  if (phnBsaInput) phnBsaInput.addEventListener('input', updatePhnEchoPredictor);
+
+  const phnCalcBsaBtn = el('phn-calc-bsa-btn');
+  if (phnCalcBsaBtn) phnCalcBsaBtn.addEventListener('click', calculatePhnHaycockFromInputs);
+
+  const phnUseBsaBtn = el('phn-use-bsa-btn');
+  if (phnUseBsaBtn) phnUseBsaBtn.addEventListener('click', usePhnCalculatedBsa);
+
+  ['phn-height-cm', 'phn-weight-kg'].forEach((id) => {
+    const node = el(id);
+    if (node) node.addEventListener('input', calculatePhnHaycockFromInputs);
+  });
+
+  const phnMeasuredButton = el('phn-measured-calc-btn');
+  if (phnMeasuredButton) phnMeasuredButton.addEventListener('click', calculatePhnMeasuredZ);
+
+  updatePhnEchoPredictor();
 
   // Predicted Hct event listeners
   ['wt_hct', 'pre_hct', 'prime', 'fluids', 'removed', 'rbc_units', 'rbc_unit_vol', 'rbc_hct', 'ebv_coef'].forEach(id => {
