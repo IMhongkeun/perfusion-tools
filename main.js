@@ -1303,6 +1303,323 @@ function setupContactActions() {
 }
 
 // -----------------------------
+// Bundled quick-reference data (inlined to keep single runtime script)
+// -----------------------------
+/**
+ * @typedef {Object} QuickReferenceReference
+ * @property {string} label
+ * @property {string=} url
+ */
+
+/**
+ * @typedef {Object} QuickReferenceCard
+ * @property {string} id
+ * @property {string} title
+ * @property {string} value
+ * @property {string} unit
+ * @property {string=} notes
+ * @property {string=} info
+ * @property {string=} copyText
+ * @property {{label: string, url?: string}[]=} references
+ * @property {string=} lastReviewed
+ * @property {{min: number, max: number}=} range
+ */
+
+/**
+ * @typedef {Object} QuickReferenceTab
+ * @property {string} id
+ * @property {string} label
+ * @property {QuickReferenceCard[]} cards
+ * @property {{adult?: QuickReferenceCard[], pediatric?: QuickReferenceCard[]}=} profiles
+ * @property {{durations: number[], defaultDuration: number, endpointText: string}=} calculator
+ * @property {{title: string, subtitle: string, guidance: string}=} intro
+ * @property {{label: string, value: string, unit?: string}=} tableColumns
+ * @property {{label: string, rangeLabel: string, unitLabel: string, range: {min: number, max: number}}=} miniCalculator
+ * @property {{id: string, label: string, pediatric: string, adult: string, notes?: string, highlight?: string}[]=} tableRows
+ * @property {string=} checklist
+ */
+
+/** @type {{tabs: QuickReferenceTab[]}} */
+window.quickReferenceData = {
+  tabs: [
+    {
+      id: 'acp',
+      label: 'ACP',
+      profiles: {
+        adult: [
+          {
+            id: 'acp-adult-flow',
+            title: 'Flow rate',
+            value: '8–12',
+            unit: 'mL/kg/min',
+            info: 'High-flow may increase cerebral edema risk; titrate with monitoring.',
+            lastReviewed: '2024-11-15',
+            range: { min: 8, max: 12 }
+          },
+          {
+            id: 'acp-adult-pressure',
+            title: 'Perfusion pressure',
+            value: '40–60',
+            unit: 'mmHg',
+            info: 'Right radial artery pressure reference.',
+            lastReviewed: '2024-11-15'
+          },
+          {
+            id: 'acp-adult-temp',
+            title: 'Perfusate temp',
+            value: '23–28',
+            unit: '°C',
+            notes: 'Moderate hypothermia',
+            info: 'Moderate hypothermia is often favored over deep for neurologic outcomes.',
+            lastReviewed: '2024-11-15'
+          },
+          {
+            id: 'acp-adult-ph',
+            title: 'pH management',
+            value: 'Alpha-stat',
+            unit: '',
+            info: 'Preserves cerebral autoregulation; reduces embolization risk.',
+            lastReviewed: '2024-11-15'
+          },
+          {
+            id: 'acp-adult-duration',
+            title: 'Duration',
+            value: 'Up to 80',
+            unit: 'min (reference)',
+            notes: 'Varies by center/monitoring/bilateral ACP',
+            info: 'Reported durations vary; if >40–50 min, consider bilateral ACP.',
+            lastReviewed: '2024-11-15'
+          },
+          {
+            id: 'acp-adult-monitoring',
+            title: 'Monitoring',
+            value: 'NIRS (rSO₂), EEG',
+            unit: '',
+            info: 'Confirm left-right balance with bilateral NIRS.',
+            lastReviewed: '2024-11-15'
+          },
+          {
+            id: 'acp-adult-hct',
+            title: 'Hct',
+            value: '25–30',
+            unit: '%',
+            lastReviewed: '2024-11-15'
+          }
+        ],
+        pediatric: [
+          {
+            id: 'acp-peds-flow',
+            title: 'Flow rate',
+            value: '40–80',
+            unit: 'mL/kg/min',
+            notes: 'Reference 50–64',
+            info: 'Neonates: ~46 ± 6 mL/kg/min; <30 mL/kg/min risks hypoxic injury.',
+            lastReviewed: '2024-11-15',
+            range: { min: 40, max: 80 }
+          },
+          {
+            id: 'acp-peds-pressure',
+            title: 'Perfusion pressure',
+            value: 'Titrate',
+            unit: '',
+            notes: 'Often 20–25 mmHg reported',
+            info: 'Higher MAP targets are used in some centers; adjust per protocol/monitoring site.',
+            lastReviewed: '2024-11-15'
+          },
+          {
+            id: 'acp-peds-temp',
+            title: 'Perfusate temp',
+            value: '18–25',
+            unit: '°C',
+            info: '25°C moderate hypothermia preserves rSO₂; moderate often favored vs deep.',
+            lastReviewed: '2024-11-15'
+          },
+          {
+            id: 'acp-peds-ph',
+            title: 'pH management',
+            value: 'pH-stat',
+            unit: '',
+            info: 'Often preferred in neonates/infants for cerebral protection.',
+            lastReviewed: '2024-11-15'
+          },
+          {
+            id: 'acp-peds-duration',
+            title: 'Duration',
+            value: '20–48',
+            unit: 'min (reference)',
+            info: 'Up to ~123 min reported; >45 min DHCA avoidance is common.',
+            lastReviewed: '2024-11-15'
+          },
+          {
+            id: 'acp-peds-monitoring',
+            title: 'Monitoring',
+            value: 'NIRS, EEG',
+            unit: '',
+            notes: 'TCD optional',
+            info: 'Use baseline/trend changes and bilateral symmetry rather than absolute values.',
+            lastReviewed: '2024-11-15'
+          },
+          {
+            id: 'acp-peds-hct',
+            title: 'Hct',
+            value: '30–35',
+            unit: '%',
+            info: 'Neonatal/infant arch ACP + hypothermia commonly uses Hct 30–35% (adjust per protocol/NIRS/EEG).',
+            lastReviewed: '2024-11-15'
+          }
+        ]
+      }
+    },
+    {
+      id: 'rcp',
+      label: 'RCP',
+      cards: [
+        {
+          id: 'rcp-svc-pressure',
+          title: 'SVC pressure',
+          value: '20–30',
+          unit: 'mmHg',
+          notes: 'Target 20–25',
+          info: 'Excess pressure increases brain edema risk.',
+          lastReviewed: '2024-11-15'
+        },
+          {
+            id: 'rcp-flow',
+            title: 'Flow rate',
+            value: '300–500',
+            unit: 'mL/min',
+            notes: 'Pressure-driven (SVC <25)',
+            info: 'Flow is titrated to pressure; 300–500 mL/min is commonly cited.',
+            lastReviewed: '2024-11-15'
+          },
+          {
+            id: 'rcp-monitoring',
+            title: 'Monitoring',
+            value: 'NIRS, EEG',
+            unit: '',
+            notes: 'TCD optional',
+            info: 'Use baseline/trend changes and bilateral symmetry rather than absolute values.',
+            lastReviewed: '2024-11-15'
+          }
+      ]
+    },
+    {
+      id: 'tca',
+      label: 'HCA',
+      headerTitle: 'HCA by Temperature (Conservative Estimates)',
+      tableRows: [
+        {
+          id: 'hca-28-30',
+          temperature: '28–30<br>(Mild–Moderate)',
+          duration: '10–15 (conservative)',
+          notes: '<strong>MHCA + ACP</strong> ≤40 min possible; shorter CPB time, less coagulopathy',
+          severity: 'safe',
+          tooltip: 'Mild-moderate hypothermia with ACP can extend safe duration.'
+        },
+        {
+          id: 'hca-24-28',
+          temperature: '24–28 (Moderate)',
+          duration: '15–20 (conservative)',
+          notes: '<strong>ACP/RCP required</strong>; recent trend with lower stroke risk',
+          severity: 'caution',
+          tooltip: 'Moderate hypothermia commonly paired with ACP/RCP.'
+        },
+        {
+          id: 'hca-20-24',
+          temperature: '20–24<br>(Low–Moderate)',
+          duration: '20–30',
+          notes: '<strong>ACP</strong> shows non-inferior cognitive outcomes vs DHCA',
+          severity: 'caution',
+          tooltip: 'Low-moderate ranges benefit from ACP support.'
+        },
+        {
+          id: 'hca-18-20',
+          temperature: '18–20 (Deep)',
+          duration: '~30 (conservative; up to 40 with caution)',
+          notes: 'Isolated DHCA: limit 30; >40 ↑ neurologic injury risk',
+          severity: 'high',
+          tooltip: 'Deep hypothermia has higher risk beyond 30–40 minutes.'
+        },
+        {
+          id: 'hca-<18',
+          temperature: '<18 (Profound)',
+          duration: '30–45',
+          notes: 'High coagulopathy risk; rarely used',
+          severity: 'high',
+          tooltip: 'Profound hypothermia is uncommon due to bleeding risk.'
+        }
+      ]
+    },
+    {
+      id: 'muf',
+      label: 'MUF',
+      intro: {
+        title: 'MUF (Modified Ultrafiltration)',
+        subtitle: 'Post-CPB hemoconcentration & fluid removal',
+        guidance: '(Pediatric strongly recommended / Adult selective)'
+      },
+      tableColumns: {
+        label: 'Parameter',
+        pediatric: 'Pediatric (Strongly Recommended)',
+        adult: 'Adult (Selective Use)',
+        notes: 'Notes'
+      },
+      miniCalculator: {
+        label: 'Pediatric MUF flow range',
+        rangeLabel: 'Flow range',
+        unitLabel: 'mL/min',
+        range: { min: 10, max: 20 }
+      },
+      tableRows: [
+        {
+          id: 'muf-flow-rate',
+          label: 'Flow Rate',
+          pediatric: '10–20 mL/kg/min',
+          adult: '150–300 mL/min',
+          notes: 'Start slow, titrate to hemodynamics',
+          highlight: 'pediatric'
+        },
+        {
+          id: 'muf-duration',
+          label: 'Duration',
+          pediatric: '10–20 min or until goal',
+          adult: '10–15 min',
+          notes: 'Until target Hct or volume removed',
+          highlight: 'pediatric'
+        },
+        {
+          id: 'muf-target-hct',
+          label: 'Target Hct',
+          pediatric: '≥35–40%',
+          adult: '≥30–35%',
+          notes: 'Or minimize transfusion/bleeding',
+          highlight: 'pediatric'
+        },
+        {
+          id: 'muf-circuit',
+          label: 'Circuit',
+          pediatric: 'A-V MUF (preferred)',
+          adult: 'A-V or similar',
+          notes: 'Heat exchanger required',
+          highlight: 'pediatric'
+        },
+        {
+          id: 'muf-pressure',
+          label: 'Pressure',
+          pediatric: 'Arterial line always positive',
+          adult: 'Arterial line always positive',
+          notes: 'Negative pressure → air embolism risk!',
+          highlight: 'pediatric'
+        }
+      ],
+      checklist: 'Pre-MUF checklist: Unslave pump, warm exchanger, confirm air-free circuit, maintain positive arterial pressure.',
+      cards: []
+    }
+  ]
+};
+
+
+// -----------------------------
 // Quick Reference (tabs + cards)
 // -----------------------------
 let quickReferenceInitialized = false;
@@ -1796,6 +2113,161 @@ function initQuickReference() {
 
 
 // -----------------------------
+// Bundled PHN coefficients + calculator (inlined to keep single runtime script)
+// -----------------------------
+const PHN_STRUCTURE_ORDER = ['ANN', 'TV_LAT', 'MV_LAT', 'MPA', 'LPA', 'RPA'];
+
+const PHN_STRUCTURES = {
+  ANN: { label: 'Aortic annulus', alpha: 0.5, mean: 1.48, sd: 0.14, unit: 'cm' },
+  TV_LAT: { label: 'Tricuspid valve (lateral)', alpha: 0.5, mean: 2.36, sd: 0.29, unit: 'cm' },
+  MV_LAT: { label: 'Mitral valve (lateral)', alpha: 0.5, mean: 2.23, sd: 0.22, unit: 'cm' },
+  MPA: { label: 'Main pulmonary artery', alpha: 0.5, mean: 1.82, sd: 0.24, unit: 'cm' },
+  LPA: { label: 'Left pulmonary artery', alpha: 0.5, mean: 1.1, sd: 0.18, unit: 'cm' },
+  RPA: { label: 'Right pulmonary artery', alpha: 0.5, mean: 1.07, sd: 0.18, unit: 'cm' }
+};
+
+const PHN_REGRESSION = {
+  ANN: { alpha: 0.5, intercept: -0.016599775, slope: 1.506884773, unit: 'cm' },
+  TV_LAT: { alpha: 0.5, intercept: 0.249147894, slope: 2.064415385, unit: 'cm' },
+  MV_LAT: { alpha: 0.5, intercept: 0.142783317, slope: 2.058261615, unit: 'cm' },
+  MPA: { alpha: 0.5, intercept: 0.117718176, slope: 1.682071763, unit: 'cm' },
+  LPA: { alpha: 0.5, intercept: 0.001348966, slope: 1.109745289, unit: 'cm' },
+  RPA: { alpha: 0.5, intercept: -0.008988176, slope: 1.0887785, unit: 'cm' }
+};
+
+const PHN_BSA_LIMITS = {
+  min: 0.15,
+  max: 2.5,
+  extrapolationFlag: 2.0
+};
+
+const PHN_COEFFICIENTS = {
+  PHN_STRUCTURE_ORDER,
+  PHN_STRUCTURES,
+  PHN_REGRESSION,
+  PHN_BSA_LIMITS
+};
+
+if (typeof window !== 'undefined') {
+  window.PHN_COEFFICIENTS = PHN_COEFFICIENTS;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = PHN_COEFFICIENTS;
+}
+
+
+const phnCoeffSource = (typeof window !== 'undefined' && window.PHN_COEFFICIENTS)
+  ? window.PHN_COEFFICIENTS
+  : require('../data/phnCoefficients.js');
+
+const CM_TO_MM = 10;
+
+function validatePositiveNumber(value, fieldName) {
+  if (value == null || value === '') throw new Error(`${fieldName} is required.`);
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed <= 0) throw new Error(`${fieldName} must be a positive number.`);
+  return parsed;
+}
+
+function cmToMm(valueCm) {
+  return valueCm * CM_TO_MM;
+}
+
+function clampToDisplayMm(valueMm) {
+  return Math.max(0, valueMm);
+}
+
+function formatMm(valueMm) {
+  return `${valueMm.toFixed(2)} mm`;
+}
+
+function calculateHaycockBSA(heightCm, weightKg) {
+  const h = validatePositiveNumber(heightCm, 'Height');
+  const w = validatePositiveNumber(weightKg, 'Weight');
+  return 0.024265 * Math.pow(h, 0.3964) * Math.pow(w, 0.5378);
+}
+
+function calculateInverseRange(bsa, coeff) {
+  const bsaValue = validatePositiveNumber(bsa, 'BSA');
+  const bsaPowAlpha = Math.pow(bsaValue, coeff.alpha);
+
+  // PHN indexed inverse formula (cm): raw_cm(z) = (mean + z*sd) * (BSA^alpha)
+  const zNeg2Cm = (coeff.mean - 2 * coeff.sd) * bsaPowAlpha;
+  const z0Cm = coeff.mean * bsaPowAlpha;
+  const zPos2Cm = (coeff.mean + 2 * coeff.sd) * bsaPowAlpha;
+
+  return {
+    bsaPowAlpha,
+    zNeg2Cm,
+    z0Cm,
+    zPos2Cm,
+    zNeg2Mm: cmToMm(zNeg2Cm),
+    z0Mm: cmToMm(z0Cm),
+    zPos2Mm: cmToMm(zPos2Cm)
+  };
+}
+
+function calculateForwardZScore(measuredCm, bsa, coeff) {
+  const measured = validatePositiveNumber(measuredCm, 'Measured value');
+  const bsaValue = validatePositiveNumber(bsa, 'BSA');
+  const bsaPowAlpha = Math.pow(bsaValue, coeff.alpha);
+  // PHN forward z-score formula: z = ((measured_cm / BSA^alpha) - mean) / sd
+  return ((measured / bsaPowAlpha) - coeff.mean) / coeff.sd;
+}
+
+function calculateRegressionReferenceCm(bsa, regressionCoeff) {
+  const bsaValue = validatePositiveNumber(bsa, 'BSA');
+  return regressionCoeff.intercept + regressionCoeff.slope * Math.pow(bsaValue, regressionCoeff.alpha);
+}
+
+function getBsaWarnings(bsa) {
+  const val = validatePositiveNumber(bsa, 'BSA');
+  const limits = phnCoeffSource.PHN_BSA_LIMITS;
+  const warnings = [];
+  if (val < limits.min || val > limits.max) {
+    warnings.push(`BSA ${val.toFixed(2)} m² is outside the reference range (${limits.min.toFixed(2)}–${limits.max.toFixed(2)} m²).`);
+  }
+  if (val > limits.extrapolationFlag) {
+    warnings.push('Caution: PHN pediatric model extrapolation for BSA > 2.0 m².');
+  }
+  return warnings;
+}
+
+function createRowsForBsa(bsa) {
+  return phnCoeffSource.PHN_STRUCTURE_ORDER.map((key) => {
+    const coeff = phnCoeffSource.PHN_STRUCTURES[key];
+    const range = calculateInverseRange(bsa, coeff);
+    return { key, coeff, range };
+  });
+}
+
+const api = {
+  PHN_STRUCTURE_ORDER: phnCoeffSource.PHN_STRUCTURE_ORDER,
+  PHN_STRUCTURES: phnCoeffSource.PHN_STRUCTURES,
+  PHN_REGRESSION: phnCoeffSource.PHN_REGRESSION,
+  PHN_BSA_LIMITS: phnCoeffSource.PHN_BSA_LIMITS,
+  calculateHaycockBSA,
+  calculateInverseRange,
+  calculateForwardZScore,
+  calculateRegressionReferenceCm,
+  getBsaWarnings,
+  cmToMm,
+  clampToDisplayMm,
+  formatMm,
+  createRowsForBsa
+};
+
+if (typeof window !== 'undefined') {
+  window.PhnCalculator = api;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = api;
+}
+
+
+// -----------------------------
 // PHN Pediatric Echo Z-score Calculator
 // -----------------------------
 let phnCalculatedBsa = null;
@@ -1833,11 +2305,24 @@ function renderPhnRows(rows) {
     const zNeg2DisplayMm = window.PhnCalculator.clampToDisplayMm(row.range.zNeg2Mm);
     const line = document.createElement('div');
     line.className = 'grid grid-cols-4 gap-2 px-3 py-2 text-sm items-center';
+    const zNeg2DisplayText = window.PhnCalculator.formatMm(zNeg2DisplayMm).replace(/\s*mm$/i, '');
+    const z0DisplayText = window.PhnCalculator.formatMm(row.range.z0Mm).replace(/\s*mm$/i, '');
+    const zPos2DisplayText = window.PhnCalculator.formatMm(row.range.zPos2Mm).replace(/\s*mm$/i, '');
+
     line.innerHTML = `
       <div class="text-primary-900 dark:text-white font-medium text-xs leading-tight">${row.coeff.label}</div>
-      <div class="text-center phn-number text-primary-900 dark:text-slate-100">${window.PhnCalculator.formatMm(zNeg2DisplayMm)}</div>
-      <div class="text-center phn-number font-bold text-emerald-800 dark:text-emerald-200 bg-emerald-100 dark:bg-emerald-900/40 border border-emerald-300/80 dark:border-emerald-700/70 rounded py-1 shadow-sm">${window.PhnCalculator.formatMm(row.range.z0Mm)}</div>
-      <div class="text-center phn-number text-primary-900 dark:text-slate-100">${window.PhnCalculator.formatMm(row.range.zPos2Mm)}</div>
+      <div class="flex items-baseline justify-center gap-1 text-primary-900 dark:text-slate-100">
+        <span class="phn-number">${zNeg2DisplayText}</span>
+        <span class="text-sm font-semibold">mm</span>
+      </div>
+      <div class="flex items-baseline justify-center gap-1 font-bold text-emerald-600 dark:text-emerald-300">
+        <span class="phn-number">${z0DisplayText}</span>
+        <span class="text-sm font-semibold">mm</span>
+      </div>
+      <div class="flex items-baseline justify-center gap-1 text-primary-900 dark:text-slate-100">
+        <span class="phn-number">${zPos2DisplayText}</span>
+        <span class="text-sm font-semibold">mm</span>
+      </div>
     `;
     resultsEl.appendChild(line);
   });
