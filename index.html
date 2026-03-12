@@ -1934,6 +1934,59 @@
               </div>
             </div>
           </div>
+
+          <details class="mt-4 group">
+            <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+              <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
+            </summary>
+            <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Unit converter scope</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>This panel provides quick bedside unit conversions for perfusion-related flow and pressure values.</li>
+                  <li>It is a calculation aid only and does not replace patient-specific interpretation or institutional protocols.</li>
+                  <li>All computations are performed locally in the browser from the entered value and selected unit.</li>
+                </ul>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Flow methodology (base input)</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Base input uses flow in <strong>L/min</strong>, with optional weight in <strong>kg</strong>.</li>
+                  <li><strong>mL/min = L/min × 1000</strong></li>
+                  <li><strong>mL/kg/min = (L/min × 1000) / weight(kg)</strong></li>
+                  <li>If weight is not entered, mL/kg/min is not computed and a guidance message is shown.</li>
+                </ul>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Pressure methodology (single source unit)</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>The pressure tab converts from one selected input unit and normalizes internally to <strong>kPa</strong> before generating all outputs.</li>
+                  <li>Clinical outputs: <strong>mmHg</strong>, <strong>kPa</strong>, <strong>cmH₂O</strong>.</li>
+                  <li>Gas supply outputs: <strong>psi</strong>, <strong>kPa</strong>, <strong>bar</strong>.</li>
+                </ul>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Pressure conversion constants</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>1 mmHg = 0.133322 kPa, 1 kPa = 7.50062 mmHg</li>
+                  <li>1 mmHg = 1.35951 cmH₂O, 1 cmH₂O = 0.735559 mmHg</li>
+                  <li>1 psi = 6.89476 kPa, 1 bar = 100 kPa</li>
+                </ul>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Display and input behavior</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Blank/invalid input clears computed pressure outputs.</li>
+                  <li>Zero and negative values are allowed for pressure conversions when clinically relevant (e.g., sub-atmospheric readings).</li>
+                  <li>Unit labels preserve standard casing as displayed (e.g., mmHg, kPa, cmH₂O, mL/min).</li>
+                </ul>
+              </div>
+            </div>
+          </details>
         </div>
       </section>
 
