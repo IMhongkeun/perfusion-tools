@@ -1833,9 +1833,9 @@ function renderPhnRows(rows) {
     const zNeg2DisplayMm = window.PhnCalculator.clampToDisplayMm(row.range.zNeg2Mm);
     const line = document.createElement('div');
     line.className = 'grid grid-cols-4 gap-2 px-3 py-2 text-sm items-center';
-    const zNeg2DisplayText = window.PhnCalculator.formatMm(zNeg2DisplayMm);
-    const z0DisplayText = window.PhnCalculator.formatMm(row.range.z0Mm);
-    const zPos2DisplayText = window.PhnCalculator.formatMm(row.range.zPos2Mm);
+    const zNeg2DisplayText = window.PhnCalculator.formatMm(zNeg2DisplayMm).replace(/\s*mm$/i, '');
+    const z0DisplayText = window.PhnCalculator.formatMm(row.range.z0Mm).replace(/\s*mm$/i, '');
+    const zPos2DisplayText = window.PhnCalculator.formatMm(row.range.zPos2Mm).replace(/\s*mm$/i, '');
 
     line.innerHTML = `
       <div class="text-primary-900 dark:text-white font-medium text-xs leading-tight">${row.coeff.label}</div>
@@ -1843,7 +1843,7 @@ function renderPhnRows(rows) {
         <span class="phn-number">${zNeg2DisplayText}</span>
         <span class="text-sm font-semibold">mm</span>
       </div>
-      <div class="flex items-baseline justify-center gap-1 font-bold text-emerald-600 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/40 border border-emerald-300/80 dark:border-emerald-700/70 rounded py-1 shadow-sm">
+      <div class="flex items-baseline justify-center gap-1 font-bold text-emerald-600 dark:text-emerald-300">
         <span class="phn-number">${z0DisplayText}</span>
         <span class="text-sm font-semibold">mm</span>
       </div>
