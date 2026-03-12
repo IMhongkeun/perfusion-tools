@@ -204,7 +204,7 @@
         "name": "What is DO₂i (Oxygen Delivery Index) and what target range is used during CPB?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "DO₂i (Oxygen Delivery Index) measures how much oxygen the heart delivers to body tissues per minute per square meter of body surface area, expressed in ml O₂/min/m². During normothermic cardiopulmonary bypass, target DO₂i is typically ≥280–300 ml/min/m² to prevent tissue hypoxia and anaerobic metabolism. Infants and neonates often require higher targets (≥350–380 ml/min/m²) due to elevated metabolic rates."
+          "text": "DO₂i (Oxygen Delivery Index) measures how much oxygen the heart delivers to body tissues per minute per square meter of body surface area, expressed in mL O₂/min/m². During normothermic cardiopulmonary bypass, target DO₂i is typically ≥280–300 mL/min/m² to prevent tissue hypoxia and anaerobic metabolism. Infants and neonates often require higher targets (≥350–380 mL/min/m²) due to elevated metabolic rates."
         }
       },
       {
@@ -308,6 +308,13 @@
         description: "Quickly calculate case durations with HH:MM inputs and automatic time formatting.",
         headingDescription: "Track pump and case times with automatic formatting helpers.",
         canonicalPath: "/timecalc"
+      },
+      "/unit-converter": {
+        title: "Unit Converter — Perfusion Tools",
+        h1: "Unit Converter",
+        description: "Convert perfusion flow units between L/min, mL/min, and mL/kg/min.",
+        headingDescription: "Quickly convert flow units for ECMO and perfusion workflows.",
+        canonicalPath: "/unit-converter"
       },
       "/quick-reference": {
         title: "Quick Reference — Perfusion Tools",
@@ -424,6 +431,7 @@
         <a href="/lbm" data-route id="nav-lbm" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">LBM</a>
         <a href="/priming-volume" data-route id="nav-priming" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Priming Volume</a>
         <a href="/timecalc" data-route id="nav-time" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Time</a>
+        <a href="/unit-converter" data-route id="nav-unit-converter" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Unit converter</a>
         <a href="/quick-reference" data-route id="nav-quick-reference" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Quick Reference</a>
         <a href="/info" data-route id="nav-info" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">Info</a>
         <a href="/faq" data-route id="nav-faq" class="nav-link px-4 py-2 rounded-full hover:bg-primary-800 transition-colors text-slate-300 hover:text-accent-400">FAQ</a>
@@ -468,6 +476,9 @@
         </a>
         <a href="/timecalc" data-route id="side-time" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
           Time Calculator
+        </a>
+        <a href="/unit-converter" data-route id="side-unit-converter" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
+          Unit converter
         </a>
         <a href="/quick-reference" data-route id="side-quick-reference" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
           Quick Reference
@@ -545,6 +556,13 @@
                 <div>
                   <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
                   <div class="text-base font-semibold text-primary-900 dark:text-white">Time Calculator</div>
+                </div>
+                <span class="text-accent-500">→</span>
+              </a>
+              <a href="/unit-converter" data-route class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
+                <div>
+                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
+                  <div class="text-base font-semibold text-primary-900 dark:text-white">Unit converter</div>
                 </div>
                 <span class="text-accent-500">→</span>
               </a>
@@ -680,8 +698,7 @@
               </div>
           </div>
 
-        </div>
-
+        <div class="px-6 pb-6">
         <details class="mt-4 group">
           <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
             <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
@@ -690,19 +707,19 @@
             <ol class="list-decimal pl-4 space-y-3">
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Arterial oxygen content (CaO₂)</p>
-                <p>CaO₂ (ml/dl) = 1.34 × Hb (g/dl) × (SaO₂ / 100) + 0.0031 × PaO₂ (mmhg). We assume a Hüfner constant of 1.34 ml O₂ per gram of Hb and a dissolved O₂ coefficient of 0.0031 ml·dl⁻¹·mmhg⁻¹. The contribution of dissolved O₂ is usually small at normal PaO₂.</p>
+                <p>CaO₂ (mL/dL) = 1.34 × Hb (g/dL) × (SaO₂ / 100) + 0.0031 × PaO₂ (mmHg). We assume a Hüfner constant of 1.34 mL O₂ per gram of Hb and a dissolved O₂ coefficient of 0.0031 mL·dL⁻¹·mmHg⁻¹. The contribution of dissolved O₂ is usually small at normal PaO₂.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Indexed oxygen delivery (DO₂i)</p>
-                <p>DO₂i (ml/min/m²) = (Pump flow ÷ BSA) × CaO₂ × 10. Pump flow is entered in l/min and BSA in m². Multiplying by 10 converts CaO₂ from ml/dl to ml/l so that the final unit is ml O₂ per minute per m².</p>
+                <p>DO₂i (mL/min/m²) = (Pump flow ÷ BSA) × CaO₂ × 10. Pump flow is entered in L/min and BSA in m². Multiplying by 10 converts CaO₂ from mL/dL to mL/L so that the final unit is mL O₂ per minute per m².</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Target DO₂i bands (Goal-Directed Perfusion)</p>
-                <p>At normothermia (≈37 °C) many adult CPB programs aim to maintain DO₂i ≥ 280–300 ml/min/m² to reduce the risk of anaerobic metabolism and postoperative acute kidney injury. The gauge displays “Low / Borderline / Target / High” bands for quick bedside interpretation using normothermic goals.</p>
+                <p>At normothermia (≈37 °C) many adult CPB programs aim to maintain DO₂i ≥ 280–300 mL/min/m² to reduce the risk of anaerobic metabolism and postoperative acute kidney injury. The gauge displays “Low / Borderline / Target / High” bands for quick bedside interpretation using normothermic goals.</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Required pump flow for a chosen DO₂i goal</p>
-                <p>For a selected DO₂i target, the corresponding pump flow is: Required flow (l/min) = (Target DO₂i × BSA) ÷ (CaO₂ × 10). This is a theoretical value based on current Hb, SaO₂, PaO₂ and BSA. In practice, flow should also respect institutional minimum/maximum flow policies and patient-specific constraints (e.g. cannula size, arterial pressure, ventricular distension).</p>
+                <p>For a selected DO₂i target, the corresponding pump flow is: Required flow (L/min) = (Target DO₂i × BSA) ÷ (CaO₂ × 10). This is a theoretical value based on current Hb, SaO₂, PaO₂ and BSA. In practice, flow should also respect institutional minimum/maximum flow policies and patient-specific constraints (e.g. cannula size, arterial pressure, ventricular distension).</p>
               </li>
               <li>
                 <p class="font-semibold text-slate-700 dark:text-slate-200">Clinical use and limitations</p>
@@ -718,8 +735,8 @@
             </ol>
           </div>
         </details>
-
-
+        </div>
+        </div>
       </section>
 
       <section id="view-bsa" class="hidden animate-in fade-in duration-300">
@@ -732,7 +749,7 @@
               <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Enter height and weight to calculate BSA and perfusion flow guidance.</p>
             </div>
             <div class="text-right">
-              <div class="text-[10px] uppercase tracking-wider text-slate-400">BSA (m²)</div>
+              <div class="text-[10px] tracking-wider text-slate-400">BSA (m²)</div>
               <div id="bsa-result" class="text-3xl font-bold text-accent-500">0.00</div>
               <div class="text-[11px] text-slate-400">Updates in real time</div>
             </div>
@@ -743,11 +760,11 @@
               <div class="space-y-4">
                 <div class="grid sm:grid-cols-2 gap-4">
                   <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Height (cm)</label>
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Height (cm)</label>
                     <input id="bsa_height" type="number" step="0.1" placeholder="170" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
                   </div>
                   <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Weight (kg)</label>
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Weight (kg)</label>
                     <input id="bsa_weight" type="number" step="0.1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
                   </div>
 
@@ -874,42 +891,42 @@
 
           <div class="p-6 grid sm:grid-cols-2 gap-6">
             <div class="sm:col-span-2">
-              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Patient Type (EBV Coef)</label>
+              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Patient Type (EBV Coef)</label>
               <select id="pttype" class="mt-1 w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white cursor-pointer">
-                <option value="adult_m">Adult — Male (70 ml/kg)</option>
-                <option value="adult_f">Adult — Female (65 ml/kg)</option>
-                <option value="child">Child (75 ml/kg)</option>
-                <option value="infant">Infant (80 ml/kg)</option>
-                <option value="neonate">Neonate (90 ml/kg)</option>
+                <option value="adult_m">Adult — Male (70 mL/kg)</option>
+                <option value="adult_f">Adult — Female (65 mL/kg)</option>
+                <option value="child">Child (75 mL/kg)</option>
+                <option value="infant">Infant (80 mL/kg)</option>
+                <option value="neonate">Neonate (90 mL/kg)</option>
               </select>
             </div>
 
             <div class="space-y-1">
-              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">EBV Coef (ml/kg)</label>
+              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">EBV Coef (mL/kg)</label>
               <input id="ebv_coef" type="number" step="1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
             </div>
 
             <div class="space-y-1">
-              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Weight (kg)</label>
+              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Weight (kg)</label>
               <input id="wt_hct" type="number" step="0.1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
             </div>
             <div class="space-y-1">
-              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Pre-CPB Hct (%)</label>
+              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Pre-CPB Hct (%)</label>
               <input id="pre_hct" type="number" step="0.1" placeholder="40" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
             </div>
 
             <div class="bg-slate-50 dark:bg-primary-800/50 p-4 rounded-xl border border-slate-100 dark:border-primary-700/50 sm:col-span-2 grid sm:grid-cols-2 gap-4">
                <div class="sm:col-span-2 text-xs font-bold text-primary-900 dark:text-accent-400 uppercase tracking-wide mb-1">Circuit Volumes</div>
                <div class="space-y-1">
-                 <label class="text-xs text-slate-500 dark:text-slate-400">Prime Volume (ml)</label>
+                 <label class="text-xs text-slate-500 dark:text-slate-400">Prime Volume (mL)</label>
                  <input id="prime" type="number" step="1" placeholder="1200" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
                </div>
                <div class="space-y-1">
-                 <label class="text-xs text-slate-500 dark:text-slate-400">Addl. Crystalloid (ml)</label>
+                 <label class="text-xs text-slate-500 dark:text-slate-400">Addl. Crystalloid (mL)</label>
                  <input id="fluids" type="number" step="1" value="0" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
                </div>
                <div class="space-y-1">
-                 <label class="text-xs text-slate-500 dark:text-slate-400">Ultrafiltration Removed (ml)</label>
+                 <label class="text-xs text-slate-500 dark:text-slate-400">Ultrafiltration Removed (mL)</label>
                  <input id="removed" type="number" step="1" value="0" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
                </div>
             </div>
@@ -921,7 +938,7 @@
                  <input id="rbc_units" type="number" step="1" value="0" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
               </div>
               <div class="space-y-1">
-                 <label class="text-xs text-slate-500 dark:text-slate-400">Vol/Unit (ml)</label>
+                 <label class="text-xs text-slate-500 dark:text-slate-400">Vol/Unit (mL)</label>
                  <input id="rbc_unit_vol" type="number" step="1" value="300" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
               </div>
               <div class="space-y-1">
@@ -960,8 +977,8 @@
              </div>
              <p class="mt-3 text-[10px] text-slate-400 italic">For educational use only.</p>
             </div>
-          </div>
         
+        <div class="px-6 pb-6">
         <details class="mt-4 group">
           <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
             <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
@@ -1021,6 +1038,8 @@
             </ol>
           </div>
         </details>
+        </div>
+          </div>
       </section>
 
       <section id="view-lbm" class="hidden animate-in fade-in duration-300">
@@ -1036,11 +1055,11 @@
 
           <div class="p-6 grid sm:grid-cols-2 gap-6">
             <div class="space-y-1">
-              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Height (cm)</label>
+              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Height (cm)</label>
               <input id="lbm_h_cm" type="number" step="0.1" placeholder="170" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
             </div>
             <div class="space-y-1">
-              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Weight (kg)</label>
+              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Weight (kg)</label>
               <input id="lbm_w_kg" type="number" step="0.1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
             </div>
 
@@ -1132,8 +1151,8 @@
               <p class="mt-3 text-[10px] text-slate-400 italic">For educational use only. Not medical advice.</p>
             </div>
           </div>
-        </div>
 
+        <div class="px-6 pb-6">
         <details class="mt-4 group">
           <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
             <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
@@ -1174,9 +1193,9 @@
             <div class="space-y-1">
               <p class="font-semibold mb-1">5. Flow comparison table (CI 1.0–3.0)</p>
               <p>The flow table shows how perfusion flow requirements change when indexed to actual BSA and lean BSA.</p>
-              <p>Flow_actual (l/min) = CI × BSA_actual</p>
-              <p>Flow_lean (l/min) = CI × BSA_lean</p>
-              <p>This allows quick comparison such as “At CI 2.4 l/min/m², how much flow do I deliver if I index to full BSA?” and “If I index to lean BSA instead, how much lower would the flow be for the same CI?”</p>
+              <p>Flow_actual (L/min) = CI × BSA_actual</p>
+              <p>Flow_lean (L/min) = CI × BSA_lean</p>
+              <p>This allows quick comparison such as “At CI 2.4 L/min/m², how much flow do I deliver if I index to full BSA?” and “If I index to lean BSA instead, how much lower would the flow be for the same CI?”</p>
               <p>In markedly obese patients, BSA_actual may suggest very high flows that exceed what is needed for metabolically active tissue, while BSA_lean can illustrate a more physiologic lower bound. Final flow selection must still consider SvO₂, lactate, arterial pressure, and institutional protocols.</p>
             </div>
 
@@ -1188,6 +1207,8 @@
             </div>
           </div>
         </details>
+        </div>
+        </div>
       </section>
 
       <section id="view-timecalc" class="hidden animate-in fade-in duration-300">
@@ -1678,7 +1699,7 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="space-y-2">
-              <label for="priming-id" class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Tube ID</label>
+              <label for="priming-id" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Tube ID</label>
               <select id="priming-id" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
                 <option value="">Select ID</option>
                 <option value="1/2">1/2"</option>
@@ -1705,7 +1726,7 @@
             </div>
 
             <div class="space-y-2">
-              <label for="priming-length" class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Length</label>
+              <label for="priming-length" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Length</label>
               <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
                 <input id="priming-length" type="number" min="0" step="0.01" placeholder="Enter length" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
                 <select id="priming-length-unit" class="w-full sm:w-28 bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
@@ -1730,7 +1751,6 @@
             <p class="font-semibold text-slate-600 dark:text-slate-300">Formula</p>
             <p>V(mL) = (π/4) × ID(mm)<sup>2</sup> × Length(m)</p>
           </div>
-        </div>
 
         <details class="mt-4 group">
           <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
@@ -1798,6 +1818,181 @@
             </ol>
           </div>
         </details>
+        </div>
+      </section>
+
+      <section id="view-unit-converter" class="hidden animate-in fade-in duration-300">
+        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
+          <div class="p-6 border-b border-slate-100 dark:border-primary-800 bg-slate-50/50 dark:bg-primary-800/30">
+            <div class="text-xs uppercase tracking-wider text-accent-500 font-semibold">Calculator</div>
+            <h2 class="text-lg font-semibold text-primary-900 dark:text-white mt-1">Unit converter</h2>
+            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Simple base-input converters for flow and pressure units.</p>
+          </div>
+
+          <div class="p-6 space-y-6">
+            <div class="flex items-center gap-2 border-b border-slate-100 dark:border-primary-800 pb-3">
+              <button id="unit-tab-flow" data-unit-tab="flow" type="button" class="px-3 py-1.5 rounded-lg bg-accent-500/15 text-accent-700 dark:text-accent-300 text-sm font-semibold">flow</button>
+              <button id="unit-tab-pressure" data-unit-tab="pressure" type="button" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-primary-800 transition-colors">pressure</button>
+            </div>
+
+            <div id="unit-panel-flow" class="space-y-6">
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Inputs</h3>
+                  <label class="block space-y-1">
+                    <span id="unit-label-flow-input" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Flow (L/min)</span>
+                    <input id="unit-flow-lmin" type="number" step="0.01" min="0" placeholder="4.5" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+                  </label>
+                  <label class="block space-y-1">
+                    <span id="unit-label-flow-weight-input" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Weight (kg)</span>
+                    <input id="unit-flow-weight" type="number" step="0.1" min="0" placeholder="70" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+                  </label>
+                </div>
+
+                <div class="space-y-4">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Outputs</h3>
+                  <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 p-4 space-y-3">
+                    <div>
+                      <div id="unit-label-flow-output-mlmin" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">mL/min</div>
+                      <div id="unit-flow-mlmin" class="text-xl font-bold text-primary-900 dark:text-white">—</div>
+                    </div>
+                    <div>
+                      <div id="unit-label-flow-output-mlkgmin" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">mL/kg/min</div>
+                      <div id="unit-flow-mlkgmin" class="text-sm font-medium text-slate-400 dark:text-slate-500">Weight required</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-xs text-slate-500 dark:text-slate-400 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/70 dark:bg-primary-900/40 p-3 space-y-1">
+                <p id="unit-flow-formula-mlmin"><strong>Formula:</strong> mL/min = L/min × 1000</p>
+                <p id="unit-flow-formula-mlkgmin"><strong>Formula:</strong> mL/kg/min = (L/min × 1000) / weight(kg)</p>
+              </div>
+            </div>
+
+            <div id="unit-panel-pressure" class="space-y-6 hidden">
+              <div class="space-y-4 md:space-y-6">
+                <div class="space-y-3 md:space-y-4">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Inputs</h3>
+                  <label class="block space-y-1">
+                    <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Value</span>
+                    <input id="unit-pressure-value" type="number" step="any" placeholder="80" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+                  </label>
+                  <label class="block space-y-1">
+                    <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">From unit</span>
+                    <select id="unit-pressure-from" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white">
+                      <option value="mmhg">mmHg</option>
+                      <option value="kpa">kPa</option>
+                      <option value="cmh2o">cmH₂O</option>
+                      <option value="psi">psi</option>
+                      <option value="bar">bar</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="space-y-4">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Outputs</h3>
+                  <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 p-4 space-y-3">
+                    <h4 class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Clinical</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div class="min-w-0">
+                        <div id="unit-label-pressure-mmhg" class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">mmHg</div>
+                        <div class="flex items-baseline gap-1.5 whitespace-nowrap"><span id="unit-pressure-mmhg-value" class="min-w-0 text-lg md:text-xl font-semibold tabular-nums text-primary-900 dark:text-white">—</span><span id="unit-pressure-mmhg-unit" class="text-xs md:text-sm text-slate-500 dark:text-slate-400 shrink-0">mmHg</span></div>
+                      </div>
+                      <div class="min-w-0">
+                        <div id="unit-label-pressure-kpa-clinical" class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">kPa</div>
+                        <div class="flex items-baseline gap-1.5 whitespace-nowrap"><span id="unit-pressure-kpa-clinical-value" class="min-w-0 text-lg md:text-xl font-semibold tabular-nums text-primary-900 dark:text-white">—</span><span id="unit-pressure-kpa-clinical-unit" class="text-xs md:text-sm text-slate-500 dark:text-slate-400 shrink-0">kPa</span></div>
+                      </div>
+                      <div class="min-w-0">
+                        <div id="unit-label-pressure-cmh2o" class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">cmH₂O</div>
+                        <div class="flex items-baseline gap-1 whitespace-nowrap"><span id="unit-pressure-cmh2o-value" class="min-w-0 text-base md:text-lg font-semibold tabular-nums text-primary-900 dark:text-white">—</span><span id="unit-pressure-cmh2o-unit" class="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 shrink-0 tracking-tight">cmH₂O</span></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 p-4 space-y-3">
+                    <h4 class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Gas supply</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div class="min-w-0">
+                        <div id="unit-label-pressure-psi" class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">psi</div>
+                        <div class="flex items-baseline gap-1.5 whitespace-nowrap"><span id="unit-pressure-psi-value" class="min-w-0 text-lg md:text-xl font-semibold tabular-nums text-primary-900 dark:text-white">—</span><span id="unit-pressure-psi-unit" class="text-xs md:text-sm text-slate-500 dark:text-slate-400 shrink-0">psi</span></div>
+                      </div>
+                      <div class="min-w-0">
+                        <div id="unit-label-pressure-kpa-gas" class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">kPa</div>
+                        <div class="flex items-baseline gap-1.5 whitespace-nowrap"><span id="unit-pressure-kpa-gas-value" class="min-w-0 text-lg md:text-xl font-semibold tabular-nums text-primary-900 dark:text-white">—</span><span id="unit-pressure-kpa-gas-unit" class="text-xs md:text-sm text-slate-500 dark:text-slate-400 shrink-0">kPa</span></div>
+                      </div>
+                      <div class="min-w-0">
+                        <div id="unit-label-pressure-bar" class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">bar</div>
+                        <div class="flex items-baseline gap-1.5 whitespace-nowrap"><span id="unit-pressure-bar-value" class="min-w-0 text-lg md:text-xl font-semibold tabular-nums text-primary-900 dark:text-white">—</span><span id="unit-pressure-bar-unit" class="text-xs md:text-sm text-slate-500 dark:text-slate-400 shrink-0">bar</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-xs text-slate-500 dark:text-slate-400 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/70 dark:bg-primary-900/40 p-3 space-y-1">
+                <p><strong>mmHg ↔ kPa:</strong> 1 mmHg = 0.133322 kPa, 1 kPa = 7.50062 mmHg</p>
+                <p><strong>mmHg ↔ cmH₂O:</strong> 1 mmHg = 1.35951 cmH₂O, 1 cmH₂O = 0.735559 mmHg</p>
+                <p><strong>psi ↔ kPa ↔ bar:</strong> 1 psi = 6.89476 kPa, 1 bar = 100 kPa</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="px-6 pb-6">
+          <details class="mt-4 group">
+            <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+              <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
+            </summary>
+            <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Unit converter scope</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>This panel provides quick bedside unit conversions for perfusion-related flow and pressure values.</li>
+                  <li>It is a calculation aid only and does not replace patient-specific interpretation or institutional protocols.</li>
+                  <li>All computations are performed locally in the browser from the entered value and selected unit.</li>
+                </ul>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Flow methodology (base input)</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Base input uses flow in <strong>L/min</strong>, with optional weight in <strong>kg</strong>.</li>
+                  <li><strong>mL/min = L/min × 1000</strong></li>
+                  <li><strong>mL/kg/min = (L/min × 1000) / weight(kg)</strong></li>
+                  <li>If weight is not entered, mL/kg/min is not computed and a guidance message is shown.</li>
+                </ul>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Pressure methodology (single source unit)</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>The pressure tab converts from one selected input unit and normalizes internally to <strong>kPa</strong> before generating all outputs.</li>
+                  <li>Clinical outputs: <strong>mmHg</strong>, <strong>kPa</strong>, <strong>cmH₂O</strong>.</li>
+                  <li>Gas supply outputs: <strong>psi</strong>, <strong>kPa</strong>, <strong>bar</strong>.</li>
+                </ul>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Pressure conversion constants</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>1 mmHg = 0.133322 kPa, 1 kPa = 7.50062 mmHg</li>
+                  <li>1 mmHg = 1.35951 cmH₂O, 1 cmH₂O = 0.735559 mmHg</li>
+                  <li>1 psi = 6.89476 kPa, 1 bar = 100 kPa</li>
+                </ul>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Display and input behavior</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Blank/invalid input clears computed pressure outputs.</li>
+                  <li>Zero and negative values are allowed for pressure conversions when clinically relevant (e.g., sub-atmospheric readings).</li>
+                  <li>Unit labels preserve standard casing as displayed (e.g., mmHg, kPa, cmH₂O, mL/min).</li>
+                </ul>
+              </div>
+            </div>
+          </details>
+          </div>
+        </div>
       </section>
 
       <section id="view-quick-reference" class="hidden animate-in fade-in duration-300">
@@ -1943,7 +2138,7 @@
               <span class="text-accent-500 transform group-open:rotate-180 transition-transform ml-4 flex-shrink-0">▼</span>
             </summary>
             <div class="border-t border-slate-100 dark:border-primary-700/50 px-4 py-3 bg-slate-50/50 dark:bg-primary-800/30">
-              <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">DO₂i (Oxygen Delivery Index) measures how much oxygen the heart delivers to body tissues per minute per square meter of body surface area, expressed in ml O₂/min/m². During normothermic cardiopulmonary bypass, target DO₂i is typically ≥280–300 ml/min/m² to prevent tissue hypoxia and anaerobic metabolism. Infants and neonates often require higher targets (≥350–380 ml/min/m²) due to elevated metabolic rates.</p>
+              <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">DO₂i (Oxygen Delivery Index) measures how much oxygen the heart delivers to body tissues per minute per square meter of body surface area, expressed in mL O₂/min/m². During normothermic cardiopulmonary bypass, target DO₂i is typically ≥280–300 mL/min/m² to prevent tissue hypoxia and anaerobic metabolism. Infants and neonates often require higher targets (≥350–380 mL/min/m²) due to elevated metabolic rates.</p>
             </div>
           </details>
 

@@ -163,7 +163,7 @@ function updateBsaFlowList(bsaVal) {
     const row = document.createElement('div');
     const highlight = Math.abs(ci - 2.4) < 0.05;
     row.className = 'grid grid-cols-[1fr_auto] items-center py-1.5 px-2 text-sm border-b border-slate-100 dark:border-primary-800 last:border-0 gap-3' + (highlight ? ' bg-amber-50 dark:bg-amber-900/20' : '');
-    row.innerHTML = `<span class="font-mono text-xs text-slate-500 dark:text-slate-400">CI ${ci.toFixed(1)}</span><span class="font-mono font-semibold text-right text-primary-900 dark:text-white">${flow.toFixed(2)} l/min</span>`;
+    row.innerHTML = `<span class="font-mono text-xs text-slate-500 dark:text-slate-400">CI ${ci.toFixed(1)}</span><span class="font-mono font-semibold text-right text-primary-900 dark:text-white">${flow.toFixed(2)} L/min</span>`;
     list.appendChild(row);
   }
 }
@@ -198,6 +198,200 @@ function calcDO2i(flowLmin, bsa, cao2) {
   const fi = flowLmin / bsa;
   return fi * cao2 * 10;
 }
+
+
+const UNIT_LABELS = {
+  flowInput: 'L/min',
+  flowOutputMlMin: 'mL/min',
+  flowOutputMlKgMin: 'mL/kg/min',
+  flowWeightInput: 'kg',
+  pressureMmhg: 'mmHg',
+  pressureKpa: 'kPa',
+  pressureCmh2o: 'cmH₂O',
+  pressurePsi: 'psi',
+  pressureBar: 'bar'
+};
+
+function initUnitConverterLabels() {
+  const flowInputLabel = el('unit-label-flow-input');
+  const flowWeightLabel = el('unit-label-flow-weight-input');
+  const flowOutputMlMinLabel = el('unit-label-flow-output-mlmin');
+  const flowOutputMlKgMinLabel = el('unit-label-flow-output-mlkgmin');
+  const pressureMmhgLabel = el('unit-label-pressure-mmhg');
+  const pressureKpaClinicalLabel = el('unit-label-pressure-kpa-clinical');
+  const pressureCmh2oLabel = el('unit-label-pressure-cmh2o');
+  const pressurePsiLabel = el('unit-label-pressure-psi');
+  const pressureKpaGasLabel = el('unit-label-pressure-kpa-gas');
+  const pressureBarLabel = el('unit-label-pressure-bar');
+  const pressureMmhgUnit = el('unit-pressure-mmhg-unit');
+  const pressureKpaClinicalUnit = el('unit-pressure-kpa-clinical-unit');
+  const pressureCmh2oUnit = el('unit-pressure-cmh2o-unit');
+  const pressurePsiUnit = el('unit-pressure-psi-unit');
+  const pressureKpaGasUnit = el('unit-pressure-kpa-gas-unit');
+  const pressureBarUnit = el('unit-pressure-bar-unit');
+  const flowFormulaMlMin = el('unit-flow-formula-mlmin');
+  const flowFormulaMlKgMin = el('unit-flow-formula-mlkgmin');
+  const pressureFromSelect = el('unit-pressure-from');
+
+  if (flowInputLabel) flowInputLabel.textContent = `Flow (${UNIT_LABELS.flowInput})`;
+  if (flowWeightLabel) flowWeightLabel.textContent = `Weight (${UNIT_LABELS.flowWeightInput})`;
+  if (flowOutputMlMinLabel) flowOutputMlMinLabel.textContent = UNIT_LABELS.flowOutputMlMin;
+  if (flowOutputMlKgMinLabel) flowOutputMlKgMinLabel.textContent = UNIT_LABELS.flowOutputMlKgMin;
+  if (pressureMmhgLabel) pressureMmhgLabel.textContent = UNIT_LABELS.pressureMmhg;
+  if (pressureKpaClinicalLabel) pressureKpaClinicalLabel.textContent = UNIT_LABELS.pressureKpa;
+  if (pressureCmh2oLabel) pressureCmh2oLabel.textContent = UNIT_LABELS.pressureCmh2o;
+  if (pressurePsiLabel) pressurePsiLabel.textContent = UNIT_LABELS.pressurePsi;
+  if (pressureKpaGasLabel) pressureKpaGasLabel.textContent = UNIT_LABELS.pressureKpa;
+  if (pressureBarLabel) pressureBarLabel.textContent = UNIT_LABELS.pressureBar;
+  if (pressureMmhgUnit) pressureMmhgUnit.textContent = UNIT_LABELS.pressureMmhg;
+  if (pressureKpaClinicalUnit) pressureKpaClinicalUnit.textContent = UNIT_LABELS.pressureKpa;
+  if (pressureCmh2oUnit) pressureCmh2oUnit.textContent = UNIT_LABELS.pressureCmh2o;
+  if (pressurePsiUnit) pressurePsiUnit.textContent = UNIT_LABELS.pressurePsi;
+  if (pressureKpaGasUnit) pressureKpaGasUnit.textContent = UNIT_LABELS.pressureKpa;
+  if (pressureBarUnit) pressureBarUnit.textContent = UNIT_LABELS.pressureBar;
+
+  if (flowFormulaMlMin) {
+    flowFormulaMlMin.innerHTML = `<strong>Formula:</strong> ${UNIT_LABELS.flowOutputMlMin} = ${UNIT_LABELS.flowInput} × 1000`;
+  }
+  if (flowFormulaMlKgMin) {
+    flowFormulaMlKgMin.innerHTML = `<strong>Formula:</strong> ${UNIT_LABELS.flowOutputMlKgMin} = (${UNIT_LABELS.flowInput} × 1000) / weight(kg)`;
+  }
+
+  if (pressureFromSelect) {
+    const labelsByValue = {
+      mmhg: UNIT_LABELS.pressureMmhg,
+      kpa: UNIT_LABELS.pressureKpa,
+      cmh2o: UNIT_LABELS.pressureCmh2o,
+      psi: UNIT_LABELS.pressurePsi,
+      bar: UNIT_LABELS.pressureBar
+    };
+    Array.from(pressureFromSelect.options).forEach(option => {
+      const label = labelsByValue[option.value];
+      if (label) option.textContent = label;
+    });
+  }
+}
+function updateUnitConverterFlow() {
+  const flowLminInput = el('unit-flow-lmin');
+  const weightInput = el('unit-flow-weight');
+  const mlMinOutput = el('unit-flow-mlmin');
+  const mlKgMinOutput = el('unit-flow-mlkgmin');
+  if (!flowLminInput || !weightInput || !mlMinOutput || !mlKgMinOutput) return;
+
+  const setWeightRequiredStyle = (isRequired) => {
+    mlKgMinOutput.classList.toggle('text-sm', isRequired);
+    mlKgMinOutput.classList.toggle('font-medium', isRequired);
+    mlKgMinOutput.classList.toggle('text-slate-400', isRequired);
+    mlKgMinOutput.classList.toggle('dark:text-slate-500', isRequired);
+    mlKgMinOutput.classList.toggle('text-xl', !isRequired);
+    mlKgMinOutput.classList.toggle('font-bold', !isRequired);
+    mlKgMinOutput.classList.toggle('text-primary-900', !isRequired);
+    mlKgMinOutput.classList.toggle('dark:text-white', !isRequired);
+  };
+
+  const flowLmin = parseFloat(flowLminInput.value);
+  const weightKg = parseFloat(weightInput.value);
+
+  if (!(flowLmin >= 0)) {
+    mlMinOutput.textContent = '—';
+    mlKgMinOutput.textContent = 'Weight required';
+    setWeightRequiredStyle(true);
+    return;
+  }
+
+  // Base conversion formula: mL/min = L/min × 1000.
+  const flowMlMin = flowLmin * 1000;
+  mlMinOutput.textContent = `${flowMlMin.toFixed(0)} ${UNIT_LABELS.flowOutputMlMin}`;
+
+  if (!(weightKg > 0)) {
+    mlKgMinOutput.textContent = 'Weight required';
+    setWeightRequiredStyle(true);
+    return;
+  }
+
+  // Flow index formula: mL/kg/min = (L/min × 1000) / weight(kg).
+  const flowMlKgMin = flowMlMin / weightKg;
+  mlKgMinOutput.textContent = `${flowMlKgMin.toFixed(2)} ${UNIT_LABELS.flowOutputMlKgMin}`;
+  setWeightRequiredStyle(false);
+}
+
+function setUnitConverterTab(activeTab) {
+  const flowTabButton = el('unit-tab-flow');
+  const pressureTabButton = el('unit-tab-pressure');
+  const flowPanel = el('unit-panel-flow');
+  const pressurePanel = el('unit-panel-pressure');
+  if (!flowTabButton || !pressureTabButton || !flowPanel || !pressurePanel) return;
+
+  const isFlowActive = activeTab !== 'pressure';
+
+  flowPanel.classList.toggle('hidden', !isFlowActive);
+  pressurePanel.classList.toggle('hidden', isFlowActive);
+
+  flowTabButton.classList.toggle('bg-accent-500/15', isFlowActive);
+  flowTabButton.classList.toggle('text-accent-700', isFlowActive);
+  flowTabButton.classList.toggle('dark:text-accent-300', isFlowActive);
+  flowTabButton.classList.toggle('text-slate-600', !isFlowActive);
+  flowTabButton.classList.toggle('dark:text-slate-300', !isFlowActive);
+
+  pressureTabButton.classList.toggle('bg-accent-500/15', !isFlowActive);
+  pressureTabButton.classList.toggle('text-accent-700', !isFlowActive);
+  pressureTabButton.classList.toggle('dark:text-accent-300', !isFlowActive);
+  pressureTabButton.classList.toggle('text-slate-600', isFlowActive);
+  pressureTabButton.classList.toggle('dark:text-slate-300', isFlowActive);
+}
+
+function updateUnitConverterPressure() {
+  const valueInput = el('unit-pressure-value');
+  const fromUnitSelect = el('unit-pressure-from');
+  const mmhgOutput = el('unit-pressure-mmhg-value');
+  const kpaClinicalOutput = el('unit-pressure-kpa-clinical-value');
+  const cmh2oOutput = el('unit-pressure-cmh2o-value');
+  const psiOutput = el('unit-pressure-psi-value');
+  const kpaGasOutput = el('unit-pressure-kpa-gas-value');
+  const barOutput = el('unit-pressure-bar-value');
+
+  if (!valueInput || !fromUnitSelect || !mmhgOutput || !kpaClinicalOutput || !cmh2oOutput || !psiOutput || !kpaGasOutput || !barOutput) return;
+
+  const inputValue = parseFloat(valueInput.value);
+  if (!Number.isFinite(inputValue)) {
+    [mmhgOutput, kpaClinicalOutput, cmh2oOutput, psiOutput, kpaGasOutput, barOutput].forEach(output => {
+      output.textContent = '—';
+    });
+    return;
+  }
+
+  const fromUnit = fromUnitSelect.value;
+  let kpaValue = 0;
+
+  // Pressure conversion uses kPa as canonical unit.
+  // mmHg -> kPa: kPa = mmHg × 0.133322
+  // cmH₂O -> mmHg: mmHg = cmH₂O × 0.735559, then mmHg -> kPa
+  // psi -> kPa: kPa = psi × 6.89476
+  // bar -> kPa: kPa = bar × 100
+  if (fromUnit === 'mmhg') kpaValue = inputValue * 0.133322;
+  else if (fromUnit === 'kpa') kpaValue = inputValue;
+  else if (fromUnit === 'cmh2o') kpaValue = (inputValue * 0.735559) * 0.133322;
+  else if (fromUnit === 'psi') kpaValue = inputValue * 6.89476;
+  else if (fromUnit === 'bar') kpaValue = inputValue * 100;
+
+  // kPa -> mmHg: mmHg = kPa × 7.50062
+  // mmHg -> cmH₂O: cmH₂O = mmHg × 1.35951
+  // kPa -> psi: psi = kPa / 6.89476
+  // kPa -> bar: bar = kPa / 100
+  const mmhgValue = kpaValue * 7.50062;
+  const cmh2oValue = mmhgValue * 1.35951;
+  const psiValue = kpaValue / 6.89476;
+  const barValue = kpaValue / 100;
+
+  mmhgOutput.textContent = mmhgValue.toFixed(1);
+  kpaClinicalOutput.textContent = kpaValue.toFixed(2);
+  cmh2oOutput.textContent = cmh2oValue.toFixed(1);
+  psiOutput.textContent = psiValue.toFixed(2);
+  kpaGasOutput.textContent = kpaValue.toFixed(2);
+  barOutput.textContent = barValue.toFixed(2);
+}
+
+
 
 const PATIENT_TYPE_COEFS = {
   adult_m: 70,
@@ -669,14 +863,14 @@ function updateGDP() {
 
   if (warningEl) warningEl.classList.add('hidden');
 
-  setText('required-flow', results.requiredFlow ? `${results.requiredFlow.toFixed(2)} <span class="text-xs text-slate-500 dark:text-slate-400">l/min</span>` : '—');
-  setText('current-do2i', results.currentDO2i ? `${Math.round(results.currentDO2i)} <span class="text-xs text-slate-500 dark:text-slate-400">ml/min/m²</span>` : '—');
+  setText('required-flow', results.requiredFlow ? `${results.requiredFlow.toFixed(2)} <span class="text-xs text-slate-500 dark:text-slate-400">L/min</span>` : '—');
+  setText('current-do2i', results.currentDO2i ? `${Math.round(results.currentDO2i)} <span class="text-xs text-slate-500 dark:text-slate-400">mL/min/m²</span>` : '—');
 
   let statusLabel = 'Waiting for current flow';
   let detail = 'Enter current pump flow to compare against the target DO₂i.';
   let gaugeColor = 'from-slate-300 to-slate-200 dark:from-primary-800 dark:to-primary-700';
   let gaugeWidth = '0%';
-  let ciComment = results.currentCI ? `Current CI ${results.currentCI.toFixed(2)} l/min/m².` : '';
+  let ciComment = results.currentCI ? `Current CI ${results.currentCI.toFixed(2)} L/min/m².` : '';
 
   const lowerTarget = results.recommendedMin;
   const upperTarget = results.recommendedMax;
@@ -690,7 +884,7 @@ function updateGDP() {
       const deltaFlow = Math.max(results.requiredFlow - results.flow, 0);
       statusLabel = 'Below target';
       detail = deltaFlow > 0
-        ? `Needs approximately +${deltaFlow.toFixed(2)} l/min to reach the target.`
+        ? `Needs approximately +${deltaFlow.toFixed(2)} L/min to reach the target.`
         : 'Increase flow to approach the target.';
       gaugeColor = 'from-amber-500 to-red-500';
     } else if (results.currentDO2i > upperTarget) {
@@ -710,10 +904,10 @@ function updateGDP() {
   gauge.style.width = gaugeWidth;
   gauge.className = `h-3 rounded-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(34,211,238,0.25)] ${gaugeColor}`;
   if (gaugeMsg) {
-    const guidelineLine = '<p>Guideline DO₂i (37°C): 280–300 ml/min/m²</p>';
-    const userAdjustedLine = `<p>Selected DO₂i target range: ${results.recommendedMin}–${results.recommendedMax} ml/min/m²</p>`;
+    const guidelineLine = '<p>Guideline DO₂i (37°C): 280–300 mL/min/m²</p>';
+    const userAdjustedLine = `<p>Selected DO₂i target range: ${results.recommendedMin}–${results.recommendedMax} mL/min/m²</p>`;
     const flowLine = results.currentDO2i
-      ? `<p class="text-[11px] text-slate-200/80">Current DO₂i: ${Math.round(results.currentDO2i)} ml/min/m²</p>`
+      ? `<p class="text-[11px] text-slate-200/80">Current DO₂i: ${Math.round(results.currentDO2i)} mL/min/m²</p>`
       : '<p class="text-[11px] text-slate-200/70">Enter current flow to visualize DO₂i against targets.</p>';
     gaugeMsg.innerHTML = `${guidelineLine}${userAdjustedLine}${flowLine}`;
   }
@@ -863,8 +1057,8 @@ function updateLBM() {
         const flowLean = bsaLean ? (ci * bsaLean).toFixed(2) : '—';
         tr.innerHTML = `
           <td class="px-4 py-2 font-mono text-xs text-slate-600 dark:text-slate-300">${ci.toFixed(1)}</td>
-          <td class="px-4 py-2 font-semibold text-primary-900 dark:text-white">${flowActual} l/min</td>
-          <td class="px-4 py-2 font-semibold text-emerald-600 dark:text-emerald-400">${flowLean} l/min</td>
+          <td class="px-4 py-2 font-semibold text-primary-900 dark:text-white">${flowActual} L/min</td>
+          <td class="px-4 py-2 font-semibold text-emerald-600 dark:text-emerald-400">${flowLean} L/min</td>
         `;
         flowBody.appendChild(tr);
       }
@@ -1629,7 +1823,7 @@ function navigateTo(path) {
 function route() {
   const path = getActivePath();
 
-  const sections = ['view-home', 'view-bsa', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'view-quick-reference', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
+  const sections = ['view-home', 'view-bsa', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'view-unit-converter', 'view-quick-reference', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
     el(sid).classList.add('hidden');
   });
@@ -1643,6 +1837,7 @@ function route() {
   else if (path.includes('priming-volume')) { el('view-priming-volume').classList.remove('hidden'); key = 'priming-volume'; }
   else if (path.includes('heparin')) { el('view-heparin').classList.remove('hidden'); key = 'heparin'; }
   else if (path.includes('timecalc')) { el('view-timecalc').classList.remove('hidden'); key = 'timecalc'; }
+  else if (path.includes('unit-converter')) { el('view-unit-converter').classList.remove('hidden'); key = 'unit-converter'; }
   else if (path.includes('quick-reference')) { el('view-quick-reference').classList.remove('hidden'); key = 'quick-reference'; }
   else if (path.includes('faq')) { el('faq').classList.remove('hidden'); key = 'faq'; }
   else if (path.includes('info')) { el('view-info').classList.remove('hidden'); key = 'info'; }
@@ -1660,6 +1855,7 @@ function route() {
     'heparin': ['nav-heparin', 'side-heparin', 'mob-heparin'],
     'priming-volume': ['nav-priming', 'side-priming', null],
     'timecalc': ['nav-time', 'side-time', 'mob-time'],
+    'unit-converter': ['nav-unit-converter', 'side-unit-converter', null],
     'quick-reference': ['nav-quick-reference', 'side-quick-reference', 'mob-quick-reference'],
     'faq': ['nav-faq', 'side-faq', null],
     'info': ['nav-info', 'side-info', 'mob-info']
@@ -1831,6 +2027,24 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  ['unit-flow-lmin', 'unit-flow-weight'].forEach(id => {
+    const x = el(id);
+    if (x) x.addEventListener('input', updateUnitConverterFlow);
+  });
+
+  ['unit-pressure-value', 'unit-pressure-from'].forEach(id => {
+    const x = el(id);
+    if (!x) return;
+    const eventName = id === 'unit-pressure-from' ? 'change' : 'input';
+    x.addEventListener(eventName, updateUnitConverterPressure);
+  });
+
+  document.querySelectorAll('[data-unit-tab]').forEach(button => {
+    button.addEventListener('click', () => {
+      setUnitConverterTab(button.dataset.unitTab || 'flow');
+    });
+  });
+
   setupContactActions();
 
   initTimeCalculator();
@@ -1841,4 +2055,8 @@ window.addEventListener('DOMContentLoaded', () => {
   updateHct();
   updateLBM();
   updatePrimingVolume();
+  initUnitConverterLabels();
+  updateUnitConverterFlow();
+  updateUnitConverterPressure();
+  setUnitConverterTab('flow');
 });
