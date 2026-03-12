@@ -1836,7 +1836,7 @@ function renderPhnRows(rows) {
     line.innerHTML = `
       <div class="text-primary-900 dark:text-white font-medium text-xs leading-tight">${row.coeff.label}</div>
       <div class="text-center phn-number text-primary-900 dark:text-slate-100">${window.PhnCalculator.formatMm(zNeg2DisplayMm)}</div>
-      <div class="text-center phn-number font-bold text-emerald-300 bg-emerald-900/30 rounded py-1">${window.PhnCalculator.formatMm(row.range.z0Mm)}</div>
+      <div class="text-center phn-number font-bold text-emerald-800 dark:text-emerald-200 bg-emerald-100 dark:bg-emerald-900/40 border border-emerald-300/80 dark:border-emerald-700/70 rounded py-1 shadow-sm">${window.PhnCalculator.formatMm(row.range.z0Mm)}</div>
       <div class="text-center phn-number text-primary-900 dark:text-slate-100">${window.PhnCalculator.formatMm(row.range.zPos2Mm)}</div>
     `;
     resultsEl.appendChild(line);
