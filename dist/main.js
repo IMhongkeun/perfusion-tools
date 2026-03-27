@@ -14,6 +14,12 @@ const html = document.documentElement;
 const themeToggle = document.getElementById('theme-toggle');
 const sunIcon = document.getElementById('icon-sun');
 const moonIcon = document.getElementById('icon-moon');
+const themeColorMeta = document.getElementById('theme-color-meta');
+
+function updateThemeColor(isDark) {
+  if (!themeColorMeta) return;
+  themeColorMeta.setAttribute('content', isDark ? '#0f172a' : '#f8fafc');
+}
 
 function updateThemeUI(isDark) {
   if (isDark) {
@@ -27,6 +33,9 @@ function updateThemeUI(isDark) {
     moonIcon.classList.remove('hidden');
     localStorage.setItem('theme', 'light');
   }
+
+  document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+  updateThemeColor(isDark);
 }
 
 const savedTheme = localStorage.getItem('theme');
