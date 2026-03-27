@@ -2561,6 +2561,12 @@ function route() {
     }
   }
 
+
+  const desktopSidebar = document.getElementById('desktop-sidebar');
+  if (desktopSidebar) {
+    desktopSidebar.scrollTop = 0;
+  }
+
   if (key === 'heparin') {
     initHeparinManagement();
   }
