@@ -93,7 +93,7 @@ function getCurrentTimeHHMM() {
   return `${hh}:${mm}`;
 }
 
-const CANONICAL_BASE = 'https://perfusiontools.com';
+const CANONICAL_BASE = 'https://www.perfusiontools.com';
 const FALLBACK_META = {
   title: 'Calculator – Perfusion Tools',
   description: 'Comprehensive perfusion calculators for CPB & ECMO including BSA, Heparin dosing, and more.',
@@ -2503,27 +2503,32 @@ function route() {
   const path = getActivePath();
   const sections = ['view-home', 'view-bsa', 'view-phn-echo', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'view-unit-converter', 'view-quick-reference', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
-    el(sid).classList.add('hidden');
+    const section = el(sid);
+    if (section) section.classList.add('hidden');
   });
 
   let key = 'home';
+  const showSection = (id) => {
+    const section = el(id);
+    if (section) section.classList.remove('hidden');
+  };
 
-  if (path.includes('phn-echo')) { el('view-phn-echo').classList.remove('hidden'); key = 'phn-echo'; }
-  else if (path.includes('bsa')) { el('view-bsa').classList.remove('hidden'); key = 'bsa'; }
-  else if (path.includes('do2i') || path.includes('gdp')) { el('view-do2i').classList.remove('hidden'); key = 'do2i'; }
-  else if (path.includes('predicted-hct')) { el('view-hct').classList.remove('hidden'); key = 'predicted-hct'; }
-  else if (path.includes('lbm')) { el('view-lbm').classList.remove('hidden'); key = 'lbm'; }
-  else if (path.includes('priming-volume')) { el('view-priming-volume').classList.remove('hidden'); key = 'priming-volume'; }
-  else if (path.includes('heparin')) { el('view-heparin').classList.remove('hidden'); key = 'heparin'; }
-  else if (path.includes('timecalc')) { el('view-timecalc').classList.remove('hidden'); key = 'timecalc'; }
-  else if (path.includes('unit-converter')) { el('view-unit-converter').classList.remove('hidden'); key = 'unit-converter'; }
-  else if (path.includes('quick-reference')) { el('view-quick-reference').classList.remove('hidden'); key = 'quick-reference'; }
-  else if (path.includes('faq')) { el('faq').classList.remove('hidden'); key = 'faq'; }
-  else if (path.includes('info')) { el('view-info').classList.remove('hidden'); key = 'info'; }
-  else if (path.includes('privacy')) { el('view-privacy').classList.remove('hidden'); key = 'privacy'; }
-  else if (path.includes('terms')) { el('view-terms').classList.remove('hidden'); key = 'terms'; }
-  else if (path.includes('contact')) { el('view-contact').classList.remove('hidden'); key = 'contact'; }
-  else { el('view-home').classList.remove('hidden'); key = 'home'; }
+  if (path.includes('phn-echo')) { showSection('view-phn-echo'); key = 'phn-echo'; }
+  else if (path.includes('bsa')) { showSection('view-bsa'); key = 'bsa'; }
+  else if (path.includes('do2i') || path.includes('gdp')) { showSection('view-do2i'); key = 'do2i'; }
+  else if (path.includes('predicted-hct')) { showSection('view-hct'); key = 'predicted-hct'; }
+  else if (path.includes('lbm')) { showSection('view-lbm'); key = 'lbm'; }
+  else if (path.includes('priming-volume')) { showSection('view-priming-volume'); key = 'priming-volume'; }
+  else if (path.includes('heparin')) { showSection('view-heparin'); key = 'heparin'; }
+  else if (path.includes('timecalc')) { showSection('view-timecalc'); key = 'timecalc'; }
+  else if (path.includes('unit-converter')) { showSection('view-unit-converter'); key = 'unit-converter'; }
+  else if (path.includes('quick-reference')) { showSection('view-quick-reference'); key = 'quick-reference'; }
+  else if (path.includes('faq')) { showSection('faq'); key = 'faq'; }
+  else if (path.includes('info')) { showSection('view-info'); key = 'info'; }
+  else if (path.includes('privacy')) { showSection('view-privacy'); key = 'privacy'; }
+  else if (path.includes('terms')) { showSection('view-terms'); key = 'terms'; }
+  else if (path.includes('contact')) { showSection('view-contact'); key = 'contact'; }
+  else { showSection('view-home'); key = 'home'; }
 
   const navMap = {
     'home': ['nav-home', 'side-home', 'mob-home'],
@@ -2612,7 +2617,8 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   const now = new Date();
-  document.getElementById('year').textContent = now.getFullYear();
+  const yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = now.getFullYear();
 
   route();
 

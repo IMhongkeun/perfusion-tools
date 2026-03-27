@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Professional perfusion calculators for CPB",
   "scripts": {
-    "build": "mkdir -p dist && cp index.html dist/ && cp main.js dist/",
+    "build": "mkdir -p dist/bsa && cp index.html dist/ && cp main.js dist/ && cp _redirects dist/ && cp bsa/index.html dist/bsa/",
     "dev": "echo 'Open index.html in browser'",
     "start": "echo 'Open index.html in browser'",
     "test": "node tests/phn.test.js"
