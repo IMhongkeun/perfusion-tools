@@ -2496,6 +2496,8 @@ function navigateTo(path) {
 
 function route() {
   const path = getActivePath();
+  const desktopSidebar = document.getElementById('desktop-sidebar');
+  const previousSidebarScrollTop = desktopSidebar ? desktopSidebar.scrollTop : null;
 
   const sections = ['view-home', 'view-bsa', 'view-phn-echo', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'view-unit-converter', 'view-quick-reference', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
@@ -2562,9 +2564,10 @@ function route() {
   }
 
 
-  const desktopSidebar = document.getElementById('desktop-sidebar');
-  if (desktopSidebar) {
-    desktopSidebar.scrollTop = 0;
+  if (desktopSidebar && previousSidebarScrollTop !== null) {
+    requestAnimationFrame(() => {
+      desktopSidebar.scrollTop = previousSidebarScrollTop;
+    });
   }
 
   if (key === 'heparin') {
