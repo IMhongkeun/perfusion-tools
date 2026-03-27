@@ -2496,9 +2496,6 @@ function navigateTo(path) {
 
 function route() {
   const path = getActivePath();
-  const desktopSidebar = document.getElementById('desktop-sidebar');
-  const previousSidebarScrollTop = desktopSidebar ? desktopSidebar.scrollTop : null;
-
   const sections = ['view-home', 'view-bsa', 'view-phn-echo', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'view-unit-converter', 'view-quick-reference', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
     el(sid).classList.add('hidden');
@@ -2549,11 +2546,12 @@ function route() {
 
   updateMetaForRoute(path || '/');
 
+  let sideEl = null;
   if (key && navMap[key]) {
     const navEl = el(navMap[key][0]);
     if (navEl) navEl.classList.add('bg-slate-100', 'text-primary-900', 'border', 'border-slate-200', 'dark:bg-primary-800', 'dark:text-accent-400', 'dark:border-primary-700');
 
-    const sideEl = el(navMap[key][1]);
+    sideEl = el(navMap[key][1]);
     if (sideEl) sideEl.classList.add('bg-slate-100', 'text-accent-600', 'dark:bg-primary-800', 'dark:text-accent-400');
 
     const mobEl = el(navMap[key][2]);
@@ -2564,9 +2562,11 @@ function route() {
   }
 
 
-  if (desktopSidebar && previousSidebarScrollTop !== null) {
+  const desktopSidebar = document.getElementById('desktop-sidebar');
+  const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+  if (desktopSidebar && sideEl && isDesktop) {
     requestAnimationFrame(() => {
-      desktopSidebar.scrollTop = previousSidebarScrollTop;
+      sideEl.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
     });
   }
 
