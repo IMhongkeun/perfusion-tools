@@ -2566,12 +2566,12 @@ function route() {
     }
   }
 
-
-  const desktopSidebar = document.getElementById('desktop-sidebar');
-  const isDesktop = window.matchMedia('(min-width: 768px)').matches;
-  if (desktopSidebar && sideEl && isDesktop) {
+  const topResetRoutes = new Set(['timecalc', 'unit-converter', 'quick-reference', 'info']);
+  if (topResetRoutes.has(key)) {
     requestAnimationFrame(() => {
-      sideEl.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
     });
   }
 
