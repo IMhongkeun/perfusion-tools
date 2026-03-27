@@ -14,6 +14,12 @@ const html = document.documentElement;
 const themeToggle = document.getElementById('theme-toggle');
 const sunIcon = document.getElementById('icon-sun');
 const moonIcon = document.getElementById('icon-moon');
+const themeColorMeta = document.getElementById('theme-color-meta');
+
+function updateThemeColor(isDark) {
+  if (!themeColorMeta) return;
+  themeColorMeta.setAttribute('content', isDark ? '#0f172a' : '#f8fafc');
+}
 
 function updateThemeUI(isDark) {
   if (isDark) {
@@ -27,6 +33,9 @@ function updateThemeUI(isDark) {
     moonIcon.classList.remove('hidden');
     localStorage.setItem('theme', 'light');
   }
+
+  document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+  updateThemeColor(isDark);
 }
 
 const savedTheme = localStorage.getItem('theme');
@@ -2475,19 +2484,23 @@ function getActivePath() {
   return normalizedPath || '/';
 }
 
-function navigateTo(path) {
+function navigateTo(path, options = {}) {
   const target = window.normalizeRoute ? window.normalizeRoute(path) : (path || '/');
   const current = getActivePath();
+  const { resetScrollTop = false } = options;
 
   if (current !== target) {
     history.pushState({}, '', target);
   }
   route();
+
+  if (resetScrollTop) {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }
 }
 
 function route() {
   const path = getActivePath();
-
   const sections = ['view-home', 'view-bsa', 'view-phn-echo', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'view-unit-converter', 'view-quick-reference', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
     el(sid).classList.add('hidden');
@@ -2529,7 +2542,7 @@ function route() {
   };
 
   document.querySelectorAll('.nav-link, .sidebar-link').forEach(l => {
-    l.classList.remove('bg-primary-800', 'text-accent-400', 'bg-slate-100', 'text-primary-900', 'bg-primary-700', 'dark:bg-primary-800', 'dark:text-accent-400');
+    l.classList.remove('bg-primary-800', 'text-accent-400', 'bg-slate-100', 'text-primary-900', 'text-accent-600', 'border', 'border-slate-200', 'border-primary-900', 'dark:border-primary-700', 'bg-primary-700', 'dark:bg-primary-800', 'dark:text-accent-400');
   });
   document.querySelectorAll('[id^="mob-"]').forEach(l => {
     l.classList.remove('text-accent-600', 'dark:text-accent-400');
@@ -2538,18 +2551,28 @@ function route() {
 
   updateMetaForRoute(path || '/');
 
+  let sideEl = null;
   if (key && navMap[key]) {
     const navEl = el(navMap[key][0]);
-    if (navEl) navEl.classList.add('bg-primary-800', 'text-accent-400');
+    if (navEl) navEl.classList.add('bg-slate-100', 'text-primary-900', 'border', 'border-slate-200', 'dark:bg-primary-800', 'dark:text-accent-400', 'dark:border-primary-700');
 
-    const sideEl = el(navMap[key][1]);
-    if (sideEl) sideEl.classList.add('bg-slate-100', 'text-primary-900', 'dark:bg-primary-800', 'dark:text-accent-400');
+    sideEl = el(navMap[key][1]);
+    if (sideEl) sideEl.classList.add('bg-slate-100', 'text-accent-600', 'dark:bg-primary-800', 'dark:text-accent-400');
 
     const mobEl = el(navMap[key][2]);
     if (mobEl) {
       mobEl.classList.remove('text-slate-400', 'dark:text-slate-500');
       mobEl.classList.add('text-accent-600', 'dark:text-accent-400');
     }
+  }
+
+  const topResetRoutes = new Set(['timecalc', 'unit-converter', 'quick-reference', 'info']);
+  if (topResetRoutes.has(key)) {
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    });
   }
 
   if (key === 'heparin') {
@@ -2571,7 +2594,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const href = brandHome.getAttribute('href');
       if (href && href.startsWith('/')) {
         e.preventDefault();
-        navigateTo(href);
+        navigateTo(href, { resetScrollTop: true });
       }
     });
   }
@@ -2582,7 +2605,8 @@ window.addEventListener('DOMContentLoaded', () => {
       if (!href || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
       if (href.startsWith('/')) {
         e.preventDefault();
-        navigateTo(href);
+        const shouldResetScrollTop = link.classList.contains('nav-link');
+        navigateTo(href, { resetScrollTop: shouldResetScrollTop });
       }
     });
   });
