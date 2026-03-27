@@ -2484,14 +2484,19 @@ function getActivePath() {
   return normalizedPath || '/';
 }
 
-function navigateTo(path) {
+function navigateTo(path, options = {}) {
   const target = window.normalizeRoute ? window.normalizeRoute(path) : (path || '/');
   const current = getActivePath();
+  const { resetScrollTop = false } = options;
 
   if (current !== target) {
     history.pushState({}, '', target);
   }
   route();
+
+  if (resetScrollTop) {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }
 }
 
 function route() {
@@ -2589,7 +2594,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const href = brandHome.getAttribute('href');
       if (href && href.startsWith('/')) {
         e.preventDefault();
-        navigateTo(href);
+        navigateTo(href, { resetScrollTop: true });
       }
     });
   }
@@ -2600,7 +2605,8 @@ window.addEventListener('DOMContentLoaded', () => {
       if (!href || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
       if (href.startsWith('/')) {
         e.preventDefault();
-        navigateTo(href);
+        const shouldResetScrollTop = link.classList.contains('nav-link');
+        navigateTo(href, { resetScrollTop: shouldResetScrollTop });
       }
     });
   });
