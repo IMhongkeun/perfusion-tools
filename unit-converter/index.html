@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Perfusion Unit Converter (Flow & Pressure) | Perfusion Tools</title>
+  <meta name="description" content="Perfusion unit converter for flow and pressure. Convert L/min to mL/min and mL/kg/min, plus mmHg, kPa, cmH2O, psi, and bar for CPB and ECMO workflows." />
+  <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
+  <link rel="canonical" href="https://www.perfusiontools.com/unit-converter" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Perfusion Unit Converter (Flow & Pressure) | Perfusion Tools" />
+  <meta property="og:description" content="Convert perfusion flow and pressure units quickly for bedside and circuit documentation." />
+  <meta property="og:url" content="https://www.perfusiontools.com/unit-converter" />
+  <meta name="twitter:title" content="Perfusion Unit Converter (Flow & Pressure) | Perfusion Tools" />
+  <meta name="twitter:description" content="Convert perfusion flow and pressure units quickly for bedside and circuit documentation." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0f4f8', 100: '#d9e2ec', 200: '#bcccdc', 300: '#9fb3c8', 400: '#829ab1',
+              500: '#627d98', 600: '#486581', 700: '#334e68', 800: '#243b53', 900: '#0f172a', 950: '#020617'
+            },
+            accent: { 400: '#22d3ee', 500: '#06b6d4', 600: '#0891b2' }
+          },
+          boxShadow: {
+            card: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            glow: '0 0 15px rgba(34, 211, 238, 0.3)'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root { --header-height: 60px; --bottom-nav-height: 64px; }
+    input[type=number] { appearance: textfield; }
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    @keyframes pulse-flow {
+      0% { opacity: 0.6; transform: scale(0.95); }
+      50% { opacity: 1; transform: scale(1.05); }
+      100% { opacity: 0.6; transform: scale(0.95); }
+    }
+    .animate-pulse-flow { animation: pulse-flow 3s infinite ease-in-out; }
+  </style>
+
+  <script>
+    const routeMeta = {
+      '/': {
+        title: 'Perfusion Unit Converter (Flow & Pressure) | Perfusion Tools',
+        h1: 'Perfusion Unit Converter for Flow and Pressure',
+        description: 'Perfusion unit converter for flow and pressure. Convert L/min to mL/min and mL/kg/min, plus mmHg, kPa, cmH2O, psi, and bar for CPB and ECMO workflows.',
+        canonicalPath: '/unit-converter'
+      },
+      '/unit-converter': {
+        title: 'Perfusion Unit Converter (Flow & Pressure) | Perfusion Tools',
+        h1: 'Perfusion Unit Converter for Flow and Pressure',
+        description: 'Perfusion unit converter for flow and pressure. Convert L/min to mL/min and mL/kg/min, plus mmHg, kPa, cmH2O, psi, and bar for CPB and ECMO workflows.',
+        headingDescription: 'Quickly convert common perfusion flow and pressure units used in CPB and ECMO practice.',
+        canonicalPath: '/unit-converter'
+      }
+    };
+
+    function normalizeRoute(rawRoute) {
+      if (!rawRoute) return '/';
+      const cleaned = rawRoute.replace('#', '').trim();
+      if (!cleaned || cleaned === '/' || cleaned === '/home') return '/';
+      return cleaned.startsWith('/') ? cleaned : `/${cleaned}`;
+    }
+
+    function applyRouteMeta(rawRoute) {
+      const path = normalizeRoute(rawRoute || window.location.pathname || '/unit-converter');
+      const meta = routeMeta[path] || routeMeta['/unit-converter'];
+      document.title = meta.title;
+
+      const descTag = document.querySelector('meta[name="description"]');
+      if (descTag) descTag.setAttribute('content', meta.description);
+
+      const headingEl = document.getElementById('page-heading');
+      if (headingEl) headingEl.textContent = meta.h1;
+
+      const subtitleEl = document.getElementById('page-subtitle');
+      if (subtitleEl) subtitleEl.textContent = meta.headingDescription || meta.description;
+
+      const canonicalTag = document.querySelector('link[rel="canonical"]');
+      if (canonicalTag) canonicalTag.setAttribute('href', `https://www.perfusiontools.com${meta.canonicalPath || '/unit-converter'}`);
+
+      return path;
+    }
+
+    window.routeMeta = routeMeta;
+    window.normalizeRoute = normalizeRoute;
+    window.applyRouteMeta = applyRouteMeta;
+    window.addEventListener('load', () => applyRouteMeta('/unit-converter'));
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0">
+  <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 h-[var(--header-height)] flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3 select-none cursor-pointer hover:opacity-80 transition-opacity">
+        <div class="relative w-8 h-8 flex items-center justify-center">
+          <div class="absolute inset-0 rounded-full border-2 border-accent-500 opacity-80"></div>
+          <div class="w-4 h-4 rounded-full bg-gradient-to-br from-accent-400 to-blue-600 shadow-glow animate-pulse-flow"></div>
+        </div>
+        <div class="text-lg font-bold tracking-tight">Perfusion <span class="text-accent-400">Tools</span></div>
+      </a>
+      <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-primary-800 transition-colors text-slate-600 dark:text-slate-300" aria-label="Toggle Dark Mode">
+        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+        <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" /></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="pt-[var(--header-height)] max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr] gap-0 min-h-screen">
+    <aside class="hidden md:block border-r border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/50 sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] p-4 overflow-y-auto">
+      <div class="space-y-1">
+        <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-3">Calculators</div>
+        <a href="/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Home</a>
+        <a href="/bsa" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">BSA Calculator</a>
+        <a href="/phn-echo" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Z-score Calculator</a>
+        <a href="/gdp" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">GDP Calculator</a>
+        <a href="/heparin" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Heparin Management</a>
+        <a href="/predicted-hct" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Predicted Hematocrit</a>
+        <a href="/lbm" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Lean Body Mass</a>
+        <a href="/priming-volume" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Priming Volume</a>
+        <a href="/timecalc" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Time Calculator</a>
+        <a href="/unit-converter" id="side-unit" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-100 text-accent-600 dark:bg-primary-800 dark:text-accent-400">Unit Converter</a>
+      </div>
+    </aside>
+
+    <main class="p-4 md:p-8 max-w-3xl mx-auto w-full space-y-8">
+      <section class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
+        <div class="p-6 space-y-3">
+          <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Perfusion Unit Converter for Flow and Pressure</h1>
+          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Quickly convert common perfusion flow and pressure units used in CPB and ECMO practice.</p>
+        </div>
+      </section>
+
+      <section id="view-unit-converter" class="animate-in fade-in duration-300">
+        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
+          <div class="p-6 border-b border-slate-100 dark:border-primary-800 bg-slate-50/50 dark:bg-primary-800/30">
+            <div class="text-xs uppercase tracking-wider text-accent-500 font-semibold">Calculator</div>
+            <h2 class="text-lg font-semibold text-primary-900 dark:text-white mt-1">Unit converter</h2>
+            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Simple base-input converters for flow and pressure units.</p>
+          </div>
+
+          <div class="p-6 space-y-6">
+            <div class="flex items-center gap-2 border-b border-slate-100 dark:border-primary-800 pb-3">
+              <button id="unit-tab-flow" data-unit-tab="flow" type="button" class="px-3 py-1.5 rounded-lg bg-accent-500/15 text-accent-700 dark:text-accent-300 text-sm font-semibold">flow</button>
+              <button id="unit-tab-pressure" data-unit-tab="pressure" type="button" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-primary-800 transition-colors">pressure</button>
+            </div>
+
+            <div id="unit-panel-flow" class="space-y-6">
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Inputs</h3>
+                  <label class="block space-y-1">
+                    <span id="unit-label-flow-input" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Flow (L/min)</span>
+                    <input id="unit-flow-lmin" type="number" step="0.01" min="0" placeholder="4.5" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+                  </label>
+                  <label class="block space-y-1">
+                    <span id="unit-label-flow-weight-input" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Weight (kg)</span>
+                    <input id="unit-flow-weight" type="number" step="0.1" min="0" placeholder="70" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+                  </label>
+                </div>
+
+                <div class="space-y-4">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Outputs</h3>
+                  <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 p-4 space-y-3">
+                    <div>
+                      <div id="unit-label-flow-output-mlmin" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">mL/min</div>
+                      <div id="unit-flow-mlmin" class="text-xl font-bold text-primary-900 dark:text-white">—</div>
+                    </div>
+                    <div>
+                      <div id="unit-label-flow-output-mlkgmin" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">mL/kg/min</div>
+                      <div id="unit-flow-mlkgmin" class="text-sm font-medium text-slate-400 dark:text-slate-500">Weight required</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-xs text-slate-500 dark:text-slate-400 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/70 dark:bg-primary-900/40 p-3 space-y-1">
+                <p id="unit-flow-formula-mlmin"><strong>Formula:</strong> mL/min = L/min × 1000</p>
+                <p id="unit-flow-formula-mlkgmin"><strong>Formula:</strong> mL/kg/min = (L/min × 1000) / weight(kg)</p>
+              </div>
+            </div>
+
+            <div id="unit-panel-pressure" class="space-y-6 hidden">
+              <div class="space-y-4 md:space-y-6">
+                <div class="space-y-3 md:space-y-4">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Inputs</h3>
+                  <label class="block space-y-1">
+                    <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Value</span>
+                    <input id="unit-pressure-value" type="number" step="any" placeholder="80" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+                  </label>
+                  <label class="block space-y-1">
+                    <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">From unit</span>
+                    <select id="unit-pressure-from" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white">
+                      <option value="mmhg">mmHg</option>
+                      <option value="kpa">kPa</option>
+                      <option value="cmh2o">cmH₂O</option>
+                      <option value="psi">psi</option>
+                      <option value="bar">bar</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="space-y-4">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Outputs</h3>
+                  <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 p-4 space-y-3">
+                    <h4 class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Clinical</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div class="min-w-0">
+                        <div id="unit-label-pressure-mmhg" class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">mmHg</div>
+                        <div class="flex items-baseline gap-1.5 whitespace-nowrap"><span id="unit-pressure-mmhg-value" class="min-w-0 text-lg md:text-xl font-semibold tabular-nums text-primary-900 dark:text-white">—</span><span id="unit-pressure-mmhg-unit" class="text-xs md:text-sm text-slate-500 dark:text-slate-400 shrink-0">mmHg</span></div>
+                      </div>
+                      <div class="min-w-0">
+                        <div id="unit-label-pressure-kpa-clinical" class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">kPa</div>
+                        <div class="flex items-baseline gap-1.5 whitespace-nowrap"><span id="unit-pressure-kpa-clinical-value" class="min-w-0 text-lg md:text-xl font-semibold tabular-nums text-primary-900 dark:text-white">—</span><span id="unit-pressure-kpa-clinical-unit" class="text-xs md:text-sm text-slate-500 dark:text-slate-400 shrink-0">kPa</span></div>
+                      </div>
+                      <div class="min-w-0">
+                        <div id="unit-label-pressure-cmh2o" class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">cmH₂O</div>
+                        <div class="flex items-baseline gap-1 whitespace-nowrap"><span id="unit-pressure-cmh2o-value" class="min-w-0 text-base md:text-lg font-semibold tabular-nums text-primary-900 dark:text-white">—</span><span id="unit-pressure-cmh2o-unit" class="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 shrink-0 tracking-tight">cmH₂O</span></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 p-4 space-y-3">
+                    <h4 class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Gas supply</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div class="min-w-0">
+                        <div id="unit-label-pressure-psi" class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">psi</div>
+                        <div class="flex items-baseline gap-1.5 whitespace-nowrap"><span id="unit-pressure-psi-value" class="min-w-0 text-lg md:text-xl font-semibold tabular-nums text-primary-900 dark:text-white">—</span><span id="unit-pressure-psi-unit" class="text-xs md:text-sm text-slate-500 dark:text-slate-400 shrink-0">psi</span></div>
+                      </div>
+                      <div class="min-w-0">
+                        <div id="unit-label-pressure-kpa-gas" class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">kPa</div>
+                        <div class="flex items-baseline gap-1.5 whitespace-nowrap"><span id="unit-pressure-kpa-gas-value" class="min-w-0 text-lg md:text-xl font-semibold tabular-nums text-primary-900 dark:text-white">—</span><span id="unit-pressure-kpa-gas-unit" class="text-xs md:text-sm text-slate-500 dark:text-slate-400 shrink-0">kPa</span></div>
+                      </div>
+                      <div class="min-w-0">
+                        <div id="unit-label-pressure-bar" class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">bar</div>
+                        <div class="flex items-baseline gap-1.5 whitespace-nowrap"><span id="unit-pressure-bar-value" class="min-w-0 text-lg md:text-xl font-semibold tabular-nums text-primary-900 dark:text-white">—</span><span id="unit-pressure-bar-unit" class="text-xs md:text-sm text-slate-500 dark:text-slate-400 shrink-0">bar</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-xs text-slate-500 dark:text-slate-400 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/70 dark:bg-primary-900/40 p-3 space-y-1">
+                <p><strong>mmHg ↔ kPa:</strong> 1 mmHg = 0.133322 kPa, 1 kPa = 7.50062 mmHg</p>
+                <p><strong>mmHg ↔ cmH₂O:</strong> 1 mmHg = 1.35951 cmH₂O, 1 cmH₂O = 0.735559 mmHg</p>
+                <p><strong>psi ↔ kPa ↔ bar:</strong> 1 psi = 6.89476 kPa, 1 bar = 100 kPa</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="px-6 pb-6">
+          <details class="mt-4 group">
+            <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+              <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
+            </summary>
+            <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Unit converter scope</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>This panel provides quick bedside unit conversions for perfusion-related flow and pressure values.</li>
+                  <li>It is a calculation aid only and does not replace patient-specific interpretation or institutional protocols.</li>
+                  <li>All computations are performed locally in the browser from the entered value and selected unit.</li>
+                </ul>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Flow methodology (base input)</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Base input uses flow in <strong>L/min</strong>, with optional weight in <strong>kg</strong>.</li>
+                  <li><strong>mL/min = L/min × 1000</strong></li>
+                  <li><strong>mL/kg/min = (L/min × 1000) / weight(kg)</strong></li>
+                  <li>If weight is not entered, mL/kg/min is not computed and a guidance message is shown.</li>
+                </ul>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Pressure methodology (single source unit)</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>The pressure tab converts from one selected input unit and normalizes internally to <strong>kPa</strong> before generating all outputs.</li>
+                  <li>Clinical outputs: <strong>mmHg</strong>, <strong>kPa</strong>, <strong>cmH₂O</strong>.</li>
+                  <li>Gas supply outputs: <strong>psi</strong>, <strong>kPa</strong>, <strong>bar</strong>.</li>
+                </ul>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Pressure conversion constants</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>1 mmHg = 0.133322 kPa, 1 kPa = 7.50062 mmHg</li>
+                  <li>1 mmHg = 1.35951 cmH₂O, 1 cmH₂O = 0.735559 mmHg</li>
+                  <li>1 psi = 6.89476 kPa, 1 bar = 100 kPa</li>
+                </ul>
+              </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Display and input behavior</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Blank/invalid input clears computed pressure outputs.</li>
+                  <li>Zero and negative values are allowed for pressure conversions when clinically relevant (e.g., sub-atmospheric readings).</li>
+                  <li>Unit labels preserve standard casing as displayed (e.g., mmHg, kPa, cmH₂O, mL/min).</li>
+                </ul>
+              </div>
+            </div>
+          </details>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="hidden md:block mt-10 border-t border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/90">
+    <div class="max-w-7xl mx-auto px-4 py-8 text-sm text-slate-500 dark:text-slate-400 flex items-center justify-between gap-3">
+      <p>© <span id="year"></span> Perfusion Tools. Educational use for healthcare professionals.</p>
+      <nav class="flex gap-4">
+        <a href="/quick-reference" class="hover:text-accent-500 transition-colors">Quick Reference</a>
+        <a href="/privacy" class="hover:text-accent-500 transition-colors">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="/main.js"></script>
+</body>
+</html>
