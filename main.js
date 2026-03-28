@@ -93,7 +93,7 @@ function getCurrentTimeHHMM() {
   return `${hh}:${mm}`;
 }
 
-const CANONICAL_BASE = 'https://perfusiontools.com';
+const CANONICAL_BASE = 'https://www.perfusiontools.com';
 const FALLBACK_META = {
   title: 'Calculator – Perfusion Tools',
   description: 'Comprehensive perfusion calculators for CPB & ECMO including BSA, Heparin dosing, and more.',
@@ -2503,27 +2503,32 @@ function route() {
   const path = getActivePath();
   const sections = ['view-home', 'view-bsa', 'view-phn-echo', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'view-unit-converter', 'view-quick-reference', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
-    el(sid).classList.add('hidden');
+    const section = el(sid);
+    if (section) section.classList.add('hidden');
   });
 
   let key = 'home';
+  const showSection = (id) => {
+    const section = el(id);
+    if (section) section.classList.remove('hidden');
+  };
 
-  if (path.includes('phn-echo')) { el('view-phn-echo').classList.remove('hidden'); key = 'phn-echo'; }
-  else if (path.includes('bsa')) { el('view-bsa').classList.remove('hidden'); key = 'bsa'; }
-  else if (path.includes('do2i') || path.includes('gdp')) { el('view-do2i').classList.remove('hidden'); key = 'do2i'; }
-  else if (path.includes('predicted-hct')) { el('view-hct').classList.remove('hidden'); key = 'predicted-hct'; }
-  else if (path.includes('lbm')) { el('view-lbm').classList.remove('hidden'); key = 'lbm'; }
-  else if (path.includes('priming-volume')) { el('view-priming-volume').classList.remove('hidden'); key = 'priming-volume'; }
-  else if (path.includes('heparin')) { el('view-heparin').classList.remove('hidden'); key = 'heparin'; }
-  else if (path.includes('timecalc')) { el('view-timecalc').classList.remove('hidden'); key = 'timecalc'; }
-  else if (path.includes('unit-converter')) { el('view-unit-converter').classList.remove('hidden'); key = 'unit-converter'; }
-  else if (path.includes('quick-reference')) { el('view-quick-reference').classList.remove('hidden'); key = 'quick-reference'; }
-  else if (path.includes('faq')) { el('faq').classList.remove('hidden'); key = 'faq'; }
-  else if (path.includes('info')) { el('view-info').classList.remove('hidden'); key = 'info'; }
-  else if (path.includes('privacy')) { el('view-privacy').classList.remove('hidden'); key = 'privacy'; }
-  else if (path.includes('terms')) { el('view-terms').classList.remove('hidden'); key = 'terms'; }
-  else if (path.includes('contact')) { el('view-contact').classList.remove('hidden'); key = 'contact'; }
-  else { el('view-home').classList.remove('hidden'); key = 'home'; }
+  if (path.includes('phn-echo')) { showSection('view-phn-echo'); key = 'phn-echo'; }
+  else if (path.includes('bsa')) { showSection('view-bsa'); key = 'bsa'; }
+  else if (path.includes('do2i') || path.includes('gdp')) { showSection('view-do2i'); key = 'do2i'; }
+  else if (path.includes('predicted-hct')) { showSection('view-hct'); key = 'predicted-hct'; }
+  else if (path.includes('lbm')) { showSection('view-lbm'); key = 'lbm'; }
+  else if (path.includes('priming-volume')) { showSection('view-priming-volume'); key = 'priming-volume'; }
+  else if (path.includes('heparin')) { showSection('view-heparin'); key = 'heparin'; }
+  else if (path.includes('timecalc')) { showSection('view-timecalc'); key = 'timecalc'; }
+  else if (path.includes('unit-converter')) { showSection('view-unit-converter'); key = 'unit-converter'; }
+  else if (path.includes('quick-reference')) { showSection('view-quick-reference'); key = 'quick-reference'; }
+  else if (path.includes('faq')) { showSection('faq'); key = 'faq'; }
+  else if (path.includes('info')) { showSection('view-info'); key = 'info'; }
+  else if (path.includes('privacy')) { showSection('view-privacy'); key = 'privacy'; }
+  else if (path.includes('terms')) { showSection('view-terms'); key = 'terms'; }
+  else if (path.includes('contact')) { showSection('view-contact'); key = 'contact'; }
+  else { showSection('view-home'); key = 'home'; }
 
   const navMap = {
     'home': ['nav-home', 'side-home', 'mob-home'],
@@ -2588,6 +2593,17 @@ function route() {
 // -----------------------------
 window.addEventListener('popstate', route);
 window.addEventListener('DOMContentLoaded', () => {
+  const hasElement = (id) => !!el(id);
+  const hasGdpCalculator = hasElement('view-do2i');
+  const hasStandaloneBsaCalculator = hasElement('view-bsa');
+  const hasPhnEchoCalculator = hasElement('view-phn-echo');
+  const hasHctCalculator = hasElement('view-hct');
+  const hasLbmCalculator = hasElement('view-lbm');
+  const hasPrimingCalculator = hasElement('view-priming-volume');
+  const hasUnitConverter = hasElement('view-unit-converter');
+  const hasHeparinCalculator = hasElement('view-heparin');
+  const hasTimeCalculator = hasElement('view-timecalc');
+
   const brandHome = document.getElementById('brand-home');
   if (brandHome) {
     brandHome.addEventListener('click', (e) => {
@@ -2612,166 +2628,189 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   const now = new Date();
-  document.getElementById('year').textContent = now.getFullYear();
+  const yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = now.getFullYear();
 
   route();
 
-  // GDP event listeners
-  gdpIds.forEach(id => {
-    const x = el(id);
-    if (x) {
-      x.addEventListener('input', () => {
-        lastChangedId = id;
-        if (id === 'bsa') {
-          bsaManualOverride = true;
-          setText('bsa-hint', el('bsa').value ? 'manual' : 'auto-calc');
-        }
+  if (hasGdpCalculator) {
+    // GDP event listeners
+    gdpIds.forEach(id => {
+      const x = el(id);
+      if (x) {
+        x.addEventListener('input', () => {
+          lastChangedId = id;
+          if (id === 'bsa') {
+            bsaManualOverride = true;
+            setText('bsa-hint', el('bsa').value ? 'manual' : 'auto-calc');
+          }
+          updateGDP();
+        });
+
+        if (id === 'bsa-method') x.addEventListener('change', () => {
+          lastChangedId = id;
+          updateGDP();
+        });
+      }
+    });
+
+    ['target-260', 'target-280', 'target-300', 'target-360'].forEach(id => {
+      const btn = el(id);
+      if (btn) {
+        btn.addEventListener('click', () => {
+          targetMode = 'preset';
+          targetDO2i = parseInt(btn.dataset.value, 10) || 0;
+          updateTargetDisplay();
+          updateGDP();
+        });
+      }
+    });
+
+    const targetCustomPill = el('target-custom-pill');
+    const targetCustomInput = el('target-custom');
+    if (targetCustomPill && targetCustomInput) {
+      targetCustomPill.addEventListener('click', () => {
+        targetMode = 'custom';
+        const v = parseFloat(targetCustomInput.value) || 0;
+        targetDO2i = v > 0 ? v : 0;
+        updateTargetDisplay();
         updateGDP();
       });
-
-      if (id === 'bsa-method') x.addEventListener('change', () => {
-        lastChangedId = id;
-        updateGDP();
-      });
-    }
-  });
-
-  ['target-260', 'target-280', 'target-300', 'target-360'].forEach(id => {
-    const btn = el(id);
-    if (btn) {
-      btn.addEventListener('click', () => {
-        targetMode = 'preset';
-        targetDO2i = parseInt(btn.dataset.value, 10) || 0;
+      targetCustomInput.addEventListener('input', () => {
+        targetMode = 'custom';
+        const v = parseFloat(targetCustomInput.value) || 0;
+        targetDO2i = v > 0 ? v : 0;
         updateTargetDisplay();
         updateGDP();
       });
     }
-  });
 
-  const targetCustomPill = el('target-custom-pill');
-  const targetCustomInput = el('target-custom');
-  if (targetCustomPill && targetCustomInput) {
-    targetCustomPill.addEventListener('click', () => {
-      targetMode = 'custom';
-      const v = parseFloat(targetCustomInput.value) || 0;
-      targetDO2i = v > 0 ? v : 0;
-      updateTargetDisplay();
-      updateGDP();
-    });
-    targetCustomInput.addEventListener('input', () => {
-      targetMode = 'custom';
-      const v = parseFloat(targetCustomInput.value) || 0;
-      targetDO2i = v > 0 ? v : 0;
-      updateTargetDisplay();
-      updateGDP();
-    });
-  }
-
-  const resetBtn = el('do2i-reset');
-  if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
-      lastChangedId = null;
-      resetGDP();
-    });
-  }
-
-  // Standalone BSA event listeners
-  ['bsa_height', 'bsa_weight'].forEach(id => {
-    const x = el(id);
-    if (x) x.addEventListener('input', updateStandaloneBsa);
-  });
-  const bsaMethodStandalone = el('bsa-method-standalone');
-  if (bsaMethodStandalone) bsaMethodStandalone.addEventListener('change', updateStandaloneBsa);
-
-  updateStandaloneBsa();
-
-  // PHN pediatric echo predictor listeners
-  updatePhnMeasuredStructureOptions();
-  const phnBsaInput = el('phn-bsa-input');
-  if (phnBsaInput) phnBsaInput.addEventListener('input', updatePhnEchoPredictor);
-
-  const phnCalcBsaBtn = el('phn-calc-bsa-btn');
-  if (phnCalcBsaBtn) phnCalcBsaBtn.addEventListener('click', calculatePhnBsaFromInputs);
-
-  const phnUseBsaBtn = el('phn-use-bsa-btn');
-  if (phnUseBsaBtn) phnUseBsaBtn.addEventListener('click', usePhnCalculatedBsa);
-
-  ['phn-height-cm', 'phn-weight-kg'].forEach((id) => {
-    const node = el(id);
-    if (node) node.addEventListener('input', calculatePhnBsaFromInputs);
-  });
-
-  const phnBsaMethod = el('phn-bsa-method');
-  if (phnBsaMethod) phnBsaMethod.addEventListener('change', calculatePhnBsaFromInputs);
-
-  const phnMeasuredButton = el('phn-measured-calc-btn');
-  if (phnMeasuredButton) phnMeasuredButton.addEventListener('click', calculatePhnMeasuredZ);
-
-  updatePhnEchoPredictor();
-
-  // Predicted Hct event listeners
-  ['wt_hct', 'pre_hct', 'prime', 'fluids', 'removed', 'rbc_units', 'rbc_unit_vol', 'rbc_hct', 'ebv_coef'].forEach(id => {
-    const x = el(id);
-    if (x) x.addEventListener('input', updateHct);
-  });
-
-  const pttypeSelect = el('pttype');
-  if (pttypeSelect) {
-    pttypeSelect.addEventListener('change', () => {
-      applyDefaultEbvCoef(pttypeSelect.value);
-      updateHct();
-    });
-    applyDefaultEbvCoef(pttypeSelect.value);
-  }
-
-  // LBM event listeners (NEW)
-  ['lbm_h_cm', 'lbm_w_kg', 'lbm_sex', 'lbm_formula', 'lbm_bsa_formula'].forEach(id => {
-    const x = el(id);
-    if (x) x.addEventListener('input', updateLBM);
-  });
-  ['lbm_sex', 'lbm_formula', 'lbm_bsa_formula'].forEach(id => {
-    const x = el(id);
-    if (x) x.addEventListener('change', updateLBM);
-  });
-
-  ['priming-id', 'priming-length', 'priming-length-unit'].forEach(id => {
-    const x = el(id);
-    if (x) {
-      x.addEventListener('input', updatePrimingVolume);
-      x.addEventListener('change', updatePrimingVolume);
+    const resetBtn = el('do2i-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        lastChangedId = null;
+        resetGDP();
+      });
     }
-  });
+  }
 
-  ['unit-flow-lmin', 'unit-flow-weight'].forEach(id => {
-    const x = el(id);
-    if (x) x.addEventListener('input', updateUnitConverterFlow);
-  });
-
-  ['unit-pressure-value', 'unit-pressure-from'].forEach(id => {
-    const x = el(id);
-    if (!x) return;
-    const eventName = id === 'unit-pressure-from' ? 'change' : 'input';
-    x.addEventListener(eventName, updateUnitConverterPressure);
-  });
-
-  document.querySelectorAll('[data-unit-tab]').forEach(button => {
-    button.addEventListener('click', () => {
-      setUnitConverterTab(button.dataset.unitTab || 'flow');
+  if (hasStandaloneBsaCalculator) {
+    // Standalone BSA event listeners
+    ['bsa_height', 'bsa_weight'].forEach(id => {
+      const x = el(id);
+      if (x) x.addEventListener('input', updateStandaloneBsa);
     });
-  });
+    const bsaMethodStandalone = el('bsa-method-standalone');
+    if (bsaMethodStandalone) bsaMethodStandalone.addEventListener('change', updateStandaloneBsa);
+
+    updateStandaloneBsa();
+  }
+
+  if (hasPhnEchoCalculator) {
+    // PHN pediatric echo predictor listeners
+    updatePhnMeasuredStructureOptions();
+    const phnBsaInput = el('phn-bsa-input');
+    if (phnBsaInput) phnBsaInput.addEventListener('input', updatePhnEchoPredictor);
+
+    const phnCalcBsaBtn = el('phn-calc-bsa-btn');
+    if (phnCalcBsaBtn) phnCalcBsaBtn.addEventListener('click', calculatePhnBsaFromInputs);
+
+    const phnUseBsaBtn = el('phn-use-bsa-btn');
+    if (phnUseBsaBtn) phnUseBsaBtn.addEventListener('click', usePhnCalculatedBsa);
+
+    ['phn-height-cm', 'phn-weight-kg'].forEach((id) => {
+      const node = el(id);
+      if (node) node.addEventListener('input', calculatePhnBsaFromInputs);
+    });
+
+    const phnBsaMethod = el('phn-bsa-method');
+    if (phnBsaMethod) phnBsaMethod.addEventListener('change', calculatePhnBsaFromInputs);
+
+    const phnMeasuredButton = el('phn-measured-calc-btn');
+    if (phnMeasuredButton) phnMeasuredButton.addEventListener('click', calculatePhnMeasuredZ);
+
+    updatePhnEchoPredictor();
+  }
+
+  if (hasHctCalculator) {
+    // Predicted Hct event listeners
+    ['wt_hct', 'pre_hct', 'prime', 'fluids', 'removed', 'rbc_units', 'rbc_unit_vol', 'rbc_hct', 'ebv_coef'].forEach(id => {
+      const x = el(id);
+      if (x) x.addEventListener('input', updateHct);
+    });
+
+    const pttypeSelect = el('pttype');
+    if (pttypeSelect) {
+      pttypeSelect.addEventListener('change', () => {
+        applyDefaultEbvCoef(pttypeSelect.value);
+        updateHct();
+      });
+      applyDefaultEbvCoef(pttypeSelect.value);
+    }
+  }
+
+  if (hasLbmCalculator) {
+    // LBM event listeners
+    ['lbm_h_cm', 'lbm_w_kg', 'lbm_sex', 'lbm_formula', 'lbm_bsa_formula'].forEach(id => {
+      const x = el(id);
+      if (x) x.addEventListener('input', updateLBM);
+    });
+    ['lbm_sex', 'lbm_formula', 'lbm_bsa_formula'].forEach(id => {
+      const x = el(id);
+      if (x) x.addEventListener('change', updateLBM);
+    });
+  }
+
+  if (hasPrimingCalculator) {
+    ['priming-id', 'priming-length', 'priming-length-unit'].forEach(id => {
+      const x = el(id);
+      if (x) {
+        x.addEventListener('input', updatePrimingVolume);
+        x.addEventListener('change', updatePrimingVolume);
+      }
+    });
+  }
+
+  if (hasUnitConverter) {
+    ['unit-flow-lmin', 'unit-flow-weight'].forEach(id => {
+      const x = el(id);
+      if (x) x.addEventListener('input', updateUnitConverterFlow);
+    });
+
+    ['unit-pressure-value', 'unit-pressure-from'].forEach(id => {
+      const x = el(id);
+      if (!x) return;
+      const eventName = id === 'unit-pressure-from' ? 'change' : 'input';
+      x.addEventListener(eventName, updateUnitConverterPressure);
+    });
+
+    document.querySelectorAll('[data-unit-tab]').forEach(button => {
+      button.addEventListener('click', () => {
+        setUnitConverterTab(button.dataset.unitTab || 'flow');
+      });
+    });
+  }
 
   setupContactActions();
 
-  initTimeCalculator();
-  initHeparinManagement();
+  if (hasTimeCalculator) {
+    initTimeCalculator();
+  }
+  if (hasHeparinCalculator) {
+    initHeparinManagement();
+  }
 
-  updateTargetDisplay();
-  updateGDP();
-  updateHct();
-  updateLBM();
-  updatePrimingVolume();
-  initUnitConverterLabels();
-  updateUnitConverterFlow();
-  updateUnitConverterPressure();
-  setUnitConverterTab('flow');
+  if (hasGdpCalculator) {
+    updateTargetDisplay();
+    updateGDP();
+  }
+  if (hasHctCalculator) updateHct();
+  if (hasLbmCalculator) updateLBM();
+  if (hasPrimingCalculator) updatePrimingVolume();
+  if (hasUnitConverter) {
+    initUnitConverterLabels();
+    updateUnitConverterFlow();
+    updateUnitConverterPressure();
+    setUnitConverterTab('flow');
+  }
 });
