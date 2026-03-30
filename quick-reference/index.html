@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Perfusion Quick Reference Guide | Perfusion Tools</title>
+  <meta name="description" content="Quick-reference perfusion guide for CPB and ECMO workflows, including drug dosing, ACT targets, prime planning, and practical bedside checklists." />
+  <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
+  <link rel="canonical" href="https://www.perfusiontools.com/quick-reference" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Perfusion Quick Reference Guide | Perfusion Tools" />
+  <meta property="og:description" content="Fast-access perfusion reference content for CPB/ECMO operations and calculations." />
+  <meta property="og:url" content="https://www.perfusiontools.com/quick-reference" />
+  <meta name="twitter:title" content="Perfusion Quick Reference Guide | Perfusion Tools" />
+  <meta name="twitter:description" content="Fast-access perfusion reference content for CPB/ECMO operations and calculations." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0f4f8', 100: '#d9e2ec', 200: '#bcccdc', 300: '#9fb3c8', 400: '#829ab1',
+              500: '#627d98', 600: '#486581', 700: '#334e68', 800: '#243b53', 900: '#0f172a', 950: '#020617'
+            },
+            accent: { 400: '#22d3ee', 500: '#06b6d4', 600: '#0891b2' }
+          },
+          boxShadow: {
+            card: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            glow: '0 0 15px rgba(34, 211, 238, 0.3)'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root { --header-height: 60px; --bottom-nav-height: 64px; }
+    @keyframes pulse-flow {
+      0% { opacity: 0.6; transform: scale(0.95); }
+      50% { opacity: 1; transform: scale(1.05); }
+      100% { opacity: 0.6; transform: scale(0.95); }
+    }
+    .animate-pulse-flow { animation: pulse-flow 3s infinite ease-in-out; }
+  </style>
+
+  <script>
+    const routeMeta = {
+      '/': {
+        title: 'Perfusion Quick Reference Guide | Perfusion Tools',
+        h1: 'Perfusion Quick Reference Guide',
+        description: 'Quick-reference perfusion guide for CPB and ECMO workflows, including drug dosing, ACT targets, prime planning, and practical bedside checklists.',
+        canonicalPath: '/quick-reference'
+      },
+      '/quick-reference': {
+        title: 'Perfusion Quick Reference Guide | Perfusion Tools',
+        h1: 'Perfusion Quick Reference Guide',
+        description: 'Quick-reference perfusion guide for CPB and ECMO workflows, including drug dosing, ACT targets, prime planning, and practical bedside checklists.',
+        headingDescription: 'Browse concise CPB and ECMO bedside reference cards in a single quick-access page.',
+        canonicalPath: '/quick-reference'
+      }
+    };
+
+    function normalizeRoute(rawRoute) {
+      if (!rawRoute) return '/';
+      const cleaned = rawRoute.replace('#', '').trim();
+      if (!cleaned || cleaned === '/' || cleaned === '/home') return '/';
+      return cleaned.startsWith('/') ? cleaned : `/${cleaned}`;
+    }
+
+    function applyRouteMeta(rawRoute) {
+      const path = normalizeRoute(rawRoute || window.location.pathname || '/quick-reference');
+      const meta = routeMeta[path] || routeMeta['/quick-reference'];
+      document.title = meta.title;
+      const descTag = document.querySelector('meta[name="description"]');
+      if (descTag) descTag.setAttribute('content', meta.description);
+      const headingEl = document.getElementById('page-heading');
+      if (headingEl) headingEl.textContent = meta.h1;
+      const subtitleEl = document.getElementById('page-subtitle');
+      if (subtitleEl) subtitleEl.textContent = meta.headingDescription || meta.description;
+      const canonicalTag = document.querySelector('link[rel="canonical"]');
+      if (canonicalTag) canonicalTag.setAttribute('href', `https://www.perfusiontools.com${meta.canonicalPath || '/quick-reference'}`);
+      return path;
+    }
+
+    window.routeMeta = routeMeta;
+    window.normalizeRoute = normalizeRoute;
+    window.applyRouteMeta = applyRouteMeta;
+    window.addEventListener('load', () => applyRouteMeta('/quick-reference'));
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0">
+  <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 h-[var(--header-height)] flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3 select-none cursor-pointer hover:opacity-80 transition-opacity">
+        <div class="relative w-8 h-8 flex items-center justify-center">
+          <div class="absolute inset-0 rounded-full border-2 border-accent-500 opacity-80"></div>
+          <div class="w-4 h-4 rounded-full bg-gradient-to-br from-accent-400 to-blue-600 shadow-glow animate-pulse-flow"></div>
+        </div>
+        <div class="text-lg font-bold tracking-tight">Perfusion <span class="text-accent-400">Tools</span></div>
+      </a>
+      <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-primary-800 transition-colors text-slate-600 dark:text-slate-300" aria-label="Toggle Dark Mode">
+        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+        <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" /></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="pt-[var(--header-height)] max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr] gap-0 min-h-screen">
+    <aside class="hidden md:block border-r border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/50 sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] p-4 overflow-y-auto">
+      <div class="space-y-1">
+        <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-3">Calculators</div>
+        <a href="/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Home</a>
+        <a href="/bsa" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">BSA Calculator</a>
+        <a href="/phn-echo" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Z-score Calculator</a>
+        <a href="/gdp" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">GDP Calculator</a>
+        <a href="/heparin" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Heparin Management</a>
+        <a href="/predicted-hct" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Predicted Hematocrit</a>
+        <a href="/lbm" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Lean Body Mass</a>
+        <a href="/priming-volume" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Priming Volume</a>
+        <a href="/timecalc" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Time Calculator</a>
+        <a href="/unit-converter" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Unit Converter</a>
+        <a href="/quick-reference" id="side-quick-reference" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-100 text-accent-600 dark:bg-primary-800 dark:text-accent-400">Quick Reference</a>
+      </div>
+    </aside>
+
+    <main class="p-4 md:p-8 max-w-3xl mx-auto w-full space-y-8">
+      <section class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
+        <div class="p-6 space-y-3">
+          <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Perfusion Quick Reference Guide</h1>
+          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Browse concise CPB and ECMO bedside reference cards in a single quick-access page.</p>
+        </div>
+      </section>
+
+      <section id="view-quick-reference" class="animate-in fade-in duration-300">
+        <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 p-6 space-y-6">
+          <div class="space-y-2">
+            <h2 class="text-xl font-semibold tracking-tight text-primary-900 dark:text-white">Quick Reference</h2>
+            <p class="text-sm text-slate-600 dark:text-slate-300">Fast intraoperative lookup (reference only)</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Follow institutional protocols and patient monitoring; educational use only.</p>
+          </div>
+
+          <div class="space-y-4">
+            <div id="quick-reference-tabs" role="tablist" aria-label="Quick reference tabs" class="flex flex-wrap gap-2"></div>
+            <div id="quick-reference-panels"></div>
+          </div>
+
+          <details class="mt-4 group">
+            <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+              <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology
+            </summary>
+            <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Quick reference guidance</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>These cards provide rapid lookup values for intraoperative use.</li>
+                  <li>Ranges vary by protocol, patient physiology, and monitoring targets.</li>
+                  <li>Always integrate pressure, NIRS/EEG, and lab trends when titrating flow.</li>
+                  <li>This tool is not a medical device and does not replace clinical judgment.</li>
+                  <li>Content is data-driven for easy updates and includes last-reviewed dates.</li>
+                  <li>Educational use only; follow institutional and surgeon-directed protocols.</li>
+                </ul>
+              </div>
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">ACP right radial pressure rationale</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Most studies and protocols (Annals of Thoracic Surgery, EJCTS, AmSECT) use right radial artery pressure as a surrogate for cerebral perfusion pressure.</li>
+                  <li>Unilateral ACP (often via innominate or right axillary/subclavian) directly supplies the right carotid/right brain.</li>
+                  <li>Consensus target: adjust flow to keep right radial pressure ~40–60 mmHg (or 40–70).</li>
+                  <li>Left radial artery pressure can be lower due to collateral flow and may under-represent left-sided perfusion during unilateral ACP.</li>
+                </ul>
+              </div>
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">ACP detail (adult reference)</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Flow rate: 8–12 mL/kg/min (≈0.6 mL/min/g cerebral tissue in some references).</li>
+                  <li>Perfusion pressure: 40–60 mmHg (right radial artery reference).</li>
+                  <li>Temperature: 23–28°C moderate hypothermia.</li>
+                  <li>pH management: Alpha-stat to support cerebral autoregulation.</li>
+                  <li>Duration: up to ~80 min reported in selected/elective cases; varies by center, monitoring, and bilateral ACP—if &gt;40–50 min, consider bilateral ACP.</li>
+                  <li>Monitoring: NIRS/EEG with baseline/trend and bilateral symmetry emphasis.</li>
+                </ul>
+              </div>
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">ACP detail (pediatric reference)</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Flow rate: 40–80 mL/kg/min (reference ~50–64); neonates ~46 ± 6 mL/kg/min.</li>
+                  <li>Perfusion pressure: titrate (often 20–25 mmHg reported; higher MAP targets used in some centers).</li>
+                  <li>Perfusate temp: 18–25°C; many ACP programs favor ~25°C moderate hypothermia.</li>
+                  <li>pH management: pH-stat is frequently used for neonatal/infant cerebral protection during hypothermia.</li>
+                  <li>Duration: ~20–48 min (reference); prolonged times reported in selected cases—if longer expected, avoid DHCA when possible and plan ACP strategy.</li>
+                  <li>Monitoring: Bilateral NIRS (trend-focused) ± EEG; TCD optional (availability dependent).</li>
+                  <li>Hct: neonatal/infant arch ACP + hypothermia commonly uses <strong>~30–35%</strong> as a reference range.</li>
+                  <li>Higher Hct raises O₂ content but increases viscosity—adjust with pressure/flow plus NIRS/EEG response and follow institutional protocols.</li>
+                </ul>
+              </div>
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">RCP detail (reference)</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>SVC pressure: 20–30 mmHg (target 20–25); excessive pressure risks brain edema.</li>
+                  <li>Flow: pressure-driven; 300–500 mL/min commonly cited to maintain SVC pressure &lt;25.</li>
+                  <li>Monitoring: NIRS/EEG with baseline/trend focus and bilateral symmetry.</li>
+                  <li>TCD can be added to track cerebral blood flow velocity.</li>
+                </ul>
+              </div>
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">HCA safety-time notes</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li>Varies by center, patient factors (age, comorbidities), neuromonitoring (NIRS baseline/trend with EEG), and use of ACP/RCP.</li>
+                  <li>Always minimize circulatory arrest time.</li>
+                  <li>Cooling time: at least 20–50 min; Rewarming: ≤0.5°C/min recommended.</li>
+                  <li>Reference: 2024 EACTS/EACTAIC/EBCP Guidelines (conservative estimates).</li>
+                  <li>Follow institutional protocols and patient monitoring; educational use only.</li>
+                </ul>
+              </div>
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">MUF detail (clinical reference)</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li><strong>Role / Indication:</strong> Pediatric &amp; congenital: Recommended when no contraindications exist. Adult: Selective use for blood conservation and volume management.</li>
+                  <li><strong>Flow rate (typical practice):</strong> Pediatric: 10–20 mL/kg/min. Adult: 150–300 mL/min. Neonates/low-weight infants: Avoid abrupt flow changes; titrate carefully to monitoring trends.</li>
+                  <li><strong>Monitoring / Titration (practical):</strong> Titrate MUF to NIRS + CVP + arterial pressure trends and overall hemodynamics.</li>
+                  <li><strong>Core safety rule (critical):</strong> Maintain positive arterial line pressure at all times to reduce air entrainment/embolism risk. Practical controls may include shunt/clamp management and centrifugal pump RPM adjustments to preserve a favorable pressure gradient.</li>
+                  <li><strong>Duration / Endpoint:</strong> Typical duration: 10–20 min (adult commonly ~10–15 min). Continue until target Hct and/or desired net fluid removal is achieved; adjust to hemodynamics and monitoring trends. Suggested Hct endpoints (reference): Pediatric ≥35–40%; Adult ≥30–35%.</li>
+                  <li><strong>Stop criteria (immediate):</strong> Air detected / air entrainment risk. Inability to maintain positive arterial line pressure. Hemodynamic instability.</li>
+                  <li><strong>Anticoagulation:</strong> Maintain adequate anticoagulation throughout MUF (commonly with ACT monitoring).</li>
+                  <li><strong>Inflammation mediator removal (current perspective):</strong> MUF may reduce circulating cytokines (e.g., IL-6, IL-8), but evidence for meaningful improvement in hard clinical outcomes is limited. Practical emphasis remains fluid removal + hemoconcentration.</li>
+                  <li><strong>Edema / neurologic note (pediatric):</strong> Supports reduction of generalized edema and may reduce cerebral water content, potentially benefiting neurologic recovery.</li>
+                  <li><strong>Temperature management:</strong> Blood can cool in the external MUF loop; for runs &gt;~10 min, monitor core temperature and consider using a heat exchanger to prevent unintended hypothermia.</li>
+                  <li><strong>References:</strong> AmSECT Pediatric &amp; Congenital Standards and Guidelines (2019, section 16.1). 2024 EACTS/EACTAIC/EBCP Adult CPB Guidelines (blood conservation/ultrafiltration-related sections).</li>
+                </ul>
+              </div>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <section id="view-info" class="hidden animate-in fade-in duration-300">
+        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
+          <div class="p-6 space-y-3 border-b border-slate-100 dark:border-primary-800 bg-slate-50/50 dark:bg-primary-800/30">
+            <p class="text-[11px] uppercase tracking-wider text-accent-500 font-semibold">About Perfusion Tools</p>
+            <h2 class="text-xl font-bold text-primary-900 dark:text-white">About Us</h2>
+            <p class="text-sm text-slate-600 dark:text-slate-300">Perfusion Tools is a lightweight, browser-based collection of calculators for perfusionists working in CPB and ECMO. We focus on transparent formulas, educational annotations, and privacy-friendly design that keeps all calculations on your device.</p>
+          </div>
+          <div class="p-6 space-y-4 text-sm text-slate-700 dark:text-slate-300">
+            <div class="grid md:grid-cols-2 gap-3">
+              <div class="bg-slate-50 dark:bg-primary-800/50 border border-slate-200 dark:border-primary-800 rounded-xl p-4 space-y-1">
+                <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Mission</p>
+                <p>Provide evidence-based perfusion calculators that respect clinician privacy and align with contemporary CPB/ECMO best practices.</p>
+              </div>
+              <div class="bg-slate-50 dark:bg-primary-800/50 border border-slate-200 dark:border-primary-800 rounded-xl p-4 space-y-1">
+                <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">What we cover</p>
+                <p>BSA, GDP/DO₂i, heparin dosing, predicted hemodilution, lean body mass, and case timing tools with concise clinical context.</p>
+              </div>
+            </div>
+            <div class="bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-xl p-4 space-y-2">
+              <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Questions or feedback?</p>
+              <p>We welcome suggestions from perfusion teams. Visit the FAQ for quick answers or head to the contact form to send a note.</p>
+              <div class="flex flex-wrap gap-2">
+                <a href="/faq" data-route class="px-4 py-2 rounded-lg bg-primary-900 text-white text-sm font-semibold hover:bg-primary-800 transition-colors dark:bg-accent-600 dark:hover:bg-accent-500">View FAQ</a>
+                <a href="/contact" data-route class="px-4 py-2 rounded-lg bg-slate-100 text-primary-900 text-sm font-semibold hover:bg-slate-200 transition-colors dark:bg-primary-800 dark:text-slate-100 dark:hover:bg-primary-700">Contact</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="hidden md:block mt-10 border-t border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/90">
+    <div class="max-w-7xl mx-auto px-4 py-8 text-sm text-slate-500 dark:text-slate-400 flex items-center justify-between gap-3">
+      <p>© <span id="year"></span> Perfusion Tools. Educational use for healthcare professionals.</p>
+      <nav class="flex gap-4">
+        <a href="/quick-reference" class="hover:text-accent-500 transition-colors">Quick Reference</a>
+        <a href="/privacy" class="hover:text-accent-500 transition-colors">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="/main.js"></script>
+</body>
+</html>

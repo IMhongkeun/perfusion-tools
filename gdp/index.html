@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Oxygen Delivery (DO₂) Calculator - Goal-Directed Perfusion (GDP) | Perfusion Tools</title>
+  <meta name="description" content="Oxygen Delivery (DO₂) and Goal-Directed Perfusion (GDP) calculator for CPB and ECMO. Set your target DO₂i, evaluate current pump flow adequacy in real time, and optimize oxygen delivery during perfusion. A practical tool for perfusionists." />
+  <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
+  <link rel="canonical" href="https://www.perfusiontools.com/gdp" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Oxygen Delivery (DO₂) Calculator - Goal-Directed Perfusion (GDP) | Perfusion Tools" />
+  <meta property="og:description" content="Calculate DO₂i targets and flow adequacy for goal-directed perfusion during CPB and ECMO." />
+  <meta property="og:url" content="https://www.perfusiontools.com/gdp" />
+  <meta name="twitter:title" content="Oxygen Delivery (DO₂) Calculator - Goal-Directed Perfusion (GDP) | Perfusion Tools" />
+  <meta name="twitter:description" content="Calculate DO₂i targets and flow adequacy for goal-directed perfusion during CPB and ECMO." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0f4f8', 100: '#d9e2ec', 200: '#bcccdc', 300: '#9fb3c8', 400: '#829ab1',
+              500: '#627d98', 600: '#486581', 700: '#334e68', 800: '#243b53', 900: '#0f172a', 950: '#020617'
+            },
+            accent: { 400: '#22d3ee', 500: '#06b6d4', 600: '#0891b2' }
+          },
+          boxShadow: {
+            card: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            glow: '0 0 15px rgba(34, 211, 238, 0.3)'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root { --header-height: 60px; --bottom-nav-height: 64px; }
+    input[type=number] { appearance: textfield; }
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    @keyframes pulse-flow {
+      0% { opacity: 0.6; transform: scale(0.95); }
+      50% { opacity: 1; transform: scale(1.05); }
+      100% { opacity: 0.6; transform: scale(0.95); }
+    }
+    .animate-pulse-flow { animation: pulse-flow 3s infinite ease-in-out; }
+  </style>
+
+  <script>
+    const routeMeta = {
+      '/': {
+        title: 'Oxygen Delivery (DO₂) Calculator - Goal-Directed Perfusion (GDP) | Perfusion Tools',
+        h1: 'Oxygen Delivery (DO₂) Calculator for Goal-Directed Perfusion',
+        description: 'Oxygen Delivery (DO₂) and Goal-Directed Perfusion (GDP) calculator for CPB and ECMO. Set your target DO₂i, evaluate current pump flow adequacy in real time, and optimize oxygen delivery during perfusion. A practical tool for perfusionists.',
+        canonicalPath: '/gdp'
+      },
+      '/gdp': {
+        title: 'Oxygen Delivery (DO₂) Calculator - Goal-Directed Perfusion (GDP) | Perfusion Tools',
+        h1: 'Oxygen Delivery (DO₂) Calculator for Goal-Directed Perfusion',
+        description: 'Oxygen Delivery (DO₂) and Goal-Directed Perfusion (GDP) calculator for CPB and ECMO. Set your target DO₂i, evaluate current pump flow adequacy in real time, and optimize oxygen delivery during perfusion. A practical tool for perfusionists.',
+        headingDescription: 'Set a DO₂i target and evaluate whether current flow is adequate using BSA and arterial oxygen content inputs.',
+        canonicalPath: '/gdp'
+      }
+    };
+
+    function normalizeRoute(rawRoute) {
+      if (!rawRoute) return '/';
+      const cleaned = rawRoute.replace('#', '').trim();
+      if (!cleaned || cleaned === '/' || cleaned === '/home') return '/';
+      return cleaned.startsWith('/') ? cleaned : `/${cleaned}`;
+    }
+
+    function applyRouteMeta(rawRoute) {
+      const path = normalizeRoute(rawRoute || window.location.pathname || '/gdp');
+      const meta = routeMeta[path] || routeMeta['/gdp'];
+      document.title = meta.title;
+
+      const descTag = document.querySelector('meta[name="description"]');
+      if (descTag) descTag.setAttribute('content', meta.description);
+
+      const headingEl = document.getElementById('page-heading');
+      if (headingEl) headingEl.textContent = meta.h1;
+
+      const subtitleEl = document.getElementById('page-subtitle');
+      if (subtitleEl) subtitleEl.textContent = meta.headingDescription || meta.description;
+
+      const canonicalTag = document.querySelector('link[rel="canonical"]');
+      if (canonicalTag) canonicalTag.setAttribute('href', `https://www.perfusiontools.com${meta.canonicalPath || '/gdp'}`);
+
+      return path;
+    }
+
+    window.routeMeta = routeMeta;
+    window.normalizeRoute = normalizeRoute;
+    window.applyRouteMeta = applyRouteMeta;
+    window.addEventListener('load', () => applyRouteMeta('/gdp'));
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0">
+  <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 h-[var(--header-height)] flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3 select-none cursor-pointer hover:opacity-80 transition-opacity">
+        <div class="relative w-8 h-8 flex items-center justify-center">
+          <div class="absolute inset-0 rounded-full border-2 border-accent-500 opacity-80"></div>
+          <div class="w-4 h-4 rounded-full bg-gradient-to-br from-accent-400 to-blue-600 shadow-glow animate-pulse-flow"></div>
+        </div>
+        <div class="text-lg font-bold tracking-tight">Perfusion <span class="text-accent-400">Tools</span></div>
+      </a>
+      <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-primary-800 transition-colors text-slate-600 dark:text-slate-300" aria-label="Toggle Dark Mode">
+        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+        <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" /></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="pt-[var(--header-height)] max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr] gap-0 min-h-screen">
+    <aside class="hidden md:block border-r border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/50 sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] p-4 overflow-y-auto">
+      <div class="space-y-1">
+        <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-3">Calculators</div>
+        <a href="/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Home</a>
+        <a href="/bsa" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">BSA Calculator</a>
+        <a href="/phn-echo" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Z-score Calculator</a>
+        <a href="/gdp" id="side-do2i" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-100 text-accent-600 dark:bg-primary-800 dark:text-accent-400">GDP Calculator</a>
+        <a href="/heparin" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Heparin Management</a>
+        <a href="/predicted-hct" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Predicted Hematocrit</a>
+        <a href="/lbm" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Lean Body Mass</a>
+        <a href="/priming-volume" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Priming Volume</a>
+        <a href="/timecalc" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Time Calculator</a>
+      </div>
+    </aside>
+
+    <main class="p-4 md:p-8 max-w-3xl mx-auto w-full space-y-8">
+      <section class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
+        <div class="p-6 space-y-3">
+          <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Oxygen Delivery (DO₂) Calculator for Goal-Directed Perfusion</h1>
+          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Set a DO₂i target and evaluate whether current flow is adequate using BSA and arterial oxygen content inputs.</p>
+        </div>
+      </section>
+
+      <section id="view-do2i" class="animate-in fade-in duration-300">
+        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
+          <div class="p-6 border-b border-slate-100 dark:border-primary-800 flex flex-wrap items-center justify-between gap-4 bg-slate-50/50 dark:bg-primary-800/30">
+            <div>
+              <p class="text-[11px] uppercase tracking-widest text-accent-500 font-semibold">Goal-Directed Perfusion</p>
+              <h2 class="text-xl font-bold text-primary-900 dark:text-white">GDP / DO₂i Calculator</h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Set a target DO₂i and evaluate whether current pump flow is adequate.</p>
+            </div>
+
+            <button id="do2i-reset" class="p-2 text-slate-400 hover:text-primary-900 dark:hover:text-accent-400 transition-colors" title="Reset Inputs">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="p-6 space-y-6">
+            <div class="text-sm text-slate-600 dark:text-slate-300 rounded-xl bg-slate-50 dark:bg-primary-800/40 border border-slate-200 dark:border-primary-700 p-4">
+              Goal-Directed Perfusion uses indexed oxygen delivery to guide flow strategy during CPB/ECMO. This tool estimates CaO₂, required flow at the selected DO₂i target, and current adequacy status from your live inputs.
+            </div>
+
+            <div class="bg-slate-50 dark:bg-primary-800/50 border border-slate-100 dark:border-primary-700/50 rounded-xl p-4 space-y-3">
+              <div class="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <p class="text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">Target DO₂i</p>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Select a preset goal or enter a custom value.</p>
+                </div>
+                <div id="target-pill-row" class="flex flex-wrap items-center gap-2">
+                  <button id="target-260" data-value="260" class="px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors">260 (min)</button>
+                  <button id="target-280" data-value="280" class="px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors">280 (standard)</button>
+                  <button id="target-300" data-value="300" class="px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors">300 (high-normal)</button>
+                  <button id="target-360" data-value="360" class="px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors">360 (pediatric)</button>
+                  <div class="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-semibold transition-colors cursor-pointer bg-white dark:bg-primary-800 border-slate-200 dark:border-primary-700" id="target-custom-pill">
+                    <span>Custom</span>
+                    <input id="target-custom" type="number" min="1" step="1" placeholder="—" class="w-20 bg-transparent border-0 focus:ring-0 focus:outline-none text-right text-sm" aria-label="Custom DO2i" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-6">
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Height (cm)</label>
+                <input id="h_cm" type="number" step="0.1" placeholder="170" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Weight (kg)</label>
+                <input id="w_kg" type="number" step="0.1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+              </div>
+
+              <div class="sm:col-span-2 grid grid-cols-[1fr_140px] gap-4 items-end bg-slate-50 dark:bg-primary-800/50 p-4 rounded-xl border border-slate-100 dark:border-primary-700/50">
+                <div class="space-y-1">
+                  <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide flex justify-between items-center">
+                    <span class="flex items-center gap-1">BSA (m²) <span class="text-red-500">*</span></span>
+                    <span id="bsa-hint" class="text-[10px] font-normal text-slate-400 lowercase">auto-calc</span>
+                  </label>
+                  <input id="bsa" type="number" step="0.01" placeholder="Auto from H/W or enter" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
+                </div>
+                <div class="space-y-1">
+                  <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Formula</label>
+                  <select id="bsa-method" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
+                    <option value="Mosteller">Mosteller</option>
+                    <option value="DuBois">DuBois</option>
+                    <option value="Haycock">Haycock</option>
+                    <option value="Boyd">Boyd</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Hemoglobin (g/dL) <span class="text-red-500">*</span></label>
+                <input id="hb" type="number" step="0.1" placeholder="10" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">PaO<sub>2</sub> (mmHg) <span class="text-red-500">*</span></label>
+                <input id="pao2" type="number" step="1" placeholder="150" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">SaO<sub>2</sub> (%) <span class="text-red-500">*</span></label>
+                <input id="sao2" type="number" step="0.1" placeholder="100" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+              </div>
+
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Current pump flow (L/min)</label>
+                <input id="flow" type="number" step="0.01" placeholder="4.6" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+              </div>
+              <div class="space-y-1 opacity-80">
+                <label class="text-xs font-semibold text-slate-400 dark:text-slate-500 tracking-wide">Calculated CaO<sub>2</sub> (mL/dL)</label>
+                <input id="cao2" disabled class="w-full bg-slate-100 dark:bg-primary-950 border-0 rounded-xl px-4 py-2.5 text-slate-600 dark:text-slate-400 font-mono text-sm" />
+              </div>
+            </div>
+
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">* Required for DO₂i and target flow calculation. Current flow is optional.</p>
+            <p id="gdp-warning" class="text-xs text-red-500 hidden">Enter required fields.</p>
+
+            <div class="bg-primary-900 dark:bg-black/20 p-6 text-white rounded-xl relative overflow-hidden">
+              <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-accent-500 rounded-full opacity-10 blur-3xl"></div>
+              <div class="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-900 to-primary-800 opacity-70"></div>
+              <div class="relative z-10 space-y-5">
+                <div class="grid md:grid-cols-3 gap-4">
+                  <div class="bg-white/5 rounded-lg p-4 border border-white/10 shadow-sm">
+                    <div class="text-[11px] uppercase tracking-wider text-slate-300">Required pump flow</div>
+                    <div id="required-flow" class="text-2xl font-bold mt-1">—</div>
+                  </div>
+                  <div class="bg-white/5 rounded-lg p-4 border border-white/10 shadow-sm">
+                    <div class="text-[11px] uppercase tracking-wider text-slate-300">Current DO₂i</div>
+                    <div id="current-do2i" class="text-2xl font-bold mt-1">—</div>
+                  </div>
+                  <div class="bg-white/5 rounded-lg p-4 border border-white/10 shadow-sm">
+                    <div class="text-[11px] uppercase tracking-wider text-slate-300">Status</div>
+                    <div id="gdp-status-text" class="text-lg font-semibold mt-1">Awaiting data</div>
+                    <p id="gdp-status-detail" class="text-xs text-slate-200 mt-1">Provide required inputs to evaluate target vs. current flow.</p>
+                  </div>
+                </div>
+
+                <div class="space-y-2">
+                  <div class="h-3 w-full bg-white/10 rounded-full overflow-hidden shadow-inner">
+                    <div id="gdp-gauge" class="h-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(255,255,255,0.3)] from-accent-600 to-accent-400" style="width: 0%;"></div>
+                  </div>
+                  <div id="gdp-gauge-msg" class="text-xs text-slate-200">Enter current flow to visualize DO₂i vs. target</div>
+                  <div id="ci-comment" class="text-[11px] text-slate-300"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 dark:bg-primary-900/30 rounded-xl border border-slate-100 dark:border-primary-700/50 p-4 space-y-2 text-xs text-slate-600 dark:text-slate-300">
+              <p>This calculator uses: DO₂i = (Flow ÷ BSA) × CaO₂ × 10. Required flow = (Target DO₂i × BSA) ÷ (CaO₂ × 10).</p>
+              <p>Interpret with lactate trend, SvO₂/ScvO₂, perfusion pressure, and institutional flow limits rather than formula outputs alone.</p>
+            </div>
+          </div>
+
+          <div class="px-6 pb-6">
+            <details class="mt-2 group">
+              <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
+                <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology & clinical notes
+              </summary>
+              <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
+                <p><strong>Target strategy:</strong> Normothermic adult programs often target DO₂i at least 280–300 mL/min/m²; pediatric targets can be higher based on institutional policy.</p>
+                <p><strong>Flow guidance:</strong> Required flow is an estimate from current Hb, SaO₂, PaO₂, and BSA. Clinical flow should still respect pressure, venous drainage, cannula, and surgical constraints.</p>
+                <p><strong>Limitations:</strong> This model assumes steady-state mixing and does not account for rapid shifts in oxygen extraction, blood loss, retransfusion, or temperature effects.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="hidden md:block mt-10 border-t border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/90">
+    <div class="max-w-7xl mx-auto px-4 py-8 text-sm text-slate-500 dark:text-slate-400 flex items-center justify-between gap-3">
+      <p>© <span id="year"></span> Perfusion Tools. Educational use for healthcare professionals.</p>
+      <nav class="flex gap-4">
+        <a href="/quick-reference" class="hover:text-accent-500 transition-colors">Quick Reference</a>
+        <a href="/privacy" class="hover:text-accent-500 transition-colors">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="/main.js"></script>
+</body>
+</html>

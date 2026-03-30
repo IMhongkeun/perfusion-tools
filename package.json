@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Professional perfusion calculators for CPB",
   "scripts": {
-    "build": "mkdir -p dist && cp index.html dist/ && cp main.js dist/",
+    "build": "mkdir -p dist/bsa dist/heparin dist/phn-echo dist/gdp dist/predicted-hct dist/lbm dist/priming-volume dist/timecalc dist/unit-converter dist/quick-reference && cp index.html dist/ && cp main.js dist/ && cp _redirects dist/ && cp bsa/index.html dist/bsa/ && cp heparin/index.html dist/heparin/ && cp phn-echo/index.html dist/phn-echo/ && cp gdp/index.html dist/gdp/ && cp predicted-hct/index.html dist/predicted-hct/ && cp lbm/index.html dist/lbm/ && cp priming-volume/index.html dist/priming-volume/ && cp timecalc/index.html dist/timecalc/ && cp unit-converter/index.html dist/unit-converter/ && cp quick-reference/index.html dist/quick-reference/",
     "dev": "echo 'Open index.html in browser'",
     "start": "echo 'Open index.html in browser'",
     "test": "node tests/phn.test.js"
