@@ -39,8 +39,8 @@ function updateThemeUI(isDark) {
 }
 
 const savedTheme = localStorage.getItem('theme');
-const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-updateThemeUI(savedTheme === 'dark' || (!savedTheme && prefersDark));
+const initialIsDark = savedTheme === 'dark';
+updateThemeUI(initialIsDark);
 
 themeToggle.addEventListener('click', () => {
   const isDark = html.classList.contains('dark');
