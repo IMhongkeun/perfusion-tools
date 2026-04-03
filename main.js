@@ -1272,12 +1272,10 @@ function initTimeCalculator() {
 // -----------------------------
 function setupContactActions() {
   const email = 'perfusiontools@gmail.com';
-  const mailLink = el('contact-mailto');
   const copyBtn = el('contact-copy');
   const toast = el('contact-toast');
   const emailText = el('contact-email');
 
-  if (mailLink) mailLink.href = `mailto:${email}`;
   if (emailText) emailText.textContent = email;
 
   const showToast = (message) => {
