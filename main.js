@@ -2589,20 +2589,40 @@ function route() {
 // -----------------------------
 // Event Wiring
 // -----------------------------
-function forceScrollTop() {
-  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+function resetScrollToTop() {
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   document.documentElement.scrollTop = 0;
   document.body.scrollTop = 0;
+  setTimeout(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, 20);
 }
 
-window.addEventListener('load', forceScrollTop);
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
+window.addEventListener('load', resetScrollToTop);
+window.addEventListener('pageshow', resetScrollToTop);
 window.addEventListener('popstate', () => {
   route();
-  forceScrollTop();
+  resetScrollToTop();
 });
 window.addEventListener('DOMContentLoaded', () => {
-  forceScrollTop();
-  setTimeout(forceScrollTop, 10);
+  document.documentElement.style.scrollPaddingTop = '0px';
+  resetScrollToTop();
+  setTimeout(resetScrollToTop, 10);
+
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (!link) return;
+    const href = link.getAttribute('href') || '';
+    if (link.classList.contains('sidebar-link') || href.startsWith('/')) {
+      setTimeout(resetScrollToTop, 50);
+    }
+  });
 
   const hasElement = (id) => !!el(id);
   const hasGdpCalculator = hasElement('view-do2i');
