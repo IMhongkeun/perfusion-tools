@@ -181,6 +181,7 @@ function updateStandaloneBsa() {
   const h = num('bsa_height');
   const w = num('bsa_weight');
   const method = el('bsa-method-standalone') ? el('bsa-method-standalone').value : 'Mosteller';
+  const formulaCompareEl = el('bsa-formula-compare');
 
   const v = computeBSA(h, w, method);
   const resultEl = el('bsa-result');
@@ -193,6 +194,36 @@ function updateStandaloneBsa() {
   }
   const methodActive = el('bsa-method-active');
   if (methodActive) methodActive.textContent = method;
+
+  if (formulaCompareEl) {
+    if (!v) {
+      formulaCompareEl.innerHTML = '<p class="text-xs text-slate-500 dark:text-slate-400">Enter height and weight to compare formulas.</p>';
+    } else {
+      const allMethods = ['Mosteller', 'DuBois', 'Haycock', 'Boyd'];
+      const rows = allMethods
+        .filter((formula) => formula !== method)
+        .map((formula) => ({ formula, bsa: computeBSA(h, w, formula) }));
+
+      const tableRows = rows.map((row) => `
+        <tr class="border-t border-slate-100 dark:border-primary-700/60">
+          <td class="py-1.5 pr-2 text-slate-600 dark:text-slate-300">${row.formula}</td>
+          <td class="py-1.5 text-right font-semibold text-primary-900 dark:text-white">${row.bsa.toFixed(3)} m²</td>
+        </tr>
+      `).join('');
+
+      formulaCompareEl.innerHTML = `
+        <table class="w-full text-xs">
+          <thead>
+            <tr class="text-slate-500 dark:text-slate-400">
+              <th class="text-left font-semibold py-1">Formula</th>
+              <th class="text-right font-semibold py-1">BSA</th>
+            </tr>
+          </thead>
+          <tbody>${tableRows}</tbody>
+        </table>
+      `;
+    }
+  }
 
   updateBsaFlowList(v);
 }
