@@ -2291,6 +2291,11 @@ function setPhnError(message) {
   box.classList.remove('hidden');
 }
 
+function formatPhnNumericText(text) {
+  if (!text) return '';
+  return String(text).replace(/(\d+(?:\.\d+)?(?:[–-]\d+(?:\.\d+)?)?)/g, '<span class="result-number">$1</span>');
+}
+
 function renderPhnWarnings(warnings) {
   const wrap = el('phn-warnings');
   if (!wrap) return;
@@ -2298,7 +2303,7 @@ function renderPhnWarnings(warnings) {
   (warnings || []).forEach((text) => {
     const item = document.createElement('div');
     item.className = 'rounded-lg border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 px-3 py-2 text-xs text-amber-800 dark:text-amber-200';
-    item.textContent = text;
+    item.innerHTML = formatPhnNumericText(text);
     wrap.appendChild(item);
   });
 }
@@ -2319,16 +2324,16 @@ function renderPhnRows(rows) {
     line.innerHTML = `
       <div class="text-primary-900 dark:text-white font-medium text-xs leading-tight">${row.coeff.label}</div>
       <div class="flex items-baseline justify-center gap-1 text-primary-900 dark:text-slate-100">
-        <span class="phn-number">${zNeg2DisplayText}</span>
-        <span class="text-sm font-semibold">mm</span>
+        <span class="result-number">${zNeg2DisplayText}</span>
+        <span class="result-unit text-sm">mm</span>
       </div>
-      <div class="flex items-baseline justify-center gap-1 font-bold text-emerald-600 dark:text-emerald-300">
-        <span class="phn-number">${z0DisplayText}</span>
-        <span class="text-sm font-semibold">mm</span>
+      <div class="flex items-baseline justify-center gap-1 font-semibold text-emerald-600 dark:text-emerald-300">
+        <span class="result-number">${z0DisplayText}</span>
+        <span class="result-unit text-sm">mm</span>
       </div>
       <div class="flex items-baseline justify-center gap-1 text-primary-900 dark:text-slate-100">
-        <span class="phn-number">${zPos2DisplayText}</span>
-        <span class="text-sm font-semibold">mm</span>
+        <span class="result-number">${zPos2DisplayText}</span>
+        <span class="result-unit text-sm">mm</span>
       </div>
     `;
     resultsEl.appendChild(line);
@@ -2397,7 +2402,7 @@ function updatePhnEchoPredictor() {
   }
 
   setPhnError('');
-  el('phn-bsa-display').textContent = bsaValue.toFixed(2);
+  el('phn-bsa-display').innerHTML = `<span class="result-number">${bsaValue.toFixed(2)}</span>`;
 
   const rows = window.PhnCalculator.createRowsForBsa(bsaValue);
   renderPhnRows(rows);
@@ -2414,7 +2419,7 @@ function calculatePhnBsaFromInputs() {
 
   if (!(heightValue > 0) || !(weightValue > 0)) {
     phnCalculatedBsa = null;
-    if (display) display.textContent = 'Calculated BSA: —';
+    if (display) display.innerHTML = 'Calculated BSA: <span class="result-number">—</span>';
     return;
   }
 
@@ -2423,13 +2428,13 @@ function calculatePhnBsaFromInputs() {
 
   if (!(result > 0) || !Number.isFinite(result)) {
     phnCalculatedBsa = null;
-    if (display) display.textContent = 'Calculated BSA: —';
+    if (display) display.innerHTML = 'Calculated BSA: <span class="result-number">—</span>';
     setPhnError('Unable to calculate BSA with selected formula.');
     return;
   }
 
   phnCalculatedBsa = result;
-  if (display) display.textContent = `Calculated BSA: ${result.toFixed(4)} m² (${selectedMethod})`;
+  if (display) display.innerHTML = `Calculated BSA: <span class="result-number">${result.toFixed(4)}</span> m² (${selectedMethod})`;
   setPhnError('');
 }
 
@@ -2458,10 +2463,10 @@ function calculatePhnMeasuredZ() {
     const coeff = window.PhnCalculator.PHN_STRUCTURES[key];
     const measuredCm = measuredMm / 10;
     const zScore = window.PhnCalculator.calculateForwardZScore(measuredCm, bsaValue, coeff);
-    output.textContent = `Measured Z-score: ${zScore.toFixed(2)}`;
+    output.innerHTML = `Measured Z-score: <span class="result-number">${zScore.toFixed(2)}</span>`;
     setPhnError('');
   } catch (error) {
-    output.textContent = 'Measured Z-score: —';
+    output.innerHTML = 'Measured Z-score: <span class="result-number">—</span>';
     setPhnError(error.message || 'Unable to compute measured Z-score.');
   }
 }
