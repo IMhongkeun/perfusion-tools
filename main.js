@@ -1272,12 +1272,10 @@ function initTimeCalculator() {
 // -----------------------------
 function setupContactActions() {
   const email = 'perfusiontools@gmail.com';
-  const mailLink = el('contact-mailto');
   const copyBtn = el('contact-copy');
   const toast = el('contact-toast');
   const emailText = el('contact-email');
 
-  if (mailLink) mailLink.href = `mailto:${email}`;
   if (emailText) emailText.textContent = email;
 
   const showToast = (message) => {
@@ -2591,8 +2589,41 @@ function route() {
 // -----------------------------
 // Event Wiring
 // -----------------------------
-window.addEventListener('popstate', route);
+function resetScrollToTop() {
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  setTimeout(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, 20);
+}
+
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
+window.addEventListener('load', resetScrollToTop);
+window.addEventListener('pageshow', resetScrollToTop);
+window.addEventListener('popstate', () => {
+  route();
+  resetScrollToTop();
+});
 window.addEventListener('DOMContentLoaded', () => {
+  document.documentElement.style.scrollPaddingTop = '0px';
+  resetScrollToTop();
+  setTimeout(resetScrollToTop, 10);
+
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (!link) return;
+    const href = link.getAttribute('href') || '';
+    if (link.classList.contains('sidebar-link') || href.startsWith('/')) {
+      setTimeout(resetScrollToTop, 50);
+    }
+  });
+
   const hasElement = (id) => !!el(id);
   const hasGdpCalculator = hasElement('view-do2i');
   const hasStandaloneBsaCalculator = hasElement('view-bsa');
