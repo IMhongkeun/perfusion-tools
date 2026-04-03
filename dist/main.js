@@ -2589,8 +2589,21 @@ function route() {
 // -----------------------------
 // Event Wiring
 // -----------------------------
-window.addEventListener('popstate', route);
+function forceScrollTop() {
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+}
+
+window.addEventListener('load', forceScrollTop);
+window.addEventListener('popstate', () => {
+  route();
+  forceScrollTop();
+});
 window.addEventListener('DOMContentLoaded', () => {
+  forceScrollTop();
+  setTimeout(forceScrollTop, 10);
+
   const hasElement = (id) => !!el(id);
   const hasGdpCalculator = hasElement('view-do2i');
   const hasStandaloneBsaCalculator = hasElement('view-bsa');
