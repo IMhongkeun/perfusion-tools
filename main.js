@@ -160,17 +160,51 @@ function initStandaloneTopNav() {
   if (!nav) {
     nav = document.createElement('nav');
     nav.id = 'global-top-nav';
-    nav.className = 'hidden md:flex items-center gap-1 text-sm font-medium overflow-x-auto whitespace-nowrap max-w-[65%]';
+    nav.className = 'hidden md:flex items-center gap-1 text-sm font-medium overflow-x-auto whitespace-nowrap max-w-[68%] pr-1';
     headerRow.insertBefore(nav, themeBtn);
   }
 
   nav.innerHTML = TOP_NAV_ITEMS.map((item) => {
     const isActive = currentPath === item.path;
     const activeClasses = isActive
-      ? 'bg-slate-100 dark:bg-primary-800 text-primary-900 dark:text-accent-400 border-slate-200 dark:border-primary-700'
+      ? 'bg-slate-100 text-accent-600 dark:bg-primary-800 dark:text-accent-400 border-slate-200 dark:border-primary-700'
       : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:border-slate-200 dark:hover:border-primary-700 hover:text-primary-900 dark:hover:text-accent-400';
-    return `<a href="${item.path}" class="px-4 py-2 rounded-full border transition-colors ${activeClasses}">${item.label}</a>`;
+    return `<a href="${item.path}" class="nav-link px-4 py-2 rounded-full border transition-colors ${activeClasses}">${item.label}</a>`;
   }).join('');
+
+  attachTopNavOverflowArrow(nav, 'global-top-nav-next');
+}
+
+function attachTopNavOverflowArrow(nav, buttonId) {
+  if (!nav) return;
+  const headerRow = document.querySelector('header .max-w-7xl');
+  const themeBtn = el('theme-toggle');
+  if (!headerRow || !themeBtn) return;
+
+  let nextBtn = el(buttonId);
+  if (!nextBtn) {
+    nextBtn = document.createElement('button');
+    nextBtn.id = buttonId;
+    nextBtn.type = 'button';
+    nextBtn.className = 'hidden md:inline-flex items-center justify-center w-8 h-8 rounded-full border border-slate-200 dark:border-primary-700 text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 transition-colors';
+    nextBtn.innerHTML = '→';
+    headerRow.insertBefore(nextBtn, themeBtn);
+  }
+
+  const updateButtonVisibility = () => {
+    const hasOverflow = nav.scrollWidth - nav.clientWidth > 8;
+    const atEnd = nav.scrollLeft + nav.clientWidth >= nav.scrollWidth - 8;
+    nextBtn.classList.toggle('hidden', !hasOverflow || atEnd);
+  };
+
+  nextBtn.onclick = () => {
+    nav.scrollBy({ left: 220, behavior: 'smooth' });
+    setTimeout(updateButtonVisibility, 180);
+  };
+
+  nav.addEventListener('scroll', updateButtonVisibility);
+  window.addEventListener('resize', updateButtonVisibility);
+  setTimeout(updateButtonVisibility, 50);
 }
 
 const BSA = {
@@ -2935,6 +2969,11 @@ window.addEventListener('DOMContentLoaded', () => {
   resetScrollToTop();
   setTimeout(resetScrollToTop, 10);
   initStandaloneTopNav();
+  const primaryTopNav = el('nav-home') ? el('nav-home').closest('nav') : null;
+  if (primaryTopNav) {
+    primaryTopNav.classList.add('overflow-x-auto', 'whitespace-nowrap', 'max-w-[68%]', 'pr-1');
+    attachTopNavOverflowArrow(primaryTopNav, 'top-nav-main-next');
+  }
 
   document.addEventListener('click', (e) => {
     const link = e.target.closest('a');
