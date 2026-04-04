@@ -244,6 +244,7 @@ const KG_PER_LB = 0.45359237;
 let bsaInputUnit = BSA_UNIT.metric;
 let bsaPatientSex = 'male';
 let bsaLeanSelectedCi = 2.4;
+const bsaFlowNumericClass = "bsa-flow-number text-xs font-semibold [font-variant-numeric:tabular-nums_lining-nums] [font-feature-settings:'tnum'_1,'lnum'_1]";
 
 function toMetricBsaInputs(heightValue, weightValue, inputUnit) {
   if (inputUnit === BSA_UNIT.imperial) {
@@ -328,7 +329,7 @@ function renderLeanFlowList(leanBsa) {
     const isSelected = Math.abs(ci - bsaLeanSelectedCi) < 0.05;
     const isCi24 = Math.abs(ci - 2.4) < 0.05;
     row.className = `grid grid-cols-[1fr_auto] items-center py-1.5 px-2 text-sm border-b border-blue-100 dark:border-blue-900/60 last:border-0 gap-3 ${isSelected ? 'bg-blue-200/70 dark:bg-blue-700/40' : (isCi24 ? 'bg-blue-100/70 dark:bg-blue-800/30' : '')}`;
-    row.innerHTML = `<span class="text-xs text-blue-800 dark:text-blue-200">CI ${ci.toFixed(1)}</span><span class="font-semibold text-right text-blue-900 dark:text-blue-100">${flow.toFixed(2)} L/min</span>`;
+    row.innerHTML = `<span class="${bsaFlowNumericClass} text-blue-800 dark:text-blue-200">CI ${ci.toFixed(1)}</span><span class="${bsaFlowNumericClass} text-right text-blue-900 dark:text-blue-100">${flow.toFixed(2)} L/min</span>`;
     leanFlowList.appendChild(row);
   }
 
@@ -359,7 +360,7 @@ function updateBsaFlowList(bsaVal) {
     const row = document.createElement('div');
     const highlight = Math.abs(ci - 2.4) < 0.05;
     row.className = 'grid grid-cols-[1fr_auto] items-center py-1.5 px-2 text-sm border-b border-slate-100 dark:border-primary-800 last:border-0 gap-3' + (highlight ? ' bg-amber-50 dark:bg-amber-900/20' : '');
-    row.innerHTML = `<span class="font-mono text-xs text-slate-500 dark:text-slate-400">CI ${ci.toFixed(1)}</span><span class="font-mono font-semibold text-right text-primary-900 dark:text-white">${flow.toFixed(2)} L/min</span>`;
+    row.innerHTML = `<span class="${bsaFlowNumericClass} text-slate-500 dark:text-slate-400">CI ${ci.toFixed(1)}</span><span class="${bsaFlowNumericClass} text-right text-primary-900 dark:text-white">${flow.toFixed(2)} L/min</span>`;
     list.appendChild(row);
   }
 }
