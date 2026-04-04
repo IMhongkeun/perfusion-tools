@@ -141,7 +141,6 @@ const TOP_NAV_ITEMS = [
   { path: '/timecalc', label: 'Time' },
   { path: '/unit-converter', label: 'Unit converter' },
   { path: '/info', label: 'Info' },
-  { path: '/faq', label: 'FAQ' }
 ];
 
 function initStandaloneTopNav() {
@@ -244,6 +243,7 @@ const KG_PER_LB = 0.45359237;
 let bsaInputUnit = BSA_UNIT.metric;
 let bsaPatientSex = 'male';
 let bsaLeanSelectedCi = 2.4;
+const bsaFlowNumericClass = "bsa-flow-number text-xs font-semibold [font-variant-numeric:tabular-nums_lining-nums] [font-feature-settings:'tnum'_1,'lnum'_1]";
 
 function toMetricBsaInputs(heightValue, weightValue, inputUnit) {
   if (inputUnit === BSA_UNIT.imperial) {
@@ -321,14 +321,14 @@ function renderLeanFlowList(leanBsa) {
   leanFlowList.innerHTML = '';
   if (!(leanBsa > 0)) return;
 
-  for (let ciTenths = 10; ciTenths <= 28; ciTenths += 2) {
+  for (let ciTenths = 10; ciTenths <= 30; ciTenths += 2) {
     const ci = ciTenths / 10;
     const flow = ci * leanBsa;
     const row = document.createElement('div');
     const isSelected = Math.abs(ci - bsaLeanSelectedCi) < 0.05;
     const isCi24 = Math.abs(ci - 2.4) < 0.05;
     row.className = `grid grid-cols-[1fr_auto] items-center py-1.5 px-2 text-sm border-b border-blue-100 dark:border-blue-900/60 last:border-0 gap-3 ${isSelected ? 'bg-blue-200/70 dark:bg-blue-700/40' : (isCi24 ? 'bg-blue-100/70 dark:bg-blue-800/30' : '')}`;
-    row.innerHTML = `<span class="text-xs text-blue-800 dark:text-blue-200">CI ${ci.toFixed(1)}</span><span class="font-semibold text-right text-blue-900 dark:text-blue-100">${flow.toFixed(2)} L/min</span>`;
+    row.innerHTML = `<span class="${bsaFlowNumericClass} text-blue-800 dark:text-blue-200">CI ${ci.toFixed(1)}</span><span class="${bsaFlowNumericClass} text-right text-blue-900 dark:text-blue-100">${flow.toFixed(2)} L/min</span>`;
     leanFlowList.appendChild(row);
   }
 
@@ -359,7 +359,7 @@ function updateBsaFlowList(bsaVal) {
     const row = document.createElement('div');
     const highlight = Math.abs(ci - 2.4) < 0.05;
     row.className = 'grid grid-cols-[1fr_auto] items-center py-1.5 px-2 text-sm border-b border-slate-100 dark:border-primary-800 last:border-0 gap-3' + (highlight ? ' bg-amber-50 dark:bg-amber-900/20' : '');
-    row.innerHTML = `<span class="font-mono text-xs text-slate-500 dark:text-slate-400">CI ${ci.toFixed(1)}</span><span class="font-mono font-semibold text-right text-primary-900 dark:text-white">${flow.toFixed(2)} L/min</span>`;
+    row.innerHTML = `<span class="${bsaFlowNumericClass} text-slate-500 dark:text-slate-400">CI ${ci.toFixed(1)}</span><span class="${bsaFlowNumericClass} text-right text-primary-900 dark:text-white">${flow.toFixed(2)} L/min</span>`;
     list.appendChild(row);
   }
 }
@@ -2851,9 +2851,10 @@ function navigateTo(path, options = {}) {
   }
 }
 
+
 function route() {
   const path = getActivePath();
-  const sections = ['view-home', 'view-bsa', 'view-phn-echo', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'view-unit-converter', 'view-quick-reference', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
+  const sections = ['view-home', 'view-bsa', 'view-phn-echo', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'view-unit-converter', 'view-quick-reference', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
     const section = el(sid);
     if (section) section.classList.add('hidden');
@@ -2875,7 +2876,6 @@ function route() {
   else if (path.includes('timecalc')) { showSection('view-timecalc'); key = 'timecalc'; }
   else if (path.includes('unit-converter')) { showSection('view-unit-converter'); key = 'unit-converter'; }
   else if (path.includes('quick-reference')) { showSection('view-quick-reference'); key = 'quick-reference'; }
-  else if (path.includes('faq')) { showSection('faq'); key = 'faq'; }
   else if (path.includes('info')) { showSection('view-info'); key = 'info'; }
   else if (path.includes('privacy')) { showSection('view-privacy'); key = 'privacy'; }
   else if (path.includes('terms')) { showSection('view-terms'); key = 'terms'; }
@@ -2894,7 +2894,6 @@ function route() {
     'timecalc': ['nav-time', 'side-time', 'mob-time'],
     'unit-converter': ['nav-unit-converter', 'side-unit-converter', null],
     'quick-reference': ['nav-quick-reference', 'side-quick-reference', 'mob-quick-reference'],
-    'faq': ['nav-faq', 'side-faq', null],
     'info': ['nav-info', 'side-info', 'mob-info']
   };
 
