@@ -2851,6 +2851,34 @@ function navigateTo(path, options = {}) {
   }
 }
 
+
+function focusHelpGuide(path) {
+  if (!path.includes('/help/')) return;
+
+  const guideMap = {
+    '/help/do2i': 'help-guide-do2i',
+    '/help/bsa': 'help-guide-bsa',
+    '/help/z-score': 'help-guide-z-score',
+    '/help/predicted-hct': 'help-guide-predicted-hct',
+    '/help/interpretation': 'help-guide-interpretation'
+  };
+
+  const targetKey = Object.keys(guideMap).find((key) => path.includes(key));
+  if (!targetKey) return;
+
+  const targetEl = el(guideMap[targetKey]);
+  if (!targetEl) return;
+
+  targetEl.classList.add('ring-2', 'ring-accent-500/50');
+  setTimeout(() => {
+    targetEl.classList.remove('ring-2', 'ring-accent-500/50');
+  }, 1200);
+
+  setTimeout(() => {
+    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 40);
+}
+
 function route() {
   const path = getActivePath();
   const sections = ['view-home', 'view-bsa', 'view-phn-echo', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'view-unit-converter', 'view-quick-reference', 'faq', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
@@ -2875,7 +2903,7 @@ function route() {
   else if (path.includes('timecalc')) { showSection('view-timecalc'); key = 'timecalc'; }
   else if (path.includes('unit-converter')) { showSection('view-unit-converter'); key = 'unit-converter'; }
   else if (path.includes('quick-reference')) { showSection('view-quick-reference'); key = 'quick-reference'; }
-  else if (path.includes('help') || path.includes('faq')) { showSection('faq'); key = 'faq'; }
+  else if (path.includes('help') || path.includes('faq')) { showSection('faq'); key = 'faq'; focusHelpGuide(path); }
   else if (path.includes('info')) { showSection('view-info'); key = 'info'; }
   else if (path.includes('privacy')) { showSection('view-privacy'); key = 'privacy'; }
   else if (path.includes('terms')) { showSection('view-terms'); key = 'terms'; }
