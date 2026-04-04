@@ -141,7 +141,7 @@ const TOP_NAV_ITEMS = [
   { path: '/timecalc', label: 'Time' },
   { path: '/unit-converter', label: 'Unit converter' },
   { path: '/info', label: 'Info' },
-  { path: '/faq', label: 'FAQ' }
+  { path: '/help', label: 'Help' }
 ];
 
 function initStandaloneTopNav() {
@@ -2875,7 +2875,7 @@ function route() {
   else if (path.includes('timecalc')) { showSection('view-timecalc'); key = 'timecalc'; }
   else if (path.includes('unit-converter')) { showSection('view-unit-converter'); key = 'unit-converter'; }
   else if (path.includes('quick-reference')) { showSection('view-quick-reference'); key = 'quick-reference'; }
-  else if (path.includes('faq')) { showSection('faq'); key = 'faq'; }
+  else if (path.includes('help') || path.includes('faq')) { showSection('faq'); key = 'faq'; }
   else if (path.includes('info')) { showSection('view-info'); key = 'info'; }
   else if (path.includes('privacy')) { showSection('view-privacy'); key = 'privacy'; }
   else if (path.includes('terms')) { showSection('view-terms'); key = 'terms'; }
