@@ -322,7 +322,7 @@ function renderLeanFlowList(leanBsa) {
   leanFlowList.innerHTML = '';
   if (!(leanBsa > 0)) return;
 
-  for (let ciTenths = 10; ciTenths <= 28; ciTenths += 2) {
+  for (let ciTenths = 10; ciTenths <= 30; ciTenths += 2) {
     const ci = ciTenths / 10;
     const flow = ci * leanBsa;
     const row = document.createElement('div');
