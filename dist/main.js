@@ -156,6 +156,65 @@ function computeBSA(h, w, method) {
   return fn(h, w);
 }
 
+const BSA_UNIT = {
+  metric: 'metric',
+  imperial: 'imperial'
+};
+
+const CM_PER_INCH = 2.54;
+const KG_PER_LB = 0.45359237;
+let bsaInputUnit = BSA_UNIT.metric;
+
+function toMetricBsaInputs(heightValue, weightValue, inputUnit) {
+  if (inputUnit === BSA_UNIT.imperial) {
+    return {
+      heightCm: heightValue * CM_PER_INCH,
+      weightKg: weightValue * KG_PER_LB
+    };
+  }
+
+  return {
+    heightCm: heightValue,
+    weightKg: weightValue
+  };
+}
+
+function convertBsaInputValue(value, fromUnit, toUnit, type) {
+  if (!Number.isFinite(value) || value <= 0 || fromUnit === toUnit) return value;
+
+  if (type === 'height') {
+    return fromUnit === BSA_UNIT.metric ? (value / CM_PER_INCH) : (value * CM_PER_INCH);
+  }
+  return fromUnit === BSA_UNIT.metric ? (value / KG_PER_LB) : (value * KG_PER_LB);
+}
+
+function updateBsaUnitUi() {
+  const isMetric = bsaInputUnit === BSA_UNIT.metric;
+  const metricBtn = el('bsa-unit-metric');
+  const imperialBtn = el('bsa-unit-imperial');
+  const heightUnit = el('bsa-height-unit');
+  const weightUnit = el('bsa-weight-unit');
+  const heightInput = el('bsa_height');
+  const weightInput = el('bsa_weight');
+
+  if (metricBtn) {
+    metricBtn.className = isMetric
+      ? 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-primary-900 text-white dark:bg-primary-700'
+      : 'px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800';
+  }
+
+  if (imperialBtn) {
+    imperialBtn.className = isMetric
+      ? 'px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800'
+      : 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-primary-900 text-white dark:bg-primary-700';
+  }
+
+  if (heightUnit) heightUnit.textContent = isMetric ? 'cm' : 'inches';
+  if (weightUnit) weightUnit.textContent = isMetric ? 'kg' : 'lb';
+  if (heightInput) heightInput.placeholder = isMetric ? '170' : '66.9';
+  if (weightInput) weightInput.placeholder = isMetric ? '70' : '154.3';
+}
+
 function updateBsaFlowList(bsaVal) {
   const list = el('bsa-flow-list');
   if (!list) return;
@@ -178,10 +237,16 @@ function updateBsaFlowList(bsaVal) {
 }
 
 function updateStandaloneBsa() {
-  const h = num('bsa_height');
-  const w = num('bsa_weight');
+  const hRaw = num('bsa_height');
+  const wRaw = num('bsa_weight');
   const method = el('bsa-method-standalone') ? el('bsa-method-standalone').value : 'Mosteller';
   const formulaCompareEl = el('bsa-formula-compare');
+  const bmiDisplay = el('bsa-bmi-display');
+  const obesityNote = el('bsa-obesity-note');
+
+  const metricInput = toMetricBsaInputs(hRaw, wRaw, bsaInputUnit);
+  const h = metricInput.heightCm;
+  const w = metricInput.weightKg;
 
   const v = computeBSA(h, w, method);
   const resultEl = el('bsa-result');
@@ -194,6 +259,18 @@ function updateStandaloneBsa() {
   }
   const methodActive = el('bsa-method-active');
   if (methodActive) methodActive.textContent = method;
+
+  if (bmiDisplay) {
+    if (h > 0 && w > 0) {
+      const heightMeters = h / 100;
+      const bmi = w / (heightMeters * heightMeters);
+      bmiDisplay.textContent = `BMI: ${bmi.toFixed(1)} kg/m²`;
+      if (obesityNote) obesityNote.textContent = bmi >= 30 ? 'Obesity Adjustment: Consider lean-mass indexed planning' : 'Obesity Adjustment: Not indicated';
+    } else {
+      bmiDisplay.textContent = 'BMI: —';
+      if (obesityNote) obesityNote.textContent = 'Obesity Adjustment: —';
+    }
+  }
 
   if (formulaCompareEl) {
     if (!v) {
@@ -226,6 +303,30 @@ function updateStandaloneBsa() {
   }
 
   updateBsaFlowList(v);
+}
+
+function setBsaUnit(nextUnit) {
+  if (!nextUnit || nextUnit === bsaInputUnit) return;
+
+  const heightInput = el('bsa_height');
+  const weightInput = el('bsa_weight');
+  const currentHeight = heightInput ? Number(heightInput.value) : NaN;
+  const currentWeight = weightInput ? Number(weightInput.value) : NaN;
+
+  if (heightInput && Number.isFinite(currentHeight) && currentHeight > 0) {
+    const convertedHeight = convertBsaInputValue(currentHeight, bsaInputUnit, nextUnit, 'height');
+    heightInput.value = Number.isFinite(convertedHeight) ? convertedHeight.toFixed(1) : '';
+  }
+
+  if (weightInput && Number.isFinite(currentWeight) && currentWeight > 0) {
+    const convertedWeight = convertBsaInputValue(currentWeight, bsaInputUnit, nextUnit, 'weight');
+    const weightDecimals = nextUnit === BSA_UNIT.imperial ? 2 : 1;
+    weightInput.value = Number.isFinite(convertedWeight) ? convertedWeight.toFixed(weightDecimals) : '';
+  }
+
+  bsaInputUnit = nextUnit;
+  updateBsaUnitUi();
+  updateStandaloneBsa();
 }
 
 function calcCaO2(hb, sao2pct, pao2) {
@@ -2770,6 +2871,12 @@ window.addEventListener('DOMContentLoaded', () => {
     const bsaMethodStandalone = el('bsa-method-standalone');
     if (bsaMethodStandalone) bsaMethodStandalone.addEventListener('change', updateStandaloneBsa);
 
+    const metricBtn = el('bsa-unit-metric');
+    if (metricBtn) metricBtn.addEventListener('click', () => setBsaUnit(BSA_UNIT.metric));
+    const imperialBtn = el('bsa-unit-imperial');
+    if (imperialBtn) imperialBtn.addEventListener('click', () => setBsaUnit(BSA_UNIT.imperial));
+
+    updateBsaUnitUi();
     updateStandaloneBsa();
   }
 
