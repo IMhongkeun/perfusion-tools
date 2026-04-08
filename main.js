@@ -445,7 +445,7 @@ function updateStandaloneBsa() {
     if (!v) {
       formulaCompareEl.innerHTML = '<p class="text-xs text-slate-500 dark:text-slate-400">Enter height and weight to compare formulas.</p>';
     } else {
-      const allMethods = ['Mosteller', 'DuBois', 'Haycock', 'Boyd'];
+      const allMethods = ['Mosteller', 'DuBois', 'Haycock', 'GehanGeorge', 'Boyd'];
       const rows = allMethods
         .filter((formula) => formula !== method)
         .map((formula) => ({ formula, bsa: computeBSA(h, w, formula) }));
@@ -1366,7 +1366,8 @@ function updateLBM() {
     Mosteller: 'Mosteller formula',
     DuBois: 'DuBois formula',
     Haycock: 'Haycock formula',
-    GehanGeorge: 'Gehan–George formula'
+    GehanGeorge: 'Gehan–George formula',
+    Boyd: 'Boyd formula'
   };
 
   const lbm = computeLBM({ sex, h, w, formula });
