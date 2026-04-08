@@ -1,4 +1,4 @@
-export const siteUrl = 'https://perfusiontools.com';
+const defaultSiteUrl = 'https://perfusiontools.com';
 
 /**
  * Central route list for sitemap generation.
@@ -20,6 +20,21 @@ export const sitemapPaths = [
   '/info'
 ] as const;
 
-export function todayIsoDate() {
-  return new Date().toISOString().split('T')[0];
+/**
+ * Resolves canonical site URL with environment override support.
+ * Priority:
+ * 1) NEXT_PUBLIC_SITE_URL (recommended)
+ * 2) VERCEL_URL (auto-provided by Vercel)
+ * 3) defaultSiteUrl
+ */
+export function resolveSiteUrl() {
+  const envUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL;
+  if (!envUrl) return defaultSiteUrl;
+
+  const withProtocol = envUrl.startsWith('http') ? envUrl : `https://${envUrl}`;
+  return withProtocol.replace(/\/+$/, '');
+}
+
+export function getLastModifiedDate() {
+  return new Date();
 }

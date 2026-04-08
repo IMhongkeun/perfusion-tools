@@ -1,8 +1,9 @@
 import type { GetServerSideProps } from 'next';
-import { siteUrl, sitemapPaths, todayIsoDate } from '../shared/sitemapRoutes';
+import { resolveSiteUrl, sitemapPaths, getLastModifiedDate } from '../shared/sitemapRoutes';
 
 function buildSitemapXml() {
-  const lastModified = todayIsoDate();
+  const siteUrl = resolveSiteUrl();
+  const lastModified = getLastModifiedDate().toISOString();
   const urls = sitemapPaths
     .map((path) => {
       return [
@@ -23,6 +24,7 @@ function buildSitemapXml() {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
+  // Pages Router example is request-time dynamic by design (runs on each request).
   const sitemapXml = buildSitemapXml();
 
   res.setHeader('Content-Type', 'application/xml');

@@ -6,10 +6,22 @@
 
 - `shared/sitemapRoutes.ts`
   - sitemap 공통 URL 배열(추가 페이지는 여기만 수정)
+  - `NEXT_PUBLIC_SITE_URL` / `VERCEL_URL` 환경변수 기반 BASE URL 해석
 - `app/sitemap.ts`, `app/robots.ts`
   - Next.js 13+ App Router용
+  - `MetadataRoute.Sitemap` / `MetadataRoute.Robots` 표준 타입 사용
+  - `dynamic = 'force-static'`로 빌드 타임 정적 생성
 - `pages/sitemap.xml.ts`, `pages/robots.txt.ts`
   - Pages Router용
+  - `getServerSideProps` 기반 요청 시 동적 생성
+
+## 환경변수 권장
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://perfusiontools.com
+```
+
+Vercel에서는 `VERCEL_URL`이 자동 제공되며, 코드에서 fallback으로 사용합니다.
 
 ## 사용 방법
 
@@ -21,6 +33,18 @@
    - `/sitemap.xml`
    - `/robots.txt`
    가 동적으로 생성됨
+
+## XML 출력 예시 (Pages Router)
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://perfusiontools.com/bsa</loc>
+    <lastmod>2026-04-08T00:00:00.000Z</lastmod>
+  </url>
+</urlset>
+```
 
 ### Pages Router
 

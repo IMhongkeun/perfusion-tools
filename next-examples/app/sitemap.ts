@@ -1,8 +1,12 @@
 import type { MetadataRoute } from 'next';
-import { siteUrl, sitemapPaths, todayIsoDate } from '../shared/sitemapRoutes';
+import { resolveSiteUrl, sitemapPaths, getLastModifiedDate } from '../shared/sitemapRoutes';
+
+// Build-time static generation (recommended for stable marketing/calculator routes).
+export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = todayIsoDate();
+  const siteUrl = resolveSiteUrl();
+  const lastModified = getLastModifiedDate();
 
   return sitemapPaths.map((path) => ({
     url: `${siteUrl}${path}`,
