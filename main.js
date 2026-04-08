@@ -132,14 +132,15 @@ function updateMetaForRoute(path) {
 const TOP_NAV_ITEMS = [
   { path: '/', label: 'Home' },
   { path: '/bsa', label: 'BSA' },
-  { path: '/phn-echo', label: 'Z-score' },
+  { path: '/lbm', label: 'LBM' },
   { path: '/gdp', label: 'GDP' },
   { path: '/heparin', label: 'Heparin' },
   { path: '/predicted-hct', label: 'Predicted Hct' },
-  { path: '/lbm', label: 'LBM' },
+  { path: '/phn-echo', label: 'Z-score' },
   { path: '/priming-volume', label: 'Priming Volume' },
   { path: '/timecalc', label: 'Time' },
-  { path: '/unit-converter', label: 'Unit converter' },
+  { path: '/quick-reference', label: 'Quick Reference' },
+  { path: '/unit-converter', label: 'Unit Converter' },
   { path: '/info', label: 'Info' },
 ];
 
