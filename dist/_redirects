@@ -8,5 +8,12 @@
 /timecalc    /timecalc/index.html   200
 /unit-converter    /unit-converter/index.html   200
 /quick-reference    /quick-reference/index.html   200
-/faq    /info   301
+/do2i    /index.html    200
+/do2i/*  /index.html    200
+/faq     /index.html    200
+/faq/*   /index.html    200
+/contact /index.html    200
+/contact/* /index.html  200
+/info    /index.html    200
+/info/*  /index.html    200
 /*    /index.html   200
