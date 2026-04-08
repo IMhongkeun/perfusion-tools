@@ -2890,9 +2890,9 @@ function route() {
     'phn-echo': ['nav-phn-echo', 'side-phn-echo', 'mob-phn-echo'],
     'lbm': ['nav-lbm', 'side-lbm', 'mob-lbm'],
     'heparin': ['nav-heparin', 'side-heparin', 'mob-heparin'],
-    'priming-volume': ['nav-priming', 'side-priming', null],
+    'priming-volume': ['nav-priming', 'side-priming', 'mob-priming'],
     'timecalc': ['nav-time', 'side-time', 'mob-time'],
-    'unit-converter': ['nav-unit-converter', 'side-unit-converter', null],
+    'unit-converter': ['nav-unit-converter', 'side-unit-converter', 'mob-unit-converter'],
     'quick-reference': ['nav-quick-reference', 'side-quick-reference', 'mob-quick-reference'],
     'info': ['nav-info', 'side-info', 'mob-info']
   };
