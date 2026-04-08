@@ -11,7 +11,9 @@ const sitemapPaths = [
   '/quick-reference',
   '/faq',
   '/contact',
-  '/info'
+  '/info',
+  '/priming-volume',
+  '/unit-converter'
 ];
 
 module.exports = sitemapPaths;
