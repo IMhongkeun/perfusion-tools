@@ -122,6 +122,14 @@ function updateMetaForRoute(path) {
   setContent('meta[name="twitter:title"]', 'content', meta.title || FALLBACK_META.title);
   setContent('meta[name="twitter:description"]', 'content', meta.description || FALLBACK_META.description);
 
+  let robotsTag = document.querySelector('meta[name="robots"]');
+  if (!robotsTag) {
+    robotsTag = document.createElement('meta');
+    robotsTag.setAttribute('name', 'robots');
+    document.head.appendChild(robotsTag);
+  }
+  robotsTag.setAttribute('content', meta.robots || 'index,follow');
+
   const canonicalTag = document.querySelector('link[rel="canonical"]');
   if (canonicalTag) {
     const canonicalPath = meta.canonicalPath || FALLBACK_META.canonicalPath || '/';

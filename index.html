@@ -11,8 +11,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Perfusion Tools – CPB & ECMO Perfusion Calculators</title>
-  <meta name="description" content="Comprehensive perfusion calculators for CPB & ECMO including BSA, Heparin dosing, and more." />
+  <title>PerfusionTools – Clinical Calculators for Perfusionists & CPB</title>
+  <meta name="description" content="PerfusionTools provides evidence-based clinical calculators for perfusionists. Optimize CPB and ECMO management with BSA, LBM, Goal-Directed Perfusion, and heparin dosing tools." />
   <meta name="keywords" content="perfusion calculator, GDP calculator, DO2i calculator, predicted Hct, CPB hemodilution, ECMO calculator, cardiac surgery tools, perfusionist, BSA calculator" />
   <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
 
@@ -352,28 +352,32 @@
         h1: "About Us",
         description: "About Perfusion Tools, a collection of perfusion calculators for ECMO and CPB clinicians.",
         headingDescription: "Learn about the mission behind Perfusion Tools and how to reach us.",
-        canonicalPath: "/info"
+        canonicalPath: "/info",
+        robots: "noindex,follow"
       },
       "/privacy": {
         title: "Privacy Policy — Perfusion Tools",
         h1: "Privacy Policy",
         description: "Learn how Perfusion Tools handles browser-based calculations without storing personal data.",
         headingDescription: "Understand how your inputs stay on-device and private.",
-        canonicalPath: "/privacy"
+        canonicalPath: "/privacy",
+        robots: "noindex,follow"
       },
       "/terms": {
         title: "Terms of Service — Perfusion Tools",
         h1: "Terms of Service",
         description: "Understand the usage terms and disclaimers for the Perfusion Tools calculators.",
         headingDescription: "Review the educational-use terms for these calculators.",
-        canonicalPath: "/terms"
+        canonicalPath: "/terms",
+        robots: "noindex,follow"
       },
       "/contact": {
         title: "Contact — Perfusion Tools",
         h1: "Contact",
         description: "Get in touch with Perfusion Tools with questions or feedback about CPB calculators.",
         headingDescription: "Reach out with questions or feedback about Perfusion Tools.",
-        canonicalPath: "/contact"
+        canonicalPath: "/contact",
+        robots: "noindex,follow"
       }
     };
 
@@ -403,6 +407,14 @@
         document.head.appendChild(descTag);
       }
       descTag.setAttribute('content', meta.description || fallback.description);
+
+      let robotsTag = document.querySelector('meta[name="robots"]');
+      if (!robotsTag) {
+        robotsTag = document.createElement('meta');
+        robotsTag.setAttribute('name', 'robots');
+        document.head.appendChild(robotsTag);
+      }
+      robotsTag.setAttribute('content', meta.robots || 'index,follow');
 
       const headingEl = document.getElementById('page-heading');
       if (headingEl) headingEl.textContent = meta.h1 || meta.title || fallback.h1;
@@ -2443,6 +2455,6 @@
     </a>
   </nav>
 
-  <script src="main.js"></script>
+  <script src="/main.js"></script>
 </body>
 </html>

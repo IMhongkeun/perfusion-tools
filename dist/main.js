@@ -122,6 +122,14 @@ function updateMetaForRoute(path) {
   setContent('meta[name="twitter:title"]', 'content', meta.title || FALLBACK_META.title);
   setContent('meta[name="twitter:description"]', 'content', meta.description || FALLBACK_META.description);
 
+  let robotsTag = document.querySelector('meta[name="robots"]');
+  if (!robotsTag) {
+    robotsTag = document.createElement('meta');
+    robotsTag.setAttribute('name', 'robots');
+    document.head.appendChild(robotsTag);
+  }
+  robotsTag.setAttribute('content', meta.robots || 'index,follow');
+
   const canonicalTag = document.querySelector('link[rel="canonical"]');
   if (canonicalTag) {
     const canonicalPath = meta.canonicalPath || FALLBACK_META.canonicalPath || '/';
@@ -132,14 +140,15 @@ function updateMetaForRoute(path) {
 const TOP_NAV_ITEMS = [
   { path: '/', label: 'Home' },
   { path: '/bsa', label: 'BSA' },
-  { path: '/phn-echo', label: 'Z-score' },
+  { path: '/lbm', label: 'LBM' },
   { path: '/gdp', label: 'GDP' },
   { path: '/heparin', label: 'Heparin' },
   { path: '/predicted-hct', label: 'Predicted Hct' },
-  { path: '/lbm', label: 'LBM' },
+  { path: '/phn-echo', label: 'Z-score' },
   { path: '/priming-volume', label: 'Priming Volume' },
   { path: '/timecalc', label: 'Time' },
-  { path: '/unit-converter', label: 'Unit converter' },
+  { path: '/quick-reference', label: 'Quick Reference' },
+  { path: '/unit-converter', label: 'Unit Converter' },
   { path: '/info', label: 'Info' },
 ];
 
@@ -444,7 +453,7 @@ function updateStandaloneBsa() {
     if (!v) {
       formulaCompareEl.innerHTML = '<p class="text-xs text-slate-500 dark:text-slate-400">Enter height and weight to compare formulas.</p>';
     } else {
-      const allMethods = ['Mosteller', 'DuBois', 'Haycock', 'Boyd'];
+      const allMethods = ['Mosteller', 'DuBois', 'Haycock', 'GehanGeorge', 'Boyd'];
       const rows = allMethods
         .filter((formula) => formula !== method)
         .map((formula) => ({ formula, bsa: computeBSA(h, w, formula) }));
@@ -1365,7 +1374,8 @@ function updateLBM() {
     Mosteller: 'Mosteller formula',
     DuBois: 'DuBois formula',
     Haycock: 'Haycock formula',
-    GehanGeorge: 'Gehan–George formula'
+    GehanGeorge: 'Gehan–George formula',
+    Boyd: 'Boyd formula'
   };
 
   const lbm = computeLBM({ sex, h, w, formula });
