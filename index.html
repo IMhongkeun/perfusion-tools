@@ -412,6 +412,14 @@
       }
       descTag.setAttribute('content', meta.description || fallback.description);
 
+      let robotsTag = document.querySelector('meta[name="robots"]');
+      if (!robotsTag) {
+        robotsTag = document.createElement('meta');
+        robotsTag.setAttribute('name', 'robots');
+        document.head.appendChild(robotsTag);
+      }
+      robotsTag.setAttribute('content', meta.robots || 'index,follow');
+
       const headingEl = document.getElementById('page-heading');
       if (headingEl) headingEl.textContent = meta.h1 || meta.title || fallback.h1;
 

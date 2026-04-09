@@ -9,9 +9,6 @@ const sitemapPaths = [
   '/do2i',
   '/phn-echo',
   '/quick-reference',
-  '/faq',
-  '/contact',
-  '/info',
   '/priming-volume',
   '/unit-converter'
 ];
