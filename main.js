@@ -97,12 +97,15 @@ const CANONICAL_BASE = 'https://www.perfusiontools.com';
 const FALLBACK_META = {
   title: 'Calculator – Perfusion Tools',
   description: 'Comprehensive perfusion calculators for CPB & ECMO including BSA, Heparin dosing, and more.',
-  canonicalPath: '/'
+  canonicalPath: '/',
+  robots: 'index,follow'
 };
 
 function getRouteMeta(path) {
   const metaSource = window.routeMeta || {};
-  const normalized = window.normalizeRoute ? window.normalizeRoute(path) : path;
+  const normalized = window.normalizeRoute
+    ? window.normalizeRoute(path)
+    : (typeof path === 'string' && path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path);
   return metaSource[normalized] || metaSource['/'] || FALLBACK_META;
 }
 
@@ -121,6 +124,14 @@ function updateMetaForRoute(path) {
   setContent('meta[property="og:description"]', 'content', meta.description || FALLBACK_META.description);
   setContent('meta[name="twitter:title"]', 'content', meta.title || FALLBACK_META.title);
   setContent('meta[name="twitter:description"]', 'content', meta.description || FALLBACK_META.description);
+
+  let robotsTag = document.querySelector('meta[name="robots"]');
+  if (!robotsTag) {
+    robotsTag = document.createElement('meta');
+    robotsTag.setAttribute('name', 'robots');
+    document.head.appendChild(robotsTag);
+  }
+  robotsTag.setAttribute('content', meta.robots || FALLBACK_META.robots);
 
   const canonicalTag = document.querySelector('link[rel="canonical"]');
   if (canonicalTag) {
