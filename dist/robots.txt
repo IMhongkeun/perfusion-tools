@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://perfusiontools.com/sitemap.xml
