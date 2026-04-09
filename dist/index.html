@@ -352,28 +352,32 @@
         h1: "About Us",
         description: "About Perfusion Tools, a collection of perfusion calculators for ECMO and CPB clinicians.",
         headingDescription: "Learn about the mission behind Perfusion Tools and how to reach us.",
-        canonicalPath: "/info"
+        canonicalPath: "/info",
+        robots: "noindex,follow"
       },
       "/privacy": {
         title: "Privacy Policy — Perfusion Tools",
         h1: "Privacy Policy",
         description: "Learn how Perfusion Tools handles browser-based calculations without storing personal data.",
         headingDescription: "Understand how your inputs stay on-device and private.",
-        canonicalPath: "/privacy"
+        canonicalPath: "/privacy",
+        robots: "noindex,follow"
       },
       "/terms": {
         title: "Terms of Service — Perfusion Tools",
         h1: "Terms of Service",
         description: "Understand the usage terms and disclaimers for the Perfusion Tools calculators.",
         headingDescription: "Review the educational-use terms for these calculators.",
-        canonicalPath: "/terms"
+        canonicalPath: "/terms",
+        robots: "noindex,follow"
       },
       "/contact": {
         title: "Contact — Perfusion Tools",
         h1: "Contact",
         description: "Get in touch with Perfusion Tools with questions or feedback about CPB calculators.",
         headingDescription: "Reach out with questions or feedback about Perfusion Tools.",
-        canonicalPath: "/contact"
+        canonicalPath: "/contact",
+        robots: "noindex,follow"
       }
     };
 
@@ -381,7 +385,11 @@
       if (!rawRoute) return '/';
       const cleaned = rawRoute.replace('#', '').trim();
       if (!cleaned || cleaned === '/' || cleaned === '/home') return '/';
-      return cleaned.startsWith('/') ? cleaned : `/${cleaned}`;
+      const withLeadingSlash = cleaned.startsWith('/') ? cleaned : `/${cleaned}`;
+      if (withLeadingSlash.length > 1 && withLeadingSlash.endsWith('/')) {
+        return withLeadingSlash.slice(0, -1);
+      }
+      return withLeadingSlash;
     }
 
     function applyRouteMeta(rawRoute) {
