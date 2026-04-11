@@ -1,11 +1,12 @@
+# 301 redirects
 /do2i       /gdp/         301
 /do2i/      /gdp/         301
 
 /home       /             301
 /home/      /             301
 
-/faq        /info         301
-/faq/       /info         301
+/faq        /info/        301
+/faq/       /info/        301
 
 /bsa          /bsa/          301
 /gdp          /gdp/          301
@@ -18,14 +19,15 @@
 /priming-volume          /priming-volume/          301
 /unit-converter          /unit-converter/          301
 
-/contact    /index.html   200
-/contact/   /index.html   200
+# 200 rewrites
+/contact    /             200
+/contact/   /             200
 
-/info       /index.html   200
-/info/      /index.html   200
+/info       /             200
+/info/      /             200
 
-/privacy    /index.html   200
-/privacy/   /index.html   200
+/privacy    /             200
+/privacy/   /             200
 
-/terms      /index.html   200
-/terms/     /index.html   200
+/terms      /             200
+/terms/     /             200
