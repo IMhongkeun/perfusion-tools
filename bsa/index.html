@@ -38,26 +38,7 @@
       }
     };
   </script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap');
-    :root { --header-height: 60px; --bottom-nav-height: 64px; }
-    .bsa-flow-number {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      font-size: 0.75rem;
-      font-weight: 600;
-      font-variant-numeric: tabular-nums lining-nums;
-      font-feature-settings: 'tnum' 1, 'lnum' 1;
-    }
-    input[type=number] { appearance: textfield; }
-    input[type=number]::-webkit-outer-spin-button,
-    input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    @keyframes pulse-flow {
-      0% { opacity: 0.6; transform: scale(0.95); }
-      50% { opacity: 1; transform: scale(1.05); }
-      100% { opacity: 0.6; transform: scale(0.95); }
-    }
-    .animate-pulse-flow { animation: pulse-flow 3s infinite ease-in-out; }
-  </style>
+  <link rel="stylesheet" href="/shared.css" />
 
   <script>
     const routeMeta = {
