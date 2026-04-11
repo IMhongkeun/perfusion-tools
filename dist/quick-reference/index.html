@@ -91,6 +91,7 @@
     window.applyRouteMeta = applyRouteMeta;
     window.addEventListener('load', () => applyRouteMeta('/quick-reference'));
   </script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/quick-reference#webpage","url":"https://perfusiontools.com/quick-reference","name":"Perfusion Quick Reference Guide – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalGuideline","name":"CPB and ECMO bedside quick reference"},"dateModified":"2026-04-10"},{"@type":"FAQPage","@id":"https://perfusiontools.com/quick-reference#faq","mainEntity":[{"@type":"Question","name":"Can I use these quick-reference values as standalone treatment orders?","acceptedAnswer":{"@type":"Answer","text":"No. Quick-reference cards are educational and should be interpreted with institutional protocols, physician direction, and real-time patient monitoring."}},{"@type":"Question","name":"What monitoring should be integrated when applying these reference ranges?","acceptedAnswer":{"@type":"Answer","text":"Integrate pressure trends, NIRS or EEG trends, and laboratory data while titrating flow or perfusion strategy."}}]}]}</script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0">
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
@@ -233,6 +234,18 @@
               </div>
             </div>
           </details>
+
+          <section aria-labelledby="quick-reference-faq-title" class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
+            <h3 id="quick-reference-faq-title" class="text-base font-semibold text-primary-900 dark:text-white">Quick Reference FAQ</h3>
+            <div class="space-y-2 text-sm text-slate-700 dark:text-slate-300">
+              <p><strong>Can I use these quick-reference values as standalone treatment orders?</strong></p>
+              <p>No. Quick-reference cards are educational and should be interpreted with institutional protocols, physician direction, and real-time patient monitoring.</p>
+            </div>
+            <div class="space-y-2 text-sm text-slate-700 dark:text-slate-300">
+              <p><strong>What monitoring should be integrated when applying these reference ranges?</strong></p>
+              <p>Integrate pressure trends, NIRS or EEG trends, and laboratory data while titrating flow or perfusion strategy.</p>
+            </div>
+          </section>
         </div>
       </section>
 
