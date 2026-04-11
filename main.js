@@ -179,7 +179,10 @@ function initStandaloneTopNav() {
   }
 
   nav.innerHTML = TOP_NAV_ITEMS.map((item) => {
-    const isActive = currentPath === item.path;
+    const normalizedItemPath = item.path.length > 1 && item.path.endsWith('/')
+      ? item.path.slice(0, -1)
+      : item.path;
+    const isActive = currentPath === normalizedItemPath;
     const activeClasses = isActive
       ? 'bg-slate-100 text-accent-600 dark:bg-primary-800 dark:text-accent-400 border-slate-200 dark:border-primary-700'
       : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:border-slate-200 dark:hover:border-primary-700 hover:text-primary-900 dark:hover:text-accent-400';
