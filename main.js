@@ -93,7 +93,7 @@ function getCurrentTimeHHMM() {
   return `${hh}:${mm}`;
 }
 
-const CANONICAL_BASE = 'https://www.perfusiontools.com';
+const CANONICAL_BASE = 'https://perfusiontools.com';
 const FALLBACK_META = {
   title: 'Calculator – Perfusion Tools',
   description: 'Comprehensive perfusion calculators for CPB & ECMO including BSA, Heparin dosing, and more.',
@@ -103,9 +103,12 @@ const FALLBACK_META = {
 
 function getRouteMeta(path) {
   const metaSource = window.routeMeta || {};
-  const normalized = window.normalizeRoute
+  const rawNormalized = window.normalizeRoute
     ? window.normalizeRoute(path)
-    : (typeof path === 'string' && path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path);
+    : path;
+  const normalized = typeof rawNormalized === 'string' && rawNormalized.length > 1 && rawNormalized.endsWith('/')
+    ? rawNormalized.slice(0, -1)
+    : rawNormalized;
   return metaSource[normalized] || metaSource['/'] || FALLBACK_META;
 }
 
@@ -142,16 +145,16 @@ function updateMetaForRoute(path) {
 
 const TOP_NAV_ITEMS = [
   { path: '/', label: 'Home' },
-  { path: '/bsa', label: 'BSA' },
-  { path: '/lbm', label: 'LBM' },
-  { path: '/gdp', label: 'GDP' },
-  { path: '/heparin', label: 'Heparin' },
-  { path: '/predicted-hct', label: 'Predicted Hct' },
-  { path: '/phn-echo', label: 'Z-score' },
-  { path: '/priming-volume', label: 'Priming Volume' },
-  { path: '/timecalc', label: 'Time' },
-  { path: '/quick-reference', label: 'Quick Reference' },
-  { path: '/unit-converter', label: 'Unit Converter' },
+  { path: '/bsa/', label: 'BSA' },
+  { path: '/lbm/', label: 'LBM' },
+  { path: '/gdp/', label: 'GDP' },
+  { path: '/heparin/', label: 'Heparin' },
+  { path: '/predicted-hct/', label: 'Predicted Hct' },
+  { path: '/phn-echo/', label: 'Z-score' },
+  { path: '/priming-volume/', label: 'Priming Volume' },
+  { path: '/timecalc/', label: 'Time' },
+  { path: '/quick-reference/', label: 'Quick Reference' },
+  { path: '/unit-converter/', label: 'Unit Converter' },
   { path: '/info', label: 'Info' },
 ];
 
@@ -3023,6 +3026,31 @@ window.addEventListener('DOMContentLoaded', () => {
       const href = link.getAttribute('href');
       if (!href || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
       if (href.startsWith('/')) {
+                const standaloneRoutes = new Set([
+          '/bsa/',
+          '/gdp/',
+          '/heparin/',
+          '/predicted-hct/',
+          '/lbm/',
+          '/timecalc/',
+          '/phn-echo/',
+          '/quick-reference/',
+          '/priming-volume/',
+          '/unit-converter/',
+          '/bsa',
+          '/gdp',
+          '/heparin',
+          '/predicted-hct',
+          '/lbm',
+          '/timecalc',
+          '/phn-echo',
+          '/quick-reference',
+          '/priming-volume',
+          '/unit-converter'
+        ]);
+        if (standaloneRoutes.has(href)) {
+          return;
+        }
         e.preventDefault();
         const shouldResetScrollTop = link.classList.contains('nav-link');
         navigateTo(href, { resetScrollTop: shouldResetScrollTop });
