@@ -2921,7 +2921,9 @@ function route() {
     l.classList.add('text-slate-400', 'dark:text-slate-500');
   });
 
-  updateMetaForRoute(path || '/');
+  if (document.getElementById('view-home')) {
+    updateMetaForRoute(path || '/');
+  }
 
   let sideEl = null;
   if (key && navMap[key]) {
