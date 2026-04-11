@@ -7,12 +7,13 @@
   <title>Perfusion Time Calculator – CPB & Cross-Clamp Time Tracking</title>
   <meta name="description" content="Accurately calculate and record CPB, cross-clamp, and circulatory arrest times during cardiac surgery. An essential tool for perfusionists to ensure precise intraoperative time management." />
   <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
-  <link rel="canonical" href="https://www.perfusiontools.com/timecalc" />
+  <link rel="canonical" href="https://perfusiontools.com/timecalc" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Perfusion Time Calculator for CPB Workflows | Perfusion Tools" />
   <meta property="og:description" content="Calculate elapsed perfusion case intervals with quick start/end time entry and HH:MM summaries." />
-  <meta property="og:url" content="https://www.perfusiontools.com/timecalc" />
+  <meta property="og:url" content="https://perfusiontools.com/timecalc" />
   <meta name="twitter:title" content="Perfusion Time Calculator for CPB Workflows | Perfusion Tools" />
   <meta name="twitter:description" content="Calculate elapsed perfusion case intervals with quick start/end time entry and HH:MM summaries." />
 
@@ -89,7 +90,7 @@
       if (subtitleEl) subtitleEl.textContent = meta.headingDescription || meta.description;
 
       const canonicalTag = document.querySelector('link[rel="canonical"]');
-      if (canonicalTag) canonicalTag.setAttribute('href', `https://www.perfusiontools.com${meta.canonicalPath || '/timecalc'}`);
+      if (canonicalTag) canonicalTag.setAttribute('href', `https://perfusiontools.com${meta.canonicalPath || '/timecalc'}`);
 
       return path;
     }
@@ -99,6 +100,7 @@
     window.applyRouteMeta = applyRouteMeta;
     window.addEventListener('load', () => applyRouteMeta('/timecalc'));
   </script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"WebApplication","@id":"https://perfusiontools.com/timecalc#app","name":"Perfusion Time Calculator","url":"https://perfusiontools.com/timecalc","description":"Calculate perfusion case times and interval durations for workflow support.","applicationCategory":"MedicalApplication","operatingSystem":"Any","publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/timecalc#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"Time Calculator","item":"https://perfusiontools.com/timecalc"}]}]}</script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0">
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
