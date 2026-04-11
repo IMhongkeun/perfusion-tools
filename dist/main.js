@@ -3023,6 +3023,21 @@ window.addEventListener('DOMContentLoaded', () => {
       const href = link.getAttribute('href');
       if (!href || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
       if (href.startsWith('/')) {
+        const standaloneRoutes = new Set([
+          '/bsa',
+          '/gdp',
+          '/heparin',
+          '/predicted-hct',
+          '/lbm',
+          '/timecalc',
+          '/phn-echo',
+          '/quick-reference',
+          '/priming-volume',
+          '/unit-converter'
+        ]);
+        if (standaloneRoutes.has(href)) {
+          return;
+        }
         e.preventDefault();
         const shouldResetScrollTop = link.classList.contains('nav-link');
         navigateTo(href, { resetScrollTop: shouldResetScrollTop });
