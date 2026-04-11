@@ -72,7 +72,10 @@
       if (!rawRoute) return '/';
       const cleaned = rawRoute.replace('#', '').trim();
       if (!cleaned || cleaned === '/' || cleaned === '/home') return '/';
-      return cleaned.startsWith('/') ? cleaned : `/${cleaned}`;
+      const withLeadingSlash = cleaned.startsWith('/') ? cleaned : `/${cleaned}`;
+      return withLeadingSlash.length > 1 && withLeadingSlash.endsWith('/')
+        ? withLeadingSlash.slice(0, -1)
+        : withLeadingSlash;
     }
 
     function applyRouteMeta(rawRoute) {

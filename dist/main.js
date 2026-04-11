@@ -103,9 +103,12 @@ const FALLBACK_META = {
 
 function getRouteMeta(path) {
   const metaSource = window.routeMeta || {};
-  const normalized = window.normalizeRoute
+  const rawNormalized = window.normalizeRoute
     ? window.normalizeRoute(path)
-    : (typeof path === 'string' && path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path);
+    : path;
+  const normalized = typeof rawNormalized === 'string' && rawNormalized.length > 1 && rawNormalized.endsWith('/')
+    ? rawNormalized.slice(0, -1)
+    : rawNormalized;
   return metaSource[normalized] || metaSource['/'] || FALLBACK_META;
 }
 
