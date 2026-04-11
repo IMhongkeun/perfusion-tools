@@ -7,6 +7,28 @@
 /faq        /info         301
 /faq/       /info         301
 
+
+/bsa/             /bsa             301
+/bsa              /bsa/index.html  200
+/gdp/             /gdp             301
+/gdp              /gdp/index.html  200
+/heparin/         /heparin         301
+/heparin          /heparin/index.html 200
+/predicted-hct/   /predicted-hct   301
+/predicted-hct    /predicted-hct/index.html 200
+/lbm/             /lbm             301
+/lbm              /lbm/index.html  200
+/timecalc/        /timecalc        301
+/timecalc         /timecalc/index.html 200
+/phn-echo/        /phn-echo        301
+/phn-echo         /phn-echo/index.html 200
+/quick-reference/ /quick-reference 301
+/quick-reference  /quick-reference/index.html 200
+/priming-volume/  /priming-volume  301
+/priming-volume   /priming-volume/index.html 200
+/unit-converter/  /unit-converter  301
+/unit-converter   /unit-converter/index.html 200
+
 /contact    /index.html   200
 /contact/   /index.html   200
 
@@ -18,3 +40,4 @@
 
 /terms      /index.html   200
 /terms/     /index.html   200
+
