@@ -7,12 +7,12 @@
   <title>BSA Calculator for Perfusionists – CPB Flow & Prime Volume</title>
   <meta name="description" content="Calculate Body Surface Area using Dubois, Mosteller, and Haycock formulas. Essential for perfusionists to determine CPB pump flow index and circuit prime volume accurately." />
   <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
-  <link rel="canonical" href="https://www.perfusiontools.com/bsa" />
+  <link rel="canonical" href="https://perfusiontools.com/bsa" />
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="BSA Calculator for Perfusion Flow Guidance | Perfusion Tools" />
   <meta property="og:description" content="Calculate Body Surface Area for CPB flow planning using multiple formulas and indexed flow guidance." />
-  <meta property="og:url" content="https://www.perfusiontools.com/bsa" />
+  <meta property="og:url" content="https://perfusiontools.com/bsa" />
   <meta name="twitter:title" content="BSA Calculator for Perfusion Flow Guidance | Perfusion Tools" />
   <meta name="twitter:description" content="Calculate Body Surface Area for CPB flow planning using multiple formulas and indexed flow guidance." />
 
@@ -96,7 +96,7 @@
       if (subtitleEl) subtitleEl.textContent = meta.headingDescription || meta.description;
 
       const canonicalTag = document.querySelector('link[rel="canonical"]');
-      if (canonicalTag) canonicalTag.setAttribute('href', `https://www.perfusiontools.com${meta.canonicalPath || '/bsa'}`);
+      if (canonicalTag) canonicalTag.setAttribute('href', `https://perfusiontools.com${meta.canonicalPath || '/bsa'}`);
 
       return path;
     }
@@ -106,6 +106,7 @@
     window.applyRouteMeta = applyRouteMeta;
     window.addEventListener('load', () => applyRouteMeta('/bsa'));
   </script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/bsa#webpage","url":"https://perfusiontools.com/bsa","name":"BSA Calculator – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalEntity","name":"Body surface area for perfusion flow indexing"},"dateModified":"2026-04-10"},{"@type":"WebApplication","@id":"https://perfusiontools.com/bsa#app","name":"BSA Calculator","url":"https://perfusiontools.com/bsa","applicationCategory":"MedicalApplication","operatingSystem":"Any","isPartOf":{"@id":"https://perfusiontools.com/bsa#webpage"},"publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/bsa#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"BSA Calculator","item":"https://perfusiontools.com/bsa"}]}]}</script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0">
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">

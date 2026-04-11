@@ -12,7 +12,6 @@ export const sitemapPaths = [
   '/predicted-hct',
   '/lbm',
   '/timecalc',
-  '/do2i',
   '/phn-echo',
   '/quick-reference',
   '/faq',

@@ -211,39 +211,6 @@
     .info-block.alert { background: rgba(249, 115, 22, 0.1); border-color: rgba(249, 115, 22, 0.35); }
   </style>
 
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What is DO₂i (Oxygen Delivery Index) and what target range is used during CPB?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "DO₂i (Oxygen Delivery Index) measures how much oxygen the heart delivers to body tissues per minute per square meter of body surface area, expressed in mL O₂/min/m². During normothermic cardiopulmonary bypass, target DO₂i is typically ≥280–300 mL/min/m² to prevent tissue hypoxia and anaerobic metabolism. Infants and neonates often require higher targets (≥350–380 mL/min/m²) due to elevated metabolic rates."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does this perfusion calculator store or send patient data?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No. This is a static HTML-based calculator that runs entirely within your browser—all calculations are performed locally. No patient health information (PHI), clinical inputs, or personal data are saved to a database, sent to external servers, or transmitted over the internet. Your privacy and data security are completely protected."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is this a medical device or replacement for clinical judgment?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "This perfusion calculator is an educational tool for healthcare professionals and is not a medical device. It does not replace clinical judgment, institutional protocols, or direct patient monitoring. Results are for reference only. Always verify calculations manually and follow your facility's perfusion management guidelines and physician orders when managing oxygen delivery during cardiopulmonary bypass."
-        }
-      }
-    ]
-  }
-  </script>
-
   <!-- Google Analytics 4 -->
   <!-- TODO: Replace G-WZYBQ2VC7E with the real measurement ID -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZYBQ2VC7E"></script>
@@ -290,13 +257,6 @@
         description: "Weight-based and resistance-adjusted heparin dosing calculator for CPB operations.",
         headingDescription: "Estimate bolus doses with adjustable resistance and clinical guidance.",
         canonicalPath: "/heparin"
-      },
-      "/do2i": {
-        title: "Goal-Directed Perfusion — DO₂ Index (DO₂i) Calculator",
-        h1: "Goal-Directed Perfusion (GDP) Calculator",
-        description: "Calculate indexed oxygen delivery (DO₂i) for adult and pediatric CPB with normothermic GDP targets.",
-        headingDescription: "Set a DO₂i target and evaluate whether current pump flow is adequate.",
-        canonicalPath: "/do2i"
       },
       "/gdp": {
         title: "Oxygen Delivery (DO₂) Calculator – Perfusion Tools",
@@ -386,10 +346,11 @@
       const cleaned = rawRoute.replace('#', '').trim();
       if (!cleaned || cleaned === '/' || cleaned === '/home') return '/';
       const withLeadingSlash = cleaned.startsWith('/') ? cleaned : `/${cleaned}`;
-      if (withLeadingSlash.length > 1 && withLeadingSlash.endsWith('/')) {
-        return withLeadingSlash.slice(0, -1);
-      }
-      return withLeadingSlash;
+      const normalizedPath = withLeadingSlash.length > 1 && withLeadingSlash.endsWith('/')
+        ? withLeadingSlash.slice(0, -1)
+        : withLeadingSlash;
+      if (normalizedPath === '/do2i') return '/gdp';
+      return normalizedPath;
     }
 
     function applyRouteMeta(rawRoute) {
@@ -436,6 +397,7 @@
     window.addEventListener('popstate', () => applyRouteMeta());
     window.addEventListener('load', () => applyRouteMeta());
   </script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"WebSite","@id":"https://perfusiontools.com/#website","url":"https://perfusiontools.com","name":"Perfusion Tools","publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"ItemList","@id":"https://perfusiontools.com/#itemlist","url":"https://perfusiontools.com/","name":"Perfusion Tools calculators","itemListElement":[{"@type":"ListItem","position":1,"url":"https://perfusiontools.com/gdp","name":"GDP Calculator"},{"@type":"ListItem","position":2,"url":"https://perfusiontools.com/bsa","name":"BSA Calculator"},{"@type":"ListItem","position":3,"url":"https://perfusiontools.com/heparin","name":"Heparin Management"},{"@type":"ListItem","position":4,"url":"https://perfusiontools.com/predicted-hct","name":"Predicted Hematocrit"},{"@type":"ListItem","position":5,"url":"https://perfusiontools.com/phn-echo","name":"Pediatric Echo Z-score"},{"@type":"ListItem","position":6,"url":"https://perfusiontools.com/quick-reference","name":"Quick Reference"}]}]}</script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0">
 
