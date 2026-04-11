@@ -2921,7 +2921,9 @@ function route() {
     l.classList.add('text-slate-400', 'dark:text-slate-500');
   });
 
-  updateMetaForRoute(path || '/');
+  if (document.getElementById('view-home')) {
+    updateMetaForRoute(path || '/');
+  }
 
   let sideEl = null;
   if (key && navMap[key]) {
@@ -3009,17 +3011,6 @@ window.addEventListener('DOMContentLoaded', () => {
   const hasUnitConverter = hasElement('view-unit-converter');
   const hasHeparinCalculator = hasElement('view-heparin');
   const hasTimeCalculator = hasElement('view-timecalc');
-
-  const brandHome = document.getElementById('brand-home');
-  if (brandHome) {
-    brandHome.addEventListener('click', (e) => {
-      const href = brandHome.getAttribute('href');
-      if (href && href.startsWith('/')) {
-        e.preventDefault();
-        navigateTo(href, { resetScrollTop: true });
-      }
-    });
-  }
 
   document.querySelectorAll('a[data-route]').forEach(link => {
     link.addEventListener('click', (e) => {
