@@ -239,7 +239,7 @@
   </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"WebApplication","@id":"https://perfusiontools.com/timecalc#app","name":"Perfusion Time Calculator","url":"https://perfusiontools.com/timecalc/","description":"Calculate perfusion case times and interval durations for workflow support.","applicationCategory":"MedicalApplication","operatingSystem":"Any","publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/timecalc#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"Time Calculator","item":"https://perfusiontools.com/timecalc/"}]}]}</script>
 </head>
-<body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0">
+<body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
     <div class="max-w-7xl mx-auto px-4 h-[var(--header-height)] flex items-center justify-between">
       <a href="/" class="flex items-center gap-3 select-none cursor-pointer hover:opacity-80 transition-opacity">
@@ -256,7 +256,7 @@
     </div>
   </header>
 
-  <div class="pt-[var(--header-height)] max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr] gap-0 min-h-screen">
+  <div class="pt-[var(--header-height)] max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr] gap-0 flex-1">
     <aside id="desktop-sidebar" class="hidden md:block border-r border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/50 sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] p-4 overflow-y-auto">
       <div class="space-y-1">
         <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-3">Calculators</div>
@@ -767,7 +767,7 @@
     </main>
   </div>
 
-  <footer class="hidden md:block mt-10 border-t border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/90">
+  <footer class="hidden md:block mt-10 border-t border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/90 mt-auto">
     <div class="max-w-7xl mx-auto px-4 py-8 text-sm text-slate-500 dark:text-slate-400 flex items-center justify-between gap-3">
       <p>© <span id="year"></span> Perfusion Tools. Educational use for healthcare professionals.</p>
       <nav class="flex gap-4">
