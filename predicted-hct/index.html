@@ -30,6 +30,9 @@
             },
             accent: { 400: '#22d3ee', 500: '#06b6d4', 600: '#0891b2' }
           },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
           boxShadow: {
             card: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
             glow: '0 0 15px rgba(34, 211, 238, 0.3)'
@@ -39,16 +42,147 @@
     };
   </script>
   <style>
-    :root { --header-height: 60px; --bottom-nav-height: 64px; }
+    /* Custom Base Styles */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap');
+    :root {
+      --header-height: 60px;
+      --bottom-nav-height: 64px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .bsa-flow-number {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums lining-nums;
+      font-feature-settings: 'tnum' 1, 'lnum' 1;
+    }
+
+    /* Hide number input arrows */
     input[type=number] { appearance: textfield; }
     input[type=number]::-webkit-outer-spin-button,
     input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    /* Range Slider Styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: transparent;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+    }
+
+    /* Custom Scrollbar for desktop */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+
+    .phn-number {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+      font-weight: 600;
+      font-size: 1.06rem;
+      letter-spacing: 0.01em;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1, 'lnum' 1;
+    }
+    /* Logo Animation */
     @keyframes pulse-flow {
       0% { opacity: 0.6; transform: scale(0.95); }
       50% { opacity: 1; transform: scale(1.05); }
       100% { opacity: 0.6; transform: scale(0.95); }
     }
-    .animate-pulse-flow { animation: pulse-flow 3s infinite ease-in-out; }
+    .animate-pulse-flow {
+      animation: pulse-flow 3s infinite ease-in-out;
+    }
+
+    /* Accessibility: High contrast focus states for better keyboard navigation */
+    summary:focus {
+      outline: 2px solid #06b6d4;
+      outline-offset: 2px;
+    }
+
+    /* Heparin management UI helpers */
+    .hep-dose-btn {
+      width: 100%;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      color: #0f172a;
+      border-radius: 0.75rem;
+      padding: 0.6rem 0.75rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .hep-dose-btn:hover { border-color: #06b6d4; color: #0891b2; }
+    .dark .hep-dose-btn { background: #0f172a; border-color: #1e293b; color: #e2e8f0; }
+    .hep-dose-btn.active-dose {
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.25);
+      color: #0891b2;
+      background: rgba(6, 182, 212, 0.08);
+    }
+    .dark .hep-dose-btn.active-dose { background: rgba(8, 145, 178, 0.2); color: #67e8f9; border-color: #0ea5e9; }
+
+    .stat-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      box-shadow: 0 4px 8px -4px rgba(15, 23, 42, 0.25);
+    }
+    .dark .stat-card { background: #0b1220; border-color: #1e293b; box-shadow: none; }
+    .stat-card.highlight { border-color: #0ea5e9; box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.35); }
+    .stat-label { font-size: 0.75rem; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; }
+    .dark .stat-label { color: #94a3b8; }
+    .stat-value { font-size: 1.5rem; font-weight: 700; color: #0f172a; }
+    .dark .stat-value { color: #e2e8f0; }
+    .stat-unit { font-size: 0.9rem; color: #94a3b8; }
+
+    .badge {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(234, 179, 8, 0.15);
+      color: #ca8a04;
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+    }
+
+    .protocol-card, .flow-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.9rem;
+      padding: 1.25rem;
+      box-shadow: 0 4px 10px -6px rgba(15, 23, 42, 0.2);
+    }
+    .dark .protocol-card, .dark .flow-card { background: #0b1220; border-color: #1e293b; box-shadow: none; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      border-radius: 9999px;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .pill-warn { background: rgba(234, 179, 8, 0.15); color: #a16207; }
+    .pill-alert { background: rgba(248, 113, 113, 0.15); color: #b91c1c; }
+
+    .info-block {
+      border-radius: 0.9rem;
+      padding: 1rem 1.1rem;
+      border: 1px solid transparent;
+    }
+    .info-block.warn { background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.35); }
+    .info-block.alert { background: rgba(249, 115, 22, 0.1); border-color: rgba(249, 115, 22, 0.35); }
   </style>
 
   <script>
@@ -123,18 +257,24 @@
   </header>
 
   <div class="pt-[var(--header-height)] max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr] gap-0 min-h-screen">
-    <aside class="hidden md:block border-r border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/50 sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] p-4 overflow-y-auto">
+    <aside id="desktop-sidebar" class="hidden md:block border-r border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/50 sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] p-4 overflow-y-auto">
       <div class="space-y-1">
         <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-3">Calculators</div>
         <a href="/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Home</a>
         <a href="/bsa/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">BSA Calculator</a>
-        <a href="/phn-echo/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Z-score Calculator</a>
+        <a href="/lbm/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Lean Body Mass</a>
         <a href="/gdp/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">GDP Calculator</a>
         <a href="/heparin/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Heparin Management</a>
         <a href="/predicted-hct/" id="side-hct" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-100 text-accent-600 dark:bg-primary-800 dark:text-accent-400">Predicted Hematocrit</a>
-        <a href="/lbm/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Lean Body Mass</a>
+        <a href="/phn-echo/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Z-score Calculator</a>
         <a href="/priming-volume/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Priming Volume</a>
         <a href="/timecalc/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Time Calculator</a>
+        <a href="/quick-reference/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Quick Reference</a>
+        <a href="/unit-converter/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Unit converter</a>
+      </div>
+      <div class="mt-8 space-y-1">
+        <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-3">Info</div>
+        <a href="/info/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">About</a>
       </div>
     </aside>
 
@@ -274,7 +414,9 @@
     <div class="max-w-7xl mx-auto px-4 py-8 text-sm text-slate-500 dark:text-slate-400 flex items-center justify-between gap-3">
       <p>© <span id="year"></span> Perfusion Tools. Educational use for healthcare professionals.</p>
       <nav class="flex gap-4">
-<a href="/privacy" class="hover:text-accent-500 transition-colors">Privacy</a>
+        <a href="/privacy/" class="hover:text-accent-500 transition-colors">Privacy</a>
+        <a href="/terms/" class="hover:text-accent-500 transition-colors">Terms</a>
+        <a href="/contact/" class="hover:text-accent-500 transition-colors">Contact</a>
       </nav>
     </div>
   </footer>
