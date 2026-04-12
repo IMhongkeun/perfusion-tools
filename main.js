@@ -2916,6 +2916,9 @@ function route() {
     'info': ['nav-info', 'side-info', 'mob-info']
   };
 
+  const isStandalonePage = !document.getElementById('view-home');
+  if (isStandalonePage) return;
+
   document.querySelectorAll('.nav-link, .sidebar-link').forEach(l => {
     l.classList.remove('bg-primary-800', 'text-accent-400', 'bg-slate-100', 'text-primary-900', 'text-accent-600', 'border', 'border-slate-200', 'border-primary-900', 'dark:border-primary-700', 'bg-primary-700', 'dark:bg-primary-800', 'dark:text-accent-400');
   });
