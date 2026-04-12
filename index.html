@@ -399,7 +399,7 @@
   </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"WebSite","@id":"https://perfusiontools.com/#website","url":"https://perfusiontools.com","name":"Perfusion Tools","publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"ItemList","@id":"https://perfusiontools.com/#itemlist","url":"https://perfusiontools.com/","name":"Perfusion Tools calculators","itemListElement":[{"@type":"ListItem","position":1,"url":"https://perfusiontools.com/gdp/","name":"GDP Calculator"},{"@type":"ListItem","position":2,"url":"https://perfusiontools.com/bsa/","name":"BSA Calculator"},{"@type":"ListItem","position":3,"url":"https://perfusiontools.com/heparin/","name":"Heparin Management"},{"@type":"ListItem","position":4,"url":"https://perfusiontools.com/predicted-hct/","name":"Predicted Hematocrit"},{"@type":"ListItem","position":5,"url":"https://perfusiontools.com/phn-echo/","name":"Pediatric Echo Z-score"},{"@type":"ListItem","position":6,"url":"https://perfusiontools.com/quick-reference/","name":"Quick Reference"},{"@type":"ListItem","position":7,"url":"https://perfusiontools.com/lbm/","name":"Lean Body Mass Calculator"},{"@type":"ListItem","position":8,"url":"https://perfusiontools.com/priming-volume/","name":"Priming Volume Calculator"},{"@type":"ListItem","position":9,"url":"https://perfusiontools.com/unit-converter/","name":"Unit Converter"},{"@type":"ListItem","position":10,"url":"https://perfusiontools.com/timecalc/","name":"Time Calculator"}]}]}</script>
 </head>
-<body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0">
+<body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
 
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
     <div class="max-w-7xl mx-auto px-4 h-[var(--header-height)] flex items-center justify-between">
@@ -443,7 +443,7 @@
     </div>
   </header>
 
-  <div class="pt-[var(--header-height)] max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr] gap-0 min-h-screen">
+  <div class="pt-[var(--header-height)] max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr] gap-0 flex-1">
     
     <aside id="desktop-sidebar" class="hidden md:block border-r border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/50 sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] p-4 overflow-y-auto">
       <div class="space-y-1">
@@ -2359,7 +2359,7 @@
     </main>
   </div>
 
-  <footer class="hidden md:block mt-10 border-t border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/90">
+  <footer class="hidden md:block mt-10 border-t border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/90 mt-auto">
     <div class="max-w-7xl mx-auto px-4 py-8 text-sm text-slate-500 dark:text-slate-400 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
       <p>© <span id="year"></span> Perfusion Tools. Educational use for healthcare professionals.</p>
       <nav class="flex gap-4">
