@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>BSA Calculator for CPB Flow Indexing | Perfusion Tools</title>
-  <meta name="description" content="Calculate body surface area with Mosteller, DuBois, and Haycock formulas to support CPB flow indexing and perfusion planning." />
+  <meta name="description" content="Calculate body surface area with Mosteller, Du Bois, and Haycock formulas to support CPB flow indexing and perfusion planning." />
   <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
   <link rel="canonical" href="https://perfusiontools.com/bsa/" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -196,7 +196,7 @@
       '/bsa': {
         title: 'BSA Calculator for Perfusion Flow Guidance | Perfusion Tools',
         h1: 'BSA Calculator for Perfusion Flow Guidance in CPB',
-        description: 'Body Surface Area (BSA) calculator for perfusionists with Mosteller, DuBois, Haycock, and Boyd formulas plus CPB flow guidance by cardiac index.',
+        description: 'Body Surface Area (BSA) calculator for perfusionists with Mosteller, Du Bois, Haycock, and Boyd formulas plus CPB flow guidance by cardiac index.',
         headingDescription: 'Calculate BSA first, then estimate indexed pump flow targets (CI 1.0-3.0) for clinical perfusion planning.',
         canonicalPath: '/bsa/'
       }
@@ -352,7 +352,7 @@
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Formula</label>
                     <select id="bsa-method-standalone" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
                       <option value="Mosteller">Mosteller</option>
-                      <option value="DuBois">DuBois</option>
+                      <option value="DuBois">Du Bois</option>
                       <option value="Haycock">Haycock</option>
                       <option value="Boyd">Boyd</option>
                     </select>
@@ -378,7 +378,7 @@
                   <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Quick summary</h3>
                   <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                     Body surface area (BSA) helps index CPB flow targets and other perfusion references to patient size.
-                    This calculator supports Mosteller, DuBois, Haycock, and Boyd formulas with indexed flow guidance.
+                    This calculator supports Mosteller, Du Bois, Haycock, and Boyd formulas with indexed flow guidance.
                   </p>
                 </section>
                 <section class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/40 p-4">
@@ -394,7 +394,7 @@
                     </div>
                     <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/50 px-3 py-2">
                       <dt class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Also available</dt>
-                      <dd class="text-slate-700 dark:text-slate-200 font-medium">DuBois, Haycock, Boyd</dd>
+                      <dd class="text-slate-700 dark:text-slate-200 font-medium">Du Bois, Haycock, Boyd</dd>
                     </div>
                     <div class="rounded-lg border border-amber-300/70 dark:border-amber-700 bg-amber-50/70 dark:bg-amber-900/20 px-3 py-2">
                       <dt class="text-xs uppercase tracking-wide text-amber-700 dark:text-amber-300">Use caution</dt>
@@ -415,11 +415,11 @@
                   <div class="grid sm:grid-cols-2 gap-2 text-sm">
                     <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/50 px-3 py-2">
                       <p class="text-xs uppercase tracking-wide text-accent-600 dark:text-accent-400 font-semibold">Mosteller (default)</p>
-                      <p class="mt-1 text-slate-700 dark:text-slate-200">BSA = √((Height(cm) × Weight(kg)) / 3600)</p>
+                      <p class="mt-1 font-mono text-[12px] sm:text-[13px] leading-relaxed text-slate-700 dark:text-slate-200">BSA = √((Height(cm) × Weight(kg)) / 3600)</p>
                     </div>
                     <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/50 px-3 py-2">
-                      <p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 font-semibold">DuBois & DuBois</p>
-                      <p class="mt-1 text-slate-700 dark:text-slate-200">BSA = 0.007184 × Height(cm)<sup>0.725</sup> × Weight(kg)<sup>0.425</sup></p>
+                      <p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 font-semibold">Du Bois & Du Bois</p>
+                      <p class="mt-1 font-mono text-[12px] sm:text-[13px] leading-relaxed text-slate-700 dark:text-slate-200"><span class="block">BSA = 0.007184 × Height(cm)<sup>0.725</sup></span><span class="block">× Weight(kg)<sup>0.425</sup></span></p>
                     </div>
                   </div>
                 </section>
@@ -431,7 +431,7 @@
                   <div id="bsa-formula-compare" class="text-xs text-slate-500 dark:text-slate-400">Enter height and weight to compare formulas.</div>
                 </div>
               </div>
-              <div id="bsa-flow-layout" class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:col-span-2">
+              <div id="bsa-flow-layout" class="grid grid-cols-1 gap-4 lg:col-span-2">
                 <div id="bsa-tbw-flow-card" class="bg-slate-50 dark:bg-primary-800/60 rounded-2xl border border-slate-100 dark:border-primary-700/60 p-5 flex flex-col">
                   <div class="flex items-center justify-between mb-3">
                     <div>
@@ -476,7 +476,7 @@
                 </section>
                 <section class="space-y-1">
                   <h4 class="text-xs font-semibold text-primary-900 dark:text-white">Which formula does this calculator use?</h4>
-                  <p>Mosteller is the default. DuBois, Haycock, and Boyd remain available for comparison in special populations.</p>
+                  <p>Mosteller is the default. Du Bois, Haycock, and Boyd remain available for comparison in special populations.</p>
                 </section>
                 <section class="space-y-1">
                   <h4 class="text-xs font-semibold text-primary-900 dark:text-white">How should the result be interpreted?</h4>
