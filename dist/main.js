@@ -179,7 +179,10 @@ function initStandaloneTopNav() {
   }
 
   nav.innerHTML = TOP_NAV_ITEMS.map((item) => {
-    const isActive = currentPath === item.path;
+    const normalizedItemPath = item.path.length > 1 && item.path.endsWith('/')
+      ? item.path.slice(0, -1)
+      : item.path;
+    const isActive = currentPath === normalizedItemPath;
     const activeClasses = isActive
       ? 'bg-slate-100 text-accent-600 dark:bg-primary-800 dark:text-accent-400 border-slate-200 dark:border-primary-700'
       : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:border-slate-200 dark:hover:border-primary-700 hover:text-primary-900 dark:hover:text-accent-400';
@@ -380,6 +383,13 @@ function updateBsaFlowList(bsaVal) {
 }
 
 function updateStandaloneBsa() {
+  const bsaMethodLabelMap = {
+    Mosteller: 'Mosteller',
+    DuBois: 'Du Bois',
+    Haycock: 'Haycock',
+    GehanGeorge: 'Gehan-George',
+    Boyd: 'Boyd'
+  };
   const hRaw = num('bsa_height');
   const wRaw = num('bsa_weight');
   const method = el('bsa-method-standalone') ? el('bsa-method-standalone').value : 'Mosteller';
@@ -408,7 +418,7 @@ function updateStandaloneBsa() {
     resultDisplay.textContent = v ? `${v.toFixed(2)} m²` : '—';
   }
   const methodActive = el('bsa-method-active');
-  if (methodActive) methodActive.textContent = method;
+  if (methodActive) methodActive.textContent = bsaMethodLabelMap[method] || method;
 
   if (bmiDisplay) {
     if (h > 0 && w > 0) {
@@ -466,7 +476,7 @@ function updateStandaloneBsa() {
 
       const tableRows = rows.map((row) => `
         <tr class="border-t border-slate-100 dark:border-primary-700/60">
-          <td class="py-1.5 pr-2 text-slate-600 dark:text-slate-300">${row.formula}</td>
+          <td class="py-1.5 pr-2 text-slate-600 dark:text-slate-300">${bsaMethodLabelMap[row.formula] || row.formula}</td>
           <td class="py-1.5 text-right font-semibold text-primary-900 dark:text-white">${row.bsa.toFixed(3)} m²</td>
         </tr>
       `).join('');
@@ -1378,7 +1388,7 @@ function updateLBM() {
 
   const bsaLabelMap = {
     Mosteller: 'Mosteller formula',
-    DuBois: 'DuBois formula',
+    DuBois: 'Du Bois formula',
     Haycock: 'Haycock formula',
     GehanGeorge: 'Gehan–George formula',
     Boyd: 'Boyd formula'
@@ -2913,6 +2923,9 @@ function route() {
     'info': ['nav-info', 'side-info', 'mob-info']
   };
 
+  const isStandalonePage = !document.getElementById('view-home');
+  if (isStandalonePage) return;
+
   document.querySelectorAll('.nav-link, .sidebar-link').forEach(l => {
     l.classList.remove('bg-primary-800', 'text-accent-400', 'bg-slate-100', 'text-primary-900', 'text-accent-600', 'border', 'border-slate-200', 'border-primary-900', 'dark:border-primary-700', 'bg-primary-700', 'dark:bg-primary-800', 'dark:text-accent-400');
   });
@@ -2921,7 +2934,9 @@ function route() {
     l.classList.add('text-slate-400', 'dark:text-slate-500');
   });
 
-  updateMetaForRoute(path || '/');
+  if (document.getElementById('view-home')) {
+    updateMetaForRoute(path || '/');
+  }
 
   let sideEl = null;
   if (key && navMap[key]) {
@@ -3009,17 +3024,6 @@ window.addEventListener('DOMContentLoaded', () => {
   const hasUnitConverter = hasElement('view-unit-converter');
   const hasHeparinCalculator = hasElement('view-heparin');
   const hasTimeCalculator = hasElement('view-timecalc');
-
-  const brandHome = document.getElementById('brand-home');
-  if (brandHome) {
-    brandHome.addEventListener('click', (e) => {
-      const href = brandHome.getAttribute('href');
-      if (href && href.startsWith('/')) {
-        e.preventDefault();
-        navigateTo(href, { resetScrollTop: true });
-      }
-    });
-  }
 
   document.querySelectorAll('a[data-route]').forEach(link => {
     link.addEventListener('click', (e) => {
