@@ -488,6 +488,55 @@
                 </section>
               </div>
             </details>
+            <section class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/40 p-4 space-y-3" aria-labelledby="bsa-extended-notes-heading">
+              <h3 id="bsa-extended-notes-heading" class="text-sm font-semibold text-primary-900 dark:text-white">Extended clinical notes & evidence</h3>
+              <div class="space-y-2">
+                <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Formula comparison at a glance</h4>
+                <div class="overflow-x-auto">
+                  <table class="w-full min-w-[760px] text-xs">
+                    <thead>
+                      <tr class="text-left text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-primary-700">
+                        <th class="py-2 pr-3 font-semibold">Formula</th>
+                        <th class="py-2 pr-3 font-semibold">Equation</th>
+                        <th class="py-2 pr-3 font-semibold">Year</th>
+                        <th class="py-2 pr-3 font-semibold">Population / typical use</th>
+                        <th class="py-2 font-semibold">Practical note</th>
+                      </tr>
+                    </thead>
+                    <tbody class="text-slate-700 dark:text-slate-200">
+                      <tr class="border-b border-slate-100 dark:border-primary-800">
+                        <td class="py-2 pr-3 font-semibold">Mosteller</td>
+                        <td class="py-2 pr-3 font-mono">BSA = √((H × W) / 3600)</td>
+                        <td class="py-2 pr-3">1987</td>
+                        <td class="py-2 pr-3">Widely used adult default</td>
+                        <td class="py-2">Simple and practical</td>
+                      </tr>
+                      <tr class="border-b border-slate-100 dark:border-primary-800">
+                        <td class="py-2 pr-3 font-semibold">Du Bois &amp; Du Bois</td>
+                        <td class="py-2 pr-3 font-mono">BSA = 0.007184 × H<sup>0.725</sup> × W<sup>0.425</sup></td>
+                        <td class="py-2 pr-3">1916</td>
+                        <td class="py-2 pr-3">Historically important, widely cited</td>
+                        <td class="py-2">Limited original derivation sample</td>
+                      </tr>
+                      <tr class="border-b border-slate-100 dark:border-primary-800">
+                        <td class="py-2 pr-3 font-semibold">Haycock</td>
+                        <td class="py-2 pr-3 font-mono">BSA = 0.024265 × H<sup>0.3964</sup> × W<sup>0.5378</sup></td>
+                        <td class="py-2 pr-3">1978</td>
+                        <td class="py-2 pr-3">Often used in pediatric estimation</td>
+                        <td class="py-2">Useful in smaller body sizes</td>
+                      </tr>
+                      <tr>
+                        <td class="py-2 pr-3 font-semibold">Boyd</td>
+                        <td class="py-2 pr-3 font-mono">BSA = 0.0003207 × H<sup>0.3</sup> × W<sup>(0.7285 − 0.0188 × logW)</sup></td>
+                        <td class="py-2 pr-3">1935</td>
+                        <td class="py-2 pr-3">Broad body-size modeling</td>
+                        <td class="py-2">Less common in routine practice</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
             <div class="pt-2">
               <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-3">
                 <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Related tools</h3>
