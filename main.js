@@ -383,6 +383,13 @@ function updateBsaFlowList(bsaVal) {
 }
 
 function updateStandaloneBsa() {
+  const bsaMethodLabelMap = {
+    Mosteller: 'Mosteller',
+    DuBois: 'Du Bois',
+    Haycock: 'Haycock',
+    GehanGeorge: 'Gehan-George',
+    Boyd: 'Boyd'
+  };
   const hRaw = num('bsa_height');
   const wRaw = num('bsa_weight');
   const method = el('bsa-method-standalone') ? el('bsa-method-standalone').value : 'Mosteller';
@@ -411,7 +418,7 @@ function updateStandaloneBsa() {
     resultDisplay.textContent = v ? `${v.toFixed(2)} m²` : '—';
   }
   const methodActive = el('bsa-method-active');
-  if (methodActive) methodActive.textContent = method;
+  if (methodActive) methodActive.textContent = bsaMethodLabelMap[method] || method;
 
   if (bmiDisplay) {
     if (h > 0 && w > 0) {
@@ -469,7 +476,7 @@ function updateStandaloneBsa() {
 
       const tableRows = rows.map((row) => `
         <tr class="border-t border-slate-100 dark:border-primary-700/60">
-          <td class="py-1.5 pr-2 text-slate-600 dark:text-slate-300">${row.formula}</td>
+          <td class="py-1.5 pr-2 text-slate-600 dark:text-slate-300">${bsaMethodLabelMap[row.formula] || row.formula}</td>
           <td class="py-1.5 text-right font-semibold text-primary-900 dark:text-white">${row.bsa.toFixed(3)} m²</td>
         </tr>
       `).join('');
@@ -1381,7 +1388,7 @@ function updateLBM() {
 
   const bsaLabelMap = {
     Mosteller: 'Mosteller formula',
-    DuBois: 'DuBois formula',
+    DuBois: 'Du Bois formula',
     Haycock: 'Haycock formula',
     GehanGeorge: 'Gehan–George formula',
     Boyd: 'Boyd formula'

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>BSA Calculator for CPB Flow Indexing | Perfusion Tools</title>
-  <meta name="description" content="Calculate body surface area with Mosteller, DuBois, and Haycock formulas to support CPB flow indexing and perfusion planning." />
+  <meta name="description" content="Calculate body surface area with Mosteller, Du Bois, and Haycock formulas to support CPB flow indexing and perfusion planning." />
   <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
   <link rel="canonical" href="https://perfusiontools.com/bsa/" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -196,7 +196,7 @@
       '/bsa': {
         title: 'BSA Calculator for Perfusion Flow Guidance | Perfusion Tools',
         h1: 'BSA Calculator for Perfusion Flow Guidance in CPB',
-        description: 'Body Surface Area (BSA) calculator for perfusionists with Mosteller, DuBois, Haycock, and Boyd formulas plus CPB flow guidance by cardiac index.',
+        description: 'Body Surface Area (BSA) calculator for perfusionists with Mosteller, Du Bois, Haycock, and Boyd formulas plus CPB flow guidance by cardiac index.',
         headingDescription: 'Calculate BSA first, then estimate indexed pump flow targets (CI 1.0-3.0) for clinical perfusion planning.',
         canonicalPath: '/bsa/'
       }
@@ -328,12 +328,9 @@
           </div>
 
           <div class="p-6 space-y-6">
-            <div class="text-sm text-slate-600 dark:text-slate-300 rounded-xl bg-slate-50 dark:bg-primary-800/40 border border-slate-200 dark:border-primary-700 p-4">
-              In perfusion, BSA is used to index pump flow, oxygen delivery, and dosing references. Keep one formula consistently throughout the case for trend clarity.
-            </div>
 
             <div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-6">
-              <div class="space-y-4">
+              <div class="space-y-4 lg:col-span-2">
                 <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/50 p-2 inline-flex gap-2" role="group" aria-label="BSA unit selection">
                   <button id="bsa-unit-metric" type="button" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-primary-900 text-white dark:bg-primary-700">Metric (cm/kg)</button>
                   <button id="bsa-unit-imperial" type="button" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Imperial (in/lb)</button>
@@ -355,7 +352,7 @@
                     <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Formula</label>
                     <select id="bsa-method-standalone" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
                       <option value="Mosteller">Mosteller</option>
-                      <option value="DuBois">DuBois</option>
+                      <option value="DuBois">Du Bois</option>
                       <option value="Haycock">Haycock</option>
                       <option value="Boyd">Boyd</option>
                     </select>
@@ -377,6 +374,42 @@
                     </div>
                   </div>
                 </div>
+                <section class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-4 space-y-2">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Quick summary</h3>
+                  <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Body surface area (BSA) helps index CPB flow targets and other perfusion references to patient size.
+                    This calculator supports Mosteller, Du Bois, Haycock, and Boyd formulas with indexed flow guidance.
+                  </p>
+                </section>
+                <section class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/40 p-4">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white mb-3">Key info</h3>
+                  <dl class="grid sm:grid-cols-2 gap-2 text-sm">
+                    <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/50 px-3 py-2">
+                      <dt class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Used for</dt>
+                      <dd class="text-slate-700 dark:text-slate-200 font-medium">Indexed CPB flow guidance</dd>
+                    </div>
+                    <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/50 px-3 py-2">
+                      <dt class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Default formula</dt>
+                      <dd class="text-slate-700 dark:text-slate-200 font-medium">Mosteller</dd>
+                    </div>
+                    <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/50 px-3 py-2">
+                      <dt class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Also available</dt>
+                      <dd class="text-slate-700 dark:text-slate-200 font-medium">Du Bois, Haycock, Boyd</dd>
+                    </div>
+                    <div class="rounded-lg border border-amber-300/70 dark:border-amber-700 bg-amber-50/70 dark:bg-amber-900/20 px-3 py-2">
+                      <dt class="text-xs uppercase tracking-wide text-amber-700 dark:text-amber-300">Use caution</dt>
+                      <dd class="text-amber-800 dark:text-amber-200 font-medium">TBW-based BSA may overestimate targets in obesity</dd>
+                    </div>
+                  </dl>
+                </section>
+                <section class="space-y-2">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Quick clinical notes</h3>
+                  <ul class="list-disc pl-5 text-sm text-slate-600 dark:text-slate-300 space-y-1.5">
+                    <li>Keep one formula consistent during the same case for clearer trending.</li>
+                    <li>TBW-based BSA may overestimate indexed targets in obesity.</li>
+                    <li>Interpret indexed flow with lactate, venous saturation, temperature, and institutional protocol.</li>
+                  </ul>
+                </section>
                 <div class="rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/50 p-4">
                   <div class="flex items-center justify-between mb-2">
                     <h3 class="text-xs font-bold text-primary-900 dark:text-slate-100 uppercase tracking-wider">Formula Comparison</h3>
@@ -385,7 +418,7 @@
                   <div id="bsa-formula-compare" class="text-xs text-slate-500 dark:text-slate-400">Enter height and weight to compare formulas.</div>
                 </div>
               </div>
-              <div id="bsa-flow-layout" class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:col-span-2">
+              <div id="bsa-flow-layout" class="grid grid-cols-1 gap-4 lg:col-span-2">
                 <div id="bsa-tbw-flow-card" class="bg-slate-50 dark:bg-primary-800/60 rounded-2xl border border-slate-100 dark:border-primary-700/60 p-5 flex flex-col">
                   <div class="flex items-center justify-between mb-3">
                     <div>
@@ -423,12 +456,156 @@
               <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
                 <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology & clinical notes
               </summary>
-              <div class="mt-2 p-4 rounded-xl bg-slate-50 dark:bg-primary-800/60 border border-slate-100 dark:border-primary-700/60 text-xs text-slate-600 dark:text-slate-300 leading-relaxed space-y-3">
-                <p><strong>Mosteller:</strong> BSA = √((Height(cm) × Weight(kg)) / 3600). Clinical default in many CPB workflows.</p>
-                <p><strong>DuBois/Haycock/Boyd:</strong> Useful for sensitivity checks in pediatrics or extreme body habitus.</p>
-                <p><strong>Clinical interpretation:</strong> Use indexed flow as guidance with lactate, venous saturation, temperature, and institutional protocols.</p>
+              <div class="mt-2 p-4 rounded-xl bg-slate-50 dark:bg-primary-800/60 border border-slate-100 dark:border-primary-700/60 text-xs text-slate-600 dark:text-slate-300 leading-relaxed space-y-4">
+                <section class="space-y-1">
+                  <h4 class="text-xs font-semibold text-primary-900 dark:text-white">What is BSA used for in perfusion?</h4>
+                  <p>BSA supports indexed CPB flow targeting and can help normalize perfusion references to patient size.</p>
+                </section>
+                <section class="space-y-1">
+                  <h4 class="text-xs font-semibold text-primary-900 dark:text-white">Which formula does this calculator use?</h4>
+                  <p>Mosteller is the default. Du Bois, Haycock, and Boyd remain available for comparison in special populations.</p>
+                </section>
+                <section class="space-y-1">
+                  <h4 class="text-xs font-semibold text-primary-900 dark:text-white">How should the result be interpreted?</h4>
+                  <p>Use indexed flow as guidance and interpret with lactate, venous saturation, temperature, and local protocol.</p>
+                </section>
+                <section class="space-y-1">
+                  <h4 class="text-xs font-semibold text-primary-900 dark:text-white">What changes in obesity?</h4>
+                  <p>TBW-based BSA can overestimate indexed targets; obesity-adjusted references may better match clinical demand.</p>
+                </section>
               </div>
             </details>
+            <section class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/40 p-4 space-y-3" aria-labelledby="bsa-extended-notes-heading">
+              <h3 id="bsa-extended-notes-heading" class="text-sm font-semibold text-primary-900 dark:text-white">Extended clinical notes & evidence</h3>
+              <div class="space-y-2">
+                <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">BSA formula notes</h4>
+                <div class="grid md:grid-cols-2 gap-3 text-xs">
+                  <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1.5">
+                    <h5 class="font-semibold text-primary-900 dark:text-white">Mosteller</h5>
+                    <p class="text-slate-600 dark:text-slate-300">Commonly used practical adult default with simple, reproducible calculation.</p>
+                    <p class="font-mono text-slate-700 dark:text-slate-200">BSA = √((H × W) / 3600)</p>
+                    <p class="text-slate-500 dark:text-slate-400">Typical use: routine adult perfusion indexing.</p>
+                  </article>
+                  <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1.5">
+                    <h5 class="font-semibold text-primary-900 dark:text-white">Du Bois &amp; Du Bois</h5>
+                    <p class="text-slate-600 dark:text-slate-300">Historically important and widely cited as an adult comparison formula.</p>
+                    <p class="font-mono text-slate-700 dark:text-slate-200">BSA = 0.007184 × H<sup>0.725</sup> × W<sup>0.425</sup></p>
+                    <p class="text-slate-500 dark:text-slate-400">Why it matters: helpful reference when comparing formula behavior.</p>
+                  </article>
+                  <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1.5">
+                    <h5 class="font-semibold text-primary-900 dark:text-white">Haycock</h5>
+                    <p class="text-slate-600 dark:text-slate-300">Often considered in pediatric body-size estimation and smaller body sizes.</p>
+                    <p class="font-mono text-slate-700 dark:text-slate-200">BSA = 0.024265 × H<sup>0.3964</sup> × W<sup>0.5378</sup></p>
+                    <p class="text-slate-500 dark:text-slate-400">Typical use: pediatric-leaning comparisons in selected patients.</p>
+                  </article>
+                  <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1.5">
+                    <h5 class="font-semibold text-primary-900 dark:text-white">Boyd</h5>
+                    <p class="text-slate-600 dark:text-slate-300">Broader body-size modeling, though less common in routine practice.</p>
+                    <p class="font-mono text-slate-700 dark:text-slate-200">BSA = 0.0003207 × H<sup>0.3</sup> × W<sup>(0.7285 − 0.0188 × logW)</sup></p>
+                    <p class="text-slate-500 dark:text-slate-400">Why it matters: offers an additional reference in non-standard body habitus.</p>
+                  </article>
+                </div>
+              </div>
+              <div class="space-y-2">
+                <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Clinical context in CPB</h4>
+                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                  BSA indexing helps normalize pump flow targets across different body sizes and can support more consistent interpretation of perfusion adequacy than body weight alone.
+                </p>
+                <p class="font-mono text-xs text-slate-700 dark:text-slate-200">Cardiac Index (CI) = Pump Flow (L/min) ÷ BSA (m²)</p>
+                <ul class="list-disc pl-4 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                  <li>BSA-based indexing can help standardize flow interpretation across different patient sizes.</li>
+                  <li>Lower temperatures reduce metabolic demand, so acceptable indexed flow may vary with temperature.</li>
+                  <li>Indexed flow is a starting point, not a complete adequacy measure.</li>
+                  <li>SvO₂, lactate, urine output, temperature, and overall clinical context should also be assessed.</li>
+                </ul>
+                <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                  <p>Moderate hypothermia may allow lower indexed flow than near-normothermic bypass.</p>
+                  <p>Higher indexed flow targets are commonly used closer to normothermia.</p>
+                  <p>Exact targets should follow local protocol and patient context.</p>
+                </div>
+              </div>
+              <div class="space-y-2">
+                <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Obesity considerations: TBW-based BSA and adjusted references</h4>
+                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                  In obesity, TBW-based BSA may overestimate indexed flow targets because excess body weight does not always reflect proportional metabolic demand. In selected patients, adjusted body-size references may better match clinical interpretation.
+                </p>
+                <div class="overflow-x-auto">
+                  <table class="w-full min-w-[680px] text-xs">
+                    <thead>
+                      <tr class="text-left text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-primary-700">
+                        <th class="py-2 pr-3 font-semibold">Item</th>
+                        <th class="py-2 pr-3 font-semibold">TBW-based interpretation</th>
+                        <th class="py-2 font-semibold">Adjusted / IBW-leaning interpretation</th>
+                      </tr>
+                    </thead>
+                    <tbody class="text-slate-700 dark:text-slate-200">
+                      <tr class="border-b border-slate-100 dark:border-primary-800">
+                        <td class="py-2 pr-3 font-semibold">BSA estimate</td>
+                        <td class="py-2 pr-3">May be higher than metabolic demand</td>
+                        <td class="py-2">May better reflect clinical demand</td>
+                      </tr>
+                      <tr class="border-b border-slate-100 dark:border-primary-800">
+                        <td class="py-2 pr-3 font-semibold">Indexed pump flow target</td>
+                        <td class="py-2 pr-3">May trend higher</td>
+                        <td class="py-2">May be more realistic in selected patients</td>
+                      </tr>
+                      <tr class="border-b border-slate-100 dark:border-primary-800">
+                        <td class="py-2 pr-3 font-semibold">Anticoagulation interpretation</td>
+                        <td class="py-2 pr-3">Some centers use adjusted strategies</td>
+                        <td class="py-2">Local protocol should take precedence</td>
+                      </tr>
+                      <tr>
+                        <td class="py-2 pr-3 font-semibold">Perfusion assessment</td>
+                        <td class="py-2 pr-3">Requires SvO₂ / lactate / temperature context</td>
+                        <td class="py-2">Still requires clinical correlation</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400">ABW = IBW + 0.4 × (TBW − IBW)</p>
+                <ul class="list-disc pl-4 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                  <li>TBW-based BSA can still be used as a starting point.</li>
+                  <li>SvO₂, lactate, temperature, and overall clinical context should guide real-time interpretation.</li>
+                  <li>Local protocol should take precedence for heparin and perfusion management.</li>
+                </ul>
+              </div>
+              <div class="space-y-2">
+                <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Selected references</h4>
+                <ul class="list-disc pl-4 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                  <li>Mosteller RD. Simplified calculation of body-surface area. N Engl J Med. 1987;317:1098.</li>
+                  <li>Du Bois D, Du Bois EF. A formula to estimate the approximate surface area if height and weight be known. Arch Intern Med. 1916;17:863.</li>
+                  <li>Haycock GB, Schwartz GJ, Wisotsky DH. Geometric method for measuring body surface area: a height-weight formula validated in infants, children, and adults. J Pediatr. 1978;93:62.</li>
+                  <li>Boyd E. The Growth of the Surface Area of the Human Body.</li>
+                </ul>
+                <p class="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">Contextual CPB interpretation</p>
+                <ul class="list-disc pl-4 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                  <li>de Somer F et al. Interact Cardiovasc Thorac Surg. 2011.</li>
+                  <li>Grocott HP et al. J Thorac Cardiovasc Surg. 2005.</li>
+                  <li>Slogoff S et al. Ann Thorac Surg. 1990.</li>
+                </ul>
+              </div>
+              <div class="space-y-2">
+                <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Frequently asked questions</h4>
+                <div class="space-y-2 text-xs">
+                  <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
+                    <h5 class="font-semibold text-primary-900 dark:text-white">Which BSA formula is usually used for adult CPB?</h5>
+                    <p class="text-slate-600 dark:text-slate-300">Mosteller is commonly used as a practical adult default because it is simple and reproducible. Practice can vary by center, so local conventions still matter.</p>
+                  </article>
+                  <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
+                    <h5 class="font-semibold text-primary-900 dark:text-white">Which BSA formula may be preferred in pediatric patients?</h5>
+                    <p class="text-slate-600 dark:text-slate-300">Haycock is often considered in pediatric body-size estimation because it has been widely validated in infants and children. It is commonly used as a pediatric comparison option.</p>
+                  </article>
+                  <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
+                    <h5 class="font-semibold text-primary-900 dark:text-white">Does the formula choice matter if the BSA values are similar?</h5>
+                    <p class="text-slate-600 dark:text-slate-300">In many average-sized adults, formula differences are small. Consistency within the same case is often more useful than switching formulas during trending.</p>
+                  </article>
+                  <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
+                    <h5 class="font-semibold text-primary-900 dark:text-white">How should BSA-based flow guidance be interpreted in obesity?</h5>
+                    <p class="text-slate-600 dark:text-slate-300">TBW-based BSA may overestimate indexed targets in obesity. Real-time interpretation should include SvO₂, lactate, temperature, and local protocol.</p>
+                  </article>
+                </div>
+              </div>
+            </section>
             <div class="pt-2">
               <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-3">
                 <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Related tools</h3>
