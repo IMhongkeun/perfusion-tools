@@ -2923,33 +2923,31 @@ function route() {
     'info': ['nav-info', 'side-info', 'mob-info']
   };
 
-  const isStandalonePage = !document.getElementById('view-home');
-  if (isStandalonePage) return;
+  const hasHomeView = Boolean(document.getElementById('view-home'));
+  if (hasHomeView) {
+    document.querySelectorAll('.nav-link, .sidebar-link').forEach(l => {
+      l.classList.remove('bg-primary-800', 'text-accent-400', 'bg-slate-100', 'text-primary-900', 'text-accent-600', 'border', 'border-slate-200', 'border-primary-900', 'dark:border-primary-700', 'bg-primary-700', 'dark:bg-primary-800', 'dark:text-accent-400');
+    });
+    document.querySelectorAll('[id^="mob-"]').forEach(l => {
+      l.classList.remove('text-accent-600', 'dark:text-accent-400');
+      l.classList.add('text-slate-400', 'dark:text-slate-500');
+    });
 
-  document.querySelectorAll('.nav-link, .sidebar-link').forEach(l => {
-    l.classList.remove('bg-primary-800', 'text-accent-400', 'bg-slate-100', 'text-primary-900', 'text-accent-600', 'border', 'border-slate-200', 'border-primary-900', 'dark:border-primary-700', 'bg-primary-700', 'dark:bg-primary-800', 'dark:text-accent-400');
-  });
-  document.querySelectorAll('[id^="mob-"]').forEach(l => {
-    l.classList.remove('text-accent-600', 'dark:text-accent-400');
-    l.classList.add('text-slate-400', 'dark:text-slate-500');
-  });
-
-  if (document.getElementById('view-home')) {
     updateMetaForRoute(path || '/');
-  }
 
-  let sideEl = null;
-  if (key && navMap[key]) {
-    const navEl = el(navMap[key][0]);
-    if (navEl) navEl.classList.add('bg-slate-100', 'text-primary-900', 'border', 'border-slate-200', 'dark:bg-primary-800', 'dark:text-accent-400', 'dark:border-primary-700');
+    let sideEl = null;
+    if (key && navMap[key]) {
+      const navEl = el(navMap[key][0]);
+      if (navEl) navEl.classList.add('bg-slate-100', 'text-primary-900', 'border', 'border-slate-200', 'dark:bg-primary-800', 'dark:text-accent-400', 'dark:border-primary-700');
 
-    sideEl = el(navMap[key][1]);
-    if (sideEl) sideEl.classList.add('bg-slate-100', 'text-accent-600', 'dark:bg-primary-800', 'dark:text-accent-400');
+      sideEl = el(navMap[key][1]);
+      if (sideEl) sideEl.classList.add('bg-slate-100', 'text-accent-600', 'dark:bg-primary-800', 'dark:text-accent-400');
 
-    const mobEl = el(navMap[key][2]);
-    if (mobEl) {
-      mobEl.classList.remove('text-slate-400', 'dark:text-slate-500');
-      mobEl.classList.add('text-accent-600', 'dark:text-accent-400');
+      const mobEl = el(navMap[key][2]);
+      if (mobEl) {
+        mobEl.classList.remove('text-slate-400', 'dark:text-slate-500');
+        mobEl.classList.add('text-accent-600', 'dark:text-accent-400');
+      }
     }
   }
 
