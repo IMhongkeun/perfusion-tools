@@ -295,9 +295,10 @@
           </div>
 
           <div class="p-6 space-y-6">
-            <div class="flex items-center gap-2 border-b border-slate-100 dark:border-primary-800 pb-3">
+            <div class="flex flex-wrap items-center gap-2 border-b border-slate-100 dark:border-primary-800 pb-3">
               <button id="unit-tab-flow" data-unit-tab="flow" type="button" class="px-3 py-1.5 rounded-lg bg-accent-500/15 text-accent-700 dark:text-accent-300 text-sm font-semibold">flow</button>
               <button id="unit-tab-pressure" data-unit-tab="pressure" type="button" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-primary-800 transition-colors">pressure</button>
+              <button id="unit-tab-cannula" data-unit-tab="cannula" type="button" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-primary-800 transition-colors">cannula size</button>
             </div>
 
             <div id="unit-panel-flow" class="space-y-6">
@@ -401,6 +402,65 @@
                 <p><strong>psi ↔ kPa ↔ bar:</strong> 1 psi = 6.89476 kPa, 1 bar = 100 kPa</p>
               </div>
             </div>
+
+            <div id="unit-panel-cannula" class="space-y-6 hidden">
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Cannula / Catheter Size</h3>
+                  <p class="text-sm text-slate-600 dark:text-slate-300">Convert French size, approximate Gauge size, and outer diameter in millimeters for catheter and cannula size reference.</p>
+                  <label class="block space-y-1">
+                    <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Size type</span>
+                    <select id="cannula-size-type" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white">
+                      <option value="fr">French (Fr)</option>
+                      <option value="gauge">Gauge (G)</option>
+                      <option value="mm">Diameter (mm)</option>
+                    </select>
+                  </label>
+
+                  <label id="cannula-fr-mm-wrap" class="block space-y-1">
+                    <span id="cannula-fr-mm-label" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">French size (Fr)</span>
+                    <input id="cannula-fr-mm-value" type="number" step="0.01" min="0" placeholder="6" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+                  </label>
+
+                  <label id="cannula-gauge-wrap" class="block space-y-1 hidden">
+                    <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Gauge (G)</span>
+                    <select id="cannula-gauge-value" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white">
+                      <option value="14">14G</option>
+                      <option value="16">16G</option>
+                      <option value="18" selected>18G</option>
+                      <option value="20">20G</option>
+                      <option value="22">22G</option>
+                      <option value="24">24G</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="space-y-4">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Outputs</h3>
+                  <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 p-4 space-y-3">
+                    <div>
+                      <div class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Outer diameter</div>
+                      <div id="cannula-output-mm" class="text-xl font-bold text-primary-900 dark:text-white">—</div>
+                    </div>
+                    <div>
+                      <div class="text-xs tracking-wider text-slate-500 dark:text-slate-400">French equivalent</div>
+                      <div id="cannula-output-fr" class="text-lg font-semibold text-primary-900 dark:text-white">—</div>
+                    </div>
+                    <div>
+                      <div class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Approximate Gauge reference</div>
+                      <div id="cannula-output-gauge" class="text-sm font-medium text-slate-600 dark:text-slate-300">—</div>
+                    </div>
+                    <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-white/70 dark:bg-primary-900/40 p-2.5">
+                      <p id="cannula-output-note" class="text-xs text-slate-600 dark:text-slate-300">Select a size type and enter a value to convert.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-xs text-slate-500 dark:text-slate-400 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/70 dark:bg-primary-900/40 p-3">
+                French size represents catheter or cannula outer diameter, where 1 Fr equals 1/3 mm. Gauge values are approximate reference sizes and are not universally interchangeable with French sizes. Actual inner and outer diameters depend on device type, wall thickness, material, and manufacturer specifications. For cannula selection, always check the manufacturer’s specification.
+              </div>
+            </div>
           </div>
 
           <div class="px-6 pb-6">
@@ -454,78 +514,16 @@
                   <li>Unit labels preserve standard casing as displayed (e.g., mmHg, kPa, cmH₂O, mL/min).</li>
                 </ul>
               </div>
+
+              <div class="space-y-1">
+                <p class="font-semibold mb-1">Cannula / catheter sizing notes</p>
+                <ul class="list-disc pl-4 space-y-1">
+                  <li><strong>French size</strong> is an outer-diameter system where <strong>1 Fr = 1/3 mm</strong>.</li>
+                  <li><strong>Gauge</strong> values are shown as approximate references and can vary by device type and manufacturer.</li>
+                </ul>
+              </div>
             </div>
           </details>
-          </div>
-        </div>
-      </section>
-
-      <section id="view-cannula-converter" class="animate-in fade-in duration-300">
-        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
-          <div class="p-6 border-b border-slate-100 dark:border-primary-800 bg-slate-50/50 dark:bg-primary-800/30">
-            <div class="text-xs uppercase tracking-wider text-accent-500 font-semibold">Converter</div>
-            <h2 class="text-lg font-semibold text-primary-900 dark:text-white mt-1">Cannula / Catheter Size</h2>
-            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Convert French size, approximate Gauge size, and outer diameter in millimeters for catheter and cannula size reference.</p>
-          </div>
-
-          <div class="p-6 space-y-4">
-            <p class="text-sm text-slate-600 dark:text-slate-300">Use this bedside catheter size and cannula size aid for French size, Fr to mm, Gauge to mm, and outer diameter reference.</p>
-
-            <div class="grid md:grid-cols-2 gap-4">
-              <div class="space-y-3">
-                <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Inputs</h3>
-                <label class="block space-y-1">
-                  <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Size type</span>
-                  <select id="cannula-size-type" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white">
-                    <option value="fr">French (Fr)</option>
-                    <option value="gauge">Gauge (G)</option>
-                    <option value="mm">Diameter (mm)</option>
-                  </select>
-                </label>
-
-                <label id="cannula-fr-mm-wrap" class="block space-y-1">
-                  <span id="cannula-fr-mm-label" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">French size (Fr)</span>
-                  <input id="cannula-fr-mm-value" type="number" step="0.01" min="0" placeholder="6" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
-                </label>
-
-                <label id="cannula-gauge-wrap" class="block space-y-1 hidden">
-                  <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Gauge (G)</span>
-                  <select id="cannula-gauge-value" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white">
-                    <option value="14">14G</option>
-                    <option value="16">16G</option>
-                    <option value="18" selected>18G</option>
-                    <option value="20">20G</option>
-                    <option value="22">22G</option>
-                    <option value="24">24G</option>
-                  </select>
-                </label>
-              </div>
-
-              <div class="space-y-3">
-                <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Outputs</h3>
-                <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 p-4 space-y-3">
-                  <div>
-                    <div class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Outer diameter</div>
-                    <div id="cannula-output-mm" class="text-xl font-bold text-primary-900 dark:text-white">—</div>
-                  </div>
-                  <div>
-                    <div class="text-xs tracking-wider text-slate-500 dark:text-slate-400">French equivalent</div>
-                    <div id="cannula-output-fr" class="text-lg font-semibold text-primary-900 dark:text-white">—</div>
-                  </div>
-                  <div>
-                    <div class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Approximate Gauge reference</div>
-                    <div id="cannula-output-gauge" class="text-sm font-medium text-slate-600 dark:text-slate-300">—</div>
-                  </div>
-                  <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-white/70 dark:bg-primary-900/40 p-2.5">
-                    <p id="cannula-output-note" class="text-xs text-slate-600 dark:text-slate-300">Select a size type and enter a value to convert.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="text-xs text-slate-500 dark:text-slate-400 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/70 dark:bg-primary-900/40 p-3">
-              French size represents catheter or cannula outer diameter, where 1 Fr equals 1/3 mm. Gauge values are approximate reference sizes and are not universally interchangeable with French sizes. Actual inner and outer diameters depend on device type, wall thickness, material, and manufacturer specifications. For cannula selection, always check the manufacturer’s specification.
-            </div>
           </div>
         </div>
       </section>

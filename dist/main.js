@@ -709,26 +709,36 @@ function updateUnitConverterFlow() {
 function setUnitConverterTab(activeTab) {
   const flowTabButton = el('unit-tab-flow');
   const pressureTabButton = el('unit-tab-pressure');
+  const cannulaTabButton = el('unit-tab-cannula');
   const flowPanel = el('unit-panel-flow');
   const pressurePanel = el('unit-panel-pressure');
-  if (!flowTabButton || !pressureTabButton || !flowPanel || !pressurePanel) return;
+  const cannulaPanel = el('unit-panel-cannula');
+  if (!flowTabButton || !pressureTabButton || !cannulaTabButton || !flowPanel || !pressurePanel || !cannulaPanel) return;
 
-  const isFlowActive = activeTab !== 'pressure';
+  const tabButtons = {
+    flow: flowTabButton,
+    pressure: pressureTabButton,
+    cannula: cannulaTabButton
+  };
+  const tabPanels = {
+    flow: flowPanel,
+    pressure: pressurePanel,
+    cannula: cannulaPanel
+  };
+  const normalizedTab = ['flow', 'pressure', 'cannula'].includes(activeTab) ? activeTab : 'flow';
 
-  flowPanel.classList.toggle('hidden', !isFlowActive);
-  pressurePanel.classList.toggle('hidden', isFlowActive);
+  Object.entries(tabPanels).forEach(([tabKey, tabPanel]) => {
+    tabPanel.classList.toggle('hidden', tabKey !== normalizedTab);
+  });
 
-  flowTabButton.classList.toggle('bg-accent-500/15', isFlowActive);
-  flowTabButton.classList.toggle('text-accent-700', isFlowActive);
-  flowTabButton.classList.toggle('dark:text-accent-300', isFlowActive);
-  flowTabButton.classList.toggle('text-slate-600', !isFlowActive);
-  flowTabButton.classList.toggle('dark:text-slate-300', !isFlowActive);
-
-  pressureTabButton.classList.toggle('bg-accent-500/15', !isFlowActive);
-  pressureTabButton.classList.toggle('text-accent-700', !isFlowActive);
-  pressureTabButton.classList.toggle('dark:text-accent-300', !isFlowActive);
-  pressureTabButton.classList.toggle('text-slate-600', isFlowActive);
-  pressureTabButton.classList.toggle('dark:text-slate-300', isFlowActive);
+  Object.entries(tabButtons).forEach(([tabKey, tabButton]) => {
+    const isActive = tabKey === normalizedTab;
+    tabButton.classList.toggle('bg-accent-500/15', isActive);
+    tabButton.classList.toggle('text-accent-700', isActive);
+    tabButton.classList.toggle('dark:text-accent-300', isActive);
+    tabButton.classList.toggle('text-slate-600', !isActive);
+    tabButton.classList.toggle('dark:text-slate-300', !isActive);
+  });
 }
 
 function updateUnitConverterPressure() {
