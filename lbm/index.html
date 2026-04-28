@@ -295,7 +295,7 @@
 
           <div class="p-6 grid sm:grid-cols-2 gap-6">
             <div class="sm:col-span-2 text-sm text-slate-600 dark:text-slate-300 rounded-xl bg-slate-50 dark:bg-primary-800/40 border border-slate-200 dark:border-primary-700 p-4">
-              Lean body mass can help contextualize metabolic demand in patients with high or low adipose mass. Compare actual BSA and lean BSA flow outputs for CI target discussions.
+              Enter height, weight, sex, and formula choice to compare actual BSA-based flow with lean BSA-based flow.
             </div>
 
             <div class="space-y-1">
@@ -326,7 +326,7 @@
               <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">BSA Formula</label>
               <select id="lbm_bsa_formula" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white cursor-pointer">
                 <option value="Mosteller">Mosteller (default)</option>
-                <option value="DuBois">DuBois</option>
+                <option value="DuBois">Du Bois</option>
                 <option value="Haycock">Haycock</option>
                 <option value="GehanGeorge">Gehan–George</option>
               </select>
@@ -339,6 +339,31 @@
               <div class="relative z-10 flex items-end justify-between">
                 <div class="text-slate-300 text-sm font-medium">LBM Result</div>
                 <div id="lbm_result" class="text-4xl font-bold tracking-tight text-white">0 <span class="text-lg font-normal text-slate-400">kg</span></div>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 dark:bg-primary-800/30 border border-slate-200 dark:border-primary-700 rounded-2xl p-4">
+              <h3 class="text-sm font-semibold text-primary-900 dark:text-slate-100">Quick summary</h3>
+              <p class="mt-2 text-sm text-slate-700 dark:text-slate-300">
+                Lean body mass (LBM) estimates fat-free body mass and can help contextualize perfusion targets in obesity or extreme body habitus. This calculator compares actual BSA-based flow with lean BSA-based flow to support CPB flow discussions.
+              </p>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-sm font-semibold text-primary-900 dark:text-slate-100">Key info</h3>
+              <div class="grid md:grid-cols-3 gap-3">
+                <div class="bg-white dark:bg-primary-900 rounded-xl border border-slate-200 dark:border-primary-800 p-3">
+                  <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400">Primary use</div>
+                  <p class="mt-1 text-sm text-slate-700 dark:text-slate-300">Compare actual BSA vs lean BSA flow guidance.</p>
+                </div>
+                <div class="bg-white dark:bg-primary-900 rounded-xl border border-slate-200 dark:border-primary-800 p-3">
+                  <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400">Formula set</div>
+                  <p class="mt-1 text-sm text-slate-700 dark:text-slate-300">Boer and Hume LBM formulas.</p>
+                </div>
+                <div class="bg-white dark:bg-primary-900 rounded-xl border border-slate-200 dark:border-primary-800 p-3">
+                  <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400">Caution</div>
+                  <p class="mt-1 text-sm text-slate-700 dark:text-slate-300">Lean BSA is a reference value, not a replacement for bedside perfusion assessment.</p>
+                </div>
               </div>
             </div>
 
@@ -380,12 +405,10 @@
             </div>
 
             <div class="bg-slate-50 dark:bg-primary-800/30 border border-slate-100 dark:border-primary-700/50 p-4 rounded-2xl">
-              <h4 class="text-xs font-bold text-primary-900 dark:text-slate-200 uppercase tracking-wider mb-2">Clinical Notes</h4>
-              <div class="text-xs text-slate-600 dark:text-slate-400 space-y-1">
-                <p>• <strong>LBM definition:</strong> Body mass excluding adipose tissue.</p>
-                <p>• <strong>Perfusion context:</strong> Helps compare full-BSA indexed flow versus lean-mass indexed flow in obesity/extreme habitus.</p>
-                <p>• <strong>Interpretation:</strong> Use as decision support with SvO₂, lactate, perfusion pressure, and local protocol.</p>
-              </div>
+              <h4 class="text-xs font-bold text-primary-900 dark:text-slate-200 uppercase tracking-wider mb-2">Practical note</h4>
+              <p class="text-sm text-slate-700 dark:text-slate-300">
+                Use lean-BSA flow as a comparison reference and interpret it with SvO₂, lactate, perfusion pressure, temperature, and local protocol.
+              </p>
             </div>
 
             <details class="group">
@@ -393,12 +416,96 @@
                 <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology & limitations
               </summary>
               <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
-                <p><strong>Boer formulas:</strong> Male LBM = 0.407×W + 0.267×H − 19.2; Female LBM = 0.252×W + 0.473×H − 48.3.</p>
-                <p><strong>Hume formulas:</strong> Male LBM = 0.32810×W + 0.33929×H − 29.5336; Female LBM = 0.29569×W + 0.41813×H − 43.2933.</p>
-                <p><strong>BSA comparison:</strong> Actual and lean BSA are computed from the selected BSA formula, then flow is CI × BSA.</p>
-                <p><strong>Limitations:</strong> Adult estimation formulas; not a pediatric reference model and not a substitute for bedside perfusion monitoring.</p>
+                <div>
+                  <p><strong>What is lean body mass?</strong></p>
+                  <p>LBM means body mass excluding adipose tissue.</p>
+                </div>
+                <div>
+                  <p><strong>Which LBM formulas are used?</strong></p>
+                  <p>Adult estimation formulas are available using Boer and Hume equations.</p>
+                </div>
+                <div>
+                  <p><strong>How is lean BSA flow calculated?</strong></p>
+                  <p>Actual BSA and lean BSA are both calculated with the selected BSA formula, then flow comparison is calculated as CI × BSA.</p>
+                </div>
+                <div>
+                  <p><strong>How should the result be interpreted?</strong></p>
+                  <p>Lean BSA flow is a comparison reference, not a standalone prescription.</p>
+                </div>
+                <div>
+                  <p><strong>Limitations</strong></p>
+                  <p>Adult estimation formulas only; not a pediatric reference model; not a substitute for bedside perfusion monitoring; local protocol should take precedence.</p>
+                </div>
               </div>
             </details>
+
+            <section class="bg-slate-50 dark:bg-primary-900/70 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-4 md:p-5 space-y-5">
+              <div class="space-y-1 border-b border-slate-200 dark:border-primary-800 pb-3">
+                <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-slate-300">Extended clinical notes & evidence</h3>
+                <p class="text-xs text-slate-600 dark:text-slate-400">Additional interpretation for obesity, lean-BSA flow comparison, and CPB context.</p>
+              </div>
+
+              <div class="space-y-2">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Actual BSA vs lean BSA interpretation</h4>
+                <div class="text-sm text-slate-700 dark:text-slate-300 space-y-1">
+                  <p>Actual BSA-based flow may trend higher in obesity because total body weight contributes to BSA.</p>
+                  <p>Lean BSA-based flow may provide a comparison reference that is closer to fat-free body size.</p>
+                  <p>Neither value should be used alone; bedside perfusion markers remain essential.</p>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">LBM formula notes</h4>
+                <p class="text-sm text-slate-700 dark:text-slate-300">Adult LBM estimation formulas (Weight in kg, Height in cm).</p>
+                <div class="grid md:grid-cols-2 gap-3">
+                  <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-800/40 p-3">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300">Boer</p>
+                    <p class="mt-1 text-sm text-slate-700 dark:text-slate-300">Commonly used adult LBM estimation formula.</p>
+                    <div class="mt-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/60 p-2">
+                      <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Equation</p>
+                      <p class="mt-1 text-xs font-mono text-slate-700 dark:text-slate-300">Male: LBM = 0.407 × weight + 0.267 × height − 19.2</p>
+                      <p class="mt-1 text-xs font-mono text-slate-700 dark:text-slate-300">Female: LBM = 0.252 × weight + 0.473 × height − 48.3</p>
+                    </div>
+                  </div>
+                  <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-800/40 p-3">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300">Hume</p>
+                    <p class="mt-1 text-sm text-slate-700 dark:text-slate-300">Alternative adult LBM estimation formula.</p>
+                    <div class="mt-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/60 p-2">
+                      <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Equation</p>
+                      <p class="mt-1 text-xs font-mono text-slate-700 dark:text-slate-300">Male: LBM = 0.32810 × weight + 0.33929 × height − 29.5336</p>
+                      <p class="mt-1 text-xs font-mono text-slate-700 dark:text-slate-300">Female: LBM = 0.29569 × weight + 0.41813 × height − 43.2933</p>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-sm text-slate-700 dark:text-slate-300">Both formulas are estimates and can differ by sex, height, and weight.</p>
+              </div>
+
+              <div class="space-y-2">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Pediatric use: limited interpretation</h4>
+                <div class="text-sm text-slate-700 dark:text-slate-300 space-y-2">
+                  <p>LBM is meaningful as a body-composition concept in children, but this calculator is intended mainly for adult obesity or extreme body-habitus interpretation. Pediatric body composition changes with growth, and adult equations such as Boer and Hume are not pediatric reference models.</p>
+                  <p>For pediatric CPB, follow institutional pediatric perfusion protocols and interpret flow with temperature, DO₂/SvO₂, lactate, NIRS, pressure, urine output, and overall clinical context. Lean-BSA flow should not be used as a standalone pediatric pump-flow target.</p>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Clinical interpretation in CPB</h4>
+                <ul class="text-sm text-slate-700 dark:text-slate-300 space-y-1 list-disc pl-5">
+                  <li>Use the flow comparison as a discussion aid, not an automatic target.</li>
+                  <li>Interpret with SvO₂, lactate, perfusion pressure, temperature, urine output, and local protocol.</li>
+                  <li>In obesity, actual BSA flow and lean BSA flow may diverge meaningfully.</li>
+                  <li>Consistency and clinical context are more important than a single calculated number.</li>
+                </ul>
+              </div>
+
+              <div class="space-y-2">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Selected references</h4>
+                <ul class="text-sm text-slate-700 dark:text-slate-300 space-y-1 list-disc pl-5">
+                  <li>Boer P. Estimated lean body mass as an index for normalization of body fluid volumes in humans. <em>Am J Physiol.</em> 1984.</li>
+                  <li>Hume R. Prediction of lean body mass from height and weight. <em>J Clin Pathol.</em> 1966.</li>
+                </ul>
+              </div>
+            </section>
           </div>
         </div>
       </section>
