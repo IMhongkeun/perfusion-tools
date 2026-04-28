@@ -594,6 +594,14 @@ const UNIT_LABELS = {
   pressurePsi: 'psi',
   pressureBar: 'bar'
 };
+const CANNULA_GAUGE_LOOKUP = [
+  { gauge: 14, diameterMm: 2.10 },
+  { gauge: 16, diameterMm: 1.65 },
+  { gauge: 18, diameterMm: 1.27 },
+  { gauge: 20, diameterMm: 0.90 },
+  { gauge: 22, diameterMm: 0.70 },
+  { gauge: 24, diameterMm: 0.55 }
+];
 
 function initUnitConverterLabels() {
   const flowInputLabel = el('unit-label-flow-input');
@@ -701,26 +709,36 @@ function updateUnitConverterFlow() {
 function setUnitConverterTab(activeTab) {
   const flowTabButton = el('unit-tab-flow');
   const pressureTabButton = el('unit-tab-pressure');
+  const cannulaTabButton = el('unit-tab-cannula');
   const flowPanel = el('unit-panel-flow');
   const pressurePanel = el('unit-panel-pressure');
-  if (!flowTabButton || !pressureTabButton || !flowPanel || !pressurePanel) return;
+  const cannulaPanel = el('unit-panel-cannula');
+  if (!flowTabButton || !pressureTabButton || !cannulaTabButton || !flowPanel || !pressurePanel || !cannulaPanel) return;
 
-  const isFlowActive = activeTab !== 'pressure';
+  const tabButtons = {
+    flow: flowTabButton,
+    pressure: pressureTabButton,
+    cannula: cannulaTabButton
+  };
+  const tabPanels = {
+    flow: flowPanel,
+    pressure: pressurePanel,
+    cannula: cannulaPanel
+  };
+  const normalizedTab = ['flow', 'pressure', 'cannula'].includes(activeTab) ? activeTab : 'flow';
 
-  flowPanel.classList.toggle('hidden', !isFlowActive);
-  pressurePanel.classList.toggle('hidden', isFlowActive);
+  Object.entries(tabPanels).forEach(([tabKey, tabPanel]) => {
+    tabPanel.classList.toggle('hidden', tabKey !== normalizedTab);
+  });
 
-  flowTabButton.classList.toggle('bg-accent-500/15', isFlowActive);
-  flowTabButton.classList.toggle('text-accent-700', isFlowActive);
-  flowTabButton.classList.toggle('dark:text-accent-300', isFlowActive);
-  flowTabButton.classList.toggle('text-slate-600', !isFlowActive);
-  flowTabButton.classList.toggle('dark:text-slate-300', !isFlowActive);
-
-  pressureTabButton.classList.toggle('bg-accent-500/15', !isFlowActive);
-  pressureTabButton.classList.toggle('text-accent-700', !isFlowActive);
-  pressureTabButton.classList.toggle('dark:text-accent-300', !isFlowActive);
-  pressureTabButton.classList.toggle('text-slate-600', isFlowActive);
-  pressureTabButton.classList.toggle('dark:text-slate-300', isFlowActive);
+  Object.entries(tabButtons).forEach(([tabKey, tabButton]) => {
+    const isActive = tabKey === normalizedTab;
+    tabButton.classList.toggle('bg-accent-500/15', isActive);
+    tabButton.classList.toggle('text-accent-700', isActive);
+    tabButton.classList.toggle('dark:text-accent-300', isActive);
+    tabButton.classList.toggle('text-slate-600', !isActive);
+    tabButton.classList.toggle('dark:text-slate-300', !isActive);
+  });
 }
 
 function updateUnitConverterPressure() {
@@ -772,6 +790,92 @@ function updateUnitConverterPressure() {
   psiOutput.textContent = psiValue.toFixed(2);
   kpaGasOutput.textContent = kpaValue.toFixed(2);
   barOutput.textContent = barValue.toFixed(2);
+}
+
+function getClosestGaugeReferenceByMm(diameterMm) {
+  if (!(diameterMm > 0)) return null;
+
+  return CANNULA_GAUGE_LOOKUP.reduce((closest, entry) => {
+    if (!closest) return entry;
+    const nextDiff = Math.abs(entry.diameterMm - diameterMm);
+    const currentDiff = Math.abs(closest.diameterMm - diameterMm);
+    return nextDiff < currentDiff ? entry : closest;
+  }, null);
+}
+
+function updateCannulaInputMode() {
+  const sizeTypeSelect = el('cannula-size-type');
+  const frMmWrap = el('cannula-fr-mm-wrap');
+  const frMmLabel = el('cannula-fr-mm-label');
+  const frMmInput = el('cannula-fr-mm-value');
+  const gaugeWrap = el('cannula-gauge-wrap');
+  if (!sizeTypeSelect || !frMmWrap || !frMmLabel || !frMmInput || !gaugeWrap) return;
+
+  const isGaugeMode = sizeTypeSelect.value === 'gauge';
+  frMmWrap.classList.toggle('hidden', isGaugeMode);
+  gaugeWrap.classList.toggle('hidden', !isGaugeMode);
+
+  if (sizeTypeSelect.value === 'mm') {
+    frMmLabel.textContent = 'Diameter (mm)';
+    frMmInput.placeholder = '2.00';
+  } else {
+    frMmLabel.textContent = 'French size (Fr)';
+    frMmInput.placeholder = '6';
+  }
+}
+
+function updateCannulaConverter() {
+  const sizeTypeSelect = el('cannula-size-type');
+  const frMmInput = el('cannula-fr-mm-value');
+  const gaugeSelect = el('cannula-gauge-value');
+  const mmOutput = el('cannula-output-mm');
+  const frOutput = el('cannula-output-fr');
+  const gaugeOutput = el('cannula-output-gauge');
+  const noteOutput = el('cannula-output-note');
+
+  if (!sizeTypeSelect || !frMmInput || !gaugeSelect || !mmOutput || !frOutput || !gaugeOutput || !noteOutput) return;
+
+  const sizeType = sizeTypeSelect.value;
+  let diameterMm = null;
+  let frenchSize = null;
+  let gaugeReferenceText = '—';
+  let clinicalNote = 'Select a size type and enter a value to convert.';
+
+  if (sizeType === 'gauge') {
+    const selectedGauge = Number(gaugeSelect.value);
+    const gaugeEntry = CANNULA_GAUGE_LOOKUP.find(entry => entry.gauge === selectedGauge);
+    if (gaugeEntry) {
+      diameterMm = gaugeEntry.diameterMm;
+      // French formula: Fr = outer diameter(mm) × 3.
+      frenchSize = gaugeEntry.diameterMm * 3;
+      gaugeReferenceText = `~${gaugeEntry.gauge}G (approximate reference)`;
+      clinicalNote = 'Gauge to mm and Gauge to Fr values are approximate and depend on device and manufacturer.';
+    }
+  } else {
+    const inputValue = parseFloat(frMmInput.value);
+    if (Number.isFinite(inputValue) && inputValue >= 0) {
+      if (sizeType === 'fr') {
+        frenchSize = inputValue;
+        // French to diameter formula: diameter(mm) = Fr ÷ 3.
+        diameterMm = inputValue / 3;
+      } else if (sizeType === 'mm') {
+        diameterMm = inputValue;
+        // Diameter to French formula: Fr = diameter(mm) × 3.
+        frenchSize = inputValue * 3;
+      }
+
+      const closestGauge = getClosestGaugeReferenceByMm(diameterMm);
+      if (closestGauge) {
+        gaugeReferenceText = `Closest ~${closestGauge.gauge}G (approximate, OD ${closestGauge.diameterMm.toFixed(2)} mm)`;
+      }
+      clinicalNote = 'Fr to mm conversion is exact by definition; Gauge reference shown here is approximate.';
+    }
+  }
+
+  mmOutput.textContent = Number.isFinite(diameterMm) ? `${diameterMm.toFixed(2)} mm` : '—';
+  frOutput.textContent = Number.isFinite(frenchSize) ? `${frenchSize.toFixed(1)} Fr` : '—';
+  gaugeOutput.textContent = gaugeReferenceText;
+  noteOutput.textContent = clinicalNote;
 }
 
 
@@ -3238,6 +3342,15 @@ window.addEventListener('DOMContentLoaded', () => {
       const eventName = id === 'unit-pressure-from' ? 'change' : 'input';
       x.addEventListener(eventName, updateUnitConverterPressure);
     });
+    ['cannula-size-type', 'cannula-gauge-value'].forEach(id => {
+      const x = el(id);
+      if (x) x.addEventListener('change', () => {
+        if (id === 'cannula-size-type') updateCannulaInputMode();
+        updateCannulaConverter();
+      });
+    });
+    const cannulaFrMmInput = el('cannula-fr-mm-value');
+    if (cannulaFrMmInput) cannulaFrMmInput.addEventListener('input', updateCannulaConverter);
 
     document.querySelectorAll('[data-unit-tab]').forEach(button => {
       button.addEventListener('click', () => {
@@ -3267,6 +3380,8 @@ window.addEventListener('DOMContentLoaded', () => {
     initUnitConverterLabels();
     updateUnitConverterFlow();
     updateUnitConverterPressure();
+    updateCannulaInputMode();
+    updateCannulaConverter();
     setUnitConverterTab('flow');
   }
 });

@@ -4,18 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Perfusion Unit Converter (Pressure, Flow, Temperature)</title>
-  <meta name="description" content="Convert commonly used perfusion units for pressure, flow, temperature, and blood gas context during CPB and ECMO management." />
+  <title>Perfusion Unit Converter for Flow, Pressure and Cannula Size | Perfusion Tools</title>
+  <meta name="description" content="Clinical unit converter for perfusion flow, pressure, and cannula size. Convert L/min, mL/kg/min, mmHg, kPa, French size, Gauge, and mm." />
   <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
   <link rel="canonical" href="https://perfusiontools.com/unit-converter/" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Perfusion Unit Converter (Flow & Pressure) | Perfusion Tools" />
-  <meta property="og:description" content="Convert perfusion flow and pressure units quickly for bedside and circuit documentation." />
+  <meta property="og:title" content="Perfusion Unit Converter for Flow, Pressure and Cannula Size | Perfusion Tools" />
+  <meta property="og:description" content="Clinical unit converter for perfusion flow, pressure, and cannula size. Convert L/min, mL/kg/min, mmHg, kPa, French size, Gauge, and mm." />
   <meta property="og:url" content="https://perfusiontools.com/unit-converter/" />
-  <meta name="twitter:title" content="Perfusion Unit Converter (Flow & Pressure) | Perfusion Tools" />
-  <meta name="twitter:description" content="Convert perfusion flow and pressure units quickly for bedside and circuit documentation." />
+  <meta name="twitter:title" content="Perfusion Unit Converter for Flow, Pressure and Cannula Size | Perfusion Tools" />
+  <meta name="twitter:description" content="Clinical unit converter for perfusion flow, pressure, and cannula size. Convert L/min, mL/kg/min, mmHg, kPa, French size, Gauge, and mm." />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -30,6 +30,9 @@
             },
             accent: { 400: '#22d3ee', 500: '#06b6d4', 600: '#0891b2' }
           },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
           boxShadow: {
             card: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
             glow: '0 0 15px rgba(34, 211, 238, 0.3)'
@@ -39,31 +42,162 @@
     };
   </script>
   <style>
-    :root { --header-height: 60px; --bottom-nav-height: 64px; }
+    /* Custom Base Styles */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap');
+    :root {
+      --header-height: 60px;
+      --bottom-nav-height: 64px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .bsa-flow-number {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums lining-nums;
+      font-feature-settings: 'tnum' 1, 'lnum' 1;
+    }
+
+    /* Hide number input arrows */
     input[type=number] { appearance: textfield; }
     input[type=number]::-webkit-outer-spin-button,
     input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    /* Range Slider Styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: transparent;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+    }
+
+    /* Custom Scrollbar for desktop */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+
+    .phn-number {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+      font-weight: 600;
+      font-size: 1.06rem;
+      letter-spacing: 0.01em;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1, 'lnum' 1;
+    }
+    /* Logo Animation */
     @keyframes pulse-flow {
       0% { opacity: 0.6; transform: scale(0.95); }
       50% { opacity: 1; transform: scale(1.05); }
       100% { opacity: 0.6; transform: scale(0.95); }
     }
-    .animate-pulse-flow { animation: pulse-flow 3s infinite ease-in-out; }
+    .animate-pulse-flow {
+      animation: pulse-flow 3s infinite ease-in-out;
+    }
+
+    /* Accessibility: High contrast focus states for better keyboard navigation */
+    summary:focus {
+      outline: 2px solid #06b6d4;
+      outline-offset: 2px;
+    }
+
+    /* Heparin management UI helpers */
+    .hep-dose-btn {
+      width: 100%;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      color: #0f172a;
+      border-radius: 0.75rem;
+      padding: 0.6rem 0.75rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .hep-dose-btn:hover { border-color: #06b6d4; color: #0891b2; }
+    .dark .hep-dose-btn { background: #0f172a; border-color: #1e293b; color: #e2e8f0; }
+    .hep-dose-btn.active-dose {
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.25);
+      color: #0891b2;
+      background: rgba(6, 182, 212, 0.08);
+    }
+    .dark .hep-dose-btn.active-dose { background: rgba(8, 145, 178, 0.2); color: #67e8f9; border-color: #0ea5e9; }
+
+    .stat-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      box-shadow: 0 4px 8px -4px rgba(15, 23, 42, 0.25);
+    }
+    .dark .stat-card { background: #0b1220; border-color: #1e293b; box-shadow: none; }
+    .stat-card.highlight { border-color: #0ea5e9; box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.35); }
+    .stat-label { font-size: 0.75rem; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; }
+    .dark .stat-label { color: #94a3b8; }
+    .stat-value { font-size: 1.5rem; font-weight: 700; color: #0f172a; }
+    .dark .stat-value { color: #e2e8f0; }
+    .stat-unit { font-size: 0.9rem; color: #94a3b8; }
+
+    .badge {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(234, 179, 8, 0.15);
+      color: #ca8a04;
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+    }
+
+    .protocol-card, .flow-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.9rem;
+      padding: 1.25rem;
+      box-shadow: 0 4px 10px -6px rgba(15, 23, 42, 0.2);
+    }
+    .dark .protocol-card, .dark .flow-card { background: #0b1220; border-color: #1e293b; box-shadow: none; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      border-radius: 9999px;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .pill-warn { background: rgba(234, 179, 8, 0.15); color: #a16207; }
+    .pill-alert { background: rgba(248, 113, 113, 0.15); color: #b91c1c; }
+
+    .info-block {
+      border-radius: 0.9rem;
+      padding: 1rem 1.1rem;
+      border: 1px solid transparent;
+    }
+    .info-block.warn { background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.35); }
+    .info-block.alert { background: rgba(249, 115, 22, 0.1); border-color: rgba(249, 115, 22, 0.35); }
   </style>
 
   <script>
     const routeMeta = {
       '/': {
-        title: 'Perfusion Unit Converter (Flow & Pressure) | Perfusion Tools',
-        h1: 'Perfusion Unit Converter for Flow and Pressure',
-        description: 'Perfusion unit converter for flow and pressure. Convert L/min to mL/min and mL/kg/min, plus mmHg, kPa, cmH2O, psi, and bar for CPB and ECMO workflows.',
+        title: 'Perfusion Unit Converter for Flow, Pressure and Cannula Size | Perfusion Tools',
+        h1: 'Perfusion Unit Converter',
+        description: 'Clinical unit converter for perfusion flow, pressure, and cannula size. Convert L/min, mL/kg/min, mmHg, kPa, French size, Gauge, and mm.',
         canonicalPath: '/unit-converter'
       },
       '/unit-converter': {
-        title: 'Perfusion Unit Converter (Flow & Pressure) | Perfusion Tools',
-        h1: 'Perfusion Unit Converter for Flow and Pressure',
-        description: 'Perfusion unit converter for flow and pressure. Convert L/min to mL/min and mL/kg/min, plus mmHg, kPa, cmH2O, psi, and bar for CPB and ECMO workflows.',
-        headingDescription: 'Quickly convert common perfusion flow and pressure units used in CPB and ECMO practice.',
+        title: 'Perfusion Unit Converter for Flow, Pressure and Cannula Size | Perfusion Tools',
+        h1: 'Perfusion Unit Converter',
+        description: 'Clinical unit converter for perfusion flow, pressure, and cannula size. Convert L/min, mL/kg/min, mmHg, kPa, French size, Gauge, and mm.',
+        headingDescription: 'Convert flow, pressure, and cannula size units used in CPB, ECMO, and vascular access workflows.',
         canonicalPath: '/unit-converter'
       }
     };
@@ -103,9 +237,9 @@
     window.applyRouteMeta = applyRouteMeta;
     window.addEventListener('load', () => applyRouteMeta('/unit-converter'));
   </script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"WebApplication","@id":"https://perfusiontools.com/unit-converter#app","name":"Perfusion Unit Converter","url":"https://perfusiontools.com/unit-converter/","description":"Convert flow and pressure units for perfusion and ECMO workflows.","applicationCategory":"MedicalApplication","operatingSystem":"Any","publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/unit-converter#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"Unit Converter","item":"https://perfusiontools.com/unit-converter/"}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"WebApplication","@id":"https://perfusiontools.com/unit-converter#app","name":"Perfusion Unit Converter","url":"https://perfusiontools.com/unit-converter/","description":"Clinical unit converter for perfusion flow, pressure, and cannula size. Converts L/min, mL/kg/min, mmHg, kPa, French size, Gauge, and mm.","applicationCategory":"MedicalApplication","operatingSystem":"Any","publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/unit-converter#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"Unit Converter","item":"https://perfusiontools.com/unit-converter/"}]}]}</script>
 </head>
-<body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0">
+<body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
     <div class="max-w-7xl mx-auto px-4 h-[var(--header-height)] flex items-center justify-between">
       <a href="/" class="flex items-center gap-3 select-none cursor-pointer hover:opacity-80 transition-opacity">
@@ -122,28 +256,33 @@
     </div>
   </header>
 
-  <div class="pt-[var(--header-height)] max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr] gap-0 min-h-screen">
-    <aside class="hidden md:block border-r border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/50 sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] p-4 overflow-y-auto">
+  <div class="pt-[var(--header-height)] max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr] gap-0 flex-1">
+    <aside id="desktop-sidebar" class="hidden md:block border-r border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/50 sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] p-4 overflow-y-auto">
       <div class="space-y-1">
         <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-3">Calculators</div>
         <a href="/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Home</a>
         <a href="/bsa/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">BSA Calculator</a>
-        <a href="/phn-echo/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Z-score Calculator</a>
+        <a href="/lbm/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Lean Body Mass</a>
         <a href="/gdp/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">GDP Calculator</a>
         <a href="/heparin/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Heparin Management</a>
         <a href="/predicted-hct/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Predicted Hematocrit</a>
-        <a href="/lbm/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Lean Body Mass</a>
+        <a href="/phn-echo/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Z-score Calculator</a>
         <a href="/priming-volume/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Priming Volume</a>
         <a href="/timecalc/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Time Calculator</a>
-        <a href="/unit-converter/" id="side-unit" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-100 text-accent-600 dark:bg-primary-800 dark:text-accent-400">Unit Converter</a>
+        <a href="/quick-reference/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Quick Reference</a>
+        <a href="/unit-converter/" id="side-unit-converter" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-100 text-accent-600 dark:bg-primary-800 dark:text-accent-400">Unit converter</a>
+      </div>
+      <div class="mt-8 space-y-1">
+        <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-3">Info</div>
+        <a href="/info/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">About</a>
       </div>
     </aside>
 
     <main class="p-4 md:p-8 max-w-3xl mx-auto w-full space-y-8">
       <section class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
         <div class="p-6 space-y-3">
-          <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Perfusion Unit Converter for Flow and Pressure</h1>
-          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Quickly convert common perfusion flow and pressure units used in CPB and ECMO practice.</p>
+          <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Perfusion Unit Converter</h1>
+          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Convert flow, pressure, and cannula size units used in CPB, ECMO, and vascular access workflows.</p>
         </div>
       </section>
 
@@ -152,13 +291,14 @@
           <div class="p-6 border-b border-slate-100 dark:border-primary-800 bg-slate-50/50 dark:bg-primary-800/30">
             <div class="text-xs uppercase tracking-wider text-accent-500 font-semibold">Calculator</div>
             <h2 class="text-lg font-semibold text-primary-900 dark:text-white mt-1">Unit converter</h2>
-            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Simple base-input converters for flow and pressure units.</p>
+            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">A compact perfusion unit converter with flow converter, pressure converter, and cannula size converter modes.</p>
           </div>
 
           <div class="p-6 space-y-6">
-            <div class="flex items-center gap-2 border-b border-slate-100 dark:border-primary-800 pb-3">
+            <div class="flex flex-wrap items-center gap-2 border-b border-slate-100 dark:border-primary-800 pb-3">
               <button id="unit-tab-flow" data-unit-tab="flow" type="button" class="px-3 py-1.5 rounded-lg bg-accent-500/15 text-accent-700 dark:text-accent-300 text-sm font-semibold">flow</button>
               <button id="unit-tab-pressure" data-unit-tab="pressure" type="button" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-primary-800 transition-colors">pressure</button>
+              <button id="unit-tab-cannula" data-unit-tab="cannula" type="button" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-primary-800 transition-colors">cannula size</button>
             </div>
 
             <div id="unit-panel-flow" class="space-y-6">
@@ -262,6 +402,65 @@
                 <p><strong>psi ↔ kPa ↔ bar:</strong> 1 psi = 6.89476 kPa, 1 bar = 100 kPa</p>
               </div>
             </div>
+
+            <div id="unit-panel-cannula" class="space-y-6 hidden">
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Cannula / Catheter Size</h3>
+                  <p class="text-sm text-slate-600 dark:text-slate-300">Convert French size, approximate Gauge size, and outer diameter in millimeters for catheter and cannula size reference.</p>
+                  <label class="block space-y-1">
+                    <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Size type</span>
+                    <select id="cannula-size-type" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white">
+                      <option value="fr">French (Fr)</option>
+                      <option value="gauge">Gauge (G)</option>
+                      <option value="mm">Diameter (mm)</option>
+                    </select>
+                  </label>
+
+                  <label id="cannula-fr-mm-wrap" class="block space-y-1">
+                    <span id="cannula-fr-mm-label" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">French size (Fr)</span>
+                    <input id="cannula-fr-mm-value" type="number" step="0.01" min="0" placeholder="6" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+                  </label>
+
+                  <label id="cannula-gauge-wrap" class="block space-y-1 hidden">
+                    <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Gauge (G)</span>
+                    <select id="cannula-gauge-value" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white">
+                      <option value="14">14G</option>
+                      <option value="16">16G</option>
+                      <option value="18" selected>18G</option>
+                      <option value="20">20G</option>
+                      <option value="22">22G</option>
+                      <option value="24">24G</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="space-y-4">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Outputs</h3>
+                  <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 p-4 space-y-3">
+                    <div>
+                      <div class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Outer diameter</div>
+                      <div id="cannula-output-mm" class="text-xl font-bold text-primary-900 dark:text-white">—</div>
+                    </div>
+                    <div>
+                      <div class="text-xs tracking-wider text-slate-500 dark:text-slate-400">French equivalent</div>
+                      <div id="cannula-output-fr" class="text-lg font-semibold text-primary-900 dark:text-white">—</div>
+                    </div>
+                    <div>
+                      <div class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Approximate Gauge reference</div>
+                      <div id="cannula-output-gauge" class="text-sm font-medium text-slate-600 dark:text-slate-300">—</div>
+                    </div>
+                    <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-white/70 dark:bg-primary-900/40 p-2.5">
+                      <p id="cannula-output-note" class="text-xs text-slate-600 dark:text-slate-300">Select a size type and enter a value to convert.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-xs text-slate-500 dark:text-slate-400 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/70 dark:bg-primary-900/40 p-3">
+                French size represents catheter or cannula outer diameter: 1 Fr = 1/3 mm. Gauge values are approximate references and may vary by device type, wall thickness, material, and manufacturer. For cannula selection, always check the manufacturer’s specification.
+              </div>
+            </div>
           </div>
 
           <div class="px-6 pb-6">
@@ -273,46 +472,36 @@
               <div class="space-y-1">
                 <p class="font-semibold mb-1">Unit converter scope</p>
                 <ul class="list-disc pl-4 space-y-1">
-                  <li>This panel provides quick bedside unit conversions for perfusion-related flow and pressure values.</li>
-                  <li>It is a calculation aid only and does not replace patient-specific interpretation or institutional protocols.</li>
-                  <li>All computations are performed locally in the browser from the entered value and selected unit.</li>
+                  <li>This tool provides quick bedside conversions for perfusion flow, pressure, and cannula/catheter size reference.</li>
+                  <li>Calculations are performed locally in the browser from the entered value and selected unit.</li>
+                  <li>Results are calculation aids and should be interpreted with institutional practice and device specifications.</li>
                 </ul>
               </div>
 
               <div class="space-y-1">
-                <p class="font-semibold mb-1">Flow methodology (base input)</p>
+                <p class="font-semibold mb-1">Flow conversions</p>
                 <ul class="list-disc pl-4 space-y-1">
-                  <li>Base input uses flow in <strong>L/min</strong>, with optional weight in <strong>kg</strong>.</li>
+                  <li>Flow is entered in <strong>L/min</strong>.</li>
                   <li><strong>mL/min = L/min × 1000</strong></li>
-                  <li><strong>mL/kg/min = (L/min × 1000) / weight(kg)</strong></li>
-                  <li>If weight is not entered, mL/kg/min is not computed and a guidance message is shown.</li>
+                  <li><strong>mL/kg/min = (L/min × 1000) / weight(kg)</strong>, when weight is provided.</li>
                 </ul>
               </div>
 
               <div class="space-y-1">
-                <p class="font-semibold mb-1">Pressure methodology (single source unit)</p>
+                <p class="font-semibold mb-1">Pressure conversions</p>
                 <ul class="list-disc pl-4 space-y-1">
-                  <li>The pressure tab converts from one selected input unit and normalizes internally to <strong>kPa</strong> before generating all outputs.</li>
-                  <li>Clinical outputs: <strong>mmHg</strong>, <strong>kPa</strong>, <strong>cmH₂O</strong>.</li>
-                  <li>Gas supply outputs: <strong>psi</strong>, <strong>kPa</strong>, <strong>bar</strong>.</li>
+                  <li>Pressure values are normalized internally using standard relationships between <strong>mmHg</strong>, <strong>kPa</strong>, <strong>cmH₂O</strong>, <strong>psi</strong>, and <strong>bar</strong>.</li>
+                  <li>Blank or invalid inputs clear the calculated outputs.</li>
+                  <li>Unit labels preserve standard clinical casing, such as mmHg, kPa, cmH₂O, and mL/min.</li>
                 </ul>
               </div>
 
               <div class="space-y-1">
-                <p class="font-semibold mb-1">Pressure conversion constants</p>
+                <p class="font-semibold mb-1">Cannula / catheter size conversions</p>
                 <ul class="list-disc pl-4 space-y-1">
-                  <li>1 mmHg = 0.133322 kPa, 1 kPa = 7.50062 mmHg</li>
-                  <li>1 mmHg = 1.35951 cmH₂O, 1 cmH₂O = 0.735559 mmHg</li>
-                  <li>1 psi = 6.89476 kPa, 1 bar = 100 kPa</li>
-                </ul>
-              </div>
-
-              <div class="space-y-1">
-                <p class="font-semibold mb-1">Display and input behavior</p>
-                <ul class="list-disc pl-4 space-y-1">
-                  <li>Blank/invalid input clears computed pressure outputs.</li>
-                  <li>Zero and negative values are allowed for pressure conversions when clinically relevant (e.g., sub-atmospheric readings).</li>
-                  <li>Unit labels preserve standard casing as displayed (e.g., mmHg, kPa, cmH₂O, mL/min).</li>
+                  <li>French size uses the standard outer-diameter relationship: <strong>diameter(mm) = Fr ÷ 3</strong>.</li>
+                  <li><strong>Gauge to mm</strong> and <strong>Gauge to French</strong> values are lookup-based approximate references, not exact formula conversions.</li>
+                  <li>Actual inner and outer diameters may vary by device type, material, wall thickness, and manufacturer.</li>
                 </ul>
               </div>
             </div>
@@ -320,17 +509,94 @@
           </div>
         </div>
       </section>
+
+      <section class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
+        <div class="p-6 space-y-4">
+          <h2 class="text-lg font-semibold text-primary-900 dark:text-white">Unit Converter FAQ</h2>
+          <div class="space-y-2">
+            <details class="rounded-xl border border-slate-200 dark:border-primary-800 p-3 bg-slate-50/70 dark:bg-primary-900/40">
+              <summary class="cursor-pointer text-sm font-medium text-primary-900 dark:text-white">What is the relationship between French size and millimeters?</summary>
+              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">French size is based on outer diameter. To convert Fr to mm, divide by 3.</p>
+            </details>
+            <details class="rounded-xl border border-slate-200 dark:border-primary-800 p-3 bg-slate-50/70 dark:bg-primary-900/40">
+              <summary class="cursor-pointer text-sm font-medium text-primary-900 dark:text-white">Can Gauge be converted exactly to French size?</summary>
+              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">No. Gauge values are approximate references because dimensions vary by catheter design, wall thickness, and manufacturer.</p>
+            </details>
+            <details class="rounded-xl border border-slate-200 dark:border-primary-800 p-3 bg-slate-50/70 dark:bg-primary-900/40">
+              <summary class="cursor-pointer text-sm font-medium text-primary-900 dark:text-white">Is this converter for ECMO cannulas?</summary>
+              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">It can support CPB and ECMO sizing reference workflows, but final device selection should follow manufacturer specifications.</p>
+            </details>
+            <details class="rounded-xl border border-slate-200 dark:border-primary-800 p-3 bg-slate-50/70 dark:bg-primary-900/40">
+              <summary class="cursor-pointer text-sm font-medium text-primary-900 dark:text-white">What flow units are supported?</summary>
+              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">The flow converter supports L/min input and outputs mL/min and mL/kg/min.</p>
+            </details>
+          </div>
+        </div>
+      </section>
     </main>
   </div>
 
-  <footer class="hidden md:block mt-10 border-t border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/90">
+  <footer class="hidden md:block mt-10 border-t border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/90 mt-auto">
     <div class="max-w-7xl mx-auto px-4 py-8 text-sm text-slate-500 dark:text-slate-400 flex items-center justify-between gap-3">
       <p>© <span id="year"></span> Perfusion Tools. Educational use for healthcare professionals.</p>
       <nav class="flex gap-4">
-<a href="/privacy" class="hover:text-accent-500 transition-colors">Privacy</a>
+        <a href="/privacy/" class="hover:text-accent-500 transition-colors">Privacy</a>
+        <a href="/terms/" class="hover:text-accent-500 transition-colors">Terms</a>
+        <a href="/contact/" class="hover:text-accent-500 transition-colors">Contact</a>
       </nav>
     </div>
   </footer>
+
+  <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-primary-900 border-t border-slate-200 dark:border-primary-800 z-50 flex items-center h-[var(--bottom-nav-height)] pb-safe overflow-x-auto whitespace-nowrap px-1">
+    <a href="/" id="mob-home" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9.75l9-6 9 6V19.5A1.5 1.5 0 0119.5 21h-15A1.5 1.5 0 013 19.5V9.75z" /></svg>
+      <span class="text-[10px] font-medium">Home</span>
+    </a>
+    <a href="/bsa/" data-route id="mob-bsa" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.5 9.75A2.25 2.25 0 016.75 7.5h10.5A2.25 2.25 0 0119.5 9.75v4.5A2.25 2.25 0 0117.25 16.5H6.75A2.25 2.25 0 014.5 14.25v-4.5z M8.25 12h7.5M9 9.75v4.5m6-4.5v4.5" /></svg>
+      <span class="text-[10px] font-medium">BSA</span>
+    </a>
+    <a href="/lbm/" data-route id="mob-lbm" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+      <span class="text-[10px] font-medium">LBM</span>
+    </a>
+    <a href="/gdp/" data-route id="mob-do2i" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+      <span class="text-[10px] font-medium">GDP</span>
+    </a>
+    <a href="/heparin/" data-route id="mob-heparin" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <span class="text-[10px] font-medium">Heparin</span>
+    </a>
+    <a href="/predicted-hct/" data-route id="mob-hct" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+      <span class="text-[10px] font-medium">Hct</span>
+    </a>
+    <a href="/phn-echo/" data-route id="mob-phn-echo" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.75 6.75A2.25 2.25 0 016 4.5h12a2.25 2.25 0 012.25 2.25v10.5A2.25 2.25 0 0118 19.5H6a2.25 2.25 0 01-2.25-2.25V6.75z M8.25 9h7.5M8.25 12h4.5M8.25 15h7.5" /></svg>
+      <span class="text-[10px] font-medium">Z-score</span>
+    </a>
+    <a href="/priming-volume/" data-route id="mob-priming" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 3h10M9 3v5l-5 7a4 4 0 003.2 6h9.6A4 4 0 0020 15l-5-7V3" /></svg>
+      <span class="text-[10px] font-medium leading-tight text-center whitespace-nowrap">Priming</span>
+    </a>
+    <a href="/timecalc/" data-route id="mob-time" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <span class="text-[10px] font-medium">Time</span>
+    </a>
+    <a href="/quick-reference/" data-route id="mob-quick-reference" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6.75A2.75 2.75 0 016.75 4h10.5A2.75 2.75 0 0120 6.75v10.5A2.75 2.75 0 0117.25 20H6.75A2.75 2.75 0 014 17.25V6.75z M8 9h8M8 13h8M8 17h5" /></svg>
+      <span class="text-[10px] font-medium leading-tight text-center whitespace-nowrap">Quick Ref</span>
+    </a>
+    <a href="/unit-converter/" data-route id="mob-unit-converter" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-accent-600 dark:text-accent-400 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M7 12h10M10 17h4" /></svg>
+      <span class="text-[10px] font-medium leading-tight text-center whitespace-nowrap">Unit Conv</span>
+    </a>
+    <a href="/info/" id="mob-info" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <span class="text-[10px] font-medium">Info</span>
+    </a>
+  </nav>
 
   <script src="/main.js"></script>
 </body>
