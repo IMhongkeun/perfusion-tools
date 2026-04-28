@@ -472,55 +472,36 @@
               <div class="space-y-1">
                 <p class="font-semibold mb-1">Unit converter scope</p>
                 <ul class="list-disc pl-4 space-y-1">
-                  <li>This perfusion unit converter provides quick bedside conversions for flow, pressure, and cannula size.</li>
-                  <li>It is a calculation aid only and does not replace patient-specific interpretation or institutional protocols.</li>
-                  <li>All computations are performed locally in the browser from the entered value and selected unit.</li>
+                  <li>This tool provides quick bedside conversions for perfusion flow, pressure, and cannula/catheter size reference.</li>
+                  <li>Calculations are performed locally in the browser from the entered value and selected unit.</li>
+                  <li>Results are calculation aids and should be interpreted with institutional practice and device specifications.</li>
                 </ul>
               </div>
 
               <div class="space-y-1">
-                <p class="font-semibold mb-1">Flow converter methodology</p>
+                <p class="font-semibold mb-1">Flow conversions</p>
                 <ul class="list-disc pl-4 space-y-1">
-                  <li>Base input uses flow in <strong>L/min</strong>, with optional weight in <strong>kg</strong>.</li>
+                  <li>Flow is entered in <strong>L/min</strong>.</li>
                   <li><strong>mL/min = L/min × 1000</strong></li>
-                  <li><strong>mL/kg/min = (L/min × 1000) / weight(kg)</strong></li>
-                  <li>If weight is not entered, mL/kg/min is not computed and a guidance message is shown.</li>
+                  <li><strong>mL/kg/min = (L/min × 1000) / weight(kg)</strong>, when weight is provided.</li>
                 </ul>
               </div>
 
               <div class="space-y-1">
-                <p class="font-semibold mb-1">Pressure converter methodology</p>
+                <p class="font-semibold mb-1">Pressure conversions</p>
                 <ul class="list-disc pl-4 space-y-1">
-                  <li>The pressure tab converts from one selected input unit and normalizes internally to <strong>kPa</strong> before generating outputs.</li>
-                  <li>Clinical outputs: <strong>mmHg</strong>, <strong>kPa</strong>, <strong>cmH₂O</strong>.</li>
-                  <li>Gas supply outputs: <strong>psi</strong>, <strong>kPa</strong>, <strong>bar</strong>.</li>
+                  <li>Pressure values are normalized internally using standard relationships between <strong>mmHg</strong>, <strong>kPa</strong>, <strong>cmH₂O</strong>, <strong>psi</strong>, and <strong>bar</strong>.</li>
+                  <li>Blank or invalid inputs clear the calculated outputs.</li>
+                  <li>Unit labels preserve standard clinical casing, such as mmHg, kPa, cmH₂O, and mL/min.</li>
                 </ul>
               </div>
 
               <div class="space-y-1">
-                <p class="font-semibold mb-1">Pressure conversion constants</p>
+                <p class="font-semibold mb-1">Cannula / catheter size conversions</p>
                 <ul class="list-disc pl-4 space-y-1">
-                  <li>1 mmHg = 0.133322 kPa, 1 kPa = 7.50062 mmHg</li>
-                  <li>1 mmHg = 1.35951 cmH₂O, 1 cmH₂O = 0.735559 mmHg</li>
-                  <li>1 psi = 6.89476 kPa, 1 bar = 100 kPa</li>
-                </ul>
-              </div>
-
-              <div class="space-y-1">
-                <p class="font-semibold mb-1">Display and input behavior</p>
-                <ul class="list-disc pl-4 space-y-1">
-                  <li>Blank/invalid input clears computed pressure outputs.</li>
-                  <li>Zero and negative values are allowed for pressure conversions when clinically relevant (e.g., sub-atmospheric readings).</li>
-                  <li>Unit labels preserve standard casing as displayed (e.g., mmHg, kPa, cmH₂O, mL/min).</li>
-                </ul>
-              </div>
-
-              <div class="space-y-1">
-                <p class="font-semibold mb-1">Cannula / catheter sizing notes</p>
-                <ul class="list-disc pl-4 space-y-1">
-                  <li>French size conversion uses <strong>Fr = diameter(mm) × 3</strong>, and therefore <strong>Fr to mm</strong> uses <strong>diameter(mm) = Fr ÷ 3</strong>.</li>
-                  <li><strong>Gauge to mm</strong> and <strong>Gauge to French</strong> are lookup-based approximate references, not exact formula conversions.</li>
-                  <li>Actual catheter size and cannula size dimensions (outer diameter and inner diameter) may vary by manufacturer and device type.</li>
+                  <li>French size uses the standard outer-diameter relationship: <strong>diameter(mm) = Fr ÷ 3</strong>.</li>
+                  <li><strong>Gauge to mm</strong> and <strong>Gauge to French</strong> values are lookup-based approximate references, not exact formula conversions.</li>
+                  <li>Actual inner and outer diameters may vary by device type, material, wall thickness, and manufacturer.</li>
                 </ul>
               </div>
             </div>
@@ -535,19 +516,19 @@
           <div class="space-y-2">
             <details class="rounded-xl border border-slate-200 dark:border-primary-800 p-3 bg-slate-50/70 dark:bg-primary-900/40">
               <summary class="cursor-pointer text-sm font-medium text-primary-900 dark:text-white">What is the relationship between French size and millimeters?</summary>
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">French size is based on outer diameter: <strong>1 Fr = 1/3 mm</strong>. So Fr to mm is <strong>mm = Fr ÷ 3</strong>.</p>
+              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">French size is based on outer diameter. To convert Fr to mm, divide by 3.</p>
             </details>
             <details class="rounded-xl border border-slate-200 dark:border-primary-800 p-3 bg-slate-50/70 dark:bg-primary-900/40">
               <summary class="cursor-pointer text-sm font-medium text-primary-900 dark:text-white">Can Gauge be converted exactly to French size?</summary>
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">No. Gauge to mm and Gauge to French are approximate references because dimensions vary by catheter size design, wall thickness, and manufacturer.</p>
+              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">No. Gauge values are approximate references because dimensions vary by catheter design, wall thickness, and manufacturer.</p>
             </details>
             <details class="rounded-xl border border-slate-200 dark:border-primary-800 p-3 bg-slate-50/70 dark:bg-primary-900/40">
               <summary class="cursor-pointer text-sm font-medium text-primary-900 dark:text-white">Is this converter for ECMO cannulas?</summary>
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Yes. It supports CPB and ECMO sizing reference workflows, but final device selection should always follow manufacturer specifications.</p>
+              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">It can support CPB and ECMO sizing reference workflows, but final device selection should follow manufacturer specifications.</p>
             </details>
             <details class="rounded-xl border border-slate-200 dark:border-primary-800 p-3 bg-slate-50/70 dark:bg-primary-900/40">
               <summary class="cursor-pointer text-sm font-medium text-primary-900 dark:text-white">What flow units are supported?</summary>
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">The flow converter supports <strong>L/min</strong> input and outputs <strong>mL/min</strong> and <strong>mL/kg/min</strong>.</p>
+              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">The flow converter supports L/min input and outputs mL/min and mL/kg/min.</p>
             </details>
           </div>
         </div>
