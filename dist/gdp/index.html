@@ -440,68 +440,88 @@
             </div>
           </div>
 
-          <div class="px-6 pb-6">
-            <details class="mt-2 group">
+          <div class="px-6 pb-6 space-y-4">
+            <details class="group">
               <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
                 <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology & limitations
               </summary>
-              <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
-                <p>This calculator estimates oxygen delivery index from arterial oxygen content and indexed pump flow. It assumes steady-state oxygen content and does not model oxygen extraction, hypothermia, hemodilution kinetics, blood loss, transfusion timing, microcirculatory flow, or rapid changes in metabolic demand.</p>
-                <p>The calculated required flow should be treated as a decision-support estimate, not a mandatory pump flow. Final flow strategy should consider venous drainage, arterial line pressure, cannula size, perfusion pressure, hematocrit, lactate, SvO₂, NIRS, temperature, and the surgical field.</p>
-              </div>
-            </details>
-          </div>
-
-          <div class="px-6 pb-6 pt-0 space-y-4">
-            <details class="group rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/70 dark:bg-primary-900/35 p-4">
-              <summary class="cursor-pointer list-none flex items-center justify-between gap-3">
-                <span class="text-sm font-semibold text-slate-700 dark:text-slate-200">Extended clinical notes & evidence</span>
-                <span class="text-xs text-slate-500 dark:text-slate-400 group-open:hidden">Expand</span>
-                <span class="text-xs text-slate-500 dark:text-slate-400 hidden group-open:inline">Collapse</span>
-              </summary>
-              <div class="mt-4 grid gap-3 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                <div>
-                  <h4 class="font-semibold text-slate-800 dark:text-slate-100 mb-1">Why DO₂i matters in CPB</h4>
-                  <p>Indexed oxygen delivery is commonly used in perfusion practice because inadequate oxygen delivery may be associated with tissue hypoxia risk. DO₂i is best interpreted alongside perfusion pressure, oxygen extraction markers, and metabolic trend data.</p>
-                </div>
-                <div>
-                  <h4 class="font-semibold text-slate-800 dark:text-slate-100 mb-1">Common adult DO₂i targets</h4>
-                  <p>Many adult goal-directed protocols monitor ranges around 260–300 mL/min/m², with center-specific trigger points. No single DO₂i threshold is universally correct for every patient or every stage of bypass.</p>
-                </div>
-                <div>
-                  <h4 class="font-semibold text-slate-800 dark:text-slate-100 mb-1">Flow versus hemoglobin trade-off</h4>
-                  <p>DO₂i can be increased by raising pump flow, improving hemoglobin concentration, improving saturation, or combining these actions. Each strategy has trade-offs related to hemodilution, line pressure, drainage quality, and overall circuit constraints.</p>
-                </div>
-                <div>
-                  <h4 class="font-semibold text-slate-800 dark:text-slate-100 mb-1">Pediatric considerations</h4>
-                  <p>Pediatric CPB frequently uses higher indexed flow and oxygen delivery goals, but age, physiology, temperature management, and congenital anatomy can change interpretation. Apply institution-specific pediatric protocols.</p>
-                </div>
+              <div class="mt-2 p-4 rounded-xl bg-slate-50 dark:bg-primary-800/60 border border-slate-100 dark:border-primary-700/60 text-xs text-slate-600 dark:text-slate-300 leading-relaxed space-y-4">
+                <section class="space-y-1">
+                  <h4 class="text-xs font-semibold text-primary-900 dark:text-white">Model assumptions</h4>
+                  <p>This calculator estimates oxygen delivery index from arterial oxygen content and indexed pump flow. It assumes steady-state oxygen content and does not model oxygen extraction, hypothermia, hemodilution kinetics, blood loss, transfusion timing, microcirculatory flow, or rapid changes in metabolic demand.</p>
+                </section>
+                <section class="space-y-1">
+                  <h4 class="text-xs font-semibold text-primary-900 dark:text-white">How to use required flow output</h4>
+                  <p>The calculated required flow should be treated as a decision-support estimate, not a mandatory pump flow. Final flow strategy should consider venous drainage, arterial line pressure, cannula size, perfusion pressure, hematocrit, lactate, SvO₂, NIRS, temperature, and the surgical field.</p>
+                </section>
               </div>
             </details>
 
-            <section class="rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/40 p-4">
-              <h3 class="text-sm font-semibold text-primary-900 dark:text-white mb-3">FAQ</h3>
-              <div class="space-y-2 text-xs">
-                <details class="group border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2">
-                  <summary class="cursor-pointer font-medium text-slate-700 dark:text-slate-200">What is DO₂i in cardiopulmonary bypass?</summary>
-                  <p class="mt-2 text-slate-600 dark:text-slate-300">DO₂i is indexed oxygen delivery: the estimated oxygen delivered to the patient per minute per square meter of BSA during CPB.</p>
-                </details>
-                <details class="group border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2">
-                  <summary class="cursor-pointer font-medium text-slate-700 dark:text-slate-200">What DO₂i target is commonly used in goal-directed perfusion?</summary>
-                  <p class="mt-2 text-slate-600 dark:text-slate-300">Common adult targets often fall in a monitored range near 260–300 mL/min/m², but target selection should follow institutional protocol and patient context.</p>
-                </details>
-                <details class="group border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2">
-                  <summary class="cursor-pointer font-medium text-slate-700 dark:text-slate-200">How is required pump flow calculated?</summary>
-                  <p class="mt-2 text-slate-600 dark:text-slate-300">Required pump flow is estimated by rearranging the DO₂i equation: (Target DO₂i × BSA) ÷ (CaO₂ × 10).</p>
-                </details>
-                <details class="group border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2">
-                  <summary class="cursor-pointer font-medium text-slate-700 dark:text-slate-200">Can I increase DO₂i without increasing pump flow?</summary>
-                  <p class="mt-2 text-slate-600 dark:text-slate-300">Yes. Increasing hemoglobin, improving saturation, or optimizing oxygenator performance can increase estimated DO₂i without changing flow, depending on clinical constraints.</p>
-                </details>
-                <details class="group border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2">
-                  <summary class="cursor-pointer font-medium text-slate-700 dark:text-slate-200">Is this calculator for ECMO too?</summary>
-                  <p class="mt-2 text-slate-600 dark:text-slate-300">The formula can describe indexed oxygen delivery conceptually, but this page is primarily designed for CPB. ECMO interpretation requires additional factors such as native cardiac output, recirculation, differential oxygenation, and circuit configuration.</p>
-                </details>
+            <section class="bg-slate-50 dark:bg-primary-900/70 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-4 md:p-5 space-y-5" aria-labelledby="gdp-extended-notes-heading">
+              <div class="space-y-1 border-b border-slate-200 dark:border-primary-800 pb-3">
+                <h3 id="gdp-extended-notes-heading" class="text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-slate-300">Extended clinical notes & evidence</h3>
+                <p class="text-xs text-slate-600 dark:text-slate-400">Additional bedside context for DO₂i targets, interpretation, and CPB-specific flow planning.</p>
+              </div>
+
+              <div class="space-y-2">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Why DO₂i matters in CPB</h4>
+                <div class="text-sm text-slate-700 dark:text-slate-300 space-y-1">
+                  <p>Indexed oxygen delivery is commonly tracked in perfusion practice because reduced oxygen delivery may increase risk of tissue hypoxia during bypass.</p>
+                  <p>DO₂i trends are more useful when interpreted with perfusion pressure, oxygen extraction markers, and metabolic trend data rather than as an isolated threshold.</p>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Common adult DO₂i targets</h4>
+                <div class="text-sm text-slate-700 dark:text-slate-300 space-y-1">
+                  <p>Many adult goal-directed perfusion protocols monitor ranges around 260–300 mL/min/m², with center-specific trigger points and escalation pathways.</p>
+                  <p>No single DO₂i value is universally correct for all patients or all CPB phases.</p>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Flow versus hemoglobin trade-off</h4>
+                <div class="text-sm text-slate-700 dark:text-slate-300 space-y-1">
+                  <p>DO₂i can be increased by raising pump flow, increasing hemoglobin concentration, improving arterial saturation, or combining these adjustments.</p>
+                  <p>Each strategy has trade-offs related to hemodilution, arterial line pressure, venous drainage, and operative exposure constraints.</p>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Pediatric considerations</h4>
+                <div class="text-sm text-slate-700 dark:text-slate-300 space-y-1">
+                  <p>Pediatric CPB often uses higher indexed flow and oxygen delivery goals, but age, physiology, temperature strategy, and congenital anatomy can alter interpretation.</p>
+                  <p>Use institution-specific pediatric protocols and bedside monitoring for final flow management.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/40 p-4 space-y-3" aria-labelledby="gdp-faq-heading">
+              <div class="space-y-1">
+                <h3 id="gdp-faq-heading" class="text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-slate-300">Frequently asked questions</h3>
+                <p class="text-xs text-slate-600 dark:text-slate-400">Quick clarifications for common CPB DO₂i workflow questions.</p>
+              </div>
+              <div class="space-y-2">
+                <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
+                  <h4 class="font-semibold text-primary-900 dark:text-white">What is DO₂i in cardiopulmonary bypass?</h4>
+                  <p class="text-sm text-slate-700 dark:text-slate-300">DO₂i is indexed oxygen delivery: the estimated oxygen delivered to the patient per minute per square meter of BSA during CPB.</p>
+                </article>
+                <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
+                  <h4 class="font-semibold text-primary-900 dark:text-white">What DO₂i target is commonly used in goal-directed perfusion?</h4>
+                  <p class="text-sm text-slate-700 dark:text-slate-300">Common adult targets often fall in a monitored range near 260–300 mL/min/m², but target selection should follow institutional protocol and patient context.</p>
+                </article>
+                <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
+                  <h4 class="font-semibold text-primary-900 dark:text-white">How is required pump flow calculated?</h4>
+                  <p class="text-sm text-slate-700 dark:text-slate-300">Required pump flow is estimated by rearranging the DO₂i equation: (Target DO₂i × BSA) ÷ (CaO₂ × 10).</p>
+                </article>
+                <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
+                  <h4 class="font-semibold text-primary-900 dark:text-white">Can I increase DO₂i without increasing pump flow?</h4>
+                  <p class="text-sm text-slate-700 dark:text-slate-300">Yes. Increasing hemoglobin, improving saturation, or optimizing oxygenator performance can increase estimated DO₂i without changing flow, depending on clinical constraints.</p>
+                </article>
+                <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
+                  <h4 class="font-semibold text-primary-900 dark:text-white">Is this calculator for ECMO too?</h4>
+                  <p class="text-sm text-slate-700 dark:text-slate-300">The formula can describe indexed oxygen delivery conceptually, but this page is primarily designed for CPB. ECMO interpretation requires additional factors such as native cardiac output, recirculation, differential oxygenation, and circuit configuration.</p>
+                </article>
               </div>
             </section>
           </div>
