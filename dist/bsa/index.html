@@ -466,133 +466,141 @@
                 </section>
               </div>
             </details>
-            <section class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/40 p-4 space-y-3" aria-labelledby="bsa-extended-notes-heading">
-              <h3 id="bsa-extended-notes-heading" class="text-sm font-semibold text-primary-900 dark:text-white">Extended clinical notes & evidence</h3>
+            <section class="bg-slate-50 dark:bg-primary-900/70 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-4 md:p-5 space-y-5" aria-labelledby="bsa-extended-notes-heading">
+              <div class="space-y-1 border-b border-slate-200 dark:border-primary-800 pb-3">
+                <h3 id="bsa-extended-notes-heading" class="text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-slate-300">Extended clinical notes & evidence</h3>
+                <p class="text-xs text-slate-600 dark:text-slate-400">Additional interpretation for BSA formula behavior, CPB flow indexing context, and obesity-specific considerations.</p>
+              </div>
+
               <div class="space-y-2">
-                <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">BSA formula notes</h4>
-                <div class="grid md:grid-cols-2 gap-3 text-xs">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">BSA formula notes</h4>
+                <div class="grid md:grid-cols-2 gap-3">
                   <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1.5">
                     <h5 class="font-semibold text-primary-900 dark:text-white">Mosteller</h5>
-                    <p class="text-slate-600 dark:text-slate-300">Commonly used practical adult default with simple, reproducible calculation.</p>
-                    <p class="font-mono text-slate-700 dark:text-slate-200">BSA = √((H × W) / 3600)</p>
-                    <p class="text-slate-500 dark:text-slate-400">Typical use: routine adult perfusion indexing.</p>
+                    <p class="text-sm text-slate-700 dark:text-slate-300">Commonly used practical adult default with simple, reproducible calculation.</p>
+                    <p class="font-mono text-xs text-slate-700 dark:text-slate-200">BSA = √((H × W) / 3600)</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Typical use: routine adult perfusion indexing.</p>
                   </article>
                   <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1.5">
                     <h5 class="font-semibold text-primary-900 dark:text-white">Du Bois &amp; Du Bois</h5>
-                    <p class="text-slate-600 dark:text-slate-300">Historically important and widely cited as an adult comparison formula.</p>
-                    <p class="font-mono text-slate-700 dark:text-slate-200">BSA = 0.007184 × H<sup>0.725</sup> × W<sup>0.425</sup></p>
-                    <p class="text-slate-500 dark:text-slate-400">Why it matters: helpful reference when comparing formula behavior.</p>
+                    <p class="text-sm text-slate-700 dark:text-slate-300">Historically important and widely cited as an adult comparison formula.</p>
+                    <p class="font-mono text-xs text-slate-700 dark:text-slate-200">BSA = 0.007184 × H<sup>0.725</sup> × W<sup>0.425</sup></p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Why it matters: helpful reference when comparing formula behavior.</p>
                   </article>
                   <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1.5">
                     <h5 class="font-semibold text-primary-900 dark:text-white">Haycock</h5>
-                    <p class="text-slate-600 dark:text-slate-300">Often considered in pediatric body-size estimation and smaller body sizes.</p>
-                    <p class="font-mono text-slate-700 dark:text-slate-200">BSA = 0.024265 × H<sup>0.3964</sup> × W<sup>0.5378</sup></p>
-                    <p class="text-slate-500 dark:text-slate-400">Typical use: pediatric-leaning comparisons in selected patients.</p>
+                    <p class="text-sm text-slate-700 dark:text-slate-300">Often considered in pediatric body-size estimation and smaller body sizes.</p>
+                    <p class="font-mono text-xs text-slate-700 dark:text-slate-200">BSA = 0.024265 × H<sup>0.3964</sup> × W<sup>0.5378</sup></p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Typical use: pediatric-leaning comparisons in selected patients.</p>
                   </article>
                   <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1.5">
                     <h5 class="font-semibold text-primary-900 dark:text-white">Boyd</h5>
-                    <p class="text-slate-600 dark:text-slate-300">Broader body-size modeling, though less common in routine practice.</p>
-                    <p class="font-mono text-slate-700 dark:text-slate-200">BSA = 0.0003207 × H<sup>0.3</sup> × W<sup>(0.7285 − 0.0188 × logW)</sup></p>
-                    <p class="text-slate-500 dark:text-slate-400">Why it matters: offers an additional reference in non-standard body habitus.</p>
+                    <p class="text-sm text-slate-700 dark:text-slate-300">Broader body-size modeling, though less common in routine practice.</p>
+                    <p class="font-mono text-xs text-slate-700 dark:text-slate-200">BSA = 0.0003207 × H<sup>0.3</sup> × W<sup>(0.7285 − 0.0188 × logW)</sup></p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Why it matters: offers an additional reference in non-standard body habitus.</p>
                   </article>
                 </div>
               </div>
+
               <div class="space-y-2">
-                <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Clinical context in CPB</h4>
-                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Clinical context in CPB</h4>
+                <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
                   BSA indexing helps normalize pump flow targets across different body sizes and can support more consistent interpretation of perfusion adequacy than body weight alone.
                 </p>
                 <p class="font-mono text-xs text-slate-700 dark:text-slate-200">Cardiac Index (CI) = Pump Flow (L/min) ÷ BSA (m²)</p>
-                <ul class="list-disc pl-4 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                <ul class="list-disc pl-5 text-sm text-slate-700 dark:text-slate-300 space-y-1">
                   <li>BSA-based indexing can help standardize flow interpretation across different patient sizes.</li>
                   <li>Lower temperatures reduce metabolic demand, so acceptable indexed flow may vary with temperature.</li>
                   <li>Indexed flow is a starting point, not a complete adequacy measure.</li>
                   <li>SvO₂, lactate, urine output, temperature, and overall clinical context should also be assessed.</li>
                 </ul>
-                <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 text-xs text-slate-600 dark:text-slate-300 space-y-1">
-                  <p>Moderate hypothermia may allow lower indexed flow than near-normothermic bypass.</p>
-                  <p>Higher indexed flow targets are commonly used closer to normothermia.</p>
-                  <p>Exact targets should follow local protocol and patient context.</p>
+                <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
+                  <p class="text-sm text-slate-700 dark:text-slate-300">Moderate hypothermia may allow lower indexed flow than near-normothermic bypass.</p>
+                  <p class="text-sm text-slate-700 dark:text-slate-300">Higher indexed flow targets are commonly used closer to normothermia.</p>
+                  <p class="text-sm text-slate-700 dark:text-slate-300">Exact targets should follow local protocol and patient context.</p>
                 </div>
               </div>
+
               <div class="space-y-2">
-                <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Obesity considerations: TBW-based BSA and adjusted references</h4>
-                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                  In obesity, TBW-based BSA may overestimate indexed flow targets because excess body weight does not always reflect proportional metabolic demand. In selected patients, adjusted body-size references may better match clinical interpretation.
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Obesity considerations: TBW-based BSA vs adjusted references</h4>
+                <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                  In obesity, TBW-based BSA may overestimate indexed flow targets. In selected patients, adjusted body-size references may better fit clinical interpretation.
                 </p>
                 <div class="overflow-x-auto">
-                  <table class="w-full min-w-[680px] text-xs">
+                  <table class="w-full min-w-[560px] md:min-w-0 text-[11px] leading-5">
                     <thead>
                       <tr class="text-left text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-primary-700">
-                        <th class="py-2 pr-3 font-semibold">Item</th>
-                        <th class="py-2 pr-3 font-semibold">TBW-based interpretation</th>
-                        <th class="py-2 font-semibold">Adjusted / IBW-leaning interpretation</th>
+                        <th class="py-1.5 pr-3 font-semibold">Item</th>
+                        <th class="py-1.5 pr-3 font-semibold">TBW-based</th>
+                        <th class="py-1.5 font-semibold">Adjusted / IBW</th>
                       </tr>
                     </thead>
                     <tbody class="text-slate-700 dark:text-slate-200">
                       <tr class="border-b border-slate-100 dark:border-primary-800">
-                        <td class="py-2 pr-3 font-semibold">BSA estimate</td>
-                        <td class="py-2 pr-3">May be higher than metabolic demand</td>
-                        <td class="py-2">May better reflect clinical demand</td>
+                        <td class="py-1.5 pr-3 font-medium">BSA estimate</td>
+                        <td class="py-1.5 pr-3">May overestimate demand</td>
+                        <td class="py-1.5">May better reflect demand</td>
                       </tr>
                       <tr class="border-b border-slate-100 dark:border-primary-800">
-                        <td class="py-2 pr-3 font-semibold">Indexed pump flow target</td>
-                        <td class="py-2 pr-3">May trend higher</td>
-                        <td class="py-2">May be more realistic in selected patients</td>
+                        <td class="py-1.5 pr-3 font-medium">Indexed flow target</td>
+                        <td class="py-1.5 pr-3">May trend higher</td>
+                        <td class="py-1.5">May be more realistic</td>
                       </tr>
                       <tr class="border-b border-slate-100 dark:border-primary-800">
-                        <td class="py-2 pr-3 font-semibold">Anticoagulation interpretation</td>
-                        <td class="py-2 pr-3">Some centers use adjusted strategies</td>
-                        <td class="py-2">Local protocol should take precedence</td>
+                        <td class="py-1.5 pr-3 font-medium">Anticoagulation</td>
+                        <td class="py-1.5 pr-3">Some centers adjust strategy</td>
+                        <td class="py-1.5">Follow local protocol</td>
                       </tr>
                       <tr>
-                        <td class="py-2 pr-3 font-semibold">Perfusion assessment</td>
-                        <td class="py-2 pr-3">Requires SvO₂ / lactate / temperature context</td>
-                        <td class="py-2">Still requires clinical correlation</td>
+                        <td class="py-1.5 pr-3 font-medium">Perfusion assessment</td>
+                        <td class="py-1.5 pr-3">Needs SvO₂, lactate, temp context</td>
+                        <td class="py-1.5">Still needs clinical correlation</td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
                 <p class="text-xs text-slate-500 dark:text-slate-400">ABW = IBW + 0.4 × (TBW − IBW)</p>
-                <ul class="list-disc pl-4 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                <ul class="list-disc pl-5 text-sm text-slate-700 dark:text-slate-300 space-y-1">
                   <li>TBW-based BSA can still be used as a starting point.</li>
                   <li>SvO₂, lactate, temperature, and overall clinical context should guide real-time interpretation.</li>
-                  <li>Local protocol should take precedence for heparin and perfusion management.</li>
+                  <li>Follow local protocol for heparin and perfusion management.</li>
                 </ul>
               </div>
+
               <div class="space-y-2">
-                <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Selected references</h4>
-                <ul class="list-disc pl-4 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Selected references</h4>
+                <ul class="list-disc pl-5 text-sm text-slate-700 dark:text-slate-300 space-y-1">
                   <li>Mosteller RD. Simplified calculation of body-surface area. N Engl J Med. 1987;317:1098.</li>
                   <li>Du Bois D, Du Bois EF. A formula to estimate the approximate surface area if height and weight be known. Arch Intern Med. 1916;17:863.</li>
                   <li>Haycock GB, Schwartz GJ, Wisotsky DH. Geometric method for measuring body surface area: a height-weight formula validated in infants, children, and adults. J Pediatr. 1978;93:62.</li>
                   <li>Boyd E. The Growth of the Surface Area of the Human Body.</li>
                 </ul>
                 <p class="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">Contextual CPB interpretation</p>
-                <ul class="list-disc pl-4 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                <ul class="list-disc pl-5 text-sm text-slate-700 dark:text-slate-300 space-y-1">
                   <li>de Somer F et al. Interact Cardiovasc Thorac Surg. 2011.</li>
                   <li>Grocott HP et al. J Thorac Cardiovasc Surg. 2005.</li>
                   <li>Slogoff S et al. Ann Thorac Surg. 1990.</li>
                 </ul>
               </div>
+
               <div class="space-y-2">
-                <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Frequently asked questions</h4>
-                <div class="space-y-2 text-xs">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Frequently asked questions</h4>
+                <div class="space-y-2">
                   <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
                     <h5 class="font-semibold text-primary-900 dark:text-white">Which BSA formula is usually used for adult CPB?</h5>
-                    <p class="text-slate-600 dark:text-slate-300">Mosteller is commonly used as a practical adult default because it is simple and reproducible. Practice can vary by center, so local conventions still matter.</p>
+                    <p class="text-sm text-slate-700 dark:text-slate-300">Mosteller is commonly used as a practical adult default because it is simple and reproducible. Practice can vary by center, so local conventions still matter.</p>
                   </article>
                   <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
                     <h5 class="font-semibold text-primary-900 dark:text-white">Which BSA formula may be preferred in pediatric patients?</h5>
-                    <p class="text-slate-600 dark:text-slate-300">Haycock is often considered in pediatric body-size estimation because it has been widely validated in infants and children. It is commonly used as a pediatric comparison option.</p>
+                    <p class="text-sm text-slate-700 dark:text-slate-300">Haycock is often considered in pediatric body-size estimation because it has been widely validated in infants and children. It is commonly used as a pediatric comparison option.</p>
                   </article>
                   <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
                     <h5 class="font-semibold text-primary-900 dark:text-white">Does the formula choice matter if the BSA values are similar?</h5>
-                    <p class="text-slate-600 dark:text-slate-300">In many average-sized adults, formula differences are small. Consistency within the same case is often more useful than switching formulas during trending.</p>
+                    <p class="text-sm text-slate-700 dark:text-slate-300">In many average-sized adults, formula differences are small. Consistency within the same case is often more useful than switching formulas during trending.</p>
                   </article>
                   <article class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
                     <h5 class="font-semibold text-primary-900 dark:text-white">How should BSA-based flow guidance be interpreted in obesity?</h5>
-                    <p class="text-slate-600 dark:text-slate-300">TBW-based BSA may overestimate indexed targets in obesity. Real-time interpretation should include SvO₂, lactate, temperature, and local protocol.</p>
+                    <p class="text-sm text-slate-700 dark:text-slate-300">TBW-based BSA may overestimate indexed targets in obesity. Real-time interpretation should include SvO₂, lactate, temperature, and local protocol.</p>
                   </article>
                 </div>
               </div>
