@@ -33,7 +33,7 @@ https://www.perfusiontools.com/*  https://perfusiontools.com/:splat   301!
 /contact    /             200
 /contact/   /             200
 
-/info       /             200
+/info       /info/        301
 /info/      /             200
 
 /privacy    /             200
