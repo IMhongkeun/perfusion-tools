@@ -902,6 +902,20 @@ function computePredictedHct({ pttype, weight, pre, prime, fluids = 0, removed =
   return { ebv, totalVol, hct };
 }
 
+function computeOnPumpHctAdjustment({ weightKg, ebvCoefValue, primeVolume, currentHct, useManualOverride = false, manualCurrentVolumeOverride = 0, addedCrystalloid = 0, rbcUnits = 0, rbcUnitVol = 300, rbcUnitHct = 60, ultrafiltrationRemoved = 0 }) {
+  const ebv = (weightKg || 0) * (ebvCoefValue || 0);
+  const estimatedCpbVolumeAuto = ebv + (primeVolume || 0);
+  let estimatedCpbVolume = estimatedCpbVolumeAuto;
+  if (useManualOverride && (manualCurrentVolumeOverride || 0) > 0) estimatedCpbVolume = manualCurrentVolumeOverride;
+  const totalRbcProductVolume = (rbcUnits || 0) * (rbcUnitVol || 0);
+  const currentRbcVolume = (estimatedCpbVolume || 0) * ((currentHct || 0) / 100);
+  const addedRbcVolume = totalRbcProductVolume * ((rbcUnitHct || 0) / 100);
+  const finalTotalVolume = (estimatedCpbVolume || 0) + (addedCrystalloid || 0) + totalRbcProductVolume - (ultrafiltrationRemoved || 0);
+  const predictedHct = finalTotalVolume > 0 ? ((currentRbcVolume + addedRbcVolume) / finalTotalVolume) * 100 : 0;
+  const hctChange = predictedHct - (currentHct || 0);
+  return { ebv, estimatedCpbVolumeAuto, estimatedCpbVolume, currentRbcVolume, addedRbcVolume, finalTotalVolume, predictedHct, hctChange };
+}
+
 // -----------------------------
 // Heparin management (new UI)
 // -----------------------------
@@ -1420,6 +1434,57 @@ function resetGDP() {
 // Predicted Hct Interaction
 // -----------------------------
 function updateHct() {
+  const mode = el('hct_mode')?.value || 'pre';
+  const isOnPumpMode = mode === 'onpump';
+  const preModeEl = el('hct-pre-mode');
+  const onPumpModeEl = el('hct-onpump-mode');
+  const leftLabelEl = el('hct-left-label');
+  const onPumpExtraResultsEl = el('onpump-extra-results');
+  if (preModeEl) preModeEl.classList.toggle('hidden', isOnPumpMode);
+  if (onPumpModeEl) onPumpModeEl.classList.toggle('hidden', !isOnPumpMode);
+  if (onPumpExtraResultsEl) onPumpExtraResultsEl.classList.toggle('hidden', !isOnPumpMode);
+  const modeHelpEl = el('hct-mode-help');
+  if (modeHelpEl) {
+    modeHelpEl.textContent = isOnPumpMode
+      ? 'Estimate hematocrit change after RBC transfusion, fluid addition, or ultrafiltration during CPB.'
+      : 'Estimate dilutional hematocrit at CPB initiation.';
+  }
+
+  if (isOnPumpMode) {
+    const r = computeOnPumpHctAdjustment({
+      weightKg: num('onpump_weight'),
+      ebvCoefValue: num('onpump_ebv_coef'),
+      primeVolume: num('onpump_prime'),
+      currentHct: num('current_hct'),
+      useManualOverride: !!el('use_manual_current_volume')?.checked,
+      manualCurrentVolumeOverride: num('manual_current_volume'),
+      addedCrystalloid: num('onpump_fluids'),
+      rbcUnits: num('onpump_rbc_units'),
+      rbcUnitVol: num('onpump_rbc_unit_vol'),
+      rbcUnitHct: num('onpump_rbc_hct'),
+      ultrafiltrationRemoved: num('onpump_removed')
+    });
+    if (leftLabelEl) leftLabelEl.textContent = 'Current Vol';
+    setText('ebv', r.finalTotalVolume ? r.finalTotalVolume.toFixed(0) : '0');
+    setText('total_vol', r.finalTotalVolume ? r.finalTotalVolume.toFixed(0) : '0');
+    setText('pred_hct', r.predictedHct ? r.predictedHct.toFixed(1) + '%' : '0%');
+    setText('current_rbc_vol', `${r.currentRbcVolume.toFixed(0)} mL`);
+    setText('added_rbc_vol', `${r.addedRbcVolume.toFixed(0)} mL`);
+    setText('onpump_ebv', `${r.ebv.toFixed(0)} mL`);
+    setText('onpump_estimated_volume', `${r.estimatedCpbVolume.toFixed(0)} mL`);
+    setText('onpump_ebv_auto', `${r.ebv.toFixed(0)} mL`);
+    setText('onpump_estimated_auto', `${r.estimatedCpbVolumeAuto.toFixed(0)} mL`);
+    const manualWrapEl = el('manual-current-volume-wrap');
+    const manualEnabled = !!el('use_manual_current_volume')?.checked;
+    if (manualWrapEl) manualWrapEl.classList.toggle('hidden', !manualEnabled);
+    const manualActiveNoteEl = el('manual-override-active-note');
+    if (manualActiveNoteEl) manualActiveNoteEl.classList.toggle('hidden', !(manualEnabled && num('manual_current_volume') > 0));
+    setText('current_hct_result', `${(num('current_hct') || 0).toFixed(1)}%`);
+    setText('pred_hct_result', `${r.predictedHct.toFixed(1)}%`);
+    setText('hct_change', `${r.hctChange >= 0 ? '+' : ''}${r.hctChange.toFixed(1)}`);
+    return;
+  }
+
   const pttype = el('pttype').value;
   const payload = {
     pttype,
@@ -1434,9 +1499,45 @@ function updateHct() {
     ebvCoefValue: num('ebv_coef')
   };
   const r = computePredictedHct(payload);
+  if (leftLabelEl) leftLabelEl.textContent = 'EBV';
   setText('ebv', r.ebv ? r.ebv.toFixed(0) : '0');
   setText('total_vol', r.totalVol ? r.totalVol.toFixed(0) : '0');
   setText('pred_hct', r.hct ? r.hct.toFixed(1) + '%' : '0%');
+}
+
+function setHctMode(mode) {
+  const modeInput = el('hct_mode');
+  if (!modeInput) return;
+  const nextMode = mode === 'onpump' ? 'onpump' : 'pre';
+  modeInput.value = nextMode;
+  const isPre = nextMode === 'pre';
+  const preBtn = el('hct-mode-pre');
+  const onPumpBtn = el('hct-mode-onpump');
+  if (preBtn) {
+    preBtn.setAttribute('aria-pressed', String(isPre));
+    preBtn.setAttribute('aria-selected', String(isPre));
+    preBtn.classList.toggle('bg-primary-900', isPre);
+    preBtn.classList.toggle('text-white', isPre);
+    preBtn.classList.toggle('dark:bg-accent-500', isPre);
+    preBtn.classList.toggle('bg-white', !isPre);
+    preBtn.classList.toggle('text-slate-700', !isPre);
+    preBtn.classList.toggle('dark:bg-primary-800', !isPre);
+    preBtn.classList.toggle('dark:text-slate-200', !isPre);
+    preBtn.classList.toggle('border', !isPre);
+  }
+  if (onPumpBtn) {
+    onPumpBtn.setAttribute('aria-pressed', String(!isPre));
+    onPumpBtn.setAttribute('aria-selected', String(!isPre));
+    onPumpBtn.classList.toggle('bg-primary-900', !isPre);
+    onPumpBtn.classList.toggle('text-white', !isPre);
+    onPumpBtn.classList.toggle('dark:bg-accent-500', !isPre);
+    onPumpBtn.classList.toggle('bg-white', isPre);
+    onPumpBtn.classList.toggle('text-slate-700', isPre);
+    onPumpBtn.classList.toggle('dark:bg-primary-800', isPre);
+    onPumpBtn.classList.toggle('dark:text-slate-200', isPre);
+    onPumpBtn.classList.toggle('border', isPre);
+  }
+  updateHct();
 }
 
 function applyDefaultEbvCoef(pttype) {
@@ -3297,6 +3398,34 @@ window.addEventListener('DOMContentLoaded', () => {
       const x = el(id);
       if (x) x.addEventListener('input', updateHct);
     });
+    ['hct_mode', 'onpump_weight', 'onpump_ebv_coef', 'onpump_prime', 'current_hct', 'manual_current_volume', 'use_manual_current_volume', 'onpump_fluids', 'onpump_rbc_units', 'onpump_rbc_unit_vol', 'onpump_rbc_hct', 'onpump_removed', 'onpump_pttype'].forEach(id => {
+      const x = el(id);
+      if (x) x.addEventListener('input', updateHct);
+      if (x) x.addEventListener('change', updateHct);
+    });
+    const modeButtons = Array.from(document.querySelectorAll('[data-hct-mode]'));
+    modeButtons.forEach((btn) => {
+      btn.addEventListener('click', () => setHctMode(btn.dataset.hctMode));
+      btn.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+        e.preventDefault();
+        const idx = modeButtons.indexOf(btn);
+        const nextIdx = e.key === 'ArrowRight' ? (idx + 1) % modeButtons.length : (idx - 1 + modeButtons.length) % modeButtons.length;
+        modeButtons[nextIdx].focus();
+        setHctMode(modeButtons[nextIdx].dataset.hctMode);
+      });
+    });
+    setHctMode(el('hct_mode')?.value || 'pre');
+    const onPumpPttypeSelect = el('onpump_pttype');
+    if (onPumpPttypeSelect) {
+      onPumpPttypeSelect.addEventListener('change', () => {
+        const onPumpCoefInput = el('onpump_ebv_coef');
+        if (onPumpCoefInput) onPumpCoefInput.value = ebvCoef(onPumpPttypeSelect.value);
+        updateHct();
+      });
+      const onPumpCoefInput = el('onpump_ebv_coef');
+      if (onPumpCoefInput && !onPumpCoefInput.value) onPumpCoefInput.value = ebvCoef(onPumpPttypeSelect.value);
+    }
 
     const pttypeSelect = el('pttype');
     if (pttypeSelect) {
