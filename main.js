@@ -902,17 +902,18 @@ function computePredictedHct({ pttype, weight, pre, prime, fluids = 0, removed =
   return { ebv, totalVol, hct };
 }
 
-function computeOnPumpHctAdjustment({ weightKg, ebvCoefValue, primeVolume, currentHct, manualCurrentVolumeOverride = 0, addedCrystalloid = 0, rbcUnits = 0, rbcUnitVol = 300, rbcUnitHct = 60, ultrafiltrationRemoved = 0 }) {
+function computeOnPumpHctAdjustment({ weightKg, ebvCoefValue, primeVolume, currentHct, useManualOverride = false, manualCurrentVolumeOverride = 0, addedCrystalloid = 0, rbcUnits = 0, rbcUnitVol = 300, rbcUnitHct = 60, ultrafiltrationRemoved = 0 }) {
   const ebv = (weightKg || 0) * (ebvCoefValue || 0);
-  let estimatedCpbVolume = ebv + (primeVolume || 0);
-  if ((manualCurrentVolumeOverride || 0) > 0) estimatedCpbVolume = manualCurrentVolumeOverride;
+  const estimatedCpbVolumeAuto = ebv + (primeVolume || 0);
+  let estimatedCpbVolume = estimatedCpbVolumeAuto;
+  if (useManualOverride && (manualCurrentVolumeOverride || 0) > 0) estimatedCpbVolume = manualCurrentVolumeOverride;
   const totalRbcProductVolume = (rbcUnits || 0) * (rbcUnitVol || 0);
   const currentRbcVolume = (estimatedCpbVolume || 0) * ((currentHct || 0) / 100);
   const addedRbcVolume = totalRbcProductVolume * ((rbcUnitHct || 0) / 100);
   const finalTotalVolume = (estimatedCpbVolume || 0) + (addedCrystalloid || 0) + totalRbcProductVolume - (ultrafiltrationRemoved || 0);
   const predictedHct = finalTotalVolume > 0 ? ((currentRbcVolume + addedRbcVolume) / finalTotalVolume) * 100 : 0;
   const hctChange = predictedHct - (currentHct || 0);
-  return { ebv, estimatedCpbVolume, currentRbcVolume, addedRbcVolume, finalTotalVolume, predictedHct, hctChange };
+  return { ebv, estimatedCpbVolumeAuto, estimatedCpbVolume, currentRbcVolume, addedRbcVolume, finalTotalVolume, predictedHct, hctChange };
 }
 
 // -----------------------------
@@ -1449,6 +1450,7 @@ function updateHct() {
       ebvCoefValue: num('onpump_ebv_coef'),
       primeVolume: num('onpump_prime'),
       currentHct: num('current_hct'),
+      useManualOverride: !!el('use_manual_current_volume')?.checked,
       manualCurrentVolumeOverride: num('manual_current_volume'),
       addedCrystalloid: num('onpump_fluids'),
       rbcUnits: num('onpump_rbc_units'),
@@ -1464,6 +1466,13 @@ function updateHct() {
     setText('added_rbc_vol', `${r.addedRbcVolume.toFixed(0)} mL`);
     setText('onpump_ebv', `${r.ebv.toFixed(0)} mL`);
     setText('onpump_estimated_volume', `${r.estimatedCpbVolume.toFixed(0)} mL`);
+    setText('onpump_ebv_auto', `${r.ebv.toFixed(0)} mL`);
+    setText('onpump_estimated_auto', `${r.estimatedCpbVolumeAuto.toFixed(0)} mL`);
+    const manualWrapEl = el('manual-current-volume-wrap');
+    const manualEnabled = !!el('use_manual_current_volume')?.checked;
+    if (manualWrapEl) manualWrapEl.classList.toggle('hidden', !manualEnabled);
+    const manualActiveNoteEl = el('manual-override-active-note');
+    if (manualActiveNoteEl) manualActiveNoteEl.classList.toggle('hidden', !(manualEnabled && num('manual_current_volume') > 0));
     setText('current_hct_result', `${(num('current_hct') || 0).toFixed(1)}%`);
     setText('pred_hct_result', `${r.predictedHct.toFixed(1)}%`);
     setText('hct_change', `${r.hctChange >= 0 ? '+' : ''}${r.hctChange.toFixed(1)}`);
@@ -3348,7 +3357,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const x = el(id);
       if (x) x.addEventListener('input', updateHct);
     });
-    ['hct_mode', 'onpump_weight', 'onpump_ebv_coef', 'onpump_prime', 'current_hct', 'manual_current_volume', 'onpump_fluids', 'onpump_rbc_units', 'onpump_rbc_unit_vol', 'onpump_rbc_hct', 'onpump_removed', 'onpump_pttype'].forEach(id => {
+    ['hct_mode', 'onpump_weight', 'onpump_ebv_coef', 'onpump_prime', 'current_hct', 'manual_current_volume', 'use_manual_current_volume', 'onpump_fluids', 'onpump_rbc_units', 'onpump_rbc_unit_vol', 'onpump_rbc_hct', 'onpump_removed', 'onpump_pttype'].forEach(id => {
       const x = el(id);
       if (x) x.addEventListener('input', updateHct);
       if (x) x.addEventListener('change', updateHct);
