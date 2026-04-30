@@ -902,6 +902,16 @@ function computePredictedHct({ pttype, weight, pre, prime, fluids = 0, removed =
   return { ebv, totalVol, hct };
 }
 
+function computeOnPumpHctAdjustment({ currentTotalVolume, currentHct, addedCrystalloid = 0, rbcUnits = 0, rbcUnitVol = 300, rbcUnitHct = 60, ultrafiltrationRemoved = 0, otherRemovedVolume = 0 }) {
+  const totalRbcProductVolume = (rbcUnits || 0) * (rbcUnitVol || 0);
+  const currentRbcVolume = (currentTotalVolume || 0) * ((currentHct || 0) / 100);
+  const addedRbcVolume = totalRbcProductVolume * ((rbcUnitHct || 0) / 100);
+  const finalTotalVolume = (currentTotalVolume || 0) + (addedCrystalloid || 0) + totalRbcProductVolume - (ultrafiltrationRemoved || 0) - (otherRemovedVolume || 0);
+  const predictedHct = finalTotalVolume > 0 ? ((currentRbcVolume + addedRbcVolume) / finalTotalVolume) * 100 : 0;
+  const hctChange = predictedHct - (currentHct || 0);
+  return { currentRbcVolume, addedRbcVolume, finalTotalVolume, predictedHct, hctChange };
+}
+
 // -----------------------------
 // Heparin management (new UI)
 // -----------------------------
@@ -1420,6 +1430,39 @@ function resetGDP() {
 // Predicted Hct Interaction
 // -----------------------------
 function updateHct() {
+  const mode = el('hct_mode')?.value || 'pre';
+  const isOnPumpMode = mode === 'onpump';
+  const preModeEl = el('hct-pre-mode');
+  const onPumpModeEl = el('hct-onpump-mode');
+  const leftLabelEl = el('hct-left-label');
+  const onPumpExtraResultsEl = el('onpump-extra-results');
+  if (preModeEl) preModeEl.classList.toggle('hidden', isOnPumpMode);
+  if (onPumpModeEl) onPumpModeEl.classList.toggle('hidden', !isOnPumpMode);
+  if (onPumpExtraResultsEl) onPumpExtraResultsEl.classList.toggle('hidden', !isOnPumpMode);
+
+  if (isOnPumpMode) {
+    const r = computeOnPumpHctAdjustment({
+      currentTotalVolume: num('current_total_volume'),
+      currentHct: num('current_hct'),
+      addedCrystalloid: num('onpump_fluids'),
+      rbcUnits: num('onpump_rbc_units'),
+      rbcUnitVol: num('onpump_rbc_unit_vol'),
+      rbcUnitHct: num('onpump_rbc_hct'),
+      ultrafiltrationRemoved: num('onpump_removed'),
+      otherRemovedVolume: num('other_removed')
+    });
+    if (leftLabelEl) leftLabelEl.textContent = 'Current Vol';
+    setText('ebv', r.finalTotalVolume ? r.finalTotalVolume.toFixed(0) : '0');
+    setText('total_vol', r.finalTotalVolume ? r.finalTotalVolume.toFixed(0) : '0');
+    setText('pred_hct', r.predictedHct ? r.predictedHct.toFixed(1) + '%' : '0%');
+    setText('current_rbc_vol', `${r.currentRbcVolume.toFixed(0)} mL`);
+    setText('added_rbc_vol', `${r.addedRbcVolume.toFixed(0)} mL`);
+    setText('current_hct_result', `${(num('current_hct') || 0).toFixed(1)}%`);
+    setText('pred_hct_result', `${r.predictedHct.toFixed(1)}%`);
+    setText('hct_change', `${r.hctChange >= 0 ? '+' : ''}${r.hctChange.toFixed(1)}`);
+    return;
+  }
+
   const pttype = el('pttype').value;
   const payload = {
     pttype,
@@ -1434,6 +1477,7 @@ function updateHct() {
     ebvCoefValue: num('ebv_coef')
   };
   const r = computePredictedHct(payload);
+  if (leftLabelEl) leftLabelEl.textContent = 'EBV';
   setText('ebv', r.ebv ? r.ebv.toFixed(0) : '0');
   setText('total_vol', r.totalVol ? r.totalVol.toFixed(0) : '0');
   setText('pred_hct', r.hct ? r.hct.toFixed(1) + '%' : '0%');
@@ -3296,6 +3340,11 @@ window.addEventListener('DOMContentLoaded', () => {
     ['wt_hct', 'pre_hct', 'prime', 'fluids', 'removed', 'rbc_units', 'rbc_unit_vol', 'rbc_hct', 'ebv_coef'].forEach(id => {
       const x = el(id);
       if (x) x.addEventListener('input', updateHct);
+    });
+    ['hct_mode', 'current_total_volume', 'current_hct', 'onpump_fluids', 'onpump_rbc_units', 'onpump_rbc_unit_vol', 'onpump_rbc_hct', 'onpump_removed', 'other_removed'].forEach(id => {
+      const x = el(id);
+      if (x) x.addEventListener('input', updateHct);
+      if (x) x.addEventListener('change', updateHct);
     });
 
     const pttypeSelect = el('pttype');
