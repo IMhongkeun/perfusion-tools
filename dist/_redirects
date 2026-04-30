@@ -17,6 +17,8 @@ https://www.perfusiontools.com/*  https://perfusiontools.com/:splat   301!
 
 /phn-echo   /z-score/     301
 /phn-echo/  /z-score/     301
+/ph-echo    /z-score/     301
+/ph-echo/   /z-score/     301
 
 /bsa          /bsa/          301
 /gdp          /gdp/          301
