@@ -1439,6 +1439,7 @@ function updateHct() {
   const preModeEl = el('hct-pre-mode');
   const onPumpModeEl = el('hct-onpump-mode');
   const leftLabelEl = el('hct-left-label');
+  const rightLabelEl = el('hct-right-label');
   const onPumpExtraResultsEl = el('onpump-extra-results');
   if (preModeEl) preModeEl.classList.toggle('hidden', isOnPumpMode);
   if (onPumpModeEl) onPumpModeEl.classList.toggle('hidden', !isOnPumpMode);
@@ -1465,7 +1466,8 @@ function updateHct() {
       ultrafiltrationRemoved: num('onpump_removed')
     });
     if (leftLabelEl) leftLabelEl.textContent = 'Current Vol';
-    setText('ebv', r.finalTotalVolume ? r.finalTotalVolume.toFixed(0) : '0');
+    if (rightLabelEl) rightLabelEl.textContent = 'Final Vol';
+    setText('ebv', r.estimatedCpbVolume ? r.estimatedCpbVolume.toFixed(0) : '0');
     setText('total_vol', r.finalTotalVolume ? r.finalTotalVolume.toFixed(0) : '0');
     setText('pred_hct', r.predictedHct ? r.predictedHct.toFixed(1) + '%' : '0%');
     setText('current_rbc_vol', `${r.currentRbcVolume.toFixed(0)} mL`);
@@ -1500,6 +1502,7 @@ function updateHct() {
   };
   const r = computePredictedHct(payload);
   if (leftLabelEl) leftLabelEl.textContent = 'EBV';
+  if (rightLabelEl) rightLabelEl.textContent = 'Total Vol';
   setText('ebv', r.ebv ? r.ebv.toFixed(0) : '0');
   setText('total_vol', r.totalVol ? r.totalVol.toFixed(0) : '0');
   setText('pred_hct', r.hct ? r.hct.toFixed(1) + '%' : '0%');
