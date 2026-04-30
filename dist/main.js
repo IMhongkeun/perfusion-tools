@@ -150,7 +150,7 @@ const TOP_NAV_ITEMS = [
   { path: '/gdp/', label: 'GDP' },
   { path: '/heparin/', label: 'Heparin' },
   { path: '/predicted-hct/', label: 'Predicted Hct' },
-  { path: '/phn-echo/', label: 'Z-score' },
+  { path: '/z-score/', label: 'Z-score' },
   { path: '/priming-volume/', label: 'Priming Volume' },
   { path: '/timecalc/', label: 'Time' },
   { path: '/quick-reference/', label: 'Quick Reference' },
@@ -2996,7 +2996,7 @@ function route() {
     if (section) section.classList.remove('hidden');
   };
 
-  if (path.includes('phn-echo')) { showSection('view-phn-echo'); key = 'phn-echo'; }
+  if (path.includes('phn-echo') || path.includes('z-score')) { showSection('view-phn-echo'); key = 'phn-echo'; }
   else if (path.includes('bsa')) { showSection('view-bsa'); key = 'bsa'; }
   else if (path.includes('do2i') || path.includes('gdp')) { showSection('view-do2i'); key = 'do2i'; }
   else if (path.includes('predicted-hct')) { showSection('view-hct'); key = 'predicted-hct'; }
@@ -3139,7 +3139,7 @@ window.addEventListener('DOMContentLoaded', () => {
           '/predicted-hct/',
           '/lbm/',
           '/timecalc/',
-          '/phn-echo/',
+          '/z-score/',
           '/quick-reference/',
           '/priming-volume/',
           '/unit-converter/',
@@ -3149,7 +3149,7 @@ window.addEventListener('DOMContentLoaded', () => {
           '/predicted-hct',
           '/lbm',
           '/timecalc',
-          '/phn-echo',
+          '/z-score',
           '/quick-reference',
           '/priming-volume',
           '/unit-converter'

@@ -7,7 +7,7 @@ const lastmod = new Date().toISOString().split('T')[0];
 
 const urlEntries = sitemapPaths
   .map((routePath) => {
-    const normalizedPath = routePath === '/' ? '' : routePath;
+    const normalizedPath = routePath === '/' ? '/' : routePath;
 
     return `  <url>\n    <loc>${siteUrl}${normalizedPath}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </url>`;
   })
