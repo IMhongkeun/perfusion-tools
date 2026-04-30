@@ -1443,6 +1443,12 @@ function updateHct() {
   if (preModeEl) preModeEl.classList.toggle('hidden', isOnPumpMode);
   if (onPumpModeEl) onPumpModeEl.classList.toggle('hidden', !isOnPumpMode);
   if (onPumpExtraResultsEl) onPumpExtraResultsEl.classList.toggle('hidden', !isOnPumpMode);
+  const modeHelpEl = el('hct-mode-help');
+  if (modeHelpEl) {
+    modeHelpEl.textContent = isOnPumpMode
+      ? 'Estimate hematocrit change after RBC transfusion, fluid addition, or ultrafiltration during CPB.'
+      : 'Estimate dilutional hematocrit at CPB initiation.';
+  }
 
   if (isOnPumpMode) {
     const r = computeOnPumpHctAdjustment({
@@ -1497,6 +1503,41 @@ function updateHct() {
   setText('ebv', r.ebv ? r.ebv.toFixed(0) : '0');
   setText('total_vol', r.totalVol ? r.totalVol.toFixed(0) : '0');
   setText('pred_hct', r.hct ? r.hct.toFixed(1) + '%' : '0%');
+}
+
+function setHctMode(mode) {
+  const modeInput = el('hct_mode');
+  if (!modeInput) return;
+  const nextMode = mode === 'onpump' ? 'onpump' : 'pre';
+  modeInput.value = nextMode;
+  const isPre = nextMode === 'pre';
+  const preBtn = el('hct-mode-pre');
+  const onPumpBtn = el('hct-mode-onpump');
+  if (preBtn) {
+    preBtn.setAttribute('aria-pressed', String(isPre));
+    preBtn.setAttribute('aria-selected', String(isPre));
+    preBtn.classList.toggle('bg-primary-900', isPre);
+    preBtn.classList.toggle('text-white', isPre);
+    preBtn.classList.toggle('dark:bg-accent-500', isPre);
+    preBtn.classList.toggle('bg-white', !isPre);
+    preBtn.classList.toggle('text-slate-700', !isPre);
+    preBtn.classList.toggle('dark:bg-primary-800', !isPre);
+    preBtn.classList.toggle('dark:text-slate-200', !isPre);
+    preBtn.classList.toggle('border', !isPre);
+  }
+  if (onPumpBtn) {
+    onPumpBtn.setAttribute('aria-pressed', String(!isPre));
+    onPumpBtn.setAttribute('aria-selected', String(!isPre));
+    onPumpBtn.classList.toggle('bg-primary-900', !isPre);
+    onPumpBtn.classList.toggle('text-white', !isPre);
+    onPumpBtn.classList.toggle('dark:bg-accent-500', !isPre);
+    onPumpBtn.classList.toggle('bg-white', isPre);
+    onPumpBtn.classList.toggle('text-slate-700', isPre);
+    onPumpBtn.classList.toggle('dark:bg-primary-800', isPre);
+    onPumpBtn.classList.toggle('dark:text-slate-200', isPre);
+    onPumpBtn.classList.toggle('border', isPre);
+  }
+  updateHct();
 }
 
 function applyDefaultEbvCoef(pttype) {
@@ -3362,6 +3403,19 @@ window.addEventListener('DOMContentLoaded', () => {
       if (x) x.addEventListener('input', updateHct);
       if (x) x.addEventListener('change', updateHct);
     });
+    const modeButtons = Array.from(document.querySelectorAll('[data-hct-mode]'));
+    modeButtons.forEach((btn) => {
+      btn.addEventListener('click', () => setHctMode(btn.dataset.hctMode));
+      btn.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+        e.preventDefault();
+        const idx = modeButtons.indexOf(btn);
+        const nextIdx = e.key === 'ArrowRight' ? (idx + 1) % modeButtons.length : (idx - 1 + modeButtons.length) % modeButtons.length;
+        modeButtons[nextIdx].focus();
+        setHctMode(modeButtons[nextIdx].dataset.hctMode);
+      });
+    });
+    setHctMode(el('hct_mode')?.value || 'pre');
     const onPumpPttypeSelect = el('onpump_pttype');
     if (onPumpPttypeSelect) {
       onPumpPttypeSelect.addEventListener('change', () => {
