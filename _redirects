@@ -1,3 +1,7 @@
+# Canonical host redirects (avoid www 5xx + indexing issues)
+http://www.perfusiontools.com/*   https://perfusiontools.com/:splat   301!
+https://www.perfusiontools.com/*  https://perfusiontools.com/:splat   301!
+
 # 301 redirects
 /do2i       /gdp/         301
 /do2i/      /gdp/         301
@@ -8,16 +12,22 @@
 /faq        /info/        301
 /faq/       /info/        301
 
+/time       /timecalc/    301
+/time/      /timecalc/    301
+
+/phn-echo   /z-score/     301
+/phn-echo/  /z-score/     301
+
 /bsa          /bsa/          301
 /gdp          /gdp/          301
-/heparin          /heparin/          301
-/predicted-hct          /predicted-hct/          301
+/heparin      /heparin/      301
+/predicted-hct /predicted-hct/ 301
 /lbm          /lbm/          301
-/timecalc          /timecalc/          301
-/phn-echo          /phn-echo/          301
-/quick-reference          /quick-reference/          301
-/priming-volume          /priming-volume/          301
-/unit-converter          /unit-converter/          301
+/timecalc     /timecalc/     301
+/z-score      /z-score/      301
+/quick-reference /quick-reference/ 301
+/priming-volume /priming-volume/ 301
+/unit-converter /unit-converter/ 301
 
 # 200 rewrites
 /contact    /             200

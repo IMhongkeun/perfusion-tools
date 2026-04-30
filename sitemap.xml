@@ -1,60 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-  <!-- Home -->
   <url>
-    <loc>https://perfusiontools.com/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <loc>https://perfusiontools.com</loc>
+    <lastmod>2026-04-30</lastmod>
   </url>
-
-  <!-- BSA Calculator -->
   <url>
-    <loc>https://perfusiontools.com/bsa</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <loc>https://perfusiontools.com/bsa/</loc>
+    <lastmod>2026-04-30</lastmod>
   </url>
-
-  <!-- GDP / DO2 Calculator -->
   <url>
-    <loc>https://perfusiontools.com/gdp</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <loc>https://perfusiontools.com/lbm/</loc>
+    <lastmod>2026-04-30</lastmod>
   </url>
-
-  <!-- Heparin Calculator -->
   <url>
-    <loc>https://perfusiontools.com/heparin</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <loc>https://perfusiontools.com/gdp/</loc>
+    <lastmod>2026-04-30</lastmod>
   </url>
-
-  <!-- Predicted Hematocrit Calculator -->
   <url>
-    <loc>https://perfusiontools.com/predicted-hct</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://perfusiontools.com/heparin/</loc>
+    <lastmod>2026-04-30</lastmod>
   </url>
-
-  <!-- Lean Body Mass Calculator -->
   <url>
-    <loc>https://perfusiontools.com/lbm</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://perfusiontools.com/predicted-hct/</loc>
+    <lastmod>2026-04-30</lastmod>
   </url>
-
-  <!-- Time Calculator -->
   <url>
-    <loc>https://perfusiontools.com/timecalc</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://perfusiontools.com/z-score/</loc>
+    <lastmod>2026-04-30</lastmod>
   </url>
-
-  <!-- About / Info Page -->
   <url>
-    <loc>https://perfusiontools.com/info</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://perfusiontools.com/priming-volume/</loc>
+    <lastmod>2026-04-30</lastmod>
   </url>
-
+  <url>
+    <loc>https://perfusiontools.com/timecalc/</loc>
+    <lastmod>2026-04-30</lastmod>
+  </url>
+  <url>
+    <loc>https://perfusiontools.com/unit-converter/</loc>
+    <lastmod>2026-04-30</lastmod>
+  </url>
+  <url>
+    <loc>https://perfusiontools.com/quick-reference/</loc>
+    <lastmod>2026-04-30</lastmod>
+  </url>
+  <url>
+    <loc>https://perfusiontools.com/info/</loc>
+    <lastmod>2026-04-30</lastmod>
+  </url>
 </urlset>

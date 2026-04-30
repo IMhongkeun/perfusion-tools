@@ -244,12 +244,12 @@
         headingDescription: "Calculate body surface area with Mosteller, DuBois, Haycock, and Boyd options.",
         canonicalPath: "/bsa/"
       },
-      "/phn-echo": {
+      "/z-score": {
         title: "Pediatric Echo Z-score Calculator (PHN)",
         h1: "Pediatric Echo Z-score Calculator",
         description: "PHN indexed mean/SD inverse z-score calculator for pediatric aortic annulus, AV valve, and pulmonary artery size ranges.",
         headingDescription: "Enter BSA to see PHN-based Z=-2, Z=0, and Z=+2 expected values (mm).",
-        canonicalPath: "/phn-echo/"
+        canonicalPath: "/z-score/"
       },
       "/heparin": {
         title: "Heparin Dosing Calculator – Perfusion Tools",
@@ -307,36 +307,36 @@
         headingDescription: "Fast intraoperative lookup (reference only)",
         canonicalPath: "/quick-reference/"
       },
-      "/info": {
+      "/info/": {
         title: "About Us – Perfusion Tools",
         h1: "About Us",
         description: "About Perfusion Tools, a collection of perfusion calculators for ECMO and CPB clinicians.",
         headingDescription: "Learn about the mission behind Perfusion Tools and how to reach us.",
-        canonicalPath: "/info",
+        canonicalPath: "/info/",
         robots: "noindex,follow"
       },
-      "/privacy": {
+      "/privacy/": {
         title: "Privacy Policy — Perfusion Tools",
         h1: "Privacy Policy",
         description: "Learn how Perfusion Tools handles browser-based calculations without storing personal data.",
         headingDescription: "Understand how your inputs stay on-device and private.",
-        canonicalPath: "/privacy",
+        canonicalPath: "/privacy/",
         robots: "noindex,follow"
       },
-      "/terms": {
+      "/terms/": {
         title: "Terms of Service — Perfusion Tools",
         h1: "Terms of Service",
         description: "Understand the usage terms and disclaimers for the Perfusion Tools calculators.",
         headingDescription: "Review the educational-use terms for these calculators.",
-        canonicalPath: "/terms",
+        canonicalPath: "/terms/",
         robots: "noindex,follow"
       },
-      "/contact": {
+      "/contact/": {
         title: "Contact — Perfusion Tools",
         h1: "Contact",
         description: "Get in touch with Perfusion Tools with questions or feedback about CPB calculators.",
         headingDescription: "Reach out with questions or feedback about Perfusion Tools.",
-        canonicalPath: "/contact",
+        canonicalPath: "/contact/",
         robots: "noindex,follow"
       }
     };
@@ -350,6 +350,8 @@
         ? withLeadingSlash.slice(0, -1)
         : withLeadingSlash;
       if (normalizedPath === '/do2i') return '/gdp';
+      if (normalizedPath === '/time') return '/timecalc';
+      if (normalizedPath === '/phn-echo') return '/z-score';
       return normalizedPath;
     }
 
@@ -397,7 +399,7 @@
     window.addEventListener('popstate', () => applyRouteMeta());
     window.addEventListener('load', () => applyRouteMeta());
   </script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"WebSite","@id":"https://perfusiontools.com/#website","url":"https://perfusiontools.com","name":"Perfusion Tools","publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"ItemList","@id":"https://perfusiontools.com/#itemlist","url":"https://perfusiontools.com/","name":"Perfusion Tools calculators","itemListElement":[{"@type":"ListItem","position":1,"url":"https://perfusiontools.com/gdp/","name":"GDP Calculator"},{"@type":"ListItem","position":2,"url":"https://perfusiontools.com/bsa/","name":"BSA Calculator"},{"@type":"ListItem","position":3,"url":"https://perfusiontools.com/heparin/","name":"Heparin Management"},{"@type":"ListItem","position":4,"url":"https://perfusiontools.com/predicted-hct/","name":"Predicted Hematocrit"},{"@type":"ListItem","position":5,"url":"https://perfusiontools.com/phn-echo/","name":"Pediatric Echo Z-score"},{"@type":"ListItem","position":6,"url":"https://perfusiontools.com/quick-reference/","name":"Quick Reference"},{"@type":"ListItem","position":7,"url":"https://perfusiontools.com/lbm/","name":"Lean Body Mass Calculator"},{"@type":"ListItem","position":8,"url":"https://perfusiontools.com/priming-volume/","name":"Priming Volume Calculator"},{"@type":"ListItem","position":9,"url":"https://perfusiontools.com/unit-converter/","name":"Unit Converter"},{"@type":"ListItem","position":10,"url":"https://perfusiontools.com/timecalc/","name":"Time Calculator"}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"WebSite","@id":"https://perfusiontools.com/#website","url":"https://perfusiontools.com","name":"Perfusion Tools","publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"ItemList","@id":"https://perfusiontools.com/#itemlist","url":"https://perfusiontools.com/","name":"Perfusion Tools calculators","itemListElement":[{"@type":"ListItem","position":1,"url":"https://perfusiontools.com/gdp/","name":"GDP Calculator"},{"@type":"ListItem","position":2,"url":"https://perfusiontools.com/bsa/","name":"BSA Calculator"},{"@type":"ListItem","position":3,"url":"https://perfusiontools.com/heparin/","name":"Heparin Management"},{"@type":"ListItem","position":4,"url":"https://perfusiontools.com/predicted-hct/","name":"Predicted Hematocrit"},{"@type":"ListItem","position":5,"url":"https://perfusiontools.com/z-score/","name":"Pediatric Echo Z-score"},{"@type":"ListItem","position":6,"url":"https://perfusiontools.com/quick-reference/","name":"Quick Reference"},{"@type":"ListItem","position":7,"url":"https://perfusiontools.com/lbm/","name":"Lean Body Mass Calculator"},{"@type":"ListItem","position":8,"url":"https://perfusiontools.com/priming-volume/","name":"Priming Volume Calculator"},{"@type":"ListItem","position":9,"url":"https://perfusiontools.com/unit-converter/","name":"Unit Converter"},{"@type":"ListItem","position":10,"url":"https://perfusiontools.com/timecalc/","name":"Time Calculator"}]}]}</script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
 
@@ -424,12 +426,12 @@
         <a href="/gdp/" data-route id="nav-do2i" class="nav-link px-4 py-2 rounded-full border border-transparent hover:bg-slate-100 dark:hover:bg-primary-800 hover:border-slate-200 dark:hover:border-primary-700 transition-colors text-slate-600 dark:text-slate-300 hover:text-primary-900 dark:hover:text-accent-400">GDP</a>
         <a href="/heparin/" data-route id="nav-heparin" class="nav-link px-4 py-2 rounded-full border border-transparent hover:bg-slate-100 dark:hover:bg-primary-800 hover:border-slate-200 dark:hover:border-primary-700 transition-colors text-slate-600 dark:text-slate-300 hover:text-primary-900 dark:hover:text-accent-400">Heparin</a>
         <a href="/predicted-hct/" data-route id="nav-hct" class="nav-link px-2.5 py-2 rounded-full border border-transparent hover:bg-slate-100 dark:hover:bg-primary-800 hover:border-slate-200 dark:hover:border-primary-700 transition-colors text-slate-600 dark:text-slate-300 hover:text-primary-900 dark:hover:text-accent-400">Predicted Hct</a>
-        <a href="/phn-echo/" data-route id="nav-phn-echo" class="nav-link px-4 py-2 rounded-full border border-transparent hover:bg-slate-100 dark:hover:bg-primary-800 hover:border-slate-200 dark:hover:border-primary-700 transition-colors text-slate-600 dark:text-slate-300 hover:text-primary-900 dark:hover:text-accent-400">Z-score</a>
+        <a href="/z-score/" data-route id="nav-phn-echo" class="nav-link px-4 py-2 rounded-full border border-transparent hover:bg-slate-100 dark:hover:bg-primary-800 hover:border-slate-200 dark:hover:border-primary-700 transition-colors text-slate-600 dark:text-slate-300 hover:text-primary-900 dark:hover:text-accent-400">Z-score</a>
         <a href="/priming-volume/" data-route id="nav-priming" class="nav-link px-2.5 py-2 rounded-full border border-transparent hover:bg-slate-100 dark:hover:bg-primary-800 hover:border-slate-200 dark:hover:border-primary-700 transition-colors text-slate-600 dark:text-slate-300 hover:text-primary-900 dark:hover:text-accent-400">Priming Volume</a>
         <a href="/timecalc/" data-route id="nav-time" class="nav-link px-4 py-2 rounded-full border border-transparent hover:bg-slate-100 dark:hover:bg-primary-800 hover:border-slate-200 dark:hover:border-primary-700 transition-colors text-slate-600 dark:text-slate-300 hover:text-primary-900 dark:hover:text-accent-400">Time</a>
         <a href="/quick-reference/" data-route id="nav-quick-reference" class="nav-link px-2.5 py-2 rounded-full border border-transparent hover:bg-slate-100 dark:hover:bg-primary-800 hover:border-slate-200 dark:hover:border-primary-700 transition-colors text-slate-600 dark:text-slate-300 hover:text-primary-900 dark:hover:text-accent-400">Quick Reference</a>
         <a href="/unit-converter/" data-route id="nav-unit-converter" class="nav-link px-2.5 py-2 rounded-full border border-transparent hover:bg-slate-100 dark:hover:bg-primary-800 hover:border-slate-200 dark:hover:border-primary-700 transition-colors text-slate-600 dark:text-slate-300 hover:text-primary-900 dark:hover:text-accent-400">Unit converter</a>
-<a href="/info" data-route id="nav-info" class="nav-link px-4 py-2 rounded-full border border-transparent hover:bg-slate-100 dark:hover:bg-primary-800 hover:border-slate-200 dark:hover:border-primary-700 transition-colors text-slate-600 dark:text-slate-300 hover:text-primary-900 dark:hover:text-accent-400">Info</a>
+<a href="/info/" data-route id="nav-info" class="nav-link px-4 py-2 rounded-full border border-transparent hover:bg-slate-100 dark:hover:bg-primary-800 hover:border-slate-200 dark:hover:border-primary-700 transition-colors text-slate-600 dark:text-slate-300 hover:text-primary-900 dark:hover:text-accent-400">Info</a>
       </nav>
 
       <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-primary-800 transition-colors text-slate-600 dark:text-slate-300 hover:text-primary-900 dark:hover:text-accent-400 focus:outline-none focus:ring-2 focus:ring-accent-500" aria-label="Toggle Dark Mode">
@@ -466,7 +468,7 @@
         <a href="/predicted-hct/" data-route id="side-hct" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
           Predicted Hematocrit
         </a>
-        <a href="/phn-echo/" data-route id="side-phn-echo" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
+        <a href="/z-score/" data-route id="side-phn-echo" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
           Z-score Calculator
         </a>
         <a href="/priming-volume/" data-route id="side-priming" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
@@ -485,7 +487,7 @@
 
       <div class="mt-8 space-y-1">
         <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-3">Info</div>
-        <a href="/info" data-route id="side-info" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 transition-all">About</a>
+        <a href="/info/" data-route id="side-info" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 transition-all">About</a>
       </div>
     </aside>
 
@@ -547,7 +549,7 @@
                 </div>
                 <span class="text-accent-500">→</span>
               </a>
-              <a href="/phn-echo/" data-route class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
+              <a href="/z-score/" data-route class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
                 <div>
                   <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
                   <div class="text-base font-semibold text-primary-900 dark:text-white">Z-score Calculator</div>
@@ -687,7 +689,7 @@
                 <a href="/gdp/" data-route class="px-3 py-2 rounded-lg bg-slate-100 text-primary-900 text-xs font-semibold hover:bg-slate-200 transition-colors dark:bg-primary-800 dark:text-slate-100 dark:hover:bg-primary-700">DO₂i / GDP Calculator</a>
                 <a href="/bsa/" data-route class="px-3 py-2 rounded-lg bg-slate-100 text-primary-900 text-xs font-semibold hover:bg-slate-200 transition-colors dark:bg-primary-800 dark:text-slate-100 dark:hover:bg-primary-700">BSA Calculator</a>
                 <a href="/predicted-hct/" data-route class="px-3 py-2 rounded-lg bg-slate-100 text-primary-900 text-xs font-semibold hover:bg-slate-200 transition-colors dark:bg-primary-800 dark:text-slate-100 dark:hover:bg-primary-700">Predicted Hct</a>
-                <a href="/phn-echo/" data-route class="px-3 py-2 rounded-lg bg-slate-100 text-primary-900 text-xs font-semibold hover:bg-slate-200 transition-colors dark:bg-primary-800 dark:text-slate-100 dark:hover:bg-primary-700">Pediatric Z-score</a>
+                <a href="/z-score/" data-route class="px-3 py-2 rounded-lg bg-slate-100 text-primary-900 text-xs font-semibold hover:bg-slate-200 transition-colors dark:bg-primary-800 dark:text-slate-100 dark:hover:bg-primary-700">Pediatric Z-score</a>
               </div>
             </div>
 
@@ -695,7 +697,7 @@
               <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Questions or Feedback</p>
               <p>If you have suggestions, workflow feedback, or bug reports, please contact Perfusion Tools directly.</p>
               <div class="flex flex-wrap gap-2">
-                <a href="/contact" data-route class="px-4 py-2 rounded-lg bg-primary-900 text-white text-sm font-semibold hover:bg-primary-800 transition-colors dark:bg-accent-600 dark:hover:bg-accent-500">Contact</a>
+                <a href="/contact/" data-route class="px-4 py-2 rounded-lg bg-primary-900 text-white text-sm font-semibold hover:bg-primary-800 transition-colors dark:bg-accent-600 dark:hover:bg-accent-500">Contact</a>
               </div>
             </div>
           </div>
@@ -755,9 +757,9 @@
     <div class="max-w-7xl mx-auto px-4 py-8 text-sm text-slate-500 dark:text-slate-400 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
       <p>© <span id="year"></span> Perfusion Tools. Educational use for healthcare professionals.</p>
       <nav class="flex gap-4">
-<a href="/privacy" data-route class="hover:text-accent-500 transition-colors">Privacy</a>
-        <a href="/terms" data-route class="hover:text-accent-500 transition-colors">Terms</a>
-        <a href="/contact" data-route class="hover:text-accent-500 transition-colors">Contact</a>
+<a href="/privacy/" data-route class="hover:text-accent-500 transition-colors">Privacy</a>
+        <a href="/terms/" data-route class="hover:text-accent-500 transition-colors">Terms</a>
+        <a href="/contact/" data-route class="hover:text-accent-500 transition-colors">Contact</a>
       </nav>
     </div>
   </footer>
@@ -787,7 +789,7 @@
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
       <span class="text-[10px] font-medium">Hct</span>
     </a>
-    <a href="/phn-echo/" data-route id="mob-phn-echo" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+    <a href="/z-score/" data-route id="mob-phn-echo" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.75 6.75A2.25 2.25 0 016 4.5h12a2.25 2.25 0 012.25 2.25v10.5A2.25 2.25 0 0118 19.5H6a2.25 2.25 0 01-2.25-2.25V6.75z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 9h7.5M8.25 12h4.5M8.25 15h7.5" /></svg>
       <span class="text-[10px] font-medium">Z-score</span>
     </a>
@@ -807,7 +809,7 @@
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M7 12h10M10 17h4" /></svg>
       <span class="text-[10px] font-medium leading-tight text-center whitespace-nowrap">Unit Conv</span>
     </a>
-    <a href="/info" data-route id="mob-info" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+    <a href="/info/" data-route id="mob-info" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
       <span class="text-[10px] font-medium">Info</span>
     </a>
