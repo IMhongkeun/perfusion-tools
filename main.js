@@ -1042,6 +1042,32 @@ const cannulaPressureDropData = [
       { flow: 6.0, pressureDrop: 78 }
     ],
     notes: 'EOPA arterial cannulae with elongated, one-piece, kink-resistant wirewound bodies, introducer, hemostasis cap, depth markings, and adjustable radiopaque suture ring. 18 Fr (6.0 mm), 12 in (30.5 cm) overall length, 3/8 in connector. Blunt tip order codes 77418/77518; dilator tip order codes 77618/77718.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'EOPA Arterial Cannulae',
+    category: 'arterial',
+    size: '20 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — EOPA Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 0 },
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 3 },
+      { flow: 2.0, pressureDrop: 6 },
+      { flow: 2.5, pressureDrop: 10 },
+      { flow: 3.0, pressureDrop: 14 },
+      { flow: 3.5, pressureDrop: 19 },
+      { flow: 4.0, pressureDrop: 25 },
+      { flow: 4.5, pressureDrop: 31 },
+      { flow: 5.0, pressureDrop: 38 },
+      { flow: 5.5, pressureDrop: 47 },
+      { flow: 6.0, pressureDrop: 55 }
+    ],
+    notes: 'EOPA arterial cannulae with elongated, one-piece, kink-resistant wirewound bodies, introducer, hemostasis cap, depth markings, and adjustable radiopaque suture ring. 20 Fr (6.7 mm), 12 in (30.5 cm) overall length, 3/8 in connector. Blunt tip order codes 77420/77520; dilator tip order codes 77620/77720.'
   }
 ];
 
