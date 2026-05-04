@@ -747,6 +747,34 @@ const cannulaPressureDropData = [
       { flow: 7.0, pressureDrop: 82 }
     ],
     notes: 'PAS 2315: 23 Fr (7.7 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8" LL connector, BE-PAS 2315 Bioline coating.'
+  },
+  {
+    manufacturer: 'Getinge / Maquet',
+    model: 'HLS Femoral Arterial Cannula',
+    category: 'femoral arterial',
+    size: 'PAS 2115',
+    sourceLabel: 'Getinge/Maquet HLS Femoral Arterial Cannula pressure-drop chart and product order table',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS femoral arterial cannula chart and product order table',
+    testMedium: 'Water at room temperature',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 2 },
+      { flow: 1.0, pressureDrop: 4 },
+      { flow: 1.5, pressureDrop: 7 },
+      { flow: 2.0, pressureDrop: 11 },
+      { flow: 2.5, pressureDrop: 16 },
+      { flow: 3.0, pressureDrop: 22 },
+      { flow: 3.5, pressureDrop: 29 },
+      { flow: 4.0, pressureDrop: 39 },
+      { flow: 4.5, pressureDrop: 50 },
+      { flow: 5.0, pressureDrop: 62 },
+      { flow: 5.5, pressureDrop: 75 },
+      { flow: 6.0, pressureDrop: 89 },
+      { flow: 6.5, pressureDrop: 104 },
+      { flow: 7.0, pressureDrop: 121 }
+    ],
+    notes: 'PAS 2115: 21 Fr (7.0 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8" LL connector, BE-PAS 2115 Bioline coating.'
   }
 ];
 
