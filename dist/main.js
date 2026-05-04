@@ -990,6 +990,32 @@ const cannulaPressureDropData = [
       { flow: 6.0, pressureDrop: 92 }
     ],
     notes: 'Select 3D II arterial cannulae with beveled tips and tapered, one-piece, kink-resistant wirewound bodies. 22 Fr (7.3 mm), 11.5 in (29.2 cm) overall length, 45° tip, vented 3/8 in connector order code 78422, non-vented 3/8 in connector order code 78522.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Select 3D II Arterial Cannulae',
+    category: 'arterial',
+    size: '24 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Select 3D II Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 0 },
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 4 },
+      { flow: 2.0, pressureDrop: 7 },
+      { flow: 2.5, pressureDrop: 11 },
+      { flow: 3.0, pressureDrop: 16 },
+      { flow: 3.5, pressureDrop: 22 },
+      { flow: 4.0, pressureDrop: 29 },
+      { flow: 4.5, pressureDrop: 37 },
+      { flow: 5.0, pressureDrop: 46 },
+      { flow: 5.5, pressureDrop: 55 },
+      { flow: 6.0, pressureDrop: 66 }
+    ],
+    notes: 'Select 3D II arterial cannulae with beveled tips and tapered, one-piece, kink-resistant wirewound bodies. 24 Fr (8.0 mm), 11.5 in (29.2 cm) overall length, 45° tip, vented 3/8 in connector order code 78424, non-vented 3/8 in connector order code 78524.'
   }
 ];
 
