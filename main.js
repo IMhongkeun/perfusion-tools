@@ -1577,6 +1577,38 @@ function setSelectOptions(selectNode, options, placeholder) {
   });
 }
 
+
+function renderAvailableCurveDatasets() {
+  const wrap = el('pressure-drop-available-list');
+  if (!wrap) return;
+  const curveEntries = cannulaPressureDropData.filter(entry => Array.isArray(entry.points) && entry.points.length > 0);
+  const grouped = {};
+  curveEntries.forEach(entry => {
+    const manufacturer = entry.manufacturer || 'Unknown';
+    const family = getPressureDropProductFamily(entry);
+    const model = entry.model || 'Unknown model';
+    grouped[manufacturer] = grouped[manufacturer] || {};
+    grouped[manufacturer][family] = grouped[manufacturer][family] || {};
+    grouped[manufacturer][family][model] = grouped[manufacturer][family][model] || new Set();
+    grouped[manufacturer][family][model].add(entry.size || 'Unknown size');
+  });
+
+  const parts = [];
+  Object.keys(grouped).sort().forEach(manufacturer => {
+    parts.push(`<div><p class="font-semibold">${manufacturer}</p>`);
+    Object.keys(grouped[manufacturer]).sort().forEach(family => {
+      parts.push(`<p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">${family}</p><ul class="pl-3 list-disc">`);
+      Object.keys(grouped[manufacturer][family]).sort().forEach(model => {
+        const sizes = Array.from(grouped[manufacturer][family][model]).sort().join(', ');
+        parts.push(`<li><span class="font-medium">${model}</span>: ${sizes}</li>`);
+      });
+      parts.push('</ul>');
+    });
+    parts.push('</div>');
+  });
+  wrap.innerHTML = parts.join('');
+}
+
 function syncPressureDropSelectors(changedLevel = 'manufacturer') {
   const manufacturerSelect = el('pressure-drop-manufacturer');
   const familySelect = el('pressure-drop-product-family');
@@ -4248,6 +4280,7 @@ window.addEventListener('DOMContentLoaded', () => {
       if (x) x.addEventListener('change', () => {
         if (id === 'cannula-size-type') updateCannulaInputMode();
         updateCannulaConverter();
+    renderAvailableCurveDatasets();
     syncPressureDropSelectors('manufacturer');
     updatePressureDropReference();
       });
