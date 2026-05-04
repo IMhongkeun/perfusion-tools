@@ -1454,7 +1454,6 @@ function updateHct() {
   const preModeEl = el('hct-pre-mode');
   const onPumpModeEl = el('hct-onpump-mode');
   const leftLabelEl = el('hct-left-label');
-  const rightLabelEl = el('hct-right-label');
   const onPumpExtraResultsEl = el('onpump-extra-results');
   if (preModeEl) preModeEl.classList.toggle('hidden', isOnPumpMode);
   if (onPumpModeEl) onPumpModeEl.classList.toggle('hidden', !isOnPumpMode);
@@ -1468,7 +1467,6 @@ function updateHct() {
 
   if (isOnPumpMode) {
     const r = computeOnPumpHctAdjustment({
-      patientType: el('onpump_pttype')?.value,
       weightKg: num('onpump_weight'),
       ebvCoefValue: num('onpump_ebv_coef'),
       primeVolume: num('onpump_prime'),
@@ -1482,8 +1480,7 @@ function updateHct() {
       ultrafiltrationRemoved: num('onpump_removed')
     });
     if (leftLabelEl) leftLabelEl.textContent = 'Current Vol';
-    if (rightLabelEl) rightLabelEl.textContent = 'Final Vol';
-    setText('ebv', r.estimatedCpbVolume ? r.estimatedCpbVolume.toFixed(0) : '0');
+    setText('ebv', r.finalTotalVolume ? r.finalTotalVolume.toFixed(0) : '0');
     setText('total_vol', r.finalTotalVolume ? r.finalTotalVolume.toFixed(0) : '0');
     setText('pred_hct', r.predictedHct ? r.predictedHct.toFixed(1) + '%' : '0%');
     setText('current_rbc_vol', `${r.currentRbcVolume.toFixed(0)} mL`);
