@@ -605,6 +605,28 @@ const cannulaPressureDropData = [
     testMedium: 'N/A',
     points: [],
     notes: 'Placeholder structure for future manufacturer-specific curve data.'
+  },
+  {
+    manufacturer: 'LivaNova',
+    model: 'RAP Femoral Venous Cannula',
+    category: 'femoral venous',
+    size: '22 Fr distal / 22 Fr proximal',
+    sourceLabel: 'LivaNova RAP Femoral Venous Cannula product page',
+    sourceUrl: 'https://www.livanova.com/cannulae/en-us/adult/mics-cannulae/rap-femoral-venous',
+    testMedium: 'Not specified on product page',
+    points: [],
+    notes: 'Manufacturer product metadata only. Pressure-flow curve points have not been added.'
+  },
+  {
+    manufacturer: 'LivaNova',
+    model: 'RAP Femoral Venous Cannula',
+    category: 'femoral venous',
+    size: '23 Fr distal / 25 Fr proximal',
+    sourceLabel: 'LivaNova RAP Femoral Venous Cannula product page',
+    sourceUrl: 'https://www.livanova.com/cannulae/en-us/adult/mics-cannulae/rap-femoral-venous',
+    testMedium: 'Not specified on product page',
+    points: [],
+    notes: 'Manufacturer product metadata only. Pressure-flow curve points have not been added.'
   }
 ];
 
