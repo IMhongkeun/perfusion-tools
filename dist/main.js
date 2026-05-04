@@ -887,6 +887,32 @@ const cannulaPressureDropData = [
       { flow: 7.0, pressureDrop: 47 }
     ],
     notes: 'PVL 2955: 29 Fr (9.7 mm) outer diameter, 55 cm insertion length, 32 side holes, 20 cm perforation length, 3/8" connector, BE-PVL 2955 Bioline coating.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'EOPA 3D Arterial Cannulae',
+    category: 'arterial',
+    size: '20 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — EOPA 3D Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 3 },
+      { flow: 1.5, pressureDrop: 6 },
+      { flow: 2.0, pressureDrop: 10 },
+      { flow: 2.5, pressureDrop: 15 },
+      { flow: 3.0, pressureDrop: 22 },
+      { flow: 3.5, pressureDrop: 31 },
+      { flow: 4.0, pressureDrop: 41 },
+      { flow: 4.5, pressureDrop: 52 },
+      { flow: 5.0, pressureDrop: 65 },
+      { flow: 5.5, pressureDrop: 81 },
+      { flow: 6.0, pressureDrop: 96 }
+    ],
+    notes: 'EOPA 3D arterial cannulae with tapered diffuse flow tips and kink-resistant elongated wirewound bodies. 20 Fr (6.7 mm), vented 3/8 in connector order code 78220, non-vented 3/8 in connector order code 78320.'
   }
 ];
 
