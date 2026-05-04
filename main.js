@@ -960,9 +960,9 @@ function drawPressureDropChart(svgNode, points, targetFlow, interpolatedPressure
 function updatePressureDropReference() {
   const manufacturerInput = el('pressure-drop-manufacturer'); const categorySelect = el('pressure-drop-category'); const modelInput = el('pressure-drop-model'); const sizeInput = el('pressure-drop-size'); const targetFlowInput = el('pressure-drop-target-flow');
   const statusMessage = el('pressure-drop-status-message'); const sourceWrap = el('pressure-drop-source'); const sourceLabel = el('pressure-drop-source-label'); const sourceUrl = el('pressure-drop-source-url'); const testMedium = el('pressure-drop-test-medium'); const notes = el('pressure-drop-notes');
-  const chartWrap = el('pressure-drop-chart-wrap'); const chartNode = el('pressure-drop-chart'); const curveMeta = el('pressure-drop-curve-meta'); const selectedModel = el('pressure-drop-selected-model'); const rangeText = el('pressure-drop-range'); const interpNote = el('pressure-drop-interp-note');
-  if (!manufacturerInput || !categorySelect || !modelInput || !sizeInput || !targetFlowInput || !statusMessage || !sourceWrap || !sourceLabel || !sourceUrl || !testMedium || !notes || !chartWrap || !chartNode || !curveMeta || !selectedModel || !rangeText || !interpNote) return;
-  chartWrap.classList.add('hidden'); curveMeta.classList.add('hidden'); sourceWrap.classList.add('hidden'); interpNote.classList.add('hidden');
+  const chartWrap = el('pressure-drop-chart-wrap'); const chartNode = el('pressure-drop-chart'); const curveMeta = el('pressure-drop-curve-meta'); const selectedModel = el('pressure-drop-selected-model'); const rangeText = el('pressure-drop-range'); const interpNote = el('pressure-drop-interp-note'); const chartRangeLabel = el('pressure-drop-chart-range-label'); const benchLabel = el('pressure-drop-bench-label');
+  if (!manufacturerInput || !categorySelect || !modelInput || !sizeInput || !targetFlowInput || !statusMessage || !sourceWrap || !sourceLabel || !sourceUrl || !testMedium || !notes || !chartWrap || !chartNode || !curveMeta || !selectedModel || !rangeText || !interpNote || !chartRangeLabel || !benchLabel) return;
+  chartWrap.classList.add('hidden'); curveMeta.classList.add('hidden'); sourceWrap.classList.add('hidden'); interpNote.classList.add('hidden'); chartRangeLabel.classList.add('hidden'); benchLabel.classList.add('hidden');
   const match = findPressureDropEntry({ manufacturer: manufacturerInput.value, category: categorySelect.value, model: modelInput.value, size: sizeInput.value });
   if (!match) { statusMessage.textContent = 'Pressure-drop data is not available for this model yet. Pressure drop cannot be estimated from Fr size alone.'; return; }
   const validPoints = getValidPressureDropPoints(match.points);
@@ -971,7 +971,7 @@ function updatePressureDropReference() {
   const result = interpolatePressureDrop(validPoints, targetFlow);
   rangeText.textContent = `Reference flow range shown in manufacturer data: ${validPoints[0].flow}–${validPoints[validPoints.length - 1].flow} L/min`;
   selectedModel.textContent = `${match.manufacturer} / ${match.model} / ${match.category} / ${match.size}`;
-  curveMeta.classList.remove('hidden'); sourceWrap.classList.remove('hidden');
+  curveMeta.classList.remove('hidden'); sourceWrap.classList.remove('hidden'); chartRangeLabel.classList.remove('hidden'); benchLabel.classList.remove('hidden');
   sourceLabel.textContent = match.sourceLabel || '—'; sourceUrl.textContent = match.sourceUrl || '—'; testMedium.textContent = `Test medium: ${match.testMedium || '—'}`; notes.textContent = `Notes: ${match.notes || '—'}`;
   if (result.state === 'exact') { statusMessage.textContent = `Pressure drop from manufacturer curve: ${result.value.toFixed(1)} mmHg`; chartWrap.classList.remove('hidden'); drawPressureDropChart(chartNode, validPoints, targetFlow, result.value); return; }
   if (result.state === 'interpolated') { statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${result.value.toFixed(1)} mmHg`; interpNote.classList.remove('hidden'); chartWrap.classList.remove('hidden'); drawPressureDropChart(chartNode, validPoints, targetFlow, result.value); return; }
