@@ -1016,6 +1016,32 @@ const cannulaPressureDropData = [
       { flow: 6.0, pressureDrop: 66 }
     ],
     notes: 'Select 3D II arterial cannulae with beveled tips and tapered, one-piece, kink-resistant wirewound bodies. 24 Fr (8.0 mm), 11.5 in (29.2 cm) overall length, 45° tip, vented 3/8 in connector order code 78424, non-vented 3/8 in connector order code 78524.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'EOPA Arterial Cannulae',
+    category: 'arterial',
+    size: '18 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — EOPA Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 5 },
+      { flow: 2.0, pressureDrop: 9 },
+      { flow: 2.5, pressureDrop: 14 },
+      { flow: 3.0, pressureDrop: 20 },
+      { flow: 3.5, pressureDrop: 27 },
+      { flow: 4.0, pressureDrop: 35 },
+      { flow: 4.5, pressureDrop: 44 },
+      { flow: 5.0, pressureDrop: 55 },
+      { flow: 5.5, pressureDrop: 66 },
+      { flow: 6.0, pressureDrop: 78 }
+    ],
+    notes: 'EOPA arterial cannulae with elongated, one-piece, kink-resistant wirewound bodies, introducer, hemostasis cap, depth markings, and adjustable radiopaque suture ring. 18 Fr (6.0 mm), 12 in (30.5 cm) overall length, 3/8 in connector. Blunt tip order codes 77418/77518; dilator tip order codes 77618/77718.'
   }
 ];
 
