@@ -878,6 +878,20 @@ function updateCannulaConverter() {
   noteOutput.textContent = clinicalNote;
 }
 
+function updateTubingPresetConverter(inchValue) {
+  if (!(inchValue > 0)) return;
+  // Formulas:
+  // mm = inch × 25.4
+  // cm = mm / 10
+  // Fr-equivalent = mm × 3
+  const diameterMm = inchValue * 25.4;
+  const diameterCm = diameterMm / 10;
+  const frEquivalent = diameterMm * 3;
+  setText('tubing-output-cm', `${diameterCm.toFixed(4)} cm`);
+  setText('tubing-output-mm', `${diameterMm.toFixed(3)} mm`);
+  setText('tubing-output-fr', `${frEquivalent.toFixed(1)} Fr ≈ ${Math.round(frEquivalent)} Fr`);
+}
+
 
 
 const PATIENT_TYPE_COEFS = {
@@ -3483,6 +3497,12 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     const cannulaFrMmInput = el('cannula-fr-mm-value');
     if (cannulaFrMmInput) cannulaFrMmInput.addEventListener('input', updateCannulaConverter);
+    document.querySelectorAll('[data-tubing-inch]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const inchValue = Number(button.dataset.tubingInch);
+        updateTubingPresetConverter(inchValue);
+      });
+    });
 
     document.querySelectorAll('[data-unit-tab]').forEach(button => {
       button.addEventListener('click', () => {
@@ -3514,6 +3534,7 @@ window.addEventListener('DOMContentLoaded', () => {
     updateUnitConverterPressure();
     updateCannulaInputMode();
     updateCannulaConverter();
+    updateTubingPresetConverter(0.375);
     setUnitConverterTab('flow');
   }
 });
