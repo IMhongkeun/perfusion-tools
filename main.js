@@ -627,6 +627,25 @@ const cannulaPressureDropData = [
     testMedium: 'Not specified on product page',
     points: [],
     notes: 'Pressure-flow chart source identified in LivaNova MICS & Femoral Cannulae brochure. Curve points have not yet been digitized.'
+  },
+  {
+    manufacturer: 'Getinge / Maquet',
+    model: 'HLS Femoral Arterial Cannula',
+    category: 'femoral arterial',
+    size: 'PAS 1315',
+    sourceLabel: 'Getinge/Maquet HLS Femoral Arterial Cannula pressure-drop chart and product order table',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS femoral arterial cannula chart and product order table',
+    testMedium: 'Water at room temperature',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 9 },
+      { flow: 1.0, pressureDrop: 24 },
+      { flow: 1.5, pressureDrop: 49 },
+      { flow: 2.0, pressureDrop: 86 },
+      { flow: 2.5, pressureDrop: 140 }
+    ],
+    notes: 'PAS 1315: 13 Fr (4.3 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8" LL connector, BE-PAS 1315 Bioline coating.'
   }
 ];
 
@@ -981,7 +1000,7 @@ function drawPressureDropChart(svgNode, points, targetFlow, interpolatedPressure
 
 function updatePressureDropReference() {
   const manufacturerInput = el('pressure-drop-manufacturer'); const categorySelect = el('pressure-drop-category'); const modelInput = el('pressure-drop-model'); const sizeInput = el('pressure-drop-size'); const targetFlowInput = el('pressure-drop-target-flow');
-  const statusMessage = el('pressure-drop-status-message'); const sourceWrap = el('pressure-drop-source'); const sourceLabel = el('pressure-drop-source-label'); const sourceUrl = el('pressure-drop-source-url'); const testMedium = el('pressure-drop-test-medium'); const notes = el('pressure-drop-notes');
+  const statusMessage = el('pressure-drop-status-message'); const sourceWrap = el('pressure-drop-source'); const sourceLabel = el('pressure-drop-source-label'); const sourceUrl = el('pressure-drop-source-url'); const testMedium = el('pressure-drop-test-medium'); const dataStatus = el('pressure-drop-data-status'); const digitizationNote = el('pressure-drop-digitization-note'); const notes = el('pressure-drop-notes');
   const chartWrap = el('pressure-drop-chart-wrap'); const chartNode = el('pressure-drop-chart'); const curveMeta = el('pressure-drop-curve-meta'); const selectedModel = el('pressure-drop-selected-model'); const rangeText = el('pressure-drop-range'); const interpNote = el('pressure-drop-interp-note'); const chartRangeLabel = el('pressure-drop-chart-range-label'); const benchLabel = el('pressure-drop-bench-label');
   if (!manufacturerInput || !categorySelect || !modelInput || !sizeInput || !targetFlowInput || !statusMessage || !sourceWrap || !sourceLabel || !sourceUrl || !testMedium || !notes || !chartWrap || !chartNode || !curveMeta || !selectedModel || !rangeText || !interpNote || !chartRangeLabel || !benchLabel) return;
   chartWrap.classList.add('hidden'); curveMeta.classList.add('hidden'); sourceWrap.classList.add('hidden'); interpNote.classList.add('hidden'); chartRangeLabel.classList.add('hidden'); benchLabel.classList.add('hidden');
@@ -994,10 +1013,10 @@ function updatePressureDropReference() {
   rangeText.textContent = `Reference flow range shown in manufacturer data: ${validPoints[0].flow}–${validPoints[validPoints.length - 1].flow} L/min`;
   selectedModel.textContent = `${match.manufacturer} / ${match.model} / ${match.category} / ${match.size}`;
   curveMeta.classList.remove('hidden'); sourceWrap.classList.remove('hidden'); chartRangeLabel.classList.remove('hidden'); benchLabel.classList.remove('hidden');
-  sourceLabel.textContent = match.sourceLabel || '—'; sourceUrl.textContent = match.sourceUrl || '—'; testMedium.textContent = `Test medium: ${match.testMedium || '—'}`; notes.textContent = `Notes: ${match.notes || '—'}`;
-  if (result.state === 'exact') { statusMessage.textContent = `Pressure drop from manufacturer curve: ${result.value.toFixed(1)} mmHg`; chartWrap.classList.remove('hidden'); drawPressureDropChart(chartNode, validPoints, targetFlow, result.value); return; }
+  sourceLabel.textContent = match.sourceLabel || '—'; sourceUrl.textContent = match.sourceUrl || '—'; testMedium.textContent = `Test medium: ${match.testMedium || '—'}`; dataStatus.textContent = `Data status: ${match.dataStatus || '—'}`; digitizationNote.textContent = `Digitization note: ${match.digitizationNote || '—'}`; notes.textContent = `Notes: ${match.notes || '—'}`;
+  if (result.state === 'exact') { statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${result.value.toFixed(1)} mmHg`; chartWrap.classList.remove('hidden'); drawPressureDropChart(chartNode, validPoints, targetFlow, result.value); return; }
   if (result.state === 'interpolated') { statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${result.value.toFixed(1)} mmHg`; interpNote.classList.remove('hidden'); chartWrap.classList.remove('hidden'); drawPressureDropChart(chartNode, validPoints, targetFlow, result.value); return; }
-  if (result.state === 'out_of_range') { statusMessage.textContent = 'Target flow is outside the manufacturer chart range. Pressure drop is not estimated.'; chartWrap.classList.remove('hidden'); drawPressureDropChart(chartNode, validPoints, NaN, NaN); return; }
+  if (result.state === 'out_of_range') { statusMessage.textContent = 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.'; chartWrap.classList.remove('hidden'); drawPressureDropChart(chartNode, validPoints, NaN, NaN); return; }
   statusMessage.textContent = 'Reference flow range is available in manufacturer chart data.';
 }
 
