@@ -913,6 +913,32 @@ const cannulaPressureDropData = [
       { flow: 6.0, pressureDrop: 96 }
     ],
     notes: 'EOPA 3D arterial cannulae with tapered diffuse flow tips and kink-resistant elongated wirewound bodies. 20 Fr (6.7 mm), vented 3/8 in connector order code 78220, non-vented 3/8 in connector order code 78320.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'EOPA 3D Arterial Cannulae',
+    category: 'arterial',
+    size: '22 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — EOPA 3D Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 4 },
+      { flow: 2.0, pressureDrop: 6 },
+      { flow: 2.5, pressureDrop: 9 },
+      { flow: 3.0, pressureDrop: 13 },
+      { flow: 3.5, pressureDrop: 18 },
+      { flow: 4.0, pressureDrop: 24 },
+      { flow: 4.5, pressureDrop: 31 },
+      { flow: 5.0, pressureDrop: 39 },
+      { flow: 5.5, pressureDrop: 47 },
+      { flow: 6.0, pressureDrop: 56 }
+    ],
+    notes: 'EOPA 3D arterial cannulae with tapered diffuse flow tips and kink-resistant elongated wirewound bodies. 22 Fr (7.3 mm), vented 3/8 in connector order code 78222, non-vented 3/8 in connector order code 78322.'
   }
 ];
 
