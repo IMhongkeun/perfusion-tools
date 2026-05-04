@@ -155,7 +155,7 @@ const TOP_NAV_ITEMS = [
   { path: '/timecalc/', label: 'Time' },
   { path: '/quick-reference/', label: 'Quick Reference' },
   { path: '/unit-converter/', label: 'Unit Converter' },
-  { path: '/info', label: 'Info' },
+  { path: '/info/', label: 'Info' },
 ];
 
 function initStandaloneTopNav() {
@@ -893,6 +893,107 @@ function updateCannulaConverter() {
 }
 
 
+function normalizePressureDropKey(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function findPressureDropEntry({ manufacturer, category, model, size }) {
+  const normalizedManufacturer = normalizePressureDropKey(manufacturer);
+  const normalizedCategory = normalizePressureDropKey(category);
+  const normalizedModel = normalizePressureDropKey(model);
+  const normalizedSize = normalizePressureDropKey(size);
+
+  if (!normalizedManufacturer || !normalizedCategory || !normalizedModel || !normalizedSize) return null;
+
+  return cannulaPressureDropData.find(entry => (
+    normalizePressureDropKey(entry.manufacturer) === normalizedManufacturer &&
+    normalizePressureDropKey(entry.category) === normalizedCategory &&
+    normalizePressureDropKey(entry.model) === normalizedModel &&
+    normalizePressureDropKey(entry.size) === normalizedSize
+  )) || null;
+}
+
+function getValidPressureDropPoints(points) {
+  if (!Array.isArray(points)) return [];
+  return points
+    .filter(point => Number.isFinite(point.flow) && Number.isFinite(point.pressureDrop))
+    .sort((a, b) => a.flow - b.flow);
+}
+
+function interpolatePressureDrop(points, targetFlow) {
+  if (!Number.isFinite(targetFlow)) return { state: 'invalid', value: null };
+  const validPoints = getValidPressureDropPoints(points);
+  if (!validPoints.length) return { state: 'no_points', value: null };
+
+  const minFlow = validPoints[0].flow;
+  const maxFlow = validPoints[validPoints.length - 1].flow;
+  if (targetFlow < minFlow || targetFlow > maxFlow) return { state: 'out_of_range', value: null, minFlow, maxFlow };
+  for (let i = 0; i < validPoints.length; i += 1) {
+    if (targetFlow === validPoints[i].flow) return { state: 'exact', value: validPoints[i].pressureDrop, minFlow, maxFlow };
+  }
+  for (let i = 0; i < validPoints.length - 1; i += 1) {
+    const left = validPoints[i]; const right = validPoints[i + 1];
+    if (targetFlow > left.flow && targetFlow < right.flow) {
+      const ratio = (targetFlow - left.flow) / (right.flow - left.flow);
+      return { state: 'interpolated', value: left.pressureDrop + ((right.pressureDrop - left.pressureDrop) * ratio), minFlow, maxFlow };
+    }
+  }
+  return { state: 'out_of_range', value: null, minFlow, maxFlow };
+}
+
+function drawPressureDropChart(svgNode, points, targetFlow, interpolatedPressureDrop) {
+  const validPoints = getValidPressureDropPoints(points);
+  if (!svgNode || !validPoints.length) return;
+  const width = 320; const height = 140;
+  const padding = { left: 34, right: 10, top: 10, bottom: 24 };
+  const minFlow = validPoints[0].flow;
+  const maxFlow = validPoints[validPoints.length - 1].flow;
+  const maxDrop = Math.max(...validPoints.map(p => p.pressureDrop), 1);
+  const scaleX = flow => padding.left + ((flow - minFlow) / Math.max(maxFlow - minFlow, 0.0001)) * (width - padding.left - padding.right);
+  const scaleY = drop => height - padding.bottom - (drop / maxDrop) * (height - padding.top - padding.bottom);
+  const polyline = validPoints.map(p => `${scaleX(p.flow).toFixed(1)},${scaleY(p.pressureDrop).toFixed(1)}`).join(' ');
+  const targetX = Number.isFinite(targetFlow) ? scaleX(targetFlow) : null;
+  const targetY = Number.isFinite(interpolatedPressureDrop) ? scaleY(interpolatedPressureDrop) : null;
+  svgNode.innerHTML = `<line x1="${padding.left}" y1="${height - padding.bottom}" x2="${width - padding.right}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><polyline points="${polyline}" fill="none" stroke="#0ea5e9" stroke-width="2" />${validPoints.map(p => `<circle cx="${scaleX(p.flow).toFixed(1)}" cy="${scaleY(p.pressureDrop).toFixed(1)}" r="2.2" fill="#0ea5e9" />`).join('')}${Number.isFinite(targetX) && Number.isFinite(targetY) ? `<line x1="${targetX.toFixed(1)}" y1="${padding.top}" x2="${targetX.toFixed(1)}" y2="${height - padding.bottom}" stroke="#f59e0b" stroke-dasharray="3 3" /><circle cx="${targetX.toFixed(1)}" cy="${targetY.toFixed(1)}" r="3" fill="#f59e0b" />` : ''}<text x="${padding.left}" y="${height - 6}" font-size="9" fill="currentColor" opacity="0.65">Flow (L/min)</text><text x="${width - 110}" y="${padding.top + 9}" font-size="9" fill="currentColor" opacity="0.65">Pressure drop (mmHg)</text>`;
+}
+
+function updatePressureDropReference() {
+  const manufacturerInput = el('pressure-drop-manufacturer'); const categorySelect = el('pressure-drop-category'); const modelInput = el('pressure-drop-model'); const sizeInput = el('pressure-drop-size'); const targetFlowInput = el('pressure-drop-target-flow');
+  const statusMessage = el('pressure-drop-status-message'); const sourceWrap = el('pressure-drop-source'); const sourceLabel = el('pressure-drop-source-label'); const sourceUrl = el('pressure-drop-source-url'); const testMedium = el('pressure-drop-test-medium'); const notes = el('pressure-drop-notes');
+  const chartWrap = el('pressure-drop-chart-wrap'); const chartNode = el('pressure-drop-chart'); const curveMeta = el('pressure-drop-curve-meta'); const selectedModel = el('pressure-drop-selected-model'); const rangeText = el('pressure-drop-range'); const interpNote = el('pressure-drop-interp-note');
+  if (!manufacturerInput || !categorySelect || !modelInput || !sizeInput || !targetFlowInput || !statusMessage || !sourceWrap || !sourceLabel || !sourceUrl || !testMedium || !notes || !chartWrap || !chartNode || !curveMeta || !selectedModel || !rangeText || !interpNote) return;
+  chartWrap.classList.add('hidden'); curveMeta.classList.add('hidden'); sourceWrap.classList.add('hidden'); interpNote.classList.add('hidden');
+  const match = findPressureDropEntry({ manufacturer: manufacturerInput.value, category: categorySelect.value, model: modelInput.value, size: sizeInput.value });
+  if (!match) { statusMessage.textContent = 'Pressure-drop data is not available for this model yet. Pressure drop cannot be estimated from Fr size alone.'; return; }
+  const validPoints = getValidPressureDropPoints(match.points);
+  if (!validPoints.length) { statusMessage.textContent = 'Manufacturer-specific curve data has not been added for this model yet.'; return; }
+  const targetFlow = parseFloat(targetFlowInput.value);
+  const result = interpolatePressureDrop(validPoints, targetFlow);
+  rangeText.textContent = `Reference flow range shown in manufacturer data: ${validPoints[0].flow}–${validPoints[validPoints.length - 1].flow} L/min`;
+  selectedModel.textContent = `${match.manufacturer} / ${match.model} / ${match.category} / ${match.size}`;
+  curveMeta.classList.remove('hidden'); sourceWrap.classList.remove('hidden');
+  sourceLabel.textContent = match.sourceLabel || '—'; sourceUrl.textContent = match.sourceUrl || '—'; testMedium.textContent = `Test medium: ${match.testMedium || '—'}`; notes.textContent = `Notes: ${match.notes || '—'}`;
+  if (result.state === 'exact') { statusMessage.textContent = `Pressure drop from manufacturer curve: ${result.value.toFixed(1)} mmHg`; chartWrap.classList.remove('hidden'); drawPressureDropChart(chartNode, validPoints, targetFlow, result.value); return; }
+  if (result.state === 'interpolated') { statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${result.value.toFixed(1)} mmHg`; interpNote.classList.remove('hidden'); chartWrap.classList.remove('hidden'); drawPressureDropChart(chartNode, validPoints, targetFlow, result.value); return; }
+  if (result.state === 'out_of_range') { statusMessage.textContent = 'Target flow is outside the manufacturer chart range. Pressure drop is not estimated.'; chartWrap.classList.remove('hidden'); drawPressureDropChart(chartNode, validPoints, NaN, NaN); return; }
+  statusMessage.textContent = 'Reference flow range is available in manufacturer chart data.';
+}
+
+function updateTubingPresetConverter(inchValue) {
+  if (!(inchValue > 0)) return;
+  // Formulas:
+  // mm = inch × 25.4
+  // cm = mm / 10
+  // Fr-equivalent = mm × 3
+  const diameterMm = inchValue * 25.4;
+  const diameterCm = diameterMm / 10;
+  const frEquivalent = diameterMm * 3;
+  setText('tubing-output-cm', `${diameterCm.toFixed(4)} cm`);
+  setText('tubing-output-mm', `${diameterMm.toFixed(3)} mm`);
+  setText('tubing-output-fr', `${frEquivalent.toFixed(1)} Fr ≈ ${Math.round(frEquivalent)} Fr`);
+}
+
+
 
 const PATIENT_TYPE_COEFS = {
   adult_m: 70,
@@ -914,6 +1015,21 @@ function computePredictedHct({ pttype, weight, pre, prime, fluids = 0, removed =
   const totalVol = ebv + (prime || 0) + (fluids || 0) + rbcVolAdded - (removed || 0);
   const hct = totalVol > 0 ? (rbcVolume / totalVol) * 100 : 0;
   return { ebv, totalVol, hct };
+}
+
+function computeOnPumpHctAdjustment({ patientType, weightKg, ebvCoefValue, primeVolume, currentHct, useManualOverride = false, manualCurrentVolumeOverride = 0, addedCrystalloid = 0, rbcUnits = 0, rbcUnitVol = 300, rbcUnitHct = 60, ultrafiltrationRemoved = 0 }) {
+  const safeEbvCoef = Number.isFinite(ebvCoefValue) && ebvCoefValue > 0 ? ebvCoefValue : ebvCoef(patientType);
+  const ebv = (weightKg || 0) * safeEbvCoef;
+  const estimatedCpbVolumeAuto = ebv + (primeVolume || 0);
+  let estimatedCpbVolume = estimatedCpbVolumeAuto;
+  if (useManualOverride && (manualCurrentVolumeOverride || 0) > 0) estimatedCpbVolume = manualCurrentVolumeOverride;
+  const totalRbcProductVolume = (rbcUnits || 0) * (rbcUnitVol || 0);
+  const currentRbcVolume = (estimatedCpbVolume || 0) * ((currentHct || 0) / 100);
+  const addedRbcVolume = totalRbcProductVolume * ((rbcUnitHct || 0) / 100);
+  const finalTotalVolume = (estimatedCpbVolume || 0) + (addedCrystalloid || 0) + totalRbcProductVolume - (ultrafiltrationRemoved || 0);
+  const predictedHct = finalTotalVolume > 0 ? ((currentRbcVolume + addedRbcVolume) / finalTotalVolume) * 100 : 0;
+  const hctChange = predictedHct - (currentHct || 0);
+  return { ebv, estimatedCpbVolumeAuto, estimatedCpbVolume, currentRbcVolume, addedRbcVolume, finalTotalVolume, predictedHct, hctChange };
 }
 
 // -----------------------------
@@ -1434,6 +1550,57 @@ function resetGDP() {
 // Predicted Hct Interaction
 // -----------------------------
 function updateHct() {
+  const mode = el('hct_mode')?.value || 'pre';
+  const isOnPumpMode = mode === 'onpump';
+  const preModeEl = el('hct-pre-mode');
+  const onPumpModeEl = el('hct-onpump-mode');
+  const leftLabelEl = el('hct-left-label');
+  const onPumpExtraResultsEl = el('onpump-extra-results');
+  if (preModeEl) preModeEl.classList.toggle('hidden', isOnPumpMode);
+  if (onPumpModeEl) onPumpModeEl.classList.toggle('hidden', !isOnPumpMode);
+  if (onPumpExtraResultsEl) onPumpExtraResultsEl.classList.toggle('hidden', !isOnPumpMode);
+  const modeHelpEl = el('hct-mode-help');
+  if (modeHelpEl) {
+    modeHelpEl.textContent = isOnPumpMode
+      ? 'Estimate hematocrit change after RBC transfusion, fluid addition, or ultrafiltration during CPB.'
+      : 'Estimate dilutional hematocrit at CPB initiation.';
+  }
+
+  if (isOnPumpMode) {
+    const r = computeOnPumpHctAdjustment({
+      weightKg: num('onpump_weight'),
+      ebvCoefValue: num('onpump_ebv_coef'),
+      primeVolume: num('onpump_prime'),
+      currentHct: num('current_hct'),
+      useManualOverride: !!el('use_manual_current_volume')?.checked,
+      manualCurrentVolumeOverride: num('manual_current_volume'),
+      addedCrystalloid: num('onpump_fluids'),
+      rbcUnits: num('onpump_rbc_units'),
+      rbcUnitVol: num('onpump_rbc_unit_vol'),
+      rbcUnitHct: num('onpump_rbc_hct'),
+      ultrafiltrationRemoved: num('onpump_removed')
+    });
+    if (leftLabelEl) leftLabelEl.textContent = 'Current Vol';
+    setText('ebv', r.finalTotalVolume ? r.finalTotalVolume.toFixed(0) : '0');
+    setText('total_vol', r.finalTotalVolume ? r.finalTotalVolume.toFixed(0) : '0');
+    setText('pred_hct', r.predictedHct ? r.predictedHct.toFixed(1) + '%' : '0%');
+    setText('current_rbc_vol', `${r.currentRbcVolume.toFixed(0)} mL`);
+    setText('added_rbc_vol', `${r.addedRbcVolume.toFixed(0)} mL`);
+    setText('onpump_ebv', `${r.ebv.toFixed(0)} mL`);
+    setText('onpump_estimated_volume', `${r.estimatedCpbVolume.toFixed(0)} mL`);
+    setText('onpump_ebv_auto', `${r.ebv.toFixed(0)} mL`);
+    setText('onpump_estimated_auto', `${r.estimatedCpbVolumeAuto.toFixed(0)} mL`);
+    const manualWrapEl = el('manual-current-volume-wrap');
+    const manualEnabled = !!el('use_manual_current_volume')?.checked;
+    if (manualWrapEl) manualWrapEl.classList.toggle('hidden', !manualEnabled);
+    const manualActiveNoteEl = el('manual-override-active-note');
+    if (manualActiveNoteEl) manualActiveNoteEl.classList.toggle('hidden', !(manualEnabled && num('manual_current_volume') > 0));
+    setText('current_hct_result', `${(num('current_hct') || 0).toFixed(1)}%`);
+    setText('pred_hct_result', `${r.predictedHct.toFixed(1)}%`);
+    setText('hct_change', `${r.hctChange >= 0 ? '+' : ''}${r.hctChange.toFixed(1)}`);
+    return;
+  }
+
   const pttype = el('pttype').value;
   const payload = {
     pttype,
@@ -1448,9 +1615,46 @@ function updateHct() {
     ebvCoefValue: num('ebv_coef')
   };
   const r = computePredictedHct(payload);
+  if (leftLabelEl) leftLabelEl.textContent = 'EBV';
+  if (rightLabelEl) rightLabelEl.textContent = 'Total Vol';
   setText('ebv', r.ebv ? r.ebv.toFixed(0) : '0');
   setText('total_vol', r.totalVol ? r.totalVol.toFixed(0) : '0');
   setText('pred_hct', r.hct ? r.hct.toFixed(1) + '%' : '0%');
+}
+
+function setHctMode(mode) {
+  const modeInput = el('hct_mode');
+  if (!modeInput) return;
+  const nextMode = mode === 'onpump' ? 'onpump' : 'pre';
+  modeInput.value = nextMode;
+  const isPre = nextMode === 'pre';
+  const preBtn = el('hct-mode-pre');
+  const onPumpBtn = el('hct-mode-onpump');
+  if (preBtn) {
+    preBtn.setAttribute('aria-pressed', String(isPre));
+    preBtn.setAttribute('aria-selected', String(isPre));
+    preBtn.classList.toggle('bg-primary-900', isPre);
+    preBtn.classList.toggle('text-white', isPre);
+    preBtn.classList.toggle('dark:bg-accent-500', isPre);
+    preBtn.classList.toggle('bg-white', !isPre);
+    preBtn.classList.toggle('text-slate-700', !isPre);
+    preBtn.classList.toggle('dark:bg-primary-800', !isPre);
+    preBtn.classList.toggle('dark:text-slate-200', !isPre);
+    preBtn.classList.toggle('border', !isPre);
+  }
+  if (onPumpBtn) {
+    onPumpBtn.setAttribute('aria-pressed', String(!isPre));
+    onPumpBtn.setAttribute('aria-selected', String(!isPre));
+    onPumpBtn.classList.toggle('bg-primary-900', !isPre);
+    onPumpBtn.classList.toggle('text-white', !isPre);
+    onPumpBtn.classList.toggle('dark:bg-accent-500', !isPre);
+    onPumpBtn.classList.toggle('bg-white', isPre);
+    onPumpBtn.classList.toggle('text-slate-700', isPre);
+    onPumpBtn.classList.toggle('dark:bg-primary-800', isPre);
+    onPumpBtn.classList.toggle('dark:text-slate-200', isPre);
+    onPumpBtn.classList.toggle('border', isPre);
+  }
+  updateHct();
 }
 
 function applyDefaultEbvCoef(pttype) {
@@ -3311,6 +3515,34 @@ window.addEventListener('DOMContentLoaded', () => {
       const x = el(id);
       if (x) x.addEventListener('input', updateHct);
     });
+    ['hct_mode', 'onpump_weight', 'onpump_ebv_coef', 'onpump_prime', 'current_hct', 'manual_current_volume', 'use_manual_current_volume', 'onpump_fluids', 'onpump_rbc_units', 'onpump_rbc_unit_vol', 'onpump_rbc_hct', 'onpump_removed', 'onpump_pttype'].forEach(id => {
+      const x = el(id);
+      if (x) x.addEventListener('input', updateHct);
+      if (x) x.addEventListener('change', updateHct);
+    });
+    const modeButtons = Array.from(document.querySelectorAll('[data-hct-mode]'));
+    modeButtons.forEach((btn) => {
+      btn.addEventListener('click', () => setHctMode(btn.dataset.hctMode));
+      btn.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+        e.preventDefault();
+        const idx = modeButtons.indexOf(btn);
+        const nextIdx = e.key === 'ArrowRight' ? (idx + 1) % modeButtons.length : (idx - 1 + modeButtons.length) % modeButtons.length;
+        modeButtons[nextIdx].focus();
+        setHctMode(modeButtons[nextIdx].dataset.hctMode);
+      });
+    });
+    setHctMode(el('hct_mode')?.value || 'pre');
+    const onPumpPttypeSelect = el('onpump_pttype');
+    if (onPumpPttypeSelect) {
+      onPumpPttypeSelect.addEventListener('change', () => {
+        const onPumpCoefInput = el('onpump_ebv_coef');
+        if (onPumpCoefInput) onPumpCoefInput.value = ebvCoef(onPumpPttypeSelect.value);
+        updateHct();
+      });
+      const onPumpCoefInput = el('onpump_ebv_coef');
+      if (onPumpCoefInput && !onPumpCoefInput.value) onPumpCoefInput.value = ebvCoef(onPumpPttypeSelect.value);
+    }
 
     const pttypeSelect = el('pttype');
     if (pttypeSelect) {
@@ -3366,6 +3598,12 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     const cannulaFrMmInput = el('cannula-fr-mm-value');
     if (cannulaFrMmInput) cannulaFrMmInput.addEventListener('input', updateCannulaConverter);
+    document.querySelectorAll('[data-tubing-inch]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const inchValue = Number(button.dataset.tubingInch);
+        updateTubingPresetConverter(inchValue);
+      });
+    });
 
     ['pressure-drop-manufacturer', 'pressure-drop-category', 'pressure-drop-model', 'pressure-drop-size', 'pressure-drop-target-flow'].forEach(id => {
       const x = el(id);
@@ -3404,6 +3642,7 @@ window.addEventListener('DOMContentLoaded', () => {
     updateUnitConverterPressure();
     updateCannulaInputMode();
     updateCannulaConverter();
+    updateTubingPresetConverter(0.375);
     setUnitConverterTab('flow');
   }
 });

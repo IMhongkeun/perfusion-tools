@@ -529,6 +529,14 @@
                       <p class="mt-1 text-xs font-medium text-slate-700 dark:text-slate-200">Pressure-drop data unavailable</p>
                       <p class="mt-1 text-xs text-slate-600 dark:text-slate-300"><span id="pressure-drop-status-message">Pressure-drop data is not available yet. Pressure drop cannot be estimated from Fr size alone.</span></p>
                     </div>
+                    <div id="pressure-drop-curve-meta" class="hidden text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                      <p id="pressure-drop-selected-model">—</p>
+                      <p id="pressure-drop-range">Reference flow range: —</p>
+                      <p id="pressure-drop-interp-note" class="hidden">Interpolated estimate from manufacturer-published curve data.</p>
+                    </div>
+                    <div id="pressure-drop-chart-wrap" class="hidden rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800/40 p-2">
+                      <svg id="pressure-drop-chart" viewBox="0 0 320 140" class="w-full h-32" role="img" aria-label="Pressure drop vs flow chart"></svg>
+                    </div>
                     <div id="pressure-drop-source" class="hidden rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800/40 p-2.5 space-y-1">
                       <div class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">Source</div>
                       <p id="pressure-drop-source-label" class="text-xs text-slate-700 dark:text-slate-200">—</p>
@@ -536,7 +544,7 @@
                       <p id="pressure-drop-test-medium" class="text-xs text-slate-600 dark:text-slate-300">Test medium: —</p>
                       <p id="pressure-drop-notes" class="text-xs text-slate-600 dark:text-slate-300">Notes: —</p>
                     </div>
-                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Pressure drop varies by manufacturer, cannula model, internal diameter, effective length, tip design, connector geometry, and test conditions. Manufacturer pressure-flow curves are usually bench data and may not reflect actual clinical performance with blood.</p>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Manufacturer pressure-flow curves are usually bench data and may not reflect actual clinical performance with blood. Actual flow performance depends on blood viscosity, Hct, temperature, cannula position, kinking, vessel size, circuit configuration, and patient condition.</p>
                   </div>
                 </details>
               </div>
