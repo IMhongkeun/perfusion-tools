@@ -916,8 +916,9 @@ function computePredictedHct({ pttype, weight, pre, prime, fluids = 0, removed =
   return { ebv, totalVol, hct };
 }
 
-function computeOnPumpHctAdjustment({ weightKg, ebvCoefValue, primeVolume, currentHct, useManualOverride = false, manualCurrentVolumeOverride = 0, addedCrystalloid = 0, rbcUnits = 0, rbcUnitVol = 300, rbcUnitHct = 60, ultrafiltrationRemoved = 0 }) {
-  const ebv = (weightKg || 0) * (ebvCoefValue || 0);
+function computeOnPumpHctAdjustment({ patientType, weightKg, ebvCoefValue, primeVolume, currentHct, useManualOverride = false, manualCurrentVolumeOverride = 0, addedCrystalloid = 0, rbcUnits = 0, rbcUnitVol = 300, rbcUnitHct = 60, ultrafiltrationRemoved = 0 }) {
+  const safeEbvCoef = Number.isFinite(ebvCoefValue) && ebvCoefValue > 0 ? ebvCoefValue : ebvCoef(patientType);
+  const ebv = (weightKg || 0) * safeEbvCoef;
   const estimatedCpbVolumeAuto = ebv + (primeVolume || 0);
   let estimatedCpbVolume = estimatedCpbVolumeAuto;
   if (useManualOverride && (manualCurrentVolumeOverride || 0) > 0) estimatedCpbVolume = manualCurrentVolumeOverride;
@@ -1467,6 +1468,7 @@ function updateHct() {
 
   if (isOnPumpMode) {
     const r = computeOnPumpHctAdjustment({
+      patientType: el('onpump_pttype')?.value,
       weightKg: num('onpump_weight'),
       ebvCoefValue: num('onpump_ebv_coef'),
       primeVolume: num('onpump_prime'),
