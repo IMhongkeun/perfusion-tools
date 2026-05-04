@@ -831,6 +831,34 @@ const cannulaPressureDropData = [
       { flow: 7.0, pressureDrop: 113 }
     ],
     notes: 'PVL 2355: 23 Fr (7.7 mm) outer diameter, 55 cm insertion length, 20 side holes, 20 cm perforation length, 3/8" connector, BE-PVL 2355 Bioline coating.'
+  },
+  {
+    manufacturer: 'Getinge / Maquet',
+    model: 'HLS Venous Cannula',
+    category: 'femoral venous',
+    size: 'PVL 2555',
+    sourceLabel: 'Getinge/Maquet HLS venous cannula product order table and PVL 2555 pressure-drop chart',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS venous cannula product order table and pressure-drop chart',
+    testMedium: 'Water at room temperature',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 2 },
+      { flow: 1.0, pressureDrop: 3 },
+      { flow: 1.5, pressureDrop: 6 },
+      { flow: 2.0, pressureDrop: 8 },
+      { flow: 2.5, pressureDrop: 12 },
+      { flow: 3.0, pressureDrop: 17 },
+      { flow: 3.5, pressureDrop: 22 },
+      { flow: 4.0, pressureDrop: 28 },
+      { flow: 4.5, pressureDrop: 34 },
+      { flow: 5.0, pressureDrop: 42 },
+      { flow: 5.5, pressureDrop: 50 },
+      { flow: 6.0, pressureDrop: 59 },
+      { flow: 6.5, pressureDrop: 69 },
+      { flow: 7.0, pressureDrop: 79 }
+    ],
+    notes: 'PVL 2555: 25 Fr (8.3 mm) outer diameter, 55 cm insertion length, 24 side holes, 20 cm perforation length, 3/8" connector, BE-PVL 2555 Bioline coating.'
   }
 ];
 
