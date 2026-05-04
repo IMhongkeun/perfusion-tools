@@ -1146,6 +1146,32 @@ const cannulaPressureDropData = [
       { flow: 6.0, pressureDrop: 89 }
     ],
     notes: 'Select Series Angled Tip arterial cannulae with beveled tips and tapered, one-piece, kink-resistant wirewound bodies, tip orientation line, and connector peel cap. 20 Fr (6.7 mm), 12 in (30.5 cm) overall length, 45° angled tip. Vented 3/8 in connector order codes: 72420 without side holes, 73420 with side holes. Non-vented 3/8 in connector order code: 72520 without side holes.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Select Series Angled Tip Arterial Cannulae',
+    category: 'arterial',
+    size: '22 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Select Series Angled Tip Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 4 },
+      { flow: 2.0, pressureDrop: 7 },
+      { flow: 2.5, pressureDrop: 10 },
+      { flow: 3.0, pressureDrop: 15 },
+      { flow: 3.5, pressureDrop: 20 },
+      { flow: 4.0, pressureDrop: 26 },
+      { flow: 4.5, pressureDrop: 32 },
+      { flow: 5.0, pressureDrop: 40 },
+      { flow: 5.5, pressureDrop: 48 },
+      { flow: 6.0, pressureDrop: 56 }
+    ],
+    notes: 'Select Series Angled Tip arterial cannulae with beveled tips and tapered, one-piece, kink-resistant wirewound bodies, tip orientation line, and connector peel cap. 22 Fr (7.3 mm), 12 in (30.5 cm) overall length, 45° angled tip. Vented 3/8 in connector order codes: 72422 without side holes, 73422 with side holes. Non-vented 3/8 in connector order code: 72522 without side holes.'
   }
 ];
 
