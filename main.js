@@ -594,6 +594,20 @@ const UNIT_LABELS = {
   pressurePsi: 'psi',
   pressureBar: 'bar'
 };
+const cannulaPressureDropData = [
+  {
+    manufacturer: 'Example placeholder — not clinical data',
+    model: 'Demo model',
+    category: 'arterial',
+    size: '18 Fr',
+    sourceLabel: 'Example placeholder — not clinical data',
+    sourceUrl: '',
+    testMedium: 'N/A',
+    points: [],
+    notes: 'Placeholder structure for future manufacturer-specific curve data.'
+  }
+];
+
 const CANNULA_GAUGE_LOOKUP = [
   { gauge: 14, diameterMm: 2.10 },
   { gauge: 16, diameterMm: 1.65 },
@@ -876,6 +890,76 @@ function updateCannulaConverter() {
   frOutput.textContent = Number.isFinite(frenchSize) ? `${frenchSize.toFixed(1)} Fr` : '—';
   gaugeOutput.textContent = gaugeReferenceText;
   noteOutput.textContent = clinicalNote;
+}
+
+
+function normalizePressureDropKey(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function findPressureDropEntry({ manufacturer, category, model, size }) {
+  const normalizedManufacturer = normalizePressureDropKey(manufacturer);
+  const normalizedCategory = normalizePressureDropKey(category);
+  const normalizedModel = normalizePressureDropKey(model);
+  const normalizedSize = normalizePressureDropKey(size);
+
+  if (!normalizedManufacturer || !normalizedCategory || !normalizedModel || !normalizedSize) return null;
+
+  return cannulaPressureDropData.find(entry => (
+    normalizePressureDropKey(entry.manufacturer) === normalizedManufacturer &&
+    normalizePressureDropKey(entry.category) === normalizedCategory &&
+    normalizePressureDropKey(entry.model) === normalizedModel &&
+    normalizePressureDropKey(entry.size) === normalizedSize
+  )) || null;
+}
+
+function updatePressureDropReference() {
+  const manufacturerInput = el('pressure-drop-manufacturer');
+  const categorySelect = el('pressure-drop-category');
+  const modelInput = el('pressure-drop-model');
+  const sizeInput = el('pressure-drop-size');
+  const targetFlowInput = el('pressure-drop-target-flow');
+  const statusMessage = el('pressure-drop-status-message');
+  const sourceWrap = el('pressure-drop-source');
+  const sourceLabel = el('pressure-drop-source-label');
+  const sourceUrl = el('pressure-drop-source-url');
+  const testMedium = el('pressure-drop-test-medium');
+  const notes = el('pressure-drop-notes');
+  if (!manufacturerInput || !categorySelect || !modelInput || !sizeInput || !targetFlowInput || !statusMessage || !sourceWrap || !sourceLabel || !sourceUrl || !testMedium || !notes) return;
+
+  const match = findPressureDropEntry({
+    manufacturer: manufacturerInput.value,
+    category: categorySelect.value,
+    model: modelInput.value,
+    size: sizeInput.value
+  });
+
+  sourceWrap.classList.add('hidden');
+  targetFlowInput.value = targetFlowInput.value;
+
+  if (!match) {
+    statusMessage.textContent = 'Pressure-drop data is not available for this model yet. Pressure drop cannot be estimated from Fr size alone.';
+    return;
+  }
+
+  const hasPoints = Array.isArray(match.points) && match.points.some(point => Number.isFinite(point.flow) && Number.isFinite(point.pressureDrop));
+  if (!hasPoints) {
+    statusMessage.textContent = 'Manufacturer-specific curve data has not been added for this model yet.';
+  } else {
+    statusMessage.textContent = 'Manufacturer-specific curve data is available for this exact model entry. Bench-data reference only.';
+  }
+
+  const isPlaceholder = String(match.sourceLabel || '').includes('Example placeholder — not clinical data');
+  if (isPlaceholder) {
+    sourceWrap.classList.remove('hidden');
+  } else if (match.sourceLabel || match.sourceUrl || match.testMedium || match.notes) {
+    sourceWrap.classList.remove('hidden');
+  }
+
+  sourceLabel.textContent = match.sourceLabel || '—';
+  sourceUrl.textContent = match.sourceUrl || '—';
+  testMedium.textContent = `Test medium: ${match.testMedium || '—'}`;
+  notes.textContent = `Notes: ${match.notes || '—'}`;
 }
 
 function updateTubingPresetConverter(inchValue) {
@@ -3492,6 +3576,7 @@ window.addEventListener('DOMContentLoaded', () => {
       if (x) x.addEventListener('change', () => {
         if (id === 'cannula-size-type') updateCannulaInputMode();
         updateCannulaConverter();
+    updatePressureDropReference();
       });
     });
     const cannulaFrMmInput = el('cannula-fr-mm-value');
@@ -3501,6 +3586,13 @@ window.addEventListener('DOMContentLoaded', () => {
         const inchValue = Number(button.dataset.tubingInch);
         updateTubingPresetConverter(inchValue);
       });
+    });
+
+    ['pressure-drop-manufacturer', 'pressure-drop-category', 'pressure-drop-model', 'pressure-drop-size', 'pressure-drop-target-flow'].forEach(id => {
+      const x = el(id);
+      if (!x) return;
+      const eventName = x.tagName === 'SELECT' ? 'change' : 'input';
+      x.addEventListener(eventName, updatePressureDropReference);
     });
 
     document.querySelectorAll('[data-unit-tab]').forEach(button => {

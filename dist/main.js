@@ -594,6 +594,20 @@ const UNIT_LABELS = {
   pressurePsi: 'psi',
   pressureBar: 'bar'
 };
+const cannulaPressureDropData = [
+  {
+    manufacturer: 'Example placeholder — not clinical data',
+    model: 'Demo model',
+    category: 'arterial',
+    size: '18 Fr',
+    sourceLabel: 'Example placeholder — not clinical data',
+    sourceUrl: '',
+    testMedium: 'N/A',
+    points: [],
+    notes: 'Placeholder structure for future manufacturer-specific curve data.'
+  }
+];
+
 const CANNULA_GAUGE_LOOKUP = [
   { gauge: 14, diameterMm: 2.10 },
   { gauge: 16, diameterMm: 1.65 },
@@ -3347,10 +3361,18 @@ window.addEventListener('DOMContentLoaded', () => {
       if (x) x.addEventListener('change', () => {
         if (id === 'cannula-size-type') updateCannulaInputMode();
         updateCannulaConverter();
+    updatePressureDropReference();
       });
     });
     const cannulaFrMmInput = el('cannula-fr-mm-value');
     if (cannulaFrMmInput) cannulaFrMmInput.addEventListener('input', updateCannulaConverter);
+
+    ['pressure-drop-manufacturer', 'pressure-drop-category', 'pressure-drop-model', 'pressure-drop-size', 'pressure-drop-target-flow'].forEach(id => {
+      const x = el(id);
+      if (!x) return;
+      const eventName = x.tagName === 'SELECT' ? 'change' : 'input';
+      x.addEventListener(eventName, updatePressureDropReference);
+    });
 
     document.querySelectorAll('[data-unit-tab]').forEach(button => {
       button.addEventListener('click', () => {
