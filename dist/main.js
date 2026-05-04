@@ -775,6 +775,34 @@ const cannulaPressureDropData = [
       { flow: 7.0, pressureDrop: 121 }
     ],
     notes: 'PAS 2115: 21 Fr (7.0 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8" LL connector, BE-PAS 2115 Bioline coating.'
+  },
+  {
+    manufacturer: 'Getinge / Maquet',
+    model: 'HLS Venous Cannula',
+    category: 'femoral venous',
+    size: 'PVL 2155',
+    sourceLabel: 'Getinge/Maquet HLS venous cannula product order table and PVL 2155 pressure-drop chart',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS venous cannula product order table and pressure-drop chart',
+    testMedium: 'Water at room temperature',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 2 },
+      { flow: 1.0, pressureDrop: 6 },
+      { flow: 1.5, pressureDrop: 10 },
+      { flow: 2.0, pressureDrop: 17 },
+      { flow: 2.5, pressureDrop: 25 },
+      { flow: 3.0, pressureDrop: 35 },
+      { flow: 3.5, pressureDrop: 47 },
+      { flow: 4.0, pressureDrop: 60 },
+      { flow: 4.5, pressureDrop: 74 },
+      { flow: 5.0, pressureDrop: 90 },
+      { flow: 5.5, pressureDrop: 108 },
+      { flow: 6.0, pressureDrop: 126 },
+      { flow: 6.5, pressureDrop: 146 },
+      { flow: 7.0, pressureDrop: 169 }
+    ],
+    notes: 'PVL 2155: 21 Fr (7.0 mm) outer diameter, 55 cm insertion length, 20 side holes, 20 cm perforation length, 3/8" connector, BE-PVL 2155 Bioline coating.'
   }
 ];
 
