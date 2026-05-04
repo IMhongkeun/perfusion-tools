@@ -1323,6 +1323,32 @@ const cannulaPressureDropData = [
       { flow: 6.0, pressureDrop: 51 }
     ],
     notes: 'Bio-Medicus NextGen femoral arterial cannula. 23 Fr (7.7 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-123; cannula kit order code 96530-123.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Bio-Medicus NextGen Femoral Arterial Cannula',
+    category: 'femoral arterial',
+    size: '25 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Femoral Arterial or Jugular Venous Cannulae and Kits',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.',
+    points: [
+      { flow: 0.5, pressureDrop: 3 },
+      { flow: 1.0, pressureDrop: 4 },
+      { flow: 1.5, pressureDrop: 4 },
+      { flow: 2.0, pressureDrop: 6 },
+      { flow: 2.5, pressureDrop: 8 },
+      { flow: 3.0, pressureDrop: 10 },
+      { flow: 3.5, pressureDrop: 12 },
+      { flow: 4.0, pressureDrop: 15 },
+      { flow: 4.5, pressureDrop: 18 },
+      { flow: 5.0, pressureDrop: 22 },
+      { flow: 5.5, pressureDrop: 25 },
+      { flow: 6.0, pressureDrop: 31 }
+    ],
+    notes: 'Bio-Medicus NextGen femoral arterial cannula. 25 Fr (8.3 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-125; cannula kit order code 96530-125.'
   }
 ];
 
