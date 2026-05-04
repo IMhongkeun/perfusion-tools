@@ -1550,12 +1550,74 @@ function drawPressureDropChart(svgNode, points, targetFlow, interpolatedPressure
   svgNode.innerHTML = `<line x1="${padding.left}" y1="${height - padding.bottom}" x2="${width - padding.right}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><polyline points="${polyline}" fill="none" stroke="#0ea5e9" stroke-width="2" />${validPoints.map(p => `<circle cx="${scaleX(p.flow).toFixed(1)}" cy="${scaleY(p.pressureDrop).toFixed(1)}" r="2.2" fill="#0ea5e9" />`).join('')}${Number.isFinite(targetX) && Number.isFinite(targetY) ? `<line x1="${targetX.toFixed(1)}" y1="${padding.top}" x2="${targetX.toFixed(1)}" y2="${height - padding.bottom}" stroke="#f59e0b" stroke-dasharray="3 3" /><circle cx="${targetX.toFixed(1)}" cy="${targetY.toFixed(1)}" r="3" fill="#f59e0b" />` : ''}<text x="${padding.left}" y="${height - 6}" font-size="9" fill="currentColor" opacity="0.65">Flow (L/min)</text><text x="${width - 110}" y="${padding.top + 9}" font-size="9" fill="currentColor" opacity="0.65">Pressure drop (mmHg)</text>`;
 }
 
+
+function getPressureDropProductFamily(entry) {
+  const model = String(entry.model || '');
+  if (model.includes('HLS')) return 'HLS Cannulae';
+  if (model.includes('EOPA 3D')) return 'EOPA 3D';
+  if (model.includes('EOPA')) return 'EOPA';
+  if (model.includes('Select 3D II')) return 'Select 3D II';
+  if (model.includes('Select Series')) return 'Select Series';
+  if (model.includes('RAP')) return 'MICS Cannulae — RAP Femoral Venous Cannulae';
+  return 'Other';
+}
+
+function setSelectOptions(selectNode, options, placeholder) {
+  if (!selectNode) return;
+  selectNode.innerHTML = '';
+  const base = document.createElement('option');
+  base.value = '';
+  base.textContent = placeholder;
+  selectNode.appendChild(base);
+  options.forEach(option => {
+    const node = document.createElement('option');
+    node.value = option.value;
+    node.textContent = option.label;
+    selectNode.appendChild(node);
+  });
+}
+
+function syncPressureDropSelectors(changedLevel = 'manufacturer') {
+  const manufacturerSelect = el('pressure-drop-manufacturer');
+  const familySelect = el('pressure-drop-product-family');
+  const categoryInput = el('pressure-drop-category');
+  const modelSelect = el('pressure-drop-model');
+  const sizeSelect = el('pressure-drop-size');
+  if (!manufacturerSelect || !familySelect || !categoryInput || !modelSelect || !sizeSelect) return;
+
+  const byManufacturer = cannulaPressureDropData.filter(entry => !manufacturerSelect.value || entry.manufacturer === manufacturerSelect.value);
+  if (changedLevel === 'manufacturer') {
+    setSelectOptions(familySelect, [...new Set(byManufacturer.map(entry => getPressureDropProductFamily(entry)))].map(v => ({ value: v, label: v })), 'Select product family');
+    modelSelect.value = ''; sizeSelect.value = ''; categoryInput.value = '';
+    setSelectOptions(modelSelect, [], 'Select model'); setSelectOptions(sizeSelect, [], 'Select size');
+    if (familySelect.options.length === 2) { familySelect.value = familySelect.options[1].value; syncPressureDropSelectors('family'); }
+    return;
+  }
+  const byFamily = byManufacturer.filter(entry => getPressureDropProductFamily(entry) === familySelect.value);
+  if (changedLevel === 'family') {
+    setSelectOptions(modelSelect, [...new Set(byFamily.map(entry => entry.model))].map(v => ({ value: v, label: v })), 'Select model');
+    sizeSelect.value=''; categoryInput.value=''; setSelectOptions(sizeSelect, [], 'Select size');
+    if (modelSelect.options.length === 2) { modelSelect.value = modelSelect.options[1].value; syncPressureDropSelectors('model'); }
+    return;
+  }
+  const byModel = byFamily.filter(entry => entry.model === modelSelect.value);
+  if (changedLevel === 'model') {
+    setSelectOptions(sizeSelect, byModel.map(entry => ({ value: entry.size, label: `${entry.size} — ${(entry.points||[]).length ? 'curve available' : 'metadata only'}` })), 'Select size');
+    categoryInput.value='';
+    if (sizeSelect.options.length === 2) { sizeSelect.value = sizeSelect.options[1].value; syncPressureDropSelectors('size'); }
+    return;
+  }
+  const match = byModel.find(entry => entry.size === sizeSelect.value);
+  categoryInput.value = match ? match.category : '';
+}
+
 function updatePressureDropReference() {
-  const manufacturerInput = el('pressure-drop-manufacturer'); const categorySelect = el('pressure-drop-category'); const modelInput = el('pressure-drop-model'); const sizeInput = el('pressure-drop-size'); const targetFlowInput = el('pressure-drop-target-flow');
+  const manufacturerInput = el('pressure-drop-manufacturer'); const categorySelect = el('pressure-drop-category'); const familySelect = el('pressure-drop-product-family'); const modelInput = el('pressure-drop-model'); const sizeInput = el('pressure-drop-size'); const targetFlowInput = el('pressure-drop-target-flow');
   const statusMessage = el('pressure-drop-status-message'); const sourceWrap = el('pressure-drop-source'); const sourceLabel = el('pressure-drop-source-label'); const sourceUrl = el('pressure-drop-source-url'); const testMedium = el('pressure-drop-test-medium'); const dataStatus = el('pressure-drop-data-status'); const digitizationNote = el('pressure-drop-digitization-note'); const notes = el('pressure-drop-notes');
   const chartWrap = el('pressure-drop-chart-wrap'); const chartNode = el('pressure-drop-chart'); const curveMeta = el('pressure-drop-curve-meta'); const selectedModel = el('pressure-drop-selected-model'); const rangeText = el('pressure-drop-range'); const interpNote = el('pressure-drop-interp-note'); const chartRangeLabel = el('pressure-drop-chart-range-label'); const benchLabel = el('pressure-drop-bench-label');
-  if (!manufacturerInput || !categorySelect || !modelInput || !sizeInput || !targetFlowInput || !statusMessage || !sourceWrap || !sourceLabel || !sourceUrl || !testMedium || !notes || !chartWrap || !chartNode || !curveMeta || !selectedModel || !rangeText || !interpNote || !chartRangeLabel || !benchLabel) return;
+  if (!manufacturerInput || !categorySelect || !familySelect || !modelInput || !sizeInput || !targetFlowInput || !statusMessage || !sourceWrap || !sourceLabel || !sourceUrl || !testMedium || !notes || !chartWrap || !chartNode || !curveMeta || !selectedModel || !rangeText || !interpNote || !chartRangeLabel || !benchLabel) return;
   chartWrap.classList.add('hidden'); curveMeta.classList.add('hidden'); sourceWrap.classList.add('hidden'); interpNote.classList.add('hidden'); chartRangeLabel.classList.add('hidden'); benchLabel.classList.add('hidden');
+  if (!manufacturerInput.value || !familySelect.value || !modelInput.value || !sizeInput.value) { statusMessage.textContent = 'Select a manufacturer, product family, model, and size to view available pressure-drop reference data.'; return; }
   const match = findPressureDropEntry({ manufacturer: manufacturerInput.value, category: categorySelect.value, model: modelInput.value, size: sizeInput.value });
   if (!match) { statusMessage.textContent = 'Pressure-drop data is not available for this model yet. Pressure drop cannot be estimated from Fr size alone.'; return; }
   const validPoints = getValidPressureDropPoints(match.points);
@@ -4186,6 +4248,7 @@ window.addEventListener('DOMContentLoaded', () => {
       if (x) x.addEventListener('change', () => {
         if (id === 'cannula-size-type') updateCannulaInputMode();
         updateCannulaConverter();
+    syncPressureDropSelectors('manufacturer');
     updatePressureDropReference();
       });
     });
@@ -4198,11 +4261,17 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    ['pressure-drop-manufacturer', 'pressure-drop-category', 'pressure-drop-model', 'pressure-drop-size', 'pressure-drop-target-flow'].forEach(id => {
+    ['pressure-drop-manufacturer', 'pressure-drop-product-family', 'pressure-drop-model', 'pressure-drop-size', 'pressure-drop-target-flow'].forEach(id => {
       const x = el(id);
       if (!x) return;
       const eventName = x.tagName === 'SELECT' ? 'change' : 'input';
-      x.addEventListener(eventName, updatePressureDropReference);
+      x.addEventListener(eventName, () => {
+        if (id === 'pressure-drop-manufacturer') syncPressureDropSelectors('manufacturer');
+        else if (id === 'pressure-drop-product-family') syncPressureDropSelectors('family');
+        else if (id === 'pressure-drop-model') syncPressureDropSelectors('model');
+        else if (id === 'pressure-drop-size') syncPressureDropSelectors('size');
+        updatePressureDropReference();
+      });
     });
 
     document.querySelectorAll('[data-unit-tab]').forEach(button => {
