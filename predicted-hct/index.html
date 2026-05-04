@@ -453,7 +453,7 @@
               <div class="text-[10px] text-slate-500">ml</div>
             </div>
             <div>
-              <div class="text-[10px] uppercase tracking-wider text-slate-400 mb-1">Total Vol</div>
+              <div id="hct-right-label" class="text-[10px] uppercase tracking-wider text-slate-400 mb-1">Total Vol</div>
               <div id="total_vol" class="text-lg font-mono font-medium">0</div>
               <div class="text-[10px] text-slate-500">ml</div>
             </div>
@@ -468,12 +468,7 @@
               <p class="mt-1 text-sm text-slate-100">Current Hct: <span id="current_hct_result" class="font-semibold">0.0%</span> → Predicted Hct: <span id="pred_hct_result" class="text-xl font-bold text-white">0.0%</span></p>
               <p class="mt-1 text-sm text-accent-300 font-semibold">Change: <span id="hct_change" class="font-bold">0.0</span> percentage points</p>
             </div>
-            <div class="mt-3 grid sm:grid-cols-2 gap-3 text-sm">
-              <div class="rounded-lg bg-primary-900/40 border border-primary-800 p-2">EBV: <span id="onpump_ebv" class="font-mono text-white">0 mL</span></div>
-              <div class="rounded-lg bg-primary-900/40 border border-primary-800 p-2">Estimated CPB volume: <span id="onpump_estimated_volume" class="font-mono text-white">0 mL</span></div>
-              <div class="rounded-lg bg-primary-900/40 border border-primary-800 p-2">Current RBC volume: <span id="current_rbc_vol" class="font-mono text-white">0 mL</span></div>
-              <div class="rounded-lg bg-primary-900/40 border border-primary-800 p-2">Added RBC volume: <span id="added_rbc_vol" class="font-mono text-white">0 mL</span></div>
-            </div>
+
           </div>
 
           <div class="bg-slate-50 dark:bg-primary-800/30 border-t border-slate-100 dark:border-primary-700/50 p-4">
@@ -490,16 +485,24 @@
           </div>
 
           <div class="px-6 pb-6">
+            <div class="mt-4 p-4 rounded-xl bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed space-y-1">
+              <h4 class="text-xs font-bold text-primary-900 dark:text-slate-200 uppercase tracking-wider">Practical notes</h4>
+              <p>• A lower predicted Hct may be acceptable during hypothermic CPB when metabolic demand is reduced, but adequacy should still be assessed with oxygen delivery and clinical markers.</p>
+              <p>• A normal predicted Hct does not guarantee adequate oxygen delivery if pump flow, arterial saturation, hemoglobin concentration, or microcirculatory conditions are unfavorable.</p>
+              <p>• The calculator estimates hematocrit change from volume balance. It does not replace transfusion thresholds, institutional blood conservation protocols, or patient-specific clinical judgment.</p>
+              <p>• When the predicted Hct is near a local transfusion threshold, consider confirming with measured Hct after adequate mixing time.</p>
+            </div>
             <details class="mt-4 group">
               <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
                 <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology & limitations
               </summary>
               <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
-                <p><strong>EBV model:</strong> EBV (mL) = Weight (kg) × EBV coefficient (mL/kg).</p>
-                <p><strong>Red cell volume:</strong> RBC_patient = EBV × (Pre-CPB Hct ÷ 100), and RBC_products = (Units × Volume per unit) × (Unit Hct ÷ 100).</p>
-                <p><strong>Total volume:</strong> V_total = EBV + Prime + Additional fluids + RBC product volume − UF removed.</p>
-                <p><strong>Predicted Hct:</strong> Predicted Hct (%) = (RBC_patient + RBC_products) ÷ V_total × 100.</p>
-                <p><strong>Limitations:</strong> Assumes complete mixing and does not fully model rapid bleeding/reinfusion shifts or compartment changes. Use with clinical markers and local protocol.</p>
+                <p><strong>EBV model:</strong> Estimated blood volume, EBV (mL), is calculated from body weight and the selected EBV coefficient.<br />EBV = Weight (kg) × EBV coefficient (mL/kg).</p>
+                <p><strong>Red cell volume:</strong> Patient red cell volume is estimated from EBV and pre-CPB hematocrit.<br />RBC_patient = EBV × (Pre-CPB Hct ÷ 100).<br />Red cell volume added from transfusion is estimated from RBC unit volume and unit hematocrit.<br />RBC_products = RBC units × RBC volume per unit × (Unit Hct ÷ 100).</p>
+                <p><strong>Total circulating volume:</strong> Total volume includes estimated blood volume, CPB prime volume, added fluids, and RBC product volume, minus ultrafiltration removed.<br />V_total = EBV + Prime volume + Additional fluids + RBC product volume − UF removed.</p>
+                <p><strong>Predicted hematocrit:</strong> Predicted Hct is calculated as total red cell volume divided by total circulating volume.<br />Predicted Hct (%) = [(RBC_patient + RBC_products) ÷ V_total] × 100.</p>
+                <p><strong>On-pump adjustment model:</strong><br />Estimated CPB volume = EBV + Prime volume.<br />Current RBC volume = Estimated CPB volume × (Current Hct ÷ 100).<br />Added RBC volume = RBC units × RBC volume per unit × (Unit Hct ÷ 100).<br />Final estimated volume = Estimated CPB volume + Fluid added + RBC product volume − UF removed.<br />Predicted post-adjustment Hct (%) = [(Current RBC volume + Added RBC volume) ÷ Final estimated volume] × 100.<br />If manual current volume override is active, the manual value replaces EBV + Prime volume as the estimated CPB volume.</p>
+                <p><strong>Limitations:</strong> This is a simplified complete-mixing model. Actual hematocrit may differ because of reservoir level changes, sampling timing, ongoing bleeding, cell saver return, cardioplegia return, hemolysis, sequestration, rapid volume shifts, ultrafiltration efficiency, and uncertainty in patient-circuit volume. Use with clinical markers and local protocol.</p>
               </div>
             </details>
           </div>
