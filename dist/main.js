@@ -1198,6 +1198,28 @@ const cannulaPressureDropData = [
       { flow: 6.0, pressureDrop: 37 }
     ],
     notes: 'Select Series Angled Tip arterial cannulae with beveled tips and tapered, one-piece, kink-resistant wirewound bodies, tip orientation line, and connector peel cap. 24 Fr (8.0 mm), 12 in (30.5 cm) overall length, 45° angled tip. Vented 3/8 in connector order codes: 72424 without side holes, 73424 with side holes. Non-vented 3/8 in connector order code: 72524 without side holes.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Bio-Medicus NextGen Femoral Arterial Cannula',
+    category: 'femoral arterial',
+    size: '15 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Femoral Arterial or Jugular Venous Cannulae and Kits',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.',
+    points: [
+      { flow: 0.5, pressureDrop: 5 },
+      { flow: 1.0, pressureDrop: 14 },
+      { flow: 1.5, pressureDrop: 26 },
+      { flow: 2.0, pressureDrop: 45 },
+      { flow: 2.5, pressureDrop: 88 },
+      { flow: 3.0, pressureDrop: 99 },
+      { flow: 3.5, pressureDrop: 137 },
+      { flow: 4.0, pressureDrop: 185 }
+    ],
+    notes: 'Bio-Medicus NextGen femoral arterial cannula. 15 Fr (5.0 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-115; cannula kit order code 96530-115.'
   }
 ];
 
