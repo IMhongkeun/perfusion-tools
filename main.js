@@ -1845,14 +1845,21 @@ function ebvCoef(pttype) {
   return PATIENT_TYPE_COEFS[pttype] || 70;
 }
 
+function calculatePreCpbHct({ ebvCoef, weightKg, preCpbHct, primeVolumeMl, additionalCrystalloidMl, ultrafiltrationRemovedMl, rbcUnits, rbcVolumePerUnitMl, rbcUnitHct }) {
+  const ebvMl = (ebvCoef || 0) * (weightKg || 0);
+  const patientRbcMl = ebvMl * ((preCpbHct || 0) / 100);
+  const transfusedRbcVolumeMl = (rbcUnits || 0) * (rbcVolumePerUnitMl || 0);
+  const transfusedRbcCellVolumeMl = transfusedRbcVolumeMl * ((rbcUnitHct || 0) / 100);
+  const totalVolumeMl = ebvMl + (primeVolumeMl || 0) + (additionalCrystalloidMl || 0) + transfusedRbcVolumeMl - (ultrafiltrationRemovedMl || 0);
+  const finalRbcVolumeMl = patientRbcMl + transfusedRbcCellVolumeMl;
+  const resultHctPercent = totalVolumeMl > 0 ? (finalRbcVolumeMl / totalVolumeMl) * 100 : 0;
+  return { ebvMl, totalVolumeMl, resultHctPercent };
+}
+
 function computePredictedHct({ pttype, weight, pre, prime, fluids = 0, removed = 0, rbcUnits = 0, rbcUnitVol = 300, rbcHct = 60, ebvCoefValue }) {
   const coef = ebvCoefValue || ebvCoef(pttype);
-  const ebv = (weight || 0) * coef;
-  const rbcVolAdded = (rbcUnits || 0) * (rbcUnitVol || 0);
-  const rbcVolume = (ebv * ((pre || 0) / 100)) + (rbcVolAdded * ((rbcHct || 0) / 100));
-  const totalVol = ebv + (prime || 0) + (fluids || 0) + rbcVolAdded - (removed || 0);
-  const hct = totalVol > 0 ? (rbcVolume / totalVol) * 100 : 0;
-  return { ebv, totalVol, hct };
+  const r = calculatePreCpbHct({ ebvCoef: coef, weightKg: weight || 0, preCpbHct: pre || 0, primeVolumeMl: prime || 0, additionalCrystalloidMl: fluids || 0, ultrafiltrationRemovedMl: removed || 0, rbcUnits: rbcUnits || 0, rbcVolumePerUnitMl: rbcUnitVol || 0, rbcUnitHct: rbcHct || 0 });
+  return { ebv: r.ebvMl, totalVol: r.totalVolumeMl, hct: r.resultHctPercent };
 }
 
 function computeOnPumpHctAdjustment({ patientType, weightKg, ebvCoefValue, primeVolume, currentHct, useManualOverride = false, manualCurrentVolumeOverride = 0, addedCrystalloid = 0, rbcUnits = 0, rbcUnitVol = 300, rbcUnitHct = 60, ultrafiltrationRemoved = 0 }) {
@@ -2394,6 +2401,7 @@ function updateHct() {
   const onPumpModeEl = el('hct-onpump-mode');
   const leftLabelEl = el('hct-left-label');
   const onPumpExtraResultsEl = el('onpump-extra-results');
+  const rightLabelEl = el('hct-right-label');
   if (preModeEl) preModeEl.classList.toggle('hidden', isOnPumpMode);
   if (onPumpModeEl) onPumpModeEl.classList.toggle('hidden', !isOnPumpMode);
   if (onPumpExtraResultsEl) onPumpExtraResultsEl.classList.toggle('hidden', !isOnPumpMode);
