@@ -155,7 +155,7 @@ const TOP_NAV_ITEMS = [
   { path: '/timecalc/', label: 'Time' },
   { path: '/quick-reference/', label: 'Quick Reference' },
   { path: '/unit-converter/', label: 'Unit Converter' },
-  { path: '/info', label: 'Info' },
+  { path: '/info/', label: 'Info' },
 ];
 
 function initStandaloneTopNav() {
@@ -594,6 +594,764 @@ const UNIT_LABELS = {
   pressurePsi: 'psi',
   pressureBar: 'bar'
 };
+const cannulaPressureDropData = [
+  {
+    manufacturer: 'Example placeholder — not clinical data',
+    model: 'Demo model',
+    category: 'arterial',
+    size: '18 Fr',
+    sourceLabel: 'Example placeholder — not clinical data',
+    sourceUrl: '',
+    testMedium: 'N/A',
+    points: [],
+    notes: 'Placeholder structure for future manufacturer-specific curve data.'
+  },
+  {
+    manufacturer: 'LivaNova',
+    model: 'RAP Femoral Venous Cannula',
+    category: 'femoral venous',
+    size: '22 Fr distal / 22 Fr proximal',
+    sourceLabel: 'LivaNova MICS & Femoral Cannulae Brochure',
+    sourceUrl: 'https://replantmed.hu/images/LN_BROCHURE_MICS_FEMORAL_CANNULAE_09295-178-A2.pdf',
+    testMedium: 'Not specified on product page',
+    points: [],
+    notes: 'Pressure-flow chart source identified in LivaNova MICS & Femoral Cannulae brochure. Curve points have not yet been digitized.'
+  },
+  {
+    manufacturer: 'LivaNova',
+    model: 'RAP Femoral Venous Cannula',
+    category: 'femoral venous',
+    size: '23 Fr distal / 25 Fr proximal',
+    sourceLabel: 'LivaNova MICS & Femoral Cannulae Brochure',
+    sourceUrl: 'https://replantmed.hu/images/LN_BROCHURE_MICS_FEMORAL_CANNULAE_09295-178-A2.pdf',
+    testMedium: 'Not specified on product page',
+    points: [],
+    notes: 'Pressure-flow chart source identified in LivaNova MICS & Femoral Cannulae brochure. Curve points have not yet been digitized.'
+  },
+  {
+    manufacturer: 'Getinge / Maquet',
+    model: 'HLS Femoral Arterial Cannula',
+    category: 'femoral arterial',
+    size: 'PAS 1315',
+    sourceLabel: 'Getinge/Maquet HLS Femoral Arterial Cannula pressure-drop chart and product order table',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS femoral arterial cannula chart and product order table',
+    testMedium: 'Water at room temperature',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 9 },
+      { flow: 1.0, pressureDrop: 24 },
+      { flow: 1.5, pressureDrop: 49 },
+      { flow: 2.0, pressureDrop: 86 },
+      { flow: 2.5, pressureDrop: 140 }
+    ],
+    notes: 'PAS 1315: 13 Fr (4.3 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8" LL connector, BE-PAS 1315 Bioline coating.'
+  },
+  {
+    manufacturer: 'Getinge / Maquet',
+    model: 'HLS Femoral Arterial Cannula',
+    category: 'femoral arterial',
+    size: 'PAS 1515',
+    sourceLabel: 'Getinge/Maquet HLS Femoral Arterial Cannula pressure-drop chart and product order table',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS femoral arterial cannula chart and product order table',
+    testMedium: 'Water at room temperature',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 5 },
+      { flow: 1.0, pressureDrop: 12 },
+      { flow: 1.5, pressureDrop: 27 },
+      { flow: 2.0, pressureDrop: 46 },
+      { flow: 2.5, pressureDrop: 73 },
+      { flow: 3.0, pressureDrop: 114 },
+      { flow: 3.5, pressureDrop: 156 }
+    ],
+    notes: 'PAS 1515: 15 Fr (5.0 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8" LL connector, BE-PAS 1515 Bioline coating.'
+  },
+  {
+    manufacturer: 'Getinge / Maquet',
+    model: 'HLS Femoral Arterial Cannula',
+    category: 'femoral arterial',
+    size: 'PAS 1715',
+    sourceLabel: 'Getinge/Maquet HLS Femoral Arterial Cannula pressure-drop chart and product order table',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS femoral arterial cannula chart and product order table',
+    testMedium: 'Water at room temperature',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 2 },
+      { flow: 1.0, pressureDrop: 8 },
+      { flow: 1.5, pressureDrop: 15 },
+      { flow: 2.0, pressureDrop: 25 },
+      { flow: 2.5, pressureDrop: 38 },
+      { flow: 3.0, pressureDrop: 55 },
+      { flow: 3.5, pressureDrop: 77 },
+      { flow: 4.0, pressureDrop: 101 },
+      { flow: 4.5, pressureDrop: 129 },
+      { flow: 5.0, pressureDrop: 161 },
+      { flow: 5.5, pressureDrop: 195 }
+    ],
+    notes: 'PAS 1715: 17 Fr (5.7 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8" LL connector, BE-PAS 1715 Bioline coating.'
+  },
+  {
+    manufacturer: 'Getinge / Maquet',
+    model: 'HLS Femoral Arterial Cannula',
+    category: 'femoral arterial',
+    size: 'PAS 1915',
+    sourceLabel: 'Getinge/Maquet HLS Femoral Arterial Cannula pressure-drop chart and product order table',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS femoral arterial cannula chart and product order table',
+    testMedium: 'Water at room temperature',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 2 },
+      { flow: 1.0, pressureDrop: 4 },
+      { flow: 1.5, pressureDrop: 9 },
+      { flow: 2.0, pressureDrop: 15 },
+      { flow: 2.5, pressureDrop: 23 },
+      { flow: 3.0, pressureDrop: 34 },
+      { flow: 3.5, pressureDrop: 46 },
+      { flow: 4.0, pressureDrop: 61 },
+      { flow: 4.5, pressureDrop: 78 },
+      { flow: 5.0, pressureDrop: 97 },
+      { flow: 5.5, pressureDrop: 117 },
+      { flow: 6.0, pressureDrop: 140 },
+      { flow: 6.5, pressureDrop: 165 }
+    ],
+    notes: 'PAS 1915: 19 Fr (6.3 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8" LL connector, BE-PAS 1915 Bioline coating.'
+  },
+  {
+    manufacturer: 'Getinge / Maquet',
+    model: 'HLS Femoral Arterial Cannula',
+    category: 'femoral arterial',
+    size: 'PAS 2315',
+    sourceLabel: 'Getinge/Maquet HLS Femoral Arterial Cannula pressure-drop chart and product order table',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS femoral arterial cannula chart and product order table',
+    testMedium: 'Water at room temperature',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 4 },
+      { flow: 2.0, pressureDrop: 7 },
+      { flow: 2.5, pressureDrop: 12 },
+      { flow: 3.0, pressureDrop: 16 },
+      { flow: 3.5, pressureDrop: 21 },
+      { flow: 4.0, pressureDrop: 27 },
+      { flow: 4.5, pressureDrop: 34 },
+      { flow: 5.0, pressureDrop: 43 },
+      { flow: 5.5, pressureDrop: 51 },
+      { flow: 6.0, pressureDrop: 60 },
+      { flow: 6.5, pressureDrop: 72 },
+      { flow: 7.0, pressureDrop: 82 }
+    ],
+    notes: 'PAS 2315: 23 Fr (7.7 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8" LL connector, BE-PAS 2315 Bioline coating.'
+  },
+  {
+    manufacturer: 'Getinge / Maquet',
+    model: 'HLS Femoral Arterial Cannula',
+    category: 'femoral arterial',
+    size: 'PAS 2115',
+    sourceLabel: 'Getinge/Maquet HLS Femoral Arterial Cannula pressure-drop chart and product order table',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS femoral arterial cannula chart and product order table',
+    testMedium: 'Water at room temperature',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 2 },
+      { flow: 1.0, pressureDrop: 4 },
+      { flow: 1.5, pressureDrop: 7 },
+      { flow: 2.0, pressureDrop: 11 },
+      { flow: 2.5, pressureDrop: 16 },
+      { flow: 3.0, pressureDrop: 22 },
+      { flow: 3.5, pressureDrop: 29 },
+      { flow: 4.0, pressureDrop: 39 },
+      { flow: 4.5, pressureDrop: 50 },
+      { flow: 5.0, pressureDrop: 62 },
+      { flow: 5.5, pressureDrop: 75 },
+      { flow: 6.0, pressureDrop: 89 },
+      { flow: 6.5, pressureDrop: 104 },
+      { flow: 7.0, pressureDrop: 121 }
+    ],
+    notes: 'PAS 2115: 21 Fr (7.0 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8" LL connector, BE-PAS 2115 Bioline coating.'
+  },
+  {
+    manufacturer: 'Getinge / Maquet',
+    model: 'HLS Venous Cannula',
+    category: 'femoral venous',
+    size: 'PVL 2155',
+    sourceLabel: 'Getinge/Maquet HLS venous cannula product order table and PVL 2155 pressure-drop chart',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS venous cannula product order table and pressure-drop chart',
+    testMedium: 'Water at room temperature',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 2 },
+      { flow: 1.0, pressureDrop: 6 },
+      { flow: 1.5, pressureDrop: 10 },
+      { flow: 2.0, pressureDrop: 17 },
+      { flow: 2.5, pressureDrop: 25 },
+      { flow: 3.0, pressureDrop: 35 },
+      { flow: 3.5, pressureDrop: 47 },
+      { flow: 4.0, pressureDrop: 60 },
+      { flow: 4.5, pressureDrop: 74 },
+      { flow: 5.0, pressureDrop: 90 },
+      { flow: 5.5, pressureDrop: 108 },
+      { flow: 6.0, pressureDrop: 126 },
+      { flow: 6.5, pressureDrop: 146 },
+      { flow: 7.0, pressureDrop: 169 }
+    ],
+    notes: 'PVL 2155: 21 Fr (7.0 mm) outer diameter, 55 cm insertion length, 20 side holes, 20 cm perforation length, 3/8" connector, BE-PVL 2155 Bioline coating.'
+  },
+  {
+    manufacturer: 'Getinge / Maquet',
+    model: 'HLS Venous Cannula',
+    category: 'femoral venous',
+    size: 'PVL 2355',
+    sourceLabel: 'Getinge/Maquet HLS venous cannula product order table and PVL 2355 pressure-drop chart',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS venous cannula product order table and pressure-drop chart',
+    testMedium: 'Water at room temperature',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 2 },
+      { flow: 1.0, pressureDrop: 3 },
+      { flow: 1.5, pressureDrop: 8 },
+      { flow: 2.0, pressureDrop: 12 },
+      { flow: 2.5, pressureDrop: 18 },
+      { flow: 3.0, pressureDrop: 24 },
+      { flow: 3.5, pressureDrop: 32 },
+      { flow: 4.0, pressureDrop: 41 },
+      { flow: 4.5, pressureDrop: 50 },
+      { flow: 5.0, pressureDrop: 60 },
+      { flow: 5.5, pressureDrop: 72 },
+      { flow: 6.0, pressureDrop: 84 },
+      { flow: 6.5, pressureDrop: 90 },
+      { flow: 7.0, pressureDrop: 113 }
+    ],
+    notes: 'PVL 2355: 23 Fr (7.7 mm) outer diameter, 55 cm insertion length, 20 side holes, 20 cm perforation length, 3/8" connector, BE-PVL 2355 Bioline coating.'
+  },
+  {
+    manufacturer: 'Getinge / Maquet',
+    model: 'HLS Venous Cannula',
+    category: 'femoral venous',
+    size: 'PVL 2555',
+    sourceLabel: 'Getinge/Maquet HLS venous cannula product order table and PVL 2555 pressure-drop chart',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS venous cannula product order table and pressure-drop chart',
+    testMedium: 'Water at room temperature',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 2 },
+      { flow: 1.0, pressureDrop: 3 },
+      { flow: 1.5, pressureDrop: 6 },
+      { flow: 2.0, pressureDrop: 8 },
+      { flow: 2.5, pressureDrop: 12 },
+      { flow: 3.0, pressureDrop: 17 },
+      { flow: 3.5, pressureDrop: 22 },
+      { flow: 4.0, pressureDrop: 28 },
+      { flow: 4.5, pressureDrop: 34 },
+      { flow: 5.0, pressureDrop: 42 },
+      { flow: 5.5, pressureDrop: 50 },
+      { flow: 6.0, pressureDrop: 59 },
+      { flow: 6.5, pressureDrop: 69 },
+      { flow: 7.0, pressureDrop: 79 }
+    ],
+    notes: 'PVL 2555: 25 Fr (8.3 mm) outer diameter, 55 cm insertion length, 24 side holes, 20 cm perforation length, 3/8" connector, BE-PVL 2555 Bioline coating.'
+  },
+  {
+    manufacturer: 'Getinge / Maquet',
+    model: 'HLS Venous Cannula',
+    category: 'femoral venous',
+    size: 'PVL 2955',
+    sourceLabel: 'Getinge/Maquet HLS venous cannula product order table and PVL 2955 pressure-drop chart',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS venous cannula product order table and pressure-drop chart',
+    testMedium: 'Water at room temperature',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 3 },
+      { flow: 2.0, pressureDrop: 5 },
+      { flow: 2.5, pressureDrop: 8 },
+      { flow: 3.0, pressureDrop: 10 },
+      { flow: 3.5, pressureDrop: 13 },
+      { flow: 4.0, pressureDrop: 16 },
+      { flow: 4.5, pressureDrop: 21 },
+      { flow: 5.0, pressureDrop: 26 },
+      { flow: 5.5, pressureDrop: 31 },
+      { flow: 6.0, pressureDrop: 36 },
+      { flow: 6.5, pressureDrop: 41 },
+      { flow: 7.0, pressureDrop: 47 }
+    ],
+    notes: 'PVL 2955: 29 Fr (9.7 mm) outer diameter, 55 cm insertion length, 32 side holes, 20 cm perforation length, 3/8" connector, BE-PVL 2955 Bioline coating.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'EOPA 3D Arterial Cannulae',
+    category: 'arterial',
+    size: '20 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — EOPA 3D Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 3 },
+      { flow: 1.5, pressureDrop: 6 },
+      { flow: 2.0, pressureDrop: 10 },
+      { flow: 2.5, pressureDrop: 15 },
+      { flow: 3.0, pressureDrop: 22 },
+      { flow: 3.5, pressureDrop: 31 },
+      { flow: 4.0, pressureDrop: 41 },
+      { flow: 4.5, pressureDrop: 52 },
+      { flow: 5.0, pressureDrop: 65 },
+      { flow: 5.5, pressureDrop: 81 },
+      { flow: 6.0, pressureDrop: 96 }
+    ],
+    notes: 'EOPA 3D arterial cannulae with tapered diffuse flow tips and kink-resistant elongated wirewound bodies. 20 Fr (6.7 mm), vented 3/8 in connector order code 78220, non-vented 3/8 in connector order code 78320.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'EOPA 3D Arterial Cannulae',
+    category: 'arterial',
+    size: '22 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — EOPA 3D Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 4 },
+      { flow: 2.0, pressureDrop: 6 },
+      { flow: 2.5, pressureDrop: 9 },
+      { flow: 3.0, pressureDrop: 13 },
+      { flow: 3.5, pressureDrop: 18 },
+      { flow: 4.0, pressureDrop: 24 },
+      { flow: 4.5, pressureDrop: 31 },
+      { flow: 5.0, pressureDrop: 39 },
+      { flow: 5.5, pressureDrop: 47 },
+      { flow: 6.0, pressureDrop: 56 }
+    ],
+    notes: 'EOPA 3D arterial cannulae with tapered diffuse flow tips and kink-resistant elongated wirewound bodies. 22 Fr (7.3 mm), vented 3/8 in connector order code 78222, non-vented 3/8 in connector order code 78322.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Select 3D II Arterial Cannulae',
+    category: 'arterial',
+    size: '20 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Select 3D II Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 4 },
+      { flow: 1.5, pressureDrop: 8 },
+      { flow: 2.0, pressureDrop: 14 },
+      { flow: 2.5, pressureDrop: 22 },
+      { flow: 3.0, pressureDrop: 32 },
+      { flow: 3.5, pressureDrop: 43 },
+      { flow: 4.0, pressureDrop: 56 },
+      { flow: 4.5, pressureDrop: 71 },
+      { flow: 5.0, pressureDrop: 88 },
+      { flow: 5.35, pressureDrop: 100 }
+    ],
+    notes: 'Select 3D II arterial cannulae with beveled tips and tapered, one-piece, kink-resistant wirewound bodies. 20 Fr (6.7 mm), 11.5 in (29.2 cm) overall length, 45° tip, vented 3/8 in connector order code 78420, non-vented 3/8 in connector order code 78520.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Select 3D II Arterial Cannulae',
+    category: 'arterial',
+    size: '22 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Select 3D II Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 0 },
+      { flow: 1.0, pressureDrop: 3 },
+      { flow: 1.5, pressureDrop: 6 },
+      { flow: 2.0, pressureDrop: 10 },
+      { flow: 2.5, pressureDrop: 16 },
+      { flow: 3.0, pressureDrop: 23 },
+      { flow: 3.5, pressureDrop: 32 },
+      { flow: 4.0, pressureDrop: 41 },
+      { flow: 4.5, pressureDrop: 52 },
+      { flow: 5.0, pressureDrop: 65 },
+      { flow: 5.5, pressureDrop: 78 },
+      { flow: 6.0, pressureDrop: 92 }
+    ],
+    notes: 'Select 3D II arterial cannulae with beveled tips and tapered, one-piece, kink-resistant wirewound bodies. 22 Fr (7.3 mm), 11.5 in (29.2 cm) overall length, 45° tip, vented 3/8 in connector order code 78422, non-vented 3/8 in connector order code 78522.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Select 3D II Arterial Cannulae',
+    category: 'arterial',
+    size: '24 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Select 3D II Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 0 },
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 4 },
+      { flow: 2.0, pressureDrop: 7 },
+      { flow: 2.5, pressureDrop: 11 },
+      { flow: 3.0, pressureDrop: 16 },
+      { flow: 3.5, pressureDrop: 22 },
+      { flow: 4.0, pressureDrop: 29 },
+      { flow: 4.5, pressureDrop: 37 },
+      { flow: 5.0, pressureDrop: 46 },
+      { flow: 5.5, pressureDrop: 55 },
+      { flow: 6.0, pressureDrop: 66 }
+    ],
+    notes: 'Select 3D II arterial cannulae with beveled tips and tapered, one-piece, kink-resistant wirewound bodies. 24 Fr (8.0 mm), 11.5 in (29.2 cm) overall length, 45° tip, vented 3/8 in connector order code 78424, non-vented 3/8 in connector order code 78524.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'EOPA Arterial Cannulae',
+    category: 'arterial',
+    size: '18 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — EOPA Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 5 },
+      { flow: 2.0, pressureDrop: 9 },
+      { flow: 2.5, pressureDrop: 14 },
+      { flow: 3.0, pressureDrop: 20 },
+      { flow: 3.5, pressureDrop: 27 },
+      { flow: 4.0, pressureDrop: 35 },
+      { flow: 4.5, pressureDrop: 44 },
+      { flow: 5.0, pressureDrop: 55 },
+      { flow: 5.5, pressureDrop: 66 },
+      { flow: 6.0, pressureDrop: 78 }
+    ],
+    notes: 'EOPA arterial cannulae with elongated, one-piece, kink-resistant wirewound bodies, introducer, hemostasis cap, depth markings, and adjustable radiopaque suture ring. 18 Fr (6.0 mm), 12 in (30.5 cm) overall length, 3/8 in connector. Blunt tip order codes 77418/77518; dilator tip order codes 77618/77718.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'EOPA Arterial Cannulae',
+    category: 'arterial',
+    size: '20 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — EOPA Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 0 },
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 3 },
+      { flow: 2.0, pressureDrop: 6 },
+      { flow: 2.5, pressureDrop: 10 },
+      { flow: 3.0, pressureDrop: 14 },
+      { flow: 3.5, pressureDrop: 19 },
+      { flow: 4.0, pressureDrop: 25 },
+      { flow: 4.5, pressureDrop: 31 },
+      { flow: 5.0, pressureDrop: 38 },
+      { flow: 5.5, pressureDrop: 47 },
+      { flow: 6.0, pressureDrop: 55 }
+    ],
+    notes: 'EOPA arterial cannulae with elongated, one-piece, kink-resistant wirewound bodies, introducer, hemostasis cap, depth markings, and adjustable radiopaque suture ring. 20 Fr (6.7 mm), 12 in (30.5 cm) overall length, 3/8 in connector. Blunt tip order codes 77420/77520; dilator tip order codes 77620/77720.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'EOPA Arterial Cannulae',
+    category: 'arterial',
+    size: '22 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — EOPA Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 0 },
+      { flow: 1.0, pressureDrop: 1 },
+      { flow: 1.5, pressureDrop: 2 },
+      { flow: 2.0, pressureDrop: 4 },
+      { flow: 2.5, pressureDrop: 6 },
+      { flow: 3.0, pressureDrop: 8 },
+      { flow: 3.5, pressureDrop: 11 },
+      { flow: 4.0, pressureDrop: 15 },
+      { flow: 4.5, pressureDrop: 18 },
+      { flow: 5.0, pressureDrop: 23 },
+      { flow: 5.5, pressureDrop: 27 },
+      { flow: 6.0, pressureDrop: 32 }
+    ],
+    notes: 'EOPA arterial cannulae with elongated, one-piece, kink-resistant wirewound bodies, introducer, hemostasis cap, depth markings, and adjustable radiopaque suture ring. 22 Fr (7.3 mm), 12 in (30.5 cm) overall length, 3/8 in connector. Blunt tip order codes 77422/77522; dilator tip order codes 77622/77722.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'EOPA Arterial Cannulae',
+    category: 'arterial',
+    size: '24 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — EOPA Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 0 },
+      { flow: 1.0, pressureDrop: 1 },
+      { flow: 1.5, pressureDrop: 1 },
+      { flow: 2.0, pressureDrop: 2 },
+      { flow: 2.5, pressureDrop: 3 },
+      { flow: 3.0, pressureDrop: 5 },
+      { flow: 3.5, pressureDrop: 6 },
+      { flow: 4.0, pressureDrop: 8 },
+      { flow: 4.5, pressureDrop: 10 },
+      { flow: 5.0, pressureDrop: 13 },
+      { flow: 5.5, pressureDrop: 15 },
+      { flow: 6.0, pressureDrop: 18 }
+    ],
+    notes: 'EOPA arterial cannulae with elongated, one-piece, kink-resistant wirewound bodies, introducer, hemostasis cap, depth markings, and adjustable radiopaque suture ring. 24 Fr (8.0 mm), 12 in (30.5 cm) overall length, 3/8 in connector. Blunt tip order codes 77424/77524; dilator tip order codes 77624/77724.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Select Series Angled Tip Arterial Cannulae',
+    category: 'arterial',
+    size: '20 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Select Series Angled Tip Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 3 },
+      { flow: 1.5, pressureDrop: 6 },
+      { flow: 2.0, pressureDrop: 11 },
+      { flow: 2.5, pressureDrop: 16 },
+      { flow: 3.0, pressureDrop: 23 },
+      { flow: 3.5, pressureDrop: 31 },
+      { flow: 4.0, pressureDrop: 40 },
+      { flow: 4.5, pressureDrop: 50 },
+      { flow: 5.0, pressureDrop: 62 },
+      { flow: 5.5, pressureDrop: 74 },
+      { flow: 6.0, pressureDrop: 89 }
+    ],
+    notes: 'Select Series Angled Tip arterial cannulae with beveled tips and tapered, one-piece, kink-resistant wirewound bodies, tip orientation line, and connector peel cap. 20 Fr (6.7 mm), 12 in (30.5 cm) overall length, 45° angled tip. Vented 3/8 in connector order codes: 72420 without side holes, 73420 with side holes. Non-vented 3/8 in connector order code: 72520 without side holes.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Select Series Angled Tip Arterial Cannulae',
+    category: 'arterial',
+    size: '22 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Select Series Angled Tip Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 4 },
+      { flow: 2.0, pressureDrop: 7 },
+      { flow: 2.5, pressureDrop: 10 },
+      { flow: 3.0, pressureDrop: 15 },
+      { flow: 3.5, pressureDrop: 20 },
+      { flow: 4.0, pressureDrop: 26 },
+      { flow: 4.5, pressureDrop: 32 },
+      { flow: 5.0, pressureDrop: 40 },
+      { flow: 5.5, pressureDrop: 48 },
+      { flow: 6.0, pressureDrop: 56 }
+    ],
+    notes: 'Select Series Angled Tip arterial cannulae with beveled tips and tapered, one-piece, kink-resistant wirewound bodies, tip orientation line, and connector peel cap. 22 Fr (7.3 mm), 12 in (30.5 cm) overall length, 45° angled tip. Vented 3/8 in connector order codes: 72422 without side holes, 73422 with side holes. Non-vented 3/8 in connector order code: 72522 without side holes.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Select Series Angled Tip Arterial Cannulae',
+    category: 'arterial',
+    size: '24 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Select Series Angled Tip Arterial Cannulae',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    points: [
+      { flow: 0.5, pressureDrop: 0 },
+      { flow: 1.0, pressureDrop: 1 },
+      { flow: 1.5, pressureDrop: 2 },
+      { flow: 2.0, pressureDrop: 4 },
+      { flow: 2.5, pressureDrop: 7 },
+      { flow: 3.0, pressureDrop: 10 },
+      { flow: 3.5, pressureDrop: 13 },
+      { flow: 4.0, pressureDrop: 17 },
+      { flow: 4.5, pressureDrop: 21 },
+      { flow: 5.0, pressureDrop: 26 },
+      { flow: 5.5, pressureDrop: 31 },
+      { flow: 6.0, pressureDrop: 37 }
+    ],
+    notes: 'Select Series Angled Tip arterial cannulae with beveled tips and tapered, one-piece, kink-resistant wirewound bodies, tip orientation line, and connector peel cap. 24 Fr (8.0 mm), 12 in (30.5 cm) overall length, 45° angled tip. Vented 3/8 in connector order codes: 72424 without side holes, 73424 with side holes. Non-vented 3/8 in connector order code: 72524 without side holes.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Bio-Medicus NextGen Femoral Arterial Cannula',
+    category: 'femoral arterial',
+    size: '15 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Femoral Arterial or Jugular Venous Cannulae and Kits',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.',
+    points: [
+      { flow: 0.5, pressureDrop: 5 },
+      { flow: 1.0, pressureDrop: 14 },
+      { flow: 1.5, pressureDrop: 26 },
+      { flow: 2.0, pressureDrop: 45 },
+      { flow: 2.5, pressureDrop: 88 },
+      { flow: 3.0, pressureDrop: 99 },
+      { flow: 3.5, pressureDrop: 137 },
+      { flow: 4.0, pressureDrop: 185 }
+    ],
+    notes: 'Bio-Medicus NextGen femoral arterial cannula. 15 Fr (5.0 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-115; cannula kit order code 96530-115.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Bio-Medicus NextGen Femoral Arterial Cannula',
+    category: 'femoral arterial',
+    size: '17 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Femoral Arterial or Jugular Venous Cannulae and Kits',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.',
+    points: [
+      { flow: 0.5, pressureDrop: 2 },
+      { flow: 1.0, pressureDrop: 5 },
+      { flow: 1.5, pressureDrop: 13 },
+      { flow: 2.0, pressureDrop: 24 },
+      { flow: 2.5, pressureDrop: 37 },
+      { flow: 3.0, pressureDrop: 54 },
+      { flow: 3.5, pressureDrop: 73 },
+      { flow: 4.0, pressureDrop: 96 },
+      { flow: 4.5, pressureDrop: 122 },
+      { flow: 5.0, pressureDrop: 152 },
+      { flow: 5.5, pressureDrop: 185 }
+    ],
+    notes: 'Bio-Medicus NextGen femoral arterial cannula. 17 Fr (5.7 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-117; cannula kit order code 96530-117.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Bio-Medicus NextGen Femoral Arterial Cannula',
+    category: 'femoral arterial',
+    size: '19 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Femoral Arterial or Jugular Venous Cannulae and Kits',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.',
+    points: [
+      { flow: 0.5, pressureDrop: 2 },
+      { flow: 1.0, pressureDrop: 5 },
+      { flow: 1.5, pressureDrop: 9 },
+      { flow: 2.0, pressureDrop: 15 },
+      { flow: 2.5, pressureDrop: 23 },
+      { flow: 3.0, pressureDrop: 32 },
+      { flow: 3.5, pressureDrop: 42 },
+      { flow: 4.0, pressureDrop: 55 },
+      { flow: 4.5, pressureDrop: 69 },
+      { flow: 5.0, pressureDrop: 85 },
+      { flow: 5.5, pressureDrop: 104 },
+      { flow: 6.0, pressureDrop: 125 }
+    ],
+    notes: 'Bio-Medicus NextGen femoral arterial cannula. 19 Fr (6.3 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-119; cannula kit order code 96530-119.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Bio-Medicus NextGen Femoral Arterial Cannula',
+    category: 'femoral arterial',
+    size: '21 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Femoral Arterial or Jugular Venous Cannulae and Kits',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.',
+    points: [
+      { flow: 0.5, pressureDrop: 3 },
+      { flow: 1.0, pressureDrop: 4 },
+      { flow: 1.5, pressureDrop: 6 },
+      { flow: 2.0, pressureDrop: 10 },
+      { flow: 2.5, pressureDrop: 16 },
+      { flow: 3.0, pressureDrop: 21 },
+      { flow: 3.5, pressureDrop: 28 },
+      { flow: 4.0, pressureDrop: 35 },
+      { flow: 4.5, pressureDrop: 44 },
+      { flow: 5.0, pressureDrop: 53 },
+      { flow: 5.5, pressureDrop: 65 },
+      { flow: 6.0, pressureDrop: 79 }
+    ],
+    notes: 'Bio-Medicus NextGen femoral arterial cannula. 21 Fr (7.0 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-121; cannula kit order code 96530-121.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Bio-Medicus NextGen Femoral Arterial Cannula',
+    category: 'femoral arterial',
+    size: '23 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Femoral Arterial or Jugular Venous Cannulae and Kits',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.',
+    points: [
+      { flow: 0.5, pressureDrop: 2 },
+      { flow: 1.0, pressureDrop: 4 },
+      { flow: 1.5, pressureDrop: 5 },
+      { flow: 2.0, pressureDrop: 8 },
+      { flow: 2.5, pressureDrop: 11 },
+      { flow: 3.0, pressureDrop: 14 },
+      { flow: 3.5, pressureDrop: 18 },
+      { flow: 4.0, pressureDrop: 23 },
+      { flow: 4.5, pressureDrop: 28 },
+      { flow: 5.0, pressureDrop: 35 },
+      { flow: 5.5, pressureDrop: 42 },
+      { flow: 6.0, pressureDrop: 51 }
+    ],
+    notes: 'Bio-Medicus NextGen femoral arterial cannula. 23 Fr (7.7 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-123; cannula kit order code 96530-123.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Bio-Medicus NextGen Femoral Arterial Cannula',
+    category: 'femoral arterial',
+    size: '25 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Femoral Arterial or Jugular Venous Cannulae and Kits',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'Digitized curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.',
+    points: [
+      { flow: 0.5, pressureDrop: 3 },
+      { flow: 1.0, pressureDrop: 4 },
+      { flow: 1.5, pressureDrop: 4 },
+      { flow: 2.0, pressureDrop: 6 },
+      { flow: 2.5, pressureDrop: 8 },
+      { flow: 3.0, pressureDrop: 10 },
+      { flow: 3.5, pressureDrop: 12 },
+      { flow: 4.0, pressureDrop: 15 },
+      { flow: 4.5, pressureDrop: 18 },
+      { flow: 5.0, pressureDrop: 22 },
+      { flow: 5.5, pressureDrop: 25 },
+      { flow: 6.0, pressureDrop: 31 }
+    ],
+    notes: 'Bio-Medicus NextGen femoral arterial cannula. 25 Fr (8.3 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-125; cannula kit order code 96530-125.'
+  }
+];
+
 const CANNULA_GAUGE_LOOKUP = [
   { gauge: 14, diameterMm: 2.10 },
   { gauge: 16, diameterMm: 1.65 },
@@ -879,6 +1637,201 @@ function updateCannulaConverter() {
 }
 
 
+function normalizePressureDropKey(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function findPressureDropEntry({ manufacturer, category, model, size }) {
+  const normalizedManufacturer = normalizePressureDropKey(manufacturer);
+  const normalizedCategory = normalizePressureDropKey(category);
+  const normalizedModel = normalizePressureDropKey(model);
+  const normalizedSize = normalizePressureDropKey(size);
+
+  if (!normalizedManufacturer || !normalizedCategory || !normalizedModel || !normalizedSize) return null;
+
+  return cannulaPressureDropData.find(entry => (
+    normalizePressureDropKey(entry.manufacturer) === normalizedManufacturer &&
+    normalizePressureDropKey(entry.category) === normalizedCategory &&
+    normalizePressureDropKey(entry.model) === normalizedModel &&
+    normalizePressureDropKey(entry.size) === normalizedSize
+  )) || null;
+}
+
+function getValidPressureDropPoints(points) {
+  if (!Array.isArray(points)) return [];
+  return points
+    .filter(point => Number.isFinite(point.flow) && Number.isFinite(point.pressureDrop))
+    .sort((a, b) => a.flow - b.flow);
+}
+
+function interpolatePressureDrop(points, targetFlow) {
+  if (!Number.isFinite(targetFlow)) return { state: 'invalid', value: null };
+  const validPoints = getValidPressureDropPoints(points);
+  if (!validPoints.length) return { state: 'no_points', value: null };
+
+  const minFlow = validPoints[0].flow;
+  const maxFlow = validPoints[validPoints.length - 1].flow;
+  if (targetFlow < minFlow || targetFlow > maxFlow) return { state: 'out_of_range', value: null, minFlow, maxFlow };
+  for (let i = 0; i < validPoints.length; i += 1) {
+    if (targetFlow === validPoints[i].flow) return { state: 'exact', value: validPoints[i].pressureDrop, minFlow, maxFlow };
+  }
+  for (let i = 0; i < validPoints.length - 1; i += 1) {
+    const left = validPoints[i]; const right = validPoints[i + 1];
+    if (targetFlow > left.flow && targetFlow < right.flow) {
+      const ratio = (targetFlow - left.flow) / (right.flow - left.flow);
+      return { state: 'interpolated', value: left.pressureDrop + ((right.pressureDrop - left.pressureDrop) * ratio), minFlow, maxFlow };
+    }
+  }
+  return { state: 'out_of_range', value: null, minFlow, maxFlow };
+}
+
+function drawPressureDropChart(svgNode, points, targetFlow, interpolatedPressureDrop) {
+  const validPoints = getValidPressureDropPoints(points);
+  if (!svgNode || !validPoints.length) return;
+  const width = 320; const height = 140;
+  const padding = { left: 34, right: 10, top: 10, bottom: 24 };
+  const minFlow = validPoints[0].flow;
+  const maxFlow = validPoints[validPoints.length - 1].flow;
+  const maxDrop = Math.max(...validPoints.map(p => p.pressureDrop), 1);
+  const scaleX = flow => padding.left + ((flow - minFlow) / Math.max(maxFlow - minFlow, 0.0001)) * (width - padding.left - padding.right);
+  const scaleY = drop => height - padding.bottom - (drop / maxDrop) * (height - padding.top - padding.bottom);
+  const polyline = validPoints.map(p => `${scaleX(p.flow).toFixed(1)},${scaleY(p.pressureDrop).toFixed(1)}`).join(' ');
+  const targetX = Number.isFinite(targetFlow) ? scaleX(targetFlow) : null;
+  const targetY = Number.isFinite(interpolatedPressureDrop) ? scaleY(interpolatedPressureDrop) : null;
+  svgNode.innerHTML = `<line x1="${padding.left}" y1="${height - padding.bottom}" x2="${width - padding.right}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><polyline points="${polyline}" fill="none" stroke="#0ea5e9" stroke-width="2" />${validPoints.map(p => `<circle cx="${scaleX(p.flow).toFixed(1)}" cy="${scaleY(p.pressureDrop).toFixed(1)}" r="2.2" fill="#0ea5e9" />`).join('')}${Number.isFinite(targetX) && Number.isFinite(targetY) ? `<line x1="${targetX.toFixed(1)}" y1="${padding.top}" x2="${targetX.toFixed(1)}" y2="${height - padding.bottom}" stroke="#f59e0b" stroke-dasharray="3 3" /><circle cx="${targetX.toFixed(1)}" cy="${targetY.toFixed(1)}" r="3" fill="#f59e0b" />` : ''}<text x="${padding.left}" y="${height - 6}" font-size="9" fill="currentColor" opacity="0.65">Flow (L/min)</text><text x="${width - 110}" y="${padding.top + 9}" font-size="9" fill="currentColor" opacity="0.65">Pressure drop (mmHg)</text>`;
+}
+
+
+function getPressureDropProductFamily(entry) {
+  const model = String(entry.model || '');
+  if (model.includes('HLS')) return 'HLS Cannulae';
+  if (model.includes('EOPA 3D')) return 'EOPA 3D';
+  if (model.includes('EOPA')) return 'EOPA';
+  if (model.includes('Select 3D II')) return 'Select 3D II';
+  if (model.includes('Select Series')) return 'Select Series';
+  if (model.includes('RAP')) return 'MICS Cannulae — RAP Femoral Venous Cannulae';
+  return 'Other';
+}
+
+function setSelectOptions(selectNode, options, placeholder) {
+  if (!selectNode) return;
+  selectNode.innerHTML = '';
+  const base = document.createElement('option');
+  base.value = '';
+  base.textContent = placeholder;
+  selectNode.appendChild(base);
+  options.forEach(option => {
+    const node = document.createElement('option');
+    node.value = option.value;
+    node.textContent = option.label;
+    selectNode.appendChild(node);
+  });
+}
+
+
+function renderAvailableCurveDatasets() {
+  const wrap = el('pressure-drop-available-list');
+  if (!wrap) return;
+  const curveEntries = cannulaPressureDropData.filter(entry => Array.isArray(entry.points) && entry.points.length > 0);
+  const grouped = {};
+  curveEntries.forEach(entry => {
+    const manufacturer = entry.manufacturer || 'Unknown';
+    const family = getPressureDropProductFamily(entry);
+    const model = entry.model || 'Unknown model';
+    grouped[manufacturer] = grouped[manufacturer] || {};
+    grouped[manufacturer][family] = grouped[manufacturer][family] || {};
+    grouped[manufacturer][family][model] = grouped[manufacturer][family][model] || new Set();
+    grouped[manufacturer][family][model].add(entry.size || 'Unknown size');
+  });
+
+  const parts = [];
+  Object.keys(grouped).sort().forEach(manufacturer => {
+    parts.push(`<div><p class="font-semibold">${manufacturer}</p>`);
+    Object.keys(grouped[manufacturer]).sort().forEach(family => {
+      parts.push(`<p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">${family}</p><ul class="pl-3 list-disc">`);
+      Object.keys(grouped[manufacturer][family]).sort().forEach(model => {
+        const sizes = Array.from(grouped[manufacturer][family][model]).sort().join(', ');
+        parts.push(`<li><span class="font-medium">${model}</span>: ${sizes}</li>`);
+      });
+      parts.push('</ul>');
+    });
+    parts.push('</div>');
+  });
+  wrap.innerHTML = parts.join('');
+}
+
+function syncPressureDropSelectors(changedLevel = 'manufacturer') {
+  const manufacturerSelect = el('pressure-drop-manufacturer');
+  const familySelect = el('pressure-drop-product-family');
+  const categoryInput = el('pressure-drop-category');
+  const modelSelect = el('pressure-drop-model');
+  const sizeSelect = el('pressure-drop-size');
+  if (!manufacturerSelect || !familySelect || !categoryInput || !modelSelect || !sizeSelect) return;
+
+  const byManufacturer = cannulaPressureDropData.filter(entry => !manufacturerSelect.value || entry.manufacturer === manufacturerSelect.value);
+  if (changedLevel === 'manufacturer') {
+    setSelectOptions(familySelect, [...new Set(byManufacturer.map(entry => getPressureDropProductFamily(entry)))].map(v => ({ value: v, label: v })), 'Select product family');
+    modelSelect.value = ''; sizeSelect.value = ''; categoryInput.value = '';
+    setSelectOptions(modelSelect, [], 'Select model'); setSelectOptions(sizeSelect, [], 'Select size');
+    if (familySelect.options.length === 2) { familySelect.value = familySelect.options[1].value; syncPressureDropSelectors('family'); }
+    return;
+  }
+  const byFamily = byManufacturer.filter(entry => getPressureDropProductFamily(entry) === familySelect.value);
+  if (changedLevel === 'family') {
+    setSelectOptions(modelSelect, [...new Set(byFamily.map(entry => entry.model))].map(v => ({ value: v, label: v })), 'Select model');
+    sizeSelect.value=''; categoryInput.value=''; setSelectOptions(sizeSelect, [], 'Select size');
+    if (modelSelect.options.length === 2) { modelSelect.value = modelSelect.options[1].value; syncPressureDropSelectors('model'); }
+    return;
+  }
+  const byModel = byFamily.filter(entry => entry.model === modelSelect.value);
+  if (changedLevel === 'model') {
+    setSelectOptions(sizeSelect, byModel.map(entry => ({ value: entry.size, label: `${entry.size} — ${(entry.points||[]).length ? 'curve available' : 'metadata only'}` })), 'Select size');
+    categoryInput.value='';
+    if (sizeSelect.options.length === 2) { sizeSelect.value = sizeSelect.options[1].value; syncPressureDropSelectors('size'); }
+    return;
+  }
+  const match = byModel.find(entry => entry.size === sizeSelect.value);
+  categoryInput.value = match ? match.category : '';
+}
+
+function updatePressureDropReference() {
+  const manufacturerInput = el('pressure-drop-manufacturer'); const categorySelect = el('pressure-drop-category'); const familySelect = el('pressure-drop-product-family'); const modelInput = el('pressure-drop-model'); const sizeInput = el('pressure-drop-size'); const targetFlowInput = el('pressure-drop-target-flow');
+  const statusMessage = el('pressure-drop-status-message'); const sourceWrap = el('pressure-drop-source'); const sourceLabel = el('pressure-drop-source-label'); const sourceUrl = el('pressure-drop-source-url'); const testMedium = el('pressure-drop-test-medium'); const dataStatus = el('pressure-drop-data-status'); const digitizationNote = el('pressure-drop-digitization-note'); const notes = el('pressure-drop-notes');
+  const chartWrap = el('pressure-drop-chart-wrap'); const chartNode = el('pressure-drop-chart'); const curveMeta = el('pressure-drop-curve-meta'); const selectedModel = el('pressure-drop-selected-model'); const rangeText = el('pressure-drop-range'); const interpNote = el('pressure-drop-interp-note'); const chartRangeLabel = el('pressure-drop-chart-range-label'); const benchLabel = el('pressure-drop-bench-label');
+  if (!manufacturerInput || !categorySelect || !familySelect || !modelInput || !sizeInput || !targetFlowInput || !statusMessage || !sourceWrap || !sourceLabel || !sourceUrl || !testMedium || !notes || !chartWrap || !chartNode || !curveMeta || !selectedModel || !rangeText || !interpNote || !chartRangeLabel || !benchLabel) return;
+  chartWrap.classList.add('hidden'); curveMeta.classList.add('hidden'); sourceWrap.classList.add('hidden'); interpNote.classList.add('hidden'); chartRangeLabel.classList.add('hidden'); benchLabel.classList.add('hidden');
+  if (!manufacturerInput.value || !familySelect.value || !modelInput.value || !sizeInput.value) { statusMessage.textContent = 'Select a manufacturer, product family, model, and size to view available pressure-drop reference data.'; return; }
+  const match = findPressureDropEntry({ manufacturer: manufacturerInput.value, category: categorySelect.value, model: modelInput.value, size: sizeInput.value });
+  if (!match) { statusMessage.textContent = 'Pressure-drop data is not available for this model yet. Pressure drop cannot be estimated from Fr size alone.'; return; }
+  const validPoints = getValidPressureDropPoints(match.points);
+  if (!validPoints.length) { statusMessage.textContent = 'Manufacturer-specific curve data has not been added for this model yet.'; return; }
+  const targetFlow = parseFloat(targetFlowInput.value);
+  const result = interpolatePressureDrop(validPoints, targetFlow);
+  rangeText.textContent = `Reference flow range shown in manufacturer data: ${validPoints[0].flow}–${validPoints[validPoints.length - 1].flow} L/min`;
+  selectedModel.textContent = `${match.manufacturer} / ${match.model} / ${match.category} / ${match.size}`;
+  curveMeta.classList.remove('hidden'); sourceWrap.classList.remove('hidden'); chartRangeLabel.classList.remove('hidden'); benchLabel.classList.remove('hidden');
+  sourceLabel.textContent = match.sourceLabel || '—'; sourceUrl.textContent = match.sourceUrl || '—'; testMedium.textContent = `Test medium: ${match.testMedium || '—'}`; dataStatus.textContent = `Data status: ${match.dataStatus || '—'}`; digitizationNote.textContent = `Digitization note: ${match.digitizationNote || '—'}`; notes.textContent = `Notes: ${match.notes || '—'}`;
+  if (result.state === 'exact') { statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${result.value.toFixed(1)} mmHg`; chartWrap.classList.remove('hidden'); drawPressureDropChart(chartNode, validPoints, targetFlow, result.value); return; }
+  if (result.state === 'interpolated') { statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${result.value.toFixed(1)} mmHg`; interpNote.classList.remove('hidden'); chartWrap.classList.remove('hidden'); drawPressureDropChart(chartNode, validPoints, targetFlow, result.value); return; }
+  if (result.state === 'out_of_range') { statusMessage.textContent = 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.'; chartWrap.classList.remove('hidden'); drawPressureDropChart(chartNode, validPoints, NaN, NaN); return; }
+  statusMessage.textContent = 'Reference flow range is available in manufacturer chart data.';
+}
+
+function updateTubingPresetConverter(inchValue) {
+  if (!(inchValue > 0)) return;
+  // Formulas:
+  // mm = inch × 25.4
+  // cm = mm / 10
+  // Fr-equivalent = mm × 3
+  const diameterMm = inchValue * 25.4;
+  const diameterCm = diameterMm / 10;
+  const frEquivalent = diameterMm * 3;
+  setText('tubing-output-cm', `${diameterCm.toFixed(4)} cm`);
+  setText('tubing-output-mm', `${diameterMm.toFixed(3)} mm`);
+  setText('tubing-output-fr', `${frEquivalent.toFixed(1)} Fr ≈ ${Math.round(frEquivalent)} Fr`);
+}
+
+
 
 const PATIENT_TYPE_COEFS = {
   adult_m: 70,
@@ -892,14 +1845,36 @@ function ebvCoef(pttype) {
   return PATIENT_TYPE_COEFS[pttype] || 70;
 }
 
+function calculatePreCpbHct({ ebvCoef, weightKg, preCpbHct, primeVolumeMl, additionalCrystalloidMl, ultrafiltrationRemovedMl, rbcUnits, rbcVolumePerUnitMl, rbcUnitHct }) {
+  const ebvMl = (ebvCoef || 0) * (weightKg || 0);
+  const patientRbcMl = ebvMl * ((preCpbHct || 0) / 100);
+  const transfusedRbcVolumeMl = (rbcUnits || 0) * (rbcVolumePerUnitMl || 0);
+  const transfusedRbcCellVolumeMl = transfusedRbcVolumeMl * ((rbcUnitHct || 0) / 100);
+  const totalVolumeMl = ebvMl + (primeVolumeMl || 0) + (additionalCrystalloidMl || 0) + transfusedRbcVolumeMl - (ultrafiltrationRemovedMl || 0);
+  const finalRbcVolumeMl = patientRbcMl + transfusedRbcCellVolumeMl;
+  const resultHctPercent = totalVolumeMl > 0 ? (finalRbcVolumeMl / totalVolumeMl) * 100 : 0;
+  return { ebvMl, totalVolumeMl, resultHctPercent };
+}
+
 function computePredictedHct({ pttype, weight, pre, prime, fluids = 0, removed = 0, rbcUnits = 0, rbcUnitVol = 300, rbcHct = 60, ebvCoefValue }) {
   const coef = ebvCoefValue || ebvCoef(pttype);
-  const ebv = (weight || 0) * coef;
-  const rbcVolAdded = (rbcUnits || 0) * (rbcUnitVol || 0);
-  const rbcVolume = (ebv * ((pre || 0) / 100)) + (rbcVolAdded * ((rbcHct || 0) / 100));
-  const totalVol = ebv + (prime || 0) + (fluids || 0) + rbcVolAdded - (removed || 0);
-  const hct = totalVol > 0 ? (rbcVolume / totalVol) * 100 : 0;
-  return { ebv, totalVol, hct };
+  const r = calculatePreCpbHct({ ebvCoef: coef, weightKg: weight || 0, preCpbHct: pre || 0, primeVolumeMl: prime || 0, additionalCrystalloidMl: fluids || 0, ultrafiltrationRemovedMl: removed || 0, rbcUnits: rbcUnits || 0, rbcVolumePerUnitMl: rbcUnitVol || 0, rbcUnitHct: rbcHct || 0 });
+  return { ebv: r.ebvMl, totalVol: r.totalVolumeMl, hct: r.resultHctPercent };
+}
+
+function computeOnPumpHctAdjustment({ patientType, weightKg, ebvCoefValue, primeVolume, currentHct, useManualOverride = false, manualCurrentVolumeOverride = 0, addedCrystalloid = 0, rbcUnits = 0, rbcUnitVol = 300, rbcUnitHct = 60, ultrafiltrationRemoved = 0 }) {
+  const safeEbvCoef = Number.isFinite(ebvCoefValue) && ebvCoefValue > 0 ? ebvCoefValue : ebvCoef(patientType);
+  const ebv = (weightKg || 0) * safeEbvCoef;
+  const estimatedCpbVolumeAuto = ebv + (primeVolume || 0);
+  let estimatedCpbVolume = estimatedCpbVolumeAuto;
+  if (useManualOverride && (manualCurrentVolumeOverride || 0) > 0) estimatedCpbVolume = manualCurrentVolumeOverride;
+  const totalRbcProductVolume = (rbcUnits || 0) * (rbcUnitVol || 0);
+  const currentRbcVolume = (estimatedCpbVolume || 0) * ((currentHct || 0) / 100);
+  const addedRbcVolume = totalRbcProductVolume * ((rbcUnitHct || 0) / 100);
+  const finalTotalVolume = (estimatedCpbVolume || 0) + (addedCrystalloid || 0) + totalRbcProductVolume - (ultrafiltrationRemoved || 0);
+  const predictedHct = finalTotalVolume > 0 ? ((currentRbcVolume + addedRbcVolume) / finalTotalVolume) * 100 : 0;
+  const hctChange = predictedHct - (currentHct || 0);
+  return { ebv, estimatedCpbVolumeAuto, estimatedCpbVolume, currentRbcVolume, addedRbcVolume, finalTotalVolume, predictedHct, hctChange };
 }
 
 // -----------------------------
@@ -1420,6 +2395,58 @@ function resetGDP() {
 // Predicted Hct Interaction
 // -----------------------------
 function updateHct() {
+  const mode = el('hct_mode')?.value || 'pre';
+  const isOnPumpMode = mode === 'onpump';
+  const preModeEl = el('hct-pre-mode');
+  const onPumpModeEl = el('hct-onpump-mode');
+  const leftLabelEl = el('hct-left-label');
+  const onPumpExtraResultsEl = el('onpump-extra-results');
+  const rightLabelEl = el('hct-right-label');
+  if (preModeEl) preModeEl.classList.toggle('hidden', isOnPumpMode);
+  if (onPumpModeEl) onPumpModeEl.classList.toggle('hidden', !isOnPumpMode);
+  if (onPumpExtraResultsEl) onPumpExtraResultsEl.classList.toggle('hidden', !isOnPumpMode);
+  const modeHelpEl = el('hct-mode-help');
+  if (modeHelpEl) {
+    modeHelpEl.textContent = isOnPumpMode
+      ? 'Estimate hematocrit change after RBC transfusion, fluid addition, or ultrafiltration during CPB.'
+      : 'Estimate dilutional hematocrit at CPB initiation.';
+  }
+
+  if (isOnPumpMode) {
+    const r = computeOnPumpHctAdjustment({
+      weightKg: num('onpump_weight'),
+      ebvCoefValue: num('onpump_ebv_coef'),
+      primeVolume: num('onpump_prime'),
+      currentHct: num('current_hct'),
+      useManualOverride: !!el('use_manual_current_volume')?.checked,
+      manualCurrentVolumeOverride: num('manual_current_volume'),
+      addedCrystalloid: num('onpump_fluids'),
+      rbcUnits: num('onpump_rbc_units'),
+      rbcUnitVol: num('onpump_rbc_unit_vol'),
+      rbcUnitHct: num('onpump_rbc_hct'),
+      ultrafiltrationRemoved: num('onpump_removed')
+    });
+    if (leftLabelEl) leftLabelEl.textContent = 'Current Vol';
+    setText('ebv', r.finalTotalVolume ? r.finalTotalVolume.toFixed(0) : '0');
+    setText('total_vol', r.finalTotalVolume ? r.finalTotalVolume.toFixed(0) : '0');
+    setText('pred_hct', r.predictedHct ? r.predictedHct.toFixed(1) + '%' : '0%');
+    setText('current_rbc_vol', `${r.currentRbcVolume.toFixed(0)} mL`);
+    setText('added_rbc_vol', `${r.addedRbcVolume.toFixed(0)} mL`);
+    setText('onpump_ebv', `${r.ebv.toFixed(0)} mL`);
+    setText('onpump_estimated_volume', `${r.estimatedCpbVolume.toFixed(0)} mL`);
+    setText('onpump_ebv_auto', `${r.ebv.toFixed(0)} mL`);
+    setText('onpump_estimated_auto', `${r.estimatedCpbVolumeAuto.toFixed(0)} mL`);
+    const manualWrapEl = el('manual-current-volume-wrap');
+    const manualEnabled = !!el('use_manual_current_volume')?.checked;
+    if (manualWrapEl) manualWrapEl.classList.toggle('hidden', !manualEnabled);
+    const manualActiveNoteEl = el('manual-override-active-note');
+    if (manualActiveNoteEl) manualActiveNoteEl.classList.toggle('hidden', !(manualEnabled && num('manual_current_volume') > 0));
+    setText('current_hct_result', `${(num('current_hct') || 0).toFixed(1)}%`);
+    setText('pred_hct_result', `${r.predictedHct.toFixed(1)}%`);
+    setText('hct_change', `${r.hctChange >= 0 ? '+' : ''}${r.hctChange.toFixed(1)}`);
+    return;
+  }
+
   const pttype = el('pttype').value;
   const payload = {
     pttype,
@@ -1434,9 +2461,46 @@ function updateHct() {
     ebvCoefValue: num('ebv_coef')
   };
   const r = computePredictedHct(payload);
+  if (leftLabelEl) leftLabelEl.textContent = 'EBV';
+  if (rightLabelEl) rightLabelEl.textContent = 'Total Vol';
   setText('ebv', r.ebv ? r.ebv.toFixed(0) : '0');
   setText('total_vol', r.totalVol ? r.totalVol.toFixed(0) : '0');
   setText('pred_hct', r.hct ? r.hct.toFixed(1) + '%' : '0%');
+}
+
+function setHctMode(mode) {
+  const modeInput = el('hct_mode');
+  if (!modeInput) return;
+  const nextMode = mode === 'onpump' ? 'onpump' : 'pre';
+  modeInput.value = nextMode;
+  const isPre = nextMode === 'pre';
+  const preBtn = el('hct-mode-pre');
+  const onPumpBtn = el('hct-mode-onpump');
+  if (preBtn) {
+    preBtn.setAttribute('aria-pressed', String(isPre));
+    preBtn.setAttribute('aria-selected', String(isPre));
+    preBtn.classList.toggle('bg-primary-900', isPre);
+    preBtn.classList.toggle('text-white', isPre);
+    preBtn.classList.toggle('dark:bg-accent-500', isPre);
+    preBtn.classList.toggle('bg-white', !isPre);
+    preBtn.classList.toggle('text-slate-700', !isPre);
+    preBtn.classList.toggle('dark:bg-primary-800', !isPre);
+    preBtn.classList.toggle('dark:text-slate-200', !isPre);
+    preBtn.classList.toggle('border', !isPre);
+  }
+  if (onPumpBtn) {
+    onPumpBtn.setAttribute('aria-pressed', String(!isPre));
+    onPumpBtn.setAttribute('aria-selected', String(!isPre));
+    onPumpBtn.classList.toggle('bg-primary-900', !isPre);
+    onPumpBtn.classList.toggle('text-white', !isPre);
+    onPumpBtn.classList.toggle('dark:bg-accent-500', !isPre);
+    onPumpBtn.classList.toggle('bg-white', isPre);
+    onPumpBtn.classList.toggle('text-slate-700', isPre);
+    onPumpBtn.classList.toggle('dark:bg-primary-800', isPre);
+    onPumpBtn.classList.toggle('dark:text-slate-200', isPre);
+    onPumpBtn.classList.toggle('border', isPre);
+  }
+  updateHct();
 }
 
 function applyDefaultEbvCoef(pttype) {
@@ -3297,6 +4361,34 @@ window.addEventListener('DOMContentLoaded', () => {
       const x = el(id);
       if (x) x.addEventListener('input', updateHct);
     });
+    ['hct_mode', 'onpump_weight', 'onpump_ebv_coef', 'onpump_prime', 'current_hct', 'manual_current_volume', 'use_manual_current_volume', 'onpump_fluids', 'onpump_rbc_units', 'onpump_rbc_unit_vol', 'onpump_rbc_hct', 'onpump_removed', 'onpump_pttype'].forEach(id => {
+      const x = el(id);
+      if (x) x.addEventListener('input', updateHct);
+      if (x) x.addEventListener('change', updateHct);
+    });
+    const modeButtons = Array.from(document.querySelectorAll('[data-hct-mode]'));
+    modeButtons.forEach((btn) => {
+      btn.addEventListener('click', () => setHctMode(btn.dataset.hctMode));
+      btn.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+        e.preventDefault();
+        const idx = modeButtons.indexOf(btn);
+        const nextIdx = e.key === 'ArrowRight' ? (idx + 1) % modeButtons.length : (idx - 1 + modeButtons.length) % modeButtons.length;
+        modeButtons[nextIdx].focus();
+        setHctMode(modeButtons[nextIdx].dataset.hctMode);
+      });
+    });
+    setHctMode(el('hct_mode')?.value || 'pre');
+    const onPumpPttypeSelect = el('onpump_pttype');
+    if (onPumpPttypeSelect) {
+      onPumpPttypeSelect.addEventListener('change', () => {
+        const onPumpCoefInput = el('onpump_ebv_coef');
+        if (onPumpCoefInput) onPumpCoefInput.value = ebvCoef(onPumpPttypeSelect.value);
+        updateHct();
+      });
+      const onPumpCoefInput = el('onpump_ebv_coef');
+      if (onPumpCoefInput && !onPumpCoefInput.value) onPumpCoefInput.value = ebvCoef(onPumpPttypeSelect.value);
+    }
 
     const pttypeSelect = el('pttype');
     if (pttypeSelect) {
@@ -3347,10 +4439,32 @@ window.addEventListener('DOMContentLoaded', () => {
       if (x) x.addEventListener('change', () => {
         if (id === 'cannula-size-type') updateCannulaInputMode();
         updateCannulaConverter();
+    renderAvailableCurveDatasets();
+    syncPressureDropSelectors('manufacturer');
+    updatePressureDropReference();
       });
     });
     const cannulaFrMmInput = el('cannula-fr-mm-value');
     if (cannulaFrMmInput) cannulaFrMmInput.addEventListener('input', updateCannulaConverter);
+    document.querySelectorAll('[data-tubing-inch]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const inchValue = Number(button.dataset.tubingInch);
+        updateTubingPresetConverter(inchValue);
+      });
+    });
+
+    ['pressure-drop-manufacturer', 'pressure-drop-product-family', 'pressure-drop-model', 'pressure-drop-size', 'pressure-drop-target-flow'].forEach(id => {
+      const x = el(id);
+      if (!x) return;
+      const eventName = x.tagName === 'SELECT' ? 'change' : 'input';
+      x.addEventListener(eventName, () => {
+        if (id === 'pressure-drop-manufacturer') syncPressureDropSelectors('manufacturer');
+        else if (id === 'pressure-drop-product-family') syncPressureDropSelectors('family');
+        else if (id === 'pressure-drop-model') syncPressureDropSelectors('model');
+        else if (id === 'pressure-drop-size') syncPressureDropSelectors('size');
+        updatePressureDropReference();
+      });
+    });
 
     document.querySelectorAll('[data-unit-tab]').forEach(button => {
       button.addEventListener('click', () => {
@@ -3382,6 +4496,7 @@ window.addEventListener('DOMContentLoaded', () => {
     updateUnitConverterPressure();
     updateCannulaInputMode();
     updateCannulaConverter();
+    updateTubingPresetConverter(0.375);
     setUnitConverterTab('flow');
   }
 });
