@@ -1241,8 +1241,6 @@ const cannulaPressureDropData = [
     testMedium: 'Water',
     dataStatus: 'digitized-curve',
     digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.',
-    interpolationMode: 'linear',
-    interpolationNote: 'Interpolated estimate from digitized manufacturer-published curve data.',
     outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
     points: [
       { flow: 0.5, pressureDrop: 3 },
@@ -1255,6 +1253,42 @@ const cannulaPressureDropData = [
       { flow: 4.0, pressureDrop: 178 }
     ],
     notes: 'Bio-Medicus NextGen jugular venous cannula. 15 Fr (5.0 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-115; cannula kit order code 96530-115.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Bio-Medicus NextGen Jugular Venous Cannula',
+    category: 'jugular venous',
+    size: '17 Fr',
+    outerDiameterFr: 17,
+    outerDiameterMm: 5.7,
+    overallLengthIn: 12.5,
+    overallLengthCm: 31.8,
+    tipLengthIn: 7.09,
+    tipLengthCm: 18.0,
+    connectorSize: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '96570-117',
+    cannulaKitOrderCode: '96530-117',
+    cartonQuantity: '1 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Femoral Arterial or Jugular Venous Cannulae and Kits',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 6 },
+      { flow: 1.5, pressureDrop: 15 },
+      { flow: 2.0, pressureDrop: 27 },
+      { flow: 2.5, pressureDrop: 42 },
+      { flow: 3.0, pressureDrop: 60 },
+      { flow: 3.5, pressureDrop: 80 },
+      { flow: 4.0, pressureDrop: 104 },
+      { flow: 4.5, pressureDrop: 131 },
+      { flow: 5.0, pressureDrop: 160 },
+      { flow: 5.5, pressureDrop: 193 }
+    ],
+    notes: 'Bio-Medicus NextGen jugular venous cannula. 17 Fr (5.7 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-117; cannula kit order code 96530-117.'
   },
   {
     manufacturer: 'Medtronic',
