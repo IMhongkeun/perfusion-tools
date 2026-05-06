@@ -1209,6 +1209,41 @@ const cannulaPressureDropData = [
   },
   {
     manufacturer: 'Medtronic',
+    model: 'Bio-Medicus Multi-stage Femoral Venous Cannula with Insertion Kit',
+    category: 'femoral venous',
+    size: '19 Fr',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus Multi-stage Femoral Venous Cannula with Insertion Kit',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    outerDiameterFr: 19,
+    outerDiameterMm: 6.3,
+    overallLengthIn: 30,
+    overallLengthCm: 76.2,
+    tipLengthIn: 23.6,
+    tipLengthCm: 60,
+    connectorSize: 'Non-vented 3/8 in (0.95 cm)',
+    cannulaOrderCode: '96880-019',
+    cartonQuantity: '1 per carton',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 2 },
+      { flow: 1.0, pressureDrop: 9 },
+      { flow: 1.5, pressureDrop: 17 },
+      { flow: 2.0, pressureDrop: 28 },
+      { flow: 2.5, pressureDrop: 42 },
+      { flow: 3.0, pressureDrop: 57 },
+      { flow: 3.5, pressureDrop: 76 },
+      { flow: 4.0, pressureDrop: 97 },
+      { flow: 4.5, pressureDrop: 121 },
+      { flow: 5.0, pressureDrop: 149 },
+      { flow: 5.5, pressureDrop: 180 }
+    ],
+    notes: 'Bio-Medicus Multi-stage femoral venous cannula with insertion kit. 19 Fr (6.3 mm), 30 in (76.2 cm) overall length, 23.6 in (60 cm) tip length, non-vented 3/8 in connector. Order code 96880-019.'
+  },
+  {
+    manufacturer: 'Medtronic',
     model: 'Bio-Medicus NextGen Femoral Arterial Cannula',
     category: 'femoral arterial',
     size: '15 Fr',
@@ -2036,6 +2071,7 @@ function getPressureDropProductFamily(entry) {
   if (model.includes('EOPA')) return 'EOPA';
   if (model.includes('Select 3D II')) return 'Select 3D II';
   if (model.includes('Select Series')) return 'Select Series';
+  if (model.includes('Bio-Medicus Multi-stage')) return 'Bio-Medicus';
   if (model.includes('Bio-Medicus NextGen')) return 'Bio-Medicus NextGen';
   if (model.includes('RAP')) return 'MICS Cannulae — RAP Femoral Venous Cannulae';
   return 'Other';
