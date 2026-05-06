@@ -1223,6 +1223,41 @@ const cannulaPressureDropData = [
   },
   {
     manufacturer: 'Medtronic',
+    model: 'Bio-Medicus NextGen Jugular Venous Cannula',
+    category: 'jugular venous',
+    size: '15 Fr',
+    outerDiameterFr: 15,
+    outerDiameterMm: 5.0,
+    overallLengthIn: 12.5,
+    overallLengthCm: 31.8,
+    tipLengthIn: 7.09,
+    tipLengthCm: 18.0,
+    connectorSize: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '96570-115',
+    cannulaKitOrderCode: '96530-115',
+    cartonQuantity: '1 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Femoral Arterial or Jugular Venous Cannulae and Kits',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.',
+    interpolationMode: 'linear',
+    interpolationNote: 'Interpolated estimate from digitized manufacturer-published curve data.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 3 },
+      { flow: 1.0, pressureDrop: 11 },
+      { flow: 1.5, pressureDrop: 24 },
+      { flow: 2.0, pressureDrop: 41 },
+      { flow: 2.5, pressureDrop: 65 },
+      { flow: 3.0, pressureDrop: 94 },
+      { flow: 3.5, pressureDrop: 132 },
+      { flow: 4.0, pressureDrop: 178 }
+    ],
+    notes: 'Bio-Medicus NextGen jugular venous cannula. 15 Fr (5.0 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-115; cannula kit order code 96530-115.'
+  },
+  {
+    manufacturer: 'Medtronic',
     model: 'Bio-Medicus NextGen Femoral Arterial Cannula',
     category: 'femoral arterial',
     size: '17 Fr',
@@ -1767,21 +1802,24 @@ function createPressureDropCurveModel(points) {
   return fitPressureDropPowerLaw(points) || createMonotonePressureDropModel(points);
 }
 
-function drawPressureDropChart(svgNode, points, targetFlow, estimatedPressureDrop) {
+function drawPressureDropChart(svgNode, points, targetFlow, estimatedPressureDrop, options = {}) {
   const validPoints = getValidPressureDropPoints(points);
   if (!svgNode || !validPoints.length) return;
   const width = 320; const height = 140;
   const padding = { left: 34, right: 10, top: 10, bottom: 24 };
   const minFlow = validPoints[0].flow;
   const maxFlow = validPoints[validPoints.length - 1].flow;
-  const curveModel = createPressureDropCurveModel(validPoints);
-  const sampleCount = 80;
+  const useLinearOnly = options.curveMode === 'linear';
+  const curveModel = useLinearOnly ? null : createPressureDropCurveModel(validPoints);
+  const sampleCount = useLinearOnly ? validPoints.length : 80;
   let lastCurveDrop = 0;
   const curveSamples = Array.from({ length: sampleCount }, (_, index) => {
+    if (useLinearOnly) return validPoints[index];
     const ratio = index / (sampleCount - 1);
     const flow = minFlow + ((maxFlow - minFlow) * ratio);
     return { flow, pressureDrop: curveModel ? curveModel.estimate(flow) : interpolatePressureDrop(validPoints, flow).value };
   }).filter(point => Number.isFinite(point.pressureDrop)).map(point => {
+    if (useLinearOnly) return point;
     lastCurveDrop = Math.max(lastCurveDrop, point.pressureDrop);
     return { ...point, pressureDrop: lastCurveDrop };
   });
@@ -1808,6 +1846,7 @@ function getPressureDropProductFamily(entry) {
   if (model.includes('EOPA')) return 'EOPA';
   if (model.includes('Select 3D II')) return 'Select 3D II';
   if (model.includes('Select Series')) return 'Select Series';
+  if (model.includes('Bio-Medicus NextGen')) return 'Bio-Medicus NextGen';
   if (model.includes('RAP')) return 'MICS Cannulae — RAP Femoral Venous Cannulae';
   return 'Other';
 }
@@ -1893,9 +1932,28 @@ function syncPressureDropSelectors(changedLevel = 'manufacturer') {
   categoryInput.value = match ? match.category : '';
 }
 
+function formatPressureDropDataStatus(status) {
+  if (status === 'digitized-curve') return 'Digitized curve';
+  return status || '—';
+}
+
+function getPressureDropProductMetadataText(entry) {
+  if (!entry || !Number.isFinite(entry.outerDiameterFr) || !Number.isFinite(entry.outerDiameterMm)) return '';
+  const parts = [
+    `Outer diameter: ${entry.outerDiameterFr} Fr (${entry.outerDiameterMm.toFixed(1)} mm)`,
+    Number.isFinite(entry.overallLengthIn) && Number.isFinite(entry.overallLengthCm) ? `Overall length: ${entry.overallLengthIn} in (${entry.overallLengthCm} cm)` : '',
+    Number.isFinite(entry.tipLengthIn) && Number.isFinite(entry.tipLengthCm) ? `Tip length: ${entry.tipLengthIn} in (${entry.tipLengthCm} cm)` : '',
+    entry.connectorSize ? `Connector: ${entry.connectorSize}` : '',
+    entry.cannulaOrderCode ? `Cannula order code: ${entry.cannulaOrderCode}` : '',
+    entry.cannulaKitOrderCode ? `Cannula kit order code: ${entry.cannulaKitOrderCode}` : '',
+    entry.cartonQuantity ? `Carton quantity: ${entry.cartonQuantity}` : ''
+  ].filter(Boolean);
+  return parts.join('; ');
+}
+
 function updatePressureDropReference() {
   const manufacturerInput = el('pressure-drop-manufacturer'); const categorySelect = el('pressure-drop-category'); const familySelect = el('pressure-drop-product-family'); const modelInput = el('pressure-drop-model'); const sizeInput = el('pressure-drop-size'); const targetFlowInput = el('pressure-drop-target-flow');
-  const statusMessage = el('pressure-drop-status-message'); const sourceWrap = el('pressure-drop-source'); const sourceLabel = el('pressure-drop-source-label'); const sourceUrl = el('pressure-drop-source-url'); const testMedium = el('pressure-drop-test-medium'); const dataStatus = el('pressure-drop-data-status'); const digitizationNote = el('pressure-drop-digitization-note'); const notes = el('pressure-drop-notes');
+  const statusMessage = el('pressure-drop-status-message'); const sourceWrap = el('pressure-drop-source'); const sourceLabel = el('pressure-drop-source-label'); const sourceUrl = el('pressure-drop-source-url'); const testMedium = el('pressure-drop-test-medium'); const dataStatus = el('pressure-drop-data-status'); const digitizationNote = el('pressure-drop-digitization-note'); const notes = el('pressure-drop-notes'); const productMeta = el('pressure-drop-product-meta');
   const chartWrap = el('pressure-drop-chart-wrap'); const chartNode = el('pressure-drop-chart'); const curveMeta = el('pressure-drop-curve-meta'); const selectedModel = el('pressure-drop-selected-model'); const rangeText = el('pressure-drop-range'); const interpNote = el('pressure-drop-interp-note'); const chartRangeLabel = el('pressure-drop-chart-range-label'); const benchLabel = el('pressure-drop-bench-label');
   if (!manufacturerInput || !categorySelect || !familySelect || !modelInput || !sizeInput || !targetFlowInput || !statusMessage || !sourceWrap || !sourceLabel || !sourceUrl || !testMedium || !notes || !chartWrap || !chartNode || !curveMeta || !selectedModel || !rangeText || !interpNote || !chartRangeLabel || !benchLabel) return;
   chartWrap.classList.add('hidden'); curveMeta.classList.add('hidden'); sourceWrap.classList.add('hidden'); interpNote.classList.add('hidden'); chartRangeLabel.classList.add('hidden'); benchLabel.classList.add('hidden');
@@ -1909,22 +1967,29 @@ function updatePressureDropReference() {
   const hasTargetFlow = targetFlowText !== '';
   const targetFlow = hasTargetFlow ? parseFloat(targetFlowText) : NaN;
   const result = hasTargetFlow ? interpolatePressureDrop(validPoints, targetFlow) : { state: 'invalid', value: null };
-  const curveModel = createPressureDropCurveModel(validPoints);
+  const useLinearOnly = match.interpolationMode === 'linear';
+  const curveModel = useLinearOnly ? null : createPressureDropCurveModel(validPoints);
+  const chartOptions = useLinearOnly ? { curveMode: 'linear' } : {};
   rangeText.textContent = `Reference flow range shown in manufacturer data: ${validPoints[0].flow}–${validPoints[validPoints.length - 1].flow} L/min`;
   selectedModel.textContent = `${match.manufacturer} / ${match.model} / ${match.category} / ${match.size}`;
-  interpNote.textContent = 'Digitized from manufacturer chart; fitted/interpolated pressure drop is approximate.';
+  interpNote.textContent = match.interpolationNote || 'Digitized from manufacturer chart; fitted/interpolated pressure drop is approximate.';
   curveMeta.classList.remove('hidden'); sourceWrap.classList.remove('hidden'); chartRangeLabel.classList.remove('hidden'); benchLabel.classList.remove('hidden'); chartWrap.classList.remove('hidden'); interpNote.classList.remove('hidden');
-  sourceLabel.textContent = match.sourceLabel || '—'; sourceUrl.textContent = match.sourceUrl || '—'; testMedium.textContent = `Test medium: ${match.testMedium || '—'}`; dataStatus.textContent = `Data status: ${match.dataStatus || '—'}`; digitizationNote.textContent = `Digitization note: ${match.digitizationNote || '—'}`; notes.textContent = `Notes: ${match.notes || '—'}`;
-  if (!hasTargetFlow || result.state === 'invalid') { statusMessage.textContent = 'Enter target flow to estimate pressure drop.'; drawPressureDropChart(chartNode, validPoints, NaN, NaN); return; }
+  sourceLabel.textContent = match.sourceLabel || '—'; sourceUrl.textContent = match.sourceUrl || '—'; testMedium.textContent = `Test medium: ${match.testMedium || '—'}`; dataStatus.textContent = `Data status: ${formatPressureDropDataStatus(match.dataStatus)}`; digitizationNote.textContent = `Digitization note: ${match.digitizationNote || '—'}`; notes.textContent = `Notes: ${match.notes || '—'}`;
+  if (productMeta) {
+    const metadataText = getPressureDropProductMetadataText(match);
+    productMeta.textContent = metadataText ? `Product metadata: ${metadataText}` : '';
+    productMeta.classList.toggle('hidden', !metadataText);
+  }
+  if (!hasTargetFlow || result.state === 'invalid') { statusMessage.textContent = 'Enter target flow to estimate pressure drop.'; drawPressureDropChart(chartNode, validPoints, NaN, NaN, chartOptions); return; }
   if (result.state === 'exact' || result.state === 'interpolated') {
     const estimatedPressureDrop = curveModel ? curveModel.estimate(targetFlow) : result.value;
     statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${estimatedPressureDrop.toFixed(1)} mmHg`;
-    drawPressureDropChart(chartNode, validPoints, targetFlow, estimatedPressureDrop);
+    drawPressureDropChart(chartNode, validPoints, targetFlow, estimatedPressureDrop, chartOptions);
     return;
   }
-  if (result.state === 'out_of_range') { statusMessage.textContent = 'Target flow is outside the manufacturer chart range. Pressure drop is not estimated.'; drawPressureDropChart(chartNode, validPoints, NaN, NaN); return; }
+  if (result.state === 'out_of_range') { statusMessage.textContent = match.outOfRangeMessage || 'Target flow is outside the manufacturer chart range. Pressure drop is not estimated.'; drawPressureDropChart(chartNode, validPoints, NaN, NaN, chartOptions); return; }
   statusMessage.textContent = 'Reference flow range is available in manufacturer chart data.';
-  drawPressureDropChart(chartNode, validPoints, NaN, NaN);
+  drawPressureDropChart(chartNode, validPoints, NaN, NaN, chartOptions);
 }
 
 const TUBING_PRESET_ACTIVE_CLASSES = ['border-accent-500', 'bg-accent-500/10', 'text-accent-700', 'dark:text-accent-300', 'shadow-sm'];
