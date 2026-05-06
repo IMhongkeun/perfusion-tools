@@ -1339,6 +1339,36 @@ const cannulaPressureDropData = [
   },
   {
     manufacturer: 'Medtronic',
+    model: 'Bio-Medicus NextGen Femoral Bi-caval Venous Cannula',
+    category: 'femoral bi-caval venous',
+    size: '15 Fr',
+    outerDiameterFr: 15,
+    outerDiameterMm: 5.0,
+    overallLengthCm: 64.8,
+    tipLengthCm: 48.9,
+    connectorSize: 'Non-vented 3/8 in (0.95 cm)',
+    cannulaOrderCode: '96670-115',
+    cannulaOrderCodeLabel: 'Cannula singles order code',
+    cannulaKitOrderCode: '96600-115',
+    cartonQuantity: '1 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Femoral Bi-caval Venous Cannula and Kits',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 7 },
+      { flow: 1.0, pressureDrop: 22 },
+      { flow: 1.5, pressureDrop: 45 },
+      { flow: 2.0, pressureDrop: 76 },
+      { flow: 2.5, pressureDrop: 115 },
+      { flow: 3.0, pressureDrop: 159 }
+    ],
+    notes: 'Bio-Medicus NextGen femoral bi-caval venous cannula. 15 Fr (5.0 mm), 64.8 cm overall length, 48.9 cm tip length, non-vented 3/8 in connector. Cannula singles order code 96670-115; cannula kit order code 96600-115.'
+  },
+  {
+    manufacturer: 'Medtronic',
     model: 'Bio-Medicus NextGen Jugular Venous Cannula',
     category: 'jugular venous',
     size: '15 Fr',
@@ -2238,12 +2268,18 @@ function formatPressureDropDataStatus(status) {
 
 function getPressureDropProductMetadataText(entry) {
   if (!entry || !Number.isFinite(entry.outerDiameterFr) || !Number.isFinite(entry.outerDiameterMm)) return '';
+  const formatLengthMetadata = (label, lengthIn, lengthCm) => {
+    if (Number.isFinite(lengthIn) && Number.isFinite(lengthCm)) return `${label}: ${lengthIn} in (${lengthCm} cm)`;
+    if (Number.isFinite(lengthCm)) return `${label}: ${lengthCm} cm`;
+    return '';
+  };
+  const cannulaOrderCodeLabel = entry.cannulaOrderCodeLabel || 'Cannula order code';
   const parts = [
     `Outer diameter: ${entry.outerDiameterFr} Fr (${entry.outerDiameterMm.toFixed(1)} mm)`,
-    Number.isFinite(entry.overallLengthIn) && Number.isFinite(entry.overallLengthCm) ? `Overall length: ${entry.overallLengthIn} in (${entry.overallLengthCm} cm)` : '',
-    Number.isFinite(entry.tipLengthIn) && Number.isFinite(entry.tipLengthCm) ? `Tip length: ${entry.tipLengthIn} in (${entry.tipLengthCm} cm)` : '',
+    formatLengthMetadata('Overall length', entry.overallLengthIn, entry.overallLengthCm),
+    formatLengthMetadata('Tip length', entry.tipLengthIn, entry.tipLengthCm),
     entry.connectorSize ? `Connector: ${entry.connectorSize}` : '',
-    entry.cannulaOrderCode ? `Cannula order code: ${entry.cannulaOrderCode}` : '',
+    entry.cannulaOrderCode ? `${cannulaOrderCodeLabel}: ${entry.cannulaOrderCode}` : '',
     entry.cannulaKitOrderCode ? `Cannula kit order code: ${entry.cannulaKitOrderCode}` : '',
     entry.cartonQuantity ? `Carton quantity: ${entry.cartonQuantity}` : ''
   ].filter(Boolean);
