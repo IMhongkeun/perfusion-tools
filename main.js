@@ -1817,8 +1817,28 @@ function updatePressureDropReference() {
   statusMessage.textContent = 'Reference flow range is available in manufacturer chart data.';
 }
 
-function updateTubingPresetConverter(inchValue) {
+const TUBING_PRESET_ACTIVE_CLASSES = ['border-accent-500', 'bg-accent-500/10', 'text-accent-700', 'dark:text-accent-300', 'shadow-sm'];
+const TUBING_PRESET_INACTIVE_CLASSES = ['border-slate-200', 'dark:border-primary-700', 'text-slate-700', 'dark:text-slate-200'];
+
+function setTubingPresetSelection(selectedButton = null) {
+  document.querySelectorAll('[data-tubing-inch]').forEach((button) => {
+    const isSelected = button === selectedButton;
+    button.setAttribute('aria-pressed', String(isSelected));
+    button.classList.remove(...TUBING_PRESET_ACTIVE_CLASSES, ...TUBING_PRESET_INACTIVE_CLASSES);
+    button.classList.add(...(isSelected ? TUBING_PRESET_ACTIVE_CLASSES : TUBING_PRESET_INACTIVE_CLASSES));
+  });
+}
+
+function resetTubingPresetConverter() {
+  setTubingPresetSelection(null);
+  setText('tubing-output-cm', '—');
+  setText('tubing-output-mm', '—');
+  setText('tubing-output-fr', '—');
+}
+
+function updateTubingPresetConverter(inchValue, selectedButton = null) {
   if (!(inchValue > 0)) return;
+  setTubingPresetSelection(selectedButton);
   // Formulas:
   // mm = inch × 25.4
   // cm = mm / 10
@@ -4449,7 +4469,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-tubing-inch]').forEach((button) => {
       button.addEventListener('click', () => {
         const inchValue = Number(button.dataset.tubingInch);
-        updateTubingPresetConverter(inchValue);
+        updateTubingPresetConverter(inchValue, button);
       });
     });
 
@@ -4496,7 +4516,7 @@ window.addEventListener('DOMContentLoaded', () => {
     updateUnitConverterPressure();
     updateCannulaInputMode();
     updateCannulaConverter();
-    updateTubingPresetConverter(0.375);
+    resetTubingPresetConverter();
     setUnitConverterTab('flow');
   }
 });
