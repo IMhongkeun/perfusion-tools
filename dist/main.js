@@ -630,11 +630,11 @@ const cannulaPressureDropData = [
   },
   {
     manufacturer: 'Getinge / Maquet',
-    model: 'HLS Femoral Arterial Cannula',
+    model: 'HLS Arterial Cannula',
     category: 'femoral arterial',
     size: 'PAS 1315',
-    sourceLabel: 'Getinge/Maquet HLS Femoral Arterial Cannula pressure-drop chart and product order table',
-    sourceUrl: 'Uploaded Getinge/Maquet HLS femoral arterial cannula chart and product order table',
+    sourceLabel: 'Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS arterial cannula chart and product order table',
     testMedium: 'Water at room temperature',
     dataStatus: 'Digitized curve',
     digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
@@ -649,11 +649,11 @@ const cannulaPressureDropData = [
   },
   {
     manufacturer: 'Getinge / Maquet',
-    model: 'HLS Femoral Arterial Cannula',
+    model: 'HLS Arterial Cannula',
     category: 'femoral arterial',
     size: 'PAS 1515',
-    sourceLabel: 'Getinge/Maquet HLS Femoral Arterial Cannula pressure-drop chart and product order table',
-    sourceUrl: 'Uploaded Getinge/Maquet HLS femoral arterial cannula chart and product order table',
+    sourceLabel: 'Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS arterial cannula chart and product order table',
     testMedium: 'Water at room temperature',
     dataStatus: 'Digitized curve',
     digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
@@ -670,11 +670,11 @@ const cannulaPressureDropData = [
   },
   {
     manufacturer: 'Getinge / Maquet',
-    model: 'HLS Femoral Arterial Cannula',
+    model: 'HLS Arterial Cannula',
     category: 'femoral arterial',
     size: 'PAS 1715',
-    sourceLabel: 'Getinge/Maquet HLS Femoral Arterial Cannula pressure-drop chart and product order table',
-    sourceUrl: 'Uploaded Getinge/Maquet HLS femoral arterial cannula chart and product order table',
+    sourceLabel: 'Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS arterial cannula chart and product order table',
     testMedium: 'Water at room temperature',
     dataStatus: 'Digitized curve',
     digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
@@ -695,11 +695,11 @@ const cannulaPressureDropData = [
   },
   {
     manufacturer: 'Getinge / Maquet',
-    model: 'HLS Femoral Arterial Cannula',
+    model: 'HLS Arterial Cannula',
     category: 'femoral arterial',
     size: 'PAS 1915',
-    sourceLabel: 'Getinge/Maquet HLS Femoral Arterial Cannula pressure-drop chart and product order table',
-    sourceUrl: 'Uploaded Getinge/Maquet HLS femoral arterial cannula chart and product order table',
+    sourceLabel: 'Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS arterial cannula chart and product order table',
     testMedium: 'Water at room temperature',
     dataStatus: 'Digitized curve',
     digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
@@ -722,11 +722,11 @@ const cannulaPressureDropData = [
   },
   {
     manufacturer: 'Getinge / Maquet',
-    model: 'HLS Femoral Arterial Cannula',
+    model: 'HLS Arterial Cannula',
     category: 'femoral arterial',
     size: 'PAS 2315',
-    sourceLabel: 'Getinge/Maquet HLS Femoral Arterial Cannula pressure-drop chart and product order table',
-    sourceUrl: 'Uploaded Getinge/Maquet HLS femoral arterial cannula chart and product order table',
+    sourceLabel: 'Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS arterial cannula chart and product order table',
     testMedium: 'Water at room temperature',
     dataStatus: 'Digitized curve',
     digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
@@ -750,11 +750,11 @@ const cannulaPressureDropData = [
   },
   {
     manufacturer: 'Getinge / Maquet',
-    model: 'HLS Femoral Arterial Cannula',
+    model: 'HLS Arterial Cannula',
     category: 'femoral arterial',
     size: 'PAS 2115',
-    sourceLabel: 'Getinge/Maquet HLS Femoral Arterial Cannula pressure-drop chart and product order table',
-    sourceUrl: 'Uploaded Getinge/Maquet HLS femoral arterial cannula chart and product order table',
+    sourceLabel: 'Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table',
+    sourceUrl: 'Uploaded Getinge/Maquet HLS arterial cannula chart and product order table',
     testMedium: 'Water at room temperature',
     dataStatus: 'Digitized curve',
     digitizationNote: 'Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.',
@@ -1025,21 +1025,23 @@ const cannulaPressureDropData = [
     sourceLabel: 'Medtronic Cannula Catalog 2020 — EOPA Arterial Cannulae',
     sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
     testMedium: 'Water',
-    dataStatus: 'Digitized curve',
-    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; pressure-drop values corrected by ×2 after identifying an initial Y-axis calibration error. Values rounded for practical reference use.',
+    validationStatus: 'corrected',
+    validationNote: 'EOPA Arterial Cannulae Y-axis corrected from presumed 0–100 mmHg calibration to the correct 0–200 mmHg chart scale.',
     points: [
-      { flow: 0.5, pressureDrop: 1 },
-      { flow: 1.0, pressureDrop: 2 },
-      { flow: 1.5, pressureDrop: 5 },
-      { flow: 2.0, pressureDrop: 9 },
-      { flow: 2.5, pressureDrop: 14 },
-      { flow: 3.0, pressureDrop: 20 },
-      { flow: 3.5, pressureDrop: 27 },
-      { flow: 4.0, pressureDrop: 35 },
-      { flow: 4.5, pressureDrop: 44 },
-      { flow: 5.0, pressureDrop: 55 },
-      { flow: 5.5, pressureDrop: 66 },
-      { flow: 6.0, pressureDrop: 78 }
+      { flow: 0.5, pressureDrop: 2 },
+      { flow: 1.0, pressureDrop: 4 },
+      { flow: 1.5, pressureDrop: 10 },
+      { flow: 2.0, pressureDrop: 18 },
+      { flow: 2.5, pressureDrop: 28 },
+      { flow: 3.0, pressureDrop: 40 },
+      { flow: 3.5, pressureDrop: 54 },
+      { flow: 4.0, pressureDrop: 70 },
+      { flow: 4.5, pressureDrop: 88 },
+      { flow: 5.0, pressureDrop: 110 },
+      { flow: 5.5, pressureDrop: 132 },
+      { flow: 6.0, pressureDrop: 156 }
     ],
     notes: 'EOPA arterial cannulae with elongated, one-piece, kink-resistant wirewound bodies, introducer, hemostasis cap, depth markings, and adjustable radiopaque suture ring. 18 Fr (6.0 mm), 12 in (30.5 cm) overall length, 3/8 in connector. Blunt tip order codes 77418/77518; dilator tip order codes 77618/77718.'
   },
@@ -1051,21 +1053,23 @@ const cannulaPressureDropData = [
     sourceLabel: 'Medtronic Cannula Catalog 2020 — EOPA Arterial Cannulae',
     sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
     testMedium: 'Water',
-    dataStatus: 'Digitized curve',
-    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; pressure-drop values corrected by ×2 after identifying an initial Y-axis calibration error. Values rounded for practical reference use.',
+    validationStatus: 'corrected',
+    validationNote: 'EOPA Arterial Cannulae Y-axis corrected from presumed 0–100 mmHg calibration to the correct 0–200 mmHg chart scale.',
     points: [
       { flow: 0.5, pressureDrop: 0 },
-      { flow: 1.0, pressureDrop: 2 },
-      { flow: 1.5, pressureDrop: 3 },
-      { flow: 2.0, pressureDrop: 6 },
-      { flow: 2.5, pressureDrop: 10 },
-      { flow: 3.0, pressureDrop: 14 },
-      { flow: 3.5, pressureDrop: 19 },
-      { flow: 4.0, pressureDrop: 25 },
-      { flow: 4.5, pressureDrop: 31 },
-      { flow: 5.0, pressureDrop: 38 },
-      { flow: 5.5, pressureDrop: 47 },
-      { flow: 6.0, pressureDrop: 55 }
+      { flow: 1.0, pressureDrop: 4 },
+      { flow: 1.5, pressureDrop: 6 },
+      { flow: 2.0, pressureDrop: 12 },
+      { flow: 2.5, pressureDrop: 20 },
+      { flow: 3.0, pressureDrop: 28 },
+      { flow: 3.5, pressureDrop: 38 },
+      { flow: 4.0, pressureDrop: 50 },
+      { flow: 4.5, pressureDrop: 62 },
+      { flow: 5.0, pressureDrop: 76 },
+      { flow: 5.5, pressureDrop: 94 },
+      { flow: 6.0, pressureDrop: 110 }
     ],
     notes: 'EOPA arterial cannulae with elongated, one-piece, kink-resistant wirewound bodies, introducer, hemostasis cap, depth markings, and adjustable radiopaque suture ring. 20 Fr (6.7 mm), 12 in (30.5 cm) overall length, 3/8 in connector. Blunt tip order codes 77420/77520; dilator tip order codes 77620/77720.'
   },
@@ -1077,21 +1081,23 @@ const cannulaPressureDropData = [
     sourceLabel: 'Medtronic Cannula Catalog 2020 — EOPA Arterial Cannulae',
     sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
     testMedium: 'Water',
-    dataStatus: 'Digitized curve',
-    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; pressure-drop values corrected by ×2 after identifying an initial Y-axis calibration error. Values rounded for practical reference use.',
+    validationStatus: 'corrected',
+    validationNote: 'EOPA Arterial Cannulae Y-axis corrected from presumed 0–100 mmHg calibration to the correct 0–200 mmHg chart scale.',
     points: [
       { flow: 0.5, pressureDrop: 0 },
-      { flow: 1.0, pressureDrop: 1 },
-      { flow: 1.5, pressureDrop: 2 },
-      { flow: 2.0, pressureDrop: 4 },
-      { flow: 2.5, pressureDrop: 6 },
-      { flow: 3.0, pressureDrop: 8 },
-      { flow: 3.5, pressureDrop: 11 },
-      { flow: 4.0, pressureDrop: 15 },
-      { flow: 4.5, pressureDrop: 18 },
-      { flow: 5.0, pressureDrop: 23 },
-      { flow: 5.5, pressureDrop: 27 },
-      { flow: 6.0, pressureDrop: 32 }
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 4 },
+      { flow: 2.0, pressureDrop: 8 },
+      { flow: 2.5, pressureDrop: 12 },
+      { flow: 3.0, pressureDrop: 16 },
+      { flow: 3.5, pressureDrop: 22 },
+      { flow: 4.0, pressureDrop: 30 },
+      { flow: 4.5, pressureDrop: 36 },
+      { flow: 5.0, pressureDrop: 46 },
+      { flow: 5.5, pressureDrop: 54 },
+      { flow: 6.0, pressureDrop: 64 }
     ],
     notes: 'EOPA arterial cannulae with elongated, one-piece, kink-resistant wirewound bodies, introducer, hemostasis cap, depth markings, and adjustable radiopaque suture ring. 22 Fr (7.3 mm), 12 in (30.5 cm) overall length, 3/8 in connector. Blunt tip order codes 77422/77522; dilator tip order codes 77622/77722.'
   },
@@ -1103,21 +1109,23 @@ const cannulaPressureDropData = [
     sourceLabel: 'Medtronic Cannula Catalog 2020 — EOPA Arterial Cannulae',
     sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
     testMedium: 'Water',
-    dataStatus: 'Digitized curve',
-    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use.',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; pressure-drop values corrected by ×2 after identifying an initial Y-axis calibration error. Values rounded for practical reference use.',
+    validationStatus: 'corrected',
+    validationNote: 'EOPA Arterial Cannulae Y-axis corrected from presumed 0–100 mmHg calibration to the correct 0–200 mmHg chart scale.',
     points: [
       { flow: 0.5, pressureDrop: 0 },
-      { flow: 1.0, pressureDrop: 1 },
-      { flow: 1.5, pressureDrop: 1 },
-      { flow: 2.0, pressureDrop: 2 },
-      { flow: 2.5, pressureDrop: 3 },
-      { flow: 3.0, pressureDrop: 5 },
-      { flow: 3.5, pressureDrop: 6 },
-      { flow: 4.0, pressureDrop: 8 },
-      { flow: 4.5, pressureDrop: 10 },
-      { flow: 5.0, pressureDrop: 13 },
-      { flow: 5.5, pressureDrop: 15 },
-      { flow: 6.0, pressureDrop: 18 }
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 2 },
+      { flow: 2.0, pressureDrop: 4 },
+      { flow: 2.5, pressureDrop: 6 },
+      { flow: 3.0, pressureDrop: 10 },
+      { flow: 3.5, pressureDrop: 12 },
+      { flow: 4.0, pressureDrop: 16 },
+      { flow: 4.5, pressureDrop: 20 },
+      { flow: 5.0, pressureDrop: 26 },
+      { flow: 5.5, pressureDrop: 30 },
+      { flow: 6.0, pressureDrop: 36 }
     ],
     notes: 'EOPA arterial cannulae with elongated, one-piece, kink-resistant wirewound bodies, introducer, hemostasis cap, depth markings, and adjustable radiopaque suture ring. 24 Fr (8.0 mm), 12 in (30.5 cm) overall length, 3/8 in connector. Blunt tip order codes 77424/77524; dilator tip order codes 77624/77724.'
   },
@@ -1220,6 +1228,223 @@ const cannulaPressureDropData = [
       { flow: 4.0, pressureDrop: 185 }
     ],
     notes: 'Bio-Medicus NextGen femoral arterial cannula. 15 Fr (5.0 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-115; cannula kit order code 96530-115.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Bio-Medicus NextGen Jugular Venous Cannula',
+    category: 'jugular venous',
+    size: '15 Fr',
+    outerDiameterFr: 15,
+    outerDiameterMm: 5.0,
+    overallLengthIn: 12.5,
+    overallLengthCm: 31.8,
+    tipLengthIn: 7.09,
+    tipLengthCm: 18.0,
+    connectorSize: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '96570-115',
+    cannulaKitOrderCode: '96530-115',
+    cartonQuantity: '1 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Femoral Arterial or Jugular Venous Cannulae and Kits',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 3 },
+      { flow: 1.0, pressureDrop: 11 },
+      { flow: 1.5, pressureDrop: 24 },
+      { flow: 2.0, pressureDrop: 41 },
+      { flow: 2.5, pressureDrop: 65 },
+      { flow: 3.0, pressureDrop: 94 },
+      { flow: 3.5, pressureDrop: 132 },
+      { flow: 4.0, pressureDrop: 178 }
+    ],
+    notes: 'Bio-Medicus NextGen jugular venous cannula. 15 Fr (5.0 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-115; cannula kit order code 96530-115.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Bio-Medicus NextGen Jugular Venous Cannula',
+    category: 'jugular venous',
+    size: '17 Fr',
+    outerDiameterFr: 17,
+    outerDiameterMm: 5.7,
+    overallLengthIn: 12.5,
+    overallLengthCm: 31.8,
+    tipLengthIn: 7.09,
+    tipLengthCm: 18.0,
+    connectorSize: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '96570-117',
+    cannulaKitOrderCode: '96530-117',
+    cartonQuantity: '1 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Femoral Arterial or Jugular Venous Cannulae and Kits',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 6 },
+      { flow: 1.5, pressureDrop: 15 },
+      { flow: 2.0, pressureDrop: 27 },
+      { flow: 2.5, pressureDrop: 42 },
+      { flow: 3.0, pressureDrop: 60 },
+      { flow: 3.5, pressureDrop: 80 },
+      { flow: 4.0, pressureDrop: 104 },
+      { flow: 4.5, pressureDrop: 131 },
+      { flow: 5.0, pressureDrop: 160 },
+      { flow: 5.5, pressureDrop: 193 }
+    ],
+    notes: 'Bio-Medicus NextGen jugular venous cannula. 17 Fr (5.7 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-117; cannula kit order code 96530-117.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Bio-Medicus NextGen Jugular Venous Cannula',
+    category: 'jugular venous',
+    size: '19 Fr',
+    outerDiameterFr: 19,
+    outerDiameterMm: 6.3,
+    overallLengthIn: 12.5,
+    overallLengthCm: 31.8,
+    tipLengthIn: 7.09,
+    tipLengthCm: 18.0,
+    connectorSize: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '96570-119',
+    cannulaKitOrderCode: '96530-119',
+    cartonQuantity: '1 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Femoral Arterial or Jugular Venous Cannulae and Kits',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 4 },
+      { flow: 1.5, pressureDrop: 9 },
+      { flow: 2.0, pressureDrop: 16 },
+      { flow: 2.5, pressureDrop: 24 },
+      { flow: 3.0, pressureDrop: 34 },
+      { flow: 3.5, pressureDrop: 45 },
+      { flow: 4.0, pressureDrop: 59 },
+      { flow: 4.5, pressureDrop: 73 },
+      { flow: 5.0, pressureDrop: 90 },
+      { flow: 5.5, pressureDrop: 109 },
+      { flow: 6.0, pressureDrop: 130 }
+    ],
+    notes: 'Bio-Medicus NextGen jugular venous cannula. 19 Fr (6.3 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-119; cannula kit order code 96530-119.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Bio-Medicus NextGen Jugular Venous Cannula',
+    category: 'jugular venous',
+    size: '21 Fr',
+    outerDiameterFr: 21,
+    outerDiameterMm: 7.0,
+    overallLengthIn: 12.5,
+    overallLengthCm: 31.8,
+    tipLengthIn: 7.09,
+    tipLengthCm: 18.0,
+    connectorSize: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '96570-121',
+    cannulaKitOrderCode: '96530-121',
+    cartonQuantity: '1 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Femoral Arterial or Jugular Venous Cannulae and Kits',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate. A near-zero low-flow value was rounded to 0 mmHg to avoid displaying a negative pressure-drop artifact from manual digitization.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 0 },
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 6 },
+      { flow: 2.0, pressureDrop: 10 },
+      { flow: 2.5, pressureDrop: 17 },
+      { flow: 3.0, pressureDrop: 23 },
+      { flow: 3.5, pressureDrop: 31 },
+      { flow: 4.0, pressureDrop: 40 },
+      { flow: 4.5, pressureDrop: 50 },
+      { flow: 5.0, pressureDrop: 61 },
+      { flow: 5.5, pressureDrop: 73 },
+      { flow: 6.0, pressureDrop: 86 }
+    ],
+    notes: 'Bio-Medicus NextGen jugular venous cannula. 21 Fr (7.0 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-121; cannula kit order code 96530-121.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Bio-Medicus NextGen Jugular Venous Cannula',
+    category: 'jugular venous',
+    size: '23 Fr',
+    outerDiameterFr: 23,
+    outerDiameterMm: 7.7,
+    overallLengthIn: 12.5,
+    overallLengthCm: 31.8,
+    tipLengthIn: 7.09,
+    tipLengthCm: 18.0,
+    connectorSize: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '96570-123',
+    cannulaKitOrderCode: '96530-123',
+    cartonQuantity: '1 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Femoral Arterial or Jugular Venous Cannulae and Kits',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 5 },
+      { flow: 2.0, pressureDrop: 8 },
+      { flow: 2.5, pressureDrop: 12 },
+      { flow: 3.0, pressureDrop: 16 },
+      { flow: 3.5, pressureDrop: 21 },
+      { flow: 4.0, pressureDrop: 26 },
+      { flow: 4.5, pressureDrop: 33 },
+      { flow: 5.0, pressureDrop: 40 },
+      { flow: 5.5, pressureDrop: 48 },
+      { flow: 6.0, pressureDrop: 57 }
+    ],
+    notes: 'Bio-Medicus NextGen jugular venous cannula. 23 Fr (7.7 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-123; cannula kit order code 96530-123.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'Bio-Medicus NextGen Jugular Venous Cannula',
+    category: 'jugular venous',
+    size: '25 Fr',
+    outerDiameterFr: 25,
+    outerDiameterMm: 8.3,
+    overallLengthIn: 12.5,
+    overallLengthCm: 31.8,
+    tipLengthIn: 7.09,
+    tipLengthCm: 18.0,
+    connectorSize: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '96570-125',
+    cannulaKitOrderCode: '96530-125',
+    cartonQuantity: '1 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Femoral Arterial or Jugular Venous Cannulae and Kits',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 0 },
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 3 },
+      { flow: 2.0, pressureDrop: 5 },
+      { flow: 2.5, pressureDrop: 8 },
+      { flow: 3.0, pressureDrop: 11 },
+      { flow: 3.5, pressureDrop: 15 },
+      { flow: 4.0, pressureDrop: 19 },
+      { flow: 4.5, pressureDrop: 24 },
+      { flow: 5.0, pressureDrop: 29 },
+      { flow: 5.5, pressureDrop: 34 },
+      { flow: 6.0, pressureDrop: 41 }
+    ],
+    notes: 'Bio-Medicus NextGen jugular venous cannula. 25 Fr (8.3 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-125; cannula kit order code 96530-125.'
   },
   {
     manufacturer: 'Medtronic',
@@ -1685,20 +1910,122 @@ function interpolatePressureDrop(points, targetFlow) {
   return { state: 'out_of_range', value: null, minFlow, maxFlow };
 }
 
-function drawPressureDropChart(svgNode, points, targetFlow, interpolatedPressureDrop) {
+function fitPressureDropPowerLaw(points) {
+  const positivePoints = getValidPressureDropPoints(points).filter(point => point.flow > 0 && point.pressureDrop > 0);
+  if (positivePoints.length < 2) return null;
+
+  // Power-law model for pressure drop curves: ΔP = a × Q^b.
+  // Fit is computed in log-log space, with Q=0 handled separately as ΔP=0.
+  const logPoints = positivePoints.map(point => ({ x: Math.log(point.flow), y: Math.log(point.pressureDrop) }));
+  const meanX = logPoints.reduce((sum, point) => sum + point.x, 0) / logPoints.length;
+  const meanY = logPoints.reduce((sum, point) => sum + point.y, 0) / logPoints.length;
+  const denominator = logPoints.reduce((sum, point) => sum + ((point.x - meanX) ** 2), 0);
+  if (!(denominator > 0)) return null;
+
+  const rawExponent = logPoints.reduce((sum, point) => sum + ((point.x - meanX) * (point.y - meanY)), 0) / denominator;
+  const exponent = Math.min(Math.max(rawExponent, 0.2), 4);
+  const intercept = meanY - (exponent * meanX);
+  const coefficient = Math.exp(intercept);
+  if (!(coefficient > 0) || !(exponent > 0)) return null;
+
+  const estimate = flow => {
+    if (!(flow > 0)) return 0;
+    return coefficient * (flow ** exponent);
+  };
+  const maxRelativeError = positivePoints.reduce((maxError, point) => {
+    const fittedDrop = estimate(point.flow);
+    const relativeError = Math.abs(fittedDrop - point.pressureDrop) / Math.max(point.pressureDrop, 1);
+    return Math.max(maxError, relativeError);
+  }, 0);
+
+  return maxRelativeError <= 0.45 ? { estimate, type: 'power-law' } : null;
+}
+
+function createMonotonePressureDropModel(points) {
+  const validPoints = getValidPressureDropPoints(points);
+  if (validPoints.length < 2) return null;
+
+  const flows = validPoints.map(point => point.flow);
+  const drops = validPoints.map(point => point.pressureDrop);
+  const intervalCount = validPoints.length - 1;
+  const intervalWidths = [];
+  const intervalSlopes = [];
+  for (let i = 0; i < intervalCount; i += 1) {
+    intervalWidths.push(flows[i + 1] - flows[i]);
+    intervalSlopes.push((drops[i + 1] - drops[i]) / intervalWidths[i]);
+  }
+
+  // Fritsch-Carlson monotone cubic interpolation preserves increasing pressure-drop data
+  // and avoids overshoot between digitized manufacturer chart points.
+  const tangents = new Array(validPoints.length).fill(0);
+  tangents[0] = intervalSlopes[0];
+  tangents[validPoints.length - 1] = intervalSlopes[intervalCount - 1];
+  for (let i = 1; i < intervalCount; i += 1) {
+    if (intervalSlopes[i - 1] * intervalSlopes[i] <= 0) {
+      tangents[i] = 0;
+    } else {
+      const widthSum = intervalWidths[i - 1] + intervalWidths[i];
+      tangents[i] = (3 * widthSum) / (((widthSum + intervalWidths[i]) / intervalSlopes[i - 1]) + ((widthSum + intervalWidths[i - 1]) / intervalSlopes[i]));
+    }
+  }
+
+  const estimate = flow => {
+    if (flow <= flows[0]) return drops[0];
+    if (flow >= flows[flows.length - 1]) return drops[drops.length - 1];
+    let index = 0;
+    while (index < intervalCount - 1 && flow > flows[index + 1]) index += 1;
+    const width = intervalWidths[index];
+    const t = (flow - flows[index]) / width;
+    const t2 = t * t;
+    const t3 = t2 * t;
+    const h00 = (2 * t3) - (3 * t2) + 1;
+    const h10 = t3 - (2 * t2) + t;
+    const h01 = (-2 * t3) + (3 * t2);
+    const h11 = t3 - t2;
+    return (h00 * drops[index]) + (h10 * width * tangents[index]) + (h01 * drops[index + 1]) + (h11 * width * tangents[index + 1]);
+  };
+
+  return { estimate, type: 'monotone-cubic' };
+}
+
+function createPressureDropCurveModel(points) {
+  return fitPressureDropPowerLaw(points) || createMonotonePressureDropModel(points);
+}
+
+function drawPressureDropChart(svgNode, points, targetFlow, estimatedPressureDrop, options = {}) {
   const validPoints = getValidPressureDropPoints(points);
   if (!svgNode || !validPoints.length) return;
   const width = 320; const height = 140;
   const padding = { left: 34, right: 10, top: 10, bottom: 24 };
   const minFlow = validPoints[0].flow;
   const maxFlow = validPoints[validPoints.length - 1].flow;
-  const maxDrop = Math.max(...validPoints.map(p => p.pressureDrop), 1);
+  const useLinearOnly = options.curveMode === 'linear';
+  const curveModel = useLinearOnly ? null : createPressureDropCurveModel(validPoints);
+  const sampleCount = useLinearOnly ? validPoints.length : 80;
+  let lastCurveDrop = 0;
+  const curveSamples = Array.from({ length: sampleCount }, (_, index) => {
+    if (useLinearOnly) return validPoints[index];
+    const ratio = index / (sampleCount - 1);
+    const flow = minFlow + ((maxFlow - minFlow) * ratio);
+    return { flow, pressureDrop: curveModel ? curveModel.estimate(flow) : interpolatePressureDrop(validPoints, flow).value };
+  }).filter(point => Number.isFinite(point.pressureDrop)).map(point => {
+    if (useLinearOnly) return point;
+    lastCurveDrop = Math.max(lastCurveDrop, point.pressureDrop);
+    return { ...point, pressureDrop: lastCurveDrop };
+  });
+  const maxDrop = Math.max(...validPoints.map(p => p.pressureDrop), ...curveSamples.map(p => p.pressureDrop), 1);
   const scaleX = flow => padding.left + ((flow - minFlow) / Math.max(maxFlow - minFlow, 0.0001)) * (width - padding.left - padding.right);
   const scaleY = drop => height - padding.bottom - (drop / maxDrop) * (height - padding.top - padding.bottom);
-  const polyline = validPoints.map(p => `${scaleX(p.flow).toFixed(1)},${scaleY(p.pressureDrop).toFixed(1)}`).join(' ');
+  const smoothCurvePath = curveSamples.map((point, index) => `${index === 0 ? 'M' : 'L'} ${scaleX(point.flow).toFixed(1)} ${scaleY(point.pressureDrop).toFixed(1)}`).join(' ');
   const targetX = Number.isFinite(targetFlow) ? scaleX(targetFlow) : null;
-  const targetY = Number.isFinite(interpolatedPressureDrop) ? scaleY(interpolatedPressureDrop) : null;
-  svgNode.innerHTML = `<line x1="${padding.left}" y1="${height - padding.bottom}" x2="${width - padding.right}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><polyline points="${polyline}" fill="none" stroke="#0ea5e9" stroke-width="2" />${validPoints.map(p => `<circle cx="${scaleX(p.flow).toFixed(1)}" cy="${scaleY(p.pressureDrop).toFixed(1)}" r="2.2" fill="#0ea5e9" />`).join('')}${Number.isFinite(targetX) && Number.isFinite(targetY) ? `<line x1="${targetX.toFixed(1)}" y1="${padding.top}" x2="${targetX.toFixed(1)}" y2="${height - padding.bottom}" stroke="#f59e0b" stroke-dasharray="3 3" /><circle cx="${targetX.toFixed(1)}" cy="${targetY.toFixed(1)}" r="3" fill="#f59e0b" />` : ''}<text x="${padding.left}" y="${height - 6}" font-size="9" fill="currentColor" opacity="0.65">Flow (L/min)</text><text x="${width - 110}" y="${padding.top + 9}" font-size="9" fill="currentColor" opacity="0.65">Pressure drop (mmHg)</text>`;
+  const targetY = Number.isFinite(estimatedPressureDrop) ? scaleY(estimatedPressureDrop) : null;
+  const showTargetMarker = Number.isFinite(targetX) && Number.isFinite(targetY);
+  const targetLabelX = showTargetMarker ? Math.min(Math.max(targetX + 7, padding.left + 4), width - 144) : null;
+  const targetLabelY = showTargetMarker ? Math.max(targetY - 33, padding.top + 3) : null;
+  const targetMarker = showTargetMarker
+    ? `<g><line x1="${targetX.toFixed(1)}" y1="${padding.top}" x2="${targetX.toFixed(1)}" y2="${height - padding.bottom}" stroke="#f59e0b" stroke-dasharray="3 3" /><circle cx="${targetX.toFixed(1)}" cy="${targetY.toFixed(1)}" r="4" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" /><rect x="${targetLabelX.toFixed(1)}" y="${targetLabelY.toFixed(1)}" width="140" height="28" rx="4" fill="#0f172a" opacity="0.88" /><text x="${(targetLabelX + 5).toFixed(1)}" y="${(targetLabelY + 11).toFixed(1)}" font-size="8" fill="#ffffff">Target flow: ${targetFlow.toFixed(1)} L/min</text><text x="${(targetLabelX + 5).toFixed(1)}" y="${(targetLabelY + 22).toFixed(1)}" font-size="8" fill="#ffffff">Estimated pressure drop: ${estimatedPressureDrop.toFixed(1)} mmHg</text></g>`
+    : '';
+  svgNode.innerHTML = `<line x1="${padding.left}" y1="${height - padding.bottom}" x2="${width - padding.right}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><path d="${smoothCurvePath}" fill="none" stroke="#0ea5e9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />${validPoints.map(p => `<circle cx="${scaleX(p.flow).toFixed(1)}" cy="${scaleY(p.pressureDrop).toFixed(1)}" r="2.2" fill="#ffffff" stroke="#0ea5e9" stroke-width="1.4" />`).join('')}${targetMarker}<text x="${padding.left}" y="${height - 6}" font-size="9" fill="currentColor" opacity="0.65">Flow (L/min)</text><text x="${width - 110}" y="${padding.top + 9}" font-size="9" fill="currentColor" opacity="0.65">Pressure drop (mmHg)</text>`;
 }
 
 
@@ -1709,6 +2036,7 @@ function getPressureDropProductFamily(entry) {
   if (model.includes('EOPA')) return 'EOPA';
   if (model.includes('Select 3D II')) return 'Select 3D II';
   if (model.includes('Select Series')) return 'Select Series';
+  if (model.includes('Bio-Medicus NextGen')) return 'Bio-Medicus NextGen';
   if (model.includes('RAP')) return 'MICS Cannulae — RAP Femoral Venous Cannulae';
   return 'Other';
 }
@@ -1794,31 +2122,88 @@ function syncPressureDropSelectors(changedLevel = 'manufacturer') {
   categoryInput.value = match ? match.category : '';
 }
 
+function formatPressureDropDataStatus(status) {
+  if (status === 'digitized-curve') return 'Digitized curve';
+  return status || '—';
+}
+
+function getPressureDropProductMetadataText(entry) {
+  if (!entry || !Number.isFinite(entry.outerDiameterFr) || !Number.isFinite(entry.outerDiameterMm)) return '';
+  const parts = [
+    `Outer diameter: ${entry.outerDiameterFr} Fr (${entry.outerDiameterMm.toFixed(1)} mm)`,
+    Number.isFinite(entry.overallLengthIn) && Number.isFinite(entry.overallLengthCm) ? `Overall length: ${entry.overallLengthIn} in (${entry.overallLengthCm} cm)` : '',
+    Number.isFinite(entry.tipLengthIn) && Number.isFinite(entry.tipLengthCm) ? `Tip length: ${entry.tipLengthIn} in (${entry.tipLengthCm} cm)` : '',
+    entry.connectorSize ? `Connector: ${entry.connectorSize}` : '',
+    entry.cannulaOrderCode ? `Cannula order code: ${entry.cannulaOrderCode}` : '',
+    entry.cannulaKitOrderCode ? `Cannula kit order code: ${entry.cannulaKitOrderCode}` : '',
+    entry.cartonQuantity ? `Carton quantity: ${entry.cartonQuantity}` : ''
+  ].filter(Boolean);
+  return parts.join('; ');
+}
+
 function updatePressureDropReference() {
   const manufacturerInput = el('pressure-drop-manufacturer'); const categorySelect = el('pressure-drop-category'); const familySelect = el('pressure-drop-product-family'); const modelInput = el('pressure-drop-model'); const sizeInput = el('pressure-drop-size'); const targetFlowInput = el('pressure-drop-target-flow');
-  const statusMessage = el('pressure-drop-status-message'); const sourceWrap = el('pressure-drop-source'); const sourceLabel = el('pressure-drop-source-label'); const sourceUrl = el('pressure-drop-source-url'); const testMedium = el('pressure-drop-test-medium'); const dataStatus = el('pressure-drop-data-status'); const digitizationNote = el('pressure-drop-digitization-note'); const notes = el('pressure-drop-notes');
+  const statusMessage = el('pressure-drop-status-message'); const sourceWrap = el('pressure-drop-source'); const sourceLabel = el('pressure-drop-source-label'); const sourceUrl = el('pressure-drop-source-url'); const testMedium = el('pressure-drop-test-medium'); const dataStatus = el('pressure-drop-data-status'); const digitizationNote = el('pressure-drop-digitization-note'); const notes = el('pressure-drop-notes'); const productMeta = el('pressure-drop-product-meta');
   const chartWrap = el('pressure-drop-chart-wrap'); const chartNode = el('pressure-drop-chart'); const curveMeta = el('pressure-drop-curve-meta'); const selectedModel = el('pressure-drop-selected-model'); const rangeText = el('pressure-drop-range'); const interpNote = el('pressure-drop-interp-note'); const chartRangeLabel = el('pressure-drop-chart-range-label'); const benchLabel = el('pressure-drop-bench-label');
   if (!manufacturerInput || !categorySelect || !familySelect || !modelInput || !sizeInput || !targetFlowInput || !statusMessage || !sourceWrap || !sourceLabel || !sourceUrl || !testMedium || !notes || !chartWrap || !chartNode || !curveMeta || !selectedModel || !rangeText || !interpNote || !chartRangeLabel || !benchLabel) return;
   chartWrap.classList.add('hidden'); curveMeta.classList.add('hidden'); sourceWrap.classList.add('hidden'); interpNote.classList.add('hidden'); chartRangeLabel.classList.add('hidden'); benchLabel.classList.add('hidden');
+  if (chartNode) chartNode.innerHTML = '';
   if (!manufacturerInput.value || !familySelect.value || !modelInput.value || !sizeInput.value) { statusMessage.textContent = 'Select a manufacturer, product family, model, and size to view available pressure-drop reference data.'; return; }
   const match = findPressureDropEntry({ manufacturer: manufacturerInput.value, category: categorySelect.value, model: modelInput.value, size: sizeInput.value });
   if (!match) { statusMessage.textContent = 'Pressure-drop data is not available for this model yet. Pressure drop cannot be estimated from Fr size alone.'; return; }
   const validPoints = getValidPressureDropPoints(match.points);
   if (!validPoints.length) { statusMessage.textContent = 'Manufacturer-specific curve data has not been added for this model yet.'; return; }
-  const targetFlow = parseFloat(targetFlowInput.value);
-  const result = interpolatePressureDrop(validPoints, targetFlow);
+  const targetFlowText = targetFlowInput.value.trim();
+  const hasTargetFlow = targetFlowText !== '';
+  const targetFlow = hasTargetFlow ? parseFloat(targetFlowText) : NaN;
+  const result = hasTargetFlow ? interpolatePressureDrop(validPoints, targetFlow) : { state: 'invalid', value: null };
+  const useLinearOnly = match.interpolationMode === 'linear';
+  const curveModel = useLinearOnly ? null : createPressureDropCurveModel(validPoints);
+  const chartOptions = useLinearOnly ? { curveMode: 'linear' } : {};
   rangeText.textContent = `Reference flow range shown in manufacturer data: ${validPoints[0].flow}–${validPoints[validPoints.length - 1].flow} L/min`;
   selectedModel.textContent = `${match.manufacturer} / ${match.model} / ${match.category} / ${match.size}`;
-  curveMeta.classList.remove('hidden'); sourceWrap.classList.remove('hidden'); chartRangeLabel.classList.remove('hidden'); benchLabel.classList.remove('hidden');
-  sourceLabel.textContent = match.sourceLabel || '—'; sourceUrl.textContent = match.sourceUrl || '—'; testMedium.textContent = `Test medium: ${match.testMedium || '—'}`; dataStatus.textContent = `Data status: ${match.dataStatus || '—'}`; digitizationNote.textContent = `Digitization note: ${match.digitizationNote || '—'}`; notes.textContent = `Notes: ${match.notes || '—'}`;
-  if (result.state === 'exact') { statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${result.value.toFixed(1)} mmHg`; chartWrap.classList.remove('hidden'); drawPressureDropChart(chartNode, validPoints, targetFlow, result.value); return; }
-  if (result.state === 'interpolated') { statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${result.value.toFixed(1)} mmHg`; interpNote.classList.remove('hidden'); chartWrap.classList.remove('hidden'); drawPressureDropChart(chartNode, validPoints, targetFlow, result.value); return; }
-  if (result.state === 'out_of_range') { statusMessage.textContent = 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.'; chartWrap.classList.remove('hidden'); drawPressureDropChart(chartNode, validPoints, NaN, NaN); return; }
+  interpNote.textContent = match.interpolationNote || 'Digitized from manufacturer chart; fitted/interpolated pressure drop is approximate.';
+  curveMeta.classList.remove('hidden'); sourceWrap.classList.remove('hidden'); chartRangeLabel.classList.remove('hidden'); benchLabel.classList.remove('hidden'); chartWrap.classList.remove('hidden'); interpNote.classList.remove('hidden');
+  sourceLabel.textContent = match.sourceLabel || '—'; sourceUrl.textContent = match.sourceUrl || '—'; testMedium.textContent = `Test medium: ${match.testMedium || '—'}`; dataStatus.textContent = `Data status: ${formatPressureDropDataStatus(match.dataStatus)}`; digitizationNote.textContent = `Digitization note: ${match.digitizationNote || '—'}`; notes.textContent = `Notes: ${match.notes || '—'}`;
+  if (productMeta) {
+    const metadataText = getPressureDropProductMetadataText(match);
+    productMeta.textContent = metadataText ? `Product metadata: ${metadataText}` : '';
+    productMeta.classList.toggle('hidden', !metadataText);
+  }
+  if (!hasTargetFlow || result.state === 'invalid') { statusMessage.textContent = 'Enter target flow to estimate pressure drop.'; drawPressureDropChart(chartNode, validPoints, NaN, NaN, chartOptions); return; }
+  if (result.state === 'exact' || result.state === 'interpolated') {
+    const estimatedPressureDrop = curveModel ? curveModel.estimate(targetFlow) : result.value;
+    statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${estimatedPressureDrop.toFixed(1)} mmHg`;
+    drawPressureDropChart(chartNode, validPoints, targetFlow, estimatedPressureDrop, chartOptions);
+    return;
+  }
+  if (result.state === 'out_of_range') { statusMessage.textContent = match.outOfRangeMessage || 'Target flow is outside the manufacturer chart range. Pressure drop is not estimated.'; drawPressureDropChart(chartNode, validPoints, NaN, NaN, chartOptions); return; }
   statusMessage.textContent = 'Reference flow range is available in manufacturer chart data.';
+  drawPressureDropChart(chartNode, validPoints, NaN, NaN, chartOptions);
 }
 
-function updateTubingPresetConverter(inchValue) {
+const TUBING_PRESET_ACTIVE_CLASSES = ['border-accent-500', 'bg-accent-500/10', 'text-accent-700', 'dark:text-accent-300', 'shadow-sm'];
+const TUBING_PRESET_INACTIVE_CLASSES = ['border-slate-200', 'dark:border-primary-700', 'text-slate-700', 'dark:text-slate-200'];
+
+function setTubingPresetSelection(selectedButton = null) {
+  document.querySelectorAll('[data-tubing-inch]').forEach((button) => {
+    const isSelected = button === selectedButton;
+    button.setAttribute('aria-pressed', String(isSelected));
+    button.classList.remove(...TUBING_PRESET_ACTIVE_CLASSES, ...TUBING_PRESET_INACTIVE_CLASSES);
+    button.classList.add(...(isSelected ? TUBING_PRESET_ACTIVE_CLASSES : TUBING_PRESET_INACTIVE_CLASSES));
+  });
+}
+
+function resetTubingPresetConverter() {
+  setTubingPresetSelection(null);
+  setText('tubing-output-cm', '—');
+  setText('tubing-output-mm', '—');
+  setText('tubing-output-fr', '—');
+}
+
+function updateTubingPresetConverter(inchValue, selectedButton = null) {
   if (!(inchValue > 0)) return;
+  setTubingPresetSelection(selectedButton);
   // Formulas:
   // mm = inch × 25.4
   // cm = mm / 10
@@ -4449,7 +4834,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-tubing-inch]').forEach((button) => {
       button.addEventListener('click', () => {
         const inchValue = Number(button.dataset.tubingInch);
-        updateTubingPresetConverter(inchValue);
+        updateTubingPresetConverter(inchValue, button);
       });
     });
 
@@ -4496,7 +4881,7 @@ window.addEventListener('DOMContentLoaded', () => {
     updateUnitConverterPressure();
     updateCannulaInputMode();
     updateCannulaConverter();
-    updateTubingPresetConverter(0.375);
+    resetTubingPresetConverter();
     setUnitConverterTab('flow');
   }
 });
