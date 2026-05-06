@@ -1685,26 +1685,119 @@ function interpolatePressureDrop(points, targetFlow) {
   return { state: 'out_of_range', value: null, minFlow, maxFlow };
 }
 
-function drawPressureDropChart(svgNode, points, targetFlow, interpolatedPressureDrop) {
+function fitPressureDropPowerLaw(points) {
+  const positivePoints = getValidPressureDropPoints(points).filter(point => point.flow > 0 && point.pressureDrop > 0);
+  if (positivePoints.length < 2) return null;
+
+  // Power-law model for pressure drop curves: ΔP = a × Q^b.
+  // Fit is computed in log-log space, with Q=0 handled separately as ΔP=0.
+  const logPoints = positivePoints.map(point => ({ x: Math.log(point.flow), y: Math.log(point.pressureDrop) }));
+  const meanX = logPoints.reduce((sum, point) => sum + point.x, 0) / logPoints.length;
+  const meanY = logPoints.reduce((sum, point) => sum + point.y, 0) / logPoints.length;
+  const denominator = logPoints.reduce((sum, point) => sum + ((point.x - meanX) ** 2), 0);
+  if (!(denominator > 0)) return null;
+
+  const rawExponent = logPoints.reduce((sum, point) => sum + ((point.x - meanX) * (point.y - meanY)), 0) / denominator;
+  const exponent = Math.min(Math.max(rawExponent, 0.2), 4);
+  const intercept = meanY - (exponent * meanX);
+  const coefficient = Math.exp(intercept);
+  if (!(coefficient > 0) || !(exponent > 0)) return null;
+
+  const estimate = flow => {
+    if (!(flow > 0)) return 0;
+    return coefficient * (flow ** exponent);
+  };
+  const maxRelativeError = positivePoints.reduce((maxError, point) => {
+    const fittedDrop = estimate(point.flow);
+    const relativeError = Math.abs(fittedDrop - point.pressureDrop) / Math.max(point.pressureDrop, 1);
+    return Math.max(maxError, relativeError);
+  }, 0);
+
+  return maxRelativeError <= 0.45 ? { estimate, type: 'power-law' } : null;
+}
+
+function createMonotonePressureDropModel(points) {
+  const validPoints = getValidPressureDropPoints(points);
+  if (validPoints.length < 2) return null;
+
+  const flows = validPoints.map(point => point.flow);
+  const drops = validPoints.map(point => point.pressureDrop);
+  const intervalCount = validPoints.length - 1;
+  const intervalWidths = [];
+  const intervalSlopes = [];
+  for (let i = 0; i < intervalCount; i += 1) {
+    intervalWidths.push(flows[i + 1] - flows[i]);
+    intervalSlopes.push((drops[i + 1] - drops[i]) / intervalWidths[i]);
+  }
+
+  // Fritsch-Carlson monotone cubic interpolation preserves increasing pressure-drop data
+  // and avoids overshoot between digitized manufacturer chart points.
+  const tangents = new Array(validPoints.length).fill(0);
+  tangents[0] = intervalSlopes[0];
+  tangents[validPoints.length - 1] = intervalSlopes[intervalCount - 1];
+  for (let i = 1; i < intervalCount; i += 1) {
+    if (intervalSlopes[i - 1] * intervalSlopes[i] <= 0) {
+      tangents[i] = 0;
+    } else {
+      const widthSum = intervalWidths[i - 1] + intervalWidths[i];
+      tangents[i] = (3 * widthSum) / (((widthSum + intervalWidths[i]) / intervalSlopes[i - 1]) + ((widthSum + intervalWidths[i - 1]) / intervalSlopes[i]));
+    }
+  }
+
+  const estimate = flow => {
+    if (flow <= flows[0]) return drops[0];
+    if (flow >= flows[flows.length - 1]) return drops[drops.length - 1];
+    let index = 0;
+    while (index < intervalCount - 1 && flow > flows[index + 1]) index += 1;
+    const width = intervalWidths[index];
+    const t = (flow - flows[index]) / width;
+    const t2 = t * t;
+    const t3 = t2 * t;
+    const h00 = (2 * t3) - (3 * t2) + 1;
+    const h10 = t3 - (2 * t2) + t;
+    const h01 = (-2 * t3) + (3 * t2);
+    const h11 = t3 - t2;
+    return (h00 * drops[index]) + (h10 * width * tangents[index]) + (h01 * drops[index + 1]) + (h11 * width * tangents[index + 1]);
+  };
+
+  return { estimate, type: 'monotone-cubic' };
+}
+
+function createPressureDropCurveModel(points) {
+  return fitPressureDropPowerLaw(points) || createMonotonePressureDropModel(points);
+}
+
+function drawPressureDropChart(svgNode, points, targetFlow, estimatedPressureDrop) {
   const validPoints = getValidPressureDropPoints(points);
   if (!svgNode || !validPoints.length) return;
   const width = 320; const height = 140;
   const padding = { left: 34, right: 10, top: 10, bottom: 24 };
   const minFlow = validPoints[0].flow;
   const maxFlow = validPoints[validPoints.length - 1].flow;
-  const maxDrop = Math.max(...validPoints.map(p => p.pressureDrop), 1);
+  const curveModel = createPressureDropCurveModel(validPoints);
+  const sampleCount = 80;
+  let lastCurveDrop = 0;
+  const curveSamples = Array.from({ length: sampleCount }, (_, index) => {
+    const ratio = index / (sampleCount - 1);
+    const flow = minFlow + ((maxFlow - minFlow) * ratio);
+    return { flow, pressureDrop: curveModel ? curveModel.estimate(flow) : interpolatePressureDrop(validPoints, flow).value };
+  }).filter(point => Number.isFinite(point.pressureDrop)).map(point => {
+    lastCurveDrop = Math.max(lastCurveDrop, point.pressureDrop);
+    return { ...point, pressureDrop: lastCurveDrop };
+  });
+  const maxDrop = Math.max(...validPoints.map(p => p.pressureDrop), ...curveSamples.map(p => p.pressureDrop), 1);
   const scaleX = flow => padding.left + ((flow - minFlow) / Math.max(maxFlow - minFlow, 0.0001)) * (width - padding.left - padding.right);
   const scaleY = drop => height - padding.bottom - (drop / maxDrop) * (height - padding.top - padding.bottom);
-  const polyline = validPoints.map(p => `${scaleX(p.flow).toFixed(1)},${scaleY(p.pressureDrop).toFixed(1)}`).join(' ');
+  const smoothCurvePath = curveSamples.map((point, index) => `${index === 0 ? 'M' : 'L'} ${scaleX(point.flow).toFixed(1)} ${scaleY(point.pressureDrop).toFixed(1)}`).join(' ');
   const targetX = Number.isFinite(targetFlow) ? scaleX(targetFlow) : null;
-  const targetY = Number.isFinite(interpolatedPressureDrop) ? scaleY(interpolatedPressureDrop) : null;
+  const targetY = Number.isFinite(estimatedPressureDrop) ? scaleY(estimatedPressureDrop) : null;
   const showTargetMarker = Number.isFinite(targetX) && Number.isFinite(targetY);
   const targetLabelX = showTargetMarker ? Math.min(Math.max(targetX + 7, padding.left + 4), width - 144) : null;
   const targetLabelY = showTargetMarker ? Math.max(targetY - 33, padding.top + 3) : null;
   const targetMarker = showTargetMarker
-    ? `<g><line x1="${targetX.toFixed(1)}" y1="${padding.top}" x2="${targetX.toFixed(1)}" y2="${height - padding.bottom}" stroke="#f59e0b" stroke-dasharray="3 3" /><circle cx="${targetX.toFixed(1)}" cy="${targetY.toFixed(1)}" r="4" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" /><rect x="${targetLabelX.toFixed(1)}" y="${targetLabelY.toFixed(1)}" width="140" height="28" rx="4" fill="#0f172a" opacity="0.88" /><text x="${(targetLabelX + 5).toFixed(1)}" y="${(targetLabelY + 11).toFixed(1)}" font-size="8" fill="#ffffff">Target flow: ${targetFlow.toFixed(1)} L/min</text><text x="${(targetLabelX + 5).toFixed(1)}" y="${(targetLabelY + 22).toFixed(1)}" font-size="8" fill="#ffffff">Estimated pressure drop: ${interpolatedPressureDrop.toFixed(1)} mmHg</text></g>`
+    ? `<g><line x1="${targetX.toFixed(1)}" y1="${padding.top}" x2="${targetX.toFixed(1)}" y2="${height - padding.bottom}" stroke="#f59e0b" stroke-dasharray="3 3" /><circle cx="${targetX.toFixed(1)}" cy="${targetY.toFixed(1)}" r="4" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" /><rect x="${targetLabelX.toFixed(1)}" y="${targetLabelY.toFixed(1)}" width="140" height="28" rx="4" fill="#0f172a" opacity="0.88" /><text x="${(targetLabelX + 5).toFixed(1)}" y="${(targetLabelY + 11).toFixed(1)}" font-size="8" fill="#ffffff">Target flow: ${targetFlow.toFixed(1)} L/min</text><text x="${(targetLabelX + 5).toFixed(1)}" y="${(targetLabelY + 22).toFixed(1)}" font-size="8" fill="#ffffff">Estimated pressure drop: ${estimatedPressureDrop.toFixed(1)} mmHg</text></g>`
     : '';
-  svgNode.innerHTML = `<line x1="${padding.left}" y1="${height - padding.bottom}" x2="${width - padding.right}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><polyline points="${polyline}" fill="none" stroke="#0ea5e9" stroke-width="2" />${validPoints.map(p => `<circle cx="${scaleX(p.flow).toFixed(1)}" cy="${scaleY(p.pressureDrop).toFixed(1)}" r="2.2" fill="#0ea5e9" />`).join('')}${targetMarker}<text x="${padding.left}" y="${height - 6}" font-size="9" fill="currentColor" opacity="0.65">Flow (L/min)</text><text x="${width - 110}" y="${padding.top + 9}" font-size="9" fill="currentColor" opacity="0.65">Pressure drop (mmHg)</text>`;
+  svgNode.innerHTML = `<line x1="${padding.left}" y1="${height - padding.bottom}" x2="${width - padding.right}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><path d="${smoothCurvePath}" fill="none" stroke="#0ea5e9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />${validPoints.map(p => `<circle cx="${scaleX(p.flow).toFixed(1)}" cy="${scaleY(p.pressureDrop).toFixed(1)}" r="2.2" fill="#ffffff" stroke="#0ea5e9" stroke-width="1.4" />`).join('')}${targetMarker}<text x="${padding.left}" y="${height - 6}" font-size="9" fill="currentColor" opacity="0.65">Flow (L/min)</text><text x="${width - 110}" y="${padding.top + 9}" font-size="9" fill="currentColor" opacity="0.65">Pressure drop (mmHg)</text>`;
 }
 
 
@@ -1816,13 +1909,19 @@ function updatePressureDropReference() {
   const hasTargetFlow = targetFlowText !== '';
   const targetFlow = hasTargetFlow ? parseFloat(targetFlowText) : NaN;
   const result = hasTargetFlow ? interpolatePressureDrop(validPoints, targetFlow) : { state: 'invalid', value: null };
+  const curveModel = createPressureDropCurveModel(validPoints);
   rangeText.textContent = `Reference flow range shown in manufacturer data: ${validPoints[0].flow}–${validPoints[validPoints.length - 1].flow} L/min`;
   selectedModel.textContent = `${match.manufacturer} / ${match.model} / ${match.category} / ${match.size}`;
-  curveMeta.classList.remove('hidden'); sourceWrap.classList.remove('hidden'); chartRangeLabel.classList.remove('hidden'); benchLabel.classList.remove('hidden'); chartWrap.classList.remove('hidden');
+  interpNote.textContent = 'Digitized from manufacturer chart; fitted/interpolated pressure drop is approximate.';
+  curveMeta.classList.remove('hidden'); sourceWrap.classList.remove('hidden'); chartRangeLabel.classList.remove('hidden'); benchLabel.classList.remove('hidden'); chartWrap.classList.remove('hidden'); interpNote.classList.remove('hidden');
   sourceLabel.textContent = match.sourceLabel || '—'; sourceUrl.textContent = match.sourceUrl || '—'; testMedium.textContent = `Test medium: ${match.testMedium || '—'}`; dataStatus.textContent = `Data status: ${match.dataStatus || '—'}`; digitizationNote.textContent = `Digitization note: ${match.digitizationNote || '—'}`; notes.textContent = `Notes: ${match.notes || '—'}`;
   if (!hasTargetFlow || result.state === 'invalid') { statusMessage.textContent = 'Enter target flow to estimate pressure drop.'; drawPressureDropChart(chartNode, validPoints, NaN, NaN); return; }
-  if (result.state === 'exact') { statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${result.value.toFixed(1)} mmHg`; drawPressureDropChart(chartNode, validPoints, targetFlow, result.value); return; }
-  if (result.state === 'interpolated') { statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${result.value.toFixed(1)} mmHg`; interpNote.classList.remove('hidden'); drawPressureDropChart(chartNode, validPoints, targetFlow, result.value); return; }
+  if (result.state === 'exact' || result.state === 'interpolated') {
+    const estimatedPressureDrop = curveModel ? curveModel.estimate(targetFlow) : result.value;
+    statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${estimatedPressureDrop.toFixed(1)} mmHg`;
+    drawPressureDropChart(chartNode, validPoints, targetFlow, estimatedPressureDrop);
+    return;
+  }
   if (result.state === 'out_of_range') { statusMessage.textContent = 'Target flow is outside the manufacturer chart range. Pressure drop is not estimated.'; drawPressureDropChart(chartNode, validPoints, NaN, NaN); return; }
   statusMessage.textContent = 'Reference flow range is available in manufacturer chart data.';
   drawPressureDropChart(chartNode, validPoints, NaN, NaN);
