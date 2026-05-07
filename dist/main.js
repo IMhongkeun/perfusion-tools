@@ -890,6 +890,439 @@ const cannulaPressureDropData = [
   },
   {
     manufacturer: 'Medtronic',
+    model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    category: 'venous',
+    size: '12 Fr',
+    outerDiameterFr: 12,
+    outerDiameterMm: 4.0,
+    overallLengthIn: 14,
+    overallLengthCm: 35.6,
+    connectionSite: '1/4 in (0.64 cm)',
+    cannulaOrderCode: '67312',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 1/4 in connection site pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 1/4 in connection site chart.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 14 },
+      { flow: 1.0, pressureDrop: 48 },
+      { flow: 1.5, pressureDrop: 98 },
+      { flow: 2.0, pressureDrop: 163 }
+    ],
+    notes: 'DLP Single Stage Venous Cannula with Right Angle Metal Tip. 12 Fr (4.0 mm), 14 in (35.6 cm) overall length, 1/4 in (0.64 cm) connection site. Order code 67312.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    category: 'venous',
+    size: '12 Fr',
+    outerDiameterFr: 12,
+    outerDiameterMm: 4.0,
+    overallLengthIn: 14,
+    overallLengthCm: 35.6,
+    connectionSite: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '69312',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 3/8 in connection site pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 3/8 in connection site chart.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 12 },
+      { flow: 1.0, pressureDrop: 45 },
+      { flow: 1.5, pressureDrop: 92 }
+    ],
+    notes: 'DLP Single Stage Venous Cannula with Right Angle Metal Tip. 12 Fr (4.0 mm), 14 in (35.6 cm) overall length, 3/8 in (0.95 cm) connection site. Order code 69312.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    category: 'venous',
+    size: '14 Fr',
+    outerDiameterFr: 14,
+    outerDiameterMm: 4.7,
+    overallLengthIn: 14,
+    overallLengthCm: 35.6,
+    connectionSite: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '69314',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 3/8 in connection site pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 3/8 in connection site chart.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 4 },
+      { flow: 1.0, pressureDrop: 17 },
+      { flow: 1.5, pressureDrop: 34 },
+      { flow: 2.0, pressureDrop: 58 },
+      { flow: 2.5, pressureDrop: 88 }
+    ],
+    notes: 'DLP Single Stage Venous Cannula with Right Angle Metal Tip. 14 Fr (4.7 mm), 14 in (35.6 cm) overall length, 3/8 in (0.95 cm) connection site. Order code 69314.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    category: 'venous',
+    size: '16 Fr',
+    outerDiameterFr: 16,
+    outerDiameterMm: 5.3,
+    overallLengthIn: 14,
+    overallLengthCm: 35.6,
+    connectionSite: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '69316',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 3/8 in connection site pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 3/8 in connection site chart.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 3 },
+      { flow: 1.0, pressureDrop: 12 },
+      { flow: 1.5, pressureDrop: 24 },
+      { flow: 2.0, pressureDrop: 41 },
+      { flow: 2.5, pressureDrop: 62 },
+      { flow: 3.0, pressureDrop: 86 }
+    ],
+    notes: 'DLP Single Stage Venous Cannula with Right Angle Metal Tip. 16 Fr (5.3 mm), 14 in (35.6 cm) overall length, 3/8 in (0.95 cm) connection site. Order code 69316.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    category: 'venous',
+    size: '18 Fr',
+    outerDiameterFr: 18,
+    outerDiameterMm: 6.0,
+    overallLengthIn: 14,
+    overallLengthCm: 35.6,
+    connectionSite: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '69318',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 3/8 in connection site pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 3/8 in connection site chart.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 2 },
+      { flow: 1.0, pressureDrop: 6 },
+      { flow: 1.5, pressureDrop: 13 },
+      { flow: 2.0, pressureDrop: 22 },
+      { flow: 2.5, pressureDrop: 33 },
+      { flow: 3.0, pressureDrop: 45 },
+      { flow: 3.5, pressureDrop: 60 },
+      { flow: 4.0, pressureDrop: 76 },
+      { flow: 4.5, pressureDrop: 94 }
+    ],
+    notes: 'DLP Single Stage Venous Cannula with Right Angle Metal Tip. 18 Fr (6.0 mm), 14 in (35.6 cm) overall length, 3/8 in (0.95 cm) connection site. Order code 69318.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    category: 'venous',
+    size: '20 Fr',
+    outerDiameterFr: 20,
+    outerDiameterMm: 6.7,
+    overallLengthIn: 14,
+    overallLengthCm: 35.6,
+    connectionSite: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '69320',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 3/8 in connection site pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 3/8 in connection site chart.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 5 },
+      { flow: 1.5, pressureDrop: 9 },
+      { flow: 2.0, pressureDrop: 15 },
+      { flow: 2.5, pressureDrop: 23 },
+      { flow: 3.0, pressureDrop: 32 },
+      { flow: 3.5, pressureDrop: 42 },
+      { flow: 4.0, pressureDrop: 54 },
+      { flow: 4.5, pressureDrop: 67 },
+      { flow: 5.0, pressureDrop: 82 },
+      { flow: 5.5, pressureDrop: 98 }
+    ],
+    notes: 'DLP Single Stage Venous Cannula with Right Angle Metal Tip. 20 Fr (6.7 mm), 14 in (35.6 cm) overall length, 3/8 in (0.95 cm) connection site. Order code 69320.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    category: 'venous',
+    size: '22 Fr',
+    outerDiameterFr: 22,
+    outerDiameterMm: 7.3,
+    overallLengthIn: 14,
+    overallLengthCm: 35.6,
+    connectionSite: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '69322',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 3/8 in connection site pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 3/8 in connection site chart.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 0 },
+      { flow: 1.0, pressureDrop: 2 },
+      { flow: 1.5, pressureDrop: 5 },
+      { flow: 2.0, pressureDrop: 9 },
+      { flow: 2.5, pressureDrop: 13 },
+      { flow: 3.0, pressureDrop: 18 },
+      { flow: 3.5, pressureDrop: 24 },
+      { flow: 4.0, pressureDrop: 31 },
+      { flow: 4.5, pressureDrop: 39 },
+      { flow: 5.0, pressureDrop: 47 },
+      { flow: 5.5, pressureDrop: 57 },
+      { flow: 6.0, pressureDrop: 67 }
+    ],
+    notes: 'DLP Single Stage Venous Cannula with Right Angle Metal Tip. 22 Fr (7.3 mm), 14 in (35.6 cm) overall length, 3/8 in (0.95 cm) connection site. Order code 69322.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    category: 'venous',
+    size: '24 Fr',
+    outerDiameterFr: 24,
+    outerDiameterMm: 8.0,
+    overallLengthIn: 14,
+    overallLengthCm: 35.6,
+    connectionSite: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '69324',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 3/8 in connection site pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 3/8 in connection site chart. A near-zero low-flow value was rounded to 0 mmHg to avoid displaying a negative pressure-drop artifact from manual digitization.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 0 },
+      { flow: 1.0, pressureDrop: 1 },
+      { flow: 1.5, pressureDrop: 3 },
+      { flow: 2.0, pressureDrop: 6 },
+      { flow: 2.5, pressureDrop: 9 },
+      { flow: 3.0, pressureDrop: 13 },
+      { flow: 3.5, pressureDrop: 17 },
+      { flow: 4.0, pressureDrop: 21 },
+      { flow: 4.5, pressureDrop: 27 },
+      { flow: 5.0, pressureDrop: 33 },
+      { flow: 5.5, pressureDrop: 40 },
+      { flow: 6.0, pressureDrop: 47 }
+    ],
+    notes: 'DLP Single Stage Venous Cannula with Right Angle Metal Tip. 24 Fr (8.0 mm), 14 in (35.6 cm) overall length, 3/8 in (0.95 cm) connection site. Order code 69324.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    category: 'venous',
+    size: '28 Fr',
+    outerDiameterFr: 28,
+    outerDiameterMm: 9.3,
+    overallLengthIn: 14,
+    overallLengthCm: 35.6,
+    connectionSite: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '69328',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 3/8 in connection site pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 3/8 in connection site chart. A near-zero low-flow value was rounded to 0 mmHg to avoid displaying a negative pressure-drop artifact from manual digitization.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 0 },
+      { flow: 1.0, pressureDrop: 0 },
+      { flow: 1.5, pressureDrop: 2 },
+      { flow: 2.0, pressureDrop: 3 },
+      { flow: 2.5, pressureDrop: 5 },
+      { flow: 3.0, pressureDrop: 7 },
+      { flow: 3.5, pressureDrop: 9 },
+      { flow: 4.0, pressureDrop: 12 },
+      { flow: 4.5, pressureDrop: 15 },
+      { flow: 5.0, pressureDrop: 18 },
+      { flow: 5.5, pressureDrop: 22 },
+      { flow: 6.0, pressureDrop: 26 }
+    ],
+    notes: 'DLP Single Stage Venous Cannula with Right Angle Metal Tip. 28 Fr (9.3 mm), 14 in (35.6 cm) overall length, 3/8 in (0.95 cm) connection site. Order code 69328.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    category: 'venous',
+    size: '31 Fr',
+    outerDiameterFr: 31,
+    outerDiameterMm: 10.3,
+    overallLengthIn: 14,
+    overallLengthCm: 35.6,
+    connectionSite: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '69331',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 3/8 in connection site pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 3/8 in connection site chart. Near-zero low-flow values were rounded to 0 mmHg for practical display.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 0 },
+      { flow: 1.0, pressureDrop: 0 },
+      { flow: 1.5, pressureDrop: 1 },
+      { flow: 2.0, pressureDrop: 2 },
+      { flow: 2.5, pressureDrop: 3 },
+      { flow: 3.0, pressureDrop: 5 },
+      { flow: 3.5, pressureDrop: 7 },
+      { flow: 4.0, pressureDrop: 9 },
+      { flow: 4.5, pressureDrop: 12 },
+      { flow: 5.0, pressureDrop: 15 },
+      { flow: 5.5, pressureDrop: 18 },
+      { flow: 6.0, pressureDrop: 21 }
+    ],
+    notes: 'DLP Single Stage Venous Cannula with Right Angle Metal Tip. 31 Fr (10.3 mm), 14 in (35.6 cm) overall length, 3/8 in (0.95 cm) connection site. Order code 69331.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    category: 'venous',
+    size: '14 Fr',
+    outerDiameterFr: 14,
+    outerDiameterMm: 4.7,
+    overallLengthIn: 14,
+    overallLengthCm: 35.6,
+    connectionSite: '1/4 in (0.64 cm)',
+    cannulaOrderCode: '67314',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 1/4 in connection site pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 1/4 in connection site chart.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 5 },
+      { flow: 1.0, pressureDrop: 17 },
+      { flow: 1.5, pressureDrop: 35 },
+      { flow: 2.0, pressureDrop: 60 },
+      { flow: 2.5, pressureDrop: 89 },
+      { flow: 3.0, pressureDrop: 123 },
+      { flow: 3.5, pressureDrop: 163 }
+    ],
+    notes: 'DLP Single Stage Venous Cannula with Right Angle Metal Tip. 14 Fr (4.7 mm), 14 in (35.6 cm) overall length, 1/4 in (0.64 cm) connection site. Order code 67314.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    category: 'venous',
+    size: '16 Fr',
+    outerDiameterFr: 16,
+    outerDiameterMm: 5.3,
+    overallLengthIn: 14,
+    overallLengthCm: 35.6,
+    connectionSite: '1/4 in (0.64 cm)',
+    cannulaOrderCode: '67316',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 1/4 in connection site pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 1/4 in connection site chart.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 3 },
+      { flow: 1.0, pressureDrop: 12 },
+      { flow: 1.5, pressureDrop: 25 },
+      { flow: 2.0, pressureDrop: 41 },
+      { flow: 2.5, pressureDrop: 62 },
+      { flow: 3.0, pressureDrop: 86 },
+      { flow: 3.5, pressureDrop: 116 },
+      { flow: 4.0, pressureDrop: 147 },
+      { flow: 4.5, pressureDrop: 182 }
+    ],
+    notes: 'DLP Single Stage Venous Cannula with Right Angle Metal Tip. 16 Fr (5.3 mm), 14 in (35.6 cm) overall length, 1/4 in (0.64 cm) connection site. Order code 67316.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    category: 'venous',
+    size: '18 Fr',
+    outerDiameterFr: 18,
+    outerDiameterMm: 6.0,
+    overallLengthIn: 14,
+    overallLengthCm: 35.6,
+    connectionSite: '1/4 in (0.64 cm)',
+    cannulaOrderCode: '67318',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 1/4 in connection site pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 1/4 in connection site chart.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 1 },
+      { flow: 1.0, pressureDrop: 6 },
+      { flow: 1.5, pressureDrop: 14 },
+      { flow: 2.0, pressureDrop: 24 },
+      { flow: 2.5, pressureDrop: 37 },
+      { flow: 3.0, pressureDrop: 52 },
+      { flow: 3.5, pressureDrop: 69 },
+      { flow: 4.0, pressureDrop: 89 },
+      { flow: 4.5, pressureDrop: 111 },
+      { flow: 5.0, pressureDrop: 134 },
+      { flow: 5.5, pressureDrop: 162 }
+    ],
+    notes: 'DLP Single Stage Venous Cannula with Right Angle Metal Tip. 18 Fr (6.0 mm), 14 in (35.6 cm) overall length, 1/4 in (0.64 cm) connection site. Order code 67318.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    category: 'venous',
+    size: '20 Fr',
+    outerDiameterFr: 20,
+    outerDiameterMm: 6.7,
+    overallLengthIn: 14,
+    overallLengthCm: 35.6,
+    connectionSite: '1/4 in (0.64 cm)',
+    cannulaOrderCode: '67320',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 1/4 in connection site pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 1/4 in connection site chart.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 0 },
+      { flow: 1.0, pressureDrop: 5 },
+      { flow: 1.5, pressureDrop: 11 },
+      { flow: 2.0, pressureDrop: 20 },
+      { flow: 2.5, pressureDrop: 31 },
+      { flow: 3.0, pressureDrop: 43 },
+      { flow: 3.5, pressureDrop: 57 },
+      { flow: 4.0, pressureDrop: 73 },
+      { flow: 4.5, pressureDrop: 92 },
+      { flow: 5.0, pressureDrop: 113 },
+      { flow: 5.5, pressureDrop: 136 },
+      { flow: 6.0, pressureDrop: 159 }
+    ],
+    notes: 'DLP Single Stage Venous Cannula with Right Angle Metal Tip. 20 Fr (6.7 mm), 14 in (35.6 cm) overall length, 1/4 in (0.64 cm) connection site. Order code 67320.'
+  },
+  {
+    manufacturer: 'Medtronic',
     model: 'EOPA 3D Arterial Cannulae',
     category: 'arterial',
     size: '20 Fr',
@@ -2253,11 +2686,23 @@ function normalizePressureDropKey(value) {
   return String(value || '').trim().toLowerCase();
 }
 
+function getPressureDropSizeOptionValue(entry) {
+  const connectionSite = entry.connectionSite ? `||${entry.connectionSite}` : '';
+  return `${entry.size || ''}${connectionSite}`;
+}
+
+function parsePressureDropSizeOptionValue(value) {
+  const [size = '', connectionSite = ''] = String(value || '').split('||');
+  return { size, connectionSite };
+}
+
 function findPressureDropEntry({ manufacturer, category, model, size }) {
+  const selectedSize = parsePressureDropSizeOptionValue(size);
   const normalizedManufacturer = normalizePressureDropKey(manufacturer);
   const normalizedCategory = normalizePressureDropKey(category);
   const normalizedModel = normalizePressureDropKey(model);
-  const normalizedSize = normalizePressureDropKey(size);
+  const normalizedSize = normalizePressureDropKey(selectedSize.size);
+  const normalizedConnectionSite = normalizePressureDropKey(selectedSize.connectionSite);
 
   if (!normalizedManufacturer || !normalizedCategory || !normalizedModel || !normalizedSize) return null;
 
@@ -2265,7 +2710,8 @@ function findPressureDropEntry({ manufacturer, category, model, size }) {
     normalizePressureDropKey(entry.manufacturer) === normalizedManufacturer &&
     normalizePressureDropKey(entry.category) === normalizedCategory &&
     normalizePressureDropKey(entry.model) === normalizedModel &&
-    normalizePressureDropKey(entry.size) === normalizedSize
+    normalizePressureDropKey(entry.size) === normalizedSize &&
+    (!normalizedConnectionSite || normalizePressureDropKey(entry.connectionSite) === normalizedConnectionSite)
   )) || null;
 }
 
@@ -2423,6 +2869,7 @@ function getPressureDropProductFamily(entry) {
   if (model.includes('EOPA')) return 'EOPA';
   if (model.includes('Select 3D II')) return 'Select 3D II';
   if (model.includes('Select Series')) return 'Select Series';
+  if (model.includes('DLP')) return 'DLP';
   if (model.includes('Bio-Medicus Multi-stage')) return 'Bio-Medicus';
   if (model.includes('Bio-Medicus NextGen')) return 'Bio-Medicus NextGen';
   if (model.includes('RAP')) return 'MICS Cannulae — RAP Femoral Venous Cannulae';
@@ -2457,7 +2904,8 @@ function renderAvailableCurveDatasets() {
     grouped[manufacturer] = grouped[manufacturer] || {};
     grouped[manufacturer][family] = grouped[manufacturer][family] || {};
     grouped[manufacturer][family][model] = grouped[manufacturer][family][model] || new Set();
-    grouped[manufacturer][family][model].add(entry.size || 'Unknown size');
+    const sizeLabel = entry.connectionSite ? `${entry.size || 'Unknown size'} (${entry.connectionSite})` : (entry.size || 'Unknown size');
+    grouped[manufacturer][family][model].add(sizeLabel);
   });
 
   const parts = [];
@@ -2501,12 +2949,17 @@ function syncPressureDropSelectors(changedLevel = 'manufacturer') {
   }
   const byModel = byFamily.filter(entry => entry.model === modelSelect.value);
   if (changedLevel === 'model') {
-    setSelectOptions(sizeSelect, byModel.map(entry => ({ value: entry.size, label: `${entry.size} — ${(entry.points||[]).length ? 'curve available' : 'metadata only'}` })), 'Select size');
+    setSelectOptions(sizeSelect, byModel.map(entry => {
+      const connectionLabel = entry.connectionSite ? ` — ${entry.connectionSite}` : '';
+      const dataLabel = (entry.points || []).length ? 'curve available' : 'metadata only';
+      return { value: getPressureDropSizeOptionValue(entry), label: `${entry.size}${connectionLabel} — ${dataLabel}` };
+    }), 'Select size');
     categoryInput.value='';
     if (sizeSelect.options.length === 2) { sizeSelect.value = sizeSelect.options[1].value; syncPressureDropSelectors('size'); }
     return;
   }
-  const match = byModel.find(entry => entry.size === sizeSelect.value);
+  const selectedSize = parsePressureDropSizeOptionValue(sizeSelect.value);
+  const match = byModel.find(entry => entry.size === selectedSize.size && (!selectedSize.connectionSite || entry.connectionSite === selectedSize.connectionSite));
   categoryInput.value = match ? match.category : '';
 }
 
@@ -2527,6 +2980,7 @@ function getPressureDropProductMetadataText(entry) {
     `Outer diameter: ${entry.outerDiameterFr} Fr (${entry.outerDiameterMm.toFixed(1)} mm)`,
     formatLengthMetadata('Overall length', entry.overallLengthIn, entry.overallLengthCm),
     formatLengthMetadata('Tip length', entry.tipLengthIn, entry.tipLengthCm),
+    entry.connectionSite ? `Connection site: ${entry.connectionSite}` : '',
     entry.connectorSize ? `Connector: ${entry.connectorSize}` : '',
     entry.cannulaOrderCode ? `${cannulaOrderCodeLabel}: ${entry.cannulaOrderCode}` : '',
     entry.cannulaKitOrderCode ? `Cannula kit order code: ${entry.cannulaKitOrderCode}` : '',
@@ -2537,7 +2991,7 @@ function getPressureDropProductMetadataText(entry) {
 
 function updatePressureDropReference() {
   const manufacturerInput = el('pressure-drop-manufacturer'); const categorySelect = el('pressure-drop-category'); const familySelect = el('pressure-drop-product-family'); const modelInput = el('pressure-drop-model'); const sizeInput = el('pressure-drop-size'); const targetFlowInput = el('pressure-drop-target-flow');
-  const statusMessage = el('pressure-drop-status-message'); const sourceWrap = el('pressure-drop-source'); const sourceLabel = el('pressure-drop-source-label'); const sourceUrl = el('pressure-drop-source-url'); const testMedium = el('pressure-drop-test-medium'); const dataStatus = el('pressure-drop-data-status'); const digitizationNote = el('pressure-drop-digitization-note'); const notes = el('pressure-drop-notes'); const productMeta = el('pressure-drop-product-meta');
+  const statusMessage = el('pressure-drop-status-message'); const sourceWrap = el('pressure-drop-source'); const sourceLabel = el('pressure-drop-source-label'); const sourceUrl = el('pressure-drop-source-url'); const testMedium = el('pressure-drop-test-medium'); const dataStatus = el('pressure-drop-data-status'); const digitizationNote = el('pressure-drop-digitization-note'); const connectionSite = el('pressure-drop-connection-site'); const notes = el('pressure-drop-notes'); const productMeta = el('pressure-drop-product-meta');
   const chartWrap = el('pressure-drop-chart-wrap'); const chartNode = el('pressure-drop-chart'); const curveMeta = el('pressure-drop-curve-meta'); const selectedModel = el('pressure-drop-selected-model'); const rangeText = el('pressure-drop-range'); const interpNote = el('pressure-drop-interp-note'); const chartRangeLabel = el('pressure-drop-chart-range-label'); const benchLabel = el('pressure-drop-bench-label');
   if (!manufacturerInput || !categorySelect || !familySelect || !modelInput || !sizeInput || !targetFlowInput || !statusMessage || !sourceWrap || !sourceLabel || !sourceUrl || !testMedium || !notes || !chartWrap || !chartNode || !curveMeta || !selectedModel || !rangeText || !interpNote || !chartRangeLabel || !benchLabel) return;
   chartWrap.classList.add('hidden'); curveMeta.classList.add('hidden'); sourceWrap.classList.add('hidden'); interpNote.classList.add('hidden'); chartRangeLabel.classList.add('hidden'); benchLabel.classList.add('hidden');
@@ -2555,10 +3009,10 @@ function updatePressureDropReference() {
   const curveModel = useLinearOnly ? null : createPressureDropCurveModel(validPoints);
   const chartOptions = useLinearOnly ? { curveMode: 'linear' } : {};
   rangeText.textContent = `Reference flow range shown in manufacturer data: ${validPoints[0].flow}–${validPoints[validPoints.length - 1].flow} L/min`;
-  selectedModel.textContent = `${match.manufacturer} / ${match.model} / ${match.category} / ${match.size}`;
+  selectedModel.textContent = `${match.manufacturer} / ${match.model} / ${match.category} / ${match.size}${match.connectionSite ? ` / ${match.connectionSite}` : ''}`;
   interpNote.textContent = match.interpolationNote || 'Digitized from manufacturer chart; fitted/interpolated pressure drop is approximate.';
   curveMeta.classList.remove('hidden'); sourceWrap.classList.remove('hidden'); chartRangeLabel.classList.remove('hidden'); benchLabel.classList.remove('hidden'); chartWrap.classList.remove('hidden'); interpNote.classList.remove('hidden');
-  sourceLabel.textContent = match.sourceLabel || '—'; sourceUrl.textContent = match.sourceUrl || '—'; testMedium.textContent = `Test medium: ${match.testMedium || '—'}`; dataStatus.textContent = `Data status: ${formatPressureDropDataStatus(match.dataStatus)}`; digitizationNote.textContent = `Digitization note: ${match.digitizationNote || '—'}`; notes.textContent = `Notes: ${match.notes || '—'}`;
+  sourceLabel.textContent = match.sourceLabel || '—'; sourceUrl.textContent = match.sourceUrl || '—'; testMedium.textContent = `Test medium: ${match.testMedium || '—'}`; dataStatus.textContent = `Data status: ${formatPressureDropDataStatus(match.dataStatus)}`; digitizationNote.textContent = `Digitization note: ${match.digitizationNote || '—'}`; if (connectionSite) connectionSite.textContent = `Connection site: ${match.connectionSite || '—'}`; notes.textContent = `Notes: ${match.notes || '—'}`;
   if (productMeta) {
     const metadataText = getPressureDropProductMetadataText(match);
     productMeta.textContent = metadataText ? `Product metadata: ${metadataText}` : '';
@@ -2567,7 +3021,7 @@ function updatePressureDropReference() {
   if (!hasTargetFlow || result.state === 'invalid') { statusMessage.textContent = 'Enter target flow to estimate pressure drop.'; drawPressureDropChart(chartNode, validPoints, NaN, NaN, chartOptions); return; }
   if (result.state === 'exact' || result.state === 'interpolated') {
     const estimatedPressureDrop = curveModel ? curveModel.estimate(targetFlow) : result.value;
-    statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${estimatedPressureDrop.toFixed(1)} mmHg`;
+    statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${estimatedPressureDrop.toFixed(1)} mmHg. Interpolated estimate from digitized manufacturer-published curve data.`;
     drawPressureDropChart(chartNode, validPoints, targetFlow, estimatedPressureDrop, chartOptions);
     return;
   }
