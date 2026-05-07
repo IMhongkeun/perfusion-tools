@@ -1347,6 +1347,571 @@ const cannulaPressureDropData = [
   },
   {
     manufacturer: 'Medtronic',
+    model: 'DLP Malleable Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '12 Fr',
+    outerDiameterFr: 12,
+    outerDiameterMm: 4.0,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '1/4 in (0.64 cm)',
+    cannulaOrderCode: '68112',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Malleable Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve-cleaned',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are rounded to two decimals and pressure-drop values are rounded to the nearest whole mmHg.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    referenceFlowRangeLabel: '0.22–0.86',
+    points: [
+      { flow: 0.22, pressureDrop: 10 },
+      { flow: 0.35, pressureDrop: 20 },
+      { flow: 0.49, pressureDrop: 36 },
+      { flow: 0.60, pressureDrop: 50 },
+      { flow: 0.65, pressureDrop: 60 },
+      { flow: 0.72, pressureDrop: 70 },
+      { flow: 0.77, pressureDrop: 80 },
+      { flow: 0.82, pressureDrop: 90 },
+      { flow: 0.86, pressureDrop: 100 }
+    ],
+    notes: 'DLP Malleable Single Stage Venous Cannulae. 12 Fr (4.0 mm), 12–15 in (30.5–38.1 cm) overall length range, 1/4 in (0.64 cm) connection site. Order code 68112.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Malleable Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '14 Fr',
+    outerDiameterFr: 14,
+    outerDiameterMm: 4.7,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '1/4 in (0.64 cm)',
+    cannulaOrderCode: '68114',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Malleable Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve-cleaned',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are rounded to two decimals and pressure-drop values are rounded to the nearest whole mmHg.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    referenceFlowRangeLabel: '0.39–1.45',
+    points: [
+      { flow: 0.39, pressureDrop: 10 },
+      { flow: 0.49, pressureDrop: 15 },
+      { flow: 0.74, pressureDrop: 30 },
+      { flow: 0.88, pressureDrop: 40 },
+      { flow: 1.01, pressureDrop: 52 },
+      { flow: 1.10, pressureDrop: 60 },
+      { flow: 1.19, pressureDrop: 70 },
+      { flow: 1.28, pressureDrop: 80 },
+      { flow: 1.37, pressureDrop: 90 },
+      { flow: 1.45, pressureDrop: 100 }
+    ],
+    notes: 'DLP Malleable Single Stage Venous Cannulae. 14 Fr (4.7 mm), 12–15 in (30.5–38.1 cm) overall length range, 1/4 in (0.64 cm) connection site. Order code 68114.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Malleable Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '16 Fr',
+    outerDiameterFr: 16,
+    outerDiameterMm: 5.3,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '1/4 in (0.64 cm)',
+    cannulaOrderCode: '68116',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Malleable Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve-cleaned',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are rounded to two decimals and pressure-drop values are rounded to the nearest whole mmHg.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    referenceFlowRangeLabel: '0.48–2.31',
+    points: [
+      { flow: 0.48, pressureDrop: 7 },
+      { flow: 1.01, pressureDrop: 22 },
+      { flow: 1.20, pressureDrop: 30 },
+      { flow: 1.50, pressureDrop: 45 },
+      { flow: 1.75, pressureDrop: 60 },
+      { flow: 1.99, pressureDrop: 77 },
+      { flow: 2.18, pressureDrop: 90 },
+      { flow: 2.31, pressureDrop: 100 }
+    ],
+    notes: 'DLP Malleable Single Stage Venous Cannulae. 16 Fr (5.3 mm), 12–15 in (30.5–38.1 cm) overall length range, 1/4 in (0.64 cm) connection site. Order code 68116.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Right Angle Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '12 Fr',
+    outerDiameterFr: 12,
+    outerDiameterMm: 4.0,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '1/4 in (0.64 cm)',
+    cannulaOrderCode: '67512',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Right Angle Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are preserved to two decimals because this small-size cannula has a narrow, steep pressure-flow range.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.20, pressureDrop: 10 },
+      { flow: 0.34, pressureDrop: 20 },
+      { flow: 0.46, pressureDrop: 34 },
+      { flow: 0.51, pressureDrop: 40 },
+      { flow: 0.58, pressureDrop: 51 },
+      { flow: 0.66, pressureDrop: 61 },
+      { flow: 0.72, pressureDrop: 70 },
+      { flow: 0.77, pressureDrop: 80 },
+      { flow: 0.81, pressureDrop: 90 }
+    ],
+    notes: 'DLP Right Angle Single Stage Venous Cannulae. 12 Fr (4.0 mm), 12–15 in (30.5–38.1 cm) overall length range, 1/4 in (0.64 cm) connection site. Order code 67512.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Right Angle Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '14 Fr',
+    outerDiameterFr: 14,
+    outerDiameterMm: 4.7,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '1/4 in (0.64 cm)',
+    cannulaOrderCode: '67514',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Right Angle Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve-cleaned',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are rounded to two decimals and pressure-drop values are rounded to the nearest whole mmHg.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    referenceFlowRangeLabel: '0.39–1.38',
+    points: [
+      { flow: 0.39, pressureDrop: 11 },
+      { flow: 0.47, pressureDrop: 15 },
+      { flow: 0.58, pressureDrop: 21 },
+      { flow: 0.73, pressureDrop: 30 },
+      { flow: 0.86, pressureDrop: 40 },
+      { flow: 1.00, pressureDrop: 51 },
+      { flow: 1.09, pressureDrop: 60 },
+      { flow: 1.19, pressureDrop: 70 },
+      { flow: 1.29, pressureDrop: 80 },
+      { flow: 1.38, pressureDrop: 90 }
+    ],
+    notes: 'DLP Right Angle Single Stage Venous Cannulae. 14 Fr (4.7 mm), 12–15 in (30.5–38.1 cm) overall length range, 1/4 in (0.64 cm) connection site. Order code 67514.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Right Angle Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '16 Fr',
+    outerDiameterFr: 16,
+    outerDiameterMm: 5.3,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '1/4 in (0.64 cm)',
+    cannulaOrderCode: '67516',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Right Angle Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve-cleaned',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are rounded to two decimals and pressure-drop values are rounded to the nearest whole mmHg.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    referenceFlowRangeLabel: '0.47–2.18',
+    points: [
+      { flow: 0.47, pressureDrop: 7 },
+      { flow: 0.99, pressureDrop: 23 },
+      { flow: 1.17, pressureDrop: 30 },
+      { flow: 1.50, pressureDrop: 45 },
+      { flow: 1.74, pressureDrop: 60 },
+      { flow: 1.89, pressureDrop: 70 },
+      { flow: 1.99, pressureDrop: 77 },
+      { flow: 2.18, pressureDrop: 90 }
+    ],
+    notes: 'DLP Right Angle Single Stage Venous Cannulae. 16 Fr (5.3 mm), 12–15 in (30.5–38.1 cm) overall length range, 1/4 in (0.64 cm) connection site. Order code 67516.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Right Angle Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '18 Fr',
+    outerDiameterFr: 18,
+    outerDiameterMm: 6.0,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '1/4 in–3/8 in (0.64–0.95 cm)',
+    cannulaOrderCode: '67518',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Right Angle Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve-cleaned',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are rounded to two decimals and pressure-drop values are rounded to the nearest whole mmHg.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    referenceFlowRangeLabel: '0.46–3.00',
+    points: [
+      { flow: 0.46, pressureDrop: 4 },
+      { flow: 0.99, pressureDrop: 13 },
+      { flow: 1.49, pressureDrop: 27 },
+      { flow: 2.00, pressureDrop: 45 },
+      { flow: 2.35, pressureDrop: 60 },
+      { flow: 2.51, pressureDrop: 67 },
+      { flow: 2.78, pressureDrop: 80 },
+      { flow: 3.00, pressureDrop: 93 }
+    ],
+    notes: 'DLP Right Angle Single Stage Venous Cannulae. 18 Fr (6.0 mm), 12–15 in (30.5–38.1 cm) overall length range, 1/4 in–3/8 in (0.64–0.95 cm) connection site. Order code 67518.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Right Angle Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '20 Fr',
+    outerDiameterFr: 20,
+    outerDiameterMm: 6.7,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '1/4 in–3/8 in (0.64–0.95 cm)',
+    cannulaOrderCode: '67520',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Right Angle Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve-cleaned',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are rounded to two decimals and pressure-drop values are rounded to the nearest whole mmHg.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    referenceFlowRangeLabel: '0.47–3.73',
+    points: [
+      { flow: 0.47, pressureDrop: 2 },
+      { flow: 0.99, pressureDrop: 9 },
+      { flow: 1.49, pressureDrop: 17 },
+      { flow: 2.00, pressureDrop: 29 },
+      { flow: 2.51, pressureDrop: 44 },
+      { flow: 3.00, pressureDrop: 61 },
+      { flow: 3.51, pressureDrop: 81 },
+      { flow: 3.73, pressureDrop: 90 }
+    ],
+    notes: 'DLP Right Angle Single Stage Venous Cannulae. 20 Fr (6.7 mm), 12–15 in (30.5–38.1 cm) overall length range, 1/4 in–3/8 in (0.64–0.95 cm) connection site. Order code 67520.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Right Angle Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '22 Fr',
+    outerDiameterFr: 22,
+    outerDiameterMm: 7.3,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '1/4 in–3/8 in (0.64–0.95 cm)',
+    cannulaOrderCode: '67522',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Right Angle Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve-cleaned',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are rounded to two decimals and pressure-drop values are rounded to the nearest whole mmHg.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    referenceFlowRangeLabel: '0.47–5.00',
+    points: [
+      { flow: 0.47, pressureDrop: 2 },
+      { flow: 0.99, pressureDrop: 6 },
+      { flow: 1.49, pressureDrop: 11 },
+      { flow: 2.00, pressureDrop: 18 },
+      { flow: 2.50, pressureDrop: 28 },
+      { flow: 2.99, pressureDrop: 38 },
+      { flow: 3.50, pressureDrop: 51 },
+      { flow: 4.00, pressureDrop: 65 },
+      { flow: 4.50, pressureDrop: 81 },
+      { flow: 5.00, pressureDrop: 100 }
+    ],
+    notes: 'DLP Right Angle Single Stage Venous Cannulae. 22 Fr (7.3 mm), 12–15 in (30.5–38.1 cm) overall length range, 1/4 in–3/8 in (0.64–0.95 cm) connection site. Order code 67522.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Right Angle Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '24 Fr',
+    outerDiameterFr: 24,
+    outerDiameterMm: 8.0,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '1/4 in–3/8 in (0.64–0.95 cm)',
+    cannulaOrderCode: '67524',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Right Angle Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve-cleaned',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are rounded to two decimals and pressure-drop values are rounded to the nearest whole mmHg.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    referenceFlowRangeLabel: '0.46–5.52',
+    points: [
+      { flow: 0.46, pressureDrop: 2 },
+      { flow: 1.00, pressureDrop: 5 },
+      { flow: 1.50, pressureDrop: 9 },
+      { flow: 2.00, pressureDrop: 15 },
+      { flow: 2.51, pressureDrop: 22 },
+      { flow: 3.01, pressureDrop: 31 },
+      { flow: 3.50, pressureDrop: 41 },
+      { flow: 4.00, pressureDrop: 53 },
+      { flow: 4.50, pressureDrop: 66 },
+      { flow: 5.01, pressureDrop: 79 },
+      { flow: 5.52, pressureDrop: 95 }
+    ],
+    notes: 'DLP Right Angle Single Stage Venous Cannulae. 24 Fr (8.0 mm), 12–15 in (30.5–38.1 cm) overall length range, 1/4 in–3/8 in (0.64–0.95 cm) connection site. Order code 67524.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Right Angle Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '26 Fr',
+    outerDiameterFr: 26,
+    outerDiameterMm: 8.7,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '67526',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Right Angle Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve-cleaned',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are rounded to two decimals and pressure-drop values are rounded to the nearest whole mmHg.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    referenceFlowRangeLabel: '0.48–6.01',
+    points: [
+      { flow: 0.48, pressureDrop: 1 },
+      { flow: 1.00, pressureDrop: 3 },
+      { flow: 1.48, pressureDrop: 6 },
+      { flow: 2.00, pressureDrop: 10 },
+      { flow: 2.50, pressureDrop: 15 },
+      { flow: 3.00, pressureDrop: 20 },
+      { flow: 3.50, pressureDrop: 27 },
+      { flow: 4.00, pressureDrop: 34 },
+      { flow: 4.50, pressureDrop: 42 },
+      { flow: 5.00, pressureDrop: 51 },
+      { flow: 5.51, pressureDrop: 62 },
+      { flow: 6.01, pressureDrop: 73 }
+    ],
+    notes: 'DLP Right Angle Single Stage Venous Cannulae. 26 Fr (8.7 mm), 12–15 in (30.5–38.1 cm) overall length range, 3/8 in (0.95 cm) connection site. Order code 67526.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Right Angle Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '28 Fr',
+    outerDiameterFr: 28,
+    outerDiameterMm: 9.3,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '67528',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Right Angle Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve-cleaned',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are rounded to two decimals and pressure-drop values are rounded to the nearest whole mmHg.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    referenceFlowRangeLabel: '0.47–6.01',
+    points: [
+      { flow: 0.47, pressureDrop: 1 },
+      { flow: 0.99, pressureDrop: 2 },
+      { flow: 1.50, pressureDrop: 4 },
+      { flow: 2.00, pressureDrop: 7 },
+      { flow: 2.51, pressureDrop: 11 },
+      { flow: 2.99, pressureDrop: 15 },
+      { flow: 3.50, pressureDrop: 19 },
+      { flow: 4.01, pressureDrop: 25 },
+      { flow: 4.50, pressureDrop: 30 },
+      { flow: 5.01, pressureDrop: 37 },
+      { flow: 5.52, pressureDrop: 44 },
+      { flow: 6.01, pressureDrop: 51 }
+    ],
+    notes: 'DLP Right Angle Single Stage Venous Cannulae. 28 Fr (9.3 mm), 12–15 in (30.5–38.1 cm) overall length range, 3/8 in (0.95 cm) connection site. Order code 67528.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Right Angle Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '30 Fr',
+    outerDiameterFr: 30,
+    outerDiameterMm: 10.0,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '67530',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Right Angle Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve-cleaned',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are rounded to two decimals and pressure-drop values are rounded to the nearest whole mmHg.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    referenceFlowRangeLabel: '0.51–5.99',
+    points: [
+      { flow: 0.51, pressureDrop: 0 },
+      { flow: 1.02, pressureDrop: 1 },
+      { flow: 1.51, pressureDrop: 2 },
+      { flow: 2.02, pressureDrop: 5 },
+      { flow: 2.53, pressureDrop: 7 },
+      { flow: 3.02, pressureDrop: 10 },
+      { flow: 3.51, pressureDrop: 14 },
+      { flow: 4.01, pressureDrop: 18 },
+      { flow: 4.50, pressureDrop: 22 },
+      { flow: 5.00, pressureDrop: 27 },
+      { flow: 5.50, pressureDrop: 32 },
+      { flow: 5.99, pressureDrop: 38 }
+    ],
+    notes: 'DLP Right Angle Single Stage Venous Cannulae. 30 Fr (10.0 mm), 12–15 in (30.5–38.1 cm) overall length range, 3/8 in (0.95 cm) connection site. Order code 67530.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Right Angle Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '32 Fr',
+    outerDiameterFr: 32,
+    outerDiameterMm: 10.7,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '67532',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Right Angle Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve-cleaned',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are rounded to two decimals and pressure-drop values are rounded to the nearest whole mmHg.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    referenceFlowRangeLabel: '0.50–5.99',
+    points: [
+      { flow: 0.50, pressureDrop: 0 },
+      { flow: 1.02, pressureDrop: 1 },
+      { flow: 1.52, pressureDrop: 2 },
+      { flow: 2.03, pressureDrop: 4 },
+      { flow: 2.52, pressureDrop: 6 },
+      { flow: 3.02, pressureDrop: 8 },
+      { flow: 3.52, pressureDrop: 11 },
+      { flow: 4.01, pressureDrop: 14 },
+      { flow: 4.50, pressureDrop: 18 },
+      { flow: 5.00, pressureDrop: 22 },
+      { flow: 5.51, pressureDrop: 27 },
+      { flow: 5.99, pressureDrop: 31 }
+    ],
+    notes: 'DLP Right Angle Single Stage Venous Cannulae. 32 Fr (10.7 mm), 12–15 in (30.5–38.1 cm) overall length range, 3/8 in (0.95 cm) connection site. Order code 67532.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Right Angle Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '34 Fr',
+    outerDiameterFr: 34,
+    outerDiameterMm: 11.3,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '67534',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Right Angle Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve-cleaned',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are rounded to two decimals and pressure-drop values are rounded to the nearest whole mmHg.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    referenceFlowRangeLabel: '0.50–5.97',
+    points: [
+      { flow: 0.50, pressureDrop: 0 },
+      { flow: 1.02, pressureDrop: 1 },
+      { flow: 1.52, pressureDrop: 2 },
+      { flow: 2.02, pressureDrop: 3 },
+      { flow: 2.53, pressureDrop: 5 },
+      { flow: 3.02, pressureDrop: 7 },
+      { flow: 3.52, pressureDrop: 9 },
+      { flow: 4.01, pressureDrop: 11 },
+      { flow: 4.50, pressureDrop: 14 },
+      { flow: 5.00, pressureDrop: 17 },
+      { flow: 5.51, pressureDrop: 21 },
+      { flow: 5.97, pressureDrop: 24 }
+    ],
+    notes: 'DLP Right Angle Single Stage Venous Cannulae. 34 Fr (11.3 mm), 12–15 in (30.5–38.1 cm) overall length range, 3/8 in (0.95 cm) connection site. Order code 67534.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Right Angle Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '36 Fr',
+    outerDiameterFr: 36,
+    outerDiameterMm: 12.0,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '67536',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Right Angle Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve-cleaned',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are rounded to two decimals and pressure-drop values are rounded to the nearest whole mmHg.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    referenceFlowRangeLabel: '0.52–5.99',
+    points: [
+      { flow: 0.52, pressureDrop: 0 },
+      { flow: 1.03, pressureDrop: 1 },
+      { flow: 1.51, pressureDrop: 2 },
+      { flow: 2.02, pressureDrop: 2 },
+      { flow: 2.53, pressureDrop: 3 },
+      { flow: 3.01, pressureDrop: 4 },
+      { flow: 3.51, pressureDrop: 6 },
+      { flow: 4.03, pressureDrop: 7 },
+      { flow: 4.51, pressureDrop: 9 },
+      { flow: 5.00, pressureDrop: 11 },
+      { flow: 5.51, pressureDrop: 13 },
+      { flow: 5.99, pressureDrop: 15 }
+    ],
+    notes: 'DLP Right Angle Single Stage Venous Cannulae. 36 Fr (12.0 mm), 12–15 in (30.5–38.1 cm) overall length range, 3/8 in (0.95 cm) connection site. Order code 67536.'
+  },
+  {
+    manufacturer: 'Medtronic',
+    model: 'DLP Right Angle Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '38 Fr',
+    outerDiameterFr: 38,
+    outerDiameterMm: 12.7,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '3/8 in (0.95 cm)',
+    cannulaOrderCode: '67538',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Right Angle Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve-cleaned',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are rounded to two decimals and pressure-drop values are rounded to the nearest whole mmHg.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    referenceFlowRangeLabel: '0.51–6.00',
+    points: [
+      { flow: 0.51, pressureDrop: 0 },
+      { flow: 1.03, pressureDrop: 1 },
+      { flow: 1.51, pressureDrop: 1 },
+      { flow: 2.03, pressureDrop: 2 },
+      { flow: 2.52, pressureDrop: 2 },
+      { flow: 3.01, pressureDrop: 3 },
+      { flow: 3.52, pressureDrop: 4 },
+      { flow: 4.02, pressureDrop: 5 },
+      { flow: 4.51, pressureDrop: 7 },
+      { flow: 5.01, pressureDrop: 8 },
+      { flow: 5.52, pressureDrop: 9 },
+      { flow: 6.00, pressureDrop: 11 }
+    ],
+    notes: 'DLP Right Angle Single Stage Venous Cannulae. 38 Fr (12.7 mm), 12–15 in (30.5–38.1 cm) overall length range, 3/8 in (0.95 cm) connection site. Order code 67538.'
+  },
+  {
+    manufacturer: 'Medtronic',
     model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
     category: 'venous',
     size: '12 Fr',
@@ -3144,13 +3709,14 @@ function normalizePressureDropKey(value) {
 }
 
 function getPressureDropSizeOptionValue(entry) {
-  const connectionSite = entry.connectionSite ? `||${entry.connectionSite}` : '';
-  return `${entry.size || ''}${connectionSite}`;
+  const connectionSite = entry.connectionSite || '';
+  const outerDiameterFr = Number.isFinite(entry.outerDiameterFr) ? entry.outerDiameterFr : '';
+  return `${entry.size || ''}||${connectionSite}||${outerDiameterFr}`;
 }
 
 function parsePressureDropSizeOptionValue(value) {
-  const [size = '', connectionSite = ''] = String(value || '').split('||');
-  return { size, connectionSite };
+  const [size = '', connectionSite = '', outerDiameterFr = ''] = String(value || '').split('||');
+  return { size, connectionSite, outerDiameterFr: parseFloat(outerDiameterFr) };
 }
 
 function findPressureDropEntry({ manufacturer, category, model, size }) {
@@ -3160,6 +3726,7 @@ function findPressureDropEntry({ manufacturer, category, model, size }) {
   const normalizedModel = normalizePressureDropKey(model);
   const normalizedSize = normalizePressureDropKey(selectedSize.size);
   const normalizedConnectionSite = normalizePressureDropKey(selectedSize.connectionSite);
+  const selectedOuterDiameterFr = selectedSize.outerDiameterFr;
 
   if (!normalizedManufacturer || !normalizedCategory || !normalizedModel || !normalizedSize) return null;
 
@@ -3168,7 +3735,8 @@ function findPressureDropEntry({ manufacturer, category, model, size }) {
     normalizePressureDropKey(entry.category) === normalizedCategory &&
     normalizePressureDropKey(entry.model) === normalizedModel &&
     normalizePressureDropKey(entry.size) === normalizedSize &&
-    (!normalizedConnectionSite || normalizePressureDropKey(entry.connectionSite) === normalizedConnectionSite)
+    (!normalizedConnectionSite || normalizePressureDropKey(entry.connectionSite) === normalizedConnectionSite) &&
+    (!Number.isFinite(selectedOuterDiameterFr) || entry.outerDiameterFr === selectedOuterDiameterFr)
   )) || null;
 }
 
@@ -3424,11 +3992,16 @@ function syncPressureDropSelectors(changedLevel = 'manufacturer') {
     return;
   }
   const selectedSize = parsePressureDropSizeOptionValue(sizeSelect.value);
-  const match = byModel.find(entry => entry.size === selectedSize.size && (!selectedSize.connectionSite || entry.connectionSite === selectedSize.connectionSite));
+  const match = byModel.find(entry => (
+    entry.size === selectedSize.size &&
+    (!selectedSize.connectionSite || entry.connectionSite === selectedSize.connectionSite) &&
+    (!Number.isFinite(selectedSize.outerDiameterFr) || entry.outerDiameterFr === selectedSize.outerDiameterFr)
+  ));
   categoryInput.value = match ? match.category : '';
 }
 
 function formatPressureDropDataStatus(status) {
+  if (status === 'digitized-curve-cleaned') return 'Digitized curve, cleaned';
   if (status === 'digitized-curve') return 'Digitized curve';
   return status || '—';
 }
@@ -3479,7 +4052,8 @@ function updatePressureDropReference() {
   const useLinearOnly = match.interpolationMode === 'linear';
   const curveModel = useLinearOnly ? null : createPressureDropCurveModel(validPoints);
   const chartOptions = useLinearOnly ? { curveMode: 'linear' } : {};
-  rangeText.textContent = `Reference flow range shown in manufacturer data: ${validPoints[0].flow}–${validPoints[validPoints.length - 1].flow} L/min`;
+  const flowRangeLabel = match.referenceFlowRangeLabel || `${validPoints[0].flow}–${validPoints[validPoints.length - 1].flow}`;
+  rangeText.textContent = `Reference flow range shown in manufacturer data: ${flowRangeLabel} L/min`;
   selectedModel.textContent = `${match.manufacturer} / ${match.model} / ${match.category} / ${match.size}${match.connectionSite ? ` / ${match.connectionSite}` : ''}`;
   interpNote.textContent = match.interpolationNote || 'Digitized from manufacturer chart; fitted/interpolated pressure drop is approximate.';
   curveMeta.classList.remove('hidden'); sourceWrap.classList.remove('hidden'); chartRangeLabel.classList.remove('hidden'); benchLabel.classList.remove('hidden'); chartWrap.classList.remove('hidden'); interpNote.classList.remove('hidden');
