@@ -1347,6 +1347,38 @@ const cannulaPressureDropData = [
   },
   {
     manufacturer: 'Medtronic',
+    model: 'DLP Malleable Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '12 Fr',
+    outerDiameterFr: 12,
+    outerDiameterMm: 4.0,
+    overallLengthRangeIn: '12–15',
+    overallLengthRangeCm: '30.5–38.1',
+    connectionSite: '1/4 in (0.64 cm)',
+    cannulaOrderCode: '68112',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Malleable Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are preserved with source precision where available because this small-size cannula has a narrow, steep pressure-flow range.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    referenceFlowRangeLabel: '0.22–0.86',
+    points: [
+      { flow: 0.21568688310882123, pressureDrop: 10.311006269787072 },
+      { flow: 0.3457177147350343, pressureDrop: 20.321973224077638 },
+      { flow: 0.48786392699733083, pressureDrop: 35.816934632813954 },
+      { flow: 0.5972541229540425, pressureDrop: 50.0631117180872 },
+      { flow: 0.6546754402300994, pressureDrop: 60.08545947400004 },
+      { flow: 0.7186976224470794, pressureDrop: 70.10677261158358 },
+      { flow: 0.769549113332092, pressureDrop: 79.97341030893703 },
+      { flow: 0.8204006042171044, pressureDrop: 89.84004800629047 },
+      { flow: 0.8646512301611937, pressureDrop: 99.70772032197323 }
+    ],
+    notes: 'DLP Malleable Single Stage Venous Cannulae. 12 Fr (4.0 mm), 12–15 in (30.5–38.1 cm) overall length range, 1/4 in (0.64 cm) connection site. Order code 68112.'
+  },
+  {
+    manufacturer: 'Medtronic',
     model: 'DLP Right Angle Single Stage Venous Cannulae',
     category: 'venous',
     size: '12 Fr',
@@ -3613,13 +3645,14 @@ function normalizePressureDropKey(value) {
 }
 
 function getPressureDropSizeOptionValue(entry) {
-  const connectionSite = entry.connectionSite ? `||${entry.connectionSite}` : '';
-  return `${entry.size || ''}${connectionSite}`;
+  const connectionSite = entry.connectionSite || '';
+  const outerDiameterFr = Number.isFinite(entry.outerDiameterFr) ? entry.outerDiameterFr : '';
+  return `${entry.size || ''}||${connectionSite}||${outerDiameterFr}`;
 }
 
 function parsePressureDropSizeOptionValue(value) {
-  const [size = '', connectionSite = ''] = String(value || '').split('||');
-  return { size, connectionSite };
+  const [size = '', connectionSite = '', outerDiameterFr = ''] = String(value || '').split('||');
+  return { size, connectionSite, outerDiameterFr: parseFloat(outerDiameterFr) };
 }
 
 function findPressureDropEntry({ manufacturer, category, model, size }) {
@@ -3629,6 +3662,7 @@ function findPressureDropEntry({ manufacturer, category, model, size }) {
   const normalizedModel = normalizePressureDropKey(model);
   const normalizedSize = normalizePressureDropKey(selectedSize.size);
   const normalizedConnectionSite = normalizePressureDropKey(selectedSize.connectionSite);
+  const selectedOuterDiameterFr = selectedSize.outerDiameterFr;
 
   if (!normalizedManufacturer || !normalizedCategory || !normalizedModel || !normalizedSize) return null;
 
@@ -3637,7 +3671,8 @@ function findPressureDropEntry({ manufacturer, category, model, size }) {
     normalizePressureDropKey(entry.category) === normalizedCategory &&
     normalizePressureDropKey(entry.model) === normalizedModel &&
     normalizePressureDropKey(entry.size) === normalizedSize &&
-    (!normalizedConnectionSite || normalizePressureDropKey(entry.connectionSite) === normalizedConnectionSite)
+    (!normalizedConnectionSite || normalizePressureDropKey(entry.connectionSite) === normalizedConnectionSite) &&
+    (!Number.isFinite(selectedOuterDiameterFr) || entry.outerDiameterFr === selectedOuterDiameterFr)
   )) || null;
 }
 
@@ -3893,7 +3928,11 @@ function syncPressureDropSelectors(changedLevel = 'manufacturer') {
     return;
   }
   const selectedSize = parsePressureDropSizeOptionValue(sizeSelect.value);
-  const match = byModel.find(entry => entry.size === selectedSize.size && (!selectedSize.connectionSite || entry.connectionSite === selectedSize.connectionSite));
+  const match = byModel.find(entry => (
+    entry.size === selectedSize.size &&
+    (!selectedSize.connectionSite || entry.connectionSite === selectedSize.connectionSite) &&
+    (!Number.isFinite(selectedSize.outerDiameterFr) || entry.outerDiameterFr === selectedSize.outerDiameterFr)
+  ));
   categoryInput.value = match ? match.category : '';
 }
 
