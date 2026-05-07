@@ -30,6 +30,9 @@
             },
             accent: { 400: '#22d3ee', 500: '#06b6d4', 600: '#0891b2' }
           },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
           boxShadow: {
             card: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
             glow: '0 0 15px rgba(34, 211, 238, 0.3)'
@@ -39,16 +42,147 @@
     };
   </script>
   <style>
-    :root { --header-height: 60px; --bottom-nav-height: 64px; }
+    /* Custom Base Styles */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap');
+    :root {
+      --header-height: 60px;
+      --bottom-nav-height: 64px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .bsa-flow-number {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums lining-nums;
+      font-feature-settings: 'tnum' 1, 'lnum' 1;
+    }
+
+    /* Hide number input arrows */
     input[type=number] { appearance: textfield; }
     input[type=number]::-webkit-outer-spin-button,
     input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    /* Range Slider Styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: transparent;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+    }
+
+    /* Custom Scrollbar for desktop */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+
+    .phn-number {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+      font-weight: 600;
+      font-size: 1.06rem;
+      letter-spacing: 0.01em;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1, 'lnum' 1;
+    }
+    /* Logo Animation */
     @keyframes pulse-flow {
       0% { opacity: 0.6; transform: scale(0.95); }
       50% { opacity: 1; transform: scale(1.05); }
       100% { opacity: 0.6; transform: scale(0.95); }
     }
-    .animate-pulse-flow { animation: pulse-flow 3s infinite ease-in-out; }
+    .animate-pulse-flow {
+      animation: pulse-flow 3s infinite ease-in-out;
+    }
+
+    /* Accessibility: High contrast focus states for better keyboard navigation */
+    summary:focus {
+      outline: 2px solid #06b6d4;
+      outline-offset: 2px;
+    }
+
+    /* Heparin management UI helpers */
+    .hep-dose-btn {
+      width: 100%;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      color: #0f172a;
+      border-radius: 0.75rem;
+      padding: 0.6rem 0.75rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .hep-dose-btn:hover { border-color: #06b6d4; color: #0891b2; }
+    .dark .hep-dose-btn { background: #0f172a; border-color: #1e293b; color: #e2e8f0; }
+    .hep-dose-btn.active-dose {
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.25);
+      color: #0891b2;
+      background: rgba(6, 182, 212, 0.08);
+    }
+    .dark .hep-dose-btn.active-dose { background: rgba(8, 145, 178, 0.2); color: #67e8f9; border-color: #0ea5e9; }
+
+    .stat-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      box-shadow: 0 4px 8px -4px rgba(15, 23, 42, 0.25);
+    }
+    .dark .stat-card { background: #0b1220; border-color: #1e293b; box-shadow: none; }
+    .stat-card.highlight { border-color: #0ea5e9; box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.35); }
+    .stat-label { font-size: 0.75rem; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; }
+    .dark .stat-label { color: #94a3b8; }
+    .stat-value { font-size: 1.5rem; font-weight: 700; color: #0f172a; }
+    .dark .stat-value { color: #e2e8f0; }
+    .stat-unit { font-size: 0.9rem; color: #94a3b8; }
+
+    .badge {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(234, 179, 8, 0.15);
+      color: #ca8a04;
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+    }
+
+    .protocol-card, .flow-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.9rem;
+      padding: 1.25rem;
+      box-shadow: 0 4px 10px -6px rgba(15, 23, 42, 0.2);
+    }
+    .dark .protocol-card, .dark .flow-card { background: #0b1220; border-color: #1e293b; box-shadow: none; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      border-radius: 9999px;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .pill-warn { background: rgba(234, 179, 8, 0.15); color: #a16207; }
+    .pill-alert { background: rgba(248, 113, 113, 0.15); color: #b91c1c; }
+
+    .info-block {
+      border-radius: 0.9rem;
+      padding: 1rem 1.1rem;
+      border: 1px solid transparent;
+    }
+    .info-block.warn { background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.35); }
+    .info-block.alert { background: rgba(249, 115, 22, 0.1); border-color: rgba(249, 115, 22, 0.35); }
   </style>
 
   <script>
@@ -105,7 +239,7 @@
   </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/predicted-hct#webpage","url":"https://perfusiontools.com/predicted-hct/","name":"Predicted Hematocrit Calculator – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalEntity","name":"Hemodilution during cardiopulmonary bypass"},"dateModified":"2026-04-10"},{"@type":"WebApplication","@id":"https://perfusiontools.com/predicted-hct#app","name":"Predicted Hematocrit Calculator","url":"https://perfusiontools.com/predicted-hct/","applicationCategory":"MedicalApplication","operatingSystem":"Any","isPartOf":{"@id":"https://perfusiontools.com/predicted-hct#webpage"},"publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/predicted-hct#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"Predicted Hematocrit","item":"https://perfusiontools.com/predicted-hct/"}]}]}</script>
 </head>
-<body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0">
+<body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
     <div class="max-w-7xl mx-auto px-4 h-[var(--header-height)] flex items-center justify-between">
       <a href="/" class="flex items-center gap-3 select-none cursor-pointer hover:opacity-80 transition-opacity">
@@ -122,19 +256,25 @@
     </div>
   </header>
 
-  <div class="pt-[var(--header-height)] max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr] gap-0 min-h-screen">
-    <aside class="hidden md:block border-r border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/50 sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] p-4 overflow-y-auto">
+  <div class="pt-[var(--header-height)] max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr] gap-0 flex-1">
+    <aside id="desktop-sidebar" class="hidden md:block border-r border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/50 sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] p-4 overflow-y-auto">
       <div class="space-y-1">
         <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-3">Calculators</div>
         <a href="/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Home</a>
         <a href="/bsa/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">BSA Calculator</a>
-        <a href="/phn-echo/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Z-score Calculator</a>
+        <a href="/lbm/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Lean Body Mass</a>
         <a href="/gdp/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">GDP Calculator</a>
         <a href="/heparin/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Heparin Management</a>
         <a href="/predicted-hct/" id="side-hct" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-100 text-accent-600 dark:bg-primary-800 dark:text-accent-400">Predicted Hematocrit</a>
-        <a href="/lbm/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Lean Body Mass</a>
+        <a href="/phn-echo/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Z-score Calculator</a>
         <a href="/priming-volume/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Priming Volume</a>
         <a href="/timecalc/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Time Calculator</a>
+        <a href="/quick-reference/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Quick Reference</a>
+        <a href="/unit-converter/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Unit converter</a>
+      </div>
+      <div class="mt-8 space-y-1">
+        <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-3">Info</div>
+        <a href="/info/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">About</a>
       </div>
     </aside>
 
@@ -155,9 +295,20 @@
 
           <div class="p-6 grid sm:grid-cols-2 gap-6">
             <div class="sm:col-span-2 text-sm text-slate-600 dark:text-slate-300 rounded-xl bg-slate-50 dark:bg-primary-800/40 border border-slate-200 dark:border-primary-700 p-4">
-              Predicted hematocrit supports pre-bypass planning and on-pump adjustment decisions. Use this model to estimate dilution from prime and added fluids, then assess the impact of ultrafiltration and RBC products.
+              This predicted hematocrit calculator supports CPB hematocrit calculator workflows for both pre-CPB hemodilution planning and on-pump hematocrit adjustment. Use it as an estimation tool for cardiopulmonary bypass hematocrit, RBC transfusion hematocrit effects, and ultrafiltration hematocrit changes.
             </div>
 
+            <div class="sm:col-span-2">
+              <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Calculation mode</label>
+              <input id="hct_mode" type="hidden" value="pre" />
+              <div class="mt-1 inline-flex flex-wrap rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/40 p-1 gap-1" role="tablist" aria-label="Hematocrit calculation mode">
+                <button id="hct-mode-pre" type="button" role="tab" aria-selected="true" aria-pressed="true" data-hct-mode="pre" class="px-3 py-2 rounded-lg text-sm font-semibold bg-primary-900 text-white dark:bg-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500">Pre-CPB</button>
+                <button id="hct-mode-onpump" type="button" role="tab" aria-selected="false" aria-pressed="false" data-hct-mode="onpump" class="px-3 py-2 rounded-lg text-sm font-semibold bg-white dark:bg-primary-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-primary-700 focus:outline-none focus:ring-2 focus:ring-accent-500">On-pump</button>
+              </div>
+              <p id="hct-mode-help" class="mt-2 text-xs text-slate-500 dark:text-slate-400">Estimate dilutional hematocrit at CPB initiation.</p>
+            </div>
+
+            <div id="hct-pre-mode" class="sm:col-span-2 grid sm:grid-cols-2 gap-6">
             <div class="sm:col-span-2">
               <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Patient Type (EBV Coef)</label>
               <select id="pttype" class="mt-1 w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white cursor-pointer">
@@ -213,16 +364,96 @@
                  <input id="rbc_hct" type="number" step="1" value="60" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
               </div>
             </div>
+            </div>
+
+            <div id="hct-onpump-mode" class="sm:col-span-2 grid sm:grid-cols-2 gap-4 hidden">
+              <div class="sm:col-span-2 text-xs font-bold text-primary-900 dark:text-accent-400 uppercase tracking-wide">Baseline CPB volume</div>
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Patient type / EBV coefficient</label>
+                <select id="onpump_pttype" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white cursor-pointer">
+                  <option value="adult_m">Adult — Male (70 mL/kg)</option><option value="adult_f">Adult — Female (65 mL/kg)</option><option value="child">Child (75 mL/kg)</option><option value="infant">Infant (80 mL/kg)</option><option value="neonate">Neonate (90 mL/kg)</option>
+                </select>
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Weight (kg)</label>
+                <input id="onpump_weight" type="number" step="0.1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">EBV coefficient (mL/kg)</label>
+                <input id="onpump_ebv_coef" type="number" step="1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Prime volume (mL)</label>
+                <input id="onpump_prime" type="number" step="1" placeholder="1200" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Current Hct on CPB (%)</label>
+                <input id="current_hct" type="number" step="0.1" placeholder="24" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
+              </div>
+              <div class="sm:col-span-2 rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-900/40 p-3">
+                <p class="text-[11px] font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300 mb-2">Auto-calculated baseline</p>
+                <div class="grid sm:grid-cols-2 gap-2 text-xs text-slate-700 dark:text-slate-300">
+                  <div>EBV: <span id="onpump_ebv_auto" class="font-mono">0 mL</span></div>
+                  <div>Estimated CPB volume: <span id="onpump_estimated_auto" class="font-mono">0 mL</span></div>
+                </div>
+              </div>
+              <div class="sm:col-span-2 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/70 dark:bg-primary-900/30 p-3 space-y-2">
+                <p class="text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">Optional manual override</p>
+                <label class="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300">
+                  <input id="use_manual_current_volume" type="checkbox" class="rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
+                  <span>Use manual current volume instead</span>
+                </label>
+                <div id="manual-current-volume-wrap" class="hidden space-y-1">
+                  <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Manual current volume (mL)</label>
+                  <input id="manual_current_volume" type="number" step="1" value="0" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400">Use this only if you want to replace the EBV + prime estimate with your own current CPB volume estimate.</p>
+                  <p id="manual-override-active-note" class="hidden text-[11px] text-amber-600 dark:text-amber-300 font-medium">Override active: calculations now use the manual current volume.</p>
+                </div>
+              </div>
+              <div class="sm:col-span-2 rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-4">
+                <div>
+                  <p class="text-xs font-bold text-primary-900 dark:text-accent-400 uppercase tracking-wide">ON-PUMP VOLUME ADJUSTMENTS</p>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Estimate the effect of fluid addition, ultrafiltration, and RBC transfusion during CPB.</p>
+                </div>
+                <div class="grid sm:grid-cols-2 gap-4">
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Crystalloid / fluid to add (mL)</label>
+                    <input id="onpump_fluids" type="number" step="1" value="0" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Ultrafiltration to remove (mL)</label>
+                    <input id="onpump_removed" type="number" step="1" value="0" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
+                  </div>
+                </div>
+                <div class="pt-3 border-t border-slate-200 dark:border-primary-700">
+                  <div class="bg-red-50 dark:bg-red-900/10 p-4 rounded-xl border border-red-100 dark:border-red-900/20 sm:col-span-2 grid sm:grid-cols-3 gap-4">
+                    <div class="sm:col-span-3 text-xs font-bold text-red-800 dark:text-red-400 uppercase tracking-wide mb-1">Blood Products</div>
+                    <div class="space-y-1">
+                       <label class="text-xs text-slate-500 dark:text-slate-400">RBC Units</label>
+                       <input id="onpump_rbc_units" type="number" step="1" value="0" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
+                    </div>
+                    <div class="space-y-1">
+                       <label class="text-xs text-slate-500 dark:text-slate-400">Vol/Unit (mL)</label>
+                       <input id="onpump_rbc_unit_vol" type="number" step="1" value="300" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
+                    </div>
+                    <div class="space-y-1">
+                       <label class="text-xs text-slate-500 dark:text-slate-400">Unit Hct (%)</label>
+                       <input id="onpump_rbc_hct" type="number" step="1" value="60" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="bg-primary-900 dark:bg-black/20 p-6 text-white grid grid-cols-3 gap-4 divide-x divide-primary-800 dark:divide-white/10 text-center">
             <div>
-              <div class="text-[10px] uppercase tracking-wider text-slate-400 mb-1">EBV</div>
+              <div id="hct-left-label" class="text-[10px] uppercase tracking-wider text-slate-400 mb-1">EBV</div>
               <div id="ebv" class="text-lg font-mono font-medium">0</div>
               <div class="text-[10px] text-slate-500">ml</div>
             </div>
             <div>
-              <div class="text-[10px] uppercase tracking-wider text-slate-400 mb-1">Total Vol</div>
+              <div id="hct-right-label" class="text-[10px] uppercase tracking-wider text-slate-400 mb-1">Total Vol</div>
               <div id="total_vol" class="text-lg font-mono font-medium">0</div>
               <div class="text-[10px] text-slate-500">ml</div>
             </div>
@@ -231,6 +462,14 @@
               <div id="pred_hct" class="text-2xl font-bold text-white">0%</div>
             </div>
           </div>
+          <div id="onpump-extra-results" class="hidden px-6 py-5 bg-primary-950 dark:bg-primary-950 text-slate-100 border-t border-primary-800">
+            <div class="rounded-lg bg-primary-900/60 border border-primary-700 p-3">
+              <p class="text-[11px] uppercase tracking-wide text-slate-300">Predicted post-adjustment result</p>
+              <p class="mt-1 text-sm text-slate-100">Current Hct: <span id="current_hct_result" class="font-semibold">0.0%</span> → Predicted Hct: <span id="pred_hct_result" class="text-xl font-bold text-white">0.0%</span></p>
+              <p class="mt-1 text-sm text-accent-300 font-semibold">Change: <span id="hct_change" class="font-bold">0.0</span> percentage points</p>
+            </div>
+
+          </div>
 
           <div class="bg-slate-50 dark:bg-primary-800/30 border-t border-slate-100 dark:border-primary-700/50 p-4">
             <h4 class="text-xs font-bold text-primary-900 dark:text-slate-200 uppercase tracking-wider mb-2">Clinical context</h4>
@@ -238,21 +477,32 @@
               <p>• <strong>Target ranges:</strong> Many adult programs maintain approximately 21–30% on pump, with higher goals in pediatric and neonatal patients.</p>
               <p>• <strong>Practical levers:</strong> Lower prime volume and UF tend to raise Hct, while crystalloid additions lower Hct.</p>
               <p>• <strong>Transfusion planning:</strong> RBC unit count, unit volume, and unit Hct assumptions directly shift predicted output.</p>
+              <p>• <strong>On-pump hematocrit adjustment:</strong> On-pump adjustment uses a simplified CPB volume estimate based on estimated blood volume plus priming volume. It applies the current measured Hct to that volume, then estimates the effect of planned crystalloid addition, RBC transfusion, or ultrafiltration.</p>
+              <p>• <strong>RBC note:</strong> RBC transfusion increases both red cell volume and total circulating volume. During CPB, the Hct rise from 1 unit may be smaller than expected when the estimated CPB volume is large.</p>
             </div>
             <p class="mt-3 text-[10px] text-slate-400 italic">Educational support tool only; verify with measured laboratory values.</p>
+            <p class="mt-2 text-[10px] text-slate-500 italic">This is a simplified mixing estimate. Actual Hct may differ due to reservoir level changes, sampling timing, ongoing bleeding, cell saver return, cardioplegia return, ultrafiltration efficiency, and institutional practice.</p>
           </div>
 
           <div class="px-6 pb-6">
+            <div class="mt-4 p-4 rounded-xl bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed space-y-1">
+              <h4 class="text-xs font-bold text-primary-900 dark:text-slate-200 uppercase tracking-wider">Practical notes</h4>
+              <p>• A lower predicted Hct may be acceptable during hypothermic CPB when metabolic demand is reduced, but adequacy should still be assessed with oxygen delivery and clinical markers.</p>
+              <p>• A normal predicted Hct does not guarantee adequate oxygen delivery if pump flow, arterial saturation, hemoglobin concentration, or microcirculatory conditions are unfavorable.</p>
+              <p>• The calculator estimates hematocrit change from volume balance. It does not replace transfusion thresholds, institutional blood conservation protocols, or patient-specific clinical judgment.</p>
+              <p>• When the predicted Hct is near a local transfusion threshold, consider confirming with measured Hct after adequate mixing time.</p>
+            </div>
             <details class="mt-4 group">
               <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
                 <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology & limitations
               </summary>
               <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
-                <p><strong>EBV model:</strong> EBV (mL) = Weight (kg) × EBV coefficient (mL/kg).</p>
-                <p><strong>Red cell volume:</strong> RBC_patient = EBV × (Pre-CPB Hct ÷ 100), and RBC_products = (Units × Volume per unit) × (Unit Hct ÷ 100).</p>
-                <p><strong>Total volume:</strong> V_total = EBV + Prime + Additional fluids + RBC product volume − UF removed.</p>
-                <p><strong>Predicted Hct:</strong> Predicted Hct (%) = (RBC_patient + RBC_products) ÷ V_total × 100.</p>
-                <p><strong>Limitations:</strong> Assumes complete mixing and does not fully model rapid bleeding/reinfusion shifts or compartment changes. Use with clinical markers and local protocol.</p>
+                <p><strong>EBV model:</strong> Estimated blood volume, EBV (mL), is calculated from body weight and the selected EBV coefficient.<br />EBV = Weight (kg) × EBV coefficient (mL/kg).</p>
+                <p><strong>Red cell volume:</strong> Patient red cell volume is estimated from EBV and pre-CPB hematocrit.<br />RBC_patient = EBV × (Pre-CPB Hct ÷ 100).<br />Red cell volume added from transfusion is estimated from RBC unit volume and unit hematocrit.<br />RBC_products = RBC units × RBC volume per unit × (Unit Hct ÷ 100).</p>
+                <p><strong>Total circulating volume:</strong> Total volume includes estimated blood volume, CPB prime volume, added fluids, and RBC product volume, minus ultrafiltration removed.<br />V_total = EBV + Prime volume + Additional fluids + RBC product volume − UF removed.</p>
+                <p><strong>Predicted hematocrit:</strong> Predicted Hct is calculated as total red cell volume divided by total circulating volume.<br />Predicted Hct (%) = [(RBC_patient + RBC_products) ÷ V_total] × 100.</p>
+                <p><strong>On-pump adjustment model:</strong><br />Estimated CPB volume = EBV + Prime volume.<br />Current RBC volume = Estimated CPB volume × (Current Hct ÷ 100).<br />Added RBC volume = RBC units × RBC volume per unit × (Unit Hct ÷ 100).<br />Final estimated volume = Estimated CPB volume + Fluid added + RBC product volume − UF removed.<br />Predicted post-adjustment Hct (%) = [(Current RBC volume + Added RBC volume) ÷ Final estimated volume] × 100.<br />If manual current volume override is active, the manual value replaces EBV + Prime volume as the estimated CPB volume.</p>
+                <p><strong>Limitations:</strong> This is a simplified complete-mixing model. Actual hematocrit may differ because of reservoir level changes, sampling timing, ongoing bleeding, cell saver return, cardioplegia return, hemolysis, sequestration, rapid volume shifts, ultrafiltration efficiency, and uncertainty in patient-circuit volume. Use with clinical markers and local protocol.</p>
               </div>
             </details>
           </div>
@@ -270,14 +520,67 @@
     </main>
   </div>
 
-  <footer class="hidden md:block mt-10 border-t border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/90">
+  <footer class="hidden md:block mt-10 border-t border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/90 mt-auto">
     <div class="max-w-7xl mx-auto px-4 py-8 text-sm text-slate-500 dark:text-slate-400 flex items-center justify-between gap-3">
       <p>© <span id="year"></span> Perfusion Tools. Educational use for healthcare professionals.</p>
       <nav class="flex gap-4">
-<a href="/privacy" class="hover:text-accent-500 transition-colors">Privacy</a>
+        <a href="/privacy/" class="hover:text-accent-500 transition-colors">Privacy</a>
+        <a href="/terms/" class="hover:text-accent-500 transition-colors">Terms</a>
+        <a href="/contact/" class="hover:text-accent-500 transition-colors">Contact</a>
       </nav>
     </div>
   </footer>
+
+  <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-primary-900 border-t border-slate-200 dark:border-primary-800 z-50 flex items-center h-[var(--bottom-nav-height)] pb-safe overflow-x-auto whitespace-nowrap px-1">
+    <a href="/" id="mob-home" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9.75l9-6 9 6V19.5A1.5 1.5 0 0119.5 21h-15A1.5 1.5 0 013 19.5V9.75z" /></svg>
+      <span class="text-[10px] font-medium">Home</span>
+    </a>
+    <a href="/bsa/" data-route id="mob-bsa" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.5 9.75A2.25 2.25 0 016.75 7.5h10.5A2.25 2.25 0 0119.5 9.75v4.5A2.25 2.25 0 0117.25 16.5H6.75A2.25 2.25 0 014.5 14.25v-4.5z M8.25 12h7.5M9 9.75v4.5m6-4.5v4.5" /></svg>
+      <span class="text-[10px] font-medium">BSA</span>
+    </a>
+    <a href="/lbm/" data-route id="mob-lbm" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+      <span class="text-[10px] font-medium">LBM</span>
+    </a>
+    <a href="/gdp/" data-route id="mob-do2i" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+      <span class="text-[10px] font-medium">GDP</span>
+    </a>
+    <a href="/heparin/" data-route id="mob-heparin" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <span class="text-[10px] font-medium">Heparin</span>
+    </a>
+    <a href="/predicted-hct/" data-route id="mob-hct" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-accent-600 dark:text-accent-400 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+      <span class="text-[10px] font-medium">Hct</span>
+    </a>
+    <a href="/phn-echo/" data-route id="mob-phn-echo" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.75 6.75A2.25 2.25 0 016 4.5h12a2.25 2.25 0 012.25 2.25v10.5A2.25 2.25 0 0118 19.5H6a2.25 2.25 0 01-2.25-2.25V6.75z M8.25 9h7.5M8.25 12h4.5M8.25 15h7.5" /></svg>
+      <span class="text-[10px] font-medium">Z-score</span>
+    </a>
+    <a href="/priming-volume/" data-route id="mob-priming" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 3h10M9 3v5l-5 7a4 4 0 003.2 6h9.6A4 4 0 0020 15l-5-7V3" /></svg>
+      <span class="text-[10px] font-medium leading-tight text-center whitespace-nowrap">Priming</span>
+    </a>
+    <a href="/timecalc/" data-route id="mob-time" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <span class="text-[10px] font-medium">Time</span>
+    </a>
+    <a href="/quick-reference/" data-route id="mob-quick-reference" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6.75A2.75 2.75 0 016.75 4h10.5A2.75 2.75 0 0120 6.75v10.5A2.75 2.75 0 0117.25 20H6.75A2.75 2.75 0 014 17.25V6.75z M8 9h8M8 13h8M8 17h5" /></svg>
+      <span class="text-[10px] font-medium leading-tight text-center whitespace-nowrap">Quick Ref</span>
+    </a>
+    <a href="/unit-converter/" data-route id="mob-unit-converter" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M7 12h10M10 17h4" /></svg>
+      <span class="text-[10px] font-medium leading-tight text-center whitespace-nowrap">Unit Conv</span>
+    </a>
+    <a href="/info/" id="mob-info" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <span class="text-[10px] font-medium">Info</span>
+    </a>
+  </nav>
 
   <script src="/main.js"></script>
 </body>
