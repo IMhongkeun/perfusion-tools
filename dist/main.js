@@ -890,6 +890,32 @@ const cannulaPressureDropData = [
   },
   {
     manufacturer: 'Medtronic',
+    model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    category: 'venous',
+    size: '12 Fr',
+    outerDiameterFr: 12,
+    outerDiameterMm: 4.0,
+    overallLengthIn: 14,
+    overallLengthCm: 35.6,
+    connectionSite: '1/4 in (0.64 cm)',
+    cannulaOrderCode: '67312',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 1/4 in connection site pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 1/4 in connection site chart.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.5, pressureDrop: 14 },
+      { flow: 1.0, pressureDrop: 48 },
+      { flow: 1.5, pressureDrop: 98 },
+      { flow: 2.0, pressureDrop: 163 }
+    ],
+    notes: 'DLP Single Stage Venous Cannula with Right Angle Metal Tip. 12 Fr (4.0 mm), 14 in (35.6 cm) overall length, 1/4 in (0.64 cm) connection site. Order code 67312.'
+  },
+  {
+    manufacturer: 'Medtronic',
     model: 'EOPA 3D Arterial Cannulae',
     category: 'arterial',
     size: '20 Fr',
@@ -2253,11 +2279,23 @@ function normalizePressureDropKey(value) {
   return String(value || '').trim().toLowerCase();
 }
 
+function getPressureDropSizeOptionValue(entry) {
+  const connectionSite = entry.connectionSite ? `||${entry.connectionSite}` : '';
+  return `${entry.size || ''}${connectionSite}`;
+}
+
+function parsePressureDropSizeOptionValue(value) {
+  const [size = '', connectionSite = ''] = String(value || '').split('||');
+  return { size, connectionSite };
+}
+
 function findPressureDropEntry({ manufacturer, category, model, size }) {
+  const selectedSize = parsePressureDropSizeOptionValue(size);
   const normalizedManufacturer = normalizePressureDropKey(manufacturer);
   const normalizedCategory = normalizePressureDropKey(category);
   const normalizedModel = normalizePressureDropKey(model);
-  const normalizedSize = normalizePressureDropKey(size);
+  const normalizedSize = normalizePressureDropKey(selectedSize.size);
+  const normalizedConnectionSite = normalizePressureDropKey(selectedSize.connectionSite);
 
   if (!normalizedManufacturer || !normalizedCategory || !normalizedModel || !normalizedSize) return null;
 
@@ -2265,7 +2303,8 @@ function findPressureDropEntry({ manufacturer, category, model, size }) {
     normalizePressureDropKey(entry.manufacturer) === normalizedManufacturer &&
     normalizePressureDropKey(entry.category) === normalizedCategory &&
     normalizePressureDropKey(entry.model) === normalizedModel &&
-    normalizePressureDropKey(entry.size) === normalizedSize
+    normalizePressureDropKey(entry.size) === normalizedSize &&
+    (!normalizedConnectionSite || normalizePressureDropKey(entry.connectionSite) === normalizedConnectionSite)
   )) || null;
 }
 
@@ -2423,6 +2462,7 @@ function getPressureDropProductFamily(entry) {
   if (model.includes('EOPA')) return 'EOPA';
   if (model.includes('Select 3D II')) return 'Select 3D II';
   if (model.includes('Select Series')) return 'Select Series';
+  if (model.includes('DLP')) return 'DLP';
   if (model.includes('Bio-Medicus Multi-stage')) return 'Bio-Medicus';
   if (model.includes('Bio-Medicus NextGen')) return 'Bio-Medicus NextGen';
   if (model.includes('RAP')) return 'MICS Cannulae — RAP Femoral Venous Cannulae';
@@ -2457,7 +2497,8 @@ function renderAvailableCurveDatasets() {
     grouped[manufacturer] = grouped[manufacturer] || {};
     grouped[manufacturer][family] = grouped[manufacturer][family] || {};
     grouped[manufacturer][family][model] = grouped[manufacturer][family][model] || new Set();
-    grouped[manufacturer][family][model].add(entry.size || 'Unknown size');
+    const sizeLabel = entry.connectionSite ? `${entry.size || 'Unknown size'} (${entry.connectionSite})` : (entry.size || 'Unknown size');
+    grouped[manufacturer][family][model].add(sizeLabel);
   });
 
   const parts = [];
@@ -2501,12 +2542,17 @@ function syncPressureDropSelectors(changedLevel = 'manufacturer') {
   }
   const byModel = byFamily.filter(entry => entry.model === modelSelect.value);
   if (changedLevel === 'model') {
-    setSelectOptions(sizeSelect, byModel.map(entry => ({ value: entry.size, label: `${entry.size} — ${(entry.points||[]).length ? 'curve available' : 'metadata only'}` })), 'Select size');
+    setSelectOptions(sizeSelect, byModel.map(entry => {
+      const connectionLabel = entry.connectionSite ? ` — ${entry.connectionSite}` : '';
+      const dataLabel = (entry.points || []).length ? 'curve available' : 'metadata only';
+      return { value: getPressureDropSizeOptionValue(entry), label: `${entry.size}${connectionLabel} — ${dataLabel}` };
+    }), 'Select size');
     categoryInput.value='';
     if (sizeSelect.options.length === 2) { sizeSelect.value = sizeSelect.options[1].value; syncPressureDropSelectors('size'); }
     return;
   }
-  const match = byModel.find(entry => entry.size === sizeSelect.value);
+  const selectedSize = parsePressureDropSizeOptionValue(sizeSelect.value);
+  const match = byModel.find(entry => entry.size === selectedSize.size && (!selectedSize.connectionSite || entry.connectionSite === selectedSize.connectionSite));
   categoryInput.value = match ? match.category : '';
 }
 
@@ -2527,6 +2573,7 @@ function getPressureDropProductMetadataText(entry) {
     `Outer diameter: ${entry.outerDiameterFr} Fr (${entry.outerDiameterMm.toFixed(1)} mm)`,
     formatLengthMetadata('Overall length', entry.overallLengthIn, entry.overallLengthCm),
     formatLengthMetadata('Tip length', entry.tipLengthIn, entry.tipLengthCm),
+    entry.connectionSite ? `Connection site: ${entry.connectionSite}` : '',
     entry.connectorSize ? `Connector: ${entry.connectorSize}` : '',
     entry.cannulaOrderCode ? `${cannulaOrderCodeLabel}: ${entry.cannulaOrderCode}` : '',
     entry.cannulaKitOrderCode ? `Cannula kit order code: ${entry.cannulaKitOrderCode}` : '',
@@ -2537,7 +2584,7 @@ function getPressureDropProductMetadataText(entry) {
 
 function updatePressureDropReference() {
   const manufacturerInput = el('pressure-drop-manufacturer'); const categorySelect = el('pressure-drop-category'); const familySelect = el('pressure-drop-product-family'); const modelInput = el('pressure-drop-model'); const sizeInput = el('pressure-drop-size'); const targetFlowInput = el('pressure-drop-target-flow');
-  const statusMessage = el('pressure-drop-status-message'); const sourceWrap = el('pressure-drop-source'); const sourceLabel = el('pressure-drop-source-label'); const sourceUrl = el('pressure-drop-source-url'); const testMedium = el('pressure-drop-test-medium'); const dataStatus = el('pressure-drop-data-status'); const digitizationNote = el('pressure-drop-digitization-note'); const notes = el('pressure-drop-notes'); const productMeta = el('pressure-drop-product-meta');
+  const statusMessage = el('pressure-drop-status-message'); const sourceWrap = el('pressure-drop-source'); const sourceLabel = el('pressure-drop-source-label'); const sourceUrl = el('pressure-drop-source-url'); const testMedium = el('pressure-drop-test-medium'); const dataStatus = el('pressure-drop-data-status'); const digitizationNote = el('pressure-drop-digitization-note'); const connectionSite = el('pressure-drop-connection-site'); const notes = el('pressure-drop-notes'); const productMeta = el('pressure-drop-product-meta');
   const chartWrap = el('pressure-drop-chart-wrap'); const chartNode = el('pressure-drop-chart'); const curveMeta = el('pressure-drop-curve-meta'); const selectedModel = el('pressure-drop-selected-model'); const rangeText = el('pressure-drop-range'); const interpNote = el('pressure-drop-interp-note'); const chartRangeLabel = el('pressure-drop-chart-range-label'); const benchLabel = el('pressure-drop-bench-label');
   if (!manufacturerInput || !categorySelect || !familySelect || !modelInput || !sizeInput || !targetFlowInput || !statusMessage || !sourceWrap || !sourceLabel || !sourceUrl || !testMedium || !notes || !chartWrap || !chartNode || !curveMeta || !selectedModel || !rangeText || !interpNote || !chartRangeLabel || !benchLabel) return;
   chartWrap.classList.add('hidden'); curveMeta.classList.add('hidden'); sourceWrap.classList.add('hidden'); interpNote.classList.add('hidden'); chartRangeLabel.classList.add('hidden'); benchLabel.classList.add('hidden');
@@ -2555,10 +2602,10 @@ function updatePressureDropReference() {
   const curveModel = useLinearOnly ? null : createPressureDropCurveModel(validPoints);
   const chartOptions = useLinearOnly ? { curveMode: 'linear' } : {};
   rangeText.textContent = `Reference flow range shown in manufacturer data: ${validPoints[0].flow}–${validPoints[validPoints.length - 1].flow} L/min`;
-  selectedModel.textContent = `${match.manufacturer} / ${match.model} / ${match.category} / ${match.size}`;
+  selectedModel.textContent = `${match.manufacturer} / ${match.model} / ${match.category} / ${match.size}${match.connectionSite ? ` / ${match.connectionSite}` : ''}`;
   interpNote.textContent = match.interpolationNote || 'Digitized from manufacturer chart; fitted/interpolated pressure drop is approximate.';
   curveMeta.classList.remove('hidden'); sourceWrap.classList.remove('hidden'); chartRangeLabel.classList.remove('hidden'); benchLabel.classList.remove('hidden'); chartWrap.classList.remove('hidden'); interpNote.classList.remove('hidden');
-  sourceLabel.textContent = match.sourceLabel || '—'; sourceUrl.textContent = match.sourceUrl || '—'; testMedium.textContent = `Test medium: ${match.testMedium || '—'}`; dataStatus.textContent = `Data status: ${formatPressureDropDataStatus(match.dataStatus)}`; digitizationNote.textContent = `Digitization note: ${match.digitizationNote || '—'}`; notes.textContent = `Notes: ${match.notes || '—'}`;
+  sourceLabel.textContent = match.sourceLabel || '—'; sourceUrl.textContent = match.sourceUrl || '—'; testMedium.textContent = `Test medium: ${match.testMedium || '—'}`; dataStatus.textContent = `Data status: ${formatPressureDropDataStatus(match.dataStatus)}`; digitizationNote.textContent = `Digitization note: ${match.digitizationNote || '—'}`; if (connectionSite) connectionSite.textContent = `Connection site: ${match.connectionSite || '—'}`; notes.textContent = `Notes: ${match.notes || '—'}`;
   if (productMeta) {
     const metadataText = getPressureDropProductMetadataText(match);
     productMeta.textContent = metadataText ? `Product metadata: ${metadataText}` : '';
@@ -2567,7 +2614,7 @@ function updatePressureDropReference() {
   if (!hasTargetFlow || result.state === 'invalid') { statusMessage.textContent = 'Enter target flow to estimate pressure drop.'; drawPressureDropChart(chartNode, validPoints, NaN, NaN, chartOptions); return; }
   if (result.state === 'exact' || result.state === 'interpolated') {
     const estimatedPressureDrop = curveModel ? curveModel.estimate(targetFlow) : result.value;
-    statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${estimatedPressureDrop.toFixed(1)} mmHg`;
+    statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${estimatedPressureDrop.toFixed(1)} mmHg. Interpolated estimate from digitized manufacturer-published curve data.`;
     drawPressureDropChart(chartNode, validPoints, targetFlow, estimatedPressureDrop, chartOptions);
     return;
   }
