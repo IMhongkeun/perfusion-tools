@@ -890,6 +890,36 @@ const cannulaPressureDropData = [
   },
   {
     manufacturer: 'Medtronic',
+    model: 'DLP Single Stage Venous Cannulae',
+    category: 'venous',
+    size: '12 Fr',
+    outerDiameterFr: 12,
+    outerDiameterMm: 4.0,
+    overallLengthRangeIn: '12–16',
+    overallLengthRangeCm: '30.5–40.6',
+    connectionSite: '1/4 in (0.64 cm)',
+    cannulaOrderCode: '66112',
+    cartonQuantity: '10 per carton',
+    sourceLabel: 'Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae pressure-loss chart',
+    sourceUrl: 'Uploaded Medtronic Cannula Catalog 2020',
+    testMedium: 'Water',
+    dataStatus: 'digitized-curve',
+    digitizationNote: 'Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Flow values are preserved to two decimals because this small-size cannula has a narrow, steep pressure-flow range.',
+    outOfRangeMessage: 'Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.',
+    points: [
+      { flow: 0.21, pressureDrop: 10 },
+      { flow: 0.33, pressureDrop: 20 },
+      { flow: 0.49, pressureDrop: 36 },
+      { flow: 0.58, pressureDrop: 50 },
+      { flow: 0.66, pressureDrop: 61 },
+      { flow: 0.72, pressureDrop: 70 },
+      { flow: 0.77, pressureDrop: 80 },
+      { flow: 0.82, pressureDrop: 90 }
+    ],
+    notes: 'DLP Single Stage Venous Cannulae. 12 Fr (4.0 mm), 12–16 in (30.5–40.6 cm) overall length range, 1/4 in (0.64 cm) connection site. Order code 66112.'
+  },
+  {
+    manufacturer: 'Medtronic',
     model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
     category: 'venous',
     size: '12 Fr',
@@ -2983,10 +3013,16 @@ function getPressureDropProductMetadataText(entry) {
     if (Number.isFinite(lengthCm)) return `${label}: ${lengthCm} cm`;
     return '';
   };
+  const formatLengthRangeMetadata = (label, lengthRangeIn, lengthRangeCm) => {
+    if (lengthRangeIn && lengthRangeCm) return `${label}: ${lengthRangeIn} in (${lengthRangeCm} cm)`;
+    if (lengthRangeCm) return `${label}: ${lengthRangeCm} cm`;
+    return '';
+  };
   const cannulaOrderCodeLabel = entry.cannulaOrderCodeLabel || 'Cannula order code';
   const parts = [
     `Outer diameter: ${entry.outerDiameterFr} Fr (${entry.outerDiameterMm.toFixed(1)} mm)`,
     formatLengthMetadata('Overall length', entry.overallLengthIn, entry.overallLengthCm),
+    formatLengthRangeMetadata('Overall length', entry.overallLengthRangeIn, entry.overallLengthRangeCm),
     formatLengthMetadata('Tip length', entry.tipLengthIn, entry.tipLengthCm),
     entry.connectionSite ? `Connection site: ${entry.connectionSite}` : '',
     entry.connectorSize ? `Connector: ${entry.connectorSize}` : '',
