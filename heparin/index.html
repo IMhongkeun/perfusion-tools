@@ -114,6 +114,7 @@
       background: #fff;
       color: #0f172a;
       border-radius: 0.75rem;
+      min-height: 2.75rem;
       padding: 0.6rem 0.75rem;
       font-weight: 600;
       font-size: 0.9rem;
@@ -311,12 +312,12 @@
                   <div class="grid grid-cols-2 gap-3">
                     <div>
                       <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Height (cm)</label>
-                      <input id="hep2-height" type="number" min="0" step="0.1" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="170" />
+                      <input id="hep2-height" type="number" inputmode="decimal" min="0" step="0.1" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="170" />
                       <p id="hep2-height-error" class="text-xs text-red-500 mt-1 hidden">Height should be 50–250 cm</p>
                     </div>
                     <div>
                       <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Weight (kg)</label>
-                      <input id="hep2-weight" type="number" min="0" step="0.1" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="70" />
+                      <input id="hep2-weight" type="number" inputmode="decimal" min="0" step="0.1" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="70" />
                       <p id="hep2-weight-error" class="text-xs text-red-500 mt-1 hidden">Weight should be 20–300 kg</p>
                     </div>
                   </div>
@@ -335,7 +336,7 @@
                   <div>
                     <div class="flex items-center gap-2 mb-1">
                       <label class="text-xs text-slate-500 dark:text-slate-400">Weight strategy</label>
-                      <button id="hep2-weight-info-toggle" type="button" class="text-[11px] text-accent-600 dark:text-accent-400 underline-offset-2 hover:underline">ⓘ</button>
+                      <button id="hep2-weight-info-toggle" type="button" class="inline-flex min-h-11 min-w-11 items-center justify-center text-[11px] text-accent-600 dark:text-accent-400 underline-offset-2 hover:underline">ⓘ</button>
                     </div>
                     <select id="hep2-weight-strategy" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500">
                       <option value="auto">Auto-detect (Recommended)</option>
