@@ -6,17 +6,17 @@ const defaultSiteUrl = 'https://perfusiontools.com';
  */
 export const sitemapPaths = [
   '/',
-  '/bsa',
-  '/gdp',
-  '/heparin',
-  '/predicted-hct',
-  '/lbm',
-  '/timecalc',
-  '/phn-echo',
-  '/quick-reference',
-  '/faq',
-  '/contact',
-  '/info'
+  '/bsa/',
+  '/lbm/',
+  '/gdp/',
+  '/heparin/',
+  '/predicted-hct/',
+  '/z-score/',
+  '/priming-volume/',
+  '/timecalc/',
+  '/unit-converter/',
+  '/quick-reference/',
+  '/info/'
 ] as const;
 
 /**
