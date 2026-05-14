@@ -191,14 +191,14 @@
         title: 'Perfusion Unit Converter for Flow, Pressure and Cannula Size | Perfusion Tools',
         h1: 'Perfusion Unit Converter',
         description: 'Clinical unit converter for perfusion flow, pressure, and cannula size. Convert French size, gauge, and CPB tubing inch sizes to diameter and Fr-equivalent values.',
-        canonicalPath: '/unit-converter'
+        canonicalPath: '/unit-converter/'
       },
       '/unit-converter': {
         title: 'Perfusion Unit Converter for Flow, Pressure and Cannula Size | Perfusion Tools',
         h1: 'Perfusion Unit Converter',
         description: 'Clinical unit converter for perfusion flow, pressure, and cannula size. Convert French size, gauge, and CPB tubing inch sizes to diameter and Fr-equivalent values.',
         headingDescription: 'Convert flow, pressure, and cannula size units used in CPB, ECMO, and vascular access workflows.',
-        canonicalPath: '/unit-converter'
+        canonicalPath: '/unit-converter/'
       }
     };
 
@@ -227,7 +227,7 @@
       if (subtitleEl) subtitleEl.textContent = meta.headingDescription || meta.description;
 
       const canonicalTag = document.querySelector('link[rel="canonical"]');
-      if (canonicalTag) canonicalTag.setAttribute('href', `https://perfusiontools.com${meta.canonicalPath || '/unit-converter'}`);
+      if (canonicalTag) canonicalTag.setAttribute('href', `https://perfusiontools.com${meta.canonicalPath || '/unit-converter/'}`);
 
       return path;
     }
@@ -266,7 +266,7 @@
         <a href="/gdp/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">GDP Calculator</a>
         <a href="/heparin/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Heparin Management</a>
         <a href="/predicted-hct/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Predicted Hematocrit</a>
-        <a href="/phn-echo/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Z-score Calculator</a>
+        <a href="/z-score/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Z-score Calculator</a>
         <a href="/priming-volume/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Priming Volume</a>
         <a href="/timecalc/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Time Calculator</a>
         <a href="/quick-reference/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Quick Reference</a>
@@ -296,9 +296,9 @@
 
           <div class="p-6 space-y-6">
             <div class="flex flex-wrap items-center gap-2 border-b border-slate-100 dark:border-primary-800 pb-3">
-              <button id="unit-tab-flow" data-unit-tab="flow" type="button" class="px-3 py-1.5 rounded-lg bg-accent-500/15 text-accent-700 dark:text-accent-300 text-sm font-semibold">flow</button>
-              <button id="unit-tab-pressure" data-unit-tab="pressure" type="button" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-primary-800 transition-colors">pressure</button>
-              <button id="unit-tab-cannula" data-unit-tab="cannula" type="button" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-primary-800 transition-colors">cannula size</button>
+              <button id="unit-tab-flow" data-unit-tab="flow" type="button" class="min-h-11 px-4 py-2 rounded-lg bg-accent-500/15 text-accent-700 dark:text-accent-300 text-sm font-semibold">flow</button>
+              <button id="unit-tab-pressure" data-unit-tab="pressure" type="button" class="min-h-11 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-primary-800 transition-colors">pressure</button>
+              <button id="unit-tab-cannula" data-unit-tab="cannula" type="button" class="min-h-11 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-primary-800 transition-colors">cannula size</button>
             </div>
 
             <div id="unit-panel-flow" class="space-y-6">
@@ -307,11 +307,11 @@
                   <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Inputs</h3>
                   <label class="block space-y-1">
                     <span id="unit-label-flow-input" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Flow (L/min)</span>
-                    <input id="unit-flow-lmin" type="number" step="0.01" min="0" placeholder="4.5" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+                    <input id="unit-flow-lmin" type="number" inputmode="decimal" step="0.01" min="0" placeholder="4.5" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
                   </label>
                   <label class="block space-y-1">
                     <span id="unit-label-flow-weight-input" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Weight (kg)</span>
-                    <input id="unit-flow-weight" type="number" step="0.1" min="0" placeholder="70" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+                    <input id="unit-flow-weight" type="number" inputmode="decimal" step="0.1" min="0" placeholder="70" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
                   </label>
                 </div>
 
@@ -342,7 +342,7 @@
                   <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Inputs</h3>
                   <label class="block space-y-1">
                     <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Value</span>
-                    <input id="unit-pressure-value" type="number" step="any" placeholder="80" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+                    <input id="unit-pressure-value" type="number" inputmode="decimal" step="any" placeholder="80" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
                   </label>
                   <label class="block space-y-1">
                     <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">From unit</span>
@@ -419,7 +419,7 @@
 
                   <label id="cannula-fr-mm-wrap" class="block space-y-1">
                     <span id="cannula-fr-mm-label" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">French size (Fr)</span>
-                    <input id="cannula-fr-mm-value" type="number" step="0.01" min="0" placeholder="6" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+                    <input id="cannula-fr-mm-value" type="number" inputmode="decimal" step="0.01" min="0" placeholder="6" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
                   </label>
 
                   <label id="cannula-gauge-wrap" class="block space-y-1 hidden">
@@ -467,9 +467,9 @@
                   <p class="text-sm text-slate-600 dark:text-slate-300">Convert French size, diameter, gauge, and common CPB tubing inch sizes.</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                  <button type="button" data-tubing-inch="0.25" aria-pressed="false" class="rounded-lg border border-slate-200 dark:border-primary-700 px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-500 transition-colors">1/4 inch</button>
-                  <button type="button" data-tubing-inch="0.375" aria-pressed="false" class="rounded-lg border border-slate-200 dark:border-primary-700 px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-500 transition-colors">3/8 inch</button>
-                  <button type="button" data-tubing-inch="0.5" aria-pressed="false" class="rounded-lg border border-slate-200 dark:border-primary-700 px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-500 transition-colors">1/2 inch</button>
+                  <button type="button" data-tubing-inch="0.25" aria-pressed="false" class="min-h-11 rounded-lg border border-slate-200 dark:border-primary-700 px-4 py-2 text-xs text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-500 transition-colors">1/4 inch</button>
+                  <button type="button" data-tubing-inch="0.375" aria-pressed="false" class="min-h-11 rounded-lg border border-slate-200 dark:border-primary-700 px-4 py-2 text-xs text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-500 transition-colors">3/8 inch</button>
+                  <button type="button" data-tubing-inch="0.5" aria-pressed="false" class="min-h-11 rounded-lg border border-slate-200 dark:border-primary-700 px-4 py-2 text-xs text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-500 transition-colors">1/2 inch</button>
                 </div>
                 <div class="grid sm:grid-cols-3 gap-3">
                   <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800/40 p-3">
@@ -532,17 +532,37 @@
                     </div>
                     <label class="block space-y-1">
                       <span class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">Target flow</span>
-                      <input type="number" min="0" step="0.1" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" id="pressure-drop-target-flow" placeholder="Target flow in L/min" />
+                      <input type="number" inputmode="decimal" min="0" step="0.1" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" id="pressure-drop-target-flow" placeholder="Target flow in L/min" />
                     </label>
-                    <p id="pressure-drop-chart-range-label" class="hidden text-[11px] text-slate-500 dark:text-slate-400">Manufacturer chart range</p>
-                    <div id="pressure-drop-result-box" class="rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800/40 p-2.5">
-                      <div id="pressure-drop-bench-label" class="hidden text-[11px] tracking-wider text-slate-500 dark:text-slate-400">Bench-data reference</div>
-                      <p class="mt-1 text-xs font-medium text-slate-700 dark:text-slate-200">Pressure-drop data unavailable</p>
-                      <p class="mt-1 text-xs text-slate-600 dark:text-slate-300"><span id="pressure-drop-status-message">Pressure-drop data is not available for this model yet. Pressure drop cannot be estimated from Fr size alone.</span></p>
+                    <div id="pressure-drop-result-box" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800/40 p-3 space-y-3">
+                      <div>
+                        <div id="pressure-drop-reference-label" class="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">Reference source</div>
+                        <p id="pressure-drop-reference-source" class="mt-1 text-sm font-semibold text-primary-900 dark:text-white">Select a cannula to view pressure-drop reference data.</p>
+                      </div>
+                      <div id="pressure-drop-estimate-card" class="hidden rounded-xl border border-accent-500/30 bg-accent-500/10 dark:bg-accent-500/15 p-4">
+                        <div class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-300">Estimated pressure drop</div>
+                        <div class="mt-1 flex items-baseline gap-2">
+                          <span id="pressure-drop-estimate-value" class="text-3xl md:text-4xl font-bold tabular-nums text-primary-900 dark:text-white">—</span>
+                          <span class="text-sm md:text-base font-normal text-slate-600 dark:text-slate-300">mmHg</span>
+                        </div>
+                        <p id="pressure-drop-estimate-context" class="mt-1 text-sm text-slate-600 dark:text-slate-300">—</p>
+                      </div>
+                      <div id="pressure-drop-chart-range-wrap" class="hidden">
+                        <div class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Manufacturer chart range</div>
+                        <p id="pressure-drop-range" class="mt-1 text-sm font-semibold text-primary-900 dark:text-white">—</p>
+                        <p id="pressure-drop-range-status" class="mt-1 text-xs text-slate-600 dark:text-slate-300">—</p>
+                      </div>
+                      <div id="pressure-drop-data-status-wrap" class="hidden">
+                        <div class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Data status</div>
+                        <p id="pressure-drop-panel-data-status" class="mt-1 text-sm font-semibold text-primary-900 dark:text-white">—</p>
+                      </div>
+                      <div>
+                        <div class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Note</div>
+                        <p class="mt-1 text-xs text-slate-600 dark:text-slate-300"><span id="pressure-drop-status-message">Pressure-drop data is not available for this model yet. Pressure drop cannot be estimated from Fr size alone.</span></p>
+                      </div>
                     </div>
                     <div id="pressure-drop-curve-meta" class="hidden text-xs text-slate-600 dark:text-slate-300 space-y-1">
                       <p id="pressure-drop-selected-model">—</p>
-                      <p id="pressure-drop-range">Reference flow range: —</p>
                       <p id="pressure-drop-interp-note" class="hidden">Digitized from manufacturer chart; fitted/interpolated pressure drop is approximate.</p>
                     </div>
                     <div id="pressure-drop-chart-wrap" class="hidden rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800/40 p-2">
@@ -682,7 +702,7 @@
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
       <span class="text-[10px] font-medium">Hct</span>
     </a>
-    <a href="/phn-echo/" data-route id="mob-phn-echo" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+    <a href="/z-score/" data-route id="mob-phn-echo" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.75 6.75A2.25 2.25 0 016 4.5h12a2.25 2.25 0 012.25 2.25v10.5A2.25 2.25 0 0118 19.5H6a2.25 2.25 0 01-2.25-2.25V6.75z M8.25 9h7.5M8.25 12h4.5M8.25 15h7.5" /></svg>
       <span class="text-[10px] font-medium">Z-score</span>
     </a>

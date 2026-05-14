@@ -15,8 +15,10 @@ const urlEntries = sitemapPaths
 
 const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlEntries}\n</urlset>\n`;
 
+const rootSitemapPath = path.join(__dirname, 'sitemap.xml');
 const distDir = path.join(__dirname, 'dist');
-const sitemapPath = path.join(distDir, 'sitemap.xml');
+const distSitemapPath = path.join(distDir, 'sitemap.xml');
 
 fs.mkdirSync(distDir, { recursive: true });
-fs.writeFileSync(sitemapPath, sitemapXml, 'utf8');
+fs.writeFileSync(rootSitemapPath, sitemapXml, 'utf8');
+fs.writeFileSync(distSitemapPath, sitemapXml, 'utf8');

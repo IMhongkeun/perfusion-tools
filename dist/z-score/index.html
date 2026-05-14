@@ -198,7 +198,7 @@
         h1: 'Pediatric Echo Z-Score Calculator (PHN Model)',
         description: 'Pediatric Heart Network (PHN) Echo Z-score calculator with BSA-based references and measured value conversion for pediatric cardiology/perfusion workflows.',
         headingDescription: 'Use PHN pediatric model references to map BSA to Z-score bands and calculate measured-value Z-scores quickly.',
-        canonicalPath: '/z-score'
+        canonicalPath: '/z-score/'
       }
     };
 
@@ -227,7 +227,7 @@
       if (subtitleEl) subtitleEl.textContent = meta.headingDescription || meta.description;
 
       const canonicalTag = document.querySelector('link[rel="canonical"]');
-      if (canonicalTag) canonicalTag.setAttribute('href', `https://perfusiontools.com${meta.canonicalPath || '/z-score'}`);
+      if (canonicalTag) canonicalTag.setAttribute('href', `https://perfusiontools.com${meta.canonicalPath || '/z-score/'}`);
 
       return path;
     }
@@ -237,7 +237,7 @@
     window.applyRouteMeta = applyRouteMeta;
     window.addEventListener('load', () => applyRouteMeta('/z-score'));
   </script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/phn-echo#webpage","url":"https://perfusiontools.com/z-score/","name":"Pediatric Echo Z-score Calculator – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalTest","name":"Pediatric echocardiography Z-score assessment"},"dateModified":"2026-04-10"},{"@type":"WebApplication","@id":"https://perfusiontools.com/phn-echo#app","name":"Pediatric Echo Z-score Calculator","url":"https://perfusiontools.com/z-score/","applicationCategory":"MedicalApplication","operatingSystem":"Any","isPartOf":{"@id":"https://perfusiontools.com/phn-echo#webpage"},"publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/phn-echo#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"Pediatric Echo Z-score","item":"https://perfusiontools.com/z-score/"}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/z-score#webpage","url":"https://perfusiontools.com/z-score/","name":"Pediatric Echo Z-score Calculator – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalTest","name":"Pediatric echocardiography Z-score assessment"},"dateModified":"2026-04-10"},{"@type":"WebApplication","@id":"https://perfusiontools.com/z-score#app","name":"Pediatric Echo Z-score Calculator","url":"https://perfusiontools.com/z-score/","applicationCategory":"MedicalApplication","operatingSystem":"Any","isPartOf":{"@id":"https://perfusiontools.com/z-score#webpage"},"publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/z-score#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"Pediatric Echo Z-score","item":"https://perfusiontools.com/z-score/"}]}]}</script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
@@ -338,8 +338,8 @@
                   </select>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                  <button id="phn-calc-bsa-btn" type="button" class="rounded-lg bg-primary-900 dark:bg-primary-700 text-white text-xs font-semibold px-3 py-2 hover:bg-primary-800">Calculate BSA</button>
-                  <button id="phn-use-bsa-btn" type="button" class="rounded-lg border border-slate-300 dark:border-primary-600 text-xs font-semibold px-3 py-2 hover:border-accent-500">Use this BSA</button>
+                  <button id="phn-calc-bsa-btn" type="button" class="min-h-11 rounded-lg bg-primary-900 dark:bg-primary-700 text-white text-xs font-semibold px-4 py-2 hover:bg-primary-800">Calculate BSA</button>
+                  <button id="phn-use-bsa-btn" type="button" class="min-h-11 rounded-lg border border-slate-300 dark:border-primary-600 text-xs font-semibold px-4 py-2 hover:border-accent-500">Use this BSA</button>
                 </div>
                 <p id="phn-calculated-bsa" class="text-xs text-slate-500 dark:text-slate-400">Calculated BSA: <span class="result-number">—</span></p>
               </div>
@@ -366,7 +366,7 @@
                   <label class="block text-xs text-slate-600 dark:text-slate-300" for="phn-measured-mm">Measured value (mm)</label>
                   <input id="phn-measured-mm" type="number" inputmode="decimal" step="0.01" min="0.01" class="result-number mt-1 w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-950 px-3 py-2 text-sm" />
                 </div>
-                <button id="phn-measured-calc-btn" type="button" class="rounded-lg bg-accent-600 text-white text-xs font-semibold px-3 py-2 hover:bg-accent-500">Calculate Z</button>
+                <button id="phn-measured-calc-btn" type="button" class="min-h-11 rounded-lg bg-accent-600 text-white text-xs font-semibold px-4 py-2 hover:bg-accent-500">Calculate Z</button>
               </div>
               <p id="phn-measured-z" class="mt-3 text-sm font-semibold text-primary-900 dark:text-white">Measured Z-score: <span class="result-number">—</span></p>
             </details>
