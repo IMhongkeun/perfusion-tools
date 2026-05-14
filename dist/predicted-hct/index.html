@@ -416,40 +416,39 @@
                   <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Estimate Hct changes from on-pump volume additions and removals.</p>
                 </div>
                 <div class="grid lg:grid-cols-2 gap-4">
-                  <div class="rounded-xl border border-cyan-200 dark:border-cyan-900/50 bg-cyan-50/70 dark:bg-cyan-950/20 p-4 space-y-4">
-                    <div class="text-xs font-bold text-cyan-800 dark:text-cyan-300 uppercase tracking-wide">Additions</div>
+                  <div class="rounded-xl border border-slate-200 dark:border-primary-700 border-t-2 border-t-accent-500 bg-white dark:bg-primary-900/30 p-4 space-y-4">
+                    <div class="text-xs font-bold text-accent-600 dark:text-accent-400 uppercase tracking-wide">Additions</div>
                     <div class="space-y-1">
                       <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Crystalloid / colloid added (mL)</label>
-                      <input id="onpump_fluids" type="number" inputmode="numeric" step="1" value="0" class="w-full bg-white dark:bg-primary-800 border border-cyan-200 dark:border-cyan-900/40 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
+                      <input id="onpump_fluids" type="number" inputmode="numeric" step="1" placeholder="0" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
                     </div>
-                    <div class="bg-red-50 dark:bg-red-900/10 p-4 rounded-xl border border-red-100 dark:border-red-900/20 grid sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3 gap-4">
-                      <div class="sm:col-span-3 lg:col-span-1 xl:col-span-3 text-xs font-bold text-red-800 dark:text-red-400 uppercase tracking-wide">RBC Addition</div>
-                      <div class="space-y-1">
-                         <label class="text-xs text-slate-500 dark:text-slate-400">RBC Units</label>
-                         <input id="onpump_rbc_units" type="number" inputmode="numeric" step="1" value="0" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
-                      </div>
-                      <div class="space-y-1">
-                         <label class="text-xs text-slate-500 dark:text-slate-400">Vol / unit (mL)</label>
-                         <input id="onpump_rbc_unit_vol" type="number" inputmode="numeric" step="1" value="300" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
-                      </div>
-                      <div class="space-y-1">
-                         <label class="text-xs text-slate-500 dark:text-slate-400">Unit Hct (%)</label>
-                         <input id="onpump_rbc_hct" type="number" inputmode="numeric" step="1" value="60" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
+                    <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
+                      <div class="text-xs font-bold text-red-700 dark:text-red-400 uppercase tracking-wide">RBC Addition</div>
+                      <div class="grid md:grid-cols-3 gap-4 items-end">
+                        <div class="space-y-1">
+                          <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide whitespace-nowrap">RBC units</label>
+                          <input id="onpump_rbc_units" type="number" inputmode="numeric" step="1" placeholder="0" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
+                        </div>
+                        <div class="space-y-1">
+                          <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide whitespace-nowrap">Vol / unit (mL)</label>
+                          <input id="onpump_rbc_unit_vol" type="number" inputmode="numeric" step="1" value="300" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
+                        </div>
+                        <div class="space-y-1">
+                          <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide whitespace-nowrap">Unit Hct (%)</label>
+                          <input id="onpump_rbc_hct" type="number" inputmode="numeric" step="1" value="60" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div class="rounded-xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/70 dark:bg-amber-950/20 p-4 space-y-4">
-                    <div class="text-xs font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wide">Removals</div>
+                  <div class="rounded-xl border border-slate-200 dark:border-primary-700 border-t-2 border-t-amber-500 bg-white dark:bg-primary-900/30 p-4 space-y-4">
+                    <div class="text-xs font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wide">Removals</div>
                     <div class="space-y-1">
                       <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Ultrafiltration / hemofiltration removed (mL)</label>
-                      <input id="onpump_removed" type="number" inputmode="numeric" step="1" value="0" class="w-full bg-white dark:bg-primary-800 border border-amber-200 dark:border-amber-900/40 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-amber-500 outline-none transition-all dark:text-white" />
+                      <input id="onpump_removed" type="number" inputmode="numeric" step="1" placeholder="0" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-amber-500 outline-none transition-all dark:text-white" />
                     </div>
                     <div class="space-y-1">
-                      <div class="flex items-center justify-between gap-2">
-                        <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Blood loss / bleeding (mL)</label>
-                        <span class="text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Not calculated</span>
-                      </div>
-                      <input id="onpump_blood_loss" type="number" inputmode="numeric" step="1" value="0" disabled class="w-full bg-slate-100 dark:bg-primary-900/70 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 text-slate-400 dark:text-slate-500 cursor-not-allowed" />
+                      <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Blood loss / bleeding (mL)</label>
+                      <input id="onpump_blood_loss" type="number" inputmode="numeric" step="1" placeholder="0" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-amber-500 outline-none transition-all dark:text-white" />
                     </div>
                   </div>
                 </div>
@@ -512,7 +511,7 @@
                 <p><strong>Red cell volume:</strong> Patient red cell volume is estimated from EBV and pre-CPB hematocrit.<br />RBC_patient = EBV × (Pre-CPB Hct ÷ 100).<br />Red cell volume added from transfusion is estimated from RBC unit volume and unit hematocrit.<br />RBC_products = RBC units × RBC volume per unit × (Unit Hct ÷ 100).</p>
                 <p><strong>Total circulating volume:</strong> Total volume includes estimated blood volume, CPB prime volume, added fluids, and RBC product volume, minus ultrafiltration removed.<br />V_total = EBV + Prime volume + Additional fluids + RBC product volume − UF removed.</p>
                 <p><strong>Predicted hematocrit:</strong> Predicted Hct is calculated as total red cell volume divided by total circulating volume.<br />Predicted Hct (%) = [(RBC_patient + RBC_products) ÷ V_total] × 100.</p>
-                <p><strong>On-pump adjustment model:</strong><br />Estimated CPB volume = EBV + Prime volume.<br />Current RBC volume = Estimated CPB volume × (Current Hct ÷ 100).<br />Added RBC volume = RBC units × RBC volume per unit × (Unit Hct ÷ 100).<br />Final estimated volume = Estimated CPB volume + Fluid added + RBC product volume − UF removed.<br />Predicted post-adjustment Hct (%) = [(Current RBC volume + Added RBC volume) ÷ Final estimated volume] × 100.<br />If manual current volume override is active, the manual value replaces EBV + Prime volume as the estimated CPB volume.</p>
+                <p><strong>On-pump adjustment model:</strong><br />Estimated CPB volume = EBV + Prime volume.<br />Current RBC volume = Estimated CPB volume × (Current Hct ÷ 100).<br />Added RBC volume = RBC units × RBC volume per unit × (Unit Hct ÷ 100).<br />Final estimated volume = Estimated CPB volume + Fluid added + RBC product volume − UF removed − Blood loss.<br />Blood loss RBC volume = Blood loss × (Current Hct ÷ 100).<br />Predicted post-adjustment Hct (%) = [(Current RBC volume + Added RBC volume − Blood loss RBC volume) ÷ Final estimated volume] × 100.<br />If manual current volume override is active, the manual value replaces EBV + Prime volume as the estimated CPB volume.</p>
                 <p><strong>Limitations:</strong> This is a simplified complete-mixing model. Actual hematocrit may differ because of reservoir level changes, sampling timing, ongoing bleeding, cell saver return, cardioplegia return, hemolysis, sequestration, rapid volume shifts, ultrafiltration efficiency, and uncertainty in patient-circuit volume. Use with clinical markers and local protocol.</p>
               </div>
             </details>

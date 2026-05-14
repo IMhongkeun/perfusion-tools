@@ -4213,19 +4213,26 @@ function computePredictedHct({ pttype, weight, pre, prime, fluids = 0, removed =
   return { ebv: r.ebvMl, totalVol: r.totalVolumeMl, hct: r.resultHctPercent };
 }
 
-function computeOnPumpHctAdjustment({ patientType, weightKg, ebvCoefValue, primeVolume, currentHct, useManualOverride = false, manualCurrentVolumeOverride = 0, addedCrystalloid = 0, rbcUnits = 0, rbcUnitVol = 300, rbcUnitHct = 60, ultrafiltrationRemoved = 0 }) {
+function computeOnPumpHctAdjustment({ patientType, weightKg, ebvCoefValue, primeVolume, currentHct, useManualOverride = false, manualCurrentVolumeOverride = 0, addedCrystalloid = 0, rbcUnits = 0, rbcUnitVol = 300, rbcUnitHct = 60, ultrafiltrationRemoved = 0, bloodLossVolume = 0 }) {
   const safeEbvCoef = Number.isFinite(ebvCoefValue) && ebvCoefValue > 0 ? ebvCoefValue : ebvCoef(patientType);
   const ebv = (weightKg || 0) * safeEbvCoef;
   const estimatedCpbVolumeAuto = ebv + (primeVolume || 0);
   let estimatedCpbVolume = estimatedCpbVolumeAuto;
   if (useManualOverride && (manualCurrentVolumeOverride || 0) > 0) estimatedCpbVolume = manualCurrentVolumeOverride;
   const totalRbcProductVolume = (rbcUnits || 0) * (rbcUnitVol || 0);
-  const currentRbcVolume = (estimatedCpbVolume || 0) * ((currentHct || 0) / 100);
+  const baseHctFraction = (currentHct || 0) / 100;
+  const currentRbcVolume = (estimatedCpbVolume || 0) * baseHctFraction;
   const addedRbcVolume = totalRbcProductVolume * ((rbcUnitHct || 0) / 100);
-  const finalTotalVolume = (estimatedCpbVolume || 0) + (addedCrystalloid || 0) + totalRbcProductVolume - (ultrafiltrationRemoved || 0);
-  const predictedHct = finalTotalVolume > 0 ? ((currentRbcVolume + addedRbcVolume) / finalTotalVolume) * 100 : 0;
+  // Blood loss is modeled as whole blood removed at the current on-CPB Hct:
+  // final volume loses bloodLossVolume, and final RBC volume loses bloodLossVolume × current Hct.
+  const safeBloodLossVolume = Math.max(0, bloodLossVolume || 0);
+  const bloodLossRbcVolume = safeBloodLossVolume * baseHctFraction;
+  const volumeBeforeBloodLoss = (estimatedCpbVolume || 0) + (addedCrystalloid || 0) + totalRbcProductVolume - (ultrafiltrationRemoved || 0);
+  const finalTotalVolume = Math.max(0, volumeBeforeBloodLoss - safeBloodLossVolume);
+  const finalRbcVolume = Math.max(0, currentRbcVolume + addedRbcVolume - bloodLossRbcVolume);
+  const predictedHct = finalTotalVolume > 0 ? (finalRbcVolume / finalTotalVolume) * 100 : 0;
   const hctChange = predictedHct - (currentHct || 0);
-  return { ebv, estimatedCpbVolumeAuto, estimatedCpbVolume, currentRbcVolume, addedRbcVolume, finalTotalVolume, predictedHct, hctChange };
+  return { ebv, estimatedCpbVolumeAuto, estimatedCpbVolume, currentRbcVolume, addedRbcVolume, bloodLossRbcVolume, finalTotalVolume, predictedHct, hctChange };
 }
 
 // -----------------------------
@@ -4759,7 +4766,7 @@ function updateHct() {
   const modeHelpEl = el('hct-mode-help');
   if (modeHelpEl) {
     modeHelpEl.textContent = isOnPumpMode
-      ? 'Estimate hematocrit change after RBC transfusion, fluid addition, or ultrafiltration during CPB.'
+      ? 'Estimate hematocrit change from on-pump additions and removals.'
       : 'Estimate dilutional hematocrit at CPB initiation.';
   }
 
@@ -4775,7 +4782,8 @@ function updateHct() {
       rbcUnits: num('onpump_rbc_units'),
       rbcUnitVol: num('onpump_rbc_unit_vol'),
       rbcUnitHct: num('onpump_rbc_hct'),
-      ultrafiltrationRemoved: num('onpump_removed')
+      ultrafiltrationRemoved: num('onpump_removed'),
+      bloodLossVolume: num('onpump_blood_loss')
     });
     if (leftLabelEl) leftLabelEl.textContent = 'Current Vol';
     setText('ebv', r.finalTotalVolume ? r.finalTotalVolume.toFixed(0) : '0');
@@ -6712,7 +6720,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const x = el(id);
       if (x) x.addEventListener('input', updateHct);
     });
-    ['hct_mode', 'onpump_weight', 'onpump_ebv_coef', 'onpump_prime', 'current_hct', 'manual_current_volume', 'use_manual_current_volume', 'onpump_fluids', 'onpump_rbc_units', 'onpump_rbc_unit_vol', 'onpump_rbc_hct', 'onpump_removed', 'onpump_pttype'].forEach(id => {
+    ['hct_mode', 'onpump_weight', 'onpump_ebv_coef', 'onpump_prime', 'current_hct', 'manual_current_volume', 'use_manual_current_volume', 'onpump_fluids', 'onpump_rbc_units', 'onpump_rbc_unit_vol', 'onpump_rbc_hct', 'onpump_removed', 'onpump_blood_loss', 'onpump_pttype'].forEach(id => {
       const x = el(id);
       if (x) x.addEventListener('input', updateHct);
       if (x) x.addEventListener('change', updateHct);
