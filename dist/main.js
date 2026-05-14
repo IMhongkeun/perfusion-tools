@@ -4759,7 +4759,7 @@ function updateHct() {
   const modeHelpEl = el('hct-mode-help');
   if (modeHelpEl) {
     modeHelpEl.textContent = isOnPumpMode
-      ? 'Estimate hematocrit change after RBC transfusion, fluid addition, or ultrafiltration during CPB.'
+      ? 'Estimate hematocrit change from fluid addition, RBC transfusion, and ultrafiltration.'
       : 'Estimate dilutional hematocrit at CPB initiation.';
   }
 
@@ -4804,8 +4804,8 @@ function updateHct() {
     weight: num('wt_hct'),
     pre: num('pre_hct'),
     prime: num('prime'),
-    fluids: num('fluids'),
-    removed: num('removed'),
+    fluids: 0,
+    removed: 0,
     rbcUnits: num('rbc_units'),
     rbcUnitVol: num('rbc_unit_vol'),
     rbcHct: num('rbc_hct'),
@@ -6708,7 +6708,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   if (hasHctCalculator) {
     // Predicted Hct event listeners
-    ['wt_hct', 'pre_hct', 'prime', 'fluids', 'removed', 'rbc_units', 'rbc_unit_vol', 'rbc_hct', 'ebv_coef'].forEach(id => {
+    ['wt_hct', 'pre_hct', 'prime', 'rbc_units', 'rbc_unit_vol', 'rbc_hct', 'ebv_coef'].forEach(id => {
       const x = el(id);
       if (x) x.addEventListener('input', updateHct);
     });
