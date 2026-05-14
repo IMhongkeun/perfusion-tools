@@ -534,15 +534,35 @@
                       <span class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">Target flow</span>
                       <input type="number" inputmode="decimal" min="0" step="0.1" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" id="pressure-drop-target-flow" placeholder="Target flow in L/min" />
                     </label>
-                    <p id="pressure-drop-chart-range-label" class="hidden text-[11px] text-slate-500 dark:text-slate-400">Manufacturer chart range</p>
-                    <div id="pressure-drop-result-box" class="rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800/40 p-2.5">
-                      <div id="pressure-drop-bench-label" class="hidden text-[11px] tracking-wider text-slate-500 dark:text-slate-400">Bench-data reference</div>
-                      <p class="mt-1 text-xs font-medium text-slate-700 dark:text-slate-200">Pressure-drop data unavailable</p>
-                      <p class="mt-1 text-xs text-slate-600 dark:text-slate-300"><span id="pressure-drop-status-message">Pressure-drop data is not available for this model yet. Pressure drop cannot be estimated from Fr size alone.</span></p>
+                    <div id="pressure-drop-result-box" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800/40 p-3 space-y-3">
+                      <div>
+                        <div id="pressure-drop-reference-label" class="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">Reference source</div>
+                        <p id="pressure-drop-reference-source" class="mt-1 text-sm font-semibold text-primary-900 dark:text-white">Select a cannula to view pressure-drop reference data.</p>
+                      </div>
+                      <div id="pressure-drop-estimate-card" class="hidden rounded-xl border border-accent-500/30 bg-accent-500/10 dark:bg-accent-500/15 p-4">
+                        <div class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-300">Estimated pressure drop</div>
+                        <div class="mt-1 flex items-baseline gap-2">
+                          <span id="pressure-drop-estimate-value" class="text-3xl md:text-4xl font-bold tabular-nums text-primary-900 dark:text-white">—</span>
+                          <span class="text-sm md:text-base font-normal text-slate-600 dark:text-slate-300">mmHg</span>
+                        </div>
+                        <p id="pressure-drop-estimate-context" class="mt-1 text-sm text-slate-600 dark:text-slate-300">—</p>
+                      </div>
+                      <div id="pressure-drop-chart-range-wrap" class="hidden">
+                        <div class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Manufacturer chart range</div>
+                        <p id="pressure-drop-range" class="mt-1 text-sm font-semibold text-primary-900 dark:text-white">—</p>
+                        <p id="pressure-drop-range-status" class="mt-1 text-xs text-slate-600 dark:text-slate-300">—</p>
+                      </div>
+                      <div id="pressure-drop-data-status-wrap" class="hidden">
+                        <div class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Data status</div>
+                        <p id="pressure-drop-panel-data-status" class="mt-1 text-sm font-semibold text-primary-900 dark:text-white">—</p>
+                      </div>
+                      <div>
+                        <div class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Note</div>
+                        <p class="mt-1 text-xs text-slate-600 dark:text-slate-300"><span id="pressure-drop-status-message">Pressure-drop data is not available for this model yet. Pressure drop cannot be estimated from Fr size alone.</span></p>
+                      </div>
                     </div>
                     <div id="pressure-drop-curve-meta" class="hidden text-xs text-slate-600 dark:text-slate-300 space-y-1">
                       <p id="pressure-drop-selected-model">—</p>
-                      <p id="pressure-drop-range">Reference flow range: —</p>
                       <p id="pressure-drop-interp-note" class="hidden">Digitized from manufacturer chart; fitted/interpolated pressure drop is approximate.</p>
                     </div>
                     <div id="pressure-drop-chart-wrap" class="hidden rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800/40 p-2">

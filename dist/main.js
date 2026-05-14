@@ -4006,6 +4006,35 @@ function formatPressureDropDataStatus(status) {
   return status || '—';
 }
 
+function isDigitizedPressureDropCurve(entry) {
+  return String(entry?.dataStatus || '').toLowerCase().includes('digitized') && Array.isArray(entry?.points) && entry.points.length > 0;
+}
+
+function getPressureDropReferenceSourceText(entry) {
+  if (isDigitizedPressureDropCurve(entry)) return 'Digitized manufacturer pressure-loss curve';
+  return 'Manufacturer pressure-drop reference data';
+}
+
+function formatPressureDropFlowValue(flow) {
+  if (!Number.isFinite(flow)) return '—';
+  if (Math.abs(flow) < 0.005) return '0';
+  return Number.isInteger(flow) ? flow.toFixed(1) : flow.toFixed(2).replace(/0$/, '');
+}
+
+function getPressureDropRangeText(validPoints, fallbackLabel = '') {
+  if (fallbackLabel) return `${fallbackLabel} L/min`;
+  if (!validPoints.length) return '—';
+  const minFlow = validPoints[0].flow;
+  const maxFlow = validPoints[validPoints.length - 1].flow;
+  return `${formatPressureDropFlowValue(minFlow)}–${formatPressureDropFlowValue(maxFlow)} L/min`;
+}
+
+function getPressureDropPanelNote(entry, hasEstimate = false) {
+  const baseNote = entry?.digitizationNote || 'Digitized manually from manufacturer-published pressure-loss chart; values are approximate.';
+  if (!hasEstimate) return baseNote;
+  return `${baseNote} Smoothed/interpolated values are approximate and may differ from direct bench testing.`;
+}
+
 function getPressureDropProductMetadataText(entry) {
   if (!entry || !Number.isFinite(entry.outerDiameterFr) || !Number.isFinite(entry.outerDiameterMm)) return '';
   const formatLengthMetadata = (label, lengthIn, lengthCm) => {
@@ -4036,15 +4065,35 @@ function getPressureDropProductMetadataText(entry) {
 function updatePressureDropReference() {
   const manufacturerInput = el('pressure-drop-manufacturer'); const categorySelect = el('pressure-drop-category'); const familySelect = el('pressure-drop-product-family'); const modelInput = el('pressure-drop-model'); const sizeInput = el('pressure-drop-size'); const targetFlowInput = el('pressure-drop-target-flow');
   const statusMessage = el('pressure-drop-status-message'); const sourceWrap = el('pressure-drop-source'); const sourceLabel = el('pressure-drop-source-label'); const sourceUrl = el('pressure-drop-source-url'); const testMedium = el('pressure-drop-test-medium'); const dataStatus = el('pressure-drop-data-status'); const digitizationNote = el('pressure-drop-digitization-note'); const connectionSite = el('pressure-drop-connection-site'); const notes = el('pressure-drop-notes'); const productMeta = el('pressure-drop-product-meta');
-  const chartWrap = el('pressure-drop-chart-wrap'); const chartNode = el('pressure-drop-chart'); const curveMeta = el('pressure-drop-curve-meta'); const selectedModel = el('pressure-drop-selected-model'); const rangeText = el('pressure-drop-range'); const interpNote = el('pressure-drop-interp-note'); const chartRangeLabel = el('pressure-drop-chart-range-label'); const benchLabel = el('pressure-drop-bench-label');
-  if (!manufacturerInput || !categorySelect || !familySelect || !modelInput || !sizeInput || !targetFlowInput || !statusMessage || !sourceWrap || !sourceLabel || !sourceUrl || !testMedium || !notes || !chartWrap || !chartNode || !curveMeta || !selectedModel || !rangeText || !interpNote || !chartRangeLabel || !benchLabel) return;
-  chartWrap.classList.add('hidden'); curveMeta.classList.add('hidden'); sourceWrap.classList.add('hidden'); interpNote.classList.add('hidden'); chartRangeLabel.classList.add('hidden'); benchLabel.classList.add('hidden');
+  const chartWrap = el('pressure-drop-chart-wrap'); const chartNode = el('pressure-drop-chart'); const curveMeta = el('pressure-drop-curve-meta'); const selectedModel = el('pressure-drop-selected-model'); const rangeText = el('pressure-drop-range'); const interpNote = el('pressure-drop-interp-note');
+  const referenceSource = el('pressure-drop-reference-source'); const estimateCard = el('pressure-drop-estimate-card'); const estimateValue = el('pressure-drop-estimate-value'); const estimateContext = el('pressure-drop-estimate-context'); const rangeWrap = el('pressure-drop-chart-range-wrap'); const rangeStatus = el('pressure-drop-range-status'); const panelDataStatusWrap = el('pressure-drop-data-status-wrap'); const panelDataStatus = el('pressure-drop-panel-data-status');
+  if (!manufacturerInput || !categorySelect || !familySelect || !modelInput || !sizeInput || !targetFlowInput || !statusMessage || !sourceWrap || !sourceLabel || !sourceUrl || !testMedium || !notes || !chartWrap || !chartNode || !curveMeta || !selectedModel || !rangeText || !interpNote || !referenceSource || !estimateCard || !estimateValue || !estimateContext || !rangeWrap || !rangeStatus || !panelDataStatusWrap || !panelDataStatus) return;
+
+  chartWrap.classList.add('hidden'); curveMeta.classList.add('hidden'); sourceWrap.classList.add('hidden'); interpNote.classList.add('hidden'); estimateCard.classList.add('hidden'); rangeWrap.classList.add('hidden'); panelDataStatusWrap.classList.add('hidden');
+  referenceSource.textContent = 'Select a cannula to view pressure-drop reference data.';
+  statusMessage.textContent = 'Pressure-drop data is not available for this model yet. Pressure drop cannot be estimated from Fr size alone.';
+  estimateValue.textContent = '—'; estimateContext.textContent = '—'; rangeText.textContent = '—'; rangeStatus.textContent = '—'; panelDataStatus.textContent = '—';
   if (chartNode) chartNode.innerHTML = '';
-  if (!manufacturerInput.value || !familySelect.value || !modelInput.value || !sizeInput.value) { statusMessage.textContent = 'Select a manufacturer, product family, model, and size to view available pressure-drop reference data.'; return; }
+
+  if (!manufacturerInput.value || !familySelect.value || !modelInput.value || !sizeInput.value) {
+    statusMessage.textContent = 'Select a manufacturer, product family, model, and size to view available pressure-drop reference data.';
+    return;
+  }
+
   const match = findPressureDropEntry({ manufacturer: manufacturerInput.value, category: categorySelect.value, model: modelInput.value, size: sizeInput.value });
-  if (!match) { statusMessage.textContent = 'Pressure-drop data is not available for this model yet. Pressure drop cannot be estimated from Fr size alone.'; return; }
+  if (!match) {
+    referenceSource.textContent = 'No pressure-drop reference data for selected cannula';
+    statusMessage.textContent = 'Pressure-drop data is not available for this model yet. Pressure drop cannot be estimated from Fr size alone.';
+    return;
+  }
+
   const validPoints = getValidPressureDropPoints(match.points);
-  if (!validPoints.length) { statusMessage.textContent = 'Manufacturer-specific curve data has not been added for this model yet.'; return; }
+  if (!validPoints.length) {
+    referenceSource.textContent = 'Direct bench-data table unavailable';
+    statusMessage.textContent = 'Manufacturer-specific curve data has not been added for this model yet.';
+    return;
+  }
+
   const targetFlowText = targetFlowInput.value.trim();
   const hasTargetFlow = targetFlowText !== '';
   const targetFlow = hasTargetFlow ? parseFloat(targetFlowText) : NaN;
@@ -4052,30 +4101,53 @@ function updatePressureDropReference() {
   const useLinearOnly = match.interpolationMode === 'linear';
   const curveModel = useLinearOnly ? null : createPressureDropCurveModel(validPoints);
   const chartOptions = useLinearOnly ? { curveMode: 'linear' } : {};
-  const flowRangeLabel = match.referenceFlowRangeLabel || `${validPoints[0].flow}–${validPoints[validPoints.length - 1].flow}`;
-  rangeText.textContent = `Reference flow range shown in manufacturer data: ${flowRangeLabel} L/min`;
+  const flowRangeLabel = match.referenceFlowRangeLabel || '';
+  const formattedDataStatus = formatPressureDropDataStatus(match.dataStatus);
+  const rangeDisplayText = getPressureDropRangeText(validPoints, flowRangeLabel);
+
+  referenceSource.textContent = getPressureDropReferenceSourceText(match);
+  panelDataStatus.textContent = formattedDataStatus;
+  rangeText.textContent = rangeDisplayText;
   selectedModel.textContent = `${match.manufacturer} / ${match.model} / ${match.category} / ${match.size}${match.connectionSite ? ` / ${match.connectionSite}` : ''}`;
   interpNote.textContent = match.interpolationNote || 'Digitized from manufacturer chart; fitted/interpolated pressure drop is approximate.';
-  curveMeta.classList.remove('hidden'); sourceWrap.classList.remove('hidden'); chartRangeLabel.classList.remove('hidden'); benchLabel.classList.remove('hidden'); chartWrap.classList.remove('hidden'); interpNote.classList.remove('hidden');
-  sourceLabel.textContent = match.sourceLabel || '—'; sourceUrl.textContent = match.sourceUrl || '—'; testMedium.textContent = `Test medium: ${match.testMedium || '—'}`; dataStatus.textContent = `Data status: ${formatPressureDropDataStatus(match.dataStatus)}`; digitizationNote.textContent = `Digitization note: ${match.digitizationNote || '—'}`; if (connectionSite) connectionSite.textContent = `Connection site: ${match.connectionSite || '—'}`; notes.textContent = `Notes: ${match.notes || '—'}`;
+  curveMeta.classList.remove('hidden'); sourceWrap.classList.remove('hidden'); rangeWrap.classList.remove('hidden'); panelDataStatusWrap.classList.remove('hidden'); chartWrap.classList.remove('hidden'); interpNote.classList.remove('hidden');
+  sourceLabel.textContent = match.sourceLabel || '—'; sourceUrl.textContent = match.sourceUrl || '—'; testMedium.textContent = `Test medium: ${match.testMedium || '—'}`; dataStatus.textContent = `Data status: ${formattedDataStatus}`; digitizationNote.textContent = `Digitization note: ${match.digitizationNote || '—'}`; if (connectionSite) connectionSite.textContent = `Connection site: ${match.connectionSite || '—'}`; notes.textContent = `Notes: ${match.notes || '—'}`;
   if (productMeta) {
     const metadataText = getPressureDropProductMetadataText(match);
     productMeta.textContent = metadataText ? `Product metadata: ${metadataText}` : '';
     productMeta.classList.toggle('hidden', !metadataText);
   }
-  if (!hasTargetFlow || result.state === 'invalid') { statusMessage.textContent = 'Enter target flow to estimate pressure drop.'; drawPressureDropChart(chartNode, validPoints, NaN, NaN, chartOptions); return; }
+
+  if (!hasTargetFlow || result.state === 'invalid') {
+    rangeStatus.textContent = 'Enter target flow to check whether it falls within the digitized chart range.';
+    statusMessage.textContent = getPressureDropPanelNote(match, false);
+    drawPressureDropChart(chartNode, validPoints, NaN, NaN, chartOptions);
+    return;
+  }
+
   if (result.state === 'exact' || result.state === 'interpolated') {
     const estimatedPressureDrop = result.state === 'exact' ? result.value : (curveModel ? curveModel.estimate(targetFlow) : result.value);
     const markerFlow = result.state === 'exact' && Number.isFinite(result.flow) ? result.flow : targetFlow;
-    statusMessage.textContent = `Estimated pressure drop from manufacturer curve: ${estimatedPressureDrop.toFixed(1)} mmHg. Interpolated estimate from digitized manufacturer-published curve data.`;
+    estimateValue.textContent = estimatedPressureDrop.toFixed(1);
+    estimateContext.textContent = `at ${targetFlow.toFixed(1)} L/min`;
+    estimateCard.classList.remove('hidden');
+    rangeStatus.textContent = 'Target flow within digitized chart range.';
+    statusMessage.textContent = getPressureDropPanelNote(match, true);
     drawPressureDropChart(chartNode, validPoints, markerFlow, estimatedPressureDrop, chartOptions);
     return;
   }
-  if (result.state === 'out_of_range') { statusMessage.textContent = match.outOfRangeMessage || 'Target flow is outside the manufacturer chart range. Pressure drop is not estimated.'; drawPressureDropChart(chartNode, validPoints, NaN, NaN, chartOptions); return; }
-  statusMessage.textContent = 'Reference flow range is available in manufacturer chart data.';
+
+  if (result.state === 'out_of_range') {
+    rangeStatus.textContent = 'Target flow outside digitized chart range; estimate may require extrapolation.';
+    statusMessage.textContent = match.outOfRangeMessage || 'Target flow is outside the manufacturer chart range. Pressure drop is not estimated.';
+    drawPressureDropChart(chartNode, validPoints, NaN, NaN, chartOptions);
+    return;
+  }
+
+  rangeStatus.textContent = 'Reference flow range is available in manufacturer chart data.';
+  statusMessage.textContent = getPressureDropPanelNote(match, false);
   drawPressureDropChart(chartNode, validPoints, NaN, NaN, chartOptions);
 }
-
 const TUBING_PRESET_ACTIVE_CLASSES = ['border-accent-500', 'bg-accent-500/10', 'text-accent-700', 'dark:text-accent-300', 'shadow-sm'];
 const TUBING_PRESET_INACTIVE_CLASSES = ['border-slate-200', 'dark:border-primary-700', 'text-slate-700', 'dark:text-slate-200'];
 
