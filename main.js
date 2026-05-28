@@ -4424,15 +4424,18 @@ function updateHeparinUI() {
     steps[3].textContent = `If ACT low: +${plan.additionalBolus.toLocaleString()} U bolus`;
   }
 
+  const referenceWeight = plan.dosingWeight;
+  const referenceDose = Math.round(referenceWeight * 300);
+  const referenceLabel = weightStrategy === 'auto' ? 'selected auto strategy' : plan.strategyLabel;
   const sensAbwDose = Math.round(plan.abw * 300);
   const sensTbwDose = Math.round(plan.tbw * 300);
   const sensIbwDose = Math.round(plan.ibw * 300);
   setText('hep2-sens-abw-wt', `${plan.abw.toFixed(1)} kg`);
-  setText('hep2-sens-abw-dose', `${sensAbwDose.toLocaleString()} U (reference)`);
+  setText('hep2-sens-abw-dose', `${sensAbwDose.toLocaleString()} U (${(sensAbwDose - referenceDose >= 0 ? '+' : '')}${(sensAbwDose - referenceDose).toLocaleString()} vs ${referenceLabel})`);
   setText('hep2-sens-tbw-wt', `${plan.tbw.toFixed(1)} kg`);
-  setText('hep2-sens-tbw-dose', `${sensTbwDose.toLocaleString()} U (${(sensTbwDose - sensAbwDose >= 0 ? '+' : '')}${(sensTbwDose - sensAbwDose).toLocaleString()} vs ABW)`);
+  setText('hep2-sens-tbw-dose', `${sensTbwDose.toLocaleString()} U (${(sensTbwDose - referenceDose >= 0 ? '+' : '')}${(sensTbwDose - referenceDose).toLocaleString()} vs ${referenceLabel})`);
   setText('hep2-sens-ibw-wt', `${plan.ibw.toFixed(1)} kg`);
-  setText('hep2-sens-ibw-dose', `${sensIbwDose.toLocaleString()} U (${(sensIbwDose - sensAbwDose >= 0 ? '+' : '')}${(sensIbwDose - sensAbwDose).toLocaleString()} vs ABW)`);
+  setText('hep2-sens-ibw-dose', `${sensIbwDose.toLocaleString()} U (${(sensIbwDose - referenceDose >= 0 ? '+' : '')}${(sensIbwDose - referenceDose).toLocaleString()} vs ${referenceLabel})`);
 
   const pedsWarning = el('hep2-peds-warning');
   if (pedsWarning) pedsWarning.classList.toggle('hidden', !(weight < 20 || height < 120));
