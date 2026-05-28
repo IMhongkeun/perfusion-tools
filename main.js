@@ -4326,11 +4326,22 @@ function updateHeparinUI() {
   const weightInput = el('hep2-weight');
   const sex = el('hep2-sex')?.value || 'male';
   const weightStrategy = el('hep2-weight-strategy')?.value || 'auto';
+  const targetActMode = el('hep2-target-act-mode')?.value || '480';
+  const targetActCustom = parseFloat(el('hep2-target-act-custom')?.value);
+  const targetAct = targetActMode === 'custom' ? targetActCustom : parseFloat(targetActMode);
 
   hepResistance = false;
 
   const height = parseFloat(heightInput?.value);
   const weight = parseFloat(weightInput?.value);
+  const baselineAct = parseFloat(el('hep2-baseline-act')?.value);
+  const postAct = parseFloat(el('hep2-post-act')?.value);
+  const additionalUfh = parseFloat(el('hep2-additional-ufh')?.value) || 0;
+  const otherUfh = parseFloat(el('hep2-other-ufh')?.value) || 0;
+  const primeHeparin = parseFloat(el('hep2-prime-heparin')?.value) || 0;
+  const protamineMode = el('hep2-protamine-ratio-mode')?.value || '0.8';
+  const protamineCustom = parseFloat(el('hep2-protamine-ratio-custom')?.value);
+  const protamineRatio = protamineMode === 'custom' ? protamineCustom : parseFloat(protamineMode);
 
   const heightError = el('hep2-height-error');
   const weightError = el('hep2-weight-error');
@@ -4424,6 +4435,53 @@ function updateHeparinUI() {
     steps[3].textContent = `If ACT low: +${plan.additionalBolus.toLocaleString()} U bolus`;
   }
 
+  // ACT response and cumulative UFH tracking
+  const actIncrease = Number.isFinite(baselineAct) && Number.isFinite(postAct) ? (postAct - baselineAct) : null;
+  const hasTarget = Number.isFinite(targetAct) && targetAct > 0;
+  const actReached = Number.isFinite(postAct) && hasTarget ? postAct >= targetAct : null;
+  const actPer1000 = (Number.isFinite(actIncrease) && plan.initialBolus > 0) ? (actIncrease / (plan.initialBolus / 1000)) : null;
+
+  const ref50 = Math.round(plan.dosingWeight * 50);
+  const ref100 = Math.round(plan.dosingWeight * 100);
+  const cumulativeUfh = plan.initialBolus + additionalUfh + otherUfh;
+  const cumulativePerKg = cumulativeUfh / plan.dosingWeight;
+
+  setText('hep2-act-increase', Number.isFinite(actIncrease) ? `${actIncrease.toFixed(0)} sec` : '-');
+  setText('hep2-act-status', actReached === null ? '-' : (actReached ? 'Target reached' : 'Target not reached'));
+  setText('hep2-act-per-1000', Number.isFinite(actPer1000) ? `${actPer1000.toFixed(1)} sec / 1,000 U` : '-');
+  setText('hep2-ref-50', `${ref50.toLocaleString()} U`);
+  setText('hep2-ref-100', `${ref100.toLocaleString()} U`);
+  setText('hep2-cumulative-ufh', `${Math.round(cumulativeUfh).toLocaleString()} U`);
+  setText('hep2-cumulative-ufh-kg', `${cumulativePerKg.toFixed(1)} U/kg`);
+
+  const resistanceCue = el('hep2-resistance-cue');
+  const showResistanceCue = Number.isFinite(postAct) && cumulativePerKg >= 500 && postAct < 480;
+  if (resistanceCue) resistanceCue.classList.toggle('hidden', !showResistanceCue);
+
+  // Protamine estimate
+  const totalUfh = plan.initialBolus + additionalUfh + otherUfh + primeHeparin;
+  setText('hep2-total-ufh', `${Math.round(totalUfh).toLocaleString()} U`);
+  const protamineValid = Number.isFinite(protamineRatio) && protamineRatio > 0;
+  const protamineMg = protamineValid ? (totalUfh / 100) * protamineRatio : null;
+  const protamineRounded = Number.isFinite(protamineMg) ? Math.round(protamineMg / 25) * 25 : null;
+  setText('hep2-protamine-mg', Number.isFinite(protamineMg) ? `${protamineMg.toFixed(1)} mg` : '-');
+  setText('hep2-protamine-rounded', Number.isFinite(protamineRounded) ? `${protamineRounded.toLocaleString()} mg` : '-');
+
+  const ratioLabelNode = el('hep2-ratio-label');
+  let ratioLabel = '-';
+  if (protamineValid) {
+    if (protamineRatio === 0.6) ratioLabel = '0.6 conservative';
+    else if (protamineRatio === 0.8) ratioLabel = '0.8 balanced';
+    else if (protamineRatio === 0.9) ratioLabel = '0.9 intermediate';
+    else if (protamineRatio === 1.0) ratioLabel = '1.0 traditional';
+    else ratioLabel = `${protamineRatio.toFixed(2)} custom`;
+  }
+  if (ratioLabelNode) ratioLabelNode.textContent = ratioLabel;
+  const ratioWarn = el('hep2-protamine-ratio-warn');
+  if (ratioWarn) ratioWarn.classList.toggle('hidden', !(protamineValid && protamineRatio > 1.0));
+  const highWarn = el('hep2-protamine-high-warn');
+  if (highWarn) highWarn.classList.toggle('hidden', !(Number.isFinite(protamineMg) && protamineMg >= 400));
+
   const referenceWeight = plan.dosingWeight;
   const referenceDose = Math.round(referenceWeight * 300);
   const referenceLabel = weightStrategy === 'auto' ? 'selected auto strategy' : plan.strategyLabel;
@@ -4497,6 +4555,25 @@ function initHeparinManagement() {
     if (node && node.tagName === 'SELECT') node.addEventListener('change', updateHeparinUI);
     if (node && node.type === 'checkbox') node.addEventListener('change', updateHeparinUI);
   });
+
+  const toggleTargetCustom = () => {
+    const wrap = el('hep2-target-act-custom-wrap');
+    if (wrap) wrap.classList.toggle('hidden', (el('hep2-target-act-mode')?.value || '') !== 'custom');
+  };
+  const toggleProtamineCustom = () => {
+    const wrap = el('hep2-protamine-ratio-custom-wrap');
+    if (wrap) wrap.classList.toggle('hidden', (el('hep2-protamine-ratio-mode')?.value || '') !== 'custom');
+  };
+  ['hep2-target-act-mode', 'hep2-protamine-ratio-mode'].forEach(id => {
+    const node = el(id);
+    if (node) node.addEventListener('change', () => { toggleTargetCustom(); toggleProtamineCustom(); updateHeparinUI(); });
+  });
+  ['hep2-target-act-custom', 'hep2-baseline-act', 'hep2-post-act', 'hep2-act-time-min', 'hep2-additional-ufh', 'hep2-other-ufh', 'hep2-prime-heparin', 'hep2-protamine-ratio-custom', 'hep2-time-first-bolus', 'hep2-time-last-bolus'].forEach(id => {
+    const node = el(id);
+    if (node) node.addEventListener('input', updateHeparinUI);
+  });
+  toggleTargetCustom();
+  toggleProtamineCustom();
 
   updateHeparinUI();
 }

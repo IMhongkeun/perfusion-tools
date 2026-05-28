@@ -362,6 +362,62 @@
                     </div>
                   </div>
 
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Target ACT (sec)</label>
+                      <select id="hep2-target-act-mode" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm">
+                        <option value="480">480</option>
+                        <option value="450">450</option>
+                        <option value="400">400</option>
+                        <option value="custom">Custom</option>
+                      </select>
+                    </div>
+                    <div id="hep2-target-act-custom-wrap" class="hidden">
+                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Custom target ACT (sec)</label>
+                      <input id="hep2-target-act-custom" type="number" min="0" step="1" placeholder="480" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" />
+                    </div>
+                  </div>
+
+                  <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-xl p-4 space-y-3">
+                    <h4 class="text-sm font-semibold text-primary-900 dark:text-white">ACT Response (On-CPB)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Baseline ACT (sec)</label>
+                        <input id="hep2-baseline-act" type="number" min="0" step="1" placeholder="120" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" />
+                      </div>
+                      <div>
+                        <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Post-heparin ACT (sec)</label>
+                        <input id="hep2-post-act" type="number" min="0" step="1" placeholder="520" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" />
+                      </div>
+                      <div>
+                        <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Time after bolus (min, optional)</label>
+                        <input id="hep2-act-time-min" type="number" min="0" step="1" placeholder="5" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" />
+                      </div>
+                      <div>
+                        <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Additional UFH during CPB (U)</label>
+                        <input id="hep2-additional-ufh" type="number" min="0" step="1" placeholder="5000" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" />
+                      </div>
+                    </div>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">ACT response may be affected by hypothermia, hemodilution, platelet count/function, antithrombin activity, sampling conditions, and ACT device type.</p>
+                  </div>
+
+                  <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-xl p-4 space-y-3">
+                    <h4 class="text-sm font-semibold text-primary-900 dark:text-white">Protamine Reversal (Post-CPB)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Circuit prime heparin (U)</label><input id="hep2-prime-heparin" type="number" min="0" step="1" placeholder="0" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                      <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Other UFH (U)</label><input id="hep2-other-ufh" type="number" min="0" step="1" placeholder="0" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                      <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Time since first bolus (min, optional)</label><input id="hep2-time-first-bolus" type="number" min="0" step="1" placeholder="90" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                      <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Time since last bolus (min, optional)</label><input id="hep2-time-last-bolus" type="number" min="0" step="1" placeholder="20" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                      <div>
+                        <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Protamine ratio (mg per 100 U)</label>
+                        <select id="hep2-protamine-ratio-mode" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm">
+                          <option value="0.8">0.8</option><option value="0.6">0.6</option><option value="0.9">0.9</option><option value="1.0">1.0</option><option value="custom">Custom</option>
+                        </select>
+                      </div>
+                      <div id="hep2-protamine-ratio-custom-wrap" class="hidden"><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Custom ratio</label><input id="hep2-protamine-ratio-custom" type="number" min="0" step="0.01" placeholder="0.85" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                    </div>
+                  </div>
+
                   <div class="bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 rounded-xl">
                     <button id="hep2-resistance-toggle" type="button" class="w-full flex items-center justify-between gap-3 px-4 py-3 text-left">
                       <div>
@@ -442,6 +498,42 @@
                         <li>Monitor ACT q30min during CPB</li>
                         <li>If ACT below target: use 50 U/kg or 100 U/kg reference only</li>
                       </ol>
+                    </div>
+
+                    <div class="flow-card">
+                      <p class="text-sm font-semibold text-primary-900 dark:text-white mb-2">ACT Response & UFH tracking (reference only)</p>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                        <div>ACT increase: <span id="hep2-act-increase" class="font-mono">-</span></div>
+                        <div>Status: <span id="hep2-act-status" class="font-semibold">-</span></div>
+                        <div>ACT response / 1,000 U: <span id="hep2-act-per-1000" class="font-mono">-</span></div>
+                        <div>50 U/kg reference: <span id="hep2-ref-50" class="font-mono">-</span></div>
+                        <div>100 U/kg reference: <span id="hep2-ref-100" class="font-mono">-</span></div>
+                        <div>Cumulative UFH: <span id="hep2-cumulative-ufh" class="font-mono">-</span></div>
+                        <div>Cumulative UFH (U/kg): <span id="hep2-cumulative-ufh-kg" class="font-mono">-</span></div>
+                      </div>
+                      <div id="hep2-resistance-cue" class="hidden mt-3 info-block warn">
+                        <p class="text-sm font-semibold text-red-600">Strong heparin resistance cue: inability to reach ACT ≥480 sec after 500 U/kg UFH is a proposed standardized definition in adult cardiac surgery.</p>
+                        <ul class="list-disc list-inside text-sm mt-2 space-y-1">
+                          <li>Confirm full heparin delivery.</li><li>Confirm sample quality.</li><li>Confirm ACT device validity.</li><li>Recheck ACT after 3–5 minutes.</li><li>Consider AT activity.</li><li>Consider heparin concentration or anti-Xa if available.</li><li>Consider AT concentrate or FFP per institutional protocol.</li><li>HIT/suspected HIT: do not use routine UFH workflow.</li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div class="flow-card">
+                      <p class="text-sm font-semibold text-primary-900 dark:text-white mb-2">Protamine estimate (reference only)</p>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                        <div>Total UFH administered: <span id="hep2-total-ufh" class="font-mono">-</span></div>
+                        <div>Ratio interpretation: <span id="hep2-ratio-label" class="font-semibold">-</span></div>
+                        <div>Estimated protamine: <span id="hep2-protamine-mg" class="font-mono">-</span></div>
+                        <div>Rounded practical dose: <span id="hep2-protamine-rounded" class="font-mono">-</span></div>
+                      </div>
+                      <p id="hep2-protamine-ratio-warn" class="hidden text-xs text-amber-600 mt-2">Warning: protamine ratio above 1.0 may increase bleeding/coagulopathy risk.</p>
+                      <p id="hep2-protamine-high-warn" class="hidden text-xs text-red-600 mt-1">Warning: calculated protamine dose is unusually high. Reassess total UFH and workflow context.</p>
+                      <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-3 space-y-1">
+                        <p>Protamine overdose can worsen coagulopathy. Evaluate residual heparin, surgical bleeding, platelets, fibrinogen, temperature, calcium, and institutional protocol before empiric repeat protamine.</p>
+                        <p>Time-based heparin decay during CPB is variable. Do not rely on time alone for reversal dosing.</p>
+                        <p>Include circuit prime heparin only when it is expected to enter the patient/systemic circulation according to local workflow.</p>
+                      </div>
                     </div>
                   </div>
 
