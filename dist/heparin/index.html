@@ -4,17 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Heparin Management Calculator for CPB (ACT & Protamine)</title>
-  <meta name="description" content="Plan heparin bolus, ACT target checks, and protamine reversal for cardiopulmonary bypass with a perfusion-focused anticoagulation workflow." />
+  <title>Heparin & Protamine Calculator for CPB | Perfusion Tools</title>
+  <meta name="description" content="Estimate adult CPB heparin bolus, ACT response, additional UFH reference doses, heparin resistance cues, and protamine reversal support." />
   <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
   <link rel="canonical" href="https://perfusiontools.com/heparin/" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Heparin Management Calculator for CPB Perfusion | Perfusion Tools" />
+  <meta property="og:title" content="Heparin & Protamine Calculator for CPB | Perfusion Tools" />
   <meta property="og:description" content="Calculate UFH bolus guidance for CPB with obesity-aware weight strategies and ACT workflow cues." />
   <meta property="og:url" content="https://perfusiontools.com/heparin/" />
-  <meta name="twitter:title" content="Heparin Management Calculator for CPB Perfusion | Perfusion Tools" />
+  <meta name="twitter:title" content="Heparin & Protamine Calculator for CPB | Perfusion Tools" />
   <meta name="twitter:description" content="Calculate UFH bolus guidance for CPB with obesity-aware weight strategies and ACT workflow cues." />
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -195,10 +195,10 @@
         canonicalPath: '/'
       },
       '/heparin': {
-        title: 'Heparin Management Calculator for CPB Perfusion | Perfusion Tools',
-        h1: 'Heparin Management for CPB Perfusion',
+        title: 'Heparin & Protamine Calculator for CPB | Perfusion Tools',
+        h1: 'Heparin & Protamine Calculator for Adult CPB',
         description: 'Standalone heparin management calculator for CPB perfusion with weight-based dosing safeguards, ACT-focused guidance, resistance checklist, and concise reversal considerations.',
-        headingDescription: 'Estimate UFH bolus guidance with TBW/IBW/ABW strategy, ACT checkpoints, and obesity safety cues for perfusion workflows.',
+        headingDescription: 'Estimate initial UFH bolus, ACT response, additional UFH reference doses, heparin resistance cues, and protamine reversal support for adult cardiopulmonary bypass.',
         canonicalPath: '/heparin/'
       }
     };
@@ -282,15 +282,14 @@
     <main class="p-4 md:p-8 max-w-3xl mx-auto w-full space-y-8">
       <section class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
         <div class="p-6 space-y-3">
-          <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Heparin Management for CPB Perfusion</h1>
-          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Estimate UFH bolus guidance with TBW/IBW/ABW strategy, ACT checkpoints, and obesity safety cues for perfusion workflows.</p>
+          <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Heparin & Protamine Calculator for Adult CPB</h1>
+          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Estimate initial UFH bolus, ACT response, additional UFH reference doses, heparin resistance cues, and protamine reversal support for adult cardiopulmonary bypass.</p>
         </div>
       </section>
 
       <section class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
         <div class="p-6 text-sm text-slate-600 dark:text-slate-300 space-y-2">
-          <p>Heparin dosing in CPB is weight-indexed but should be interpreted with ACT trend, hemodilution, temperature, and local protocol.</p>
-          <p>This page focuses on adult perfusion use: initial UFH bolus planning, additional bolus guidance, and resistance/reversal context as quick bedside support.</p>
+          <p>Adult CPB only. Not intended for pediatric CPB, ECMO maintenance anticoagulation, ICU heparin infusion, dialysis anticoagulation, or VTE treatment protocols.</p><p>Use this page to estimate and reference anticoagulation workflow support. Follow institutional protocol for all dosing decisions.</p>
         </div>
       </section>
 
@@ -299,7 +298,7 @@
           <div class="p-6 space-y-6">
             <div class="space-y-2">
               <h2 class="text-xl font-bold text-primary-900 dark:text-white">Heparin Management (CPB)</h2>
-              <p class="text-sm text-slate-600 dark:text-slate-300">Calculate an initial loading dose with weight strategy safeguards and optional flow targets; toggle resistance cues when ACT response is low.</p>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Estimate an initial UFH bolus with weight strategy safeguards, track cumulative systemic UFH exposure, and support protamine reversal planning.</p>
             </div>
 
             <div class="space-y-6">
@@ -339,7 +338,7 @@
                       <button id="hep2-weight-info-toggle" type="button" class="inline-flex min-h-11 min-w-11 items-center justify-center text-[11px] text-accent-600 dark:text-accent-400 underline-offset-2 hover:underline">ⓘ</button>
                     </div>
                     <select id="hep2-weight-strategy" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500">
-                      <option value="auto">Auto-detect (Recommended)</option>
+                      <option value="auto">Auto-detect</option>
                       <option value="tbw">Total body weight (TBW)</option>
                       <option value="abw">Adjusted body weight (ABW)</option>
                       <option value="ibw">Ideal body weight (IBW)</option>
@@ -363,11 +362,59 @@
                     </div>
                   </div>
 
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Institutional target ACT (reference)</label>
+                      <select id="hep2-target-act-mode" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm">
+                        <option value="480">480</option>
+                        <option value="450">450</option>
+                        <option value="400">400</option>
+                        <option value="custom">Custom</option>
+                      </select>
+                    </div>
+                    <div id="hep2-target-act-custom-wrap" class="hidden">
+                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Custom target ACT reference (sec)</label>
+                      <input id="hep2-target-act-custom" type="number" min="0" step="1" placeholder="480" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" />
+                    </div>
+                  </div>
+
+                  <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-xl p-4 space-y-3">
+                    <h4 class="text-sm font-semibold text-primary-900 dark:text-white">Protamine Reversal (Post-CPB)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Additional UFH during CPB (U)</label><input id="hep2-additional-ufh" type="number" min="0" step="1" placeholder="7000" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                      <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Other systemic UFH (U)</label><input id="hep2-other-ufh" type="number" min="0" step="1" placeholder="0" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                      <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Circuit prime heparin (U)</label><input id="hep2-prime-heparin" type="number" min="0" step="1" placeholder="3000" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                      <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Time since first bolus (min, optional)</label><input id="hep2-time-first-bolus" type="number" min="0" step="1" placeholder="90" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                      <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Time since last bolus (min, optional)</label><input id="hep2-time-last-bolus" type="number" min="0" step="1" placeholder="20" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                      <div>
+                        <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Protamine calculation basis</label>
+                        <select id="hep2-protamine-basis" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm">
+                          <option value="total">Total UFH administered</option>
+                          <option value="initial">Initial systemic UFH bolus</option>
+                          <option value="custom">Custom UFH reference</option>
+                        </select>
+                      </div>
+                      <div id="hep2-custom-ufh-wrap" class="hidden"><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Custom UFH reference (U)</label><input id="hep2-custom-ufh" type="number" min="0" step="1" placeholder="25000" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                      <p id="hep2-protamine-basis-help" class="md:col-span-2 text-[11px] text-slate-500 dark:text-slate-400">Uses total entered UFH exposure as the protamine reference. Simple and common, but may overestimate reversal needs when CPB duration is long.</p>
+                      <div>
+                        <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Protamine-to-heparin ratio</label>
+                        <select id="hep2-protamine-ratio-mode" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm">
+                          <option value="0.8">0.8 mg / 100 U heparin — Balanced</option>
+                          <option value="0.6">0.6 mg / 100 U heparin — Conservative</option>
+                          <option value="0.9">0.9 mg / 100 U heparin — Intermediate</option>
+                          <option value="1.0">1.0 mg / 100 U heparin — Traditional 1:1</option>
+                          <option value="custom">Custom ratio</option>
+                        </select>
+                      </div>
+                      <div id="hep2-protamine-ratio-custom-wrap" class="hidden"><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Custom ratio (mg / 100 U heparin)</label><input id="hep2-protamine-ratio-custom" type="number" min="0" step="0.01" placeholder="0.85" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                    </div>
+                  </div>
+
                   <div class="bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 rounded-xl">
                     <button id="hep2-resistance-toggle" type="button" class="w-full flex items-center justify-between gap-3 px-4 py-3 text-left">
                       <div>
                         <p class="text-sm font-semibold text-primary-900 dark:text-white">Suspect heparin resistance?</p>
-                        <p class="text-[11px] text-slate-600 dark:text-slate-300">Reference checklist when ACT response is lower than expected.</p>
+                        <p class="text-[11px] text-slate-600 dark:text-slate-300">Reference checklist when cumulative UFH exposure is high or ACT remains below institutional target.</p>
                       </div>
                       <svg data-chevron class="h-4 w-4 text-slate-500 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M6 9l6 6 6-6" />
@@ -390,7 +437,7 @@
                         <ul class="list-disc list-inside text-sm text-slate-700 dark:text-slate-200 space-y-1">
                           <li>Rule out basics: confirm heparin delivery, sampling/ACT device issues, temperature/hemodilution.</li>
                           <li>Recheck ACT at 3–5 min; if below target, consider additional UFH per local protocol.</li>
-                          <li>If inadequate response persists, consider checking AT activity and/or anti-Xa (or heparin concentration) and prepare AT supplementation (FFP if AT concentrate not available) per protocol.</li>
+                          <li>If anticoagulation response remains below institutional target, consider checking AT activity and/or anti-Xa (or heparin concentration) and prepare AT supplementation (FFP if AT concentrate not available) per protocol.</li>
                           <li>Special situations (e.g., HIT) → follow institutional DTI protocol.</li>
                         </ul>
                       </div>
@@ -423,8 +470,6 @@
                     <div class="protocol-card">
                       <div class="flex items-start mb-4"><div><p class="text-xs text-slate-500 dark:text-slate-400">Initial bolus</p><p id="hep2-initial-bolus" class="text-4xl font-mono font-bold text-primary-900 dark:text-white">-</p><div id="hep2-high-dose" class="pill pill-warn hidden">High dose &gt; 40k U</div></div></div>
                       <div id="hep2-diff-note" class="text-xs text-amber-600 dark:text-amber-300 bg-amber-500/10 rounded px-2 py-1 mb-3 hidden"></div>
-                      <div class="space-y-2 text-sm"><div class="flex justify-between"><span class="text-slate-600 dark:text-slate-400">Additional bolus</span><span id="hep2-add-bolus" class="font-mono text-primary-900 dark:text-white">-</span></div></div>
-
                       <div id="hep2-sensitivity" class="mt-3 bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-lg p-3 text-xs text-slate-700 dark:text-slate-200 space-y-2">
                         <p class="font-semibold text-primary-900 dark:text-white">Sensitivity (weight strategy vs dose @300 u/kg)</p>
                         <div class="grid grid-cols-3 text-[11px] font-semibold text-slate-500 dark:text-slate-400"><span>Strategy</span><span>Weight</span><span>Dose / Δ</span></div>
@@ -441,8 +486,47 @@
                         <li>Bolus -</li>
                         <li>Wait 3–5 min → Check ACT</li>
                         <li>Monitor ACT q30min during CPB</li>
-                        <li>If ACT low: + bolus</li>
+                        <li>Use institutional ACT target and anticoagulation protocol for monitoring decisions</li>
                       </ol>
+                    </div>
+
+                    <div class="flow-card">
+                      <p class="text-sm font-semibold text-primary-900 dark:text-white mb-2">Systemic UFH exposure safety cue</p>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                        <div>Cumulative systemic UFH: <span id="hep2-systemic-ufh" class="font-mono">-</span></div>
+                        <div>Cumulative systemic UFH (U/kg): <span id="hep2-systemic-ufh-kg" class="font-mono">-</span></div>
+                      </div>
+                      <div id="hep2-resistance-cue" class="hidden mt-3 info-block warn">
+                        <p class="text-sm font-semibold text-amber-700 dark:text-amber-300">High cumulative UFH exposure. If ACT remains below institutional target or &lt;480 sec despite ≥500 U/kg UFH, consider heparin resistance evaluation.</p>
+                        <ul class="list-disc list-inside text-sm mt-2 space-y-1">
+                          <li>Confirm full heparin delivery.</li>
+                          <li>Confirm sample quality and ACT device validity.</li>
+                          <li>Recheck ACT after 3–5 minutes.</li>
+                          <li>Consider AT activity, heparin concentration, or anti-Xa if available.</li>
+                          <li>Consider AT concentrate or FFP per institutional protocol.</li>
+                          <li>HIT/suspected HIT: do not use routine UFH workflow.</li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div class="flow-card">
+                      <p class="text-sm font-semibold text-primary-900 dark:text-white mb-2">Protamine estimate (reference only)</p>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                        <div>UFH reference used: <span id="hep2-ufh-reference-used" class="font-mono">-</span></div>
+                        <div>Selected protamine-to-heparin ratio: <span id="hep2-selected-ratio" class="font-mono">-</span></div>
+                        <div>Estimated protamine dose: <span id="hep2-protamine-mg" class="font-mono">-</span></div>
+                        <div>Practical rounded dose: <span id="hep2-protamine-rounded" class="font-mono">-</span></div>
+                        <div>Rounding note: <span class="font-mono">rounded to nearest 25 mg</span></div>
+                        <div>Ratio interpretation: <span id="hep2-ratio-label" class="font-semibold">-</span></div>
+                      </div>
+                      <p id="hep2-protamine-ratio-warn" class="hidden text-xs text-amber-600 mt-2">Warning: protamine ratio above 1.0 may increase bleeding/coagulopathy risk.</p>
+                      <p id="hep2-protamine-high-warn" class="hidden text-xs text-red-600 mt-1">Warning: calculated protamine dose is unusually high. Reassess the UFH reference amount and workflow context.</p>
+                      <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-3 space-y-1">
+                        <p>Protamine dosing may be estimated from total UFH, initial systemic UFH bolus, measured heparin concentration, or local protocol. Total-dose methods are simple but may overestimate reversal needs when CPB duration is long. Initial-bolus methods may reduce protamine exposure but may underestimate reversal needs after additional UFH. Use institutional protocol and clinical assessment.</p>
+                        <p>Protamine overdose can worsen coagulopathy. Evaluate residual heparin, surgical bleeding, platelets, fibrinogen, temperature, calcium, and institutional protocol before empiric repeat protamine.</p>
+                        <p>Time-based heparin decay during CPB is variable. Do not rely on time alone for reversal dosing.</p>
+                        <p>Include circuit prime heparin only when it is expected to enter the patient/systemic circulation according to local workflow.</p>
+                      </div>
                     </div>
                   </div>
 
@@ -525,7 +609,14 @@
                   </div>
 
                   <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-300 space-y-2">
-                    <p class="text-sm font-semibold text-primary-900 dark:text-white">Selected references</p>
+
+                  <div class="bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-200 space-y-2">
+                    <p class="text-sm font-semibold text-primary-900 dark:text-white">FAQ</p>
+                    <ol class="list-decimal list-inside space-y-1">
+                      <li>What ACT target is commonly used before CPB?</li><li>How is initial heparin dose calculated for CPB?</li><li>How do you estimate additional heparin when ACT is below target?</li><li>What is heparin resistance during CPB?</li><li>How is protamine dose estimated after CPB?</li><li>Why can ACT be misleading during hypothermic CPB?</li><li>Is this calculator for ECMO or ICU heparin infusion?</li>
+                    </ol>
+                  </div>
+<p class="text-sm font-semibold text-primary-900 dark:text-white">Selected references</p>
                     <ul class="list-disc list-inside space-y-2">
                       <li>
                         <span>Shore-Lesserson L, Baker RA, Ferraris VA, et al. STS/SCA/AmSECT Clinical Practice Guidelines: Anticoagulation during Cardiopulmonary Bypass. Ann Thorac Surg. 2018.</span>
@@ -584,56 +675,7 @@
     </div>
   </footer>
 
-  <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-primary-900 border-t border-slate-200 dark:border-primary-800 z-50 flex items-center h-[var(--bottom-nav-height)] pb-safe overflow-x-auto whitespace-nowrap px-1">
-    <a href="/" id="mob-home" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
-      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9.75l9-6 9 6V19.5A1.5 1.5 0 0119.5 21h-15A1.5 1.5 0 013 19.5V9.75z" /></svg>
-      <span class="text-[10px] font-medium">Home</span>
-    </a>
-    <a href="/bsa/" data-route id="mob-bsa" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
-      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.5 9.75A2.25 2.25 0 016.75 7.5h10.5A2.25 2.25 0 0119.5 9.75v4.5A2.25 2.25 0 0117.25 16.5H6.75A2.25 2.25 0 014.5 14.25v-4.5z M8.25 12h7.5M9 9.75v4.5m6-4.5v4.5" /></svg>
-      <span class="text-[10px] font-medium">BSA</span>
-    </a>
-    <a href="/lbm/" data-route id="mob-lbm" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
-      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-      <span class="text-[10px] font-medium">LBM</span>
-    </a>
-    <a href="/gdp/" data-route id="mob-do2i" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
-      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-      <span class="text-[10px] font-medium">GDP</span>
-    </a>
-    <a href="/heparin/" data-route id="mob-heparin" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-accent-600 dark:text-accent-400 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
-      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-      <span class="text-[10px] font-medium">Heparin</span>
-    </a>
-    <a href="/predicted-hct/" data-route id="mob-hct" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
-      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
-      <span class="text-[10px] font-medium">Hct</span>
-    </a>
-    <a href="/z-score/" data-route id="mob-phn-echo" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
-      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.75 6.75A2.25 2.25 0 016 4.5h12a2.25 2.25 0 012.25 2.25v10.5A2.25 2.25 0 0118 19.5H6a2.25 2.25 0 01-2.25-2.25V6.75z M8.25 9h7.5M8.25 12h4.5M8.25 15h7.5" /></svg>
-      <span class="text-[10px] font-medium">Z-score</span>
-    </a>
-    <a href="/priming-volume/" data-route id="mob-priming" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
-      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 3h10M9 3v5l-5 7a4 4 0 003.2 6h9.6A4 4 0 0020 15l-5-7V3" /></svg>
-      <span class="text-[10px] font-medium leading-tight text-center whitespace-nowrap">Priming</span>
-    </a>
-    <a href="/timecalc/" data-route id="mob-time" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
-      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-      <span class="text-[10px] font-medium">Time</span>
-    </a>
-    <a href="/quick-reference/" data-route id="mob-quick-reference" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
-      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6.75A2.75 2.75 0 016.75 4h10.5A2.75 2.75 0 0120 6.75v10.5A2.75 2.75 0 0117.25 20H6.75A2.75 2.75 0 014 17.25V6.75z M8 9h8M8 13h8M8 17h5" /></svg>
-      <span class="text-[10px] font-medium leading-tight text-center whitespace-nowrap">Quick Ref</span>
-    </a>
-    <a href="/unit-converter/" data-route id="mob-unit-converter" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
-      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M7 12h10M10 17h4" /></svg>
-      <span class="text-[10px] font-medium leading-tight text-center whitespace-nowrap">Unit Conv</span>
-    </a>
-    <a href="/info/" id="mob-info" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
-      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-      <span class="text-[10px] font-medium">Info</span>
-    </a>
-  </nav>
+
 
   <script src="/main.js"></script>
 </body>

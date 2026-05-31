@@ -4243,7 +4243,6 @@ function computeDevineIbw(heightCm, sex) {
 }
 
 let hepDoseUnit = 300;
-let hepResistance = false;
 
 function setHepDoseButtons(activeDose) {
   document.querySelectorAll('[data-hep-dose]').forEach(btn => {
@@ -4293,7 +4292,6 @@ function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy 
   const tbwBolus = Math.round(weightKg * doseUnit);
   const difference = tbwBolus - initialBolus;
   const isHighDose = initialBolus > 40000;
-  const additionalBolus = Math.round(dosingWeight * (hepResistance ? 100 : 50));
 
   // DuBois BSA approximation used here (0.007184 × H^0.725 × W^0.425)
   const bsaActual = 0.007184 * Math.pow(heightCm, 0.725) * Math.pow(weightKg, 0.425);
@@ -4315,7 +4313,6 @@ function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy 
     tbwBolus,
     difference,
     isHighDose,
-    additionalBolus,
     bsaActual,
     bsaCapped,
   };
@@ -4327,10 +4324,22 @@ function updateHeparinUI() {
   const sex = el('hep2-sex')?.value || 'male';
   const weightStrategy = el('hep2-weight-strategy')?.value || 'auto';
 
-  hepResistance = false;
-
   const height = parseFloat(heightInput?.value);
   const weight = parseFloat(weightInput?.value);
+  const readOptionalNumber = (id) => {
+    const node = el(id);
+    if (!node || node.value === '') return null;
+    const value = parseFloat(node.value);
+    return Number.isFinite(value) && value >= 0 ? value : null;
+  };
+  const additionalUfh = readOptionalNumber('hep2-additional-ufh') ?? 0;
+  const otherUfh = readOptionalNumber('hep2-other-ufh') ?? 0;
+  const primeHeparin = readOptionalNumber('hep2-prime-heparin') ?? 0;
+  const customUfhReference = readOptionalNumber('hep2-custom-ufh');
+  const protamineBasis = el('hep2-protamine-basis')?.value || 'total';
+  const protamineMode = el('hep2-protamine-ratio-mode')?.value || '0.8';
+  const protamineCustom = readOptionalNumber('hep2-protamine-ratio-custom');
+  const protamineRatio = protamineMode === 'custom' ? protamineCustom : parseFloat(protamineMode);
 
   const heightError = el('hep2-height-error');
   const weightError = el('hep2-weight-error');
@@ -4375,7 +4384,6 @@ function updateHeparinUI() {
   if (capBadge) capBadge.classList.toggle('hidden', !plan.bsaCapped);
 
   setText('hep2-initial-bolus', plan.initialBolus.toLocaleString());
-  setText('hep2-add-bolus', `${plan.additionalBolus.toLocaleString()} U`);
 
   const weightBreakdown = el('hep2-weight-breakdown');
   if (weightBreakdown) {
@@ -4421,18 +4429,69 @@ function updateHeparinUI() {
     steps[0].textContent = `Bolus ${plan.initialBolus.toLocaleString()} U IV`;
     steps[1].textContent = 'Wait 3–5 min → Check ACT';
     steps[2].textContent = 'Monitor ACT q30min during CPB';
-    steps[3].textContent = `If ACT low: +${plan.additionalBolus.toLocaleString()} U bolus`;
+    steps[3].textContent = 'Use institutional ACT target and anticoagulation protocol for monitoring decisions';
   }
 
+  // Track systemic UFH exposure for a simple heparin resistance safety cue.
+  // Formula: cumulative systemic UFH = initial patient bolus + additional systemic UFH + other systemic UFH.
+  // Circuit prime heparin is intentionally excluded from this resistance cue because it may not be systemic.
+  const cumulativeSystemicUfh = plan.initialBolus + additionalUfh + otherUfh;
+  const cumulativeSystemicPerKg = cumulativeSystemicUfh / plan.dosingWeight;
+  setText('hep2-systemic-ufh', `${Math.round(cumulativeSystemicUfh).toLocaleString()} U`);
+  setText('hep2-systemic-ufh-kg', `${cumulativeSystemicPerKg.toFixed(1)} U/kg`);
+
+  const resistanceCue = el('hep2-resistance-cue');
+  if (resistanceCue) resistanceCue.classList.toggle('hidden', cumulativeSystemicPerKg < 500);
+
+  // Protamine estimate formula: protamine mg = UFH reference amount / 100 × selected ratio.
+  // The basis selector controls which UFH reference amount is used.
+  const totalUfh = plan.initialBolus + additionalUfh + otherUfh + primeHeparin;
+  let ufhReference = totalUfh;
+  let ufhReferenceLabel = 'total UFH administered';
+  if (protamineBasis === 'initial') {
+    ufhReference = plan.initialBolus;
+    ufhReferenceLabel = 'initial systemic UFH bolus';
+  } else if (protamineBasis === 'custom') {
+    ufhReference = customUfhReference;
+    ufhReferenceLabel = 'custom UFH reference';
+  }
+
+  const hasUfhReference = Number.isFinite(ufhReference) && ufhReference > 0;
+  const protamineValid = Number.isFinite(protamineRatio) && protamineRatio > 0;
+  const protamineMg = hasUfhReference && protamineValid ? (ufhReference / 100) * protamineRatio : null;
+  const protamineRounded = Number.isFinite(protamineMg) ? Math.round(protamineMg / 25) * 25 : null;
+  setText('hep2-ufh-reference-used', hasUfhReference ? `${Math.round(ufhReference).toLocaleString()} U (${ufhReferenceLabel})` : '-');
+  setText('hep2-selected-ratio', protamineValid ? `${protamineRatio.toFixed(2)} mg / 100 U heparin` : '-');
+  setText('hep2-protamine-mg', Number.isFinite(protamineMg) ? `${protamineMg.toFixed(1)} mg` : '-');
+  setText('hep2-protamine-rounded', Number.isFinite(protamineRounded) ? `${protamineRounded.toLocaleString()} mg` : '-');
+
+  const ratioLabelNode = el('hep2-ratio-label');
+  let ratioLabel = '-';
+  if (protamineValid) {
+    if (protamineRatio === 0.6) ratioLabel = '0.6 conservative';
+    else if (protamineRatio === 0.8) ratioLabel = '0.8 balanced';
+    else if (protamineRatio === 0.9) ratioLabel = '0.9 intermediate';
+    else if (protamineRatio === 1.0) ratioLabel = '1.0 traditional';
+    else ratioLabel = `${protamineRatio.toFixed(2)} custom`;
+  }
+  if (ratioLabelNode) ratioLabelNode.textContent = ratioLabel;
+  const ratioWarn = el('hep2-protamine-ratio-warn');
+  if (ratioWarn) ratioWarn.classList.toggle('hidden', !(protamineValid && protamineRatio > 1.0));
+  const highWarn = el('hep2-protamine-high-warn');
+  if (highWarn) highWarn.classList.toggle('hidden', !(Number.isFinite(protamineMg) && protamineMg >= 400));
+
+  const referenceWeight = plan.dosingWeight;
+  const referenceDose = Math.round(referenceWeight * 300);
+  const referenceLabel = weightStrategy === 'auto' ? 'selected auto strategy' : plan.strategyLabel;
   const sensAbwDose = Math.round(plan.abw * 300);
   const sensTbwDose = Math.round(plan.tbw * 300);
   const sensIbwDose = Math.round(plan.ibw * 300);
   setText('hep2-sens-abw-wt', `${plan.abw.toFixed(1)} kg`);
-  setText('hep2-sens-abw-dose', `${sensAbwDose.toLocaleString()} U (reference)`);
+  setText('hep2-sens-abw-dose', `${sensAbwDose.toLocaleString()} U (${(sensAbwDose - referenceDose >= 0 ? '+' : '')}${(sensAbwDose - referenceDose).toLocaleString()} vs ${referenceLabel})`);
   setText('hep2-sens-tbw-wt', `${plan.tbw.toFixed(1)} kg`);
-  setText('hep2-sens-tbw-dose', `${sensTbwDose.toLocaleString()} U (${(sensTbwDose - sensAbwDose >= 0 ? '+' : '')}${(sensTbwDose - sensAbwDose).toLocaleString()} vs ABW)`);
+  setText('hep2-sens-tbw-dose', `${sensTbwDose.toLocaleString()} U (${(sensTbwDose - referenceDose >= 0 ? '+' : '')}${(sensTbwDose - referenceDose).toLocaleString()} vs ${referenceLabel})`);
   setText('hep2-sens-ibw-wt', `${plan.ibw.toFixed(1)} kg`);
-  setText('hep2-sens-ibw-dose', `${sensIbwDose.toLocaleString()} U (${(sensIbwDose - sensAbwDose >= 0 ? '+' : '')}${(sensIbwDose - sensAbwDose).toLocaleString()} vs ABW)`);
+  setText('hep2-sens-ibw-dose', `${sensIbwDose.toLocaleString()} U (${(sensIbwDose - referenceDose >= 0 ? '+' : '')}${(sensIbwDose - referenceDose).toLocaleString()} vs ${referenceLabel})`);
 
   const pedsWarning = el('hep2-peds-warning');
   if (pedsWarning) pedsWarning.classList.toggle('hidden', !(weight < 20 || height < 120));
@@ -4494,6 +4553,41 @@ function initHeparinManagement() {
     if (node && node.tagName === 'SELECT') node.addEventListener('change', updateHeparinUI);
     if (node && node.type === 'checkbox') node.addEventListener('change', updateHeparinUI);
   });
+
+  const toggleTargetCustom = () => {
+    const wrap = el('hep2-target-act-custom-wrap');
+    if (wrap) wrap.classList.toggle('hidden', (el('hep2-target-act-mode')?.value || '') !== 'custom');
+  };
+  const toggleProtamineCustom = () => {
+    const wrap = el('hep2-protamine-ratio-custom-wrap');
+    if (wrap) wrap.classList.toggle('hidden', (el('hep2-protamine-ratio-mode')?.value || '') !== 'custom');
+  };
+  const updateProtamineBasisUi = () => {
+    const basis = el('hep2-protamine-basis')?.value || 'total';
+    const customWrap = el('hep2-custom-ufh-wrap');
+    const help = el('hep2-protamine-basis-help');
+    if (customWrap) customWrap.classList.toggle('hidden', basis !== 'custom');
+    if (help) {
+      if (basis === 'initial') {
+        help.textContent = 'Uses the first systemic UFH bolus as the reference amount. This may reduce protamine exposure, but does not account for later additional UFH or measured residual heparin.';
+      } else if (basis === 'custom') {
+        help.textContent = 'Use when local protocol, heparin concentration monitoring, Hepcon/HMS, anti-Xa, or clinical assessment provides a preferred UFH reference amount.';
+      } else {
+        help.textContent = 'Uses total entered UFH exposure as the protamine reference. Simple and common, but may overestimate reversal needs when CPB duration is long.';
+      }
+    }
+  };
+  ['hep2-target-act-mode', 'hep2-protamine-ratio-mode', 'hep2-protamine-basis'].forEach(id => {
+    const node = el(id);
+    if (node) node.addEventListener('change', () => { toggleTargetCustom(); toggleProtamineCustom(); updateProtamineBasisUi(); updateHeparinUI(); });
+  });
+  ['hep2-target-act-custom', 'hep2-additional-ufh', 'hep2-other-ufh', 'hep2-prime-heparin', 'hep2-custom-ufh', 'hep2-protamine-ratio-custom', 'hep2-time-first-bolus', 'hep2-time-last-bolus'].forEach(id => {
+    const node = el(id);
+    if (node) node.addEventListener('input', updateHeparinUI);
+  });
+  toggleTargetCustom();
+  toggleProtamineCustom();
+  updateProtamineBasisUi();
 
   updateHeparinUI();
 }
