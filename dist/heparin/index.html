@@ -184,6 +184,18 @@
     }
     .info-block.warn { background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.35); }
     .info-block.alert { background: rgba(249, 115, 22, 0.1); border-color: rgba(249, 115, 22, 0.35); }
+
+    .heparin-form-field { display: flex; flex-direction: column; }
+    .heparin-field-label {
+      min-height: 2.75rem;
+      display: flex;
+      align-items: flex-end;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+    @media (max-width: 768px) {
+      .heparin-field-label { min-height: auto; }
+    }
   </style>
 
   <script>
@@ -314,28 +326,28 @@
                     <span class="text-xs text-slate-500 dark:text-slate-400">Adult CPB</span>
                   </div>
                   <div class="grid grid-cols-2 gap-3">
-                    <div>
-                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Height (cm)</label>
+                    <div class="heparin-form-field">
+                      <label class="heparin-field-label text-xs text-slate-500 dark:text-slate-400">Height (cm)</label>
                       <input id="hep2-height" type="number" inputmode="decimal" min="0" step="0.1" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="170" />
                       <p id="hep2-height-error" class="text-xs text-red-500 mt-1 hidden">Height should be 50–250 cm</p>
                     </div>
-                    <div>
-                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Weight (kg)</label>
+                    <div class="heparin-form-field">
+                      <label class="heparin-field-label text-xs text-slate-500 dark:text-slate-400">Weight (kg)</label>
                       <input id="hep2-weight" type="number" inputmode="decimal" min="0" step="0.1" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="70" />
                       <p id="hep2-weight-error" class="text-xs text-red-500 mt-1 hidden">Weight should be 20–300 kg</p>
                     </div>
                   </div>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Sex</label>
+                    <div class="heparin-form-field">
+                      <label class="heparin-field-label text-xs text-slate-500 dark:text-slate-400">Sex</label>
                       <select id="hep2-sex" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500">
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                       </select>
                     </div>
-                    <div>
-                      <div class="flex items-center gap-2 mb-1">
-                        <label class="text-xs text-slate-500 dark:text-slate-400">Weight strategy</label>
+                    <div class="heparin-form-field">
+                      <div class="heparin-field-label text-xs text-slate-500 dark:text-slate-400">
+                        <label>Weight strategy</label>
                         <button id="hep2-weight-info-toggle" type="button" class="inline-flex min-h-11 min-w-11 items-center justify-center text-[11px] text-accent-600 dark:text-accent-400 underline-offset-2 hover:underline">ⓘ</button>
                       </div>
                       <select id="hep2-weight-strategy" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500">
@@ -361,8 +373,8 @@
                     </div>
                   </div>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Institutional target ACT (optional reference)</label>
+                    <div class="heparin-form-field">
+                      <label class="heparin-field-label text-xs text-slate-500 dark:text-slate-400">Institutional target ACT (optional reference)</label>
                       <select id="hep2-target-act-mode" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm">
                         <option value="480">480 sec</option>
                         <option value="450">450 sec</option>
@@ -370,8 +382,8 @@
                         <option value="custom">Custom</option>
                       </select>
                     </div>
-                    <div id="hep2-target-act-custom-wrap" class="hidden">
-                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Custom target ACT reference (sec)</label>
+                    <div id="hep2-target-act-custom-wrap" class="hidden heparin-form-field">
+                      <label class="heparin-field-label text-xs text-slate-500 dark:text-slate-400">Custom target ACT reference (sec)</label>
                       <input id="hep2-target-act-custom" type="number" min="0" step="1" placeholder="480" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" />
                     </div>
                   </div>
@@ -440,15 +452,15 @@
                   <h3 class="text-base font-semibold text-primary-900 dark:text-white">Protamine inputs</h3>
                   <div class="space-y-3">
                     <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">A. Heparin exposure during case</p>
-                    <div>
-                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Initial systemic UFH given (U)</label>
+                    <div class="heparin-form-field">
+                      <label class="heparin-field-label text-xs text-slate-500 dark:text-slate-400">Initial systemic UFH given (U)</label>
                       <input id="hep2-initial-ufh-given" type="number" min="0" step="1" placeholder="Auto from initial plan" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" />
                       <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Auto-fills from Section 1 when available; edit if the actual dose differs.</p>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Additional systemic UFH during CPB (U)</label><input id="hep2-additional-ufh" type="number" min="0" step="1" placeholder="7000" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
-                      <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Other systemic UFH (U)</label><input id="hep2-other-ufh" type="number" min="0" step="1" placeholder="0" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
-                      <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Circuit prime heparin (U)</label><input id="hep2-prime-heparin" type="number" min="0" step="1" placeholder="3000" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                      <div class="heparin-form-field"><label class="heparin-field-label text-xs text-slate-500 dark:text-slate-400">Additional systemic UFH during CPB (U)</label><input id="hep2-additional-ufh" type="number" min="0" step="1" placeholder="7000" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                      <div class="heparin-form-field"><label class="heparin-field-label text-xs text-slate-500 dark:text-slate-400">Other systemic UFH (U)</label><input id="hep2-other-ufh" type="number" min="0" step="1" placeholder="0" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                      <div class="heparin-form-field"><label class="heparin-field-label text-xs text-slate-500 dark:text-slate-400">Circuit prime heparin (U)</label><input id="hep2-prime-heparin" type="number" min="0" step="1" placeholder="3000" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
                     </div>
                   </div>
                   <div class="space-y-3">
@@ -458,7 +470,7 @@
                       <option value="initial">Initial systemic UFH bolus</option>
                       <option value="custom">Custom UFH reference</option>
                     </select>
-                    <div id="hep2-custom-ufh-wrap" class="hidden"><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Custom UFH reference (U)</label><input id="hep2-custom-ufh" type="number" min="0" step="1" placeholder="25000" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                    <div id="hep2-custom-ufh-wrap" class="hidden heparin-form-field"><label class="heparin-field-label text-xs text-slate-500 dark:text-slate-400">Custom UFH reference (U)</label><input id="hep2-custom-ufh" type="number" min="0" step="1" placeholder="25000" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
                     <p id="hep2-protamine-basis-help" class="text-[11px] text-slate-500 dark:text-slate-400">Uses total entered UFH exposure as the protamine reference. Simple and common, but may overestimate reversal needs when CPB duration is long.</p>
                   </div>
                   <div class="space-y-3">
@@ -470,7 +482,7 @@
                       <option value="1.0">1.0 mg / 100 U heparin — Traditional 1:1</option>
                       <option value="custom">Custom ratio</option>
                     </select>
-                    <div id="hep2-protamine-ratio-custom-wrap" class="hidden"><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Custom ratio (mg / 100 U heparin)</label><input id="hep2-protamine-ratio-custom" type="number" min="0" step="0.01" placeholder="0.85" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                    <div id="hep2-protamine-ratio-custom-wrap" class="hidden heparin-form-field"><label class="heparin-field-label text-xs text-slate-500 dark:text-slate-400">Custom ratio (mg / 100 U heparin)</label><input id="hep2-protamine-ratio-custom" type="number" min="0" step="0.01" placeholder="0.85" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
                   </div>
                 </div>
 
