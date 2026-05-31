@@ -4244,6 +4244,14 @@ function computeDevineIbw(heightCm, sex) {
 
 let hepDoseUnit = 300;
 let hepInitialUfhOverrideTouched = false;
+const HEPARIN_QUICK_PROTOCOL_ACT_LOW_COPY = 'If ACT below target: reassess sample/device/heparin delivery and follow institutional protocol';
+
+function syncHeparinQuickProtocolCopy() {
+  const steps = el('hep2-quick-steps')?.querySelectorAll('li');
+  if (steps && steps.length >= 4) {
+    steps[3].textContent = HEPARIN_QUICK_PROTOCOL_ACT_LOW_COPY;
+  }
+}
 
 function setHepDoseButtons(activeDose) {
   document.querySelectorAll('[data-hep-dose]').forEach(btn => {
@@ -4320,6 +4328,8 @@ function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy 
 }
 
 function updateHeparinUI() {
+  syncHeparinQuickProtocolCopy();
+
   const heightInput = el('hep2-height');
   const weightInput = el('hep2-weight');
   const sex = el('hep2-sex')?.value || 'male';
