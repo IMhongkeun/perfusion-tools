@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>Heparin & Protamine Calculator for CPB | Perfusion Tools</title>
-  <meta name="description" content="Estimate adult CPB heparin bolus, ACT response, additional UFH reference doses, heparin resistance cues, and protamine reversal support." />
+  <meta name="description" content="Plan adult CPB initial UFH bolus and estimate post-CPB protamine reversal using total UFH, initial bolus, or custom UFH reference." />
   <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
   <link rel="canonical" href="https://perfusiontools.com/heparin/" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Heparin & Protamine Calculator for CPB | Perfusion Tools" />
-  <meta property="og:description" content="Calculate UFH bolus guidance for CPB with obesity-aware weight strategies and ACT workflow cues." />
+  <meta property="og:description" content="Plan adult CPB initial UFH bolus and estimate post-CPB protamine reversal with obesity-aware weight strategy support." />
   <meta property="og:url" content="https://perfusiontools.com/heparin/" />
   <meta name="twitter:title" content="Heparin & Protamine Calculator for CPB | Perfusion Tools" />
-  <meta name="twitter:description" content="Calculate UFH bolus guidance for CPB with obesity-aware weight strategies and ACT workflow cues." />
+  <meta name="twitter:description" content="Plan adult CPB initial UFH bolus and estimate post-CPB protamine reversal with obesity-aware weight strategy support." />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -197,8 +197,8 @@
       '/heparin': {
         title: 'Heparin & Protamine Calculator for CPB | Perfusion Tools',
         h1: 'Heparin & Protamine Calculator for Adult CPB',
-        description: 'Standalone heparin management calculator for CPB perfusion with weight-based dosing safeguards, ACT-focused guidance, resistance checklist, and concise reversal considerations.',
-        headingDescription: 'Estimate initial UFH bolus, ACT response, additional UFH reference doses, heparin resistance cues, and protamine reversal support for adult cardiopulmonary bypass.',
+        description: 'Adult CPB heparin and protamine calculator with weight-strategy UFH bolus planning, protamine basis options, and concise safety notes.',
+        headingDescription: 'Plan an initial UFH bolus using weight strategy, then estimate post-CPB protamine reversal using total UFH, initial bolus, or a custom UFH reference.',
         canonicalPath: '/heparin/'
       }
     };
@@ -279,11 +279,11 @@
       </div>
     </aside>
 
-    <main class="p-4 md:p-8 max-w-3xl mx-auto w-full space-y-8">
+    <main class="p-4 md:p-8 max-w-5xl mx-auto w-full space-y-8">
       <section class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
         <div class="p-6 space-y-3">
           <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Heparin & Protamine Calculator for Adult CPB</h1>
-          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Estimate initial UFH bolus, ACT response, additional UFH reference doses, heparin resistance cues, and protamine reversal support for adult cardiopulmonary bypass.</p>
+          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Plan an initial UFH bolus using weight strategy, then estimate post-CPB protamine reversal using total UFH, initial bolus, or a custom UFH reference.</p>
         </div>
       </section>
 
@@ -293,19 +293,24 @@
         </div>
       </section>
 
-      <section id="view-heparin" class="animate-in fade-in duration-300">
+      <section id="view-heparin" class="animate-in fade-in duration-300 space-y-8">
         <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 overflow-hidden">
-          <div class="p-6 space-y-6">
+          <div class="p-6 space-y-8">
             <div class="space-y-2">
-              <h2 class="text-xl font-bold text-primary-900 dark:text-white">Heparin Management (CPB)</h2>
-              <p class="text-sm text-slate-600 dark:text-slate-300">Estimate an initial UFH bolus with weight strategy safeguards, track cumulative systemic UFH exposure, and support protamine reversal planning.</p>
+              <h2 class="text-xl font-bold text-primary-900 dark:text-white">Adult CPB workflow</h2>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Use Section 1 before bypass to estimate the initial UFH plan, then use Section 2 after bypass to estimate protamine from the selected heparin exposure basis.</p>
             </div>
 
-            <div class="space-y-6">
-              <div class="space-y-4">
+            <section class="space-y-4" aria-labelledby="hep2-pre-title">
+              <div class="space-y-1">
+                <h2 id="hep2-pre-title" class="text-lg font-bold text-primary-900 dark:text-white">1. Pre-CPB: Initial UFH Plan</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-300">How much initial heparin should I plan based on this patient and weight strategy?</p>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
                 <div class="bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 space-y-4">
                   <div class="flex items-center justify-between">
-                    <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Patient parameters</h3>
+                    <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Patient and dosing inputs</h3>
                     <span class="text-xs text-slate-500 dark:text-slate-400">Adult CPB</span>
                   </div>
                   <div class="grid grid-cols-2 gap-3">
@@ -320,8 +325,7 @@
                       <p id="hep2-weight-error" class="text-xs text-red-500 mt-1 hidden">Weight should be 20–300 kg</p>
                     </div>
                   </div>
-
-                  <div class="grid grid-cols-2 gap-3">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
                       <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Sex</label>
                       <select id="hep2-sex" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500">
@@ -329,31 +333,26 @@
                         <option value="female">Female</option>
                       </select>
                     </div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center">ACT monitoring per protocol</div>
-                  </div>
-
-                  <div>
-                    <div class="flex items-center gap-2 mb-1">
-                      <label class="text-xs text-slate-500 dark:text-slate-400">Weight strategy</label>
-                      <button id="hep2-weight-info-toggle" type="button" class="inline-flex min-h-11 min-w-11 items-center justify-center text-[11px] text-accent-600 dark:text-accent-400 underline-offset-2 hover:underline">ⓘ</button>
-                    </div>
-                    <select id="hep2-weight-strategy" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500">
-                      <option value="auto">Auto-detect</option>
-                      <option value="tbw">Total body weight (TBW)</option>
-                      <option value="abw">Adjusted body weight (ABW)</option>
-                      <option value="ibw">Ideal body weight (IBW)</option>
-                    </select>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Auto switches to ABW when BMI ≥ 30 to reduce overdose risk.</p>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Auto logic: BMI &lt; 30 → TBW; BMI 30–39 → ABW (0.4 correction); BMI ≥ 40 → ABW (0.3) with obesity safety cues.</p>
-                    <div id="hep2-weight-info" class="hidden mt-2 text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-100 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-xl p-3 space-y-1">
-                      <p><strong class="text-primary-900 dark:text-white">Devine IBW:</strong> Male = 50 + 0.91 × (cm − 152.4), Female = 45.5 + 0.91 × (cm − 152.4).</p>
-                      <p><strong class="text-primary-900 dark:text-white">ABW 0.4 / 0.3 rules:</strong> ABW = IBW + factor × (TBW − IBW); factor 0.4 when BMI 30–39, factor 0.3 when BMI ≥ 40.</p>
-                      <p><strong class="text-primary-900 dark:text-white">Safety cap:</strong> Obesity flows/doses use IBW/ABW and may cap BSA to avoid extreme UFH and hemodilution.</p>
+                    <div>
+                      <div class="flex items-center gap-2 mb-1">
+                        <label class="text-xs text-slate-500 dark:text-slate-400">Weight strategy</label>
+                        <button id="hep2-weight-info-toggle" type="button" class="inline-flex min-h-11 min-w-11 items-center justify-center text-[11px] text-accent-600 dark:text-accent-400 underline-offset-2 hover:underline">ⓘ</button>
+                      </div>
+                      <select id="hep2-weight-strategy" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500">
+                        <option value="auto">Auto-detect</option>
+                        <option value="tbw">Total body weight (TBW)</option>
+                        <option value="abw">Adjusted body weight (ABW)</option>
+                        <option value="ibw">Ideal body weight (IBW)</option>
+                      </select>
                     </div>
                   </div>
-
+                  <div id="hep2-weight-info" class="hidden text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-100 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-xl p-3 space-y-1">
+                    <p><strong class="text-primary-900 dark:text-white">Devine IBW:</strong> Male = 50 + 0.91 × (cm − 152.4), Female = 45.5 + 0.91 × (cm − 152.4).</p>
+                    <p><strong class="text-primary-900 dark:text-white">ABW 0.4 / 0.3 rules:</strong> ABW = IBW + factor × (TBW − IBW); factor 0.4 when BMI 30–39, factor 0.3 when BMI ≥ 40.</p>
+                    <p><strong class="text-primary-900 dark:text-white">Auto logic:</strong> BMI &lt; 30 → TBW; BMI 30–39 → ABW (0.4); BMI ≥ 40 → ABW (0.3).</p>
+                  </div>
                   <div class="space-y-2">
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Initial dose (u/kg)</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Initial dose (U/kg)</p>
                     <div class="grid grid-cols-4 gap-2" id="hep2-dose-buttons">
                       <button type="button" data-hep-dose="250" class="hep-dose-btn">250</button>
                       <button type="button" data-hep-dose="300" class="hep-dose-btn active-dose">300</button>
@@ -361,14 +360,13 @@
                       <button type="button" data-hep-dose="400" class="hep-dose-btn">400</button>
                     </div>
                   </div>
-
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Institutional target ACT (reference)</label>
+                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Institutional target ACT (optional reference)</label>
                       <select id="hep2-target-act-mode" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm">
-                        <option value="480">480</option>
-                        <option value="450">450</option>
-                        <option value="400">400</option>
+                        <option value="480">480 sec</option>
+                        <option value="450">450 sec</option>
+                        <option value="400">400 sec</option>
                         <option value="custom">Custom</option>
                       </select>
                     </div>
@@ -377,286 +375,214 @@
                       <input id="hep2-target-act-custom" type="number" min="0" step="1" placeholder="480" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" />
                     </div>
                   </div>
+                </div>
 
-                  <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-xl p-4 space-y-3">
-                    <h4 class="text-sm font-semibold text-primary-900 dark:text-white">Protamine Reversal (Post-CPB)</h4>
+                <div class="protocol-card h-full">
+                  <h3 class="text-base font-semibold text-primary-900 dark:text-white mb-3">Initial UFH plan</h3>
+                  <div id="hep2-placeholder" class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-200 dark:border-primary-800 rounded-2xl min-h-[240px] p-6 text-center">
+                    <p class="text-lg font-semibold">Enter patient parameters to calculate</p>
+                    <p class="text-sm">Height and weight are required before results appear.</p>
+                  </div>
+
+                  <div id="hep2-results" class="space-y-4 hidden">
+                    <div class="grid grid-cols-2 gap-3">
+                      <div class="stat-card"><p class="stat-label">BMI</p><p id="hep2-bmi" class="stat-value">-</p></div>
+                      <div class="stat-card"><p class="stat-label">BSA</p><p class="stat-value text-accent-500"><span id="hep2-bsa">-</span> <span class="stat-unit">m²</span></p><span id="hep2-bsa-cap" class="badge hidden">Capped cue</span></div>
+                      <div class="stat-card"><p class="stat-label">IBW</p><p class="stat-value"><span id="hep2-ibw">-</span> <span class="stat-unit">kg</span></p></div>
+                      <div class="stat-card"><p class="stat-label">ABW</p><p class="stat-value"><span id="hep2-abw">-</span> <span class="stat-unit">kg</span></p></div>
+                    </div>
+                    <div class="stat-card highlight">
+                      <p class="stat-label">Selected dosing weight</p>
+                      <p class="stat-value"><span id="hep2-dosing-weight">-</span> <span class="stat-unit">kg</span></p>
+                      <p id="hep2-dosing-note" class="text-[11px] text-slate-500 dark:text-slate-400"></p>
+                    </div>
+                    <div class="protocol-card bg-slate-50 dark:bg-primary-900/40">
+                      <p class="text-xs text-slate-500 dark:text-slate-400">Initial systemic UFH bolus</p>
+                      <p id="hep2-initial-bolus" class="text-4xl font-mono font-bold text-primary-900 dark:text-white">-</p>
+                      <div id="hep2-high-dose" class="pill pill-warn hidden mt-2">High dose &gt; 40k U</div>
+                      <div id="hep2-diff-note" class="text-xs text-amber-600 dark:text-amber-300 bg-amber-500/10 rounded px-2 py-1 mt-3 hidden"></div>
+                    </div>
+                    <div id="hep2-weight-breakdown" class="hidden text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 rounded-xl p-3 leading-relaxed"></div>
+                    <div id="hep2-peds-warning" class="hidden info-block warn"><h4 class="text-sm font-semibold text-red-500 mb-1">Adult CPB only</h4><p class="text-sm text-red-200/80">For patients &lt; 20 kg or height &lt; 120 cm, follow institutional pediatric protocols.</p></div>
+                    <div id="hep2-extreme-obesity" class="hidden info-block alert"><h4 class="text-sm font-semibold text-orange-500 mb-1">Extreme obesity safety cue</h4><p class="text-sm text-orange-200/80">BMI ≥ 50 kg/m². Dosing weight uses ABW (0.3) in auto mode to reduce extreme UFH estimates. Consider heparin concentration or anti-Xa when ACT is unreliable.</p></div>
+                    <div id="hep2-obesity-warning" class="info-block alert hidden"><h4 class="text-sm font-semibold text-orange-500 mb-1">Obesity dosing cue</h4><p class="text-sm text-orange-200/80">Auto mode is using adjusted body weight. Confirm anticoagulation using local monitoring and protocol.</p></div>
+                    <div id="hep2-sensitivity" class="bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-lg p-3 text-xs text-slate-700 dark:text-slate-200 space-y-2">
+                      <p class="font-semibold text-primary-900 dark:text-white">Sensitivity (weight strategy vs dose @300 U/kg)</p>
+                      <div class="grid grid-cols-3 text-[11px] font-semibold text-slate-500 dark:text-slate-400"><span>Strategy</span><span>Weight</span><span>Dose / Δ</span></div>
+                      <div class="grid grid-cols-3 text-sm"><span>TBW</span><span id="hep2-sens-tbw-wt">-</span><span id="hep2-sens-tbw-dose">-</span></div>
+                      <div class="grid grid-cols-3 text-sm"><span>ABW (0.4)</span><span id="hep2-sens-abw-wt">-</span><span id="hep2-sens-abw-dose">-</span></div>
+                      <div class="grid grid-cols-3 text-sm"><span>IBW</span><span id="hep2-sens-ibw-wt">-</span><span id="hep2-sens-ibw-dose">-</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="space-y-4" aria-labelledby="hep2-post-title">
+              <div class="space-y-1">
+                <h2 id="hep2-post-title" class="text-lg font-bold text-primary-900 dark:text-white">2. Post-CPB: Protamine Reversal</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-300">Given the planned or actual heparin exposure and selected protamine strategy, what is the estimated protamine dose?</p>
+              </div>
+
+              <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4">
+                <h3 class="text-sm font-semibold text-primary-900 dark:text-white mb-2">Selected heparin plan</h3>
+                <p id="hep2-recap-empty" class="text-sm text-slate-600 dark:text-slate-300">Enter patient data above to populate the initial UFH plan.</p>
+                <div id="hep2-recap-values" class="hidden grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                  <div><span class="stat-label block">Initial systemic UFH</span><span id="hep2-recap-initial" class="font-mono font-semibold">-</span></div>
+                  <div><span class="stat-label block">Dosing weight</span><span id="hep2-recap-weight" class="font-mono font-semibold">-</span></div>
+                  <div><span class="stat-label block">Weight strategy</span><span id="hep2-recap-strategy" class="font-semibold">-</span></div>
+                  <div><span class="stat-label block">Initial dose</span><span id="hep2-recap-dose" class="font-mono font-semibold">-</span></div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+                <div class="flow-card space-y-4">
+                  <h3 class="text-base font-semibold text-primary-900 dark:text-white">Protamine inputs</h3>
+                  <div class="space-y-3">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">A. Heparin exposure during case</p>
+                    <div>
+                      <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Initial systemic UFH given (U)</label>
+                      <input id="hep2-initial-ufh-given" type="number" min="0" step="1" placeholder="Auto from initial plan" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" />
+                      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Auto-fills from Section 1 when available; edit if the actual dose differs.</p>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Additional UFH during CPB (U)</label><input id="hep2-additional-ufh" type="number" min="0" step="1" placeholder="7000" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                      <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Additional systemic UFH during CPB (U)</label><input id="hep2-additional-ufh" type="number" min="0" step="1" placeholder="7000" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
                       <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Other systemic UFH (U)</label><input id="hep2-other-ufh" type="number" min="0" step="1" placeholder="0" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
                       <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Circuit prime heparin (U)</label><input id="hep2-prime-heparin" type="number" min="0" step="1" placeholder="3000" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
-                      <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Time since first bolus (min, optional)</label><input id="hep2-time-first-bolus" type="number" min="0" step="1" placeholder="90" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
-                      <div><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Time since last bolus (min, optional)</label><input id="hep2-time-last-bolus" type="number" min="0" step="1" placeholder="20" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
-                      <div>
-                        <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Protamine calculation basis</label>
-                        <select id="hep2-protamine-basis" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm">
-                          <option value="total">Total UFH administered</option>
-                          <option value="initial">Initial systemic UFH bolus</option>
-                          <option value="custom">Custom UFH reference</option>
-                        </select>
-                      </div>
-                      <div id="hep2-custom-ufh-wrap" class="hidden"><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Custom UFH reference (U)</label><input id="hep2-custom-ufh" type="number" min="0" step="1" placeholder="25000" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
-                      <p id="hep2-protamine-basis-help" class="md:col-span-2 text-[11px] text-slate-500 dark:text-slate-400">Uses total entered UFH exposure as the protamine reference. Simple and common, but may overestimate reversal needs when CPB duration is long.</p>
-                      <div>
-                        <label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Protamine-to-heparin ratio</label>
-                        <select id="hep2-protamine-ratio-mode" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm">
-                          <option value="0.8">0.8 mg / 100 U heparin — Balanced</option>
-                          <option value="0.6">0.6 mg / 100 U heparin — Conservative</option>
-                          <option value="0.9">0.9 mg / 100 U heparin — Intermediate</option>
-                          <option value="1.0">1.0 mg / 100 U heparin — Traditional 1:1</option>
-                          <option value="custom">Custom ratio</option>
-                        </select>
-                      </div>
-                      <div id="hep2-protamine-ratio-custom-wrap" class="hidden"><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Custom ratio (mg / 100 U heparin)</label><input id="hep2-protamine-ratio-custom" type="number" min="0" step="0.01" placeholder="0.85" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
                     </div>
                   </div>
+                  <div class="space-y-3">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">B. Protamine calculation basis</p>
+                    <select id="hep2-protamine-basis" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm">
+                      <option value="total">Total UFH administered</option>
+                      <option value="initial">Initial systemic UFH bolus</option>
+                      <option value="custom">Custom UFH reference</option>
+                    </select>
+                    <div id="hep2-custom-ufh-wrap" class="hidden"><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Custom UFH reference (U)</label><input id="hep2-custom-ufh" type="number" min="0" step="1" placeholder="25000" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                    <p id="hep2-protamine-basis-help" class="text-[11px] text-slate-500 dark:text-slate-400">Uses total entered UFH exposure as the protamine reference. Simple and common, but may overestimate reversal needs when CPB duration is long.</p>
+                  </div>
+                  <div class="space-y-3">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">C. Protamine-to-heparin ratio</p>
+                    <select id="hep2-protamine-ratio-mode" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm">
+                      <option value="0.8">0.8 mg / 100 U heparin — Balanced</option>
+                      <option value="0.6">0.6 mg / 100 U heparin — Conservative</option>
+                      <option value="0.9">0.9 mg / 100 U heparin — Intermediate</option>
+                      <option value="1.0">1.0 mg / 100 U heparin — Traditional 1:1</option>
+                      <option value="custom">Custom ratio</option>
+                    </select>
+                    <div id="hep2-protamine-ratio-custom-wrap" class="hidden"><label class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Custom ratio (mg / 100 U heparin)</label><input id="hep2-protamine-ratio-custom" type="number" min="0" step="0.01" placeholder="0.85" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
+                  </div>
+                </div>
 
-                  <div class="bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 rounded-xl">
-                    <button id="hep2-resistance-toggle" type="button" class="w-full flex items-center justify-between gap-3 px-4 py-3 text-left">
-                      <div>
-                        <p class="text-sm font-semibold text-primary-900 dark:text-white">Suspect heparin resistance?</p>
-                        <p class="text-[11px] text-slate-600 dark:text-slate-300">Reference checklist when cumulative UFH exposure is high or ACT remains below institutional target.</p>
-                      </div>
-                      <svg data-chevron class="h-4 w-4 text-slate-500 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M6 9l6 6 6-6" />
-                      </svg>
-                    </button>
-                    <div id="hep2-resistance-content" class="hidden border-t border-slate-200 dark:border-primary-800 px-4 py-4 space-y-4">
-                      <div class="space-y-2">
-                        <p class="text-xs font-semibold text-primary-900 dark:text-white">Risk factors (check all)</p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700 dark:text-slate-200">
-                          <label class="flex items-start gap-2"><input id="hep2-rf-sirs" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" /><span>Ongoing sepsis / SIRS</span></label>
-                          <label class="flex items-start gap-2"><input id="hep2-rf-lmwh" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" /><span>Recent LMWH within 12–24 h</span></label>
-                          <label class="flex items-start gap-2"><input id="hep2-rf-ecmo" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" /><span>Prolonged pre-CPB ECMO / VAD</span></label>
-                          <label class="flex items-start gap-2"><input id="hep2-rf-at3" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" /><span>Known AT-III deficiency / cirrhosis</span></label>
-                          <label class="flex items-start gap-2"><input id="hep2-rf-history" type="checkbox" class="mt-1 rounded border-slate-300 text-accent-500 focus:ring-accent-500" /><span>Prior high-dose heparin requirement</span></label>
-                        </div>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Selecting risk factors does not automatically change dosing. (Reference only)</p>
-                      </div>
-                      <div class="space-y-2">
-                        <p class="text-xs font-semibold text-primary-900 dark:text-white">Next steps (reference)</p>
-                        <ul class="list-disc list-inside text-sm text-slate-700 dark:text-slate-200 space-y-1">
-                          <li>Rule out basics: confirm heparin delivery, sampling/ACT device issues, temperature/hemodilution.</li>
-                          <li>Recheck ACT at 3–5 min; if below target, consider additional UFH per local protocol.</li>
-                          <li>If anticoagulation response remains below institutional target, consider checking AT activity and/or anti-Xa (or heparin concentration) and prepare AT supplementation (FFP if AT concentrate not available) per protocol.</li>
-                          <li>Special situations (e.g., HIT) → follow institutional DTI protocol.</li>
-                        </ul>
-                      </div>
+                <div class="flow-card space-y-4">
+                  <h3 class="text-base font-semibold text-primary-900 dark:text-white">Protamine estimate</h3>
+                  <div class="grid grid-cols-1 gap-3 text-sm">
+                    <div class="flex justify-between gap-3"><span class="text-slate-600 dark:text-slate-400">UFH reference used</span><span id="hep2-ufh-reference-used" class="font-mono text-right">-</span></div>
+                    <div class="flex justify-between gap-3"><span class="text-slate-600 dark:text-slate-400">Selected calculation basis</span><span id="hep2-selected-basis" class="font-semibold text-right">-</span></div>
+                    <div class="flex justify-between gap-3"><span class="text-slate-600 dark:text-slate-400">Selected ratio</span><span id="hep2-selected-ratio" class="font-mono text-right">-</span></div>
+                    <div class="rounded-xl bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 p-4">
+                      <p class="text-xs text-slate-500 dark:text-slate-400">Estimated protamine dose</p>
+                      <p id="hep2-protamine-mg" class="text-3xl font-mono font-bold text-primary-900 dark:text-white">-</p>
                     </div>
+                    <div class="flex justify-between gap-3"><span class="text-slate-600 dark:text-slate-400">Practical rounded dose</span><span id="hep2-protamine-rounded" class="font-mono text-right">-</span></div>
+                    <div class="flex justify-between gap-3"><span class="text-slate-600 dark:text-slate-400">Rounding note</span><span class="font-mono text-right">rounded to nearest 25 mg</span></div>
+                    <div class="flex justify-between gap-3"><span class="text-slate-600 dark:text-slate-400">Ratio interpretation</span><span id="hep2-ratio-label" class="font-semibold text-right">-</span></div>
                   </div>
+                  <p id="hep2-protamine-ratio-warn" class="hidden text-xs text-amber-600 dark:text-amber-300">Warning: protamine ratio above 1.0 may increase bleeding/coagulopathy risk.</p>
+                  <p id="hep2-protamine-high-warn" class="hidden text-xs text-red-600 dark:text-red-300">Warning: calculated protamine dose is unusually high. Reassess the UFH reference amount and workflow context.</p>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400">Protamine dosing may be estimated from total UFH, initial systemic UFH bolus, measured heparin concentration, or local protocol. Use institutional protocol and clinical assessment.</p>
                 </div>
               </div>
+            </section>
 
-              <div class="space-y-4">
-                <div id="hep2-placeholder" class="h-full flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-200 dark:border-primary-800 rounded-2xl min-h-[360px]">
-                  <p class="text-lg font-semibold">Enter patient parameters to calculate</p>
-                  <p class="text-sm">Height, weight, and dose are required.</p>
+            <section class="space-y-4" aria-labelledby="hep2-safety-title">
+              <h2 id="hep2-safety-title" class="text-lg font-bold text-primary-900 dark:text-white">Clinical safety notes</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 space-y-3">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Heparin resistance cue</h3>
+                  <div class="grid grid-cols-1 gap-2 text-sm">
+                    <div>Cumulative systemic UFH: <span id="hep2-systemic-ufh" class="font-mono">-</span></div>
+                    <div>Cumulative systemic UFH (U/kg): <span id="hep2-systemic-ufh-kg" class="font-mono">-</span></div>
+                  </div>
+                  <div id="hep2-resistance-cue" class="hidden info-block warn">
+                    <p class="text-sm font-semibold text-amber-700 dark:text-amber-300">High cumulative UFH exposure. If ACT remains below institutional target or &lt;480 sec despite ≥500 U/kg UFH, consider heparin resistance evaluation.</p>
+                    <ul class="list-disc list-inside text-sm mt-2 space-y-1">
+                      <li>Confirm full heparin delivery.</li>
+                      <li>Confirm sample quality and ACT device validity.</li>
+                      <li>Recheck ACT after 3–5 minutes.</li>
+                      <li>Consider AT activity, heparin concentration, or anti-Xa if available.</li>
+                      <li>Consider AT concentrate or FFP per institutional protocol.</li>
+                      <li>HIT/suspected HIT: do not use routine UFH workflow.</li>
+                    </ul>
+                  </div>
                 </div>
-
-                <div id="hep2-results" class="space-y-4 hidden">
-                  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="stat-card"><p class="stat-label">BMI</p><p id="hep2-bmi" class="stat-value">-</p></div>
-                    <div class="stat-card"><p class="stat-label">IBW (Devine)</p><p class="stat-value"><span id="hep2-ibw">-</span> <span class="stat-unit">kg</span></p><p class="text-[11px] text-slate-500 dark:text-slate-400">Devine formula</p></div>
-                    <div class="stat-card relative"><p class="stat-label">BSA (Mosteller)</p><p class="stat-value text-accent-500"><span id="hep2-bsa">-</span> <span class="stat-unit">m²</span></p><span id="hep2-bsa-cap" class="badge hidden">Capped for Safety (Obesity)</span></div>
-                    <div class="stat-card highlight"><p class="stat-label">Dosing weight</p><p class="stat-value"><span id="hep2-dosing-weight">-</span> <span class="stat-unit">kg</span></p><p id="hep2-dosing-note" class="text-[11px] text-slate-500 dark:text-slate-400 truncate"></p></div>
-                  </div>
-
-                  <div id="hep2-weight-breakdown" class="hidden text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 rounded-xl p-3 leading-relaxed"></div>
-
-                  <div id="hep2-peds-warning" class="hidden info-block warn"><h4 class="text-sm font-semibold text-red-500 mb-1">Pediatric safety notice</h4><p class="text-sm text-red-200/80">This calculator is validated for adult CPB only. For patients &lt; 20 kg or height &lt; 120 cm, follow institutional pediatric protocols.</p></div>
-
-                  <div id="hep2-extreme-obesity" class="hidden info-block alert"><h4 class="text-sm font-semibold text-orange-500 mb-1">Extreme obesity safety notice</h4><p class="text-sm text-orange-200/80">BMI ≥ 50 kg/m². Dosing weight uses ABW (0.3) to avoid extreme UFH doses. Consider Anti-Xa or heparin concentration monitoring rather than ACT alone.</p></div>
-
-                  <div class="space-y-4">
-                    <div class="protocol-card">
-                      <div class="flex items-start mb-4"><div><p class="text-xs text-slate-500 dark:text-slate-400">Initial bolus</p><p id="hep2-initial-bolus" class="text-4xl font-mono font-bold text-primary-900 dark:text-white">-</p><div id="hep2-high-dose" class="pill pill-warn hidden">High dose &gt; 40k U</div></div></div>
-                      <div id="hep2-diff-note" class="text-xs text-amber-600 dark:text-amber-300 bg-amber-500/10 rounded px-2 py-1 mb-3 hidden"></div>
-                      <div id="hep2-sensitivity" class="mt-3 bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-lg p-3 text-xs text-slate-700 dark:text-slate-200 space-y-2">
-                        <p class="font-semibold text-primary-900 dark:text-white">Sensitivity (weight strategy vs dose @300 u/kg)</p>
-                        <div class="grid grid-cols-3 text-[11px] font-semibold text-slate-500 dark:text-slate-400"><span>Strategy</span><span>Weight</span><span>Dose / Δ</span></div>
-                        <div class="grid grid-cols-3 text-sm"><span>TBW</span><span id="hep2-sens-tbw-wt">-</span><span id="hep2-sens-tbw-dose">-</span></div>
-                        <div class="grid grid-cols-3 text-sm"><span>ABW (0.4)</span><span id="hep2-sens-abw-wt">-</span><span id="hep2-sens-abw-dose">-</span></div>
-                        <div class="grid grid-cols-3 text-sm"><span>IBW</span><span id="hep2-sens-ibw-wt">-</span><span id="hep2-sens-ibw-dose">-</span></div>
-                        <p class="text-[11px] text-amber-600 dark:text-amber-300">In severe obesity, TBW-based dosing can exceed 40,000 U; reassess dosing when values climb this high.</p>
-                      </div>
-                    </div>
-
-                    <div id="hep2-quick-card" class="flow-card">
-                      <p class="text-sm font-semibold text-green-600 dark:text-green-300 mb-2">Quick protocol</p>
-                      <ol class="list-decimal list-inside space-y-1 text-sm text-primary-900 dark:text-slate-200" id="hep2-quick-steps">
-                        <li>Bolus -</li>
-                        <li>Wait 3–5 min → Check ACT</li>
-                        <li>Monitor ACT q30min during CPB</li>
-                        <li>Use institutional ACT target and anticoagulation protocol for monitoring decisions</li>
-                      </ol>
-                    </div>
-
-                    <div class="flow-card">
-                      <p class="text-sm font-semibold text-primary-900 dark:text-white mb-2">Systemic UFH exposure safety cue</p>
-                      <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-                        <div>Cumulative systemic UFH: <span id="hep2-systemic-ufh" class="font-mono">-</span></div>
-                        <div>Cumulative systemic UFH (U/kg): <span id="hep2-systemic-ufh-kg" class="font-mono">-</span></div>
-                      </div>
-                      <div id="hep2-resistance-cue" class="hidden mt-3 info-block warn">
-                        <p class="text-sm font-semibold text-amber-700 dark:text-amber-300">High cumulative UFH exposure. If ACT remains below institutional target or &lt;480 sec despite ≥500 U/kg UFH, consider heparin resistance evaluation.</p>
-                        <ul class="list-disc list-inside text-sm mt-2 space-y-1">
-                          <li>Confirm full heparin delivery.</li>
-                          <li>Confirm sample quality and ACT device validity.</li>
-                          <li>Recheck ACT after 3–5 minutes.</li>
-                          <li>Consider AT activity, heparin concentration, or anti-Xa if available.</li>
-                          <li>Consider AT concentrate or FFP per institutional protocol.</li>
-                          <li>HIT/suspected HIT: do not use routine UFH workflow.</li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div class="flow-card">
-                      <p class="text-sm font-semibold text-primary-900 dark:text-white mb-2">Protamine estimate (reference only)</p>
-                      <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-                        <div>UFH reference used: <span id="hep2-ufh-reference-used" class="font-mono">-</span></div>
-                        <div>Selected protamine-to-heparin ratio: <span id="hep2-selected-ratio" class="font-mono">-</span></div>
-                        <div>Estimated protamine dose: <span id="hep2-protamine-mg" class="font-mono">-</span></div>
-                        <div>Practical rounded dose: <span id="hep2-protamine-rounded" class="font-mono">-</span></div>
-                        <div>Rounding note: <span class="font-mono">rounded to nearest 25 mg</span></div>
-                        <div>Ratio interpretation: <span id="hep2-ratio-label" class="font-semibold">-</span></div>
-                      </div>
-                      <p id="hep2-protamine-ratio-warn" class="hidden text-xs text-amber-600 mt-2">Warning: protamine ratio above 1.0 may increase bleeding/coagulopathy risk.</p>
-                      <p id="hep2-protamine-high-warn" class="hidden text-xs text-red-600 mt-1">Warning: calculated protamine dose is unusually high. Reassess the UFH reference amount and workflow context.</p>
-                      <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-3 space-y-1">
-                        <p>Protamine dosing may be estimated from total UFH, initial systemic UFH bolus, measured heparin concentration, or local protocol. Total-dose methods are simple but may overestimate reversal needs when CPB duration is long. Initial-bolus methods may reduce protamine exposure but may underestimate reversal needs after additional UFH. Use institutional protocol and clinical assessment.</p>
-                        <p>Protamine overdose can worsen coagulopathy. Evaluate residual heparin, surgical bleeding, platelets, fibrinogen, temperature, calcium, and institutional protocol before empiric repeat protamine.</p>
-                        <p>Time-based heparin decay during CPB is variable. Do not rely on time alone for reversal dosing.</p>
-                        <p>Include circuit prime heparin only when it is expected to enter the patient/systemic circulation according to local workflow.</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div id="hep2-obesity-warning" class="info-block alert hidden"><h4 class="text-sm font-semibold text-orange-500 mb-1">Morbid obesity management</h4><p class="text-sm text-orange-200/80">Using ABW with 0.3 correction to prevent overdose. Flow capped to reduce hemodilution; monitor SvO₂ and lactate closely.</p></div>
-
-                  <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 space-y-3">
-                    <p class="text-sm font-semibold text-primary-900 dark:text-white">Clinical pearls</p>
-                    <ul class="list-disc list-inside text-sm text-slate-600 dark:text-slate-300 space-y-1">
-                      <li>ACT is influenced by hemodilution, hypothermia, platelet count, factor levels, antithrombin activity, and device-specific variability.</li>
-                      <li>TBW-based heparin dosing is commonly used for CPB initiation, but it may produce very large doses in severe obesity.</li>
-                      <li>IBW-based dosing may reduce overdose risk in obesity, but IBW alone can underdose if ACT, heparin concentration, or anti-Xa is not confirmed.</li>
-                      <li>ABW is a compromise between TBW and IBW and may be useful when TBW appears excessive but IBW seems too conservative.</li>
-                      <li>Failure to reach target ACT after an adequate bolus should prompt reassessment for heparin resistance, low antithrombin, sampling error, circuit factors, or drug/device effects.</li>
-                    </ul>
-                  </div>
-
-                  <div class="grid md:grid-cols-3 gap-3">
-                    <article class="bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-xl p-3 space-y-2">
-                      <h4 class="text-sm font-semibold text-primary-900 dark:text-white">TBW — Total Body Weight</h4>
-                      <p class="text-sm text-slate-700 dark:text-slate-300">TBW is actual measured body weight and is commonly used for initial CPB heparin dosing. In severe obesity, TBW can generate very large bolus estimates that may increase bleeding concern without reliably improving anticoagulation.</p>
-                    </article>
-                    <article class="bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-xl p-3 space-y-2">
-                      <h4 class="text-sm font-semibold text-primary-900 dark:text-white">IBW — Ideal Body Weight</h4>
-                      <p class="text-sm text-slate-700 dark:text-slate-300">IBW is height/sex-based and may be useful when adiposity is high and heparin distribution is non-linear. IBW can reduce overdose risk, but under-anticoagulation remains possible unless ACT, heparin concentration, or anti-Xa confirms response.</p>
-                    </article>
-                    <article class="bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-xl p-3 space-y-2">
-                      <h4 class="text-sm font-semibold text-primary-900 dark:text-white">ABW — Adjusted Body Weight</h4>
-                      <p class="text-sm text-slate-700 dark:text-slate-300">ABW provides an intermediate dosing weight between IBW and TBW when TBW appears excessive and IBW too conservative.</p>
-                      <p class="font-mono text-xs text-slate-700 dark:text-slate-200">ABW = IBW + 0.4 × (TBW − IBW)</p>
-                      <p class="text-xs text-slate-500 dark:text-slate-400">Use as a comparison reference, not a universal replacement for local protocol.</p>
-                    </article>
-                  </div>
-
-                  <div class="bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-200 space-y-2">
-                    <p class="text-sm font-semibold text-primary-900 dark:text-white">How to apply TBW, IBW, and ABW in practice</p>
-                    <ul class="list-disc list-inside space-y-1">
-                      <li>Non-obese adult CPB patients: TBW-based dosing is usually the simplest starting point.</li>
-                      <li>Mild to moderate obesity: TBW may still be used, but compare IBW or ABW if calculated dose appears unusually high.</li>
-                      <li>Severe obesity (especially BMI ≥ 35 kg/m²): display TBW, IBW, and ABW side by side; TBW may overestimate and IBW may underestimate need.</li>
-                      <li>Known heparin resistance or low antithrombin: do not rely on weight dosing alone; confirm with ACT response and consider anti-Xa/heparin concentration per protocol.</li>
-                      <li>High bleeding-risk cases: lower calculated dose is not automatically safer if anticoagulation is inadequate.</li>
-                    </ul>
-                  </div>
-
-                  <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 space-y-2">
-                    <p class="text-sm font-semibold text-primary-900 dark:text-white">Obesity-specific interpretation</p>
-                    <p class="text-sm text-slate-700 dark:text-slate-300">In obesity, blood volume and lean mass do not rise in direct proportion to total body weight, and adipose tissue has limited heparin distribution. Treat this heparin dose calculator as a comparison aid for CPB heparin dosing and cardiopulmonary bypass anticoagulation planning.</p>
-                    <ul class="list-disc list-inside text-sm text-slate-700 dark:text-slate-300 space-y-1">
-                      <li>TBW dose: conventional actual-weight estimate.</li>
-                      <li>IBW dose: conservative height-based estimate.</li>
-                      <li>ABW dose: intermediate estimate that partially accounts for excess body weight.</li>
-                      <li>ACT response: determines whether the selected dose achieved the anticoagulation target.</li>
-                      <li>Anti-Xa or heparin concentration: useful when ACT is unreliable or discordant.</li>
-                    </ul>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Safest interpretation: calculated dose + measured anticoagulation response + patient context.</p>
-                  </div>
-
-                  <div class="bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-200 space-y-2">
-                    <p class="text-sm font-semibold text-primary-900 dark:text-white">Heparin resistance and ACT interpretation</p>
-                    <p>Suspect heparin resistance when expected UFH bolus does not achieve institutional ACT target. Contributors include low antithrombin, elevated heparin-binding proteins, inflammation, thrombocytosis, prior heparin exposure, and high factor VIII/fibrinogen.</p>
-                    <p>ACT is rapid point-of-care guidance but not a pure heparin concentration test; values are affected by hypothermia, hemodilution, platelet count, factor levels, device type, aprotinin exposure, and sampling conditions.</p>
-                    <ul class="list-disc list-inside space-y-1">
-                      <li>Confirm sample quality and device validity.</li>
-                      <li>Confirm full bolus delivery.</li>
-                      <li>Consider additional heparin per institutional protocol.</li>
-                      <li>Consider anti-Xa or heparin concentration testing when available.</li>
-                      <li>Consider targeted antithrombin supplementation when AT-mediated resistance is likely.</li>
-                    </ul>
-                  </div>
-
-                  <div class="bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-200 space-y-2">
-                    <p class="text-sm font-semibold text-primary-900 dark:text-white">Guideline anchors (summary)</p>
-                    <ul class="list-disc list-inside space-y-1">
-                      <li>STS/SCA/AmSECT 2018: Initial heparin dosing and monitoring should confirm adequate anticoagulation before CPB, commonly with ACT-based institutional targets.</li>
-                      <li>ACT target: many protocols use thresholds around ≥ 400–480 seconds, but exact targets depend on local protocol, device type, and surgical context.</li>
-                      <li>Heparin concentration / anti-Xa: consider additional monitoring when ACT is unreliable or discordant (hypothermia, hemodilution, inflammation, obesity).</li>
-                      <li>Antithrombin: UFH effect depends on antithrombin activity; low AT can contribute to heparin resistance and may require targeted management.</li>
-                      <li>Obesity: TBW, IBW, and ABW are dosing references, not automatic orders; final dosing should be confirmed by measured anticoagulation response.</li>
-                    </ul>
-                  </div>
-
-                  <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-300 space-y-2">
-
-                  <div class="bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-200 space-y-2">
-                    <p class="text-sm font-semibold text-primary-900 dark:text-white">FAQ</p>
-                    <ol class="list-decimal list-inside space-y-1">
-                      <li>What ACT target is commonly used before CPB?</li><li>How is initial heparin dose calculated for CPB?</li><li>How do you estimate additional heparin when ACT is below target?</li><li>What is heparin resistance during CPB?</li><li>How is protamine dose estimated after CPB?</li><li>Why can ACT be misleading during hypothermic CPB?</li><li>Is this calculator for ECMO or ICU heparin infusion?</li>
-                    </ol>
-                  </div>
-<p class="text-sm font-semibold text-primary-900 dark:text-white">Selected references</p>
-                    <ul class="list-disc list-inside space-y-2">
-                      <li>
-                        <span>Shore-Lesserson L, Baker RA, Ferraris VA, et al. STS/SCA/AmSECT Clinical Practice Guidelines: Anticoagulation during Cardiopulmonary Bypass. Ann Thorac Surg. 2018.</span>
-                        <div class="mt-1.5 flex flex-wrap gap-1.5">
-                          <a href="https://pubmed.ncbi.nlm.nih.gov/29559750/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
-                          <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5850589/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Free full text</a>
-                        </div>
-                      </li>
-                      <li>
-                        <span>Wahba A, et al. 2024 EACTS/EACTAIC/EBCP Guidelines on cardiopulmonary bypass in adult cardiac surgery. Eur J Cardiothorac Surg / Interdiscip Cardiovasc Thorac Surg. 2025.</span>
-                        <div class="mt-1.5 flex flex-wrap gap-1.5">
-                          <a href="https://pubmed.ncbi.nlm.nih.gov/39949317/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
-                          <a href="https://academic.oup.com/ejcts/article/67/2/ezae354/8011475" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Journal</a>
-                          <a href="https://www.eacts.org/clinical-practice-guideline/2024-eacts-eactaic-ebcp-guidelines-on-cardiopulmonary-bypass-in-adult-cardiac-surgery/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Guideline</a>
-                        </div>
-                      </li>
-                      <li>
-                        <span>Vienne M, et al. Adjusted calculation model of heparin management during cardiopulmonary bypass in obese patients. Eur J Anaesthesiol. 2018.</span>
-                        <div class="mt-1.5 flex flex-wrap gap-1.5">
-                          <a href="https://pubmed.ncbi.nlm.nih.gov/29521662/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
-                        </div>
-                      </li>
-                      <li>
-                        <span>Bull BS, Korpman RA, Huse WM, Briggs BD. Heparin therapy during extracorporeal circulation. I. Problems inherent in existing heparin protocols. J Thorac Cardiovasc Surg. 1975.</span>
-                        <div class="mt-1.5 flex flex-wrap gap-1.5">
-                          <a href="https://pubmed.ncbi.nlm.nih.gov/1127966/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
-                        </div>
-                      </li>
-                      <li>
-                        <span>Bull BS, Huse WM, Brauer FS, Korpman RA. Heparin therapy during extracorporeal circulation: II. The use of a dose-response curve to individualize heparin and protamine dosage. J Thorac Cardiovasc Surg. 1975.</span>
-                        <div class="mt-1.5 flex flex-wrap gap-1.5">
-                          <a href="https://pubmed.ncbi.nlm.nih.gov/1127967/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
-                          <a href="https://doi.org/10.1016/S0022-5223(19)41500-6" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">DOI</a>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
+                <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 space-y-3 text-sm text-slate-700 dark:text-slate-300">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Protamine safety notes</h3>
+                  <ul class="list-disc list-inside space-y-1">
+                    <li>Protamine overdose can worsen coagulopathy.</li>
+                    <li>Time-based heparin decay during CPB is variable.</li>
+                    <li>Include circuit prime heparin only when it is expected to enter the patient/systemic circulation according to local workflow.</li>
+                  </ul>
                 </div>
               </div>
-            </div>
+            </section>
+
+            <section class="space-y-4" aria-labelledby="hep2-method-title">
+              <h2 id="hep2-method-title" class="text-lg font-bold text-primary-900 dark:text-white">Methodology, FAQ, references</h2>
+              <div class="grid grid-cols-1 gap-4">
+                <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-300 space-y-3">
+                  <p class="text-sm font-semibold text-primary-900 dark:text-white">Methodology notes</p>
+                  <ul class="list-disc list-inside space-y-1">
+                    <li>Initial UFH bolus = selected dosing weight × selected U/kg preset.</li>
+                    <li>Auto weight strategy uses TBW when BMI &lt;30, ABW 0.4 when BMI 30–39, and ABW 0.3 when BMI ≥40.</li>
+                    <li>Protamine estimate = UFH reference amount ÷ 100 × selected protamine-to-heparin ratio.</li>
+                    <li>Total UFH basis includes initial systemic UFH, additional systemic UFH, other systemic UFH, and circuit prime heparin when entered.</li>
+                    <li>Initial-bolus basis uses only the initial systemic UFH amount, while custom basis uses the entered custom UFH reference.</li>
+                  </ul>
+                </div>
+
+                <div class="bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-200 space-y-2">
+                  <p class="text-sm font-semibold text-primary-900 dark:text-white">FAQ</p>
+                  <ol class="list-decimal list-inside space-y-1">
+                    <li>How is initial heparin dose calculated for adult CPB?</li>
+                    <li>Which weight strategy should be used for obese patients?</li>
+                    <li>How is protamine dose estimated after CPB?</li>
+                    <li>What is the difference between total UFH and initial-bolus protamine basis?</li>
+                    <li>Why can protamine overdose worsen bleeding?</li>
+                    <li>When should heparin resistance be suspected?</li>
+                    <li>Is this calculator for ECMO or ICU heparin infusion?</li>
+                  </ol>
+                </div>
+
+                <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-300 space-y-2">
+                  <p class="text-sm font-semibold text-primary-900 dark:text-white">Selected references</p>
+                  <ul class="list-disc list-inside space-y-2">
+                    <li>
+                      <span>Shore-Lesserson L, et al. STS/SCA/AmSECT Clinical Practice Guidelines: Anticoagulation during Cardiopulmonary Bypass. Ann Thorac Surg. 2018.</span>
+                      <div class="mt-1.5 flex flex-wrap gap-1.5">
+                        <a href="https://pubmed.ncbi.nlm.nih.gov/29398341/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
+                        <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5850589/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Free full text</a>
+                      </div>
+                    </li>
+                    <li>
+                      <span>Wahba A, et al. 2024 EACTS/EACTAIC/EBCP Guidelines on cardiopulmonary bypass in adult cardiac surgery. Eur J Cardiothorac Surg / Interdiscip Cardiovasc Thorac Surg. 2025.</span>
+                      <div class="mt-1.5 flex flex-wrap gap-1.5">
+                        <a href="https://pubmed.ncbi.nlm.nih.gov/39949317/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
+                        <a href="https://academic.oup.com/ejcts/article/67/2/ezae354/8011475" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Journal</a>
+                        <a href="https://www.eacts.org/clinical-practice-guideline/2024-eacts-eactaic-ebcp-guidelines-on-cardiopulmonary-bypass-in-adult-cardiac-surgery/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Guideline</a>
+                      </div>
+                    </li>
+                    <li>
+                      <span>Vienne M, et al. Adjusted calculation model of heparin management during cardiopulmonary bypass in obese patients. Eur J Anaesthesiol. 2018.</span>
+                      <div class="mt-1.5 flex flex-wrap gap-1.5"><a href="https://pubmed.ncbi.nlm.nih.gov/29521662/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a></div>
+                    </li>
+                    <li>
+                      <span>International Society on Thrombosis and Haemostasis SSC communication on a common definition of heparin resistance in adult cardiac surgery. 2024.</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </section>
