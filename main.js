@@ -4557,13 +4557,14 @@ function updateHeparinUI() {
   if (highWarn) highWarn.classList.toggle('hidden', !(Number.isFinite(protamineMg) && protamineMg >= 400));
 
   const referenceWeight = plan.dosingWeight;
-  const referenceDose = Math.round(referenceWeight * 300);
+  const selectedDoseUnit = hepDoseUnit;
+  const referenceDose = Math.round(referenceWeight * selectedDoseUnit);
   const referenceLabel = weightStrategy === 'auto' ? 'selected auto strategy' : plan.strategyLabel;
   const sensAbwWeight = plan.bmi >= 40 ? plan.abwSuper : plan.abw;
-  const sensAbwDose = Math.round(sensAbwWeight * 300);
+  const sensAbwDose = Math.round(sensAbwWeight * selectedDoseUnit);
   setText('hep2-sens-abw-label', plan.bmi >= 40 ? 'ABW (0.3)' : 'ABW (0.4)');
-  const sensTbwDose = Math.round(plan.tbw * 300);
-  const sensIbwDose = Math.round(plan.ibw * 300);
+  const sensTbwDose = Math.round(plan.tbw * selectedDoseUnit);
+  const sensIbwDose = Math.round(plan.ibw * selectedDoseUnit);
   setText('hep2-sens-abw-wt', `${sensAbwWeight.toFixed(1)} kg`);
   setText('hep2-sens-abw-dose', `${sensAbwDose.toLocaleString()} U (${(sensAbwDose - referenceDose >= 0 ? '+' : '')}${(sensAbwDose - referenceDose).toLocaleString()} vs ${referenceLabel})`);
   setText('hep2-sens-tbw-wt', `${plan.tbw.toFixed(1)} kg`);
