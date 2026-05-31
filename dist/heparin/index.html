@@ -435,13 +435,29 @@
                     <div id="hep2-peds-warning" class="hidden info-block warn"><h4 class="text-sm font-semibold text-red-500 mb-1">Adult CPB only</h4><p class="text-sm text-red-200/80">For patients &lt; 20 kg or height &lt; 120 cm, follow institutional pediatric protocols.</p></div>
                     <div id="hep2-extreme-obesity" class="hidden info-block alert"><h4 class="text-sm font-semibold text-orange-500 mb-1">Extreme obesity safety cue</h4><p class="text-sm text-orange-200/80">BMI ≥ 50 kg/m². Dosing weight uses ABW (0.3) in auto mode to reduce extreme UFH estimates. Consider heparin concentration or anti-Xa when ACT is unreliable.</p></div>
                     <div id="hep2-obesity-warning" class="info-block alert hidden"><h4 class="text-sm font-semibold text-orange-500 mb-1">Obesity dosing cue</h4><p class="text-sm text-orange-200/80">Auto mode is using adjusted body weight. Confirm anticoagulation using local monitoring and protocol.</p></div>
-                    <div id="hep2-sensitivity" class="bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-lg p-3 text-xs text-slate-700 dark:text-slate-200 space-y-2">
-                      <p class="font-semibold text-primary-900 dark:text-white">Sensitivity (weight strategy vs dose @300 U/kg)</p>
-                      <div class="grid grid-cols-3 text-[11px] font-semibold text-slate-500 dark:text-slate-400"><span>Strategy</span><span>Weight</span><span>Dose / Δ</span></div>
-                      <div class="grid grid-cols-3 text-sm"><span>TBW</span><span id="hep2-sens-tbw-wt">-</span><span id="hep2-sens-tbw-dose">-</span></div>
-                      <div class="grid grid-cols-3 text-sm"><span>ABW (0.4)</span><span id="hep2-sens-abw-wt">-</span><span id="hep2-sens-abw-dose">-</span></div>
-                      <div class="grid grid-cols-3 text-sm"><span>IBW</span><span id="hep2-sens-ibw-wt">-</span><span id="hep2-sens-ibw-dose">-</span></div>
-                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="hep2-sensitivity" class="hidden bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 space-y-3">
+                <div class="space-y-1">
+                  <h3 class="text-base font-semibold text-primary-900 dark:text-white">Sensitivity / weight strategy comparison</h3>
+                  <p class="text-sm text-slate-600 dark:text-slate-300">How would the estimated initial UFH bolus change with other weight strategies?</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div class="stat-card space-y-2">
+                    <p class="stat-label">TBW</p>
+                    <p id="hep2-sens-tbw-wt" class="text-lg font-semibold text-primary-900 dark:text-white">-</p>
+                    <p id="hep2-sens-tbw-dose" class="text-sm text-slate-600 dark:text-slate-300">-</p>
+                  </div>
+                  <div class="stat-card space-y-2">
+                    <p id="hep2-sens-abw-label" class="stat-label">ABW</p>
+                    <p id="hep2-sens-abw-wt" class="text-lg font-semibold text-primary-900 dark:text-white">-</p>
+                    <p id="hep2-sens-abw-dose" class="text-sm text-slate-600 dark:text-slate-300">-</p>
+                  </div>
+                  <div class="stat-card space-y-2">
+                    <p class="stat-label">IBW</p>
+                    <p id="hep2-sens-ibw-wt" class="text-lg font-semibold text-primary-900 dark:text-white">-</p>
+                    <p id="hep2-sens-ibw-dose" class="text-sm text-slate-600 dark:text-slate-300">-</p>
                   </div>
                 </div>
               </div>

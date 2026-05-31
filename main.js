@@ -4372,10 +4372,12 @@ function updateHeparinUI() {
 
   const placeholder = el('hep2-placeholder');
   const results = el('hep2-results');
+  const sensitivity = el('hep2-sensitivity');
 
   if (!(heightValid && weightValid)) {
     if (results) results.classList.add('hidden');
     if (placeholder) placeholder.classList.remove('hidden');
+    if (sensitivity) sensitivity.classList.add('hidden');
     const recapEmpty = el('hep2-recap-empty');
     const recapValues = el('hep2-recap-values');
     if (recapEmpty) recapEmpty.classList.remove('hidden');
@@ -4392,6 +4394,7 @@ function updateHeparinUI() {
   if (!plan) {
     if (results) results.classList.add('hidden');
     if (placeholder) placeholder.classList.remove('hidden');
+    if (sensitivity) sensitivity.classList.add('hidden');
     return;
   }
 
@@ -4512,10 +4515,12 @@ function updateHeparinUI() {
   const referenceWeight = plan.dosingWeight;
   const referenceDose = Math.round(referenceWeight * 300);
   const referenceLabel = weightStrategy === 'auto' ? 'selected auto strategy' : plan.strategyLabel;
-  const sensAbwDose = Math.round(plan.abw * 300);
+  const sensAbwWeight = plan.bmi >= 40 ? plan.abwSuper : plan.abw;
+  const sensAbwDose = Math.round(sensAbwWeight * 300);
+  setText('hep2-sens-abw-label', plan.bmi >= 40 ? 'ABW (0.3)' : 'ABW (0.4)');
   const sensTbwDose = Math.round(plan.tbw * 300);
   const sensIbwDose = Math.round(plan.ibw * 300);
-  setText('hep2-sens-abw-wt', `${plan.abw.toFixed(1)} kg`);
+  setText('hep2-sens-abw-wt', `${sensAbwWeight.toFixed(1)} kg`);
   setText('hep2-sens-abw-dose', `${sensAbwDose.toLocaleString()} U (${(sensAbwDose - referenceDose >= 0 ? '+' : '')}${(sensAbwDose - referenceDose).toLocaleString()} vs ${referenceLabel})`);
   setText('hep2-sens-tbw-wt', `${plan.tbw.toFixed(1)} kg`);
   setText('hep2-sens-tbw-dose', `${sensTbwDose.toLocaleString()} U (${(sensTbwDose - referenceDose >= 0 ? '+' : '')}${(sensTbwDose - referenceDose).toLocaleString()} vs ${referenceLabel})`);
@@ -4531,6 +4536,7 @@ function updateHeparinUI() {
   const obesityBlock = el('hep2-obesity-warning');
   if (obesityBlock) obesityBlock.classList.toggle('hidden', plan.alertLevel !== 'high');
 
+  if (sensitivity) sensitivity.classList.remove('hidden');
   if (results) results.classList.remove('hidden');
   if (placeholder) placeholder.classList.add('hidden');
 }
