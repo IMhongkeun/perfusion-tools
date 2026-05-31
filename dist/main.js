@@ -4344,7 +4344,6 @@ function updateHeparinUI() {
     return Number.isFinite(value) && value >= 0 ? value : null;
   };
   const additionalUfh = readOptionalNumber('hep2-additional-ufh') ?? 0;
-  const otherUfh = readOptionalNumber('hep2-other-ufh') ?? 0;
   const primeHeparin = readOptionalNumber('hep2-prime-heparin') ?? 0;
   const customUfhReference = readOptionalNumber('hep2-custom-ufh');
   const enteredInitialUfhGiven = readOptionalNumber('hep2-initial-ufh-given');
@@ -4464,9 +4463,9 @@ function updateHeparinUI() {
 
 
   // Track systemic UFH exposure for a simple heparin resistance safety cue.
-  // Formula: cumulative systemic UFH = initial patient bolus + additional systemic UFH + other systemic UFH.
+  // Formula: cumulative systemic UFH = initial patient bolus + additional systemic UFH during CPB.
   // Circuit prime heparin is intentionally excluded from this resistance cue because it may not be systemic.
-  const cumulativeSystemicUfh = initialUfhGiven + additionalUfh + otherUfh;
+  const cumulativeSystemicUfh = initialUfhGiven + additionalUfh;
   const cumulativeSystemicPerKg = cumulativeSystemicUfh / plan.dosingWeight;
   setText('hep2-systemic-ufh', `${Math.round(cumulativeSystemicUfh).toLocaleString()} U`);
   setText('hep2-systemic-ufh-kg', `${cumulativeSystemicPerKg.toFixed(1)} U/kg`);
@@ -4476,7 +4475,7 @@ function updateHeparinUI() {
 
   // Protamine estimate formula: protamine mg = UFH reference amount / 100 × selected ratio.
   // The basis selector controls which UFH reference amount is used.
-  const totalUfh = initialUfhGiven + additionalUfh + otherUfh + primeHeparin;
+  const totalUfh = initialUfhGiven + additionalUfh + primeHeparin;
   let ufhReference = totalUfh;
   let ufhReferenceLabel = 'total UFH administered';
   if (protamineBasis === 'initial') {
@@ -4623,7 +4622,7 @@ function initHeparinManagement() {
       updateHeparinUI();
     });
   }
-  ['hep2-target-act-custom', 'hep2-additional-ufh', 'hep2-other-ufh', 'hep2-prime-heparin', 'hep2-custom-ufh', 'hep2-protamine-ratio-custom'].forEach(id => {
+  ['hep2-target-act-custom', 'hep2-additional-ufh', 'hep2-prime-heparin', 'hep2-custom-ufh', 'hep2-protamine-ratio-custom'].forEach(id => {
     const node = el(id);
     if (node) node.addEventListener('input', updateHeparinUI);
   });
