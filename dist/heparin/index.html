@@ -448,6 +448,36 @@
               </div>
             </section>
 
+            <section class="space-y-4" aria-labelledby="hep2-during-title">
+              <div class="space-y-1">
+                <h2 id="hep2-during-title" class="text-lg font-bold text-primary-900 dark:text-white">During CPB: Additional UFH &amp; Heparin Resistance Cue</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-300">During CPB, additional UFH may be given according to institutional protocol when ACT is below target. Some protocols use incremental boluses such as 50–100 U/kg, but fixed redosing is not universal. If ACT does not increase as expected, use this checklist to consider heparin resistance contributors.</p>
+              </div>
+              <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 space-y-4">
+                <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Heparin Resistance Cue Checklist</h3>
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">Non-validated reminder tool</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700 dark:text-slate-300">
+                  <label class="flex items-start gap-2 rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/60 p-3"><input type="checkbox" class="hep2-resistance-check mt-0.5 rounded border-slate-300 text-accent-600 focus:ring-accent-500" data-points="2" /><span>Recent or preoperative heparin exposure <span class="text-xs text-slate-500 dark:text-slate-400">(+2)</span></span></label>
+                  <label class="flex items-start gap-2 rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/60 p-3"><input type="checkbox" class="hep2-resistance-check mt-0.5 rounded border-slate-300 text-accent-600 focus:ring-accent-500" data-points="3" /><span>Preoperative heparin infusion, IABP, VAD, or ECMO exposure <span class="text-xs text-slate-500 dark:text-slate-400">(+3)</span></span></label>
+                  <label class="flex items-start gap-2 rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/60 p-3"><input type="checkbox" class="hep2-resistance-check mt-0.5 rounded border-slate-300 text-accent-600 focus:ring-accent-500" data-points="4" /><span>Known or suspected low antithrombin activity <span class="text-xs text-slate-500 dark:text-slate-400">(+4)</span></span></label>
+                  <label class="flex items-start gap-2 rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/60 p-3"><input type="checkbox" class="hep2-resistance-check mt-0.5 rounded border-slate-300 text-accent-600 focus:ring-accent-500" data-points="2" /><span>Inflammatory state, sepsis, endocarditis, or major systemic inflammation <span class="text-xs text-slate-500 dark:text-slate-400">(+2)</span></span></label>
+                  <label class="flex items-start gap-2 rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/60 p-3"><input type="checkbox" class="hep2-resistance-check mt-0.5 rounded border-slate-300 text-accent-600 focus:ring-accent-500" data-points="1" /><span>High platelet count / thrombocytosis <span class="text-xs text-slate-500 dark:text-slate-400">(+1)</span></span></label>
+                  <label class="flex items-start gap-2 rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/60 p-3"><input type="checkbox" class="hep2-resistance-check mt-0.5 rounded border-slate-300 text-accent-600 focus:ring-accent-500" data-points="1" /><span>ACT sample, device, cartridge, or activator concern <span class="text-xs text-slate-500 dark:text-slate-400">(+1)</span></span></label>
+                  <label class="flex items-start gap-2 rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/60 p-3 md:col-span-2"><input id="hep2-rf-cumulative" type="checkbox" class="hep2-resistance-check mt-0.5 rounded border-slate-300 text-accent-600 focus:ring-accent-500" data-points="5" data-force-high="true" /><span>Cumulative UFH ≥500 U/kg and ACT still below target or &lt;480 sec <span class="text-xs text-slate-500 dark:text-slate-400">(+5; at least High cue)</span></span></label>
+                </div>
+                <div id="hep2-resistance-check-output" class="rounded-xl border px-3 py-2 text-sm bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-200 dark:border-emerald-500/30">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span id="hep2-resistance-check-label" class="font-semibold">Low cue</span>
+                    <span id="hep2-resistance-check-score" class="text-xs opacity-80">0 points</span>
+                  </div>
+                  <p id="hep2-resistance-check-message" class="mt-1">Low heparin resistance cue. Continue institutional ACT/heparin monitoring.</p>
+                </div>
+                <p class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">Non-validated screening aid. This checklist is a reminder tool, not a diagnostic score or medication-order protocol.</p>
+              </div>
+            </section>
+
             <section class="space-y-4" aria-labelledby="hep2-post-title">
               <div class="space-y-1">
                 <h2 id="hep2-post-title" class="text-lg font-bold text-primary-900 dark:text-white">2. Post-CPB: Protamine Reversal</h2>
@@ -568,6 +598,7 @@
                     <li>Total UFH basis includes initial systemic UFH, additional systemic UFH during CPB, and circuit prime heparin when entered.</li>
                     <li>Initial-bolus basis uses only the initial systemic UFH amount, while custom basis uses the entered custom UFH reference.</li>
                     <li>ACT targets vary by institution, circuit, and device. This calculator does not use ACT target to calculate UFH or protamine dose. Confirm anticoagulation using local ACT/heparin monitoring protocol.</li>
+                    <li>Major CPB guidelines emphasize ACT/heparin monitoring and institutional protocols rather than a universal fixed UFH redosing dose. A 2024 ISTH SSC communication proposed inability to reach ACT ≥480 sec after 500 U/kg UFH as a standardized adult cardiac surgery definition of heparin resistance.</li>
                   </ul>
                 </div>
 

@@ -4327,8 +4327,53 @@ function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy 
   };
 }
 
+function updateHeparinResistanceChecklist() {
+  const items = Array.from(document.querySelectorAll('.hep2-resistance-check'));
+  if (!items.length) return;
+
+  let score = 0;
+  let forceHighCue = false;
+  items.forEach((item) => {
+    if (!item.checked) return;
+    score += Number.parseInt(item.dataset.points || '0', 10) || 0;
+    if (item.dataset.forceHigh === 'true') forceHighCue = true;
+  });
+
+  let level = 'low';
+  let label = 'Low cue';
+  let message = 'Low heparin resistance cue. Continue institutional ACT/heparin monitoring.';
+  let style = 'bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-200 dark:border-emerald-500/30';
+
+  if (forceHighCue || score >= 6) {
+    level = 'high';
+    label = 'High cue';
+    message = 'High heparin resistance cue. If ACT remains below target despite high UFH exposure, consider heparin resistance evaluation, AT activity, heparin concentration/anti-Xa if available, AT concentrate or plasma per institutional protocol, and team discussion.';
+    style = 'bg-red-50 text-red-800 border-red-200 dark:bg-red-500/10 dark:text-red-200 dark:border-red-500/30';
+  } else if (score >= 3) {
+    level = 'moderate';
+    label = 'Moderate cue';
+    message = 'Moderate heparin resistance cue. Recheck ACT, confirm heparin delivery, sample quality, and ACT device validity. Consider AT activity or heparin concentration if available.';
+    style = 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-500/10 dark:text-amber-200 dark:border-amber-500/30';
+  }
+
+  const output = el('hep2-resistance-check-output');
+  if (output) {
+    output.dataset.level = level;
+    output.className = `rounded-xl border px-3 py-2 text-sm ${style}`;
+  }
+  const scoreLabel = score === 1 ? '1 point' : `${score} points`;
+  const setText = (id, value) => {
+    const node = el(id);
+    if (node) node.textContent = value;
+  };
+  setText('hep2-resistance-check-label', label);
+  setText('hep2-resistance-check-score', scoreLabel);
+  setText('hep2-resistance-check-message', message);
+}
+
 function updateHeparinUI() {
   syncHeparinQuickProtocolCopy();
+  updateHeparinResistanceChecklist();
 
   const heightInput = el('hep2-height');
   const weightInput = el('hep2-weight');
@@ -4581,7 +4626,12 @@ function initHeparinManagement() {
     });
   }
 
-  ['hep2-height', 'hep2-weight', 'hep2-sex', 'hep2-weight-strategy', 'hep2-rf-sirs', 'hep2-rf-lmwh', 'hep2-rf-ecmo', 'hep2-rf-at3', 'hep2-rf-history'].forEach(id => {
+  document.querySelectorAll('.hep2-resistance-check').forEach((node) => {
+    node.addEventListener('change', updateHeparinResistanceChecklist);
+  });
+  updateHeparinResistanceChecklist();
+
+  ['hep2-height', 'hep2-weight', 'hep2-sex', 'hep2-weight-strategy'].forEach(id => {
     const node = el(id);
     if (node) node.addEventListener('input', updateHeparinUI);
     if (node && node.tagName === 'SELECT') node.addEventListener('change', updateHeparinUI);
