@@ -4243,7 +4243,14 @@ function computeDevineIbw(heightCm, sex) {
 }
 
 let hepDoseUnit = 300;
+let hepBsaMethod = 'DuBois';
 let hepInitialUfhOverrideTouched = false;
+const HEPARIN_BSA_METHOD_LABELS = {
+  Mosteller: 'Mosteller',
+  DuBois: 'Du Bois',
+  Haycock: 'Haycock',
+  Boyd: 'Boyd'
+};
 const HEPARIN_QUICK_PROTOCOL_ACT_LOW_COPY = 'If ACT below target: reassess sample/device/heparin delivery and follow institutional protocol';
 
 function syncHeparinQuickProtocolCopy() {
@@ -4261,7 +4268,7 @@ function setHepDoseButtons(activeDose) {
   });
 }
 
-function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy }) {
+function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy, bsaMethod = 'DuBois' }) {
   if (!(heightCm > 0) || !(weightKg > 0)) return null;
   const bmi = weightKg / Math.pow(heightCm / 100, 2);
   const ibw = computeDevineIbw(heightCm, sex) || weightKg;
@@ -4302,8 +4309,10 @@ function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy 
   const difference = tbwBolus - initialBolus;
   const isHighDose = initialBolus > 40000;
 
-  // DuBois BSA approximation used here (0.007184 × H^0.725 × W^0.425)
-  const bsaActual = 0.007184 * Math.pow(heightCm, 0.725) * Math.pow(weightKg, 0.425);
+  // BSA formula selection uses the shared calculator formulas:
+  // Mosteller = sqrt(H × W / 3600), DuBois = 0.007184 × H^0.725 × W^0.425,
+  // Haycock = 0.024265 × H^0.3964 × W^0.5378, Boyd uses weight in grams.
+  const bsaActual = computeBSA(heightCm, weightKg, bsaMethod);
   let bsaCapped = false;
   if (bmi > 35 && bsaActual > 2.5) {
     bsaCapped = true;
@@ -4434,7 +4443,8 @@ function updateHeparinUI() {
     return;
   }
 
-  const plan = computeHeparinPlan({ heightCm: height, weightKg: weight, sex, doseUnit: hepDoseUnit, weightStrategy });
+  const selectedBsaMethod = HEPARIN_BSA_METHOD_LABELS[hepBsaMethod] ? hepBsaMethod : 'DuBois';
+  const plan = computeHeparinPlan({ heightCm: height, weightKg: weight, sex, doseUnit: hepDoseUnit, weightStrategy, bsaMethod: selectedBsaMethod });
   if (!plan) {
     if (results) results.classList.add('hidden');
     if (placeholder) placeholder.classList.remove('hidden');
@@ -4442,6 +4452,15 @@ function updateHeparinUI() {
     return;
   }
 
+  const bsaMethodLabel = HEPARIN_BSA_METHOD_LABELS[selectedBsaMethod];
+  setText('hep2-bsa-method-current', `(${bsaMethodLabel})`);
+  document.querySelectorAll('[data-hep-bsa-method]').forEach((option) => {
+    const isSelected = option.dataset.hepBsaMethod === selectedBsaMethod;
+    option.setAttribute('aria-selected', String(isSelected));
+    option.classList.toggle('bg-accent-500/10', isSelected);
+    option.classList.toggle('text-accent-600', isSelected);
+    option.classList.toggle('dark:text-accent-400', isSelected);
+  });
   setText('hep2-bmi', plan.bmi.toFixed(1));
   setText('hep2-ibw', plan.ibw.toFixed(1));
   setText('hep2-bsa', plan.bsaActual.toFixed(2));
@@ -4604,6 +4623,35 @@ function initHeparinManagement() {
       updateHeparinUI();
     });
   });
+
+  const bsaMethodToggle = el('hep2-bsa-method-toggle');
+  const bsaMethodMenu = el('hep2-bsa-method-menu');
+  if (bsaMethodToggle && bsaMethodMenu) {
+    const closeBsaMethodMenu = () => {
+      bsaMethodMenu.classList.add('hidden');
+      bsaMethodToggle.setAttribute('aria-expanded', 'false');
+    };
+
+    bsaMethodToggle.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const isOpen = !bsaMethodMenu.classList.contains('hidden');
+      bsaMethodMenu.classList.toggle('hidden', isOpen);
+      bsaMethodToggle.setAttribute('aria-expanded', String(!isOpen));
+    });
+
+    bsaMethodMenu.querySelectorAll('[data-hep-bsa-method]').forEach((option) => {
+      option.addEventListener('click', () => {
+        const nextMethod = option.dataset.hepBsaMethod;
+        if (HEPARIN_BSA_METHOD_LABELS[nextMethod]) {
+          hepBsaMethod = nextMethod;
+          updateHeparinUI();
+        }
+        closeBsaMethodMenu();
+      });
+    });
+
+    document.addEventListener('click', closeBsaMethodMenu);
+  }
 
   const weightInfoToggle = el('hep2-weight-info-toggle');
   const weightInfo = el('hep2-weight-info');
