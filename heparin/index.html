@@ -401,7 +401,21 @@
                   <div id="hep2-results" class="space-y-4 hidden">
                     <div class="grid grid-cols-2 gap-3">
                       <div class="stat-card"><p class="stat-label">BMI</p><p id="hep2-bmi" class="stat-value">-</p></div>
-                      <div class="stat-card"><p class="stat-label">BSA</p><p class="stat-value text-accent-500"><span id="hep2-bsa">-</span> <span class="stat-unit">m²</span></p><span id="hep2-bsa-cap" class="badge hidden">Capped cue</span></div>
+                      <div class="stat-card">
+                        <div class="stat-label flex items-center gap-1.5">
+                          <span>BSA <span id="hep2-bsa-method-current" class="font-normal text-slate-400 dark:text-slate-500">(Du Bois)</span></span>
+                          <div class="relative inline-flex">
+                            <button id="hep2-bsa-method-toggle" type="button" class="heparin-info-icon border border-slate-300 dark:border-primary-700 text-slate-500 dark:text-slate-300 hover:border-accent-500 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/40" aria-haspopup="listbox" aria-expanded="false" title="Select BSA formula">ƒ</button>
+                            <div id="hep2-bsa-method-menu" class="hidden absolute left-0 top-6 z-30 w-36 overflow-hidden rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 shadow-lg" role="listbox" aria-label="BSA formula">
+                              <button type="button" class="block w-full px-3 py-2 text-left text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-primary-800" data-hep-bsa-method="Mosteller" role="option">Mosteller</button>
+                              <button type="button" class="block w-full px-3 py-2 text-left text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-primary-800" data-hep-bsa-method="DuBois" role="option">Du Bois</button>
+                              <button type="button" class="block w-full px-3 py-2 text-left text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-primary-800" data-hep-bsa-method="Haycock" role="option">Haycock</button>
+                              <button type="button" class="block w-full px-3 py-2 text-left text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-primary-800" data-hep-bsa-method="Boyd" role="option">Boyd</button>
+                            </div>
+                          </div>
+                        </div>
+                        <p class="stat-value text-accent-500"><span id="hep2-bsa">-</span> <span class="stat-unit">m²</span></p><span id="hep2-bsa-cap" class="badge hidden">Capped cue</span>
+                      </div>
                       <div class="stat-card"><p class="stat-label">IBW</p><p class="stat-value"><span id="hep2-ibw">-</span> <span class="stat-unit">kg</span></p></div>
                       <div class="stat-card"><p class="stat-label">ABW</p><p class="stat-value"><span id="hep2-abw">-</span> <span class="stat-unit">kg</span></p></div>
                     </div>
