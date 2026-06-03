@@ -105,6 +105,14 @@ function run() {
   assert(nearlyEqual(phn.calculateModelMeasuredZScore('detroitPettersen2008', 'IVSD', 4, 1.4), -2.48, 0.01));
   assert.throws(() => phn.calculateModelMeasuredZScore('phnLopez', 'IVSD', 4, 1.4));
 
+  // 13) Model range notes and Detroit BSA warning rules are model-specific and non-blocking
+  assert(phn.selectedModelRangeNote.phnLopez.includes('healthy, non-obese pediatric subjects up to 18 years'));
+  assert(phn.selectedModelRangeNote.detroitPettersen2008.includes('BSA up to approximately 2.0 m²'));
+  assert.strictEqual(phn.shouldShowDetroitBsaWarning('detroitPettersen2008', 2.0), false);
+  assert.strictEqual(phn.shouldShowDetroitBsaWarning('detroitPettersen2008', 2.01), true);
+  assert.strictEqual(phn.shouldShowDetroitBsaWarning('phnLopez', 2.5), false);
+  assert(Number.isFinite(phn.calculateModelExpectedSizes('detroitPettersen2008', 'IVSD', 2.1, 0).z0Mm));
+
   console.log('PHN snapshots (mm):');
   console.log(JSON.stringify(snapshots, null, 2));
   console.log('All PHN tests passed.');

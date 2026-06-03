@@ -366,11 +366,17 @@
                   <select id="phn-structure-select" class="mt-1 w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-950 px-3 py-2 text-sm text-primary-900 dark:text-white"></select>
                 </div>
               </div>
+              <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-white/80 dark:bg-primary-950/30 px-3 py-2 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                <p id="phn-model-range-note">PHN / Lopez: Developed from healthy, non-obese pediatric subjects up to 18 years. Use caution when applying to patients outside typical pediatric body size ranges.</p>
+                <p id="phn-model-consistency-note" class="text-slate-500 dark:text-slate-400">Z-scores and expected sizes may differ between models. Use the same model consistently for serial follow-up.</p>
+              </div>
               <div>
                 <label class="block text-xs font-medium text-slate-600 dark:text-slate-300" for="phn-target-z">Target Z-score</label>
                 <input id="phn-target-z" type="number" inputmode="decimal" step="0.1" value="0" class="result-number mt-1 w-32 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-950 px-3 py-2 text-sm font-semibold text-primary-900 dark:text-white" />
               </div>
             </div>
+
+            <div id="phn-model-bsa-warning" class="hidden rounded-lg border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 px-3 py-2 text-xs text-amber-800 dark:text-amber-200">BSA is above the usual Detroit / Pettersen 2008 calculator range. Interpret results with caution.</div>
 
             <div class="rounded-xl border border-slate-200 dark:border-primary-700 p-4 space-y-4 bg-white dark:bg-primary-900/30">
               <div class="grid md:grid-cols-3 gap-3 text-xs">

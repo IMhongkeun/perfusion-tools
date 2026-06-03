@@ -6493,6 +6493,17 @@ function buildZScoreModels() {
 
 const zScoreModels = buildZScoreModels();
 
+const selectedModelRangeNote = {
+  phnLopez: 'PHN / Lopez: Developed from healthy, non-obese pediatric subjects up to 18 years. Use caution when applying to patients outside typical pediatric body size ranges.',
+  detroitPettersen2008: 'Detroit / Pettersen 2008: Developed from patients aged 1 day to 18 years. Recommended calculator range: BSA up to approximately 2.0 m². Use caution above this range.'
+};
+
+const MODEL_CONSISTENCY_NOTE = 'Z-scores and expected sizes may differ between models. Use the same model consistently for serial follow-up.';
+
+function shouldShowDetroitBsaWarning(modelKey, bsa) {
+  return modelKey === 'detroitPettersen2008' && Number(bsa) > 2.0;
+}
+
 function calculateModelTargetMm(modelKey, structureKey, bsa, targetZ) {
   const model = zScoreModels[modelKey];
   if (!model) throw new Error('Select a supported reference model.');
@@ -6558,6 +6569,9 @@ const api = {
   PEDIATRIC_STRUCTURES: phnCoeffSource.PEDIATRIC_STRUCTURES,
   PETTERSEN_STRUCTURES: phnCoeffSource.PETTERSEN_STRUCTURES,
   zScoreModels,
+  selectedModelRangeNote,
+  MODEL_CONSISTENCY_NOTE,
+  shouldShowDetroitBsaWarning,
   calculateHaycockBSA,
   calculateInverseRange,
   calculateForwardZScore,
@@ -6781,6 +6795,20 @@ function setPhnText(id, text) {
   if (node) node.textContent = text;
 }
 
+function updatePhnModelRangeNotes(modelKey) {
+  if (!window.PhnCalculator) return;
+  const rangeNote = window.PhnCalculator.selectedModelRangeNote?.[modelKey] || '';
+  setPhnText('phn-model-range-note', rangeNote);
+  setPhnText('phn-model-consistency-note', window.PhnCalculator.MODEL_CONSISTENCY_NOTE || 'Z-scores and expected sizes may differ between models. Use the same model consistently for serial follow-up.');
+}
+
+function updatePhnBsaRangeWarning(modelKey, bsaValue) {
+  const warning = el('phn-model-bsa-warning');
+  if (!warning || !window.PhnCalculator) return;
+  const showWarning = window.PhnCalculator.shouldShowDetroitBsaWarning(modelKey, bsaValue);
+  warning.classList.toggle('hidden', !showWarning);
+}
+
 function populatePhnModelOptions() {
   const modelSelect = el('phn-model-select');
   if (!modelSelect || !window.PhnCalculator?.zScoreModels) return;
@@ -6818,11 +6846,13 @@ function populatePhnStructureOptions(preferredKey = '') {
 function updatePhnMeasuredStructureOptions() {
   populatePhnModelOptions();
   populatePhnStructureOptions();
+  updatePhnModelRangeNotes(getPhnSelectedModel()?.key || PHN_DEFAULT_MODEL_KEY);
 }
 
 function clearSelectedModelOutputs() {
   ['phn-result-model', 'phn-result-structure', 'phn-result-bsa', 'phn-expected-neg2', 'phn-expected-zero', 'phn-expected-pos2', 'phn-expected-target'].forEach((id) => setPhnText(id, '—'));
   setPhnText('phn-target-z-label', '0.0');
+  updatePhnBsaRangeWarning(phnZScoreState.selectedModel, null);
   const measuredOutput = el('phn-measured-z');
   if (measuredOutput) measuredOutput.innerHTML = 'Calculated Z-score: <span class="result-number">—</span>';
   setPhnText('phn-measured-help', 'Enter BSA and a measured value to calculate Z-score.');
@@ -6859,6 +6889,8 @@ function updatePhnModelComparison() {
   if (!selected) return;
   const state = readPhnZScoreState();
   const structure = selected.model.structures.find((item) => item.key === state.selectedStructure);
+  updatePhnModelRangeNotes(state.selectedModel);
+  updatePhnBsaRangeWarning(state.selectedModel, state.bsa);
 
   setPhnText('phn-result-model', selected.model.label);
   setPhnText('phn-result-structure', structure ? structure.label : '—');
