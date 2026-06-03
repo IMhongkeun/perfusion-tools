@@ -6740,29 +6740,26 @@ function updatePhnDebugPanel(bsaValue, rows) {
 function clearPhnReferenceRows() {
   const resultsEl = el('phn-results');
   if (resultsEl) resultsEl.innerHTML = '';
+
   const wrapper = el('phn-results-wrapper');
   if (wrapper) wrapper.classList.add('hidden');
+
   const debugOutput = el('phn-debug-output');
   if (debugOutput) debugOutput.textContent = '';
-  const resultsEl = el('phn-results');
-  if (resultsEl) resultsEl.innerHTML = '';
-  const wrapper = el('phn-results-wrapper');
-  if (wrapper) wrapper.classList.add('hidden');
-  const debugOutput = el('phn-debug-output');
-  if (debugOutput) debugOutput.textContent = '';
-  const resultsEl = el('phn-results');
-  if (resultsEl) resultsEl.innerHTML = '';
-  const wrapper = el('phn-results-wrapper');
-  if (wrapper) wrapper.classList.add('hidden');
-  const debugOutput = el('phn-debug-output');
-  if (debugOutput) debugOutput.textContent = '';
+}
+
 function clearPhnOutputs() {
-  const resultsEl = el('phn-results');
-  if (resultsEl) resultsEl.innerHTML = '';
   const displayEl = el('phn-bsa-display');
   if (displayEl) displayEl.textContent = '—';
+
   renderPhnWarnings([]);
-  clearPhnComparison();
+  clearPhnReferenceRows();
+
+  if (typeof clearSelectedModelOutputs === 'function') {
+    clearSelectedModelOutputs();
+  } else if (typeof clearPhnComparison === 'function') {
+    clearPhnComparison();
+  }
 }
 
 function updatePhnEchoPredictor() {
@@ -6924,20 +6921,6 @@ function clearSelectedModelOutputs() {
   const measuredOutput = el('phn-measured-z');
   if (measuredOutput) measuredOutput.innerHTML = 'Calculated Z-score: <span class="result-number">—</span>';
   setPhnText('phn-measured-help', 'Enter BSA and a measured value to calculate Z-score.');
-}
-
-function clearPhnOutputs() {
-  const displayEl = el('phn-bsa-display');
-  if (displayEl) displayEl.textContent = '—';
-
-  renderPhnWarnings([]);
-  clearPhnReferenceRows();
-
-  if (typeof clearSelectedModelOutputs === 'function') {
-    clearSelectedModelOutputs();
-  } else if (typeof clearPhnComparison === 'function') {
-    clearPhnComparison();
-  }
 }
 
 function readPhnZScoreState() {
