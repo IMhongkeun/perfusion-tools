@@ -6744,6 +6744,19 @@ function clearPhnReferenceRows() {
   if (wrapper) wrapper.classList.add('hidden');
   const debugOutput = el('phn-debug-output');
   if (debugOutput) debugOutput.textContent = '';
+  const resultsEl = el('phn-results');
+  if (resultsEl) resultsEl.innerHTML = '';
+  const wrapper = el('phn-results-wrapper');
+  if (wrapper) wrapper.classList.add('hidden');
+  const debugOutput = el('phn-debug-output');
+  if (debugOutput) debugOutput.textContent = '';
+function clearPhnOutputs() {
+  const resultsEl = el('phn-results');
+  if (resultsEl) resultsEl.innerHTML = '';
+  const displayEl = el('phn-bsa-display');
+  if (displayEl) displayEl.textContent = '—';
+  renderPhnWarnings([]);
+  clearPhnComparison();
 }
 
 function updatePhnEchoPredictor() {
