@@ -150,6 +150,7 @@ const TOP_NAV_ITEMS = [
   { path: '/gdp/', label: 'GDP' },
   { path: '/heparin/', label: 'Heparin' },
   { path: '/predicted-hct/', label: 'Predicted Hct' },
+  { path: '/adult-cardiac-reference/', label: 'Adult Cardiac' },
   { path: '/z-score/', label: 'Z-score' },
   { path: '/priming-volume/', label: 'Priming Volume' },
   { path: '/timecalc/', label: 'Time' },
@@ -249,6 +250,169 @@ function computeBSA(h, w, method) {
   if (!h || !w || h <= 0 || w <= 0) return 0;
   const fn = BSA[method] || BSA.Mosteller;
   return fn(h, w);
+}
+
+const ADULT_AORTA_LEVELS = [
+  { key: 'annulus', label: 'Aortic annulus', inputId: 'adult-aorta-annulus' },
+  { key: 'sinus', label: 'Sinus of Valsalva', inputId: 'adult-aorta-sinus' },
+  { key: 'stj', label: 'Sinotubular junction', inputId: 'adult-aorta-stj' },
+  { key: 'ascending', label: 'Ascending aorta', inputId: 'adult-aorta-ascending' },
+  { key: 'arch', label: 'Arch / descending aorta', inputId: 'adult-aorta-arch' },
+];
+
+const ADULT_AORTA_CONTEXT_NOTES = {
+  general: 'General / tricuspid context: interpret absolute diameter, indexed size, growth rate, valve anatomy, symptoms, and imaging modality together.',
+  bicuspid: 'Bicuspid aortic valve context: thresholds can be diagnosis-specific; use guideline discussion language and consider valve phenotype, family history, and growth rate.',
+  heritable: 'Marfan / heritable thoracic aortic disease context: smaller diameters may require closer specialist review; use diagnosis-specific guideline thresholds.',
+  highRisk: 'Prior aortic surgery / high-risk context: compare with prior imaging and operative history; individualized specialist review is important.',
+};
+
+function readAdultRefNumber(id) {
+  const node = el(id);
+  if (!node) return NaN;
+  const value = parseFloat(node.value);
+  return Number.isFinite(value) ? value : NaN;
+}
+
+function formatAdultRefNumber(value, digits = 1) {
+  return Number.isFinite(value) ? value.toFixed(digits) : '—';
+}
+
+function setAdultRefText(id, value) {
+  const node = el(id);
+  if (node) node.textContent = value;
+}
+
+function getAdultRefPatientSize() {
+  const heightCm = readAdultRefNumber('adult-ref-height');
+  const weightKg = readAdultRefNumber('adult-ref-weight');
+  const bsa = readAdultRefNumber('adult-ref-bsa');
+  return {
+    heightCm: Number.isFinite(heightCm) && heightCm > 0 ? heightCm : 0,
+    weightKg: Number.isFinite(weightKg) && weightKg > 0 ? weightKg : 0,
+    bsa: Number.isFinite(bsa) && bsa > 0 ? bsa : 0,
+  };
+}
+
+function getAdultAortaStatus(diameterCm, areaHeightRatio) {
+  if (!Number.isFinite(diameterCm) || diameterCm <= 0) {
+    return { label: 'Not entered', className: 'border-slate-200 bg-slate-50 text-slate-600 dark:border-primary-800 dark:bg-primary-900/60 dark:text-slate-300' };
+  }
+  if (Number.isFinite(areaHeightRatio) && areaHeightRatio >= 10) {
+    return { label: 'Guideline caution range', className: 'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-200' };
+  }
+  if (diameterCm >= 4.5) {
+    return { label: 'Guideline discussion threshold', className: 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200' };
+  }
+  if (diameterCm >= 4.0) {
+    return { label: 'Above reference range', className: 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200' };
+  }
+  return { label: 'Within typical reference range', className: 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-200' };
+}
+
+function renderAdultAortaResults() {
+  const container = el('adult-aorta-results');
+  if (!container) return;
+  const { heightCm, bsa } = getAdultRefPatientSize();
+  const heightM = heightCm > 0 ? heightCm / 100 : 0;
+  const cards = [];
+
+  ADULT_AORTA_LEVELS.forEach((level) => {
+    const diameterMm = readAdultRefNumber(level.inputId);
+    if (!Number.isFinite(diameterMm) || diameterMm <= 0) return;
+
+    const diameterCm = diameterMm / 10;
+    const indexedBsa = bsa > 0 ? diameterCm / bsa : NaN;
+    const indexedHeight = heightM > 0 ? diameterCm / heightM : NaN;
+    // Aortic cross-sectional area indexed to height: area = π × (diameterCm / 2)^2, then divide by height in meters.
+    const area = Math.PI * Math.pow(diameterCm / 2, 2);
+    const areaHeightRatio = heightM > 0 ? area / heightM : NaN;
+    const status = getAdultAortaStatus(diameterCm, areaHeightRatio);
+
+    cards.push(`
+      <article class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/70 p-4 shadow-sm">
+        <div class="flex flex-wrap items-start justify-between gap-2">
+          <h3 class="text-sm font-semibold text-primary-900 dark:text-white">${level.label}</h3>
+          <span class="inline-flex rounded-full border px-2.5 py-1 text-[11px] font-semibold ${status.className}">${status.label}</span>
+        </div>
+        <dl class="mt-3 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+          <div><dt class="text-xs text-slate-500 dark:text-slate-400">Diameter</dt><dd class="font-semibold text-primary-900 dark:text-white">${formatAdultRefNumber(diameterCm, 2)} cm</dd></div>
+          <div><dt class="text-xs text-slate-500 dark:text-slate-400">BSA indexed</dt><dd class="font-semibold text-primary-900 dark:text-white">${formatAdultRefNumber(indexedBsa, 2)} cm/m²</dd></div>
+          <div><dt class="text-xs text-slate-500 dark:text-slate-400">Height indexed</dt><dd class="font-semibold text-primary-900 dark:text-white">${formatAdultRefNumber(indexedHeight, 2)} cm/m</dd></div>
+          <div><dt class="text-xs text-slate-500 dark:text-slate-400">Area / height</dt><dd class="font-semibold text-primary-900 dark:text-white">${formatAdultRefNumber(areaHeightRatio, 1)} cm²/m</dd></div>
+        </dl>
+        <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">Requires clinical context; compare anatomical level, modality, measurement convention, and serial change before applying guideline thresholds.</p>
+      </article>`);
+  });
+
+  container.innerHTML = cards.length
+    ? cards.join('')
+    : '<div class="rounded-2xl border border-dashed border-slate-300 dark:border-primary-700 bg-slate-50 dark:bg-primary-900/50 p-5 text-sm text-slate-600 dark:text-slate-300">Enter one or more aortic diameters in millimeters to calculate indexed adult reference values. Empty fields are ignored.</div>';
+}
+
+function updateAdultAortaContextNote() {
+  const context = el('adult-aorta-context')?.value || 'general';
+  setAdultRefText('adult-aorta-context-note', ADULT_AORTA_CONTEXT_NOTES[context] || ADULT_AORTA_CONTEXT_NOTES.general);
+}
+
+function updateAdultUtilityCalculators() {
+  const { bsa, heightCm } = getAdultRefPatientSize();
+  const edv = readAdultRefNumber('adult-calc-edv');
+  const esv = readAdultRefNumber('adult-calc-esv');
+  const lvef = Number.isFinite(edv) && edv > 0 && Number.isFinite(esv) && esv >= 0 && esv < edv
+    ? ((edv - esv) / edv) * 100
+    : NaN;
+  setAdultRefText('adult-calc-lvef-output', Number.isFinite(lvef) ? `${formatAdultRefNumber(lvef, 0)}%` : '—');
+
+  const lvotDiameterMm = readAdultRefNumber('adult-calc-lvot-diameter');
+  const lvotVti = readAdultRefNumber('adult-calc-lvot-vti');
+  const avVti = readAdultRefNumber('adult-calc-av-vti');
+  const lvotDiameterCm = Number.isFinite(lvotDiameterMm) ? lvotDiameterMm / 10 : NaN;
+  const lvotArea = Number.isFinite(lvotDiameterCm) && lvotDiameterCm > 0 ? Math.PI * Math.pow(lvotDiameterCm / 2, 2) : NaN;
+  const ava = Number.isFinite(lvotArea) && Number.isFinite(lvotVti) && lvotVti > 0 && Number.isFinite(avVti) && avVti > 0
+    ? (lvotArea * lvotVti) / avVti
+    : NaN;
+  setAdultRefText('adult-calc-ava-output', Number.isFinite(ava) ? `${formatAdultRefNumber(ava, 2)} cm²` : '—');
+  setAdultRefText('adult-calc-ava-index-output', Number.isFinite(ava) && bsa > 0 ? `${formatAdultRefNumber(ava / bsa, 2)} cm²/m²` : '—');
+
+  const indexValue = readAdultRefNumber('adult-calc-index-value');
+  setAdultRefText('adult-calc-index-output', Number.isFinite(indexValue) && indexValue > 0 && bsa > 0 ? formatAdultRefNumber(indexValue / bsa, 2) : '—');
+
+  const aortaDiameterMm = readAdultRefNumber('adult-calc-aorta-diameter');
+  const calcHeightCm = readAdultRefNumber('adult-calc-aorta-height') || heightCm;
+  const calcHeightM = Number.isFinite(calcHeightCm) && calcHeightCm > 0 ? calcHeightCm / 100 : 0;
+  const aortaDiameterCm = Number.isFinite(aortaDiameterMm) && aortaDiameterMm > 0 ? aortaDiameterMm / 10 : NaN;
+  const aortaArea = Number.isFinite(aortaDiameterCm) ? Math.PI * Math.pow(aortaDiameterCm / 2, 2) : NaN;
+  setAdultRefText('adult-calc-area-height-output', Number.isFinite(aortaArea) && calcHeightM > 0 ? `${formatAdultRefNumber(aortaArea / calcHeightM, 1)} cm²/m` : '—');
+}
+
+function updateAdultCardiacReference() {
+  updateAdultAortaContextNote();
+  renderAdultAortaResults();
+  updateAdultUtilityCalculators();
+}
+
+function initAdultCardiacReference() {
+  if (!el('adult-ref-page')) return;
+
+  el('adult-ref-calc-bsa')?.addEventListener('click', () => {
+    const heightCm = readAdultRefNumber('adult-ref-height');
+    const weightKg = readAdultRefNumber('adult-ref-weight');
+    const method = el('adult-ref-bsa-method')?.value || 'Mosteller';
+    const calculatedBsa = computeBSA(heightCm, weightKg, method);
+    if (calculatedBsa > 0) {
+      const bsaInput = el('adult-ref-bsa');
+      if (bsaInput) bsaInput.value = calculatedBsa.toFixed(2);
+    }
+    updateAdultCardiacReference();
+  });
+
+  document.querySelectorAll('[data-adult-ref-input]').forEach((input) => {
+    input.addEventListener('input', updateAdultCardiacReference);
+    input.addEventListener('change', updateAdultCardiacReference);
+  });
+
+  updateAdultCardiacReference();
 }
 
 const BSA_UNIT = {
@@ -7118,6 +7282,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const hasGdpCalculator = hasElement('view-do2i');
   const hasStandaloneBsaCalculator = hasElement('view-bsa');
   const hasPhnEchoCalculator = hasElement('view-phn-echo');
+  const hasAdultCardiacReference = hasElement('adult-ref-page');
   const hasHctCalculator = hasElement('view-hct');
   const hasLbmCalculator = hasElement('view-lbm');
   const hasPrimingCalculator = hasElement('view-priming-volume');
@@ -7135,6 +7300,7 @@ window.addEventListener('DOMContentLoaded', () => {
           '/gdp/',
           '/heparin/',
           '/predicted-hct/',
+          '/adult-cardiac-reference/',
           '/lbm/',
           '/timecalc/',
           '/z-score/',
@@ -7145,6 +7311,7 @@ window.addEventListener('DOMContentLoaded', () => {
           '/gdp',
           '/heparin',
           '/predicted-hct',
+          '/adult-cardiac-reference',
           '/lbm',
           '/timecalc',
           '/z-score',
@@ -7263,6 +7430,7 @@ window.addEventListener('DOMContentLoaded', () => {
     updateStandaloneBsa();
   }
 
+  if (hasAdultCardiacReference) initAdultCardiacReference();
   if (hasPhnEchoCalculator) {
     // PHN pediatric echo predictor listeners
     updatePhnMeasuredStructureOptions();

@@ -5,6 +5,7 @@ const sitemapPaths = [
   '/gdp/',
   '/heparin/',
   '/predicted-hct/',
+  '/adult-cardiac-reference/',
   '/z-score/',
   '/priming-volume/',
   '/timecalc/',
