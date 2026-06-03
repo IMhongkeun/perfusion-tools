@@ -6659,6 +6659,8 @@ function renderPhnWarnings(warnings) {
 function renderPhnRows(rows) {
   const resultsEl = el('phn-results');
   if (!resultsEl) return;
+  const wrapper = el('phn-results-wrapper');
+  if (wrapper) wrapper.classList.remove('hidden');
   resultsEl.innerHTML = '';
 
   rows.forEach((row) => {
@@ -6712,6 +6714,13 @@ function updatePhnDebugPanel(bsaValue, rows) {
   output.textContent = lines.join('\n');
 }
 
+function clearPhnReferenceRows() {
+  const resultsEl = el('phn-results');
+  if (resultsEl) resultsEl.innerHTML = '';
+  const wrapper = el('phn-results-wrapper');
+  if (wrapper) wrapper.classList.add('hidden');
+  const debugOutput = el('phn-debug-output');
+  if (debugOutput) debugOutput.textContent = '';
 function clearPhnOutputs() {
   const resultsEl = el('phn-results');
   if (resultsEl) resultsEl.innerHTML = '';
@@ -6885,6 +6894,7 @@ function clearPhnOutputs() {
   const displayEl = el('phn-bsa-display');
   if (displayEl) displayEl.textContent = '—';
   renderPhnWarnings([]);
+  clearPhnReferenceRows();
   clearSelectedModelOutputs();
 }
 
