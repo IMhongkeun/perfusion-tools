@@ -6574,6 +6574,28 @@ function getBsaWarnings(bsa) {
   return warnings;
 }
 
+function getModelBsaWarnings(modelKey, bsa) {
+  if (!modelKey) return [];
+  const val = validatePositiveNumber(bsa, 'BSA');
+  if (modelKey === 'detroitPettersen2008') {
+    return val > 2.0
+      ? ['BSA is above the usual Detroit / Pettersen 2008 calculator range. Interpret results with caution.']
+      : [];
+  }
+  if (modelKey === 'phnLopez') {
+    const limits = phnCoeffSource.PHN_BSA_LIMITS;
+    const warnings = [];
+    if (val < limits.min || val > limits.max) {
+      warnings.push(`BSA ${val.toFixed(2)} m² is outside the reference range (${limits.min.toFixed(2)}–${limits.max.toFixed(2)} m²).`);
+    }
+    if (val > limits.extrapolationFlag) {
+      warnings.push('PHN / Lopez was developed from pediatric subjects up to 18 years. Use caution outside pediatric body size ranges.');
+    }
+    return warnings;
+  }
+  return [];
+}
+
 function createRowsForBsa(bsa) {
   return phnCoeffSource.PHN_STRUCTURE_ORDER.map((key) => {
     const coeff = phnCoeffSource.PHN_STRUCTURES[key];
@@ -6607,6 +6629,7 @@ const api = {
   calculateModelMeasuredZScore,
   calculateRegressionReferenceCm,
   getBsaWarnings,
+  getModelBsaWarnings,
   cmToMm,
   clampToDisplayMm,
   formatMm,
@@ -6721,6 +6744,12 @@ function clearPhnReferenceRows() {
   if (wrapper) wrapper.classList.add('hidden');
   const debugOutput = el('phn-debug-output');
   if (debugOutput) debugOutput.textContent = '';
+  const resultsEl = el('phn-results');
+  if (resultsEl) resultsEl.innerHTML = '';
+  const wrapper = el('phn-results-wrapper');
+  if (wrapper) wrapper.classList.add('hidden');
+  const debugOutput = el('phn-debug-output');
+  if (debugOutput) debugOutput.textContent = '';
 function clearPhnOutputs() {
   const resultsEl = el('phn-results');
   if (resultsEl) resultsEl.innerHTML = '';
@@ -6753,7 +6782,8 @@ function updatePhnEchoPredictor() {
   const rows = window.PhnCalculator.createRowsForBsa(bsaValue);
   renderPhnRows(rows);
   updatePhnModelComparison();
-  renderPhnWarnings(window.PhnCalculator.getBsaWarnings(bsaValue));
+  const selectedModelKey = getPhnSelectedModel()?.key;
+  renderPhnWarnings(window.PhnCalculator.getModelBsaWarnings(selectedModelKey, bsaValue));
   updatePhnDebugPanel(bsaValue, rows);
 }
 

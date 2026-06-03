@@ -111,6 +111,14 @@ function run() {
   assert.strictEqual(phn.shouldShowDetroitBsaWarning('detroitPettersen2008', 2.0), false);
   assert.strictEqual(phn.shouldShowDetroitBsaWarning('detroitPettersen2008', 2.01), true);
   assert.strictEqual(phn.shouldShowDetroitBsaWarning('phnLopez', 2.5), false);
+  const detroitModelWarnings = phn.getModelBsaWarnings('detroitPettersen2008', 2.1);
+  assert(detroitModelWarnings.some((text) => text.includes('Detroit / Pettersen 2008 calculator range')));
+  assert(!detroitModelWarnings.some((text) => text.includes('PHN')));
+  assert.deepStrictEqual(phn.getModelBsaWarnings('detroitPettersen2008', 2.0), []);
+  const phnModelWarnings = phn.getModelBsaWarnings('phnLopez', 2.1);
+  assert(phnModelWarnings.some((text) => text.includes('PHN / Lopez was developed')));
+  assert(!phnModelWarnings.some((text) => text.includes('Detroit')));
+  assert.deepStrictEqual(phn.getModelBsaWarnings('', 2.1), []);
   assert(Number.isFinite(phn.calculateModelExpectedSizes('detroitPettersen2008', 'IVSD', 2.1, 0).z0Mm));
 
   // 14) Model switching preserves anatomically equivalent mapped structures when keys differ
