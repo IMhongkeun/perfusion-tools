@@ -503,10 +503,16 @@
                     <p>Patient RBC volume = EBV × Pre-CPB Hct / 100</p>
                     <p>RBC product volume = RBC units × Volume per unit</p>
                     <p>RBC volume added = RBC product volume × Unit Hct / 100</p>
-                    <p>Final estimated volume = EBV + Prime volume + RBC product volume</p>
+                    <p>Final estimated volume =</p>
+                    <p class="pl-4">EBV</p>
+                    <p class="pl-4">+ Prime volume</p>
+                    <p class="pl-4">+ RBC product volume</p>
+                    <p class="pl-4">+ Additional crystalloid/colloid added</p>
+                    <p class="pl-4">− Ultrafiltration removed</p>
                     <p>Predicted Hct (%) = [(Patient RBC volume + RBC volume added) / Final estimated volume] × 100</p>
                   </div>
                   <p class="mt-2">Prime volume should represent the non-patient volume added to the circuit. If RBC product volume is entered separately, avoid double-counting it in the prime volume unless the calculator is intentionally configured that way.</p>
+                  <p class="mt-2">Additional crystalloid or colloid increases total volume without adding red cell volume. In this simplified model, ultrafiltration decreases total volume without removing red cell volume.</p>
                 </div>
                 <div>
                   <h3 class="text-sm font-semibold text-primary-900 dark:text-white">On-pump adjustment model</h3>
