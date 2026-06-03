@@ -4,19 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Pediatric Echo Z-Score Calculator | Perfusion Tools</title>
-  <meta name="description" content="Calculate Pediatric Heart Network (PHN) echo Z-scores with indexed reference values for congenital and pediatric cardiac measurement review." />
+  <title>Pediatric Echo Z-Score Calculator | PHN Lopez & Detroit Pettersen</title>
+  <meta name="description" content="Calculate pediatric echocardiography Z-scores and expected cardiac structure size from BSA using PHN / Lopez or Detroit / Pettersen 2008 reference models." />
   <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
   <meta name="robots" content="noindex,follow" />
   <link rel="canonical" href="https://perfusiontools.com/z-score/" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Pediatric Echo Z-Score Calculator | Perfusion Tools" />
-  <meta property="og:description" content="PHN pediatric echo z-score calculator with measured value-to-z conversion and BSA-based reference bands." />
+  <meta property="og:title" content="Pediatric Echo Z-Score Calculator | PHN Lopez & Detroit Pettersen" />
+  <meta property="og:description" content="Calculate pediatric echocardiography Z-scores and expected cardiac structure size from BSA using PHN / Lopez or Detroit / Pettersen 2008 reference models." />
   <meta property="og:url" content="https://perfusiontools.com/z-score/" />
-  <meta name="twitter:title" content="Pediatric Echo Z-Score Calculator | Perfusion Tools" />
-  <meta name="twitter:description" content="PHN pediatric echo z-score calculator with measured value-to-z conversion and BSA-based reference bands." />
+  <meta name="twitter:title" content="Pediatric Echo Z-Score Calculator | PHN Lopez & Detroit Pettersen" />
+  <meta name="twitter:description" content="Calculate pediatric echocardiography Z-scores and expected cardiac structure size from BSA using PHN / Lopez or Detroit / Pettersen 2008 reference models." />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -195,9 +195,9 @@
         canonicalPath: '/'
       },
       '/phn-echo': {
-        title: 'Pediatric Echo Z-Score Calculator | Perfusion Tools',
+        title: 'Pediatric Echo Z-Score Calculator | PHN Lopez & Detroit Pettersen',
         h1: 'Pediatric Echo Z-Score Calculator',
-        description: 'Pediatric echo Z-score calculator with PHN / Lopez and Detroit / Pettersen 2008 reference models for expected size and measured-value Z-score from BSA.',
+        description: 'Calculate pediatric echocardiography Z-scores and expected cardiac structure size from BSA using PHN / Lopez or Detroit / Pettersen 2008 reference models.',
         headingDescription: 'Select a reference model, choose a structure, and calculate expected size or measured-value Z-score from BSA.',
         canonicalPath: '/z-score/'
       }
@@ -239,6 +239,8 @@
     window.addEventListener('load', () => applyRouteMeta('/phn-echo'));
   </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/z-score#webpage","url":"https://perfusiontools.com/z-score/","name":"Pediatric Echo Z-score Calculator – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalTest","name":"Pediatric echocardiography Z-score assessment"},"dateModified":"2026-04-10"},{"@type":"WebApplication","@id":"https://perfusiontools.com/z-score#app","name":"Pediatric Echo Z-score Calculator","url":"https://perfusiontools.com/z-score/","applicationCategory":"MedicalApplication","operatingSystem":"Any","isPartOf":{"@id":"https://perfusiontools.com/z-score#webpage"},"publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/z-score#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"Pediatric Echo Z-score","item":"https://perfusiontools.com/z-score/"}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a pediatric echo Z-score?","acceptedAnswer":{"@type":"Answer","text":"A pediatric echo Z-score describes how far a measured cardiac structure is from the expected mean for a child’s body size. A Z-score of 0 is close to the model-predicted average, while positive values are larger and negative values are smaller than expected."}},{"@type":"Question","name":"Why does this calculator use BSA?","acceptedAnswer":{"@type":"Answer","text":"Pediatric cardiac structure size changes with growth. Body surface area is commonly used to normalize cardiac measurements across infants, children, and adolescents."}},{"@type":"Question","name":"What is the difference between PHN / Lopez and Detroit / Pettersen 2008?","acceptedAnswer":{"@type":"Answer","text":"They are based on different reference populations and regression methods. The same measured structure may produce different Z-scores depending on the selected model. Use one model consistently for serial follow-up."}},{"@type":"Question","name":"Can I compare PHN and Detroit / Pettersen results directly?","acceptedAnswer":{"@type":"Answer","text":"They can be reviewed side by side conceptually, but they should not be treated as interchangeable. Differences may reflect model design, reference population, structure definitions, and regression method."}},{"@type":"Question","name":"What does “expected size at Z = 0” mean?","acceptedAnswer":{"@type":"Answer","text":"Z = 0 represents the model-predicted average size for the selected structure at the entered BSA."}},{"@type":"Question","name":"What does “expected size at Z = +2” mean?","acceptedAnswer":{"@type":"Answer","text":"Z = +2 means the expected size approximately two standard deviations above the model-predicted average for that BSA."}},{"@type":"Question","name":"Why is measured value optional?","acceptedAnswer":{"@type":"Answer","text":"Some users may only want to know the expected structure size for a target Z-score. If a measured value is entered, the calculator also computes the measured-value Z-score."}},{"@type":"Question","name":"Should this calculator be used for adults?","acceptedAnswer":{"@type":"Answer","text":"No. These models were developed for pediatric and adolescent populations. Avoid direct adult extrapolation."}},{"@type":"Question","name":"What units should I enter?","acceptedAnswer":{"@type":"Answer","text":"Enter measured structure size in millimeters. The calculator displays expected sizes in millimeters. Some internal model equations may convert values to centimeters."}},{"@type":"Question","name":"Why can different Z-score calculators give different results?","acceptedAnswer":{"@type":"Answer","text":"Z-scores depend on the reference population, measurement method, regression equation, BSA formula, and structure definition used by each model."}}]}</script>
+
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
@@ -428,15 +430,119 @@
             </div>
 
             <div class="rounded-xl border border-slate-200 dark:border-primary-700 p-4 space-y-2 text-xs text-slate-600 dark:text-slate-300 bg-slate-50/60 dark:bg-primary-900/40">
-              <p class="font-semibold text-primary-900 dark:text-white">Methodology & interpretation notes</p>
+              <h2 class="text-sm font-semibold text-primary-900 dark:text-white">Methodology &amp; interpretation notes</h2>
               <ul class="list-disc pl-4 space-y-1">
-                <li>Select one reference model and use it consistently for serial follow-up. PHN / Lopez and Detroit / Pettersen 2008 use different reference populations and regression methods, so Z-scores and expected sizes may differ between models.</li>
-                <li>Displayed values are in millimeters. Internal calculations may use centimeters depending on the model.</li>
-                <li>Z-score interpretation should consider growth stage, diagnosis, and serial trends.</li>
-                <li>Pediatric/adolescent reference use only; avoid direct adult extrapolation.</li>
-                <li>This calculator supports clinical assessment but does not replace physician judgment or institutional protocols.</li>
+                <li>Select one reference model and use it consistently for serial follow-up.</li>
+                <li>PHN / Lopez and Detroit / Pettersen 2008 use different reference populations and regression methods, so Z-scores and expected sizes may differ between models.</li>
+                <li>Displayed values are in millimeters. Internal calculations may use centimeters depending on the selected model.</li>
+                <li>Z-score interpretation should consider growth stage, diagnosis, image quality, measurement technique, and serial trends.</li>
+                <li>This calculator supports clinical assessment and education but does not replace physician judgment, echocardiography lab standards, or institutional protocols.</li>
               </ul>
             </div>
+
+            <section class="rounded-xl border border-slate-200 dark:border-primary-700 p-4 space-y-3 bg-white dark:bg-primary-900/30">
+              <h2 class="text-base font-semibold text-primary-900 dark:text-white">About this pediatric echo Z-score calculator</h2>
+              <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">This pediatric echocardiography Z-score calculator estimates expected cardiac structure size from <a href="/bsa/" class="text-accent-600 dark:text-accent-400 hover:underline">body surface area</a> and calculates optional measured-value Z-scores. It supports PHN / Lopez and Detroit / Pettersen 2008 reference models. Users can select a model, choose a supported structure, enter a target Z-score, and view the corresponding expected size in millimeters. A measured value can also be entered to calculate a forward Z-score using the selected model.</p>
+              <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Use this pediatric echo Z-score calculator for BSA-adjusted Z-score review, cardiac structure size planning, PHN Lopez Z-score checks, Detroit Pettersen Z-score checks, expected size by Z-score, and measured-value Z-score education. For quick clinical context, see the <a href="/quick-reference/" class="text-accent-600 dark:text-accent-400 hover:underline">Quick Reference</a> page.</p>
+            </section>
+
+            <details class="rounded-xl border border-slate-200 dark:border-primary-700 p-4 bg-slate-50/60 dark:bg-primary-900/40">
+              <summary class="cursor-pointer text-base font-semibold text-primary-900 dark:text-white">How the equations work</summary>
+              <div class="mt-3 space-y-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                <div>
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">PHN / Lopez</h3>
+                  <p class="mt-1">PHN / Lopez uses BSA-adjusted reference equations for common pediatric echocardiographic measurements. The calculator applies the selected structure’s coefficients to estimate expected size at a given BSA and target Z-score. The measured-value Z-score is calculated by comparing the user-entered measurement with the model-predicted mean and dispersion.</p>
+                </div>
+                <div>
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Detroit / Pettersen 2008</h3>
+                  <p class="mt-1">Detroit / Pettersen 2008 uses a log-linear regression model with body surface area as the independent variable.</p>
+                  <div class="mt-2 rounded-lg bg-white dark:bg-primary-950/50 border border-slate-200 dark:border-primary-700 p-3 text-xs leading-relaxed font-mono text-primary-900 dark:text-slate-100 space-y-1 overflow-x-auto">
+                    <p>meanLn = b0 + b1 × BSA + b2 × BSA² + b3 × BSA³</p>
+                    <p>z = (ln(measuredCm) - meanLn) / sqrt(MSE)</p>
+                    <p>targetCm = exp(meanLn + targetZ × sqrt(MSE))</p>
+                    <p>targetMm = targetCm × 10</p>
+                  </div>
+                  <p class="mt-2">User-entered and displayed values are in millimeters. Detroit / Pettersen calculations internally convert measured size from millimeters to centimeters before applying the logarithmic equation.</p>
+                </div>
+              </div>
+            </details>
+
+            <section class="rounded-xl border border-slate-200 dark:border-primary-700 p-4 bg-white dark:bg-primary-900/30">
+              <h2 class="text-base font-semibold text-primary-900 dark:text-white">FAQ</h2>
+              <div class="mt-3 space-y-2">
+                <details class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50/70 dark:bg-primary-900/40 p-3">
+                  <summary class="cursor-pointer text-sm font-semibold text-primary-900 dark:text-white">What is a pediatric echo Z-score?</summary>
+                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">A pediatric echo Z-score describes how far a measured cardiac structure is from the expected mean for a child’s body size. A Z-score of 0 is close to the model-predicted average, while positive values are larger and negative values are smaller than expected.</p>
+                </details>
+                <details class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50/70 dark:bg-primary-900/40 p-3">
+                  <summary class="cursor-pointer text-sm font-semibold text-primary-900 dark:text-white">Why does this calculator use BSA?</summary>
+                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Pediatric cardiac structure size changes with growth. Body surface area is commonly used to normalize cardiac measurements across infants, children, and adolescents.</p>
+                </details>
+                <details class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50/70 dark:bg-primary-900/40 p-3">
+                  <summary class="cursor-pointer text-sm font-semibold text-primary-900 dark:text-white">What is the difference between PHN / Lopez and Detroit / Pettersen 2008?</summary>
+                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">They are based on different reference populations and regression methods. The same measured structure may produce different Z-scores depending on the selected model. Use one model consistently for serial follow-up.</p>
+                </details>
+                <details class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50/70 dark:bg-primary-900/40 p-3">
+                  <summary class="cursor-pointer text-sm font-semibold text-primary-900 dark:text-white">Can I compare PHN and Detroit / Pettersen results directly?</summary>
+                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">They can be reviewed side by side conceptually, but they should not be treated as interchangeable. Differences may reflect model design, reference population, structure definitions, and regression method.</p>
+                </details>
+                <details class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50/70 dark:bg-primary-900/40 p-3">
+                  <summary class="cursor-pointer text-sm font-semibold text-primary-900 dark:text-white">What does “expected size at Z = 0” mean?</summary>
+                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Z = 0 represents the model-predicted average size for the selected structure at the entered BSA.</p>
+                </details>
+                <details class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50/70 dark:bg-primary-900/40 p-3">
+                  <summary class="cursor-pointer text-sm font-semibold text-primary-900 dark:text-white">What does “expected size at Z = +2” mean?</summary>
+                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Z = +2 means the expected size approximately two standard deviations above the model-predicted average for that BSA.</p>
+                </details>
+                <details class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50/70 dark:bg-primary-900/40 p-3">
+                  <summary class="cursor-pointer text-sm font-semibold text-primary-900 dark:text-white">Why is measured value optional?</summary>
+                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Some users may only want to know the expected structure size for a target Z-score. If a measured value is entered, the calculator also computes the measured-value Z-score.</p>
+                </details>
+                <details class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50/70 dark:bg-primary-900/40 p-3">
+                  <summary class="cursor-pointer text-sm font-semibold text-primary-900 dark:text-white">Should this calculator be used for adults?</summary>
+                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">No. These models were developed for pediatric and adolescent populations. Avoid direct adult extrapolation.</p>
+                </details>
+                <details class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50/70 dark:bg-primary-900/40 p-3">
+                  <summary class="cursor-pointer text-sm font-semibold text-primary-900 dark:text-white">What units should I enter?</summary>
+                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Enter measured structure size in millimeters. The calculator displays expected sizes in millimeters. Some internal model equations may convert values to centimeters.</p>
+                </details>
+                <details class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50/70 dark:bg-primary-900/40 p-3">
+                  <summary class="cursor-pointer text-sm font-semibold text-primary-900 dark:text-white">Why can different Z-score calculators give different results?</summary>
+                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Z-scores depend on the reference population, measurement method, regression equation, BSA formula, and structure definition used by each model.</p>
+                </details>
+              </div>
+            </section>
+
+            <section class="rounded-xl border border-slate-200 dark:border-primary-700 p-4 bg-slate-50/60 dark:bg-primary-900/40">
+              <h2 class="text-base font-semibold text-primary-900 dark:text-white">Selected references</h2>
+              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Reference equations are implemented for educational and clinical support use. Always confirm measurement technique, anatomical definition, and selected model before applying results clinically.</p>
+              <ol class="mt-4 space-y-4 text-sm text-slate-600 dark:text-slate-300 list-decimal pl-5">
+                <li>
+                  <span>Lopez L, Colan SD, Frommelt PC, et al. Relationship of echocardiographic Z scores adjusted for body surface area to age, sex, race, and ethnicity: the Pediatric Heart Network normal echocardiogram database. Circulation: Cardiovascular Imaging. 2017.</span>
+                  <div class="mt-2 flex flex-wrap gap-1.5">
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/29138232/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
+                    <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5812349/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Free full text</a>
+                    <a href="https://www.pediatricheartnetwork.org/echo-z-scores/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PHN calculator</a>
+                  </div>
+                </li>
+                <li>
+                  <span>Pettersen MD, Du W, Skeens ME, Humes RA. Regression equations for calculation of Z scores of cardiac structures in a large cohort of healthy infants, children, and adolescents: an echocardiographic study. Journal of the American Society of Echocardiography. 2008;21:922-934.</span>
+                  <div class="mt-2 flex flex-wrap gap-1.5">
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/18406572/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
+                    <a href="https://doi.org/10.1016/j.echo.2008.02.006" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">DOI</a>
+                    <a href="https://diagnosticcriteria.org/marfan/reprints/Petterson-2008-JAmSocEcho-21-p922-934.pdf" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PDF / Full text</a>
+                  </div>
+                </li>
+                <li>
+                  <span>Lopez L, et al. Pediatric Heart Network Echocardiographic Z Scores. Journal of the American Society of Echocardiography. 2021.</span>
+                  <div class="mt-2 flex flex-wrap gap-1.5">
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/33189460/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
+                    <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7870534/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Free full text</a>
+                  </div>
+                </li>
+              </ol>
+            </section>
+
 
             <details id="phn-debug-panel" class="hidden rounded-xl border border-slate-200 dark:border-primary-700 p-4 bg-slate-50/60 dark:bg-primary-900/40">
               <summary class="cursor-pointer text-sm font-semibold text-primary-900 dark:text-white">Debug panel (development mode)</summary>
