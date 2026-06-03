@@ -314,6 +314,10 @@
                 <label class="block text-xs font-medium text-slate-600 dark:text-slate-300" for="phn-bsa-input">BSA (m²)</label>
                 <input id="phn-bsa-input" type="number" inputmode="decimal" step="0.01" min="0.01" placeholder="1.20" class="result-number w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-950 px-3 py-2 text-base font-semibold text-primary-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500" />
                 <p class="text-xs text-slate-500 dark:text-slate-400">Allowed reference range: <span class="result-number">0.15–2.50</span> m² (results still compute outside range with warnings).</p>
+                <div>
+                  <label class="block text-xs font-medium text-slate-600 dark:text-slate-300" for="phn-target-z">Target Z-score</label>
+                  <input id="phn-target-z" type="number" inputmode="decimal" step="0.1" value="0" class="result-number mt-1 w-32 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-950 px-3 py-2 text-sm font-semibold text-primary-900 dark:text-white" />
+                </div>
               </div>
 
               <div class="rounded-xl border border-slate-200 dark:border-primary-700 p-4 space-y-3 bg-slate-50/60 dark:bg-primary-900/50">
@@ -355,6 +359,32 @@
               <div id="phn-results" class="divide-y divide-slate-100 dark:divide-primary-800"></div>
             </div>
 
+            <div class="rounded-xl border border-slate-200 dark:border-primary-700 overflow-hidden bg-white dark:bg-primary-900/30">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 px-4 py-3 bg-slate-50 dark:bg-primary-950/40 border-b border-slate-200 dark:border-primary-800">
+                <div>
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">PHN vs Detroit/Pettersen model comparison</h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Expected sizes are displayed in mm. Target column uses Z=<span id="phn-target-z-label" class="result-number">0.0</span>.</p>
+                </div>
+              </div>
+              <div class="hidden md:block overflow-x-auto">
+                <table class="min-w-full text-xs">
+                  <thead class="bg-white dark:bg-primary-900 text-slate-500 dark:text-slate-400 uppercase tracking-wide">
+                    <tr>
+                      <th class="px-3 py-2 text-left font-semibold">Structure</th>
+                      <th class="px-3 py-2 text-left font-semibold">Model</th>
+                      <th class="px-3 py-2 text-center font-semibold">Measured Z</th>
+                      <th class="px-3 py-2 text-center font-semibold">Z=-2</th>
+                      <th class="px-3 py-2 text-center font-semibold">Z=0</th>
+                      <th class="px-3 py-2 text-center font-semibold">Z=+2</th>
+                      <th class="px-3 py-2 text-center font-semibold">Target Z</th>
+                    </tr>
+                  </thead>
+                  <tbody id="phn-comparison-table" class="divide-y divide-slate-100 dark:divide-primary-800"></tbody>
+                </table>
+              </div>
+              <div id="phn-comparison-cards" class="md:hidden p-3 space-y-3"></div>
+            </div>
+
             <details class="rounded-xl border border-slate-200 dark:border-primary-700 p-4 bg-slate-50/60 dark:bg-primary-900/40">
               <summary class="cursor-pointer text-sm font-semibold text-primary-900 dark:text-white">Measured value (optional forward Z-score)</summary>
               <div class="mt-3 grid md:grid-cols-[1fr_1fr_auto] gap-2 items-end">
@@ -375,6 +405,7 @@
               <p class="font-semibold text-primary-900 dark:text-white">Methodology & interpretation notes</p>
               <ul class="list-disc pl-4 space-y-1">
                 <li>PHN reference model; internal unit is cm and displayed values are mm.</li>
+                <li>PHN / Lopez and Detroit / Pettersen use different reference populations and regression methods. Z-scores and expected sizes may differ between models. Use the selected model consistently for serial follow-up.</li>
                 <li>Z-score interpretation should consider growth stage, diagnosis, and serial trends.</li>
                 <li>Pediatric/adolescent reference use only; avoid direct adult extrapolation.</li>
                 <li>This calculator supports clinical assessment but does not replace physician judgment or institutional protocols.</li>
