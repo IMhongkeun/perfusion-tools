@@ -4243,7 +4243,12 @@ function computeDevineIbw(heightCm, sex) {
 }
 
 let hepDoseUnit = 300;
+let hepBsaMethod = 'DuBois';
 let hepInitialUfhOverrideTouched = false;
+const HEPARIN_BSA_METHOD_LABELS = {
+  Mosteller: 'Mosteller',
+  DuBois: 'Du Bois'
+};
 const HEPARIN_QUICK_PROTOCOL_ACT_LOW_COPY = 'If ACT below target: reassess sample/device/heparin delivery and follow institutional protocol';
 
 function syncHeparinQuickProtocolCopy() {
@@ -4261,7 +4266,7 @@ function setHepDoseButtons(activeDose) {
   });
 }
 
-function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy }) {
+function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy, bsaMethod = 'DuBois' }) {
   if (!(heightCm > 0) || !(weightKg > 0)) return null;
   const bmi = weightKg / Math.pow(heightCm / 100, 2);
   const ibw = computeDevineIbw(heightCm, sex) || weightKg;
@@ -4302,8 +4307,9 @@ function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy 
   const difference = tbwBolus - initialBolus;
   const isHighDose = initialBolus > 40000;
 
-  // DuBois BSA approximation used here (0.007184 × H^0.725 × W^0.425)
-  const bsaActual = 0.007184 * Math.pow(heightCm, 0.725) * Math.pow(weightKg, 0.425);
+  // Adult CPB BSA formula selection uses the shared calculator formulas:
+  // Mosteller = sqrt(H × W / 3600), DuBois = 0.007184 × H^0.725 × W^0.425.
+  const bsaActual = computeBSA(heightCm, weightKg, bsaMethod);
   let bsaCapped = false;
   if (bmi > 35 && bsaActual > 2.5) {
     bsaCapped = true;
@@ -4434,7 +4440,8 @@ function updateHeparinUI() {
     return;
   }
 
-  const plan = computeHeparinPlan({ heightCm: height, weightKg: weight, sex, doseUnit: hepDoseUnit, weightStrategy });
+  const selectedBsaMethod = HEPARIN_BSA_METHOD_LABELS[hepBsaMethod] ? hepBsaMethod : 'DuBois';
+  const plan = computeHeparinPlan({ heightCm: height, weightKg: weight, sex, doseUnit: hepDoseUnit, weightStrategy, bsaMethod: selectedBsaMethod });
   if (!plan) {
     if (results) results.classList.add('hidden');
     if (placeholder) placeholder.classList.remove('hidden');
@@ -4442,6 +4449,15 @@ function updateHeparinUI() {
     return;
   }
 
+  const bsaMethodLabel = HEPARIN_BSA_METHOD_LABELS[selectedBsaMethod];
+  setText('hep2-bsa-method-current', `(${bsaMethodLabel})`);
+  document.querySelectorAll('[data-hep-bsa-method]').forEach((option) => {
+    const isSelected = option.dataset.hepBsaMethod === selectedBsaMethod;
+    option.setAttribute('aria-selected', String(isSelected));
+    option.classList.toggle('bg-accent-500/10', isSelected);
+    option.classList.toggle('text-accent-600', isSelected);
+    option.classList.toggle('dark:text-accent-400', isSelected);
+  });
   setText('hep2-bmi', plan.bmi.toFixed(1));
   setText('hep2-ibw', plan.ibw.toFixed(1));
   setText('hep2-bsa', plan.bsaActual.toFixed(2));
@@ -4604,6 +4620,35 @@ function initHeparinManagement() {
       updateHeparinUI();
     });
   });
+
+  const bsaMethodToggle = el('hep2-bsa-method-toggle');
+  const bsaMethodMenu = el('hep2-bsa-method-menu');
+  if (bsaMethodToggle && bsaMethodMenu) {
+    const closeBsaMethodMenu = () => {
+      bsaMethodMenu.classList.add('hidden');
+      bsaMethodToggle.setAttribute('aria-expanded', 'false');
+    };
+
+    bsaMethodToggle.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const isOpen = !bsaMethodMenu.classList.contains('hidden');
+      bsaMethodMenu.classList.toggle('hidden', isOpen);
+      bsaMethodToggle.setAttribute('aria-expanded', String(!isOpen));
+    });
+
+    bsaMethodMenu.querySelectorAll('[data-hep-bsa-method]').forEach((option) => {
+      option.addEventListener('click', () => {
+        const nextMethod = option.dataset.hepBsaMethod;
+        if (HEPARIN_BSA_METHOD_LABELS[nextMethod]) {
+          hepBsaMethod = nextMethod;
+          updateHeparinUI();
+        }
+        closeBsaMethodMenu();
+      });
+    });
+
+    document.addEventListener('click', closeBsaMethodMenu);
+  }
 
   const weightInfoToggle = el('hep2-weight-info-toggle');
   const weightInfo = el('hep2-weight-info');
@@ -6223,11 +6268,88 @@ const PHN_BSA_LIMITS = {
   extrapolationFlag: 2.0
 };
 
+const PEDIATRIC_STRUCTURE_ORDER = [
+  'RVDD',
+  'IVSD',
+  'IVSS',
+  'LVIDD',
+  'LVIDS',
+  'LVPWD',
+  'LVPWS',
+  'AOV_ANN',
+  'SOV',
+  'STJ',
+  'TRANSVERSE_ARCH',
+  'AORTIC_ISTHMUS',
+  'DISTAL_ARCH',
+  'AORTA_DIAPHRAGM',
+  'PV_ANN',
+  'MPA',
+  'RPA',
+  'LPA',
+  'MV_ANN',
+  'TV_ANN',
+  'LA'
+];
+
+const PEDIATRIC_STRUCTURES = {
+  RVDD: { label: 'RVDd', phnKey: null, pettersenKey: 'RVDD' },
+  IVSD: { label: 'IVSd', phnKey: null, pettersenKey: 'IVSD' },
+  IVSS: { label: 'IVSs', phnKey: null, pettersenKey: 'IVSS' },
+  LVIDD: { label: 'LVIDd', phnKey: null, pettersenKey: 'LVIDD' },
+  LVIDS: { label: 'LVIDs', phnKey: null, pettersenKey: 'LVIDS' },
+  LVPWD: { label: 'LVPWd', phnKey: null, pettersenKey: 'LVPWD' },
+  LVPWS: { label: 'LVPWs', phnKey: null, pettersenKey: 'LVPWS' },
+  AOV_ANN: { label: 'Aortic valve annulus', phnKey: 'ANN', pettersenKey: 'AOV_ANN' },
+  SOV: { label: 'Sinuses of Valsalva', phnKey: null, pettersenKey: 'SOV' },
+  STJ: { label: 'Sinotubular junction', phnKey: null, pettersenKey: 'STJ' },
+  TRANSVERSE_ARCH: { label: 'Transverse aortic arch', phnKey: null, pettersenKey: 'TRANSVERSE_ARCH' },
+  AORTIC_ISTHMUS: { label: 'Aortic isthmus', phnKey: null, pettersenKey: 'AORTIC_ISTHMUS' },
+  DISTAL_ARCH: { label: 'Distal aortic arch', phnKey: null, pettersenKey: 'DISTAL_ARCH' },
+  AORTA_DIAPHRAGM: { label: 'Aorta at diaphragm', phnKey: null, pettersenKey: 'AORTA_DIAPHRAGM' },
+  PV_ANN: { label: 'Pulmonary valve annulus', phnKey: null, pettersenKey: 'PV_ANN' },
+  MPA: { label: 'Main pulmonary artery', phnKey: 'MPA', pettersenKey: 'MPA' },
+  RPA: { label: 'Right pulmonary artery', phnKey: 'RPA', pettersenKey: 'RPA' },
+  LPA: { label: 'Left pulmonary artery', phnKey: 'LPA', pettersenKey: 'LPA' },
+  MV_ANN: { label: 'Mitral valve annulus', phnKey: 'MV_LAT', pettersenKey: 'MV_ANN' },
+  TV_ANN: { label: 'Tricuspid valve annulus', phnKey: 'TV_LAT', pettersenKey: 'TV_ANN' },
+  LA: { label: 'Left atrium', phnKey: null, pettersenKey: 'LA' }
+};
+
+// Detroit / Pettersen 2008 Table 2 coefficients for ln(measurement_cm) vs. BSA.
+const PETTERSEN_STRUCTURES = {
+  RVDD: { label: 'RVDd', b0: -0.317, b1: 1.850, b2: -1.274, b3: 0.335, mse: 0.058 },
+  IVSD: { label: 'IVSd', b0: -1.242, b1: 1.272, b2: -0.762, b3: 0.208, mse: 0.046 },
+  IVSS: { label: 'IVSs', b0: -1.048, b1: 1.751, b2: -1.177, b3: 0.318, mse: 0.034 },
+  LVIDD: { label: 'LVIDd', b0: 0.105, b1: 2.859, b2: -2.119, b3: 0.552, mse: 0.010 },
+  LVIDS: { label: 'LVIDs', b0: -0.371, b1: 2.833, b2: -2.081, b3: 0.538, mse: 0.016 },
+  LVPWD: { label: 'LVPWd', b0: -1.586, b1: 1.849, b2: -1.188, b3: 0.313, mse: 0.037 },
+  LVPWS: { label: 'LVPWs', b0: -0.947, b1: 1.907, b2: -1.259, b3: 0.330, mse: 0.023 },
+  AOV_ANN: { label: 'Aortic valve annulus', b0: -0.874, b1: 2.708, b2: -1.841, b3: 0.452, mse: 0.010 },
+  SOV: { label: 'Sinuses of Valsalva', b0: -0.500, b1: 2.537, b2: -1.707, b3: 0.420, mse: 0.012 },
+  STJ: { label: 'Sinotubular junction', b0: -0.759, b1: 2.643, b2: -1.797, b3: 0.442, mse: 0.018 },
+  TRANSVERSE_ARCH: { label: 'Transverse aortic arch', b0: -0.790, b1: 3.020, b2: -2.484, b3: 0.712, mse: 0.023 },
+  AORTIC_ISTHMUS: { label: 'Aortic isthmus', b0: -1.072, b1: 2.539, b2: -1.627, b3: 0.368, mse: 0.027 },
+  DISTAL_ARCH: { label: 'Distal aortic arch', b0: -0.976, b1: 2.469, b2: -1.746, b3: 0.445, mse: 0.026 },
+  AORTA_DIAPHRAGM: { label: 'Aorta at diaphragm', b0: -0.922, b1: 2.100, b2: -1.411, b3: 0.371, mse: 0.018 },
+  PV_ANN: { label: 'Pulmonary valve annulus', b0: -0.761, b1: 2.774, b2: -1.808, b3: 0.436, mse: 0.023 },
+  MPA: { label: 'Main pulmonary artery', b0: -0.707, b1: 2.746, b2: -1.807, b3: 0.424, mse: 0.024 },
+  RPA: { label: 'Right pulmonary artery', b0: -1.360, b1: 3.394, b2: -2.508, b3: 0.660, mse: 0.027 },
+  LPA: { label: 'Left pulmonary artery', b0: -1.348, b1: 2.884, b2: -1.954, b3: 0.466, mse: 0.028 },
+  MV_ANN: { label: 'Mitral valve annulus', b0: -0.271, b1: 2.446, b2: -1.700, b3: 0.425, mse: 0.022 },
+  TV_ANN: { label: 'Tricuspid valve annulus', b0: -0.164, b1: 2.341, b2: -1.596, b3: 0.387, mse: 0.036 },
+  LA: { label: 'Left atrium', b0: -0.208, b1: 2.164, b2: -1.597, b3: 0.429, mse: 0.020 }
+};
+
+
 const PHN_COEFFICIENTS = {
   PHN_STRUCTURE_ORDER,
   PHN_STRUCTURES,
   PHN_REGRESSION,
-  PHN_BSA_LIMITS
+  PHN_BSA_LIMITS,
+  PEDIATRIC_STRUCTURE_ORDER,
+  PEDIATRIC_STRUCTURES,
+  PETTERSEN_STRUCTURES
 };
 
 if (typeof window !== 'undefined') {
@@ -6298,6 +6420,142 @@ function calculateForwardZScore(measuredCm, bsa, coeff) {
   return ((measured / bsaPowAlpha) - coeff.mean) / coeff.sd;
 }
 
+function calculatePhnTargetMm(bsa, targetZ, coeff) {
+  const bsaValue = validatePositiveNumber(bsa, 'BSA');
+  const zValue = Number(targetZ);
+  if (!Number.isFinite(zValue)) throw new Error('Target Z-score must be a number.');
+  const bsaPowAlpha = Math.pow(bsaValue, coeff.alpha);
+  // PHN reverse formula (mm): target = (mean + targetZ × sd) × BSA^alpha × 10.
+  return cmToMm((coeff.mean + zValue * coeff.sd) * bsaPowAlpha);
+}
+
+function calculatePettersenMeanLn(bsa, coeff) {
+  const bsaValue = validatePositiveNumber(bsa, 'BSA');
+  ['b0', 'b1', 'b2', 'b3', 'mse'].forEach((key) => {
+    if (!Number.isFinite(coeff[key])) throw new Error('Coefficient missing');
+  });
+  return coeff.b0 + coeff.b1 * bsaValue + coeff.b2 * Math.pow(bsaValue, 2) + coeff.b3 * Math.pow(bsaValue, 3);
+}
+
+function calculatePettersenZScore(measuredMm, bsa, coeff) {
+  const measured = validatePositiveNumber(measuredMm, 'Measured value');
+  const meanLn = calculatePettersenMeanLn(bsa, coeff);
+  // Detroit/Pettersen 2008 uses ln(measurement in cm) and sqrt(MSE) as the denominator.
+  return (Math.log(measured / CM_TO_MM) - meanLn) / Math.sqrt(coeff.mse);
+}
+
+function calculatePettersenTargetMm(bsa, targetZ, coeff) {
+  const zValue = Number(targetZ);
+  if (!Number.isFinite(zValue)) throw new Error('Target Z-score must be a number.');
+  const meanLn = calculatePettersenMeanLn(bsa, coeff);
+  return cmToMm(Math.exp(meanLn + zValue * Math.sqrt(coeff.mse)));
+}
+
+function hasCompletePettersenCoefficients(coeff) {
+  return Boolean(coeff) && ['b0', 'b1', 'b2', 'b3', 'mse'].every((key) => Number.isFinite(coeff[key]));
+}
+
+function buildZScoreModels() {
+  const phnStructures = phnCoeffSource.PHN_STRUCTURE_ORDER.map((key) => ({
+    key,
+    label: phnCoeffSource.PHN_STRUCTURES[key].label,
+    calculationType: 'phn',
+    coefficients: phnCoeffSource.PHN_STRUCTURES[key]
+  }));
+
+  const detroitStructures = phnCoeffSource.PEDIATRIC_STRUCTURE_ORDER
+    .map((key) => {
+      const structure = phnCoeffSource.PEDIATRIC_STRUCTURES[key];
+      const coeff = structure && structure.pettersenKey ? phnCoeffSource.PETTERSEN_STRUCTURES[structure.pettersenKey] : null;
+      if (!hasCompletePettersenCoefficients(coeff)) return null;
+      return {
+        key,
+        label: structure.label,
+        calculationType: 'pettersen',
+        coefficients: coeff
+      };
+    })
+    .filter(Boolean);
+
+  return {
+    phnLopez: {
+      label: 'PHN / Lopez',
+      unit: 'cm-internal-mm-display',
+      structures: phnStructures
+    },
+    detroitPettersen2008: {
+      label: 'Detroit / Pettersen 2008',
+      unit: 'cm-internal-mm-display',
+      structures: detroitStructures
+    }
+  };
+}
+
+const zScoreModels = buildZScoreModels();
+
+const selectedModelRangeNote = {
+  phnLopez: 'PHN / Lopez: Developed from healthy, non-obese pediatric subjects up to 18 years. Use caution when applying to patients outside typical pediatric body size ranges.',
+  detroitPettersen2008: 'Detroit / Pettersen 2008: Developed from patients aged 1 day to 18 years. Recommended calculator range: BSA up to approximately 2.0 m². Use caution above this range.'
+};
+
+const MODEL_CONSISTENCY_NOTE = 'Z-scores and expected sizes may differ between models. Use the same model consistently for serial follow-up.';
+
+function shouldShowDetroitBsaWarning(modelKey, bsa) {
+  return modelKey === 'detroitPettersen2008' && Number(bsa) > 2.0;
+}
+
+function getEquivalentStructureKey(currentKey, targetModelKey) {
+  const targetModel = zScoreModels[targetModelKey];
+  const targetStructures = targetModel?.structures || [];
+  const firstTargetKey = targetStructures[0]?.key || '';
+  if (!currentKey || !targetModel) return firstTargetKey;
+
+  const targetSupports = (key) => targetStructures.some((structure) => structure.key === key);
+  if (targetSupports(currentKey)) return currentKey;
+
+  const targetMapKey = targetModelKey === 'phnLopez'
+    ? 'phnKey'
+    : (targetModelKey === 'detroitPettersen2008' ? 'pettersenKey' : null);
+  if (!targetMapKey) return firstTargetKey;
+
+  const pediatricStructures = phnCoeffSource.PEDIATRIC_STRUCTURES || {};
+  const mappedStructure = Object.values(pediatricStructures).find((structure) => (
+    structure.phnKey === currentKey || structure.pettersenKey === currentKey
+  ));
+  const mappedTargetKey = mappedStructure?.[targetMapKey];
+  return mappedTargetKey && targetSupports(mappedTargetKey) ? mappedTargetKey : firstTargetKey;
+}
+
+function calculateModelTargetMm(modelKey, structureKey, bsa, targetZ) {
+  const model = zScoreModels[modelKey];
+  if (!model) throw new Error('Select a supported reference model.');
+  const structure = model.structures.find((item) => item.key === structureKey);
+  if (!structure) throw new Error('Select a structure supported by the selected model.');
+  if (structure.calculationType === 'phn') return calculatePhnTargetMm(bsa, targetZ, structure.coefficients);
+  if (structure.calculationType === 'pettersen') return calculatePettersenTargetMm(bsa, targetZ, structure.coefficients);
+  throw new Error('Unsupported calculation type.');
+}
+
+function calculateModelExpectedSizes(modelKey, structureKey, bsa, targetZ) {
+  return {
+    zNeg2Mm: calculateModelTargetMm(modelKey, structureKey, bsa, -2),
+    z0Mm: calculateModelTargetMm(modelKey, structureKey, bsa, 0),
+    zPos2Mm: calculateModelTargetMm(modelKey, structureKey, bsa, 2),
+    targetMm: calculateModelTargetMm(modelKey, structureKey, bsa, targetZ)
+  };
+}
+
+function calculateModelMeasuredZScore(modelKey, structureKey, measuredMm, bsa) {
+  const measured = validatePositiveNumber(measuredMm, 'Measured value');
+  const model = zScoreModels[modelKey];
+  if (!model) throw new Error('Select a supported reference model.');
+  const structure = model.structures.find((item) => item.key === structureKey);
+  if (!structure) throw new Error('Select a structure supported by the selected model.');
+  if (structure.calculationType === 'phn') return calculateForwardZScore(measured / CM_TO_MM, bsa, structure.coefficients);
+  if (structure.calculationType === 'pettersen') return calculatePettersenZScore(measured, bsa, structure.coefficients);
+  throw new Error('Unsupported calculation type.');
+}
+
 function calculateRegressionReferenceCm(bsa, regressionCoeff) {
   const bsaValue = validatePositiveNumber(bsa, 'BSA');
   return regressionCoeff.intercept + regressionCoeff.slope * Math.pow(bsaValue, regressionCoeff.alpha);
@@ -6316,6 +6574,28 @@ function getBsaWarnings(bsa) {
   return warnings;
 }
 
+function getModelBsaWarnings(modelKey, bsa) {
+  if (!modelKey) return [];
+  const val = validatePositiveNumber(bsa, 'BSA');
+  if (modelKey === 'detroitPettersen2008') {
+    return val > 2.0
+      ? ['BSA is above the usual Detroit / Pettersen 2008 calculator range. Interpret results with caution.']
+      : [];
+  }
+  if (modelKey === 'phnLopez') {
+    const limits = phnCoeffSource.PHN_BSA_LIMITS;
+    const warnings = [];
+    if (val < limits.min || val > limits.max) {
+      warnings.push(`BSA ${val.toFixed(2)} m² is outside the reference range (${limits.min.toFixed(2)}–${limits.max.toFixed(2)} m²).`);
+    }
+    if (val > limits.extrapolationFlag) {
+      warnings.push('PHN / Lopez was developed from pediatric subjects up to 18 years. Use caution outside pediatric body size ranges.');
+    }
+    return warnings;
+  }
+  return [];
+}
+
 function createRowsForBsa(bsa) {
   return phnCoeffSource.PHN_STRUCTURE_ORDER.map((key) => {
     const coeff = phnCoeffSource.PHN_STRUCTURES[key];
@@ -6329,11 +6609,27 @@ const api = {
   PHN_STRUCTURES: phnCoeffSource.PHN_STRUCTURES,
   PHN_REGRESSION: phnCoeffSource.PHN_REGRESSION,
   PHN_BSA_LIMITS: phnCoeffSource.PHN_BSA_LIMITS,
+  PEDIATRIC_STRUCTURE_ORDER: phnCoeffSource.PEDIATRIC_STRUCTURE_ORDER,
+  PEDIATRIC_STRUCTURES: phnCoeffSource.PEDIATRIC_STRUCTURES,
+  PETTERSEN_STRUCTURES: phnCoeffSource.PETTERSEN_STRUCTURES,
+  zScoreModels,
+  selectedModelRangeNote,
+  MODEL_CONSISTENCY_NOTE,
+  shouldShowDetroitBsaWarning,
+  getEquivalentStructureKey,
   calculateHaycockBSA,
   calculateInverseRange,
   calculateForwardZScore,
+  calculatePhnTargetMm,
+  calculatePettersenMeanLn,
+  calculatePettersenZScore,
+  calculatePettersenTargetMm,
+  calculateModelTargetMm,
+  calculateModelExpectedSizes,
+  calculateModelMeasuredZScore,
   calculateRegressionReferenceCm,
   getBsaWarnings,
+  getModelBsaWarnings,
   cmToMm,
   clampToDisplayMm,
   formatMm,
@@ -6386,6 +6682,8 @@ function renderPhnWarnings(warnings) {
 function renderPhnRows(rows) {
   const resultsEl = el('phn-results');
   if (!resultsEl) return;
+  const wrapper = el('phn-results-wrapper');
+  if (wrapper) wrapper.classList.remove('hidden');
   resultsEl.innerHTML = '';
 
   rows.forEach((row) => {
@@ -6439,24 +6737,13 @@ function updatePhnDebugPanel(bsaValue, rows) {
   output.textContent = lines.join('\n');
 }
 
-function updatePhnMeasuredStructureOptions() {
-  const select = el('phn-measured-structure');
-  if (!select || select.options.length > 0) return;
-  window.PhnCalculator.PHN_STRUCTURE_ORDER.forEach((key) => {
-    const coeff = window.PhnCalculator.PHN_STRUCTURES[key];
-    const option = document.createElement('option');
-    option.value = key;
-    option.textContent = coeff.label;
-    select.appendChild(option);
-  });
-}
-
-function clearPhnOutputs() {
+function clearPhnReferenceRows() {
   const resultsEl = el('phn-results');
   if (resultsEl) resultsEl.innerHTML = '';
-  const displayEl = el('phn-bsa-display');
-  if (displayEl) displayEl.textContent = '—';
-  renderPhnWarnings([]);
+  const wrapper = el('phn-results-wrapper');
+  if (wrapper) wrapper.classList.add('hidden');
+  const debugOutput = el('phn-debug-output');
+  if (debugOutput) debugOutput.textContent = '';
 }
 
 function updatePhnEchoPredictor() {
@@ -6481,7 +6768,9 @@ function updatePhnEchoPredictor() {
 
   const rows = window.PhnCalculator.createRowsForBsa(bsaValue);
   renderPhnRows(rows);
-  renderPhnWarnings(window.PhnCalculator.getBsaWarnings(bsaValue));
+  updatePhnModelComparison();
+  const selectedModelKey = getPhnSelectedModel()?.key;
+  renderPhnWarnings(window.PhnCalculator.getModelBsaWarnings(selectedModelKey, bsaValue));
   updatePhnDebugPanel(bsaValue, rows);
 }
 
@@ -6525,26 +6814,195 @@ function usePhnCalculatedBsa() {
   updatePhnEchoPredictor();
 }
 
-function calculatePhnMeasuredZ() {
-  const output = el('phn-measured-z');
-  const structureSelect = el('phn-measured-structure');
-  const measuredMm = Number(el('phn-measured-mm') ? el('phn-measured-mm').value : NaN);
-  const bsaValue = Number(el('phn-bsa-input') ? el('phn-bsa-input').value : NaN);
+const PHN_DEFAULT_MODEL_KEY = 'phnLopez';
+let phnZScoreState = {
+  selectedModel: PHN_DEFAULT_MODEL_KEY,
+  selectedStructure: null,
+  targetZ: 0,
+  measuredMm: null,
+  bsa: null
+};
 
-  if (!output || !structureSelect) return;
+function getPhnModelKeys() {
+  return Object.keys(window.PhnCalculator?.zScoreModels || {});
+}
 
-  try {
-    const key = structureSelect.value;
-    const coeff = window.PhnCalculator.PHN_STRUCTURES[key];
-    const measuredCm = measuredMm / 10;
-    const zScore = window.PhnCalculator.calculateForwardZScore(measuredCm, bsaValue, coeff);
-    output.innerHTML = `Measured Z-score: <span class="result-number">${zScore.toFixed(2)}</span>`;
-    setPhnError('');
-  } catch (error) {
-    output.innerHTML = 'Measured Z-score: <span class="result-number">—</span>';
-    setPhnError(error.message || 'Unable to compute measured Z-score.');
+function getPhnSelectedModel() {
+  const models = window.PhnCalculator?.zScoreModels || {};
+  const modelSelect = el('phn-model-select');
+  const selectedModel = modelSelect && models[modelSelect.value] ? modelSelect.value : PHN_DEFAULT_MODEL_KEY;
+  return models[selectedModel] ? { key: selectedModel, model: models[selectedModel] } : null;
+}
+
+function formatPhnSizeMm(valueMm) {
+  if (!Number.isFinite(valueMm)) return '—';
+  return `${window.PhnCalculator.clampToDisplayMm(valueMm).toFixed(1)} mm`;
+}
+
+function setPhnText(id, text) {
+  const node = el(id);
+  if (node) node.textContent = text;
+}
+
+function updatePhnModelRangeNotes(modelKey) {
+  if (!window.PhnCalculator) return;
+  const rangeNote = window.PhnCalculator.selectedModelRangeNote?.[modelKey] || '';
+  setPhnText('phn-model-range-note', rangeNote);
+  setPhnText('phn-model-consistency-note', window.PhnCalculator.MODEL_CONSISTENCY_NOTE || 'Z-scores and expected sizes may differ between models. Use the same model consistently for serial follow-up.');
+}
+
+function updatePhnBsaRangeWarning(modelKey, bsaValue) {
+  const warning = el('phn-model-bsa-warning');
+  if (!warning || !window.PhnCalculator) return;
+  const showWarning = window.PhnCalculator.shouldShowDetroitBsaWarning(modelKey, bsaValue);
+  warning.classList.toggle('hidden', !showWarning);
+}
+
+function populatePhnModelOptions() {
+  const modelSelect = el('phn-model-select');
+  if (!modelSelect || !window.PhnCalculator?.zScoreModels) return;
+  const currentValue = modelSelect.value || PHN_DEFAULT_MODEL_KEY;
+  modelSelect.innerHTML = '';
+  getPhnModelKeys().forEach((key) => {
+    const option = document.createElement('option');
+    option.value = key;
+    option.textContent = window.PhnCalculator.zScoreModels[key].label;
+    modelSelect.appendChild(option);
+  });
+  modelSelect.value = window.PhnCalculator.zScoreModels[currentValue] ? currentValue : PHN_DEFAULT_MODEL_KEY;
+}
+
+function populatePhnStructureOptions(preferredKey = '') {
+  const structureSelect = el('phn-structure-select');
+  const selected = getPhnSelectedModel();
+  if (!structureSelect || !selected) return;
+  const structures = selected.model.structures || [];
+  const currentValue = preferredKey || structureSelect.value || phnZScoreState.selectedStructure;
+  structureSelect.innerHTML = '';
+  structures.forEach((structure) => {
+    const option = document.createElement('option');
+    option.value = structure.key;
+    option.textContent = structure.label;
+    structureSelect.appendChild(option);
+  });
+  const nextStructure = window.PhnCalculator.getEquivalentStructureKey
+    ? window.PhnCalculator.getEquivalentStructureKey(currentValue, selected.key)
+    : (structures.some((structure) => structure.key === currentValue) ? currentValue : (structures[0] ? structures[0].key : ''));
+  structureSelect.value = nextStructure;
+  phnZScoreState.selectedStructure = nextStructure;
+}
+
+function updatePhnMeasuredStructureOptions() {
+  populatePhnModelOptions();
+  populatePhnStructureOptions();
+  updatePhnModelRangeNotes(getPhnSelectedModel()?.key || PHN_DEFAULT_MODEL_KEY);
+}
+
+function clearSelectedModelOutputs() {
+  ['phn-result-model', 'phn-result-structure', 'phn-result-bsa', 'phn-expected-neg2', 'phn-expected-zero', 'phn-expected-pos2', 'phn-expected-target'].forEach((id) => setPhnText(id, '—'));
+  setPhnText('phn-target-z-label', '0.0');
+  updatePhnBsaRangeWarning(phnZScoreState.selectedModel, null);
+  const measuredOutput = el('phn-measured-z');
+  if (measuredOutput) measuredOutput.innerHTML = 'Calculated Z-score: <span class="result-number">—</span>';
+  setPhnText('phn-measured-help', 'Enter BSA and a measured value to calculate Z-score.');
+}
+
+function clearPhnOutputs() {
+  const displayEl = el('phn-bsa-display');
+  if (displayEl) displayEl.textContent = '—';
+
+  renderPhnWarnings([]);
+  clearPhnReferenceRows();
+
+  if (typeof clearSelectedModelOutputs === 'function') {
+    clearSelectedModelOutputs();
+  } else if (typeof clearPhnComparison === 'function') {
+    clearPhnComparison();
   }
 }
+
+function readPhnZScoreState() {
+  const selected = getPhnSelectedModel();
+  const structureSelect = el('phn-structure-select');
+  const targetInput = el('phn-target-z');
+  const measuredInput = el('phn-measured-mm');
+  const bsaInput = el('phn-bsa-input');
+  const targetZ = targetInput && targetInput.value !== '' ? Number(targetInput.value) : 0;
+  const measuredMm = measuredInput && measuredInput.value !== '' ? Number(measuredInput.value) : null;
+  phnZScoreState = {
+    selectedModel: selected ? selected.key : PHN_DEFAULT_MODEL_KEY,
+    selectedStructure: structureSelect ? structureSelect.value : null,
+    targetZ,
+    measuredMm,
+    bsa: bsaInput && bsaInput.value !== '' ? Number(bsaInput.value) : null
+  };
+  return phnZScoreState;
+}
+
+function updatePhnModelComparison() {
+  if (!window.PhnCalculator) return;
+  const selected = getPhnSelectedModel();
+  if (!selected) return;
+  const state = readPhnZScoreState();
+  const structure = selected.model.structures.find((item) => item.key === state.selectedStructure);
+  updatePhnModelRangeNotes(state.selectedModel);
+  updatePhnBsaRangeWarning(state.selectedModel, state.bsa);
+
+  setPhnText('phn-result-model', selected.model.label);
+  setPhnText('phn-result-structure', structure ? structure.label : '—');
+  setPhnText('phn-result-bsa', state.bsa && state.bsa > 0 ? `${state.bsa.toFixed(2)} m²` : '—');
+  setPhnText('phn-target-z-label', Number.isFinite(state.targetZ) ? state.targetZ.toFixed(1) : '—');
+
+  if (!(state.bsa > 0) || !structure) {
+    ['phn-expected-neg2', 'phn-expected-zero', 'phn-expected-pos2', 'phn-expected-target'].forEach((id) => setPhnText(id, '—'));
+    setPhnText('phn-measured-help', 'Enter BSA and a measured value to calculate Z-score.');
+    return;
+  }
+
+  if (!Number.isFinite(state.targetZ)) {
+    setPhnError('Target Z-score must be a number.');
+    return;
+  }
+
+  try {
+    const expected = window.PhnCalculator.calculateModelExpectedSizes(state.selectedModel, state.selectedStructure, state.bsa, state.targetZ);
+    setPhnText('phn-expected-neg2', formatPhnSizeMm(expected.zNeg2Mm));
+    setPhnText('phn-expected-zero', formatPhnSizeMm(expected.z0Mm));
+    setPhnText('phn-expected-pos2', formatPhnSizeMm(expected.zPos2Mm));
+    setPhnText('phn-expected-target', formatPhnSizeMm(expected.targetMm));
+    setPhnError('');
+  } catch (error) {
+    setPhnError(error.message || 'Unable to compute expected size.');
+    return;
+  }
+
+  const measuredOutput = el('phn-measured-z');
+  if (state.measuredMm == null) {
+    if (measuredOutput) measuredOutput.innerHTML = 'Calculated Z-score: <span class="result-number">—</span>';
+    setPhnText('phn-measured-help', 'Enter a measured value to calculate Z-score.');
+    return;
+  }
+
+  if (!(state.measuredMm > 0)) {
+    if (measuredOutput) measuredOutput.innerHTML = 'Calculated Z-score: <span class="result-number">—</span>';
+    setPhnText('phn-measured-help', 'Measured value must be a positive number.');
+    return;
+  }
+
+  try {
+    const zScore = window.PhnCalculator.calculateModelMeasuredZScore(state.selectedModel, state.selectedStructure, state.measuredMm, state.bsa);
+    if (measuredOutput) measuredOutput.innerHTML = `Calculated Z-score: <span class="result-number">${zScore.toFixed(2)}</span>`;
+    setPhnText('phn-measured-help', `Calculated with ${selected.model.label} for ${structure.label}.`);
+  } catch (error) {
+    if (measuredOutput) measuredOutput.innerHTML = 'Calculated Z-score: <span class="result-number">—</span>';
+    setPhnText('phn-measured-help', error.message || 'Unable to calculate measured Z-score.');
+  }
+}
+
+function calculatePhnMeasuredZ() {
+  updatePhnModelComparison();
+}
+
 // -----------------------------
 // Router & Navigation Styling
 // -----------------------------
@@ -6881,8 +7339,16 @@ window.addEventListener('DOMContentLoaded', () => {
     const phnBsaMethod = el('phn-bsa-method');
     if (phnBsaMethod) phnBsaMethod.addEventListener('change', calculatePhnBsaFromInputs);
 
-    const phnMeasuredButton = el('phn-measured-calc-btn');
-    if (phnMeasuredButton) phnMeasuredButton.addEventListener('click', calculatePhnMeasuredZ);
+    ['phn-model-select', 'phn-structure-select', 'phn-target-z', 'phn-measured-mm'].forEach((id) => {
+      const node = el(id);
+      if (node) node.addEventListener('input', updatePhnModelComparison);
+      if (node && node.tagName === 'SELECT') {
+        node.addEventListener('change', () => {
+          if (id === 'phn-model-select') populatePhnStructureOptions(phnZScoreState.selectedStructure);
+          updatePhnModelComparison();
+        });
+      }
+    });
 
     updatePhnEchoPredictor();
   }
