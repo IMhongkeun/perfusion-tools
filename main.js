@@ -6504,6 +6504,28 @@ function shouldShowDetroitBsaWarning(modelKey, bsa) {
   return modelKey === 'detroitPettersen2008' && Number(bsa) > 2.0;
 }
 
+function getEquivalentStructureKey(currentKey, targetModelKey) {
+  const targetModel = zScoreModels[targetModelKey];
+  const targetStructures = targetModel?.structures || [];
+  const firstTargetKey = targetStructures[0]?.key || '';
+  if (!currentKey || !targetModel) return firstTargetKey;
+
+  const targetSupports = (key) => targetStructures.some((structure) => structure.key === key);
+  if (targetSupports(currentKey)) return currentKey;
+
+  const targetMapKey = targetModelKey === 'phnLopez'
+    ? 'phnKey'
+    : (targetModelKey === 'detroitPettersen2008' ? 'pettersenKey' : null);
+  if (!targetMapKey) return firstTargetKey;
+
+  const pediatricStructures = phnCoeffSource.PEDIATRIC_STRUCTURES || {};
+  const mappedStructure = Object.values(pediatricStructures).find((structure) => (
+    structure.phnKey === currentKey || structure.pettersenKey === currentKey
+  ));
+  const mappedTargetKey = mappedStructure?.[targetMapKey];
+  return mappedTargetKey && targetSupports(mappedTargetKey) ? mappedTargetKey : firstTargetKey;
+}
+
 function calculateModelTargetMm(modelKey, structureKey, bsa, targetZ) {
   const model = zScoreModels[modelKey];
   if (!model) throw new Error('Select a supported reference model.');
@@ -6572,6 +6594,7 @@ const api = {
   selectedModelRangeNote,
   MODEL_CONSISTENCY_NOTE,
   shouldShowDetroitBsaWarning,
+  getEquivalentStructureKey,
   calculateHaycockBSA,
   calculateInverseRange,
   calculateForwardZScore,
@@ -6836,9 +6859,9 @@ function populatePhnStructureOptions(preferredKey = '') {
     option.textContent = structure.label;
     structureSelect.appendChild(option);
   });
-  const nextStructure = structures.some((structure) => structure.key === currentValue)
-    ? currentValue
-    : (structures[0] ? structures[0].key : '');
+  const nextStructure = window.PhnCalculator.getEquivalentStructureKey
+    ? window.PhnCalculator.getEquivalentStructureKey(currentValue, selected.key)
+    : (structures.some((structure) => structure.key === currentValue) ? currentValue : (structures[0] ? structures[0].key : ''));
   structureSelect.value = nextStructure;
   phnZScoreState.selectedStructure = nextStructure;
 }

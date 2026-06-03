@@ -113,6 +113,16 @@ function run() {
   assert.strictEqual(phn.shouldShowDetroitBsaWarning('phnLopez', 2.5), false);
   assert(Number.isFinite(phn.calculateModelExpectedSizes('detroitPettersen2008', 'IVSD', 2.1, 0).z0Mm));
 
+  // 14) Model switching preserves anatomically equivalent mapped structures when keys differ
+  assert.strictEqual(phn.getEquivalentStructureKey('ANN', 'detroitPettersen2008'), 'AOV_ANN');
+  assert.strictEqual(phn.getEquivalentStructureKey('AOV_ANN', 'phnLopez'), 'ANN');
+  assert.strictEqual(phn.getEquivalentStructureKey('MPA', 'detroitPettersen2008'), 'MPA');
+  assert.strictEqual(phn.getEquivalentStructureKey('IVSD', 'phnLopez'), phn.PHN_STRUCTURE_ORDER[0]);
+  const mappedAnnKey = phn.getEquivalentStructureKey('ANN', 'detroitPettersen2008');
+  const mappedAnnStructure = phn.zScoreModels.detroitPettersen2008.structures.find((item) => item.key === mappedAnnKey);
+  assert.strictEqual(mappedAnnStructure.label, 'Aortic valve annulus');
+  assert(Number.isFinite(phn.calculateModelExpectedSizes('detroitPettersen2008', mappedAnnKey, 1.0, 0).z0Mm));
+
   console.log('PHN snapshots (mm):');
   console.log(JSON.stringify(snapshots, null, 2));
   console.log('All PHN tests passed.');
