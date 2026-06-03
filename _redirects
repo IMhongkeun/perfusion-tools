@@ -24,7 +24,6 @@ https://www.perfusiontools.com/*  https://perfusiontools.com/:splat   301!
 /gdp          /gdp/          301
 /heparin      /heparin/      301
 /predicted-hct /predicted-hct/ 301
-/adult-cardiac-reference /adult-cardiac-reference/ 301
 /lbm          /lbm/          301
 /timecalc     /timecalc/     301
 /z-score      /z-score/      301
