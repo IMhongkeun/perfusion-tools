@@ -4247,9 +4247,7 @@ let hepBsaMethod = 'DuBois';
 let hepInitialUfhOverrideTouched = false;
 const HEPARIN_BSA_METHOD_LABELS = {
   Mosteller: 'Mosteller',
-  DuBois: 'Du Bois',
-  Haycock: 'Haycock',
-  Boyd: 'Boyd'
+  DuBois: 'Du Bois'
 };
 const HEPARIN_QUICK_PROTOCOL_ACT_LOW_COPY = 'If ACT below target: reassess sample/device/heparin delivery and follow institutional protocol';
 
@@ -4309,9 +4307,8 @@ function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy,
   const difference = tbwBolus - initialBolus;
   const isHighDose = initialBolus > 40000;
 
-  // BSA formula selection uses the shared calculator formulas:
-  // Mosteller = sqrt(H × W / 3600), DuBois = 0.007184 × H^0.725 × W^0.425,
-  // Haycock = 0.024265 × H^0.3964 × W^0.5378, Boyd uses weight in grams.
+  // Adult CPB BSA formula selection uses the shared calculator formulas:
+  // Mosteller = sqrt(H × W / 3600), DuBois = 0.007184 × H^0.725 × W^0.425.
   const bsaActual = computeBSA(heightCm, weightKg, bsaMethod);
   let bsaCapped = false;
   if (bmi > 35 && bsaActual > 2.5) {
