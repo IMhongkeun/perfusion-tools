@@ -85,6 +85,26 @@ function run() {
   assert.strictEqual(phn.PEDIATRIC_STRUCTURES.IVSD.phnKey, null);
   assert.strictEqual(phn.PEDIATRIC_STRUCTURES.AOV_ANN.pettersenKey, 'AOV_ANN');
 
+  // 10) Selected-model data only exposes supported structures per model
+  const phnModelKeys = phn.zScoreModels.phnLopez.structures.map((item) => item.key);
+  const detroitModelKeys = phn.zScoreModels.detroitPettersen2008.structures.map((item) => item.key);
+  assert.deepStrictEqual(phnModelKeys, phn.PHN_STRUCTURE_ORDER);
+  assert(!phnModelKeys.includes('IVSD'));
+  assert(detroitModelKeys.includes('IVSD'));
+  assert(phn.zScoreModels.detroitPettersen2008.structures.every((item) => item.coefficients && Number.isFinite(item.coefficients.mse)));
+
+  // 11) Selected-model target sizing preserves PHN math and Pettersen monotonic behavior
+  const phnModelMpa = phn.calculateModelExpectedSizes('phnLopez', 'MPA', 1.2, 0);
+  const phnMpaRange = phn.calculateInverseRange(1.2, phn.PHN_STRUCTURES.MPA);
+  assert(nearlyEqual(phnModelMpa.z0Mm, phnMpaRange.z0Mm, 1e-9));
+  const detroitIvsdExpected = phn.calculateModelExpectedSizes('detroitPettersen2008', 'IVSD', 1.4, 0);
+  assert(detroitIvsdExpected.zPos2Mm > detroitIvsdExpected.z0Mm);
+  assert(detroitIvsdExpected.z0Mm > detroitIvsdExpected.zNeg2Mm);
+
+  // 12) Selected-model measured Z-score uses the selected model only
+  assert(nearlyEqual(phn.calculateModelMeasuredZScore('detroitPettersen2008', 'IVSD', 4, 1.4), -2.48, 0.01));
+  assert.throws(() => phn.calculateModelMeasuredZScore('phnLopez', 'IVSD', 4, 1.4));
+
   console.log('PHN snapshots (mm):');
   console.log(JSON.stringify(snapshots, null, 2));
   console.log('All PHN tests passed.');

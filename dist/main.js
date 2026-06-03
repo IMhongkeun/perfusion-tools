@@ -6451,6 +6451,78 @@ function calculatePettersenTargetMm(bsa, targetZ, coeff) {
   return cmToMm(Math.exp(meanLn + zValue * Math.sqrt(coeff.mse)));
 }
 
+function hasCompletePettersenCoefficients(coeff) {
+  return Boolean(coeff) && ['b0', 'b1', 'b2', 'b3', 'mse'].every((key) => Number.isFinite(coeff[key]));
+}
+
+function buildZScoreModels() {
+  const phnStructures = phnCoeffSource.PHN_STRUCTURE_ORDER.map((key) => ({
+    key,
+    label: phnCoeffSource.PHN_STRUCTURES[key].label,
+    calculationType: 'phn',
+    coefficients: phnCoeffSource.PHN_STRUCTURES[key]
+  }));
+
+  const detroitStructures = phnCoeffSource.PEDIATRIC_STRUCTURE_ORDER
+    .map((key) => {
+      const structure = phnCoeffSource.PEDIATRIC_STRUCTURES[key];
+      const coeff = structure && structure.pettersenKey ? phnCoeffSource.PETTERSEN_STRUCTURES[structure.pettersenKey] : null;
+      if (!hasCompletePettersenCoefficients(coeff)) return null;
+      return {
+        key,
+        label: structure.label,
+        calculationType: 'pettersen',
+        coefficients: coeff
+      };
+    })
+    .filter(Boolean);
+
+  return {
+    phnLopez: {
+      label: 'PHN / Lopez',
+      unit: 'cm-internal-mm-display',
+      structures: phnStructures
+    },
+    detroitPettersen2008: {
+      label: 'Detroit / Pettersen 2008',
+      unit: 'cm-internal-mm-display',
+      structures: detroitStructures
+    }
+  };
+}
+
+const zScoreModels = buildZScoreModels();
+
+function calculateModelTargetMm(modelKey, structureKey, bsa, targetZ) {
+  const model = zScoreModels[modelKey];
+  if (!model) throw new Error('Select a supported reference model.');
+  const structure = model.structures.find((item) => item.key === structureKey);
+  if (!structure) throw new Error('Select a structure supported by the selected model.');
+  if (structure.calculationType === 'phn') return calculatePhnTargetMm(bsa, targetZ, structure.coefficients);
+  if (structure.calculationType === 'pettersen') return calculatePettersenTargetMm(bsa, targetZ, structure.coefficients);
+  throw new Error('Unsupported calculation type.');
+}
+
+function calculateModelExpectedSizes(modelKey, structureKey, bsa, targetZ) {
+  return {
+    zNeg2Mm: calculateModelTargetMm(modelKey, structureKey, bsa, -2),
+    z0Mm: calculateModelTargetMm(modelKey, structureKey, bsa, 0),
+    zPos2Mm: calculateModelTargetMm(modelKey, structureKey, bsa, 2),
+    targetMm: calculateModelTargetMm(modelKey, structureKey, bsa, targetZ)
+  };
+}
+
+function calculateModelMeasuredZScore(modelKey, structureKey, measuredMm, bsa) {
+  const measured = validatePositiveNumber(measuredMm, 'Measured value');
+  const model = zScoreModels[modelKey];
+  if (!model) throw new Error('Select a supported reference model.');
+  const structure = model.structures.find((item) => item.key === structureKey);
+  if (!structure) throw new Error('Select a structure supported by the selected model.');
+  if (structure.calculationType === 'phn') return calculateForwardZScore(measured / CM_TO_MM, bsa, structure.coefficients);
+  if (structure.calculationType === 'pettersen') return calculatePettersenZScore(measured, bsa, structure.coefficients);
+  throw new Error('Unsupported calculation type.');
+}
+
 function calculateRegressionReferenceCm(bsa, regressionCoeff) {
   const bsaValue = validatePositiveNumber(bsa, 'BSA');
   return regressionCoeff.intercept + regressionCoeff.slope * Math.pow(bsaValue, regressionCoeff.alpha);
@@ -6485,6 +6557,7 @@ const api = {
   PEDIATRIC_STRUCTURE_ORDER: phnCoeffSource.PEDIATRIC_STRUCTURE_ORDER,
   PEDIATRIC_STRUCTURES: phnCoeffSource.PEDIATRIC_STRUCTURES,
   PETTERSEN_STRUCTURES: phnCoeffSource.PETTERSEN_STRUCTURES,
+  zScoreModels,
   calculateHaycockBSA,
   calculateInverseRange,
   calculateForwardZScore,
@@ -6492,6 +6565,9 @@ const api = {
   calculatePettersenMeanLn,
   calculatePettersenZScore,
   calculatePettersenTargetMm,
+  calculateModelTargetMm,
+  calculateModelExpectedSizes,
+  calculateModelMeasuredZScore,
   calculateRegressionReferenceCm,
   getBsaWarnings,
   cmToMm,
@@ -6575,154 +6651,6 @@ function renderPhnRows(rows) {
   });
 }
 
-function formatPhnComparisonValue(valueMm) {
-  if (!Number.isFinite(valueMm)) return '—';
-  return `${window.PhnCalculator.clampToDisplayMm(valueMm).toFixed(2)} mm`;
-}
-
-function createUnavailablePhnComparisonRow(structure, modelName, reason) {
-  return {
-    structureKey: structure.key,
-    structureLabel: structure.label,
-    modelName,
-    zScoreText: reason,
-    zNeg2Text: reason,
-    z0Text: reason,
-    zPos2Text: reason,
-    targetText: reason,
-    unavailable: true
-  };
-}
-
-function createPhnComparisonRows(bsaValue, targetZ, measuredStructureKey, measuredMm) {
-  const calculator = window.PhnCalculator;
-  const hasMeasured = Number.isFinite(measuredMm) && measuredMm > 0 && measuredStructureKey;
-  return calculator.PEDIATRIC_STRUCTURE_ORDER.flatMap((key) => {
-    const structure = { key, ...calculator.PEDIATRIC_STRUCTURES[key] };
-    const rows = [];
-
-    if (structure.phnKey && calculator.PHN_STRUCTURES[structure.phnKey]) {
-      const coeff = calculator.PHN_STRUCTURES[structure.phnKey];
-      const range = calculator.calculateInverseRange(bsaValue, coeff);
-      const targetMm = calculator.calculatePhnTargetMm(bsaValue, targetZ, coeff);
-      const zScoreText = hasMeasured && measuredStructureKey === key
-        ? calculator.calculateForwardZScore(measuredMm / 10, bsaValue, coeff).toFixed(2)
-        : '—';
-      rows.push({
-        structureKey: key,
-        structureLabel: structure.label,
-        modelName: 'PHN / Lopez',
-        zScoreText,
-        zNeg2Text: formatPhnComparisonValue(range.zNeg2Mm),
-        z0Text: formatPhnComparisonValue(range.z0Mm),
-        zPos2Text: formatPhnComparisonValue(range.zPos2Mm),
-        targetText: formatPhnComparisonValue(targetMm),
-        unavailable: false
-      });
-    } else {
-      rows.push(createUnavailablePhnComparisonRow(structure, 'PHN / Lopez', 'Not available in this model'));
-    }
-
-    if (structure.pettersenKey && calculator.PETTERSEN_STRUCTURES[structure.pettersenKey]) {
-      const coeff = calculator.PETTERSEN_STRUCTURES[structure.pettersenKey];
-      try {
-        const zScoreText = hasMeasured && measuredStructureKey === key
-          ? calculator.calculatePettersenZScore(measuredMm, bsaValue, coeff).toFixed(2)
-          : '—';
-        rows.push({
-          structureKey: key,
-          structureLabel: structure.label,
-          modelName: 'Detroit / Pettersen 2008',
-          zScoreText,
-          zNeg2Text: formatPhnComparisonValue(calculator.calculatePettersenTargetMm(bsaValue, -2, coeff)),
-          z0Text: formatPhnComparisonValue(calculator.calculatePettersenTargetMm(bsaValue, 0, coeff)),
-          zPos2Text: formatPhnComparisonValue(calculator.calculatePettersenTargetMm(bsaValue, 2, coeff)),
-          targetText: formatPhnComparisonValue(calculator.calculatePettersenTargetMm(bsaValue, targetZ, coeff)),
-          unavailable: false
-        });
-      } catch (error) {
-        rows.push(createUnavailablePhnComparisonRow(structure, 'Detroit / Pettersen 2008', 'Coefficient missing'));
-      }
-    } else {
-      rows.push(createUnavailablePhnComparisonRow(structure, 'Detroit / Pettersen 2008', 'Not available in this model'));
-    }
-
-    return rows;
-  });
-}
-
-function renderPhnComparisonRows(rows, targetZ) {
-  const tableBody = el('phn-comparison-table');
-  const cards = el('phn-comparison-cards');
-  const targetLabel = el('phn-target-z-label');
-  if (targetLabel) targetLabel.textContent = Number.isFinite(targetZ) ? targetZ.toFixed(1) : '—';
-  if (tableBody) tableBody.innerHTML = '';
-  if (cards) cards.innerHTML = '';
-
-  (rows || []).forEach((row) => {
-    if (tableBody) {
-      const tr = document.createElement('tr');
-      tr.className = 'border-t border-slate-100 dark:border-primary-800';
-      tr.innerHTML = `
-        <td class="px-3 py-2 font-medium text-primary-900 dark:text-white">${row.structureLabel}</td>
-        <td class="px-3 py-2 text-slate-600 dark:text-slate-300">${row.modelName}</td>
-        <td class="px-3 py-2 text-center result-number ${row.unavailable ? 'text-slate-400' : ''}">${row.zScoreText}</td>
-        <td class="px-3 py-2 text-center result-number ${row.unavailable ? 'text-slate-400' : ''}">${row.zNeg2Text}</td>
-        <td class="px-3 py-2 text-center result-number ${row.unavailable ? 'text-slate-400' : 'font-semibold text-emerald-600 dark:text-emerald-300'}">${row.z0Text}</td>
-        <td class="px-3 py-2 text-center result-number ${row.unavailable ? 'text-slate-400' : ''}">${row.zPos2Text}</td>
-        <td class="px-3 py-2 text-center result-number ${row.unavailable ? 'text-slate-400' : ''}">${row.targetText}</td>
-      `;
-      tableBody.appendChild(tr);
-    }
-
-    if (cards) {
-      const card = document.createElement('div');
-      card.className = 'rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/40 p-3 space-y-2';
-      card.innerHTML = `
-        <div>
-          <div class="text-sm font-semibold text-primary-900 dark:text-white">${row.structureLabel}</div>
-          <div class="text-xs text-slate-500 dark:text-slate-400">${row.modelName}</div>
-        </div>
-        <div class="grid grid-cols-2 gap-2 text-xs">
-          <div><span class="text-slate-500 dark:text-slate-400">Measured Z</span><div class="result-number ${row.unavailable ? 'text-slate-400' : 'text-primary-900 dark:text-white'}">${row.zScoreText}</div></div>
-          <div><span class="text-slate-500 dark:text-slate-400">Target Z=${Number.isFinite(targetZ) ? targetZ.toFixed(1) : '—'}</span><div class="result-number ${row.unavailable ? 'text-slate-400' : 'text-primary-900 dark:text-white'}">${row.targetText}</div></div>
-          <div><span class="text-slate-500 dark:text-slate-400">Z=-2</span><div class="result-number ${row.unavailable ? 'text-slate-400' : 'text-primary-900 dark:text-white'}">${row.zNeg2Text}</div></div>
-          <div><span class="text-slate-500 dark:text-slate-400">Z=0</span><div class="result-number ${row.unavailable ? 'text-slate-400' : 'text-emerald-600 dark:text-emerald-300'}">${row.z0Text}</div></div>
-          <div><span class="text-slate-500 dark:text-slate-400">Z=+2</span><div class="result-number ${row.unavailable ? 'text-slate-400' : 'text-primary-900 dark:text-white'}">${row.zPos2Text}</div></div>
-        </div>
-      `;
-      cards.appendChild(card);
-    }
-  });
-}
-
-function clearPhnComparison() {
-  renderPhnComparisonRows([], Number(el('phn-target-z') ? el('phn-target-z').value : 0));
-}
-
-function updatePhnModelComparison() {
-  if (!window.PhnCalculator) return;
-  const bsaValue = Number(el('phn-bsa-input') ? el('phn-bsa-input').value : NaN);
-  if (!(bsaValue > 0)) {
-    clearPhnComparison();
-    return;
-  }
-
-  const targetInput = el('phn-target-z');
-  const targetZ = targetInput && targetInput.value !== '' ? Number(targetInput.value) : 0;
-  if (!Number.isFinite(targetZ)) {
-    setPhnError('Target Z-score must be a number.');
-    clearPhnComparison();
-    return;
-  }
-
-  const structureKey = el('phn-measured-structure') ? el('phn-measured-structure').value : '';
-  const measuredMm = Number(el('phn-measured-mm') ? el('phn-measured-mm').value : NaN);
-  const rows = createPhnComparisonRows(bsaValue, targetZ, structureKey, measuredMm);
-  renderPhnComparisonRows(rows, targetZ);
-}
-
-
 function updatePhnDebugPanel(bsaValue, rows) {
   const panel = el('phn-debug-panel');
   const output = el('phn-debug-output');
@@ -6745,18 +6673,6 @@ function updatePhnDebugPanel(bsaValue, rows) {
   });
 
   output.textContent = lines.join('\n');
-}
-
-function updatePhnMeasuredStructureOptions() {
-  const select = el('phn-measured-structure');
-  if (!select || select.options.length > 0) return;
-  window.PhnCalculator.PEDIATRIC_STRUCTURE_ORDER.forEach((key) => {
-    const structure = window.PhnCalculator.PEDIATRIC_STRUCTURES[key];
-    const option = document.createElement('option');
-    option.value = key;
-    option.textContent = structure.label;
-    select.appendChild(option);
-  });
 }
 
 function clearPhnOutputs() {
@@ -6835,45 +6751,170 @@ function usePhnCalculatedBsa() {
   updatePhnEchoPredictor();
 }
 
-function calculatePhnMeasuredZ() {
-  const output = el('phn-measured-z');
-  const structureSelect = el('phn-measured-structure');
-  const measuredMm = Number(el('phn-measured-mm') ? el('phn-measured-mm').value : NaN);
-  const bsaValue = Number(el('phn-bsa-input') ? el('phn-bsa-input').value : NaN);
+const PHN_DEFAULT_MODEL_KEY = 'phnLopez';
+let phnZScoreState = {
+  selectedModel: PHN_DEFAULT_MODEL_KEY,
+  selectedStructure: null,
+  targetZ: 0,
+  measuredMm: null,
+  bsa: null
+};
 
-  if (!output || !structureSelect || !window.PhnCalculator) return;
+function getPhnModelKeys() {
+  return Object.keys(window.PhnCalculator?.zScoreModels || {});
+}
+
+function getPhnSelectedModel() {
+  const models = window.PhnCalculator?.zScoreModels || {};
+  const modelSelect = el('phn-model-select');
+  const selectedModel = modelSelect && models[modelSelect.value] ? modelSelect.value : PHN_DEFAULT_MODEL_KEY;
+  return models[selectedModel] ? { key: selectedModel, model: models[selectedModel] } : null;
+}
+
+function formatPhnSizeMm(valueMm) {
+  if (!Number.isFinite(valueMm)) return '—';
+  return `${window.PhnCalculator.clampToDisplayMm(valueMm).toFixed(1)} mm`;
+}
+
+function setPhnText(id, text) {
+  const node = el(id);
+  if (node) node.textContent = text;
+}
+
+function populatePhnModelOptions() {
+  const modelSelect = el('phn-model-select');
+  if (!modelSelect || !window.PhnCalculator?.zScoreModels) return;
+  const currentValue = modelSelect.value || PHN_DEFAULT_MODEL_KEY;
+  modelSelect.innerHTML = '';
+  getPhnModelKeys().forEach((key) => {
+    const option = document.createElement('option');
+    option.value = key;
+    option.textContent = window.PhnCalculator.zScoreModels[key].label;
+    modelSelect.appendChild(option);
+  });
+  modelSelect.value = window.PhnCalculator.zScoreModels[currentValue] ? currentValue : PHN_DEFAULT_MODEL_KEY;
+}
+
+function populatePhnStructureOptions(preferredKey = '') {
+  const structureSelect = el('phn-structure-select');
+  const selected = getPhnSelectedModel();
+  if (!structureSelect || !selected) return;
+  const structures = selected.model.structures || [];
+  const currentValue = preferredKey || structureSelect.value || phnZScoreState.selectedStructure;
+  structureSelect.innerHTML = '';
+  structures.forEach((structure) => {
+    const option = document.createElement('option');
+    option.value = structure.key;
+    option.textContent = structure.label;
+    structureSelect.appendChild(option);
+  });
+  const nextStructure = structures.some((structure) => structure.key === currentValue)
+    ? currentValue
+    : (structures[0] ? structures[0].key : '');
+  structureSelect.value = nextStructure;
+  phnZScoreState.selectedStructure = nextStructure;
+}
+
+function updatePhnMeasuredStructureOptions() {
+  populatePhnModelOptions();
+  populatePhnStructureOptions();
+}
+
+function clearSelectedModelOutputs() {
+  ['phn-result-model', 'phn-result-structure', 'phn-result-bsa', 'phn-expected-neg2', 'phn-expected-zero', 'phn-expected-pos2', 'phn-expected-target'].forEach((id) => setPhnText(id, '—'));
+  setPhnText('phn-target-z-label', '0.0');
+  const measuredOutput = el('phn-measured-z');
+  if (measuredOutput) measuredOutput.innerHTML = 'Calculated Z-score: <span class="result-number">—</span>';
+  setPhnText('phn-measured-help', 'Enter BSA and a measured value to calculate Z-score.');
+}
+
+function clearPhnOutputs() {
+  const displayEl = el('phn-bsa-display');
+  if (displayEl) displayEl.textContent = '—';
+  renderPhnWarnings([]);
+  clearSelectedModelOutputs();
+}
+
+function readPhnZScoreState() {
+  const selected = getPhnSelectedModel();
+  const structureSelect = el('phn-structure-select');
+  const targetInput = el('phn-target-z');
+  const measuredInput = el('phn-measured-mm');
+  const bsaInput = el('phn-bsa-input');
+  const targetZ = targetInput && targetInput.value !== '' ? Number(targetInput.value) : 0;
+  const measuredMm = measuredInput && measuredInput.value !== '' ? Number(measuredInput.value) : null;
+  phnZScoreState = {
+    selectedModel: selected ? selected.key : PHN_DEFAULT_MODEL_KEY,
+    selectedStructure: structureSelect ? structureSelect.value : null,
+    targetZ,
+    measuredMm,
+    bsa: bsaInput && bsaInput.value !== '' ? Number(bsaInput.value) : null
+  };
+  return phnZScoreState;
+}
+
+function updatePhnModelComparison() {
+  if (!window.PhnCalculator) return;
+  const selected = getPhnSelectedModel();
+  if (!selected) return;
+  const state = readPhnZScoreState();
+  const structure = selected.model.structures.find((item) => item.key === state.selectedStructure);
+
+  setPhnText('phn-result-model', selected.model.label);
+  setPhnText('phn-result-structure', structure ? structure.label : '—');
+  setPhnText('phn-result-bsa', state.bsa && state.bsa > 0 ? `${state.bsa.toFixed(2)} m²` : '—');
+  setPhnText('phn-target-z-label', Number.isFinite(state.targetZ) ? state.targetZ.toFixed(1) : '—');
+
+  if (!(state.bsa > 0) || !structure) {
+    ['phn-expected-neg2', 'phn-expected-zero', 'phn-expected-pos2', 'phn-expected-target'].forEach((id) => setPhnText(id, '—'));
+    setPhnText('phn-measured-help', 'Enter BSA and a measured value to calculate Z-score.');
+    return;
+  }
+
+  if (!Number.isFinite(state.targetZ)) {
+    setPhnError('Target Z-score must be a number.');
+    return;
+  }
 
   try {
-    const key = structureSelect.value;
-    const structure = window.PhnCalculator.PEDIATRIC_STRUCTURES[key];
-    if (!structure) throw new Error('Select a supported structure.');
-
-    const modelResults = [];
-    if (structure.phnKey && window.PhnCalculator.PHN_STRUCTURES[structure.phnKey]) {
-      const coeff = window.PhnCalculator.PHN_STRUCTURES[structure.phnKey];
-      const zScore = window.PhnCalculator.calculateForwardZScore(measuredMm / 10, bsaValue, coeff);
-      modelResults.push(`PHN / Lopez: <span class="result-number">${zScore.toFixed(2)}</span>`);
-    } else {
-      modelResults.push('PHN / Lopez: <span class="text-slate-400">Not available in this model</span>');
-    }
-
-    if (structure.pettersenKey && window.PhnCalculator.PETTERSEN_STRUCTURES[structure.pettersenKey]) {
-      const coeff = window.PhnCalculator.PETTERSEN_STRUCTURES[structure.pettersenKey];
-      const zScore = window.PhnCalculator.calculatePettersenZScore(measuredMm, bsaValue, coeff);
-      modelResults.push(`Detroit / Pettersen 2008: <span class="result-number">${zScore.toFixed(2)}</span>`);
-    } else {
-      modelResults.push('Detroit / Pettersen 2008: <span class="text-slate-400">Not available in this model</span>');
-    }
-
-    output.innerHTML = `Measured Z-score: ${modelResults.join(' · ')}`;
-    updatePhnModelComparison();
+    const expected = window.PhnCalculator.calculateModelExpectedSizes(state.selectedModel, state.selectedStructure, state.bsa, state.targetZ);
+    setPhnText('phn-expected-neg2', formatPhnSizeMm(expected.zNeg2Mm));
+    setPhnText('phn-expected-zero', formatPhnSizeMm(expected.z0Mm));
+    setPhnText('phn-expected-pos2', formatPhnSizeMm(expected.zPos2Mm));
+    setPhnText('phn-expected-target', formatPhnSizeMm(expected.targetMm));
     setPhnError('');
   } catch (error) {
-    output.innerHTML = 'Measured Z-score: <span class="result-number">—</span>';
-    updatePhnModelComparison();
-    setPhnError(error.message || 'Unable to compute measured Z-score.');
+    setPhnError(error.message || 'Unable to compute expected size.');
+    return;
+  }
+
+  const measuredOutput = el('phn-measured-z');
+  if (state.measuredMm == null) {
+    if (measuredOutput) measuredOutput.innerHTML = 'Calculated Z-score: <span class="result-number">—</span>';
+    setPhnText('phn-measured-help', 'Enter a measured value to calculate Z-score.');
+    return;
+  }
+
+  if (!(state.measuredMm > 0)) {
+    if (measuredOutput) measuredOutput.innerHTML = 'Calculated Z-score: <span class="result-number">—</span>';
+    setPhnText('phn-measured-help', 'Measured value must be a positive number.');
+    return;
+  }
+
+  try {
+    const zScore = window.PhnCalculator.calculateModelMeasuredZScore(state.selectedModel, state.selectedStructure, state.measuredMm, state.bsa);
+    if (measuredOutput) measuredOutput.innerHTML = `Calculated Z-score: <span class="result-number">${zScore.toFixed(2)}</span>`;
+    setPhnText('phn-measured-help', `Calculated with ${selected.model.label} for ${structure.label}.`);
+  } catch (error) {
+    if (measuredOutput) measuredOutput.innerHTML = 'Calculated Z-score: <span class="result-number">—</span>';
+    setPhnText('phn-measured-help', error.message || 'Unable to calculate measured Z-score.');
   }
 }
+
+function calculatePhnMeasuredZ() {
+  updatePhnModelComparison();
+}
+
 // -----------------------------
 // Router & Navigation Styling
 // -----------------------------
@@ -7210,13 +7251,15 @@ window.addEventListener('DOMContentLoaded', () => {
     const phnBsaMethod = el('phn-bsa-method');
     if (phnBsaMethod) phnBsaMethod.addEventListener('change', calculatePhnBsaFromInputs);
 
-    const phnMeasuredButton = el('phn-measured-calc-btn');
-    if (phnMeasuredButton) phnMeasuredButton.addEventListener('click', calculatePhnMeasuredZ);
-
-    ['phn-target-z', 'phn-measured-structure', 'phn-measured-mm'].forEach((id) => {
+    ['phn-model-select', 'phn-structure-select', 'phn-target-z', 'phn-measured-mm'].forEach((id) => {
       const node = el(id);
       if (node) node.addEventListener('input', updatePhnModelComparison);
-      if (node && node.tagName === 'SELECT') node.addEventListener('change', updatePhnModelComparison);
+      if (node && node.tagName === 'SELECT') {
+        node.addEventListener('change', () => {
+          if (id === 'phn-model-select') populatePhnStructureOptions(phnZScoreState.selectedStructure);
+          updatePhnModelComparison();
+        });
+      }
     });
 
     updatePhnEchoPredictor();
