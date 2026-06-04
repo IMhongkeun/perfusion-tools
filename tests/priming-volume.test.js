@@ -25,8 +25,11 @@ function run() {
     return volumeMl;
   });
 
-  const total = volumes.reduce((sum, value) => sum + value, 0);
-  assert(nearlyEqual(total, 410.9), `Default example total expected 410.9 mL, got ${total}`);
+  const tubingSubtotal = volumes.reduce((sum, value) => sum + value, 0);
+  assert(nearlyEqual(tubingSubtotal, 410.9), `Default example tubing subtotal expected 410.9 mL, got ${tubingSubtotal}`);
+
+  const adultExampleTotal = tubingSubtotal + 260 + 300;
+  assert(nearlyEqual(adultExampleTotal, 970.9), `Adult CPB example total expected 970.9 mL, got ${adultExampleTotal}`);
 
   console.log('All priming volume tests passed.');
 }

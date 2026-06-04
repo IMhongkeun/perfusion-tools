@@ -5231,97 +5231,54 @@ function calculatePrimingVolumeMl(idMm, lengthM, quantity = 1) {
 }
 
 function updatePrimingVolume() {
-  const idSelect = el('priming-id');
-  const lengthInput = el('priming-length');
-  const unitSelect = el('priming-length-unit');
+  const result = getCurrentPrimingTubingSegment();
+  const customWrap = el('priming-custom-id-wrap');
   const idMmEl = el('priming-id-mm');
   const mlPerMEl = el('priming-ml-per-m');
   const mlPerCmEl = el('priming-ml-per-cm');
   const lengthMEl = el('priming-length-m');
   const volumeEl = el('priming-volume');
   const lengthError = el('priming-length-error');
+  const addButton = el('priming-add-tubing-item');
 
-  if (!idSelect || !lengthInput || !unitSelect) return;
-
-  const tube = PRIMING_TUBE_IDS.find(item => item.key === idSelect.value);
-  if (tube) {
-    const mlPerM = (Math.PI / 4) * Math.pow(tube.idMm, 2);
-    const mlPerCm = mlPerM / 100;
-    if (idMmEl) idMmEl.textContent = tube.idMm.toFixed(4);
-    if (mlPerMEl) mlPerMEl.textContent = mlPerM.toFixed(2);
-    if (mlPerCmEl) mlPerCmEl.textContent = mlPerCm.toFixed(3);
-  } else {
-    if (idMmEl) idMmEl.textContent = '—';
-    if (mlPerMEl) mlPerMEl.textContent = '—';
-    if (mlPerCmEl) mlPerCmEl.textContent = '—';
-  }
-
-  const lengthRaw = lengthInput.value.trim();
-  const lengthProvided = lengthRaw !== '';
-  const lengthValue = lengthProvided ? parseFloat(lengthRaw) : null;
-  const lengthInvalid = lengthProvided && (Number.isNaN(lengthValue) || lengthValue < 0);
-
-  if (lengthError) lengthError.classList.toggle('hidden', !lengthInvalid);
-
-  if (lengthInvalid || !lengthProvided) {
-    if (lengthMEl) lengthMEl.textContent = '—';
-    if (volumeEl) volumeEl.textContent = '—';
-    return;
-  }
-
-  const lengthM = convertLengthToMeters(lengthValue, unitSelect.value);
-  if (lengthMEl) lengthMEl.textContent = lengthM != null ? lengthM.toFixed(4) : '—';
-
-  if (!tube || lengthM == null) {
-    if (volumeEl) volumeEl.textContent = '—';
-    return;
-  }
-
-  const volumeMl = calculatePrimingVolumeMl(tube.idMm, lengthM);
-  if (volumeEl) volumeEl.textContent = volumeMl != null ? volumeMl.toFixed(1) : '—';
+  if (customWrap) customWrap.classList.toggle('hidden', result.tubeId !== 'custom');
+  if (idMmEl) idMmEl.textContent = result.idReady ? result.idMm.toFixed(4) : '—';
+  if (mlPerMEl) mlPerMEl.textContent = result.idReady ? result.mlPerM.toFixed(2) : '—';
+  if (mlPerCmEl) mlPerCmEl.textContent = result.idReady ? result.mlPerCm.toFixed(3) : '—';
+  if (lengthMEl) lengthMEl.textContent = result.lengthProvided && Number.isFinite(result.lengthM) ? result.lengthM.toFixed(4) : '—';
+  if (lengthError) lengthError.classList.toggle('hidden', !result.lengthInvalid);
+  if (volumeEl) volumeEl.textContent = result.ready ? result.volumeMl.toFixed(1) : '—';
+  if (addButton) addButton.disabled = !result.ready || result.volumeMl <= 0;
 }
 
-
-const PRIMING_DEFAULT_SEGMENTS = [
-  { name: 'Arterial line', tubeId: '3/8', customIdMm: '', length: 150, unit: 'cm', quantity: 1, include: true },
-  { name: 'Venous line', tubeId: '1/2', customIdMm: '', length: 180, unit: 'cm', quantity: 1, include: true },
-  { name: 'Cardioplegia line', tubeId: '1/4', customIdMm: '', length: 60, unit: 'cm', quantity: 1, include: true },
-  { name: 'Suction line', tubeId: '3/8', customIdMm: '', length: 80, unit: 'cm', quantity: 1, include: true }
+const PRIMING_ADULT_EXAMPLE_ITEMS = [
+  { type: 'Tubing', item: 'Arterial line', details: '3/8", 150 cm × 1', volume: calculatePrimingVolumeMl(9.525, 1.5, 1), category: 'tubing' },
+  { type: 'Tubing', item: 'Venous line', details: '1/2", 180 cm × 1', volume: calculatePrimingVolumeMl(12.7, 1.8, 1), category: 'tubing' },
+  { type: 'Tubing', item: 'Cardioplegia line', details: '1/4", 60 cm × 1', volume: calculatePrimingVolumeMl(6.35, 0.6, 1), category: 'tubing' },
+  { type: 'Tubing', item: 'Suction line', details: '3/8", 80 cm × 1', volume: calculatePrimingVolumeMl(9.525, 0.8, 1), category: 'tubing' },
+  { type: 'Oxygenator', item: 'Medtronic Affinity Fusion', details: 'preset', volume: 260, category: 'component' },
+  { type: 'Reservoir', item: 'Operating volume', details: 'manual', volume: 300, category: 'component' }
 ];
 
-let primingSegments = PRIMING_DEFAULT_SEGMENTS.map(segment => ({ ...segment }));
-let primingNextSegmentId = 1;
-
-function getPrimingTubeIdMm(tubeId, customIdMm) {
-  if (tubeId === 'custom') return customIdMm;
-  const tube = PRIMING_TUBE_IDS.find(item => item.key === tubeId);
-  return tube ? tube.idMm : 0;
-}
+let primingBuilderItems = [];
+let primingNextBuilderItemId = 1;
 
 function readPrimingNonNegative(inputEl) {
-  if (!inputEl) return { value: 0, invalid: false };
+  if (!inputEl) return { value: 0, invalid: false, provided: false };
   const raw = inputEl.value.trim();
   if (raw === '') {
     inputEl.classList.remove('ring-1', 'ring-rose-400', 'border-rose-400');
-    return { value: 0, invalid: false };
+    return { value: 0, invalid: false, provided: false };
   }
   const parsed = parseFloat(raw);
   const invalid = Number.isNaN(parsed);
   if (parsed < 0) {
     inputEl.value = '0';
     inputEl.classList.remove('ring-1', 'ring-rose-400', 'border-rose-400');
-    return { value: 0, invalid: false };
+    return { value: 0, invalid: false, provided: true };
   }
   ['ring-1', 'ring-rose-400', 'border-rose-400'].forEach(cls => inputEl.classList.toggle(cls, invalid));
-  return { value: invalid ? 0 : parsed, invalid };
-}
-
-function formatPrimingMl(value) {
-  return Number.isFinite(value) ? Math.round(value).toString() : '—';
-}
-
-function formatPrimingRowMl(value) {
-  return Number.isFinite(value) ? value.toFixed(1) : '—';
+  return { value: invalid ? 0 : parsed, invalid, provided: true };
 }
 
 function escapePrimingHtml(value) {
@@ -5333,183 +5290,72 @@ function escapePrimingHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
-function getPrimingSegmentTemplate(segment) {
-  const id = segment.id;
-  const tubeOptions = PRIMING_TUBE_IDS.map(tube => (
-    `<option value="${tube.key}"${segment.tubeId === tube.key ? ' selected' : ''}>${tube.label} = ${tube.idMm} mm</option>`
-  )).join('');
-  const unitOptions = ['cm', 'm', 'ft', 'in'].map(unit => (
-    `<option value="${unit}"${segment.unit === unit ? ' selected' : ''}>${unit}</option>`
-  )).join('');
-
-  return `
-    <div class="priming-segment-row rounded-2xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/70 p-4 space-y-3" data-segment-id="${id}">
-      <div class="grid grid-cols-1 md:grid-cols-[auto_1.2fr_1fr_1fr] gap-3 items-end">
-        <label class="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
-          <input type="checkbox" class="priming-segment-include h-4 w-4 rounded border-slate-300 text-accent-600 focus:ring-accent-500" ${segment.include ? 'checked' : ''} aria-label="Include segment ${id}">
-          Include
-        </label>
-        <div class="space-y-1">
-          <label class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Segment name</label>
-          <input type="text" class="priming-segment-name w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" value="${escapePrimingHtml(segment.name)}" aria-label="Segment name">
-        </div>
-        <div class="space-y-1">
-          <label class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Tubing ID</label>
-          <select class="priming-segment-id w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer" aria-label="Tubing ID">
-            ${tubeOptions}
-            <option value="custom"${segment.tubeId === 'custom' ? ' selected' : ''}>Custom</option>
-          </select>
-        </div>
-        <div class="space-y-1 priming-custom-id-wrap ${segment.tubeId === 'custom' ? '' : 'hidden'}">
-          <label class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Custom ID (mm)</label>
-          <input type="number" inputmode="decimal" min="0" step="0.0001" class="priming-segment-custom-id w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" value="${escapePrimingHtml(segment.customIdMm)}" aria-label="Custom inner diameter in millimeters">
-        </div>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[1fr_auto_0.8fr_1fr_auto_auto] gap-3 items-end">
-        <div class="space-y-1">
-          <label class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Length</label>
-          <input type="number" inputmode="decimal" min="0" step="0.01" class="priming-segment-length w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" value="${escapePrimingHtml(segment.length ?? '')}" aria-label="Segment length">
-        </div>
-        <div class="space-y-1">
-          <label class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Unit</label>
-          <select class="priming-segment-unit w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer" aria-label="Length unit">${unitOptions}</select>
-        </div>
-        <div class="space-y-1">
-          <label class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Quantity</label>
-          <input type="number" inputmode="numeric" min="0" step="1" class="priming-segment-quantity w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" value="${escapePrimingHtml(segment.quantity ?? 1)}" aria-label="Segment quantity">
-        </div>
-        <div class="rounded-xl bg-slate-50 dark:bg-primary-800/60 border border-slate-100 dark:border-primary-800 px-3 py-2.5">
-          <div class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400">Segment volume</div>
-          <div class="font-bold text-primary-900 dark:text-white"><span class="priming-segment-volume">0.0</span> mL</div>
-        </div>
-        <button type="button" class="priming-duplicate-segment px-3 py-2.5 rounded-lg border border-slate-200 dark:border-primary-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:border-accent-500/50 transition-colors">Duplicate</button>
-        <button type="button" class="priming-delete-segment px-3 py-2.5 rounded-lg border border-slate-200 dark:border-primary-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:border-rose-400/60 transition-colors" aria-label="Delete segment ${id}">Delete</button>
-      </div>
-    </div>
-  `;
+function formatPrimingMl(value, decimals = 1) {
+  return Number.isFinite(value) ? value.toFixed(decimals) : '—';
 }
 
-function renderPrimingSegments() {
-  const listEl = el('priming-segment-list');
-  if (!listEl) return;
-  primingSegments = primingSegments.map(segment => ({ ...segment, id: segment.id || primingNextSegmentId++ }));
-  listEl.innerHTML = primingSegments.map(getPrimingSegmentTemplate).join('');
-  bindPrimingSegmentEvents();
-  updatePrimingCircuitPrime();
+function formatPrimingExpressionValue(value) {
+  if (!Number.isFinite(value)) return '—';
+  return Number.isInteger(value) ? value.toFixed(0) : value.toFixed(1);
 }
 
-function getPrimingSegmentFromRow(row) {
-  const tubeId = row.querySelector('.priming-segment-id')?.value || '';
-  const customIdResult = readPrimingNonNegative(row.querySelector('.priming-segment-custom-id'));
-  const lengthResult = readPrimingNonNegative(row.querySelector('.priming-segment-length'));
-  const quantityResult = readPrimingNonNegative(row.querySelector('.priming-segment-quantity'));
-  const idMm = getPrimingTubeIdMm(tubeId, customIdResult.value);
-  const lengthM = convertLengthToMeters(lengthResult.value, row.querySelector('.priming-segment-unit')?.value || 'cm');
-  const quantity = quantityResult.value;
-  const invalid = customIdResult.invalid || lengthResult.invalid || quantityResult.invalid;
-  const volume = invalid ? NaN : calculatePrimingVolumeMl(idMm, lengthM, quantity);
+function getPrimingTubeByKey(key) {
+  return PRIMING_TUBE_IDS.find(item => item.key === key) || null;
+}
+
+function getCurrentPrimingTubingSegment() {
+  const tubeId = el('priming-id')?.value || '';
+  const tube = getPrimingTubeByKey(tubeId);
+  const customId = readPrimingNonNegative(el('priming-custom-id'));
+  const length = readPrimingNonNegative(el('priming-length'));
+  const quantity = readPrimingNonNegative(el('priming-quantity'));
+  const unit = el('priming-length-unit')?.value || 'cm';
+  const idMm = tubeId === 'custom' ? customId.value : (tube ? tube.idMm : 0);
+  const idReady = tubeId === 'custom' ? customId.provided && !customId.invalid && idMm > 0 : !!tube;
+  const lengthM = convertLengthToMeters(length.value, unit);
+  const lengthInvalid = length.invalid;
+  const quantityValue = quantity.provided ? quantity.value : 0;
+  const ready = idReady && length.provided && !lengthInvalid && !quantity.invalid && length.value > 0 && quantityValue > 0;
+  const volumeMl = ready ? calculatePrimingVolumeMl(idMm, lengthM, quantityValue) : NaN;
+  const displayLabel = tube ? tube.label : (tubeId === 'custom' ? `${idMm.toFixed(4)} mm` : '');
 
   return {
-    id: Number(row.dataset.segmentId),
-    include: !!row.querySelector('.priming-segment-include')?.checked,
-    name: row.querySelector('.priming-segment-name')?.value || '',
     tubeId,
-    customIdMm: row.querySelector('.priming-segment-custom-id')?.value || '',
-    length: row.querySelector('.priming-segment-length')?.value || '',
-    unit: row.querySelector('.priming-segment-unit')?.value || 'cm',
-    quantity: row.querySelector('.priming-segment-quantity')?.value || '',
-    volume
+    tube,
+    idMm,
+    idReady,
+    mlPerM: idReady ? (Math.PI / 4) * Math.pow(idMm, 2) : NaN,
+    mlPerCm: idReady ? ((Math.PI / 4) * Math.pow(idMm, 2)) / 100 : NaN,
+    lengthM,
+    lengthProvided: length.provided,
+    lengthInvalid,
+    lengthValue: length.value,
+    unit,
+    quantity: quantityValue,
+    ready,
+    volumeMl,
+    displayLabel
   };
 }
 
-function syncPrimingSegmentsFromDom() {
-  const rows = Array.from(document.querySelectorAll('.priming-segment-row'));
-  primingSegments = rows.map(getPrimingSegmentFromRow);
+function addPrimingBuilderItem(item) {
+  if (!item || !Number.isFinite(item.volume) || item.volume <= 0) return;
+  primingBuilderItems.push({ ...item, id: primingNextBuilderItemId++ });
+  renderPrimingBuilder();
 }
 
-function bindPrimingSegmentEvents() {
-  document.querySelectorAll('.priming-segment-row').forEach(row => {
-    row.querySelectorAll('input, select').forEach(input => {
-      input.addEventListener('input', updatePrimingCircuitPrime);
-      input.addEventListener('change', updatePrimingCircuitPrime);
-    });
-    row.querySelector('.priming-delete-segment')?.addEventListener('click', () => {
-      syncPrimingSegmentsFromDom();
-      primingSegments = primingSegments.filter(segment => segment.id !== Number(row.dataset.segmentId));
-      renderPrimingSegments();
-    });
-    row.querySelector('.priming-duplicate-segment')?.addEventListener('click', () => {
-      syncPrimingSegmentsFromDom();
-      const segment = primingSegments.find(item => item.id === Number(row.dataset.segmentId));
-      if (segment) primingSegments.push({ ...segment, id: primingNextSegmentId++, name: `${segment.name || 'Segment'} copy` });
-      renderPrimingSegments();
-    });
+function addCurrentPrimingTubingItem() {
+  const result = getCurrentPrimingTubingSegment();
+  if (!result.ready) return;
+  const name = el('priming-segment-name')?.value.trim() || 'Tubing segment';
+  const lengthRaw = el('priming-length')?.value.trim() || '0';
+  addPrimingBuilderItem({
+    type: 'Tubing',
+    item: name,
+    details: `${result.displayLabel}, ${lengthRaw} ${result.unit} × ${formatPrimingExpressionValue(result.quantity)}`,
+    volume: result.volumeMl,
+    category: 'tubing'
   });
-}
-
-function updatePrimingCircuitPrime() {
-  const rows = Array.from(document.querySelectorAll('.priming-segment-row'));
-  let tubingTotal = 0;
-  let hasInvalidSegment = false;
-
-  rows.forEach(row => {
-    const segment = getPrimingSegmentFromRow(row);
-    const customWrap = row.querySelector('.priming-custom-id-wrap');
-    if (customWrap) customWrap.classList.toggle('hidden', segment.tubeId !== 'custom');
-    const volumeEl = row.querySelector('.priming-segment-volume');
-    if (volumeEl) volumeEl.textContent = formatPrimingRowMl(segment.volume);
-    if (segment.include) {
-      if (Number.isFinite(segment.volume)) tubingTotal += segment.volume;
-      else hasInvalidSegment = true;
-    }
-  });
-
-  const oxygenator = readPrimingNonNegative(el('priming-oxygenator-volume'));
-  const reservoir = readPrimingNonNegative(el('priming-reservoir-volume'));
-  const filterMode = el('priming-filter-mode')?.value || 'integrated';
-  const filterWrap = el('priming-filter-volume-wrap');
-  if (filterWrap) filterWrap.classList.toggle('hidden', filterMode !== 'separate');
-  const filterManual = readPrimingNonNegative(el('priming-filter-volume'));
-  const other = readPrimingNonNegative(el('priming-other-volume'));
-  const hasInvalidComponent = oxygenator.invalid || reservoir.invalid || filterManual.invalid || other.invalid;
-  const filterVolume = filterMode === 'separate' ? filterManual.value : 0;
-  const total = tubingTotal + oxygenator.value + reservoir.value + filterVolume + other.value;
-  const displayTotal = hasInvalidSegment || hasInvalidComponent ? NaN : total;
-
-  setText('priming-total-tubing', formatPrimingMl(tubingTotal));
-  setText('priming-summary-tubing', formatPrimingMl(tubingTotal));
-  setText('priming-summary-oxygenator', formatPrimingMl(oxygenator.value));
-  setText('priming-summary-reservoir', formatPrimingMl(reservoir.value));
-  setText('priming-summary-filter', formatPrimingMl(filterVolume));
-  setText('priming-summary-other', formatPrimingMl(other.value));
-  setText('priming-total-circuit', formatPrimingMl(displayTotal));
-}
-
-function resetPrimingSegmentsToExample() {
-  primingSegments = PRIMING_DEFAULT_SEGMENTS.map(segment => ({ ...segment, id: primingNextSegmentId++ }));
-  renderPrimingSegments();
-}
-
-function clearPrimingSegments() {
-  primingSegments = [];
-  renderPrimingSegments();
-}
-
-function addPrimingSegment() {
-  syncPrimingSegmentsFromDom();
-  primingSegments.push({ id: primingNextSegmentId++, name: '', tubeId: '3/8', customIdMm: '', length: '', unit: 'cm', quantity: 1, include: true });
-  renderPrimingSegments();
-}
-
-function resetPrimingComponents() {
-  const ids = ['priming-oxygenator-model', 'priming-oxygenator-volume', 'priming-reservoir-volume', 'priming-filter-volume', 'priming-other-volume'];
-  ids.forEach(id => {
-    const input = el(id);
-    if (input) input.value = '';
-  });
-  const filterMode = el('priming-filter-mode');
-  if (filterMode) filterMode.value = 'integrated';
-  updatePrimingCircuitPrime();
 }
 
 function handlePrimingOxygenatorModelChange() {
@@ -5517,7 +5363,84 @@ function handlePrimingOxygenatorModelChange() {
   const volumeInput = el('priming-oxygenator-volume');
   if (!modelSelect || !volumeInput) return;
   if (modelSelect.value && modelSelect.value !== 'custom') volumeInput.value = modelSelect.value;
-  updatePrimingCircuitPrime();
+}
+
+function getSelectedOxygenatorLabel() {
+  const modelSelect = el('priming-oxygenator-model');
+  if (!modelSelect) return 'Oxygenator';
+  const selected = modelSelect.options[modelSelect.selectedIndex];
+  return selected?.dataset?.label || 'Custom oxygenator';
+}
+
+function addPrimingOxygenatorItem() {
+  const volume = readPrimingNonNegative(el('priming-oxygenator-volume'));
+  if (volume.invalid || volume.value <= 0) return;
+  const model = getSelectedOxygenatorLabel();
+  const details = el('priming-oxygenator-model')?.value === 'custom' ? 'manual' : 'preset';
+  addPrimingBuilderItem({ type: 'Oxygenator', item: model, details, volume: volume.value, category: 'component' });
+}
+
+function addPrimingReservoirItem() {
+  const volume = readPrimingNonNegative(el('priming-reservoir-volume'));
+  if (volume.invalid || volume.value <= 0) return;
+  addPrimingBuilderItem({ type: 'Reservoir', item: 'Operating volume', details: 'manual', volume: volume.value, category: 'component' });
+}
+
+function addPrimingComponentItem() {
+  const volume = readPrimingNonNegative(el('priming-component-volume'));
+  if (volume.invalid || volume.value <= 0) return;
+  const type = el('priming-component-type')?.value || 'Other';
+  const name = el('priming-component-name')?.value.trim() || type;
+  addPrimingBuilderItem({ type, item: name, details: 'manual', volume: volume.value, category: 'component' });
+}
+
+function renderPrimingBuilder() {
+  const emptyEl = el('priming-builder-empty');
+  const tableWrap = el('priming-builder-table-wrap');
+  const body = el('priming-builder-items');
+  const hasItems = primingBuilderItems.length > 0;
+
+  if (emptyEl) emptyEl.classList.toggle('hidden', hasItems);
+  if (tableWrap) tableWrap.classList.toggle('hidden', !hasItems);
+  if (body) {
+    body.innerHTML = primingBuilderItems.map(item => `
+      <tr>
+        <td class="px-3 py-2 align-top font-medium text-slate-700 dark:text-slate-200">${escapePrimingHtml(item.type)}</td>
+        <td class="px-3 py-2 align-top text-slate-700 dark:text-slate-200">${escapePrimingHtml(item.item)}</td>
+        <td class="px-3 py-2 align-top text-slate-500 dark:text-slate-400">${escapePrimingHtml(item.details)}</td>
+        <td class="px-3 py-2 align-top text-right font-semibold text-primary-900 dark:text-white">${formatPrimingMl(item.volume)} mL</td>
+        <td class="px-3 py-2 align-top text-right"><button type="button" class="priming-delete-builder-item text-xs font-semibold text-slate-500 hover:text-rose-500" data-builder-id="${item.id}" aria-label="Delete ${escapePrimingHtml(item.item)}">Delete</button></td>
+      </tr>
+    `).join('');
+    body.querySelectorAll('.priming-delete-builder-item').forEach(button => {
+      button.addEventListener('click', () => {
+        primingBuilderItems = primingBuilderItems.filter(item => item.id !== Number(button.dataset.builderId));
+        renderPrimingBuilder();
+      });
+    });
+  }
+
+  const tubingSubtotal = primingBuilderItems.filter(item => item.category === 'tubing').reduce((sum, item) => sum + item.volume, 0);
+  const componentSubtotal = primingBuilderItems.filter(item => item.category !== 'tubing').reduce((sum, item) => sum + item.volume, 0);
+  const total = tubingSubtotal + componentSubtotal;
+  setText('priming-builder-tubing-subtotal', formatPrimingMl(tubingSubtotal));
+  setText('priming-builder-component-subtotal', formatPrimingMl(componentSubtotal));
+  setText('priming-builder-total', formatPrimingMl(total));
+
+  const expression = hasItems
+    ? `Total Prime Volume = ${primingBuilderItems.map(item => formatPrimingExpressionValue(item.volume)).join(' + ')} = ${formatPrimingMl(total)} mL`
+    : 'Total Prime Volume = 0 mL';
+  setText('priming-builder-expression', expression);
+}
+
+function clearPrimingBuilderItems() {
+  primingBuilderItems = [];
+  renderPrimingBuilder();
+}
+
+function loadPrimingAdultExample() {
+  primingBuilderItems = PRIMING_ADULT_EXAMPLE_ITEMS.map(item => ({ ...item, id: primingNextBuilderItemId++ }));
+  renderPrimingBuilder();
 }
 
 function setTimeError(inputEl, hasError) {
@@ -7653,29 +7576,31 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   if (hasPrimingCalculator) {
-    ['priming-id', 'priming-length', 'priming-length-unit'].forEach(id => {
+    ['priming-id', 'priming-custom-id', 'priming-length', 'priming-length-unit', 'priming-quantity'].forEach(id => {
       const x = el(id);
       if (x) {
         x.addEventListener('input', updatePrimingVolume);
         x.addEventListener('change', updatePrimingVolume);
       }
     });
-    ['priming-oxygenator-volume', 'priming-reservoir-volume', 'priming-filter-volume', 'priming-other-volume'].forEach(id => {
+    ['priming-oxygenator-volume', 'priming-reservoir-volume', 'priming-component-volume'].forEach(id => {
       const x = el(id);
-      if (x) x.addEventListener('input', updatePrimingCircuitPrime);
+      if (x) x.addEventListener('input', () => readPrimingNonNegative(x));
     });
     const oxygenatorModel = el('priming-oxygenator-model');
     if (oxygenatorModel) oxygenatorModel.addEventListener('change', handlePrimingOxygenatorModelChange);
-    const filterMode = el('priming-filter-mode');
-    if (filterMode) filterMode.addEventListener('change', updatePrimingCircuitPrime);
-    const addSegment = el('priming-add-segment');
-    if (addSegment) addSegment.addEventListener('click', addPrimingSegment);
-    const resetSegments = el('priming-reset-segments');
-    if (resetSegments) resetSegments.addEventListener('click', resetPrimingSegmentsToExample);
-    const clearSegments = el('priming-clear-segments');
-    if (clearSegments) clearSegments.addEventListener('click', clearPrimingSegments);
-    const resetComponents = el('priming-reset-components');
-    if (resetComponents) resetComponents.addEventListener('click', resetPrimingComponents);
+    const addTubing = el('priming-add-tubing-item');
+    if (addTubing) addTubing.addEventListener('click', addCurrentPrimingTubingItem);
+    const addOxygenator = el('priming-add-oxygenator-item');
+    if (addOxygenator) addOxygenator.addEventListener('click', addPrimingOxygenatorItem);
+    const addReservoir = el('priming-add-reservoir-item');
+    if (addReservoir) addReservoir.addEventListener('click', addPrimingReservoirItem);
+    const addComponent = el('priming-add-component-item');
+    if (addComponent) addComponent.addEventListener('click', addPrimingComponentItem);
+    const clearBuilder = el('priming-clear-builder');
+    if (clearBuilder) clearBuilder.addEventListener('click', clearPrimingBuilderItems);
+    const loadExample = el('priming-load-example');
+    if (loadExample) loadExample.addEventListener('click', loadPrimingAdultExample);
   }
 
   if (hasUnitConverter) {
@@ -7747,7 +7672,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (hasLbmCalculator) updateLBM();
   if (hasPrimingCalculator) {
     updatePrimingVolume();
-    renderPrimingSegments();
+    renderPrimingBuilder();
   }
   if (hasUnitConverter) {
     initUnitConverterLabels();
