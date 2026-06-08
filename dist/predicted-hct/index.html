@@ -83,6 +83,105 @@
     .dark ::-webkit-scrollbar-thumb { background: #334155; }
 
 
+    /* Shared expanded lower-section pattern for methodology, FAQ, references, and related tools */
+    .calculator-lower-section {
+      border-radius: 1rem;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      padding: 1rem;
+    }
+    .dark .calculator-lower-section {
+      border-color: #1e293b;
+      background: rgba(15, 23, 42, 0.4);
+    }
+    .calculator-lower-title {
+      font-size: 1rem;
+      line-height: 1.5rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .dark .calculator-lower-title { color: #fff; }
+    .calculator-lower-panel {
+      margin-top: 0.5rem;
+      border-radius: 0.75rem;
+      border: 1px solid #f1f5f9;
+      background: #fff;
+      padding: 1rem;
+      font-size: 0.8125rem;
+      line-height: 1.625;
+      color: #475569;
+      box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+    }
+    .dark .calculator-lower-panel {
+      border-color: #1e293b;
+      background: #0f172a;
+      color: #cbd5e1;
+      box-shadow: none;
+    }
+    .calculator-lower-panel > * + * { margin-top: 0.75rem; }
+    .calculator-lower-panel p + p { margin-top: 0.35rem; }
+    .calculator-lower-panel ul,
+    .calculator-lower-panel ol {
+      padding-left: 1.25rem;
+    }
+    .calculator-lower-panel ul { list-style: disc; }
+    .calculator-lower-panel ol { list-style: decimal; }
+    .calculator-lower-panel li + li { margin-top: 0.25rem; }
+    .calculator-lower-subheading,
+    .calculator-faq-question {
+      font-weight: 600;
+      color: #334155;
+    }
+    .dark .calculator-lower-subheading,
+    .dark .calculator-faq-question { color: #e2e8f0; }
+    .calculator-faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .calculator-faq-item { margin-top: 0; }
+    .calculator-faq-answer {
+      margin-top: 0.2rem;
+      color: #64748b;
+    }
+    .dark .calculator-faq-answer { color: #cbd5e1; }
+    .calculator-formula-block {
+      overflow-x: auto;
+      border-radius: 0.75rem;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      padding: 0.75rem;
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+      font-size: 0.75rem;
+      line-height: 1.55;
+      color: #0f172a;
+    }
+    .dark .calculator-formula-block {
+      border-color: #1e293b;
+      background: rgba(2, 6, 23, 0.5);
+      color: #f8fafc;
+    }
+    .calculator-related-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .calculator-related-link {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 0.5rem;
+      border: 1px solid #e2e8f0;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      color: #334155;
+      transition: color 150ms ease, border-color 150ms ease;
+    }
+    .calculator-related-link:hover { color: #06b6d4; border-color: rgba(6, 182, 212, 0.4); }
+    .dark .calculator-related-link { border-color: #334155; color: #e2e8f0; }
+    .dark .calculator-related-link:hover { color: #22d3ee; border-color: rgba(34, 211, 238, 0.45); }
+
+
     .phn-number {
       font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
       font-weight: 600;
@@ -471,25 +570,29 @@
           </div>
 
           <div class="bg-slate-50 dark:bg-primary-800/30 border-t border-slate-100 dark:border-primary-700/50 p-6 space-y-4">
-            <section class="rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/40 p-4">
-              <h2 class="text-sm font-bold text-primary-900 dark:text-slate-100 uppercase tracking-wider">Clinical context</h2>
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Predicted hematocrit during CPB is mainly determined by red cell mass and total circulating volume. Hemodilution from prime volume or crystalloid addition lowers Hct, while RBC products increase red cell volume. Ultrafiltration or hemofiltration may increase Hct by reducing plasma water volume. Actual measured Hct can differ from the estimate because of incomplete mixing, cardioplegia return, cell saver return, reservoir level changes, bleeding, sampling timing, and institutional practice.</p>
-              <ul class="mt-3 list-disc pl-5 space-y-1 text-sm text-slate-600 dark:text-slate-300">
+            <section class="calculator-lower-section">
+              <h2 class="calculator-lower-title">Clinical context</h2>
+              <div class="calculator-lower-panel">
+                <p>Predicted hematocrit during CPB is mainly determined by red cell mass and total circulating volume. Hemodilution from prime volume or crystalloid addition lowers Hct, while RBC products increase red cell volume. Ultrafiltration or hemofiltration may increase Hct by reducing plasma water volume. Actual measured Hct can differ from the estimate because of incomplete mixing, cardioplegia return, cell saver return, reservoir level changes, bleeding, sampling timing, and institutional practice.</p>
+              <ul>
                 <li>Use measured laboratory Hct whenever clinical decisions depend on the result.</li>
                 <li>A predicted Hct value does not directly represent oxygen delivery.</li>
                 <li>Oxygen delivery also depends on pump flow, arterial saturation, hemoglobin concentration, temperature, metabolic demand, and microcirculatory conditions.</li>
                 <li>When Hct is near a local transfusion threshold, recheck measured Hct after adequate mixing time.</li>
               </ul>
+              </div>
             </section>
 
-            <section class="rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/40 p-4">
-              <h2 class="text-sm font-bold text-primary-900 dark:text-slate-100 uppercase tracking-wider">About this predicted hematocrit calculator</h2>
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">This CPB predicted hematocrit calculator estimates hematocrit changes from cardiopulmonary bypass hemodilution, RBC transfusion, fluid addition, and ultrafiltration. It can be used before bypass to estimate dilutional hematocrit at CPB initiation, or during bypass to estimate how added crystalloid, RBC products, or ultrafiltration may change the on-pump hematocrit. The CPB hematocrit calculator is intended for perfusionists, cardiac anesthesia teams, cardiac surgery clinicians, and trainees who need a quick estimated blood volume, CPB prime volume, and red cell mass balance estimate.</p>
+            <section class="calculator-lower-section">
+              <h2 class="calculator-lower-title">About this predicted hematocrit calculator</h2>
+              <div class="calculator-lower-panel">
+                <p>This CPB predicted hematocrit calculator estimates hematocrit changes from cardiopulmonary bypass hemodilution, RBC transfusion, fluid addition, and ultrafiltration. It can be used before bypass to estimate dilutional hematocrit at CPB initiation, or during bypass to estimate how added crystalloid, RBC products, or ultrafiltration may change the on-pump hematocrit. The CPB hematocrit calculator is intended for perfusionists, cardiac anesthesia teams, cardiac surgery clinicians, and trainees who need a quick estimated blood volume, CPB prime volume, and red cell mass balance estimate.</p>
+              </div>
             </section>
 
-            <section class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
-              <h2 class="text-base font-semibold text-primary-900 dark:text-white">Methodology & limitations</h2>
-              <div class="mt-4 space-y-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <section class="calculator-lower-section">
+              <h2 class="calculator-lower-title">Calculation method & assumptions</h2>
+              <div class="calculator-lower-panel">
                 <div>
                   <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Estimated blood volume</h3>
                   <p class="mt-1">EBV (mL) = Weight (kg) × EBV coefficient (mL/kg)</p>
@@ -543,72 +646,73 @@
               </div>
             </section>
 
-            <section class="rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/40 p-4">
-              <h2 class="text-sm font-bold text-primary-900 dark:text-slate-100 uppercase tracking-wider">FAQ</h2>
-              <div class="mt-3 space-y-2">
-                <section class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
-                  <h2 class="text-base font-semibold text-primary-900 dark:text-white">What is predicted hematocrit during CPB?</h2>
-                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Predicted hematocrit is an estimated Hct value calculated from red cell volume and total circulating volume. During cardiopulmonary bypass, it is affected by estimated blood volume, prime volume, RBC transfusion, crystalloid or colloid addition, and ultrafiltration.</p>
-                </section>
-                <section class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
-                  <h2 class="text-base font-semibold text-primary-900 dark:text-white">How does CPB prime volume lower hematocrit?</h2>
-                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">CPB prime adds volume without adding patient red cell mass unless RBC prime is used. This dilutes the patient’s red cells and lowers the predicted hematocrit at CPB initiation.</p>
-                </section>
-                <section class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
-                  <h2 class="text-base font-semibold text-primary-900 dark:text-white">How is RBC transfusion handled in this calculator?</h2>
-                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">RBC products increase both total volume and red cell volume. The calculator estimates added red cell volume from the number of units, volume per unit, and unit hematocrit.</p>
-                </section>
-                <section class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
-                  <h2 class="text-base font-semibold text-primary-900 dark:text-white">Why does one RBC unit not always increase Hct by the same amount?</h2>
-                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">The Hct change from one unit depends on the current patient-circuit volume, unit volume, unit hematocrit, and concurrent fluid removal or addition. A larger CPB volume produces a smaller percentage-point rise.</p>
-                </section>
-                <section class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
-                  <h2 class="text-base font-semibold text-primary-900 dark:text-white">How does ultrafiltration affect hematocrit?</h2>
-                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">In this simplified model, ultrafiltration removes plasma water volume and does not remove red cell volume, so it tends to increase predicted Hct. Actual effect depends on UF efficiency, timing, and ongoing fluid shifts.</p>
-                </section>
-                <section class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
-                  <h2 class="text-base font-semibold text-primary-900 dark:text-white">What is the difference between Pre-CPB and On-pump mode?</h2>
-                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Pre-CPB mode estimates dilutional hematocrit at CPB initiation from EBV, pre-CPB Hct, prime volume, and optional RBC prime. On-pump mode starts from the current measured on-pump Hct and estimates the effect of planned fluid, RBC transfusion, or UF.</p>
-                </section>
-                <section class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
-                  <h2 class="text-base font-semibold text-primary-900 dark:text-white">When should I use manual current volume override?</h2>
-                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Use manual override when EBV plus prime volume is not a good estimate of the current patient-circuit volume. This may occur after RAP, major volume shifts, cardioplegia return, cell saver return, reservoir level changes, or significant fluid administration.</p>
-                </section>
-                <section class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
-                  <h2 class="text-base font-semibold text-primary-900 dark:text-white">Should surgical bleeding be entered as a removal?</h2>
-                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Blood loss should only be entered if the calculator specifically includes a blood removal field and the blood is not returned to the circuit. Blood returned to the reservoir through suction is still part of the circulating volume and should not be counted as removed.</p>
-                </section>
-                <section class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
-                  <h2 class="text-base font-semibold text-primary-900 dark:text-white">Why can measured Hct differ from predicted Hct?</h2>
-                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Measured Hct may differ because of incomplete mixing, sampling site, timing, ongoing bleeding, cell saver return, cardioplegia return, hemolysis, sequestration, volume shifts, or measurement variability.</p>
-                </section>
-                <section class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
-                  <h2 class="text-base font-semibold text-primary-900 dark:text-white">Does predicted Hct determine transfusion need?</h2>
-                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">No. Predicted Hct is only one planning estimate. Transfusion decisions should consider measured Hct or hemoglobin, oxygen delivery, pump flow, arterial saturation, temperature, patient risk, bleeding, and institutional patient blood management protocols.</p>
-                </section>
-                <section class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
-                  <h2 class="text-base font-semibold text-primary-900 dark:text-white">Can this calculator be used for pediatric patients?</h2>
-                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">It can estimate volume-based hematocrit changes when appropriate EBV coefficients and product assumptions are used, but pediatric and neonatal practice often uses different Hct targets and requires patient-specific judgment.</p>
-                </section>
-                <section class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
-                  <h2 class="text-base font-semibold text-primary-900 dark:text-white">Can this calculator be used for ECMO?</h2>
-                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">This calculator is designed for CPB hemodilution and on-pump adjustment. ECMO has different circuit dynamics, ongoing patient blood volume changes, transfusion practices, and time course, so direct ECMO use should be cautious.</p>
-                </section>
-                <section class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
-                  <h2 class="text-base font-semibold text-primary-900 dark:text-white">What units should I enter?</h2>
-                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Enter weight in kilograms, volumes in milliliters, hematocrit as percent, and EBV coefficient in mL/kg.</p>
-                </section>
-                <section class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
-                  <h2 class="text-base font-semibold text-primary-900 dark:text-white">Is lower Hct acceptable during hypothermic CPB?</h2>
-                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Lower Hct may sometimes be tolerated during hypothermia because metabolic demand is reduced, but adequacy should be assessed using oxygen delivery, perfusion flow, saturation, temperature, acid-base status, and clinical context.</p>
-                </section>
+            <section class="calculator-lower-section">
+              <h2 class="calculator-lower-title">FAQ</h2>
+              <div class="calculator-lower-panel calculator-faq-list">
+                <div class="calculator-faq-item">
+                  <p class="calculator-faq-question">What is predicted hematocrit during CPB?</p>
+                  <p class="calculator-faq-answer">Predicted hematocrit is an estimated Hct value calculated from red cell volume and total circulating volume. During cardiopulmonary bypass, it is affected by estimated blood volume, prime volume, RBC transfusion, crystalloid or colloid addition, and ultrafiltration.</p>
+                </div>
+                <div class="calculator-faq-item">
+                  <p class="calculator-faq-question">How does CPB prime volume lower hematocrit?</p>
+                  <p class="calculator-faq-answer">CPB prime adds volume without adding patient red cell mass unless RBC prime is used. This dilutes the patient’s red cells and lowers the predicted hematocrit at CPB initiation.</p>
+                </div>
+                <div class="calculator-faq-item">
+                  <p class="calculator-faq-question">How is RBC transfusion handled in this calculator?</p>
+                  <p class="calculator-faq-answer">RBC products increase both total volume and red cell volume. The calculator estimates added red cell volume from the number of units, volume per unit, and unit hematocrit.</p>
+                </div>
+                <div class="calculator-faq-item">
+                  <p class="calculator-faq-question">Why does one RBC unit not always increase Hct by the same amount?</p>
+                  <p class="calculator-faq-answer">The Hct change from one unit depends on the current patient-circuit volume, unit volume, unit hematocrit, and concurrent fluid removal or addition. A larger CPB volume produces a smaller percentage-point rise.</p>
+                </div>
+                <div class="calculator-faq-item">
+                  <p class="calculator-faq-question">How does ultrafiltration affect hematocrit?</p>
+                  <p class="calculator-faq-answer">In this simplified model, ultrafiltration removes plasma water volume and does not remove red cell volume, so it tends to increase predicted Hct. Actual effect depends on UF efficiency, timing, and ongoing fluid shifts.</p>
+                </div>
+                <div class="calculator-faq-item">
+                  <p class="calculator-faq-question">What is the difference between Pre-CPB and On-pump mode?</p>
+                  <p class="calculator-faq-answer">Pre-CPB mode estimates dilutional hematocrit at CPB initiation from EBV, pre-CPB Hct, prime volume, and optional RBC prime. On-pump mode starts from the current measured on-pump Hct and estimates the effect of planned fluid, RBC transfusion, or UF.</p>
+                </div>
+                <div class="calculator-faq-item">
+                  <p class="calculator-faq-question">When should I use manual current volume override?</p>
+                  <p class="calculator-faq-answer">Use manual override when EBV plus prime volume is not a good estimate of the current patient-circuit volume. This may occur after RAP, major volume shifts, cardioplegia return, cell saver return, reservoir level changes, or significant fluid administration.</p>
+                </div>
+                <div class="calculator-faq-item">
+                  <p class="calculator-faq-question">Should surgical bleeding be entered as a removal?</p>
+                  <p class="calculator-faq-answer">Blood loss should only be entered if the calculator specifically includes a blood removal field and the blood is not returned to the circuit. Blood returned to the reservoir through suction is still part of the circulating volume and should not be counted as removed.</p>
+                </div>
+                <div class="calculator-faq-item">
+                  <p class="calculator-faq-question">Why can measured Hct differ from predicted Hct?</p>
+                  <p class="calculator-faq-answer">Measured Hct may differ because of incomplete mixing, sampling site, timing, ongoing bleeding, cell saver return, cardioplegia return, hemolysis, sequestration, volume shifts, or measurement variability.</p>
+                </div>
+                <div class="calculator-faq-item">
+                  <p class="calculator-faq-question">Does predicted Hct determine transfusion need?</p>
+                  <p class="calculator-faq-answer">No. Predicted Hct is only one planning estimate. Transfusion decisions should consider measured Hct or hemoglobin, oxygen delivery, pump flow, arterial saturation, temperature, patient risk, bleeding, and institutional patient blood management protocols.</p>
+                </div>
+                <div class="calculator-faq-item">
+                  <p class="calculator-faq-question">Can this calculator be used for pediatric patients?</p>
+                  <p class="calculator-faq-answer">It can estimate volume-based hematocrit changes when appropriate EBV coefficients and product assumptions are used, but pediatric and neonatal practice often uses different Hct targets and requires patient-specific judgment.</p>
+                </div>
+                <div class="calculator-faq-item">
+                  <p class="calculator-faq-question">Can this calculator be used for ECMO?</p>
+                  <p class="calculator-faq-answer">This calculator is designed for CPB hemodilution and on-pump adjustment. ECMO has different circuit dynamics, ongoing patient blood volume changes, transfusion practices, and time course, so direct ECMO use should be cautious.</p>
+                </div>
+                <div class="calculator-faq-item">
+                  <p class="calculator-faq-question">What units should I enter?</p>
+                  <p class="calculator-faq-answer">Enter weight in kilograms, volumes in milliliters, hematocrit as percent, and EBV coefficient in mL/kg.</p>
+                </div>
+                <div class="calculator-faq-item">
+                  <p class="calculator-faq-question">Is lower Hct acceptable during hypothermic CPB?</p>
+                  <p class="calculator-faq-answer">Lower Hct may sometimes be tolerated during hypothermia because metabolic demand is reduced, but adequacy should be assessed using oxygen delivery, perfusion flow, saturation, temperature, acid-base status, and clinical context.</p>
+                </div>
               </div>
             </section>
 
-            <section class="rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/40 p-4">
-              <h2 class="text-sm font-bold text-primary-900 dark:text-slate-100 uppercase tracking-wider">Selected references</h2>
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">References are selected for CPB hematocrit, hemodilution, oxygen delivery context, and patient blood management. This page avoids medication-only references that are not directly relevant to predicted hematocrit.</p>
-              <ol class="mt-4 space-y-4 text-sm text-slate-600 dark:text-slate-300 list-decimal pl-5">
+            <section class="calculator-lower-section">
+              <h2 class="calculator-lower-title">Selected references</h2>
+              <div class="calculator-lower-panel">
+                <p>References are selected for CPB hematocrit, hemodilution, oxygen delivery context, and patient blood management. This page avoids medication-only references that are not directly relevant to predicted hematocrit.</p>
+                <ol>
                 <li>
                   <span>Tibi P, McClure RS, Huang J, et al. STS/SCA/AmSECT/SABM Update to the Clinical Practice Guidelines on Patient Blood Management. Ann Thorac Surg. 2021;112(3):981-1004.</span>
                   <div class="mt-2 flex flex-wrap gap-2">
@@ -633,16 +737,19 @@
                     <a href="https://academic.oup.com/ejcts/article/doi/10.1093/ejcts/ezae352/7815985" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500">Guideline</a>
                   </div>
                 </li>
-              </ol>
+                </ol>
+              </div>
             </section>
 
-            <section class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4">
-              <h2 class="text-sm font-bold text-primary-900 dark:text-slate-100 uppercase tracking-wider">Related tools</h2>
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Related tools for CPB planning: Priming Volume Calculator, BSA Calculator, and DO₂i Calculator.</p>
-              <div class="mt-3 flex flex-wrap gap-2">
-                <a href="/priming-volume/" class="text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-primary-700 text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-500 transition-colors">Priming Volume Calculator</a>
-                <a href="/bsa/" class="text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-primary-700 text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-500 transition-colors">BSA Calculator</a>
-                <a href="/gdp/" class="text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-primary-700 text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-500 transition-colors">GDP / DO₂i Calculator</a>
+            <section class="calculator-lower-section">
+              <h2 class="calculator-lower-title">Related tools</h2>
+              <div class="calculator-lower-panel">
+                <p>Related tools for CPB planning: Priming Volume Calculator, BSA Calculator, and DO₂i Calculator.</p>
+                <div class="calculator-related-links">
+                <a href="/priming-volume/" class="calculator-related-link">Priming Volume Calculator</a>
+                <a href="/bsa/" class="calculator-related-link">BSA Calculator</a>
+                <a href="/gdp/" class="calculator-related-link">GDP / DO₂i Calculator</a>
+                </div>
               </div>
             </section>
           </div>
