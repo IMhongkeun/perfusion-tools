@@ -383,7 +383,7 @@ function updateBsaFlowList(bsaVal, weightKg) {
     const flowLpm = ci * bsaVal;
     // Weight-indexed equivalent: mL/kg/min = (flowLpm × 1000) ÷ weight(kg).
     const mlKgMin = hasValidWeight ? Math.round((flowLpm * 1000) / weightKg) : null;
-    const desktopEquivalentText = mlKgMin === null ? '—' : `${mlKgMin}`;
+    const desktopEquivalentText = mlKgMin === null ? '—' : `${mlKgMin} <span class="font-medium opacity-75">mL/kg/min</span>`;
     const mobileEquivalentText = mlKgMin === null ? '— mL/kg/min' : `≈ ${mlKgMin} mL/kg/min`;
     const row = document.createElement('div');
     const highlight = Math.abs(ci - 2.4) < 0.05;

@@ -518,7 +518,7 @@
                     <span class="text-[10px] text-slate-400 whitespace-nowrap">CI 1.0–3.0</span>
                   </div>
                   <div class="max-h-80 min-h-[18rem] overflow-y-auto pr-1" id="bsa-flow-list"></div>
-                  <p class="mt-3 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">mL/kg/min is a reference conversion, not a separate adult CPB target.</p>
+                  <p class="mt-3 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">mL/kg/min is shown as a weight-indexed reference conversion, not a separate adult CPB target.</p>
                 </div>
                 <div id="bsa-lean-flow-card" class="hidden bg-slate-50 dark:bg-primary-800/60 rounded-2xl border border-slate-100 dark:border-primary-700/60 p-5 flex flex-col">
                   <div class="flex items-start justify-between mb-2">
@@ -546,13 +546,27 @@
             <section class="calculator-lower-section">
               <h2 class="calculator-lower-title">Methodology & clinical notes</h2>
               <div class="calculator-lower-panel">
-                <p>This calculator estimates body surface area and BSA-indexed CPB flow targets for perfusion planning.</p>
+                <p>This calculator estimates body surface area and BSA-indexed CPB flow references for perfusion planning. The blood flow rate sheet presents commonly used adult CPB pump flow references by cardiac index (CI).</p>
+                <div class="grid md:grid-cols-3 gap-2 text-xs">
+                  <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
+                    <p class="font-semibold text-primary-900 dark:text-white">Mosteller BSA</p>
+                    <p class="font-mono text-slate-700 dark:text-slate-200">BSA (m²) = sqrt([height(cm) × weight(kg)] / 3600)</p>
+                  </div>
+                  <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
+                    <p class="font-semibold text-primary-900 dark:text-white">BSA-based flow</p>
+                    <p class="font-mono text-slate-700 dark:text-slate-200">Pump flow (L/min) = BSA (m²) × CI (L/min/m²)</p>
+                  </div>
+                  <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
+                    <p class="font-semibold text-primary-900 dark:text-white">Weight-indexed reference</p>
+                    <p class="font-mono text-slate-700 dark:text-slate-200">mL/kg/min = [Pump flow (L/min) × 1000] / weight (kg)</p>
+                  </div>
+                </div>
                 <ul class="list-disc pl-5 space-y-1.5">
                   <li><span class="font-semibold text-primary-900 dark:text-white">Default formula:</span> Mosteller is used as the primary adult default because it is simple and reproducible.</li>
                   <li><span class="font-semibold text-primary-900 dark:text-white">Comparison formulas:</span> Du Bois, Haycock, and Boyd are available to compare formula behavior in selected patients.</li>
-                  <li><span class="font-semibold text-primary-900 dark:text-white">Flow estimate:</span> Pump flow is estimated from BSA × cardiac index target.</li>
-                  <li><span class="font-semibold text-primary-900 dark:text-white">Obesity adjustment:</span> TBW-based BSA may overestimate indexed targets in obesity; adjusted or IBW-based references are provided for comparison.</li>
-                  <li><span class="font-semibold text-primary-900 dark:text-white">Clinical interpretation:</span> Indexed flow is a starting point and should be interpreted with temperature, SvO₂, lactate, hemoglobin, urine output, and local protocol.</li>
+                  <li><span class="font-semibold text-primary-900 dark:text-white">Primary framework:</span> Adult CPB flow is generally interpreted through BSA and CI; the mL/kg/min value is a supplementary reference conversion of that BSA-based flow.</li>
+                  <li><span class="font-semibold text-primary-900 dark:text-white">Weight-based limitation:</span> Body weight does not always reflect metabolic demand in adults, and weight-based interpretation may overestimate flow needs in obesity.</li>
+                  <li><span class="font-semibold text-primary-900 dark:text-white">Clinical interpretation:</span> This sheet is reference guidance only. Flow settings should be interpreted with patient status, institutional practice, temperature, hemoglobin/hematocrit, venous oxygen saturation, lactate, arterial pressure, and oxygen delivery adequacy.</li>
                 </ul>
               </div>
             </section>
@@ -595,14 +609,19 @@
               <div class="space-y-2">
                 <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Clinical context in CPB</h4>
                 <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-                  BSA indexing helps normalize pump flow targets across different body sizes and can support more consistent interpretation of perfusion adequacy than body weight alone.
+                  BSA indexing helps normalize adult CPB pump flow references across different body sizes. The primary flow framework is BSA × CI; mL/kg/min is shown only as a weight-indexed reference conversion for users who want to view the same BSA-based flow by body weight.
                 </p>
-                <p class="font-mono text-xs text-slate-700 dark:text-slate-200">Cardiac Index (CI) = Pump Flow (L/min) ÷ BSA (m²)</p>
+                <div class="space-y-1">
+                  <p class="font-mono text-xs text-slate-700 dark:text-slate-200">Cardiac Index (CI) = Pump Flow (L/min) ÷ BSA (m²)</p>
+                  <p class="font-mono text-xs text-slate-700 dark:text-slate-200">Pump Flow (L/min) = BSA (m²) × CI (L/min/m²)</p>
+                  <p class="font-mono text-xs text-slate-700 dark:text-slate-200">mL/kg/min = [Pump Flow (L/min) × 1000] ÷ weight (kg)</p>
+                </div>
                 <ul class="list-disc pl-5 text-sm text-slate-700 dark:text-slate-300 space-y-1">
                   <li>BSA-based indexing can help standardize flow interpretation across different patient sizes.</li>
+                  <li>mL/kg/min should not be used alone to set an adult CPB target, especially when total body weight may overstate metabolic demand.</li>
                   <li>Lower temperatures reduce metabolic demand, so acceptable indexed flow may vary with temperature.</li>
                   <li>Indexed flow is a starting point, not a complete adequacy measure.</li>
-                  <li>SvO₂, lactate, urine output, temperature, and overall clinical context should also be assessed.</li>
+                  <li>Temperature, hemoglobin/hematocrit, SvO₂, lactate, arterial pressure, oxygen delivery adequacy, and overall clinical context should also be assessed.</li>
                 </ul>
                 <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
                   <p class="text-sm text-slate-700 dark:text-slate-300">Moderate hypothermia may allow lower indexed flow than near-normothermic bypass.</p>
