@@ -4,18 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Priming Volume Calculator for CPB Circuits</title>
-  <meta name="description" content="Estimate CPB circuit priming volume and dilution impact to support pre-bypass planning and hemodilution management." />
+  <title>CPB Priming Volume Calculator | Tubing & Oxygenator Prime Volume</title>
+  <meta name="description" content="Estimate CPB priming volume by adding tubing segment volume and oxygenator prime volume. Calculate tubing volume from inner diameter and length, then build a total prime volume list." />
   <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
   <link rel="canonical" href="https://perfusiontools.com/priming-volume/" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Priming Volume Calculator (Tube ID) for Perfusion | Perfusion Tools" />
-  <meta property="og:description" content="Estimate perfusion tubing priming volume from tube ID and length with quick unit conversion." />
+  <meta property="og:title" content="CPB Priming Volume Calculator | Tubing & Oxygenator Prime Volume" />
+  <meta property="og:description" content="Estimate CPB priming volume by adding tubing segment volume and oxygenator prime volume. Calculate tubing volume from inner diameter and length, then build a total prime volume list." />
   <meta property="og:url" content="https://perfusiontools.com/priming-volume/" />
-  <meta name="twitter:title" content="Priming Volume Calculator (Tube ID) for Perfusion | Perfusion Tools" />
-  <meta name="twitter:description" content="Estimate perfusion tubing priming volume from tube ID and length with quick unit conversion." />
+  <meta name="twitter:title" content="CPB Priming Volume Calculator | Tubing & Oxygenator Prime Volume" />
+  <meta name="twitter:description" content="Estimate CPB priming volume by adding tubing segment volume and oxygenator prime volume. Calculate tubing volume from inner diameter and length, then build a total prime volume list." />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -81,6 +81,105 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
     .dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+
+    /* Shared expanded lower-section pattern for methodology, FAQ, references, and related tools */
+    .calculator-lower-section {
+      border-radius: 1rem;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      padding: 1rem;
+    }
+    .dark .calculator-lower-section {
+      border-color: #1e293b;
+      background: rgba(15, 23, 42, 0.4);
+    }
+    .calculator-lower-title {
+      font-size: 1rem;
+      line-height: 1.5rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .dark .calculator-lower-title { color: #fff; }
+    .calculator-lower-panel {
+      margin-top: 0.5rem;
+      border-radius: 0.75rem;
+      border: 1px solid #f1f5f9;
+      background: #fff;
+      padding: 1rem;
+      font-size: 0.8125rem;
+      line-height: 1.625;
+      color: #475569;
+      box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+    }
+    .dark .calculator-lower-panel {
+      border-color: #1e293b;
+      background: #0f172a;
+      color: #cbd5e1;
+      box-shadow: none;
+    }
+    .calculator-lower-panel > * + * { margin-top: 0.75rem; }
+    .calculator-lower-panel p + p { margin-top: 0.35rem; }
+    .calculator-lower-panel ul,
+    .calculator-lower-panel ol {
+      padding-left: 1.25rem;
+    }
+    .calculator-lower-panel ul { list-style: disc; }
+    .calculator-lower-panel ol { list-style: decimal; }
+    .calculator-lower-panel li + li { margin-top: 0.25rem; }
+    .calculator-lower-subheading,
+    .calculator-faq-question {
+      font-weight: 600;
+      color: #334155;
+    }
+    .dark .calculator-lower-subheading,
+    .dark .calculator-faq-question { color: #e2e8f0; }
+    .calculator-faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .calculator-faq-item { margin-top: 0; }
+    .calculator-faq-answer {
+      margin-top: 0.2rem;
+      color: #64748b;
+    }
+    .dark .calculator-faq-answer { color: #cbd5e1; }
+    .calculator-formula-block {
+      overflow-x: auto;
+      border-radius: 0.75rem;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      padding: 0.75rem;
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+      font-size: 0.75rem;
+      line-height: 1.55;
+      color: #0f172a;
+    }
+    .dark .calculator-formula-block {
+      border-color: #1e293b;
+      background: rgba(2, 6, 23, 0.5);
+      color: #f8fafc;
+    }
+    .calculator-related-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .calculator-related-link {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 0.5rem;
+      border: 1px solid #e2e8f0;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      color: #334155;
+      transition: color 150ms ease, border-color 150ms ease;
+    }
+    .calculator-related-link:hover { color: #06b6d4; border-color: rgba(6, 182, 212, 0.4); }
+    .dark .calculator-related-link { border-color: #334155; color: #e2e8f0; }
+    .dark .calculator-related-link:hover { color: #22d3ee; border-color: rgba(34, 211, 238, 0.45); }
 
 
     .phn-number {
@@ -188,16 +287,16 @@
   <script>
     const routeMeta = {
       '/': {
-        title: 'Priming Volume Calculator (Tube ID) for Perfusion | Perfusion Tools',
-        h1: 'Priming Volume Calculator for Perfusion Tubing',
-        description: 'Priming Volume calculator for perfusion tubing. Select tube inner diameter and length to estimate internal volume with cm/m/ft/in conversion for CPB circuit planning.',
+        title: 'CPB Priming Volume Calculator | Tubing & Oxygenator Prime Volume',
+        h1: 'CPB Priming Volume Calculator',
+        description: 'Estimate CPB priming volume by adding tubing segment volume and oxygenator prime volume. Calculate tubing volume from inner diameter and length, then build a total prime volume list.',
         canonicalPath: '/priming-volume/'
       },
       '/priming-volume': {
-        title: 'Priming Volume Calculator (Tube ID) for Perfusion | Perfusion Tools',
-        h1: 'Priming Volume Calculator for Perfusion Tubing',
-        description: 'Priming Volume calculator for perfusion tubing. Select tube inner diameter and length to estimate internal volume with cm/m/ft/in conversion for CPB circuit planning.',
-        headingDescription: 'Estimate tubing internal volume from inner diameter and length for circuit setup planning.',
+        title: 'CPB Priming Volume Calculator | Tubing & Oxygenator Prime Volume',
+        h1: 'CPB Priming Volume Calculator',
+        description: 'Estimate CPB priming volume by adding tubing segment volume and oxygenator prime volume. Calculate tubing volume from inner diameter and length, then build a total prime volume list.',
+        headingDescription: 'Calculate tubing segment volume and oxygenator prime volume to estimate total CPB circuit priming volume.',
         canonicalPath: '/priming-volume/'
       }
     };
@@ -237,7 +336,7 @@
     window.applyRouteMeta = applyRouteMeta;
     window.addEventListener('load', () => applyRouteMeta('/priming-volume'));
   </script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/priming-volume#webpage","url":"https://perfusiontools.com/priming-volume/","name":"Priming Volume Calculator – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalProcedure","name":"Cardiopulmonary bypass circuit priming volume planning"},"dateModified":"2026-04-10"},{"@type":"WebApplication","@id":"https://perfusiontools.com/priming-volume#app","name":"CPB Circuit Priming Volume Calculator","url":"https://perfusiontools.com/priming-volume/","applicationCategory":"MedicalApplication","operatingSystem":"Any","isPartOf":{"@id":"https://perfusiontools.com/priming-volume#webpage"},"publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/priming-volume#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"Priming Volume Calculator","item":"https://perfusiontools.com/priming-volume/"}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/priming-volume#webpage","url":"https://perfusiontools.com/priming-volume/","name":"CPB Priming Volume Calculator – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalProcedure","name":"Cardiopulmonary bypass circuit priming volume planning"},"dateModified":"2026-06-08"},{"@type":"WebApplication","@id":"https://perfusiontools.com/priming-volume#app","name":"CPB Priming Volume Calculator","url":"https://perfusiontools.com/priming-volume/","applicationCategory":"MedicalApplication","operatingSystem":"Any","isPartOf":{"@id":"https://perfusiontools.com/priming-volume#webpage"},"publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/priming-volume#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"Priming Volume Calculator","item":"https://perfusiontools.com/priming-volume/"}]}]}</script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
@@ -281,83 +380,259 @@
     <main class="p-4 md:p-8 max-w-3xl mx-auto w-full space-y-8">
       <section class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
         <div class="p-6 space-y-3">
-          <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Priming Volume Calculator for Perfusion Tubing</h1>
-          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Estimate tubing internal volume from inner diameter and length for circuit setup planning.</p>
+          <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">CPB Priming Volume Calculator</h1>
+          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Calculate tubing segment volume and oxygenator prime volume to estimate total CPB circuit priming volume.</p>
+          <p class="text-sm text-slate-600 dark:text-slate-300">Use this calculator to estimate CPB circuit priming volume from tubing segments and oxygenator prime volume. Add each tubing segment or oxygenator preset to the total list to build a practical prime volume estimate for setup planning and hemodilution checks.</p>
         </div>
       </section>
 
       <section id="view-priming-volume" class="animate-in fade-in duration-300">
-        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-6 space-y-6">
-          <div class="space-y-2">
-            <h2 class="text-xl font-semibold tracking-tight">Priming Volume Calculator (Tube ID)</h2>
-            <p class="text-sm text-slate-600 dark:text-slate-300">Select a standard tubing ID and length to calculate priming volume. ID is the inner diameter (wall thickness not included).</p>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-5 space-y-5">
             <div class="space-y-2">
-              <label for="priming-id" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Tube ID</label>
-              <select id="priming-id" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
-                <option value="">Select ID</option>
-                <option value="1/2">1/2"</option>
-                <option value="3/8">3/8"</option>
-                <option value="1/4">1/4"</option>
-                <option value="3/16">3/16"</option>
-                <option value="3/32">3/32"</option>
-                <option value="1/16">1/16"</option>
-              </select>
-              <div class="rounded-xl border border-slate-100 dark:border-primary-800 bg-slate-50 dark:bg-primary-800/60 p-3 text-xs text-slate-600 dark:text-slate-300 space-y-1">
-                <div class="flex justify-between"><span>ID (mm)</span><span id="priming-id-mm" class="font-semibold text-primary-900 dark:text-white">—</span></div>
-                <div class="flex justify-between"><span>mL/m</span><span id="priming-ml-per-m" class="font-semibold text-primary-900 dark:text-white">—</span></div>
-                <div class="flex justify-between"><span>mL/cm</span><span id="priming-ml-per-cm" class="font-semibold text-primary-900 dark:text-white">—</span></div>
-              </div>
+              <h2 class="text-xl font-semibold tracking-tight">Tubing Volume Calculator</h2>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Calculate the internal volume of a tubing segment, then add it to the total prime volume list.</p>
             </div>
 
-            <div class="space-y-2">
-              <label for="priming-length" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Length</label>
-              <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
-                <input id="priming-length" type="number" inputmode="decimal" min="0" step="0.01" placeholder="Enter length" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
-                <select id="priming-length-unit" class="w-full sm:w-28 bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
-                  <option value="cm">cm</option>
-                  <option value="m" selected>m</option>
-                  <option value="ft">ft</option>
-                  <option value="in">in</option>
-                </select>
+            <div class="space-y-4">
+              <div class="space-y-2">
+                <label for="priming-segment-name" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Segment name</label>
+                <input id="priming-segment-name" type="text" placeholder="e.g., Arterial line" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="space-y-2">
+                  <label for="priming-id" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Tube ID</label>
+                  <select id="priming-id" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
+                    <option value="">Select ID</option>
+                    <option value="1/2">1/2&quot; = 12.7 mm</option>
+                    <option value="3/8">3/8&quot; = 9.525 mm</option>
+                    <option value="1/4">1/4&quot; = 6.35 mm</option>
+                    <option value="3/16">3/16&quot; = 4.7625 mm</option>
+                    <option value="3/32">3/32&quot; = 2.38125 mm</option>
+                    <option value="1/16">1/16&quot; = 1.5875 mm</option>
+                    <option value="custom">Custom</option>
+                  </select>
+                </div>
+                <div id="priming-custom-id-wrap" class="hidden space-y-2">
+                  <label for="priming-custom-id" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Custom ID in mm</label>
+                  <input id="priming-custom-id" type="number" inputmode="decimal" min="0" step="0.0001" placeholder="Enter ID in mm" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
+                </div>
+              </div>
+              <div class="grid grid-cols-[minmax(0,1.7fr)_4.5rem_minmax(4.25rem,0.8fr)] sm:grid-cols-[minmax(0,2.4fr)_5.5rem_minmax(4.75rem,0.7fr)] gap-3 items-end">
+                <div class="space-y-2">
+                  <label for="priming-length" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Length</label>
+                  <input id="priming-length" type="number" inputmode="decimal" min="0" step="0.01" placeholder="e.g. 150" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
+                </div>
+                <div class="space-y-2">
+                  <label for="priming-length-unit" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Unit</label>
+                  <select id="priming-length-unit" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
+                    <option value="cm" selected>cm</option>
+                    <option value="m">m</option>
+                    <option value="ft">ft</option>
+                    <option value="in">in</option>
+                  </select>
+                </div>
+                <div class="space-y-2">
+                  <label for="priming-quantity" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Quantity</label>
+                  <input id="priming-quantity" type="number" inputmode="numeric" min="0" step="1" placeholder="1" value="1" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
+                </div>
               </div>
               <p id="priming-length-error" class="text-xs text-red-500 hidden">Length must be 0 or greater.</p>
-              <p class="text-xs text-slate-500 dark:text-slate-400">Length (m): <span id="priming-length-m" class="font-semibold text-slate-700 dark:text-slate-200">—</span></p>
+            </div>
+
+            <div class="rounded-xl border border-slate-100 dark:border-primary-800 bg-slate-50 dark:bg-primary-800/60 p-3 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+              <div class="flex justify-between"><span>ID (mm)</span><span id="priming-id-mm" class="font-semibold text-primary-900 dark:text-white">—</span></div>
+              <div class="flex justify-between"><span>Length (m)</span><span id="priming-length-m" class="font-semibold text-primary-900 dark:text-white">—</span></div>
+              <div class="flex justify-between"><span>mL/m</span><span id="priming-ml-per-m" class="font-semibold text-primary-900 dark:text-white">—</span></div>
+              <div class="flex justify-between"><span>mL/cm</span><span id="priming-ml-per-cm" class="font-semibold text-primary-900 dark:text-white">—</span></div>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-800/50 p-4 text-center space-y-3">
+              <div>
+                <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Tubing Segment Volume</div>
+                <div id="priming-volume" class="text-3xl md:text-4xl font-bold text-accent-500">—</div>
+                <div class="text-xs text-slate-500 dark:text-slate-400">mL</div>
+              </div>
+              <button id="priming-add-tubing-item" type="button" class="px-4 py-2.5 rounded-lg bg-accent-600 hover:bg-accent-500 text-white text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Add tubing</button>
             </div>
           </div>
 
-          <div class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-800/50 p-4 text-center space-y-1">
-            <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Priming Volume</div>
-            <div id="priming-volume" class="text-3xl md:text-4xl font-bold text-accent-500">—</div>
-            <div class="text-xs text-slate-500 dark:text-slate-400">mL</div>
-          </div>
-
-          <div class="text-xs text-slate-500 dark:text-slate-400 space-y-1">
-            <p class="font-semibold text-slate-600 dark:text-slate-300">Formula</p>
-            <p>V(mL) = (π/4) × ID(mm)<sup>2</sup> × Length(m)</p>
-          </div>
-
-          <details class="mt-4 group">
-            <summary class="cursor-pointer text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-accent-500 transition-colors list-none flex items-center gap-2">
-              <span class="transform transition-transform group-open:rotate-90">▶</span> Methodology & limitations
-            </summary>
-            <div class="mt-2 p-4 rounded-xl bg-white dark:bg-primary-900 border border-slate-100 dark:border-primary-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed shadow-sm space-y-3">
-              <p><strong>Input model:</strong> Select standard tubing inner diameter and provide length in cm, m, ft, or in.</p>
-              <p><strong>Unit conversion:</strong> cm→m (/100), in→m (×0.0254), ft→m (×0.3048).</p>
-              <p><strong>Cylinder formula:</strong> V(mL) = (π/4) × ID(mm)<sup>2</sup> × Length(m).</p>
-              <p><strong>Interpretation:</strong> Output reflects tubing internal volume only and excludes connectors, reservoirs, oxygenator volume, and real-world tolerance effects.</p>
+          <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-5 space-y-5">
+            <div class="space-y-2">
+              <h2 class="text-xl font-semibold tracking-tight">Oxygenator Volume</h2>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Select an oxygenator preset or enter a custom prime volume, then add it to the total list.</p>
             </div>
-          </details>
-          <div class="pt-1">
-            <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Related tools</h3>
-              <div class="flex flex-wrap gap-2">
-                <a href="/predicted-hct/" class="text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-primary-700 text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-500 transition-colors">Predicted Hematocrit</a>
-                <a href="/gdp/" class="text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-primary-700 text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-500 transition-colors">GDP Calculator</a>
+            <div class="space-y-4">
+              <div class="space-y-2">
+                <label for="priming-oxygenator-model" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Oxygenator model</label>
+                <select id="priming-oxygenator-model" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
+                  <option value="">Select model</option>
+                  <optgroup label="Adult CPB">
+                    <option value="260" data-label="Medtronic Affinity Fusion">Medtronic Affinity Fusion — 260 mL</option>
+                    <option value="260" data-label="Terumo CAPIOX FX25">Terumo CAPIOX FX25 — 260 mL</option>
+                    <option value="144" data-label="Terumo CAPIOX FX15">Terumo CAPIOX FX15 — 144 mL</option>
+                    <option value="43" data-label="Terumo CAPIOX FX05">Terumo CAPIOX FX05 — 43 mL</option>
+                    <option value="184" data-label="LivaNova Inspire 6">LivaNova Inspire 6 — 184 mL</option>
+                    <option value="219" data-label="LivaNova Inspire 8">LivaNova Inspire 8 — 219 mL</option>
+                    <option value="284" data-label="LivaNova Inspire 6F">LivaNova Inspire 6F — 284 mL</option>
+                    <option value="351" data-label="LivaNova Inspire 8F">LivaNova Inspire 8F — 351 mL</option>
+                  </optgroup>
+                  <option value="custom" data-label="Custom oxygenator">Custom</option>
+                </select>
+              </div>
+              <div class="space-y-2">
+                <label for="priming-oxygenator-volume" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Oxygenator prime volume (mL)</label>
+                <input id="priming-oxygenator-volume" type="number" inputmode="decimal" min="0" step="1" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" aria-describedby="priming-oxygenator-note" />
+              </div>
+              <p id="priming-oxygenator-note" class="text-xs text-slate-500 dark:text-slate-400">Preset values are based on manufacturer product information and should be verified against the current IFU and local configuration.</p>
+              <button id="priming-add-oxygenator-item" type="button" class="px-4 py-2.5 rounded-lg bg-accent-600 hover:bg-accent-500 text-white text-sm font-semibold transition-colors">Add oxygenator</button>
+            </div>
+          </div>
+
+          <div class="lg:col-span-2 rounded-2xl border border-accent-500/30 dark:border-accent-500/40 bg-white dark:bg-primary-900 p-5 shadow-card space-y-4" aria-live="polite">
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+              <div class="space-y-2">
+                <h2 class="text-xl font-semibold tracking-tight">Total Prime Volume</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-300">Added tubing and oxygenator volumes are summed here.</p>
+              </div>
+              <button id="priming-clear-builder" type="button" class="self-start px-3 py-2 rounded-lg border border-slate-200 dark:border-primary-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:border-rose-400/60 transition-colors">Clear all</button>
+            </div>
+
+            <div id="priming-builder-empty" class="rounded-xl border border-dashed border-slate-300 dark:border-primary-700 bg-slate-50 dark:bg-primary-900/50 p-4 text-sm text-slate-500 dark:text-slate-400">No items added yet. Calculate tubing or select an oxygenator, then add it.</div>
+            <div id="priming-builder-cards" class="hidden space-y-2 md:hidden"></div>
+            <div id="priming-builder-table-wrap" class="hidden overflow-x-auto rounded-xl border border-slate-200 dark:border-primary-800 md:block">
+              <table class="w-full text-sm">
+                <thead class="bg-slate-100 dark:bg-primary-800 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  <tr>
+                    <th class="px-3 py-2 text-left">Item</th>
+                    <th class="px-3 py-2 text-left">Details</th>
+                    <th class="px-3 py-2 text-right">Volume</th>
+                    <th class="px-3 py-2 text-center">Remove</th>
+                  </tr>
+                </thead>
+                <tbody id="priming-builder-items" class="divide-y divide-slate-100 dark:divide-primary-800"></tbody>
+              </table>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4">
+                <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Tubing subtotal</div>
+                <div class="text-2xl font-bold text-primary-900 dark:text-white"><span id="priming-builder-tubing-subtotal">0.0</span> <span class="text-sm text-slate-500 dark:text-slate-400">mL</span></div>
+              </div>
+              <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4">
+                <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Oxygenator subtotal</div>
+                <div class="text-2xl font-bold text-primary-900 dark:text-white"><span id="priming-builder-oxygenator-subtotal">0.0</span> <span class="text-sm text-slate-500 dark:text-slate-400">mL</span></div>
+              </div>
+              <div class="rounded-xl border border-accent-500/30 dark:border-accent-500/40 bg-slate-100 dark:bg-primary-800/60 p-4">
+                <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Total estimated prime volume</div>
+                <div class="text-3xl font-bold text-primary-900 dark:text-white"><span id="priming-builder-total">0.0</span> <span class="text-sm text-slate-500 dark:text-slate-400">mL</span></div>
               </div>
             </div>
+            <p id="priming-builder-expression" class="text-xs text-slate-500 dark:text-slate-400">Total Prime Volume = 0 mL</p>
+          </div>
+
+          <div class="lg:col-span-2 bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-5 space-y-4">
+            <div class="text-xs text-slate-500 dark:text-slate-400 space-y-2">
+              <h2 class="calculator-lower-title">Formula</h2>
+              <p><strong>Tubing segment volume:</strong></p>
+              <p>V(mL) = (π / 4) × ID(mm)<sup>2</sup> × Length(m) × Quantity</p>
+              <p><strong>Total estimated prime volume:</strong></p>
+              <p>Total Prime Volume = Sum of Added Tubing Segment Volumes + Sum of Added Oxygenator Prime Volumes</p>
+              <ul class="list-disc pl-5 space-y-1">
+                <li>ID means internal diameter.</li>
+                <li>Length is converted to meters before calculation.</li>
+                <li>The result is displayed in mL.</li>
+                <li>Oxygenator preset values are added as manufacturer-reported or product-information-based prime volumes and remain editable by the user.</li>
+              </ul>
+            </div>
+
+            <section class="calculator-lower-section">
+              <h2 class="calculator-lower-title">Methodology &amp; limitations</h2>
+              <div class="calculator-lower-panel">
+                <div class="space-y-1">
+                  <h3 class="font-semibold text-slate-700 dark:text-slate-200">1. What this calculator estimates</h3>
+                  <p>This tool estimates CPB priming volume by combining calculated tubing segment volume with selected or manually entered oxygenator prime volume. It is designed for setup planning, quick circuit checks, and hemodilution-related workflows.</p>
+                </div>
+                <div class="space-y-1">
+                  <h3 class="font-semibold text-slate-700 dark:text-slate-200">2. Tubing volume calculation</h3>
+                  <p>Tubing volume is calculated as the volume of a cylinder using the tubing internal diameter and length. Standard tubing sizes are converted from inches to millimeters, and length units are converted to meters before calculation.</p>
+                  <p><strong>Formula:</strong> V(mL) = (π / 4) × ID(mm)<sup>2</sup> × Length(m) × Quantity</p>
+                  <p>Because 1 m of tubing with a 1 mm<sup>2</sup> cross-sectional area equals 1 mL, this formula directly returns mL when ID is in mm and length is in meters.</p>
+                </div>
+                <div class="space-y-1">
+                  <h3 class="font-semibold text-slate-700 dark:text-slate-200">3. Oxygenator prime volume</h3>
+                  <p>Oxygenator preset values represent typical manufacturer-reported oxygenator prime volumes. These values can vary by exact model, coating, integrated filter configuration, regional product version, and local circuit setup. Always verify the current IFU, product specification sheet, and institutional configuration before clinical use.</p>
+                </div>
+                <div class="space-y-1">
+                  <h3 class="font-semibold text-slate-700 dark:text-slate-200">4. What is included</h3>
+                  <ul class="list-disc pl-5 space-y-1">
+                    <li>Added tubing segment volumes</li>
+                    <li>Added oxygenator prime volumes</li>
+                    <li>User-edited custom oxygenator volumes</li>
+                  </ul>
+                </div>
+                <div class="space-y-1">
+                  <h3 class="font-semibold text-slate-700 dark:text-slate-200">5. What is not included</h3>
+                  <p>Not automatically included:</p>
+                  <ul class="list-disc pl-5 space-y-1">
+                    <li>Reservoir fill level</li>
+                    <li>Separate arterial filter volume</li>
+                    <li>Connectors</li>
+                    <li>Stopcocks</li>
+                    <li>Bridge lines</li>
+                    <li>Transducer lines</li>
+                    <li>Hemoconcentrator</li>
+                    <li>Sampling manifolds</li>
+                    <li>Institution-specific custom circuit components</li>
+                    <li>Volume lost during de-airing or recirculation setup</li>
+                  </ul>
+                  <p>These items may affect real-world prime volume but are intentionally excluded to keep this calculator focused and simple.</p>
+                </div>
+                <div class="space-y-1">
+                  <h3 class="font-semibold text-slate-700 dark:text-slate-200">6. Clinical interpretation</h3>
+                  <p>The calculated value should be interpreted as an estimated circuit prime volume, not an exact measured volume. For predicted hematocrit or hemodilution calculations, use the volume that will effectively mix with the patient’s circulating blood.</p>
+                </div>
+                <div class="space-y-1">
+                  <h3 class="font-semibold text-slate-700 dark:text-slate-200">7. Practical limitations</h3>
+                  <p>Actual prime volume may differ from the estimate because of:</p>
+                  <ul class="list-disc pl-5 space-y-1">
+                    <li>Tubing manufacturing tolerance</li>
+                    <li>Differences between nominal and actual internal diameter</li>
+                    <li>Local tubing length variation</li>
+                    <li>Oxygenator model variation</li>
+                    <li>Integrated versus separate component configuration</li>
+                    <li>Residual fluid volume after priming and de-airing</li>
+                    <li>Institutional setup differences</li>
+                  </ul>
+                </div>
+                <div class="space-y-1">
+                  <h3 class="font-semibold text-slate-700 dark:text-slate-200">8. Clinical use disclaimer</h3>
+                  <p>This tool is intended for educational and setup-planning use by healthcare professionals. It does not replace manufacturer IFU, institutional protocols, perfusionist judgment, or direct measurement of the circuit when precision is required.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="calculator-lower-section">
+              <h2 class="calculator-lower-title">FAQ</h2>
+              <div class="calculator-lower-panel calculator-faq-list">
+                <div class="calculator-faq-item"><p class="calculator-faq-question">How is CPB tubing volume calculated?</p><p class="calculator-faq-answer">Tubing volume is calculated from internal diameter and length using the cylinder volume formula.</p></div>
+                <div class="calculator-faq-item"><p class="calculator-faq-question">Does this calculator include reservoir volume?</p><p class="calculator-faq-answer">No. Reservoir fill level is not automatically included because it depends on local setup and operating practice.</p></div>
+                <div class="calculator-faq-item"><p class="calculator-faq-question">Can I use this value for predicted hematocrit calculations?</p><p class="calculator-faq-answer">Yes, the estimated prime volume can be used as an input for hemodilution or predicted hematocrit calculations, but the clinically relevant value is the volume that effectively mixes with the patient’s circulating blood.</p></div>
+                <div class="calculator-faq-item"><p class="calculator-faq-question">Are oxygenator preset values exact?</p><p class="calculator-faq-answer">No. Preset values are examples based on product information and should be verified with the current manufacturer IFU and local configuration.</p></div>
+              </div>
+            </section>
+
+            <section class="calculator-lower-section">
+              <h2 class="calculator-lower-title">Related tools</h2>
+              <div class="calculator-lower-panel">
+                <p>Use the calculated prime volume in the Predicted Hematocrit Calculator when estimating hemodilution after CPB initiation.</p>
+                <div class="calculator-related-links">
+                <a href="/predicted-hct/" class="calculator-related-link">Predicted Hematocrit Calculator</a>
+                <a href="/gdp/" class="calculator-related-link">GDP / DO2i Calculator</a>
+                <a href="/unit-converter/" class="calculator-related-link">Unit Converter</a>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </section>

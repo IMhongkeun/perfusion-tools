@@ -5223,61 +5223,214 @@ function convertLengthToMeters(length, unit) {
   }
 }
 
-function calculatePrimingVolumeMl(idMm, lengthM) {
-  if (idMm == null || lengthM == null) return null;
-  // Formula: V(mL) = (π/4) × ID(mm)^2 × Length(m)
-  return (Math.PI / 4) * Math.pow(idMm, 2) * lengthM;
+function calculatePrimingVolumeMl(idMm, lengthM, quantity = 1) {
+  if (idMm == null || lengthM == null || quantity == null) return null;
+  // Formula: V(mL) = (π/4) × ID(mm)^2 × Length(m) × Quantity.
+  // Because 1 m = 1000 mm, mm² × m converts to 1000 mm³, which equals 1 mL.
+  return (Math.PI / 4) * Math.pow(idMm, 2) * lengthM * quantity;
 }
 
 function updatePrimingVolume() {
-  const idSelect = el('priming-id');
-  const lengthInput = el('priming-length');
-  const unitSelect = el('priming-length-unit');
+  const result = getCurrentPrimingTubingSegment();
+  const customWrap = el('priming-custom-id-wrap');
   const idMmEl = el('priming-id-mm');
   const mlPerMEl = el('priming-ml-per-m');
   const mlPerCmEl = el('priming-ml-per-cm');
   const lengthMEl = el('priming-length-m');
   const volumeEl = el('priming-volume');
   const lengthError = el('priming-length-error');
+  const lengthInput = el('priming-length');
+  const addButton = el('priming-add-tubing-item');
 
-  if (!idSelect || !lengthInput || !unitSelect) return;
-
-  const tube = PRIMING_TUBE_IDS.find(item => item.key === idSelect.value);
-  if (tube) {
-    const mlPerM = (Math.PI / 4) * Math.pow(tube.idMm, 2);
-    const mlPerCm = mlPerM / 100;
-    if (idMmEl) idMmEl.textContent = tube.idMm.toFixed(4);
-    if (mlPerMEl) mlPerMEl.textContent = mlPerM.toFixed(2);
-    if (mlPerCmEl) mlPerCmEl.textContent = mlPerCm.toFixed(3);
-  } else {
-    if (idMmEl) idMmEl.textContent = '—';
-    if (mlPerMEl) mlPerMEl.textContent = '—';
-    if (mlPerCmEl) mlPerCmEl.textContent = '—';
+  if (customWrap) customWrap.classList.toggle('hidden', result.tubeId !== 'custom');
+  if (idMmEl) idMmEl.textContent = result.idReady ? result.idMm.toFixed(4) : '—';
+  if (mlPerMEl) mlPerMEl.textContent = result.idReady ? result.mlPerM.toFixed(2) : '—';
+  if (mlPerCmEl) mlPerCmEl.textContent = result.idReady ? result.mlPerCm.toFixed(3) : '—';
+  if (lengthMEl) lengthMEl.textContent = result.lengthProvided && Number.isFinite(result.lengthM) ? result.lengthM.toFixed(4) : '—';
+  if (lengthError) {
+    const lengthTouched = lengthInput?.dataset?.touched === 'true';
+    const lengthHasInput = !!lengthInput?.value.trim();
+    lengthError.classList.toggle('hidden', !(result.lengthInvalid && (lengthTouched || lengthHasInput)));
   }
+  if (volumeEl) volumeEl.textContent = result.ready ? result.volumeMl.toFixed(1) : '—';
+  if (addButton) addButton.disabled = !result.ready || result.volumeMl <= 0;
+}
 
-  const lengthRaw = lengthInput.value.trim();
-  const lengthProvided = lengthRaw !== '';
-  const lengthValue = lengthProvided ? parseFloat(lengthRaw) : null;
-  const lengthInvalid = lengthProvided && (Number.isNaN(lengthValue) || lengthValue < 0);
+let primingBuilderItems = [];
+let primingNextBuilderItemId = 1;
 
-  if (lengthError) lengthError.classList.toggle('hidden', !lengthInvalid);
-
-  if (lengthInvalid || !lengthProvided) {
-    if (lengthMEl) lengthMEl.textContent = '—';
-    if (volumeEl) volumeEl.textContent = '—';
-    return;
+function readPrimingNonNegative(inputEl) {
+  if (!inputEl) return { value: 0, invalid: false, provided: false };
+  const raw = inputEl.value.trim();
+  if (raw === '') {
+    inputEl.classList.remove('ring-1', 'ring-rose-400', 'border-rose-400');
+    return { value: 0, invalid: false, provided: false };
   }
-
-  const lengthM = convertLengthToMeters(lengthValue, unitSelect.value);
-  if (lengthMEl) lengthMEl.textContent = lengthM != null ? lengthM.toFixed(4) : '—';
-
-  if (!tube || lengthM == null) {
-    if (volumeEl) volumeEl.textContent = '—';
-    return;
+  const parsed = parseFloat(raw);
+  const invalid = Number.isNaN(parsed) || inputEl.validity?.badInput;
+  if (parsed < 0) {
+    inputEl.value = '0';
+    inputEl.classList.remove('ring-1', 'ring-rose-400', 'border-rose-400');
+    return { value: 0, invalid: false, provided: true };
   }
+  ['ring-1', 'ring-rose-400', 'border-rose-400'].forEach(cls => inputEl.classList.toggle(cls, invalid));
+  return { value: invalid ? 0 : parsed, invalid, provided: true };
+}
 
-  const volumeMl = calculatePrimingVolumeMl(tube.idMm, lengthM);
-  if (volumeEl) volumeEl.textContent = volumeMl != null ? volumeMl.toFixed(1) : '—';
+function escapePrimingHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function formatPrimingMl(value, decimals = 1) {
+  return Number.isFinite(value) ? value.toFixed(decimals) : '—';
+}
+
+function formatPrimingExpressionValue(value) {
+  if (!Number.isFinite(value)) return '—';
+  return Number.isInteger(value) ? value.toFixed(0) : value.toFixed(1);
+}
+
+function getPrimingTubeByKey(key) {
+  return PRIMING_TUBE_IDS.find(item => item.key === key) || null;
+}
+
+function getCurrentPrimingTubingSegment() {
+  const tubeId = el('priming-id')?.value || '';
+  const tube = getPrimingTubeByKey(tubeId);
+  const customId = readPrimingNonNegative(el('priming-custom-id'));
+  const length = readPrimingNonNegative(el('priming-length'));
+  const quantity = readPrimingNonNegative(el('priming-quantity'));
+  const unit = el('priming-length-unit')?.value || 'cm';
+  const idMm = tubeId === 'custom' ? customId.value : (tube ? tube.idMm : 0);
+  const idReady = tubeId === 'custom' ? customId.provided && !customId.invalid && idMm > 0 : !!tube;
+  const lengthM = convertLengthToMeters(length.value, unit);
+  const lengthInvalid = length.invalid;
+  const quantityValue = quantity.provided ? quantity.value : 0;
+  const ready = idReady && length.provided && !lengthInvalid && !quantity.invalid && length.value > 0 && quantityValue > 0;
+  const volumeMl = ready ? calculatePrimingVolumeMl(idMm, lengthM, quantityValue) : NaN;
+  const displayLabel = tube ? tube.label : (tubeId === 'custom' ? `${idMm.toFixed(4)} mm` : '');
+
+  return {
+    tubeId,
+    tube,
+    idMm,
+    idReady,
+    mlPerM: idReady ? (Math.PI / 4) * Math.pow(idMm, 2) : NaN,
+    mlPerCm: idReady ? ((Math.PI / 4) * Math.pow(idMm, 2)) / 100 : NaN,
+    lengthM,
+    lengthProvided: length.provided,
+    lengthInvalid,
+    lengthValue: length.value,
+    unit,
+    quantity: quantityValue,
+    ready,
+    volumeMl,
+    displayLabel
+  };
+}
+
+function addPrimingBuilderItem(item) {
+  if (!item || !Number.isFinite(item.volume) || item.volume <= 0) return;
+  primingBuilderItems.push({ ...item, id: primingNextBuilderItemId++ });
+  renderPrimingBuilder();
+}
+
+function addCurrentPrimingTubingItem() {
+  const result = getCurrentPrimingTubingSegment();
+  if (!result.ready) return;
+  const name = el('priming-segment-name')?.value.trim() || 'Tubing segment';
+  const lengthRaw = el('priming-length')?.value.trim() || '0';
+  addPrimingBuilderItem({
+    item: 'Tubing',
+    details: `${name} · ${result.displayLabel}, ${lengthRaw} ${result.unit} × ${formatPrimingExpressionValue(result.quantity)}`,
+    volume: result.volumeMl,
+    category: 'tubing'
+  });
+}
+
+function handlePrimingOxygenatorModelChange() {
+  const modelSelect = el('priming-oxygenator-model');
+  const volumeInput = el('priming-oxygenator-volume');
+  if (!modelSelect || !volumeInput) return;
+  if (modelSelect.value && modelSelect.value !== 'custom') volumeInput.value = modelSelect.value;
+}
+
+function getSelectedOxygenatorLabel() {
+  const modelSelect = el('priming-oxygenator-model');
+  if (!modelSelect) return 'Oxygenator';
+  const selected = modelSelect.options[modelSelect.selectedIndex];
+  return selected?.dataset?.label || 'Custom oxygenator';
+}
+
+function addPrimingOxygenatorItem() {
+  const volume = readPrimingNonNegative(el('priming-oxygenator-volume'));
+  if (volume.invalid || volume.value <= 0) return;
+  const model = getSelectedOxygenatorLabel();
+  addPrimingBuilderItem({ item: 'Oxygenator', details: model, volume: volume.value, category: 'oxygenator' });
+}
+
+function renderPrimingBuilder() {
+  const emptyEl = el('priming-builder-empty');
+  const tableWrap = el('priming-builder-table-wrap');
+  const cardWrap = el('priming-builder-cards');
+  const body = el('priming-builder-items');
+  const hasItems = primingBuilderItems.length > 0;
+
+  if (emptyEl) emptyEl.classList.toggle('hidden', hasItems);
+  if (tableWrap) tableWrap.style.display = hasItems ? '' : 'none';
+  if (cardWrap) {
+    cardWrap.classList.toggle('hidden', !hasItems);
+    cardWrap.innerHTML = primingBuilderItems.map(item => `
+      <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 p-3 flex items-start gap-3">
+        <div class="min-w-0 flex-1">
+          <div class="font-semibold text-slate-700 dark:text-slate-200">${escapePrimingHtml(item.item)}</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400 break-words">${escapePrimingHtml(item.details)}</div>
+          <div class="mt-1 font-semibold text-primary-900 dark:text-white">${formatPrimingMl(item.volume)} mL</div>
+        </div>
+        <button type="button" class="priming-delete-builder-item inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-slate-200 dark:border-primary-700 text-lg leading-none text-slate-400 hover:text-rose-500 hover:border-rose-300 transition-colors" data-builder-id="${item.id}" aria-label="Remove item">×</button>
+      </div>
+    `).join('');
+  }
+  if (body) {
+    body.innerHTML = primingBuilderItems.map(item => `
+      <tr>
+        <td class="px-3 py-2 align-top font-medium text-slate-700 dark:text-slate-200">${escapePrimingHtml(item.item)}</td>
+        <td class="px-3 py-2 align-top text-slate-500 dark:text-slate-400">${escapePrimingHtml(item.details)}</td>
+        <td class="px-3 py-2 align-top text-right font-semibold text-primary-900 dark:text-white">${formatPrimingMl(item.volume)} mL</td>
+        <td class="px-3 py-2 align-top text-center"><button type="button" class="priming-delete-builder-item inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 dark:border-primary-700 text-lg leading-none text-slate-400 hover:text-rose-500 hover:border-rose-300 transition-colors" data-builder-id="${item.id}" aria-label="Remove item">×</button></td>
+      </tr>
+    `).join('');
+  }
+  [body, cardWrap].forEach(container => {
+    container?.querySelectorAll('.priming-delete-builder-item').forEach(button => {
+      button.addEventListener('click', () => {
+        primingBuilderItems = primingBuilderItems.filter(item => item.id !== Number(button.dataset.builderId));
+        renderPrimingBuilder();
+      });
+    });
+  });
+
+  const tubingSubtotal = primingBuilderItems.filter(item => item.category === 'tubing').reduce((sum, item) => sum + item.volume, 0);
+  const oxygenatorSubtotal = primingBuilderItems.filter(item => item.category === 'oxygenator').reduce((sum, item) => sum + item.volume, 0);
+  const total = tubingSubtotal + oxygenatorSubtotal;
+  setText('priming-builder-tubing-subtotal', formatPrimingMl(tubingSubtotal));
+  setText('priming-builder-oxygenator-subtotal', formatPrimingMl(oxygenatorSubtotal));
+  setText('priming-builder-total', formatPrimingMl(total));
+
+  const expression = hasItems
+    ? `Total Prime Volume = ${primingBuilderItems.map(item => formatPrimingExpressionValue(item.volume)).join(' + ')} = ${formatPrimingMl(total)} mL`
+    : 'Total Prime Volume = 0 mL';
+  setText('priming-builder-expression', expression);
+}
+
+function clearPrimingBuilderItems() {
+  primingBuilderItems = [];
+  renderPrimingBuilder();
 }
 
 function setTimeError(inputEl, hasError) {
@@ -7413,13 +7566,31 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   if (hasPrimingCalculator) {
-    ['priming-id', 'priming-length', 'priming-length-unit'].forEach(id => {
+    ['priming-id', 'priming-custom-id', 'priming-length', 'priming-length-unit', 'priming-quantity'].forEach(id => {
       const x = el(id);
       if (x) {
         x.addEventListener('input', updatePrimingVolume);
         x.addEventListener('change', updatePrimingVolume);
+        if (id === 'priming-length') {
+          x.addEventListener('blur', () => {
+            x.dataset.touched = 'true';
+            updatePrimingVolume();
+          });
+        }
       }
     });
+    ['priming-oxygenator-volume'].forEach(id => {
+      const x = el(id);
+      if (x) x.addEventListener('input', () => readPrimingNonNegative(x));
+    });
+    const oxygenatorModel = el('priming-oxygenator-model');
+    if (oxygenatorModel) oxygenatorModel.addEventListener('change', handlePrimingOxygenatorModelChange);
+    const addTubing = el('priming-add-tubing-item');
+    if (addTubing) addTubing.addEventListener('click', addCurrentPrimingTubingItem);
+    const addOxygenator = el('priming-add-oxygenator-item');
+    if (addOxygenator) addOxygenator.addEventListener('click', addPrimingOxygenatorItem);
+    const clearBuilder = el('priming-clear-builder');
+    if (clearBuilder) clearBuilder.addEventListener('click', clearPrimingBuilderItems);
   }
 
   if (hasUnitConverter) {
@@ -7489,7 +7660,10 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   if (hasHctCalculator) updateHct();
   if (hasLbmCalculator) updateLBM();
-  if (hasPrimingCalculator) updatePrimingVolume();
+  if (hasPrimingCalculator) {
+    updatePrimingVolume();
+    renderPrimingBuilder();
+  }
   if (hasUnitConverter) {
     initUnitConverterLabels();
     updateUnitConverterFlow();
