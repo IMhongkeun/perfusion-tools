@@ -5251,15 +5251,6 @@ function updatePrimingVolume() {
   if (addButton) addButton.disabled = !result.ready || result.volumeMl <= 0;
 }
 
-const PRIMING_ADULT_EXAMPLE_ITEMS = [
-  { type: 'Tubing', item: 'Arterial line', details: '3/8", 150 cm × 1', volume: calculatePrimingVolumeMl(9.525, 1.5, 1), category: 'tubing' },
-  { type: 'Tubing', item: 'Venous line', details: '1/2", 180 cm × 1', volume: calculatePrimingVolumeMl(12.7, 1.8, 1), category: 'tubing' },
-  { type: 'Tubing', item: 'Cardioplegia line', details: '1/4", 60 cm × 1', volume: calculatePrimingVolumeMl(6.35, 0.6, 1), category: 'tubing' },
-  { type: 'Tubing', item: 'Suction line', details: '3/8", 80 cm × 1', volume: calculatePrimingVolumeMl(9.525, 0.8, 1), category: 'tubing' },
-  { type: 'Oxygenator', item: 'Medtronic Affinity Fusion', details: 'preset', volume: 260, category: 'component' },
-  { type: 'Reservoir', item: 'Operating volume', details: 'manual', volume: 300, category: 'component' }
-];
-
 let primingBuilderItems = [];
 let primingNextBuilderItemId = 1;
 
@@ -5350,9 +5341,8 @@ function addCurrentPrimingTubingItem() {
   const name = el('priming-segment-name')?.value.trim() || 'Tubing segment';
   const lengthRaw = el('priming-length')?.value.trim() || '0';
   addPrimingBuilderItem({
-    type: 'Tubing',
-    item: name,
-    details: `${result.displayLabel}, ${lengthRaw} ${result.unit} × ${formatPrimingExpressionValue(result.quantity)}`,
+    item: 'Tubing',
+    details: `${name} · ${result.displayLabel}, ${lengthRaw} ${result.unit} × ${formatPrimingExpressionValue(result.quantity)}`,
     volume: result.volumeMl,
     category: 'tubing'
   });
@@ -5376,22 +5366,7 @@ function addPrimingOxygenatorItem() {
   const volume = readPrimingNonNegative(el('priming-oxygenator-volume'));
   if (volume.invalid || volume.value <= 0) return;
   const model = getSelectedOxygenatorLabel();
-  const details = el('priming-oxygenator-model')?.value === 'custom' ? 'manual' : 'preset';
-  addPrimingBuilderItem({ type: 'Oxygenator', item: model, details, volume: volume.value, category: 'component' });
-}
-
-function addPrimingReservoirItem() {
-  const volume = readPrimingNonNegative(el('priming-reservoir-volume'));
-  if (volume.invalid || volume.value <= 0) return;
-  addPrimingBuilderItem({ type: 'Reservoir', item: 'Operating volume', details: 'manual', volume: volume.value, category: 'component' });
-}
-
-function addPrimingComponentItem() {
-  const volume = readPrimingNonNegative(el('priming-component-volume'));
-  if (volume.invalid || volume.value <= 0) return;
-  const type = el('priming-component-type')?.value || 'Other';
-  const name = el('priming-component-name')?.value.trim() || type;
-  addPrimingBuilderItem({ type, item: name, details: 'manual', volume: volume.value, category: 'component' });
+  addPrimingBuilderItem({ item: 'Oxygenator', details: model, volume: volume.value, category: 'oxygenator' });
 }
 
 function renderPrimingBuilder() {
@@ -5405,11 +5380,10 @@ function renderPrimingBuilder() {
   if (body) {
     body.innerHTML = primingBuilderItems.map(item => `
       <tr>
-        <td class="px-3 py-2 align-top font-medium text-slate-700 dark:text-slate-200">${escapePrimingHtml(item.type)}</td>
-        <td class="px-3 py-2 align-top text-slate-700 dark:text-slate-200">${escapePrimingHtml(item.item)}</td>
+        <td class="px-3 py-2 align-top font-medium text-slate-700 dark:text-slate-200">${escapePrimingHtml(item.item)}</td>
         <td class="px-3 py-2 align-top text-slate-500 dark:text-slate-400">${escapePrimingHtml(item.details)}</td>
         <td class="px-3 py-2 align-top text-right font-semibold text-primary-900 dark:text-white">${formatPrimingMl(item.volume)} mL</td>
-        <td class="px-3 py-2 align-top text-right"><button type="button" class="priming-delete-builder-item text-xs font-semibold text-slate-500 hover:text-rose-500" data-builder-id="${item.id}" aria-label="Delete ${escapePrimingHtml(item.item)}">Delete</button></td>
+        <td class="px-3 py-2 align-top text-center"><button type="button" class="priming-delete-builder-item inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 dark:border-primary-700 text-slate-400 hover:text-rose-500 hover:border-rose-300 transition-colors" data-builder-id="${item.id}" aria-label="Remove item">×</button></td>
       </tr>
     `).join('');
     body.querySelectorAll('.priming-delete-builder-item').forEach(button => {
@@ -5421,10 +5395,10 @@ function renderPrimingBuilder() {
   }
 
   const tubingSubtotal = primingBuilderItems.filter(item => item.category === 'tubing').reduce((sum, item) => sum + item.volume, 0);
-  const componentSubtotal = primingBuilderItems.filter(item => item.category !== 'tubing').reduce((sum, item) => sum + item.volume, 0);
-  const total = tubingSubtotal + componentSubtotal;
+  const oxygenatorSubtotal = primingBuilderItems.filter(item => item.category === 'oxygenator').reduce((sum, item) => sum + item.volume, 0);
+  const total = tubingSubtotal + oxygenatorSubtotal;
   setText('priming-builder-tubing-subtotal', formatPrimingMl(tubingSubtotal));
-  setText('priming-builder-component-subtotal', formatPrimingMl(componentSubtotal));
+  setText('priming-builder-oxygenator-subtotal', formatPrimingMl(oxygenatorSubtotal));
   setText('priming-builder-total', formatPrimingMl(total));
 
   const expression = hasItems
@@ -5435,11 +5409,6 @@ function renderPrimingBuilder() {
 
 function clearPrimingBuilderItems() {
   primingBuilderItems = [];
-  renderPrimingBuilder();
-}
-
-function loadPrimingAdultExample() {
-  primingBuilderItems = PRIMING_ADULT_EXAMPLE_ITEMS.map(item => ({ ...item, id: primingNextBuilderItemId++ }));
   renderPrimingBuilder();
 }
 
@@ -7583,7 +7552,7 @@ window.addEventListener('DOMContentLoaded', () => {
         x.addEventListener('change', updatePrimingVolume);
       }
     });
-    ['priming-oxygenator-volume', 'priming-reservoir-volume', 'priming-component-volume'].forEach(id => {
+    ['priming-oxygenator-volume'].forEach(id => {
       const x = el(id);
       if (x) x.addEventListener('input', () => readPrimingNonNegative(x));
     });
@@ -7593,14 +7562,8 @@ window.addEventListener('DOMContentLoaded', () => {
     if (addTubing) addTubing.addEventListener('click', addCurrentPrimingTubingItem);
     const addOxygenator = el('priming-add-oxygenator-item');
     if (addOxygenator) addOxygenator.addEventListener('click', addPrimingOxygenatorItem);
-    const addReservoir = el('priming-add-reservoir-item');
-    if (addReservoir) addReservoir.addEventListener('click', addPrimingReservoirItem);
-    const addComponent = el('priming-add-component-item');
-    if (addComponent) addComponent.addEventListener('click', addPrimingComponentItem);
     const clearBuilder = el('priming-clear-builder');
     if (clearBuilder) clearBuilder.addEventListener('click', clearPrimingBuilderItems);
-    const loadExample = el('priming-load-example');
-    if (loadExample) loadExample.addEventListener('click', loadPrimingAdultExample);
   }
 
   if (hasUnitConverter) {
