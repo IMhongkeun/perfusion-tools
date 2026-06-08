@@ -42,14 +42,14 @@ function run() {
     ['LivaNova Inspire 6', '184'],
     ['LivaNova Inspire 8', '219'],
     ['LivaNova Inspire 6F', '284'],
-    ['LivaNova Inspire 8F', '351'],
-    ['LivaNova EOS ECMO', '150'],
-    ['Getinge HLS Module Advanced 5.0', '240'],
-    ['Getinge HLS Module Advanced 7.0', '273']
+    ['LivaNova Inspire 8F', '351']
   ].forEach(([model, volume]) => {
     assert(primingPageHtml.includes(`value="${volume}" data-label="${model}"`), `${model} preset should have ${volume} mL value`);
   });
   assert(primingPageHtml.includes('<option value="custom" data-label="Custom oxygenator">Custom</option>'));
+  ['LivaNova EOS ECMO', 'Getinge HLS Module Advanced 5.0', 'Getinge HLS Module Advanced 7.0', 'ECMO / ECLS'].forEach((text) => {
+    assert(!primingPageHtml.includes(text), `${text} should not appear in CPB oxygenator presets`);
+  });
 
   console.log('All priming volume tests passed.');
 }
