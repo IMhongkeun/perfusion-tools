@@ -373,8 +373,8 @@ function updateBsaFlowList(bsaVal, weightKg) {
 
   const hasValidWeight = Number.isFinite(weightKg) && weightKg > 0;
   const header = document.createElement('div');
-  header.className = 'hidden sm:grid sm:grid-cols-[0.75fr_1fr_1.3fr] items-center px-2 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 gap-3 border-b border-slate-100 dark:border-primary-800';
-  header.innerHTML = '<span>CI</span><span class="text-right">Flow</span><span class="text-right">mL/kg/min</span>';
+  header.className = 'hidden sm:grid sm:grid-cols-[0.75fr_1fr_1.3fr] items-center px-2 pb-1.5 text-[10px] font-bold tracking-wider text-slate-400 dark:text-slate-500 gap-3 border-b border-slate-100 dark:border-primary-800';
+  header.innerHTML = '<span>CI</span><span class="text-right">flow</span><span class="text-right">ml/kg/min</span>';
   list.appendChild(header);
 
   for (let ciTenths = 10; ciTenths <= 30; ciTenths += 2) {

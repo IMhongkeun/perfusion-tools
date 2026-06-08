@@ -546,27 +546,12 @@
             <section class="calculator-lower-section">
               <h2 class="calculator-lower-title">Methodology & clinical notes</h2>
               <div class="calculator-lower-panel">
-                <p>This calculator estimates body surface area and BSA-indexed CPB flow references for perfusion planning. The blood flow rate sheet presents commonly used adult CPB pump flow references by cardiac index (CI).</p>
-                <div class="grid md:grid-cols-3 gap-2 text-xs">
-                  <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
-                    <p class="font-semibold text-primary-900 dark:text-white">Mosteller BSA</p>
-                    <p class="font-mono text-slate-700 dark:text-slate-200">BSA (m²) = sqrt([height(cm) × weight(kg)] / 3600)</p>
-                  </div>
-                  <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
-                    <p class="font-semibold text-primary-900 dark:text-white">BSA-based flow</p>
-                    <p class="font-mono text-slate-700 dark:text-slate-200">Pump flow (L/min) = BSA (m²) × CI (L/min/m²)</p>
-                  </div>
-                  <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/40 p-3 space-y-1">
-                    <p class="font-semibold text-primary-900 dark:text-white">Weight-indexed reference</p>
-                    <p class="font-mono text-slate-700 dark:text-slate-200">mL/kg/min = [Pump flow (L/min) × 1000] / weight (kg)</p>
-                  </div>
-                </div>
+                <p>This calculator estimates body surface area and BSA-indexed CPB flow references for perfusion planning. Formula details and evidence notes are summarized in the extended section below.</p>
                 <ul class="list-disc pl-5 space-y-1.5">
                   <li><span class="font-semibold text-primary-900 dark:text-white">Default formula:</span> Mosteller is used as the primary adult default because it is simple and reproducible.</li>
                   <li><span class="font-semibold text-primary-900 dark:text-white">Comparison formulas:</span> Du Bois, Haycock, and Boyd are available to compare formula behavior in selected patients.</li>
-                  <li><span class="font-semibold text-primary-900 dark:text-white">Primary framework:</span> Adult CPB flow is generally interpreted through BSA and CI; the mL/kg/min value is a supplementary reference conversion of that BSA-based flow.</li>
-                  <li><span class="font-semibold text-primary-900 dark:text-white">Weight-based limitation:</span> Body weight does not always reflect metabolic demand in adults, and weight-based interpretation may overestimate flow needs in obesity.</li>
-                  <li><span class="font-semibold text-primary-900 dark:text-white">Clinical interpretation:</span> This sheet is reference guidance only. Flow settings should be interpreted with patient status, institutional practice, temperature, hemoglobin/hematocrit, venous oxygen saturation, lactate, arterial pressure, and oxygen delivery adequacy.</li>
+                  <li><span class="font-semibold text-primary-900 dark:text-white">Flow sheet:</span> Blood flow rows are BSA-indexed adult CPB references by cardiac index, with mL/kg/min shown only as a secondary weight-indexed conversion.</li>
+                  <li><span class="font-semibold text-primary-900 dark:text-white">Clinical interpretation:</span> Use these values as reference guidance and interpret them with patient status, institutional practice, and perfusion adequacy markers.</li>
                 </ul>
               </div>
             </section>
@@ -709,12 +694,6 @@
                       <a href="https://archive.org/details/growthofsurfacea0000boyd" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Archive</a>
                     </div>
                   </li>
-                </ul>
-                <p class="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">Contextual CPB interpretation</p>
-                <ul class="list-disc pl-5 text-sm text-slate-700 dark:text-slate-300 space-y-2">
-                  <li><span>de Somer F et al. Interact Cardiovasc Thorac Surg. 2011.</span></li>
-                  <li><span>Grocott HP et al. J Thorac Cardiovasc Surg. 2005.</span></li>
-                  <li><span>Slogoff S et al. Ann Thorac Surg. 1990.</span></li>
                 </ul>
               </div>
             </section>
