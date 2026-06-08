@@ -5377,27 +5377,43 @@ function addPrimingOxygenatorItem() {
 function renderPrimingBuilder() {
   const emptyEl = el('priming-builder-empty');
   const tableWrap = el('priming-builder-table-wrap');
+  const cardWrap = el('priming-builder-cards');
   const body = el('priming-builder-items');
   const hasItems = primingBuilderItems.length > 0;
 
   if (emptyEl) emptyEl.classList.toggle('hidden', hasItems);
-  if (tableWrap) tableWrap.classList.toggle('hidden', !hasItems);
+  if (tableWrap) tableWrap.style.display = hasItems ? '' : 'none';
+  if (cardWrap) {
+    cardWrap.classList.toggle('hidden', !hasItems);
+    cardWrap.innerHTML = primingBuilderItems.map(item => `
+      <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 p-3 flex items-start gap-3">
+        <div class="min-w-0 flex-1">
+          <div class="font-semibold text-slate-700 dark:text-slate-200">${escapePrimingHtml(item.item)}</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400 break-words">${escapePrimingHtml(item.details)}</div>
+          <div class="mt-1 font-semibold text-primary-900 dark:text-white">${formatPrimingMl(item.volume)} mL</div>
+        </div>
+        <button type="button" class="priming-delete-builder-item inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-slate-200 dark:border-primary-700 text-lg leading-none text-slate-400 hover:text-rose-500 hover:border-rose-300 transition-colors" data-builder-id="${item.id}" aria-label="Remove item">×</button>
+      </div>
+    `).join('');
+  }
   if (body) {
     body.innerHTML = primingBuilderItems.map(item => `
       <tr>
         <td class="px-3 py-2 align-top font-medium text-slate-700 dark:text-slate-200">${escapePrimingHtml(item.item)}</td>
         <td class="px-3 py-2 align-top text-slate-500 dark:text-slate-400">${escapePrimingHtml(item.details)}</td>
         <td class="px-3 py-2 align-top text-right font-semibold text-primary-900 dark:text-white">${formatPrimingMl(item.volume)} mL</td>
-        <td class="px-3 py-2 align-top text-center"><button type="button" class="priming-delete-builder-item inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 dark:border-primary-700 text-slate-400 hover:text-rose-500 hover:border-rose-300 transition-colors" data-builder-id="${item.id}" aria-label="Remove item">×</button></td>
+        <td class="px-3 py-2 align-top text-center"><button type="button" class="priming-delete-builder-item inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 dark:border-primary-700 text-lg leading-none text-slate-400 hover:text-rose-500 hover:border-rose-300 transition-colors" data-builder-id="${item.id}" aria-label="Remove item">×</button></td>
       </tr>
     `).join('');
-    body.querySelectorAll('.priming-delete-builder-item').forEach(button => {
+  }
+  [body, cardWrap].forEach(container => {
+    container?.querySelectorAll('.priming-delete-builder-item').forEach(button => {
       button.addEventListener('click', () => {
         primingBuilderItems = primingBuilderItems.filter(item => item.id !== Number(button.dataset.builderId));
         renderPrimingBuilder();
       });
     });
-  }
+  });
 
   const tubingSubtotal = primingBuilderItems.filter(item => item.category === 'tubing').reduce((sum, item) => sum + item.volume, 0);
   const oxygenatorSubtotal = primingBuilderItems.filter(item => item.category === 'oxygenator').reduce((sum, item) => sum + item.volume, 0);
