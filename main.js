@@ -5239,6 +5239,7 @@ function updatePrimingVolume() {
   const lengthMEl = el('priming-length-m');
   const volumeEl = el('priming-volume');
   const lengthError = el('priming-length-error');
+  const lengthInput = el('priming-length');
   const addButton = el('priming-add-tubing-item');
 
   if (customWrap) customWrap.classList.toggle('hidden', result.tubeId !== 'custom');
@@ -5246,7 +5247,11 @@ function updatePrimingVolume() {
   if (mlPerMEl) mlPerMEl.textContent = result.idReady ? result.mlPerM.toFixed(2) : '—';
   if (mlPerCmEl) mlPerCmEl.textContent = result.idReady ? result.mlPerCm.toFixed(3) : '—';
   if (lengthMEl) lengthMEl.textContent = result.lengthProvided && Number.isFinite(result.lengthM) ? result.lengthM.toFixed(4) : '—';
-  if (lengthError) lengthError.classList.toggle('hidden', !result.lengthInvalid);
+  if (lengthError) {
+    const lengthTouched = lengthInput?.dataset?.touched === 'true';
+    const lengthHasInput = !!lengthInput?.value.trim();
+    lengthError.classList.toggle('hidden', !(result.lengthInvalid && (lengthTouched || lengthHasInput)));
+  }
   if (volumeEl) volumeEl.textContent = result.ready ? result.volumeMl.toFixed(1) : '—';
   if (addButton) addButton.disabled = !result.ready || result.volumeMl <= 0;
 }
@@ -5262,7 +5267,7 @@ function readPrimingNonNegative(inputEl) {
     return { value: 0, invalid: false, provided: false };
   }
   const parsed = parseFloat(raw);
-  const invalid = Number.isNaN(parsed);
+  const invalid = Number.isNaN(parsed) || inputEl.validity?.badInput;
   if (parsed < 0) {
     inputEl.value = '0';
     inputEl.classList.remove('ring-1', 'ring-rose-400', 'border-rose-400');
@@ -7550,6 +7555,12 @@ window.addEventListener('DOMContentLoaded', () => {
       if (x) {
         x.addEventListener('input', updatePrimingVolume);
         x.addEventListener('change', updatePrimingVolume);
+        if (id === 'priming-length') {
+          x.addEventListener('blur', () => {
+            x.dataset.touched = 'true';
+            updatePrimingVolume();
+          });
+        }
       }
     });
     ['priming-oxygenator-volume'].forEach(id => {

@@ -318,14 +318,14 @@
                   <input id="priming-custom-id" type="number" inputmode="decimal" min="0" step="0.0001" placeholder="Enter ID in mm" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
                 </div>
               </div>
-              <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-3 items-end">
+              <div class="grid grid-cols-1 sm:grid-cols-[minmax(0,2fr)_7rem_minmax(5rem,0.8fr)] gap-3 items-end">
                 <div class="space-y-2">
                   <label for="priming-length" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Length</label>
                   <input id="priming-length" type="number" inputmode="decimal" min="0" step="0.01" placeholder="Enter length" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
                 </div>
                 <div class="space-y-2">
                   <label for="priming-length-unit" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Unit</label>
-                  <select id="priming-length-unit" class="w-full sm:w-24 bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
+                  <select id="priming-length-unit" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
                     <option value="cm" selected>cm</option>
                     <option value="m">m</option>
                     <option value="ft">ft</option>
@@ -367,10 +367,21 @@
                 <label for="priming-oxygenator-model" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Oxygenator model</label>
                 <select id="priming-oxygenator-model" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
                   <option value="">Select model</option>
-                  <option value="260" data-label="Medtronic Affinity Fusion">Medtronic Affinity Fusion - 260 mL</option>
-                  <option value="260" data-label="Terumo CAPIOX FX25">Terumo CAPIOX FX25 - 260 mL</option>
-                  <option value="144" data-label="Terumo CAPIOX FX15">Terumo CAPIOX FX15 - 144 mL</option>
-                  <option value="43" data-label="Terumo CAPIOX FX05">Terumo CAPIOX FX05 - 43 mL</option>
+                  <optgroup label="Adult CPB">
+                    <option value="260" data-label="Medtronic Affinity Fusion">Medtronic Affinity Fusion — 260 mL</option>
+                    <option value="260" data-label="Terumo CAPIOX FX25">Terumo CAPIOX FX25 — 260 mL</option>
+                    <option value="144" data-label="Terumo CAPIOX FX15">Terumo CAPIOX FX15 — 144 mL</option>
+                    <option value="43" data-label="Terumo CAPIOX FX05">Terumo CAPIOX FX05 — 43 mL</option>
+                    <option value="184" data-label="LivaNova Inspire 6">LivaNova Inspire 6 — 184 mL</option>
+                    <option value="219" data-label="LivaNova Inspire 8">LivaNova Inspire 8 — 219 mL</option>
+                    <option value="284" data-label="LivaNova Inspire 6F">LivaNova Inspire 6F — 284 mL</option>
+                    <option value="351" data-label="LivaNova Inspire 8F">LivaNova Inspire 8F — 351 mL</option>
+                  </optgroup>
+                  <optgroup label="ECMO / ECLS">
+                    <option value="150" data-label="LivaNova EOS ECMO">LivaNova EOS ECMO — 150 mL</option>
+                    <option value="240" data-label="Getinge HLS Module Advanced 5.0">Getinge HLS Module Advanced 5.0 — 240 mL</option>
+                    <option value="273" data-label="Getinge HLS Module Advanced 7.0">Getinge HLS Module Advanced 7.0 — 273 mL</option>
+                  </optgroup>
                   <option value="custom" data-label="Custom oxygenator">Custom</option>
                 </select>
               </div>
@@ -378,7 +389,7 @@
                 <label for="priming-oxygenator-volume" class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Oxygenator prime volume (mL)</label>
                 <input id="priming-oxygenator-volume" type="number" inputmode="decimal" min="0" step="1" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" aria-describedby="priming-oxygenator-note" />
               </div>
-              <p id="priming-oxygenator-note" class="text-xs text-slate-500 dark:text-slate-400">Preset values are examples. Verify the current manufacturer IFU and your local configuration.</p>
+              <p id="priming-oxygenator-note" class="text-xs text-slate-500 dark:text-slate-400">Preset values are based on manufacturer product information and should be verified against the current IFU and local configuration.</p>
               <button id="priming-add-oxygenator-item" type="button" class="px-4 py-2.5 rounded-lg bg-accent-600 hover:bg-accent-500 text-white text-sm font-semibold transition-colors">Add oxygenator</button>
             </div>
           </div>
