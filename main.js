@@ -374,7 +374,7 @@ function updateBsaFlowList(bsaVal, weightKg) {
   const hasValidWeight = Number.isFinite(weightKg) && weightKg > 0;
   const header = document.createElement('div');
   header.className = 'hidden sm:grid sm:grid-cols-[0.75fr_1fr_1.3fr] items-center px-2 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 gap-3 border-b border-slate-100 dark:border-primary-800';
-  header.innerHTML = '<span>CI</span><span class="text-right">Flow</span><span class="text-right">Equivalent</span>';
+  header.innerHTML = '<span>CI</span><span class="text-right">Flow</span><span class="text-right">mL/kg/min</span>';
   list.appendChild(header);
 
   for (let ciTenths = 10; ciTenths <= 30; ciTenths += 2) {
@@ -383,14 +383,15 @@ function updateBsaFlowList(bsaVal, weightKg) {
     const flowLpm = ci * bsaVal;
     // Weight-indexed equivalent: mL/kg/min = (flowLpm × 1000) ÷ weight(kg).
     const mlKgMin = hasValidWeight ? Math.round((flowLpm * 1000) / weightKg) : null;
-    const equivalentText = mlKgMin === null ? '— mL/kg/min equivalent' : `${mlKgMin} mL/kg/min equivalent`;
+    const desktopEquivalentText = mlKgMin === null ? '—' : `${mlKgMin}`;
+    const mobileEquivalentText = mlKgMin === null ? '— mL/kg/min' : `≈ ${mlKgMin} mL/kg/min`;
     const row = document.createElement('div');
     const highlight = Math.abs(ci - 2.4) < 0.05;
     row.className = 'grid grid-cols-[1fr_auto] sm:grid-cols-[0.75fr_1fr_1.3fr] items-center min-h-[3.25rem] sm:min-h-0 py-2 sm:py-1.5 px-2 text-sm border-b border-slate-100 dark:border-primary-800 last:border-0 gap-x-3 gap-y-1' + (highlight ? ' bg-amber-50 dark:bg-amber-900/20' : '');
     const ciClass = `${bsaFlowNumericClass} ${highlight ? 'text-amber-700 dark:text-amber-200' : 'text-slate-500 dark:text-slate-400'}`;
     const flowClass = `${bsaFlowNumericClass} text-right ${highlight ? 'text-amber-800 dark:text-amber-100' : 'text-primary-900 dark:text-white'}`;
     const equivalentClass = `${bsaFlowNumericClass} col-span-2 sm:col-span-1 text-[11px] sm:text-xs text-left sm:text-right ${highlight ? 'text-amber-700 dark:text-amber-200' : 'text-slate-500 dark:text-slate-400'}`;
-    row.innerHTML = `<span class="${ciClass}">CI ${ci.toFixed(1)}</span><span class="${flowClass}">${flowLpm.toFixed(2)} L/min</span><span class="${equivalentClass}">${equivalentText}</span>`;
+    row.innerHTML = `<span class="${ciClass}">CI ${ci.toFixed(1)}</span><span class="${flowClass}">${flowLpm.toFixed(2)} L/min</span><span class="${equivalentClass}"><span class="sm:hidden">${mobileEquivalentText}</span><span class="hidden sm:inline">${desktopEquivalentText}</span></span>`;
     list.appendChild(row);
   }
 }
