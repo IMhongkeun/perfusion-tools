@@ -94,6 +94,56 @@
       border-color: #1e293b;
       background: rgba(15, 23, 42, 0.4);
     }
+
+    .calculator-references {
+      border-radius: 1rem;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      padding: 1rem;
+    }
+    .dark .calculator-references {
+      border-color: #1e293b;
+      background: rgba(15, 23, 42, 0.4);
+    }
+    .calculator-references h2 {
+      font-size: 1rem;
+      line-height: 1.5rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .dark .calculator-references h2 { color: #fff; }
+    .calculator-references > p,
+    .calculator-references > ol {
+      margin-top: 0.5rem;
+      border-radius: 0.75rem;
+      border: 1px solid #f1f5f9;
+      background: #fff;
+      padding: 1rem;
+      font-size: 0.8125rem;
+      line-height: 1.625;
+      color: #475569;
+      box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+    }
+    .dark .calculator-references > p,
+    .dark .calculator-references > ol {
+      border-color: #1e293b;
+      background: #0f172a;
+      color: #cbd5e1;
+      box-shadow: none;
+    }
+    .calculator-references > ol {
+      list-style: decimal;
+      padding-left: 2.25rem;
+    }
+    .calculator-references li + li { margin-top: 0.5rem; }
+    .calculator-references a {
+      color: #0891b2;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .calculator-references a:hover { color: #06b6d4; }
+    .dark .calculator-references a { color: #22d3ee; }
+
     .calculator-lower-title {
       font-size: 1rem;
       line-height: 1.5rem;
@@ -699,7 +749,7 @@
               </div>
             </section>
           </div>
-          <div class="px-6 pb-6 pt-0">
+          <div class="px-6 pb-6 pt-0 space-y-4">
             <section class="calculator-lower-section">
               <h2 class="calculator-lower-title">Related tools</h2>
               <div class="calculator-lower-panel">
@@ -708,6 +758,50 @@
                 <a href="/predicted-hct/" class="calculator-related-link">Predicted Hematocrit</a>
                 </div>
               </div>
+            </section>
+
+            <section class="calculator-references" aria-labelledby="gdp-references-title">
+              <h2 id="gdp-references-title">References</h2>
+              <p>
+                This calculator is based on published goal-directed perfusion literature, oxygen delivery physiology, and temperature-adjusted oxygen consumption concepts. DO₂i targets and temperature-corrected values should be interpreted as reference estimates, not absolute pump-flow prescriptions.
+              </p>
+
+              <ol>
+                <li>
+                  <a href="https://academic.oup.com/ejcts/article/67/2/ezae354/8011475" target="_blank" rel="noopener noreferrer">
+                    Wahba A, Kunst G, De Somer F, et al. 2024 EACTS/EACTAIC/EBCP Guidelines on cardiopulmonary bypass in adult cardiac surgery.
+                  </a>
+                  Eur J Cardiothorac Surg. 2025;67(2):ezae354.
+                </li>
+
+                <li>
+                  <a href="https://pubmed.ncbi.nlm.nih.gov/29778331/" target="_blank" rel="noopener noreferrer">
+                    Ranucci M, Johnson I, Willcox T, et al. Goal-directed perfusion to reduce acute kidney injury: a randomized trial.
+                  </a>
+                  J Thorac Cardiovasc Surg. 2018;156(5):1918-1927.e2.
+                </li>
+
+                <li>
+                  <a href="https://pubmed.ncbi.nlm.nih.gov/35125028/" target="_blank" rel="noopener noreferrer">
+                    Gao P, Liu J, Zhang P, Bai L, Jin Y, Li Y. Goal-directed perfusion for reducing acute kidney injury in cardiac surgery: a systematic review and meta-analysis.
+                  </a>
+                  Perfusion. 2023;38(3):591-599.
+                </li>
+
+                <li>
+                  <a href="https://pubmed.ncbi.nlm.nih.gov/10355405/" target="_blank" rel="noopener noreferrer">
+                    Parolari A, Alamanni F, Gherli T, et al. Cardiopulmonary bypass and oxygen consumption: oxygen delivery and hemodynamics.
+                  </a>
+                  Ann Thorac Surg. 1999;67(5):1320-1327.
+                </li>
+
+                <li>
+                  <a href="https://pubmed.ncbi.nlm.nih.gov/40606406/" target="_blank" rel="noopener noreferrer">
+                    El Dsouki Y, Condello I. A temperature-adjusted algorithm for predicting critical indexed oxygen delivery (DO₂i) during cardiopulmonary bypass.
+                  </a>
+                  Cureus. 2025;17(7):e87089.
+                </li>
+              </ol>
             </section>
           </div>
         </div>
