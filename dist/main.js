@@ -4782,10 +4782,19 @@ function setText(id, text) {
 // GDP Interaction
 // -----------------------------
   const gdpIds = ['h_cm', 'w_kg', 'bsa', 'bsa-method', 'flow', 'hb', 'sao2', 'pao2'];
+  const GDP_Q10 = 2.2;
+  const GDP_DEFAULT_TEMPERATURE_C = 37;
   let lastChangedId = null;
   let bsaManualOverride = false;
   let targetDO2i = 280;
   let targetMode = 'preset'; // 'preset' | 'custom'
+
+  function getGdpTemperatureC() {
+    const input = el('gdp-temp-c');
+    const value = input ? parseFloat(input.value) : GDP_DEFAULT_TEMPERATURE_C;
+    if (!Number.isFinite(value)) return GDP_DEFAULT_TEMPERATURE_C;
+    return clamp(value, 20, 37);
+  }
 
   function getGdpInputs() {
     const bsaVal = el('bsa').value;
@@ -4793,22 +4802,32 @@ function setText(id, text) {
     const sao2Val = el('sao2').value;
     const pao2Val = el('pao2').value;
     const flowVal = el('flow').value;
+    const temperatureC = getGdpTemperatureC();
 
     return {
       bsaVal,
       hbVal,
       sao2Val,
       pao2Val,
-      flowVal
+      flowVal,
+      temperatureC
     };
+  }
+
+  function calculateGdpVo2Fraction(temperatureC) {
+    // Q10 temperature correction: VO2 fraction = Q10 ^ ((temperatureC - 37) / 10).
+    // This estimates relative metabolic demand during hypothermic CPB and is not a pump-flow prescription.
+    return Math.pow(GDP_Q10, (temperatureC - GDP_DEFAULT_TEMPERATURE_C) / 10);
   }
 
   function computeGdpResults(inputs) {
     const bsa = parseFloat(inputs.bsaVal) || 0;
-  const flow = parseFloat(inputs.flowVal) || 0;
-  const hb = parseFloat(inputs.hbVal) || 0;
+    const flow = parseFloat(inputs.flowVal) || 0;
+    const hb = parseFloat(inputs.hbVal) || 0;
     const sao2 = parseFloat(inputs.sao2Val) || 0;
     const pao2 = parseFloat(inputs.pao2Val) || 0;
+    const temperatureC = Number.isFinite(inputs.temperatureC) ? inputs.temperatureC : GDP_DEFAULT_TEMPERATURE_C;
+    const vo2Fraction = calculateGdpVo2Fraction(temperatureC);
     const currentCI = bsa ? flow / bsa : 0;
     const cao2 = calcCaO2(hb, sao2, pao2);
     const currentDO2i = flow ? calcDO2i(flow, bsa, cao2) : 0;
@@ -4817,6 +4836,8 @@ function setText(id, text) {
     const normothermicMax = Math.round(baseTarget * 1.1);
     const flowTargetDo2i = (normothermicMin + normothermicMax) / 2;
     const requiredFlow = calcRequiredFlowLmin(flowTargetDo2i, bsa, cao2);
+    const tempAdjustedDo2Reference = baseTarget * vo2Fraction;
+    const tempAdjustedReferenceFlow = requiredFlow * vo2Fraction;
 
     return {
       bsa,
@@ -4824,9 +4845,13 @@ function setText(id, text) {
       sao2,
       pao2,
       flow,
+      temperatureC,
+      vo2Fraction,
       currentCI,
       cao2,
       requiredFlow,
+      tempAdjustedDo2Reference,
+      tempAdjustedReferenceFlow,
       currentDO2i,
       baseTarget,
       normothermicMin,
@@ -4877,6 +4902,26 @@ function updateTargetDisplay() {
   });
 }
 
+function updateGdpTemperatureDisplay(temperatureC, vo2Fraction) {
+  const safeTemperature = Number.isFinite(temperatureC) ? clamp(temperatureC, 20, 37) : GDP_DEFAULT_TEMPERATURE_C;
+  const slider = el('gdp-temp-slider');
+  const input = el('gdp-temp-c');
+  const fraction = Number.isFinite(vo2Fraction) ? vo2Fraction : calculateGdpVo2Fraction(safeTemperature);
+
+  if (slider && document.activeElement !== slider) slider.value = String(safeTemperature);
+  if (input && document.activeElement !== input) input.value = Number.isInteger(safeTemperature) ? String(safeTemperature) : safeTemperature.toFixed(1);
+  setText('gdp-vo2-fraction', `${Math.round(fraction * 100)}%`);
+
+  document.querySelectorAll('[data-gdp-temp-preset]').forEach((button) => {
+    const preset = Number(button.dataset.gdpTempPreset);
+    const active = Math.abs(preset - safeTemperature) < 0.05;
+    button.className = 'gdp-temp-preset min-h-10 px-3 py-2 text-xs font-semibold rounded-full border transition-colors ' + (active
+      ? 'bg-emerald-500/10 border-emerald-500 text-emerald-700 dark:text-emerald-300 shadow-sm'
+      : 'bg-white dark:bg-primary-800 border-slate-200 dark:border-primary-700 text-slate-600 dark:text-slate-300 hover:border-emerald-500/50');
+  });
+}
+
+
 function updateGDP() {
   updateBSA();
 
@@ -4904,8 +4949,13 @@ function updateGDP() {
       warningEl.textContent = `Enter required fields: ${requiredMissing.join(', ')}`;
       warningEl.classList.remove('hidden');
     }
+    setText('cao2-result', '—');
     setText('required-flow', '—');
+    setText('temp-reference-flow', '—');
+    setText('temp-do2-reference', '—');
     setText('current-do2i', '—');
+    setText('gdp-temp-flow-note', '');
+    updateGdpTemperatureDisplay(results.temperatureC, results.vo2Fraction);
     statusText.textContent = 'Awaiting data';
     statusDetail.textContent = 'Provide required inputs to evaluate target vs. current flow.';
     gauge.style.width = '0%';
@@ -4916,8 +4966,12 @@ function updateGDP() {
 
   if (warningEl) warningEl.classList.add('hidden');
 
-  setText('required-flow', results.requiredFlow ? `${results.requiredFlow.toFixed(2)} <span class="text-xs text-slate-500 dark:text-slate-400">L/min</span>` : '—');
-  setText('current-do2i', results.currentDO2i ? `${Math.round(results.currentDO2i)} <span class="text-xs text-slate-500 dark:text-slate-400">mL/min/m²</span>` : '—');
+  updateGdpTemperatureDisplay(results.temperatureC, results.vo2Fraction);
+  setText('cao2-result', results.cao2 ? `${results.cao2.toFixed(2)} <span class="text-xs text-slate-300">mL/dL</span>` : '—');
+  setText('required-flow', results.requiredFlow ? `${results.requiredFlow.toFixed(2)} <span class="text-xs text-slate-300">L/min</span>` : '—');
+  setText('temp-reference-flow', results.tempAdjustedReferenceFlow ? `${results.tempAdjustedReferenceFlow.toFixed(2)} <span class="text-xs text-emerald-200">L/min</span>` : '—');
+  setText('temp-do2-reference', results.tempAdjustedDo2Reference ? `${Math.round(results.tempAdjustedDo2Reference)} mL/min/m²` : '—');
+  setText('current-do2i', results.currentDO2i ? `${Math.round(results.currentDO2i)} <span class="text-xs text-slate-300">mL/min/m²</span>` : '—');
 
   let statusLabel = 'Waiting for current flow';
   let detail = 'Enter current pump flow to compare against the target DO₂i.';
@@ -4951,6 +5005,17 @@ function updateGDP() {
     }
   }
 
+  const tempFlowNote = el('gdp-temp-flow-note');
+  if (tempFlowNote) {
+    if (results.flow > 0 && results.tempAdjustedReferenceFlow > 0) {
+      const delta = results.flow - results.tempAdjustedReferenceFlow;
+      const direction = delta >= 0 ? 'above' : 'below';
+      tempFlowNote.textContent = `Current flow is ${Math.abs(delta).toFixed(2)} L/min ${direction} the temp-adjusted reference floor (${results.temperatureC.toFixed(1)}°C, Q10 ${GDP_Q10}).`;
+    } else {
+      tempFlowNote.textContent = 'Enter current flow to compare it with the temp-adjusted reference floor.';
+    }
+  }
+
   statusText.textContent = statusLabel;
   statusDetail.textContent = detail;
   if (ciCommentEl) ciCommentEl.textContent = ciComment;
@@ -4978,6 +5043,10 @@ function resetGDP() {
   bsaManualOverride = false;
   const cao2El = el('cao2');
   if (cao2El) cao2El.value = '';
+  const tempInput = el('gdp-temp-c');
+  const tempSlider = el('gdp-temp-slider');
+  if (tempInput) tempInput.value = String(GDP_DEFAULT_TEMPERATURE_C);
+  if (tempSlider) tempSlider.value = String(GDP_DEFAULT_TEMPERATURE_C);
   updateTargetDisplay();
   updateGDP();
 }
@@ -7444,6 +7513,26 @@ window.addEventListener('DOMContentLoaded', () => {
         updateGDP();
       });
     }
+
+    const tempSlider = el('gdp-temp-slider');
+    const tempInput = el('gdp-temp-c');
+    const syncGdpTemperature = (value, options = {}) => {
+      const temperature = clamp(parseFloat(value) || GDP_DEFAULT_TEMPERATURE_C, 20, 37);
+      const displayValue = Number.isInteger(temperature) ? String(temperature) : temperature.toFixed(1);
+      if (tempSlider) tempSlider.value = String(temperature);
+      if (tempInput && options.commitInput !== false) tempInput.value = displayValue;
+      updateGDP();
+    };
+    if (tempSlider) {
+      tempSlider.addEventListener('input', () => syncGdpTemperature(tempSlider.value));
+    }
+    if (tempInput) {
+      tempInput.addEventListener('input', () => syncGdpTemperature(tempInput.value, { commitInput: false }));
+      tempInput.addEventListener('change', () => syncGdpTemperature(tempInput.value));
+    }
+    document.querySelectorAll('[data-gdp-temp-preset]').forEach((button) => {
+      button.addEventListener('click', () => syncGdpTemperature(button.dataset.gdpTempPreset));
+    });
 
     const resetBtn = el('do2i-reset');
     if (resetBtn) {
