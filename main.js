@@ -4902,25 +4902,33 @@ function updateTargetDisplay() {
   });
 }
 
+function formatGdpTemperature(temperatureC) {
+  const safeTemperature = Number.isFinite(temperatureC) ? clamp(temperatureC, 20, 37) : GDP_DEFAULT_TEMPERATURE_C;
+  return `${safeTemperature.toFixed(1)}°C`;
+}
+
 function updateGdpTemperatureDisplay(temperatureC, vo2Fraction) {
   const safeTemperature = Number.isFinite(temperatureC) ? clamp(temperatureC, 20, 37) : GDP_DEFAULT_TEMPERATURE_C;
   const slider = el('gdp-temp-slider');
   const input = el('gdp-temp-c');
   const fraction = Number.isFinite(vo2Fraction) ? vo2Fraction : calculateGdpVo2Fraction(safeTemperature);
+  const temperatureLabel = formatGdpTemperature(safeTemperature);
 
   if (slider && document.activeElement !== slider) slider.value = String(safeTemperature);
-  if (input && document.activeElement !== input) input.value = Number.isInteger(safeTemperature) ? String(safeTemperature) : safeTemperature.toFixed(1);
+  if (input && document.activeElement !== input) input.value = safeTemperature.toFixed(1);
+  setText('gdp-temp-display', temperatureLabel);
   setText('gdp-vo2-fraction', `${Math.round(fraction * 100)}%`);
+  setText('corrected-flow-label', `Corrected flow (${temperatureLabel})`);
+  setText('corrected-row-label', `${temperatureLabel} corrected`);
 
   document.querySelectorAll('[data-gdp-temp-preset]').forEach((button) => {
     const preset = Number(button.dataset.gdpTempPreset);
     const active = Math.abs(preset - safeTemperature) < 0.05;
-    button.className = 'gdp-temp-preset min-h-10 px-3 py-2 text-xs font-semibold rounded-full border transition-colors ' + (active
-      ? 'bg-emerald-500/10 border-emerald-500 text-emerald-700 dark:text-emerald-300 shadow-sm'
-      : 'bg-white dark:bg-primary-800 border-slate-200 dark:border-primary-700 text-slate-600 dark:text-slate-300 hover:border-emerald-500/50');
+    button.className = 'gdp-temp-preset min-h-9 px-2.5 py-1.5 text-[11px] font-semibold rounded-full border transition-colors ' + (active
+      ? 'bg-accent-500/10 border-accent-500 text-accent-600 dark:text-accent-400 shadow-sm'
+      : 'bg-white dark:bg-primary-800 border-slate-200 dark:border-primary-700 text-slate-600 dark:text-slate-300 hover:border-accent-500/50');
   });
 }
-
 
 function updateGDP() {
   updateBSA();
@@ -4952,7 +4960,10 @@ function updateGDP() {
     setText('cao2-result', '—');
     setText('required-flow', '—');
     setText('temp-reference-flow', '—');
-    setText('temp-do2-reference', '—');
+    setText('normothermia-flow', '—');
+    setText('normothermia-do2-floor', targetDO2i ? `${Math.round(targetDO2i)} mL/min/m²` : '—');
+    setText('corrected-flow-table', '—');
+    setText('corrected-do2-floor', results.tempAdjustedDo2Reference ? `${Math.round(results.tempAdjustedDo2Reference)} mL/min/m²` : '—');
     setText('current-do2i', '—');
     setText('gdp-temp-flow-note', '');
     updateGdpTemperatureDisplay(results.temperatureC, results.vo2Fraction);
@@ -4967,10 +4978,13 @@ function updateGDP() {
   if (warningEl) warningEl.classList.add('hidden');
 
   updateGdpTemperatureDisplay(results.temperatureC, results.vo2Fraction);
-  setText('cao2-result', results.cao2 ? `${results.cao2.toFixed(2)} <span class="text-xs text-slate-300">mL/dL</span>` : '—');
-  setText('required-flow', results.requiredFlow ? `${results.requiredFlow.toFixed(2)} <span class="text-xs text-slate-300">L/min</span>` : '—');
-  setText('temp-reference-flow', results.tempAdjustedReferenceFlow ? `${results.tempAdjustedReferenceFlow.toFixed(2)} <span class="text-xs text-emerald-200">L/min</span>` : '—');
-  setText('temp-do2-reference', results.tempAdjustedDo2Reference ? `${Math.round(results.tempAdjustedDo2Reference)} mL/min/m²` : '—');
+  setText('cao2-result', results.cao2 ? results.cao2.toFixed(2) : '—');
+  setText('required-flow', results.requiredFlow ? results.requiredFlow.toFixed(2) : '—');
+  setText('temp-reference-flow', results.tempAdjustedReferenceFlow ? results.tempAdjustedReferenceFlow.toFixed(2) : '—');
+  setText('normothermia-flow', results.requiredFlow ? `${results.requiredFlow.toFixed(2)} L/min` : '—');
+  setText('normothermia-do2-floor', results.baseTarget ? `${Math.round(results.baseTarget)} mL/min/m²` : '—');
+  setText('corrected-flow-table', results.tempAdjustedReferenceFlow ? `${results.tempAdjustedReferenceFlow.toFixed(2)} L/min` : '—');
+  setText('corrected-do2-floor', results.tempAdjustedDo2Reference ? `${Math.round(results.tempAdjustedDo2Reference)} mL/min/m²` : '—');
   setText('current-do2i', results.currentDO2i ? `${Math.round(results.currentDO2i)} <span class="text-xs text-slate-300">mL/min/m²</span>` : '—');
 
   let statusLabel = 'Waiting for current flow';
@@ -7518,7 +7532,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const tempInput = el('gdp-temp-c');
     const syncGdpTemperature = (value, options = {}) => {
       const temperature = clamp(parseFloat(value) || GDP_DEFAULT_TEMPERATURE_C, 20, 37);
-      const displayValue = Number.isInteger(temperature) ? String(temperature) : temperature.toFixed(1);
+      const displayValue = temperature.toFixed(1);
       if (tempSlider) tempSlider.value = String(temperature);
       if (tempInput && options.commitInput !== false) tempInput.value = displayValue;
       updateGDP();

@@ -480,72 +480,97 @@
             <p class="text-[11px] text-slate-500 dark:text-slate-400">* Required for DO₂i and target flow calculation. Current flow is optional.</p>
             <p id="gdp-warning" class="text-xs text-red-500 hidden">Enter required fields.</p>
 
-            <section class="rounded-xl border border-emerald-200/70 dark:border-emerald-900/60 bg-slate-50 dark:bg-primary-800/35 p-4 space-y-4" aria-labelledby="gdp-temperature-context-heading">
+            <section class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/35 p-3 md:p-4 space-y-3" aria-labelledby="gdp-temperature-context-heading">
               <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <div class="flex items-center gap-2">
-                    <h3 id="gdp-temperature-context-heading" class="text-sm font-semibold text-primary-900 dark:text-white">Temperature context</h3>
-                    <span class="rounded-full border border-emerald-300/70 dark:border-emerald-700/70 px-2 py-0.5 text-[10px] font-bold tracking-wide text-emerald-700 dark:text-emerald-300">NEW</span>
+                  <h3 id="gdp-temperature-context-heading" class="text-sm font-semibold text-primary-900 dark:text-white">Temperature context</h3>
+                  <p class="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">Fixed Q10 = 2.2 hypothermic CPB reference.</p>
+                </div>
+                <div class="flex items-baseline gap-3 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/40 px-3 py-2">
+                  <div>
+                    <div id="gdp-temp-display" class="text-lg font-bold text-primary-900 dark:text-white">37.0°C</div>
+                    <div class="text-[10px] uppercase tracking-wide text-slate-500 dark:text-slate-400">selected temp</div>
                   </div>
-                  <p class="mt-1 text-xs text-slate-600 dark:text-slate-300">Reference estimate for hypothermic CPB oxygen consumption using fixed Q10 = 2.2.</p>
-                </div>
-                <div class="text-right">
-                  <div id="gdp-vo2-fraction" class="text-lg font-bold text-emerald-700 dark:text-emerald-300">100%</div>
-                  <div class="text-[11px] text-slate-500 dark:text-slate-400">estimated VO₂ fraction</div>
+                  <div class="h-8 w-px bg-slate-200 dark:bg-primary-700"></div>
+                  <div>
+                    <div id="gdp-vo2-fraction" class="text-lg font-bold text-emerald-600 dark:text-emerald-300">100%</div>
+                    <div class="text-[10px] uppercase tracking-wide text-slate-500 dark:text-slate-400">VO₂ fraction</div>
+                  </div>
                 </div>
               </div>
 
-              <div class="grid md:grid-cols-[1fr_110px] gap-3 items-center">
-                <label class="space-y-1">
-                  <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Patient temperature (°C)</span>
-                  <input id="gdp-temp-slider" type="range" min="20" max="37" step="0.5" value="37" class="w-full accent-emerald-500" />
+              <div class="grid md:grid-cols-[1fr_96px] gap-3 items-end">
+                <label class="space-y-1 min-w-0">
+                  <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Temperature (°C)</span>
+                  <input id="gdp-temp-slider" type="range" min="20" max="37" step="0.5" value="37" class="w-full accent-accent-500" />
                 </label>
-                <input id="gdp-temp-c" type="number" inputmode="decimal" min="20" max="37" step="0.5" value="37" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm font-semibold text-primary-900 dark:text-white focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all" aria-label="Patient temperature in degrees Celsius" />
+                <input id="gdp-temp-c" type="number" inputmode="decimal" min="20" max="37" step="0.5" value="37" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2 text-sm font-semibold text-primary-900 dark:text-white focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all" aria-label="Patient temperature in degrees Celsius" />
               </div>
 
-              <div class="flex flex-wrap gap-2" aria-label="Temperature presets">
-                <button type="button" data-gdp-temp-preset="37" class="gdp-temp-preset min-h-10 px-3 py-2 text-xs font-semibold rounded-full border transition-colors">37°C normothermia</button>
-                <button type="button" data-gdp-temp-preset="35" class="gdp-temp-preset min-h-10 px-3 py-2 text-xs font-semibold rounded-full border transition-colors">35°C mild hypothermia</button>
-                <button type="button" data-gdp-temp-preset="32" class="gdp-temp-preset min-h-10 px-3 py-2 text-xs font-semibold rounded-full border transition-colors">32°C moderate hypothermia</button>
-                <button type="button" data-gdp-temp-preset="28" class="gdp-temp-preset min-h-10 px-3 py-2 text-xs font-semibold rounded-full border transition-colors">28°C deep hypothermia</button>
-                <button type="button" data-gdp-temp-preset="20" class="gdp-temp-preset min-h-10 px-3 py-2 text-xs font-semibold rounded-full border transition-colors">20°C DHCA prep</button>
+              <div class="flex flex-wrap gap-1.5" aria-label="Temperature presets">
+                <button type="button" data-gdp-temp-preset="37" class="gdp-temp-preset min-h-9 px-2.5 py-1.5 text-[11px] font-semibold rounded-full border transition-colors">37°C normothermia</button>
+                <button type="button" data-gdp-temp-preset="35" class="gdp-temp-preset min-h-9 px-2.5 py-1.5 text-[11px] font-semibold rounded-full border transition-colors">35°C mild HT</button>
+                <button type="button" data-gdp-temp-preset="32" class="gdp-temp-preset min-h-9 px-2.5 py-1.5 text-[11px] font-semibold rounded-full border transition-colors">32°C moderate HT</button>
+                <button type="button" data-gdp-temp-preset="28" class="gdp-temp-preset min-h-9 px-2.5 py-1.5 text-[11px] font-semibold rounded-full border transition-colors">28°C deep HT</button>
+                <button type="button" data-gdp-temp-preset="20" class="gdp-temp-preset min-h-9 px-2.5 py-1.5 text-[11px] font-semibold rounded-full border transition-colors">20°C DHCA prep</button>
               </div>
 
-              <div class="rounded-lg border border-emerald-200/70 dark:border-emerald-900/60 bg-white/70 dark:bg-primary-900/30 px-3 py-2 text-xs text-slate-600 dark:text-slate-300">
-                Temp-adjusted DO₂ reference: <span id="temp-do2-reference" class="font-semibold text-emerald-700 dark:text-emerald-300">—</span>
-              </div>
-              <p class="text-[11px] text-slate-500 dark:text-slate-400">Based on estimated VO₂ reduction at the selected temperature; use as a reference floor, not a prescribed pump flow.</p>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Estimated VO₂ reduction is used only as a reference, not a pump-flow prescription.</p>
             </section>
 
-            <div class="bg-primary-900 dark:bg-black/20 p-6 text-white rounded-xl relative overflow-hidden">
+            <div class="bg-primary-900 dark:bg-black/20 p-4 md:p-5 text-white rounded-xl relative overflow-hidden">
               <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-accent-500 rounded-full opacity-10 blur-3xl"></div>
               <div class="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-900 to-primary-800 opacity-70"></div>
-              <div class="relative z-10 space-y-5">
-                <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
-                  <div class="bg-white/5 rounded-lg p-4 border border-white/10 shadow-sm">
+              <div class="relative z-10 space-y-4">
+                <div class="grid sm:grid-cols-3 gap-3">
+                  <div class="bg-white/5 rounded-lg p-3 border border-white/10 shadow-sm">
                     <div class="text-[11px] uppercase tracking-wider text-slate-300">CaO₂</div>
                     <div id="cao2-result" class="text-2xl font-bold mt-1">—</div>
+                    <div class="text-[11px] text-slate-300">mL O₂/dL</div>
                   </div>
-                  <div class="bg-white/5 rounded-lg p-4 border border-white/10 shadow-sm">
-                    <div class="text-[11px] uppercase tracking-wider text-slate-300">Required pump flow</div>
+                  <div class="bg-white/5 rounded-lg p-3 border border-white/10 shadow-sm">
+                    <div class="text-[11px] uppercase tracking-wider text-slate-300">Required flow (normothermia)</div>
                     <div id="required-flow" class="text-2xl font-bold mt-1">—</div>
+                    <div class="text-[11px] text-slate-300">L/min</div>
                   </div>
-                  <div class="bg-white/5 rounded-lg p-4 border border-white/10 shadow-sm">
-                    <div class="text-[11px] uppercase tracking-wider text-slate-300">Temp-adjusted reference flow</div>
+                  <div class="bg-white/5 rounded-lg p-3 border border-emerald-300/30 shadow-sm">
+                    <div id="corrected-flow-label" class="text-[11px] uppercase tracking-wider text-emerald-200">Corrected flow (37.0°C)</div>
                     <div id="temp-reference-flow" class="text-2xl font-bold mt-1 text-emerald-300">—</div>
-                    <p class="mt-1 text-[11px] text-slate-200/80">Reference estimate, not a prescribed pump flow.</p>
-                  </div>
-                  <div class="bg-white/5 rounded-lg p-4 border border-white/10 shadow-sm">
-                    <div class="text-[11px] uppercase tracking-wider text-slate-300">Current DO₂i</div>
-                    <div id="current-do2i" class="text-2xl font-bold mt-1">—</div>
+                    <div class="text-[11px] text-emerald-100/90">L/min · reference only</div>
                   </div>
                 </div>
 
-                <div class="bg-white/5 rounded-lg p-4 border border-white/10 shadow-sm">
-                  <div class="text-[11px] uppercase tracking-wider text-slate-300">Status</div>
-                  <div id="gdp-status-text" class="text-lg font-semibold mt-1">Awaiting data</div>
-                  <p id="gdp-status-detail" class="text-xs text-slate-200 mt-1">Provide required inputs to evaluate target vs. current flow.</p>
-                  <p id="gdp-temp-flow-note" class="text-xs text-emerald-200 mt-2"></p>
+                <div class="rounded-lg border border-white/10 bg-white/5 overflow-hidden">
+                  <div class="grid grid-cols-3 gap-2 px-3 py-2 text-[11px] uppercase tracking-wider text-slate-300 border-b border-white/10">
+                    <div>Basis</div>
+                    <div>Required flow</div>
+                    <div>DO₂i floor</div>
+                  </div>
+                  <div class="grid grid-cols-3 gap-2 px-3 py-2 text-xs text-slate-100 border-b border-white/10">
+                    <div>Normothermia (37°C)</div>
+                    <div id="normothermia-flow">—</div>
+                    <div id="normothermia-do2-floor">—</div>
+                  </div>
+                  <div class="grid grid-cols-3 gap-2 px-3 py-2 text-xs text-emerald-200">
+                    <div id="corrected-row-label">37.0°C corrected</div>
+                    <div id="corrected-flow-table">—</div>
+                    <div id="corrected-do2-floor">—</div>
+                  </div>
+                </div>
+
+                <div class="bg-white/5 rounded-lg p-3 border border-white/10 shadow-sm">
+                  <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <div class="text-[11px] uppercase tracking-wider text-slate-300">Status</div>
+                      <div id="gdp-status-text" class="text-lg font-semibold mt-1">Awaiting data</div>
+                      <p id="gdp-status-detail" class="text-xs text-slate-200 mt-1">Provide required inputs to evaluate target vs. current flow.</p>
+                      <p id="gdp-temp-flow-note" class="text-xs text-emerald-200 mt-2"></p>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-[11px] uppercase tracking-wider text-slate-300">Current DO₂i</div>
+                      <div id="current-do2i" class="text-xl font-bold mt-1">—</div>
+                    </div>
+                  </div>
                 </div>
 
                 <div class="space-y-2">
@@ -597,11 +622,11 @@
                 <section class="space-y-1">
                   <h4 class="text-xs font-semibold text-primary-900 dark:text-white">Model assumptions</h4>
                   <p>This calculator estimates oxygen delivery index from arterial oxygen content and indexed pump flow. It assumes steady-state oxygen content and does not model oxygen extraction, hemodilution kinetics, blood loss, transfusion timing, microcirculatory flow, or rapid changes in metabolic demand.</p>
-                  <p>The temperature context uses a fixed Q10 assumption to estimate metabolic demand reduction during hypothermia. This reference estimate does not replace bedside assessment or make the temperature-adjusted value a prescribed pump flow.</p>
+                  <p>The corrected flow is a temperature-adjusted reference flow based on Q10-estimated VO₂ reduction, with Q10 fixed at 2.2. This reference estimate does not replace bedside assessment or make the temperature-adjusted value a prescribed pump flow.</p>
                 </section>
                 <section class="space-y-1">
                   <h4 class="text-xs font-semibold text-primary-900 dark:text-white">How to use required flow output</h4>
-                  <p>The calculated required flow should be treated as a decision-support estimate, not a mandatory pump flow. Final flow decisions should integrate SvO₂/ScvO₂, lactate trend, NIRS, perfusion pressure, hemoglobin, arterial line pressure, venous drainage, cannula limitations, institutional protocol, temperature, and the surgical field.</p>
+                  <p>The calculated required flow should be treated as a decision-support estimate, not a mandatory pump flow. Final pump flow decisions should integrate SvO₂/ScvO₂, lactate trend, NIRS, perfusion pressure, hemoglobin, arterial pressure, venous drainage, cannula limits, temperature phase, institutional protocol, and the surgical field.</p>
                 </section>
               </div>
             </section>
