@@ -4944,13 +4944,10 @@ function updateGDP() {
   if (!inputs.pao2Val) requiredMissing.push('PaO₂');
   if (!targetDO2i) requiredMissing.push('Target DO₂i');
 
-  const gauge = el('gdp-gauge');
-  const gaugeMsg = el('gdp-gauge-msg');
   const statusText = el('gdp-status-text');
   const statusDetail = el('gdp-status-detail');
-  const ciCommentEl = el('ci-comment');
-
-  el('cao2').value = results.cao2 ? results.cao2.toFixed(2) : '';
+  const cao2Hidden = el('cao2');
+  if (cao2Hidden) cao2Hidden.value = results.cao2 ? results.cao2.toFixed(2) : '';
 
   if (requiredMissing.length || !results.bsa || !results.hb || !results.sao2 || !results.pao2 || !targetDO2i) {
     if (warningEl) {
@@ -4965,13 +4962,9 @@ function updateGDP() {
     setText('corrected-flow-table', '—');
     setText('corrected-do2-floor', results.tempAdjustedDo2Reference ? `${Math.round(results.tempAdjustedDo2Reference)} mL/min/m²` : '—');
     setText('current-do2i', '—');
-    setText('gdp-temp-flow-note', '');
     updateGdpTemperatureDisplay(results.temperatureC, results.vo2Fraction);
-    statusText.textContent = 'Awaiting data';
-    statusDetail.textContent = 'Provide required inputs to evaluate target vs. current flow.';
-    gauge.style.width = '0%';
-    gauge.className = 'h-3 rounded-full bg-gradient-to-r from-slate-300 to-slate-200 dark:from-primary-800 dark:to-primary-700 transition-all duration-700 ease-out';
-    gaugeMsg.textContent = 'Enter current flow to visualize DO₂i vs. target';
+    if (statusText) statusText.textContent = 'No data';
+    if (statusDetail) statusDetail.textContent = 'Enter required fields to calculate flow and DO₂i.';
     return;
   }
 
@@ -4987,62 +4980,33 @@ function updateGDP() {
   setText('corrected-do2-floor', results.tempAdjustedDo2Reference ? `${Math.round(results.tempAdjustedDo2Reference)} mL/min/m²` : '—');
   setText('current-do2i', results.currentDO2i ? `${Math.round(results.currentDO2i)} <span class="text-xs text-slate-300">mL/min/m²</span>` : '—');
 
-  let statusLabel = 'Waiting for current flow';
-  let detail = 'Enter current pump flow to compare against the target DO₂i.';
-  let gaugeColor = 'from-slate-300 to-slate-200 dark:from-primary-800 dark:to-primary-700';
-  let gaugeWidth = '0%';
-  let ciComment = results.currentCI ? `Current CI ${results.currentCI.toFixed(2)} L/min/m².` : '';
+  let statusLabel = 'No data';
+  let detail = 'Enter current pump flow to evaluate DO₂i.';
 
   const lowerTarget = results.recommendedMin;
   const upperTarget = results.recommendedMax;
 
   if (results.currentDO2i > 0) {
-    const denom = upperTarget > 0 ? upperTarget * 1.05 : targetDO2i || 1;
-    const pct = clamp((results.currentDO2i / denom) * 100, 0, 100);
-    gaugeWidth = `${pct}%`;
+    const temperatureLabel = formatGdpTemperature(results.temperatureC);
+    const flowDelta = results.flow - results.tempAdjustedReferenceFlow;
+    const referencePhrase = flowDelta >= 0
+      ? `flow is ${Math.abs(flowDelta).toFixed(2)} L/min above the ${temperatureLabel} reference floor.`
+      : `flow is ${Math.abs(flowDelta).toFixed(2)} L/min below the ${temperatureLabel} reference floor.`;
 
     if (results.currentDO2i < lowerTarget) {
-      const deltaFlow = Math.max(results.requiredFlow - results.flow, 0);
       statusLabel = 'Below target';
-      detail = deltaFlow > 0
-        ? `Needs approximately +${deltaFlow.toFixed(2)} L/min to reach the target.`
-        : 'Increase flow to approach the target.';
-      gaugeColor = 'from-amber-500 to-red-500';
+      detail = `Below the selected normothermic target; ${referencePhrase}`;
     } else if (results.currentDO2i > upperTarget) {
       statusLabel = 'Above target';
-      detail = 'Above the goal—verify this is intentional and hemodynamically tolerated.';
-      gaugeColor = 'from-sky-500 to-blue-500';
+      detail = `Above the selected normothermic target; ${referencePhrase}`;
     } else {
-      statusLabel = 'At / near target';
-      detail = 'Current delivery is within ±10% of the selected DO₂i goal.';
-      gaugeColor = 'from-emerald-500 to-emerald-400';
+      statusLabel = 'Borderline';
+      detail = `Within ±10% of the selected target; ${referencePhrase}`;
     }
   }
 
-  const tempFlowNote = el('gdp-temp-flow-note');
-  if (tempFlowNote) {
-    if (results.flow > 0 && results.tempAdjustedReferenceFlow > 0) {
-      const delta = results.flow - results.tempAdjustedReferenceFlow;
-      const direction = delta >= 0 ? 'above' : 'below';
-      tempFlowNote.textContent = `Current flow is ${Math.abs(delta).toFixed(2)} L/min ${direction} the temp-adjusted reference floor (${results.temperatureC.toFixed(1)}°C, Q10 ${GDP_Q10}).`;
-    } else {
-      tempFlowNote.textContent = 'Enter current flow to compare it with the temp-adjusted reference floor.';
-    }
-  }
-
-  statusText.textContent = statusLabel;
-  statusDetail.textContent = detail;
-  if (ciCommentEl) ciCommentEl.textContent = ciComment;
-  gauge.style.width = gaugeWidth;
-  gauge.className = `h-3 rounded-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(34,211,238,0.25)] ${gaugeColor}`;
-  if (gaugeMsg) {
-    const guidelineLine = '<p>Guideline DO₂i (37°C): 280–300 mL/min/m²</p>';
-    const userAdjustedLine = `<p>Selected DO₂i target range: ${results.recommendedMin}–${results.recommendedMax} mL/min/m²</p>`;
-    const flowLine = results.currentDO2i
-      ? `<p class="text-[11px] text-slate-200/80">Current DO₂i: ${Math.round(results.currentDO2i)} mL/min/m²</p>`
-      : '<p class="text-[11px] text-slate-200/70">Enter current flow to visualize DO₂i against targets.</p>';
-    gaugeMsg.innerHTML = `${guidelineLine}${userAdjustedLine}${flowLine}`;
-  }
+  if (statusText) statusText.textContent = statusLabel;
+  if (statusDetail) statusDetail.textContent = detail;
 }
 
 function resetGDP() {
