@@ -95,54 +95,6 @@
       background: rgba(15, 23, 42, 0.4);
     }
 
-    .calculator-references {
-      border-radius: 1rem;
-      border: 1px solid #e2e8f0;
-      background: #f8fafc;
-      padding: 1rem;
-    }
-    .dark .calculator-references {
-      border-color: #1e293b;
-      background: rgba(15, 23, 42, 0.4);
-    }
-    .calculator-references h2 {
-      font-size: 1rem;
-      line-height: 1.5rem;
-      font-weight: 600;
-      color: #0f172a;
-    }
-    .dark .calculator-references h2 { color: #fff; }
-    .calculator-references > p,
-    .calculator-references > ol {
-      margin-top: 0.5rem;
-      border-radius: 0.75rem;
-      border: 1px solid #f1f5f9;
-      background: #fff;
-      padding: 1rem;
-      font-size: 0.8125rem;
-      line-height: 1.625;
-      color: #475569;
-      box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
-    }
-    .dark .calculator-references > p,
-    .dark .calculator-references > ol {
-      border-color: #1e293b;
-      background: #0f172a;
-      color: #cbd5e1;
-      box-shadow: none;
-    }
-    .calculator-references > ol {
-      list-style: decimal;
-      padding-left: 2.25rem;
-    }
-    .calculator-references li + li { margin-top: 0.5rem; }
-    .calculator-references a {
-      color: #0891b2;
-      font-weight: 600;
-      text-decoration: none;
-    }
-    .calculator-references a:hover { color: #06b6d4; }
-    .dark .calculator-references a { color: #22d3ee; }
 
     .calculator-lower-title {
       font-size: 1rem;
@@ -760,48 +712,60 @@
               </div>
             </section>
 
-            <section class="calculator-references" aria-labelledby="gdp-references-title">
-              <h2 id="gdp-references-title">References</h2>
-              <p>
-                This calculator is based on published goal-directed perfusion literature, oxygen delivery physiology, and temperature-adjusted oxygen consumption concepts. DO₂i targets and temperature-corrected values should be interpreted as reference estimates, not absolute pump-flow prescriptions.
-              </p>
+            <section class="selected-references bg-slate-50 dark:bg-primary-900/70 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-4 md:p-5 space-y-5" aria-labelledby="gdp-selected-references-title">
+              <h2 id="gdp-selected-references-title" class="text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-slate-300">Selected references</h2>
 
-              <ol>
-                <li>
-                  <a href="https://academic.oup.com/ejcts/article/67/2/ezae354/8011475" target="_blank" rel="noopener noreferrer">
-                    Wahba A, Kunst G, De Somer F, et al. 2024 EACTS/EACTAIC/EBCP Guidelines on cardiopulmonary bypass in adult cardiac surgery.
-                  </a>
-                  Eur J Cardiothorac Surg. 2025;67(2):ezae354.
-                </li>
+              <div class="space-y-2">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Guideline &amp; GDP references</h3>
+                <ul class="list-disc pl-5 text-sm text-slate-700 dark:text-slate-300 space-y-2">
+                  <li>
+                    <span>Wahba A, Kunst G, De Somer F, et al. 2024 EACTS/EACTAIC/EBCP Guidelines on cardiopulmonary bypass in adult cardiac surgery. Eur J Cardiothorac Surg. 2025;67(2):ezae354.</span>
+                    <div class="reference-links mt-1 flex flex-wrap gap-1.5">
+                      <a href="https://academic.oup.com/ejcts/article/67/2/ezae354/8011475" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Journal</a>
+                      <a href="https://pubmed.ncbi.nlm.nih.gov/39949326/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
+                      <a href="https://doi.org/10.1093/ejcts/ezae354" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">DOI</a>
+                    </div>
+                  </li>
+                  <li>
+                    <span>Ranucci M, Johnson I, Willcox T, et al. Goal-directed perfusion to reduce acute kidney injury: a randomized trial. J Thorac Cardiovasc Surg. 2018;156(5):1918-1927.e2.</span>
+                    <div class="reference-links mt-1 flex flex-wrap gap-1.5">
+                      <a href="https://pubmed.ncbi.nlm.nih.gov/29778331/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
+                      <a href="https://www.jtcvs.org/article/S0022-5223(18)31029-8/fulltext" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Journal</a>
+                      <a href="https://doi.org/10.1016/j.jtcvs.2018.04.045" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">DOI</a>
+                    </div>
+                  </li>
+                  <li>
+                    <span>Gao P, Liu J, Zhang P, Bai L, Jin Y, Li Y. Goal-directed perfusion for reducing acute kidney injury in cardiac surgery: a systematic review and meta-analysis. Perfusion. 2023;38(3):591-599.</span>
+                    <div class="reference-links mt-1 flex flex-wrap gap-1.5">
+                      <a href="https://pubmed.ncbi.nlm.nih.gov/35125028/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
+                      <a href="https://journals.sagepub.com/doi/10.1177/02676591211073783" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Journal</a>
+                      <a href="https://doi.org/10.1177/02676591211073783" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">DOI</a>
+                    </div>
+                  </li>
+                </ul>
+              </div>
 
-                <li>
-                  <a href="https://pubmed.ncbi.nlm.nih.gov/29778331/" target="_blank" rel="noopener noreferrer">
-                    Ranucci M, Johnson I, Willcox T, et al. Goal-directed perfusion to reduce acute kidney injury: a randomized trial.
-                  </a>
-                  J Thorac Cardiovasc Surg. 2018;156(5):1918-1927.e2.
-                </li>
-
-                <li>
-                  <a href="https://pubmed.ncbi.nlm.nih.gov/35125028/" target="_blank" rel="noopener noreferrer">
-                    Gao P, Liu J, Zhang P, Bai L, Jin Y, Li Y. Goal-directed perfusion for reducing acute kidney injury in cardiac surgery: a systematic review and meta-analysis.
-                  </a>
-                  Perfusion. 2023;38(3):591-599.
-                </li>
-
-                <li>
-                  <a href="https://pubmed.ncbi.nlm.nih.gov/10355405/" target="_blank" rel="noopener noreferrer">
-                    Parolari A, Alamanni F, Gherli T, et al. Cardiopulmonary bypass and oxygen consumption: oxygen delivery and hemodynamics.
-                  </a>
-                  Ann Thorac Surg. 1999;67(5):1320-1327.
-                </li>
-
-                <li>
-                  <a href="https://pubmed.ncbi.nlm.nih.gov/40606406/" target="_blank" rel="noopener noreferrer">
-                    El Dsouki Y, Condello I. A temperature-adjusted algorithm for predicting critical indexed oxygen delivery (DO₂i) during cardiopulmonary bypass.
-                  </a>
-                  Cureus. 2025;17(7):e87089.
-                </li>
-              </ol>
+              <div class="space-y-2">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Temperature &amp; oxygen consumption references</h3>
+                <ul class="list-disc pl-5 text-sm text-slate-700 dark:text-slate-300 space-y-2">
+                  <li>
+                    <span>Parolari A, Alamanni F, Gherli T, et al. Cardiopulmonary bypass and oxygen consumption: oxygen delivery and hemodynamics. Ann Thorac Surg. 1999;67(5):1320-1327.</span>
+                    <div class="reference-links mt-1 flex flex-wrap gap-1.5">
+                      <a href="https://pubmed.ncbi.nlm.nih.gov/10355405/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
+                      <a href="https://www.annalsthoracicsurgery.org/article/S0003-4975(99)00261-1/fulltext" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Journal</a>
+                      <a href="https://doi.org/10.1016/S0003-4975(99)00261-1" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">DOI</a>
+                    </div>
+                  </li>
+                  <li>
+                    <span>El Dsouki Y, Condello I. A temperature-adjusted algorithm for predicting critical indexed oxygen delivery (DO₂i) during cardiopulmonary bypass. Cureus. 2025;17(7):e87089.</span>
+                    <div class="reference-links mt-1 flex flex-wrap gap-1.5">
+                      <a href="https://pubmed.ncbi.nlm.nih.gov/40606406/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
+                      <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12221110/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PMC</a>
+                      <a href="https://doi.org/10.7759/cureus.87089" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">DOI</a>
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </section>
           </div>
         </div>
