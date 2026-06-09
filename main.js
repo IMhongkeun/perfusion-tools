@@ -4962,6 +4962,11 @@ function updateGDP() {
     setText('corrected-flow-table', '—');
     setText('corrected-do2-floor', results.tempAdjustedDo2Reference ? `${Math.round(results.tempAdjustedDo2Reference)} mL/min/m²` : '—');
     setText('current-do2i', '—');
+    const adequacyBar = el('gdp-adequacy-bar');
+    if (adequacyBar) {
+      adequacyBar.style.width = '0%';
+      adequacyBar.className = 'h-full w-0 rounded-full bg-slate-400 transition-all duration-500 ease-out';
+    }
     updateGdpTemperatureDisplay(results.temperatureC, results.vo2Fraction);
     if (statusText) statusText.textContent = 'No data';
     if (statusDetail) statusDetail.textContent = 'Enter required fields to calculate flow and DO₂i.';
@@ -4971,17 +4976,19 @@ function updateGDP() {
   if (warningEl) warningEl.classList.add('hidden');
 
   updateGdpTemperatureDisplay(results.temperatureC, results.vo2Fraction);
-  setText('cao2-result', results.cao2 ? results.cao2.toFixed(2) : '—');
-  setText('required-flow', results.requiredFlow ? results.requiredFlow.toFixed(2) : '—');
-  setText('temp-reference-flow', results.tempAdjustedReferenceFlow ? results.tempAdjustedReferenceFlow.toFixed(2) : '—');
+  setText('cao2-result', results.cao2 ? `${results.cao2.toFixed(2)} <span class="text-xs font-medium text-slate-300">mL O₂/dL</span>` : '—');
+  setText('required-flow', results.requiredFlow ? `${results.requiredFlow.toFixed(2)} <span class="text-xs font-medium text-slate-300">L/min</span>` : '—');
+  setText('temp-reference-flow', results.tempAdjustedReferenceFlow ? `${results.tempAdjustedReferenceFlow.toFixed(2)} <span class="text-xs font-medium text-emerald-100/90">L/min</span>` : '—');
   setText('normothermia-flow', results.requiredFlow ? `${results.requiredFlow.toFixed(2)} L/min` : '—');
   setText('normothermia-do2-floor', results.baseTarget ? `${Math.round(results.baseTarget)} mL/min/m²` : '—');
   setText('corrected-flow-table', results.tempAdjustedReferenceFlow ? `${results.tempAdjustedReferenceFlow.toFixed(2)} L/min` : '—');
   setText('corrected-do2-floor', results.tempAdjustedDo2Reference ? `${Math.round(results.tempAdjustedDo2Reference)} mL/min/m²` : '—');
-  setText('current-do2i', results.currentDO2i ? `${Math.round(results.currentDO2i)} <span class="text-xs text-slate-300">mL/min/m²</span>` : '—');
+  setText('current-do2i', results.currentDO2i ? `${Math.round(results.currentDO2i)} <span class="text-xs font-medium text-slate-300">mL/min/m²</span>` : '—');
 
   let statusLabel = 'No data';
   let detail = 'Enter current pump flow to evaluate DO₂i.';
+  let adequacyWidth = '0%';
+  let adequacyColor = 'bg-slate-400';
 
   const lowerTarget = results.recommendedMin;
   const upperTarget = results.recommendedMax;
@@ -4992,28 +4999,40 @@ function updateGDP() {
     const referencePhrase = flowDelta >= 0
       ? `flow is ${Math.abs(flowDelta).toFixed(2)} L/min above the ${temperatureLabel} reference floor.`
       : `flow is ${Math.abs(flowDelta).toFixed(2)} L/min below the ${temperatureLabel} reference floor.`;
+    const adequacyDenominator = upperTarget > 0 ? upperTarget * 1.1 : targetDO2i || 1;
+    adequacyWidth = `${clamp((results.currentDO2i / adequacyDenominator) * 100, 0, 100)}%`;
 
     if (results.currentDO2i < lowerTarget) {
       statusLabel = 'Below target';
       detail = `Below the selected normothermic target; ${referencePhrase}`;
+      adequacyColor = 'bg-gradient-to-r from-amber-500 to-red-500';
     } else if (results.currentDO2i > upperTarget) {
       statusLabel = 'Above target';
       detail = `Above the selected normothermic target; ${referencePhrase}`;
+      adequacyColor = 'bg-gradient-to-r from-sky-500 to-blue-500';
     } else {
       statusLabel = 'Borderline';
       detail = `Within ±10% of the selected target; ${referencePhrase}`;
+      adequacyColor = 'bg-gradient-to-r from-emerald-500 to-emerald-400';
     }
   }
 
+  const adequacyBar = el('gdp-adequacy-bar');
+  if (adequacyBar) {
+    adequacyBar.style.width = adequacyWidth;
+    adequacyBar.className = `h-full rounded-full transition-all duration-500 ease-out ${adequacyColor}`;
+  }
   if (statusText) statusText.textContent = statusLabel;
   if (statusDetail) statusDetail.textContent = detail;
 }
 
 function resetGDP() {
-  ['h_cm', 'w_kg', 'bsa', 'flow', 'hb', 'sao2', 'pao2'].forEach(id => {
+  ['h_cm', 'w_kg', 'bsa', 'flow', 'hb', 'pao2'].forEach(id => {
     const n = el(id);
     if (n) n.value = '';
   });
+  const sao2El = el('sao2');
+  if (sao2El) sao2El.value = '100';
   const customInput = el('target-custom');
   if (customInput) customInput.value = '';
   targetDO2i = 280;
