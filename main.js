@@ -4116,7 +4116,7 @@ function createPressureDropLookupResult(entry, flowInputValue, flowValue, onFlow
   wrap.className = 'space-y-4';
   wrap.appendChild(createPressureDropEstimateCard(entry, flowInputValue, flowValue, interpolationResult, onFlowInput));
   const grid = document.createElement('div');
-  grid.className = 'grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(260px,0.9fr)]';
+  grid.className = 'grid items-start gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(260px,0.9fr)]';
   grid.appendChild(createPressureDropChartPanel(entry, flowValue, interpolationResult));
   grid.appendChild(createPressureDropSelectedSummary(entry));
   wrap.appendChild(grid);
