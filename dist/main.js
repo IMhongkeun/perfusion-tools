@@ -3951,11 +3951,12 @@ function createPressureDropCandidateList(candidates, onSelect) {
   return wrap;
 }
 
-function createPressureDropEstimateCard(entry, flowValue, interpolationResult) {
+function createPressureDropEstimateCard(entry, flowInputValue, flowValue, interpolationResult, onFlowInput) {
   const card = document.createElement('div');
   const validPoints = getValidPressureDropPoints(entry.points);
   const rangeText = getPressureDropRangeText(validPoints, entry.referenceFlowRangeLabel || '');
-  card.className = 'rounded-xl border border-accent-500/25 bg-accent-500/10 dark:bg-accent-500/15 p-4 space-y-2';
+  const isOutOfRange = interpolationResult?.state === 'out_of_range';
+  card.className = `rounded-xl border ${isOutOfRange ? 'border-amber-300 dark:border-amber-500/50 bg-amber-50 dark:bg-amber-500/10' : 'border-accent-500/25 bg-accent-500/10 dark:bg-accent-500/15'} p-4 space-y-3`;
   const title = document.createElement('p');
   title.className = 'text-xs uppercase tracking-wider text-accent-700 dark:text-accent-300';
   title.textContent = 'Estimated pressure drop';
@@ -3964,18 +3965,38 @@ function createPressureDropEstimateCard(entry, flowValue, interpolationResult) {
   const note = document.createElement('p');
   note.className = 'text-xs leading-relaxed text-slate-600 dark:text-slate-300';
 
+  const inputWrap = document.createElement('label');
+  inputWrap.className = 'block space-y-1';
+  const inputLabel = document.createElement('span');
+  inputLabel.className = 'text-xs tracking-wider text-slate-500 dark:text-slate-400';
+  inputLabel.textContent = 'Flow rate (L/min)';
+  const input = document.createElement('input');
+  input.id = 'pressure-drop-result-flow';
+  input.type = 'number';
+  input.min = '0';
+  input.step = '0.1';
+  input.inputMode = 'decimal';
+  input.placeholder = 'Enter flow rate';
+  input.value = flowInputValue || '';
+  input.className = 'w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white';
+  input.addEventListener('input', () => onFlowInput(input.value));
+  const helper = document.createElement('span');
+  helper.className = 'block text-xs text-slate-500 dark:text-slate-400';
+  helper.textContent = validPoints.length ? `Available manufacturer curve range: ${rangeText}.` : 'No digitized curve range is available for this cannula.';
+  inputWrap.append(inputLabel, input, helper);
+
   if (!validPoints.length) {
     value.textContent = 'Curve unavailable';
     note.textContent = 'No digitized pressure-flow points are available for this cannula yet.';
   } else if (!Number.isFinite(flowValue)) {
     value.textContent = 'Enter flow';
-    note.textContent = `Available manufacturer curve range: ${rangeText}.`;
+    note.textContent = `Enter a flow rate to estimate pressure drop from the selected manufacturer curve.`;
   } else if (validPoints.length < 2) {
     value.textContent = 'Unavailable';
     note.textContent = 'At least two manufacturer curve points are required for interpolation.';
-  } else if (interpolationResult.state === 'out_of_range') {
+  } else if (isOutOfRange) {
     value.textContent = 'Out of range';
-    note.textContent = `The entered flow is outside the available manufacturer curve range (${formatPressureDropFlowValue(interpolationResult.minFlow)}–${formatPressureDropFlowValue(interpolationResult.maxFlow)} L/min). Avoid extrapolating beyond the published data.`;
+    note.textContent = `The entered flow is outside the available manufacturer curve range (${formatPressureDropFlowValue(interpolationResult.minFlow)}–${formatPressureDropFlowValue(interpolationResult.maxFlow)} L/min). Values outside the curve range are not extrapolated.`;
   } else if (interpolationResult.state === 'exact' || interpolationResult.state === 'interpolated') {
     value.textContent = `${interpolationResult.value.toFixed(1)} mmHg`;
     note.textContent = `At ${flowValue.toFixed(1)} L/min, estimated pressure drop is approximately ${interpolationResult.value.toFixed(1)} mmHg. ${interpolationResult.state === 'exact' ? 'This matches a digitized manufacturer curve point.' : 'Interpolated from digitized manufacturer-published curve data.'}`;
@@ -3984,7 +4005,7 @@ function createPressureDropEstimateCard(entry, flowValue, interpolationResult) {
     note.textContent = `Available manufacturer curve range: ${rangeText}.`;
   }
 
-  card.append(title, value, note);
+  card.append(title, value, inputWrap, note);
   return card;
 }
 
@@ -4061,11 +4082,11 @@ function createPressureDropSelectedSummary(entry) {
   return card;
 }
 
-function createPressureDropLookupResult(entry, flowValue) {
+function createPressureDropLookupResult(entry, flowInputValue, flowValue, onFlowInput) {
   const interpolationResult = interpolatePressureDrop(entry.points, flowValue);
   const wrap = document.createElement('div');
   wrap.className = 'space-y-4';
-  wrap.appendChild(createPressureDropEstimateCard(entry, flowValue, interpolationResult));
+  wrap.appendChild(createPressureDropEstimateCard(entry, flowInputValue, flowValue, interpolationResult, onFlowInput));
   const grid = document.createElement('div');
   grid.className = 'grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,0.75fr)]';
   grid.appendChild(createPressureDropChartPanel(entry, flowValue, interpolationResult));
@@ -4171,6 +4192,13 @@ async function initCannulaPressureDropPage() {
       setPressureDropSelectOptionPairs(controls.connectionSelect, connectionOptions, 'Any connection site');
     };
 
+    const focusResultFlowInput = () => {
+      const resultFlowInput = el('pressure-drop-result-flow');
+      if (!resultFlowInput) return;
+      resultFlowInput.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      resultFlowInput.focus({ preventScroll: true });
+    };
+
     const selectEntry = (entry) => {
       if (controls.manufacturerSelect) controls.manufacturerSelect.value = entry.manufacturer || '';
       populateLookupOptions('');
@@ -4181,15 +4209,21 @@ async function initCannulaPressureDropPage() {
       if (controls.sizeSelect) controls.sizeSelect.value = entry.size || '';
       populateLookupOptions('');
       if (controls.connectionSelect) controls.connectionSelect.value = getPressureDropConnectionOptionValue(entry);
-      render();
+      render({ focusResultFlow: true });
     };
 
-    const render = () => {
+    const syncFlowInput = (value, options = {}) => {
+      if (controls.flowInput) controls.flowInput.value = value;
+      render(options);
+    };
+
+    const render = ({ focusResultFlow = false } = {}) => {
       populateLookupOptions('');
       const filters = getPressureDropLookupSelection(controls);
       const candidates = getPressureDropLookupMatches(entries, filters);
       const selectedEntry = candidates.length === 1 ? candidates[0] : null;
-      const flowValue = parseFloat(controls.flowInput?.value || '');
+      const flowInputValue = controls.flowInput?.value || '';
+      const flowValue = parseFloat(flowInputValue);
       results.innerHTML = '';
 
       if (!entries.length) {
@@ -4210,9 +4244,10 @@ async function initCannulaPressureDropPage() {
       }
 
       status.textContent = `Selected ${selectedEntry.manufacturer} · ${selectedEntry.model} · ${selectedEntry.size || 'size not specified'}`;
-      results.appendChild(createPressureDropLookupResult(selectedEntry, flowValue));
+      results.appendChild(createPressureDropLookupResult(selectedEntry, flowInputValue, flowValue, value => syncFlowInput(value, { focusResultFlow: true })));
       results.appendChild(createPressureDropAvailableDatasetsDetails(entries));
       setState({});
+      if (focusResultFlow) requestAnimationFrame(focusResultFlowInput);
     };
 
     [
