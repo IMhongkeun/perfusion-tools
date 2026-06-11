@@ -94,6 +94,8 @@
       border-color: #1e293b;
       background: rgba(15, 23, 42, 0.4);
     }
+
+
     .calculator-lower-title {
       font-size: 1rem;
       line-height: 1.5rem;
@@ -425,87 +427,159 @@
               </div>
             </div>
 
-            <div class="grid sm:grid-cols-2 gap-6">
-              <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Height (cm)</label>
-                <input id="h_cm" type="number" inputmode="decimal" step="0.1" placeholder="170" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
-              </div>
-              <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Weight (kg)</label>
-                <input id="w_kg" type="number" inputmode="decimal" step="0.1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+            <section class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/35 p-3 md:p-4 space-y-3" aria-labelledby="gdp-inputs-heading">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h3 id="gdp-inputs-heading" class="text-sm font-semibold text-primary-900 dark:text-white">Oxygen delivery inputs</h3>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400">Patient size, blood oxygen content, and current pump flow.</p>
+                </div>
+                <span id="bsa-hint" class="rounded-full border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/40 px-2 py-1 text-[10px] font-semibold text-slate-500 dark:text-slate-400 lowercase">auto-calc</span>
               </div>
 
-              <div class="sm:col-span-2 grid grid-cols-[1fr_140px] gap-4 items-end bg-slate-50 dark:bg-primary-800/50 p-4 rounded-xl border border-slate-100 dark:border-primary-700/50">
-                <div class="space-y-1">
-                  <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide flex justify-between items-center">
-                    <span class="flex items-center gap-1">BSA (m²) <span class="text-red-500">*</span></span>
-                    <span id="bsa-hint" class="text-[10px] font-normal text-slate-400 lowercase">auto-calc</span>
-                  </label>
-                  <input id="bsa" type="number" inputmode="decimal" step="0.01" placeholder="Auto from H/W or enter" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
+              <div class="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div class="space-y-1 min-w-0">
+                  <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide" for="h_cm">Height (cm)</label>
+                  <input id="h_cm" type="number" inputmode="decimal" step="0.1" placeholder="170" class="w-full h-10 bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
                 </div>
-                <div class="space-y-1">
-                  <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Formula</label>
-                  <select id="bsa-method" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
+                <div class="space-y-1 min-w-0">
+                  <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide" for="w_kg">Weight (kg)</label>
+                  <input id="w_kg" type="number" inputmode="decimal" step="0.1" placeholder="70" class="w-full h-10 bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+                </div>
+                <div class="space-y-1 min-w-0">
+                  <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide" for="bsa">BSA (m²) <span class="text-red-500">*</span></label>
+                  <input id="bsa" type="number" inputmode="decimal" step="0.01" placeholder="Auto or enter" class="w-full h-10 bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
+                </div>
+                <div class="space-y-1 min-w-0">
+                  <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide" for="bsa-method">BSA formula</label>
+                  <select id="bsa-method" class="w-full h-10 bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 outline-none dark:text-white cursor-pointer">
                     <option value="Mosteller">Mosteller</option>
                     <option value="DuBois">DuBois</option>
                     <option value="Haycock">Haycock</option>
                     <option value="Boyd">Boyd</option>
                   </select>
                 </div>
-              </div>
 
-              <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Hemoglobin (g/dL) <span class="text-red-500">*</span></label>
-                <input id="hb" type="number" inputmode="decimal" step="0.1" placeholder="10" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+                <div class="space-y-1 min-w-0">
+                  <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide" for="hb">Hemoglobin (g/dL) <span class="text-red-500">*</span></label>
+                  <input id="hb" type="number" inputmode="decimal" step="0.1" placeholder="10" class="w-full h-10 bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+                </div>
+                <div class="space-y-1 min-w-0">
+                  <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide" for="pao2">PaO<sub>2</sub> (mmHg) <span class="text-red-500">*</span></label>
+                  <input id="pao2" type="number" inputmode="numeric" step="1" placeholder="250" class="w-full h-10 bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+                </div>
+                <div class="space-y-1 min-w-0">
+                  <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide" for="sao2">SaO<sub>2</sub> (%) <span class="text-red-500">*</span></label>
+                  <input id="sao2" type="number" inputmode="decimal" step="0.1" value="100" class="w-full h-10 bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+                </div>
+                <div class="space-y-1 min-w-0">
+                  <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide" for="flow">Current flow (L/min)</label>
+                  <input id="flow" type="number" inputmode="decimal" step="0.01" placeholder="4.6" class="w-full h-10 bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
+                </div>
               </div>
-              <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">PaO<sub>2</sub> (mmHg) <span class="text-red-500">*</span></label>
-                <input id="pao2" type="number" inputmode="numeric" step="1" placeholder="150" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
-              </div>
-              <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">SaO<sub>2</sub> (%) <span class="text-red-500">*</span></label>
-                <input id="sao2" type="number" inputmode="decimal" step="0.1" placeholder="100" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
-              </div>
-
-              <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Current pump flow (L/min)</label>
-                <input id="flow" type="number" inputmode="decimal" step="0.01" placeholder="4.6" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all dark:text-white" />
-              </div>
-              <div class="space-y-1 opacity-80">
-                <label class="text-xs font-semibold text-slate-400 dark:text-slate-500 tracking-wide">Calculated CaO<sub>2</sub> (mL/dL)</label>
-                <input id="cao2" disabled class="w-full bg-slate-100 dark:bg-primary-950 border-0 rounded-xl px-4 py-2.5 text-slate-600 dark:text-slate-400 font-mono text-sm" />
-              </div>
-            </div>
+              <input id="cao2" type="hidden" />
+            </section>
 
             <p class="text-[11px] text-slate-500 dark:text-slate-400">* Required for DO₂i and target flow calculation. Current flow is optional.</p>
             <p id="gdp-warning" class="text-xs text-red-500 hidden">Enter required fields.</p>
 
-            <div class="bg-primary-900 dark:bg-black/20 p-6 text-white rounded-xl relative overflow-hidden">
+            <section class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/35 p-3 md:p-4 space-y-3" aria-labelledby="gdp-temperature-context-heading">
+              <div class="grid lg:grid-cols-[1fr_auto] gap-3 items-start">
+                <div class="pt-0.5">
+                  <h3 id="gdp-temperature-context-heading" class="text-sm font-semibold text-primary-900 dark:text-white">Temperature context</h3>
+                  <p class="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">Fixed Q10 = 2.2 hypothermic CPB reference.</p>
+                </div>
+
+                <div class="grid grid-cols-1 min-[420px]:grid-cols-3 gap-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/40 p-2.5 min-w-0 lg:min-w-[420px] items-start">
+                  <label class="space-y-1 min-w-0">
+                    <span class="text-[10px] uppercase tracking-wide text-slate-500 dark:text-slate-400">Temperature (°C)</span>
+                    <input id="gdp-temp-c" type="number" inputmode="decimal" min="20" max="37" step="0.5" value="37" class="w-full h-9 bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-lg px-2.5 py-1.5 text-sm font-semibold text-primary-900 dark:text-white focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all" aria-label="Patient temperature in degrees Celsius" />
+                  </label>
+                  <div class="rounded-lg bg-slate-50 dark:bg-primary-800/70 px-2.5 py-1.5">
+                    <div id="gdp-temp-display" class="text-sm font-bold text-primary-900 dark:text-white">37.0°C</div>
+                    <div class="text-[10px] uppercase tracking-wide text-slate-500 dark:text-slate-400">selected temp</div>
+                  </div>
+                  <div class="rounded-lg bg-slate-50 dark:bg-primary-800/70 px-2.5 py-1.5">
+                    <div id="gdp-vo2-fraction" class="text-sm font-bold text-emerald-600 dark:text-emerald-300">100%</div>
+                    <div class="text-[10px] uppercase tracking-wide text-slate-500 dark:text-slate-400">VO₂ fraction</div>
+                  </div>
+                  <label class="min-[420px]:col-span-3 space-y-1 min-w-0">
+                    <span class="sr-only">Temperature slider</span>
+                    <input id="gdp-temp-slider" type="range" min="20" max="37" step="0.5" value="37" class="w-full accent-accent-500" />
+                  </label>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-1.5" aria-label="Temperature presets">
+                <button type="button" data-gdp-temp-preset="37" class="gdp-temp-preset min-h-9 px-2.5 py-1.5 text-[11px] font-semibold rounded-full border transition-colors">37°C normothermia</button>
+                <button type="button" data-gdp-temp-preset="35" class="gdp-temp-preset min-h-9 px-2.5 py-1.5 text-[11px] font-semibold rounded-full border transition-colors">35°C mild HT</button>
+                <button type="button" data-gdp-temp-preset="32" class="gdp-temp-preset min-h-9 px-2.5 py-1.5 text-[11px] font-semibold rounded-full border transition-colors">32°C moderate HT</button>
+                <button type="button" data-gdp-temp-preset="28" class="gdp-temp-preset min-h-9 px-2.5 py-1.5 text-[11px] font-semibold rounded-full border transition-colors">28°C deep HT</button>
+                <button type="button" data-gdp-temp-preset="20" class="gdp-temp-preset min-h-9 px-2.5 py-1.5 text-[11px] font-semibold rounded-full border transition-colors">20°C DHCA prep</button>
+              </div>
+
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Estimated VO₂ reduction is used only as a reference, not a pump-flow prescription.</p>
+            </section>
+
+            <div class="bg-primary-900 dark:bg-black/20 p-4 md:p-5 text-white rounded-xl relative overflow-hidden">
               <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-accent-500 rounded-full opacity-10 blur-3xl"></div>
               <div class="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-900 to-primary-800 opacity-70"></div>
-              <div class="relative z-10 space-y-5">
-                <div class="grid md:grid-cols-3 gap-4">
-                  <div class="bg-white/5 rounded-lg p-4 border border-white/10 shadow-sm">
-                    <div class="text-[11px] uppercase tracking-wider text-slate-300">Required pump flow</div>
-                    <div id="required-flow" class="text-2xl font-bold mt-1">—</div>
+              <div class="relative z-10 space-y-4">
+                <div class="grid sm:grid-cols-3 gap-3">
+                  <div class="bg-white/5 rounded-lg p-3 border border-white/10 shadow-sm">
+                    <div class="text-[11px] uppercase tracking-wider text-slate-300">CaO₂</div>
+                    <div id="cao2-result" class="mt-1 flex items-baseline gap-1 text-2xl font-bold">—</div>
                   </div>
-                  <div class="bg-white/5 rounded-lg p-4 border border-white/10 shadow-sm">
-                    <div class="text-[11px] uppercase tracking-wider text-slate-300">Current DO₂i</div>
-                    <div id="current-do2i" class="text-2xl font-bold mt-1">—</div>
+                  <div class="bg-white/5 rounded-lg p-3 border border-white/10 shadow-sm">
+                    <div class="text-[11px] uppercase tracking-wider text-slate-300">Required flow (normothermia)</div>
+                    <div id="required-flow" class="mt-1 flex items-baseline gap-1 text-2xl font-bold">—</div>
                   </div>
-                  <div class="bg-white/5 rounded-lg p-4 border border-white/10 shadow-sm">
-                    <div class="text-[11px] uppercase tracking-wider text-slate-300">Status</div>
-                    <div id="gdp-status-text" class="text-lg font-semibold mt-1">Awaiting data</div>
-                    <p id="gdp-status-detail" class="text-xs text-slate-200 mt-1">Provide required inputs to evaluate target vs. current flow.</p>
+                  <div class="bg-white/5 rounded-lg p-3 border border-emerald-300/30 shadow-sm">
+                    <div id="corrected-flow-label" class="text-[11px] uppercase tracking-wider text-emerald-200">Corrected flow (37.0°C)</div>
+                    <div id="temp-reference-flow" class="mt-1 flex items-baseline gap-1 text-2xl font-bold text-emerald-300">—</div>
+                    <div class="text-[11px] text-emerald-100/90">Reference only</div>
                   </div>
                 </div>
 
-                <div class="space-y-2">
-                  <div class="h-3 w-full bg-white/10 rounded-full overflow-hidden shadow-inner">
-                    <div id="gdp-gauge" class="h-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(255,255,255,0.3)] from-accent-600 to-accent-400" style="width: 0%;"></div>
+                <div class="rounded-lg border border-white/10 bg-white/5 overflow-hidden">
+                  <div class="grid grid-cols-3 gap-2 px-3 py-2 text-[11px] uppercase tracking-wider text-slate-300 border-b border-white/10">
+                    <div>Basis</div>
+                    <div>Required flow</div>
+                    <div>DO₂i floor</div>
                   </div>
-                  <div id="gdp-gauge-msg" class="text-xs text-slate-200">Enter current flow to visualize DO₂i vs. target</div>
-                  <div id="ci-comment" class="text-[11px] text-slate-300"></div>
+                  <div class="grid grid-cols-3 gap-2 px-3 py-2 text-xs text-slate-100 border-b border-white/10">
+                    <div>Normothermia (37°C)</div>
+                    <div id="normothermia-flow">—</div>
+                    <div id="normothermia-do2-floor">—</div>
+                  </div>
+                  <div class="grid grid-cols-3 gap-2 px-3 py-2 text-xs text-emerald-200">
+                    <div id="corrected-row-label">37.0°C corrected</div>
+                    <div id="corrected-flow-table">—</div>
+                    <div id="corrected-do2-floor">—</div>
+                  </div>
+                </div>
+
+                <div class="bg-white/5 rounded-lg p-3 border border-white/10 shadow-sm space-y-3">
+                  <div class="grid sm:grid-cols-[1fr_auto] gap-3 items-start">
+                    <div>
+                      <div class="text-[11px] uppercase tracking-wider text-slate-300">Status</div>
+                      <div id="gdp-status-text" class="text-lg font-semibold mt-1">No data</div>
+                      <p id="gdp-status-detail" class="text-xs text-slate-200 mt-1">Enter current flow to evaluate DO₂i.</p>
+                    </div>
+                    <div class="sm:text-right">
+                      <div class="text-[11px] uppercase tracking-wider text-slate-300">Current DO₂i</div>
+                      <div id="current-do2i" class="mt-1 flex items-baseline gap-1 text-xl font-bold sm:justify-end">—</div>
+                    </div>
+                  </div>
+                  <div class="space-y-1.5" aria-label="Current DO₂i adequacy relative to selected normothermic target">
+                    <div class="h-2.5 w-full bg-white/10 rounded-full overflow-hidden shadow-inner">
+                      <div id="gdp-adequacy-bar" class="h-full w-0 rounded-full bg-slate-400 transition-all duration-500 ease-out"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px] uppercase tracking-wide text-slate-300">
+                      <span>Below</span>
+                      <span>Borderline</span>
+                      <span>Adequate</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -527,6 +601,9 @@
                 <p><span class="font-semibold">CaO₂</span> = (1.34 × Hb × SaO₂) + (0.003 × PaO₂)</p>
                 <p><span class="font-semibold">DO₂i</span> = (Pump flow ÷ BSA) × CaO₂ × 10</p>
                 <p><span class="font-semibold">Required pump flow</span> = (Target DO₂i × BSA) ÷ (CaO₂ × 10)</p>
+                <p><span class="font-semibold">VO₂ fraction</span> = 2.2<sup>((Temperature °C − 37) ÷ 10)</sup></p>
+                <p><span class="font-semibold">Temp-adjusted DO₂ reference</span> = Selected DO₂i target × VO₂ fraction</p>
+                <p><span class="font-semibold">Temp-adjusted reference flow</span> = Required pump flow at selected DO₂i target × VO₂ fraction</p>
               </div>
               <div class="pt-2 border-t border-slate-200 dark:border-primary-700 text-xs text-slate-600 dark:text-slate-400 space-y-1">
                 <p><span class="font-semibold">Hb:</span> g/dL</p>
@@ -545,11 +622,12 @@
               <div class="calculator-lower-panel">
                 <section class="space-y-1">
                   <h4 class="text-xs font-semibold text-primary-900 dark:text-white">Model assumptions</h4>
-                  <p>This calculator estimates oxygen delivery index from arterial oxygen content and indexed pump flow. It assumes steady-state oxygen content and does not model oxygen extraction, hypothermia, hemodilution kinetics, blood loss, transfusion timing, microcirculatory flow, or rapid changes in metabolic demand.</p>
+                  <p>This calculator estimates oxygen delivery index from arterial oxygen content and indexed pump flow. It assumes steady-state oxygen content and does not model oxygen extraction, hemodilution kinetics, blood loss, transfusion timing, microcirculatory flow, or rapid changes in metabolic demand.</p>
+                  <p>The corrected flow is a temperature-adjusted reference flow based on Q10-estimated VO₂ reduction, with Q10 fixed at 2.2. This reference estimate does not replace bedside assessment or make the temperature-adjusted value a prescribed pump flow.</p>
                 </section>
                 <section class="space-y-1">
                   <h4 class="text-xs font-semibold text-primary-900 dark:text-white">How to use required flow output</h4>
-                  <p>The calculated required flow should be treated as a decision-support estimate, not a mandatory pump flow. Final flow strategy should consider venous drainage, arterial line pressure, cannula size, perfusion pressure, hematocrit, lactate, SvO₂, NIRS, temperature, and the surgical field.</p>
+                  <p>The calculated required flow should be treated as a decision-support estimate, not a mandatory pump flow. Final pump flow decisions should integrate SvO₂/ScvO₂, lactate trend, NIRS, perfusion pressure, hemoglobin, arterial pressure, venous drainage, cannula limits, temperature phase, institutional protocol, and the surgical field.</p>
                 </section>
               </div>
             </section>
@@ -613,13 +691,17 @@
                   <p class="calculator-faq-answer">Yes. Changes in hemoglobin concentration, saturation, and oxygenator performance can increase estimated DO₂i without changing pump flow.</p>
                 </div>
                 <div class="calculator-faq-item">
+                  <p class="calculator-faq-question">Can I reduce pump flow based only on the temperature-corrected VO₂ estimate?</p>
+                  <p class="calculator-faq-answer">No. The temperature-corrected value is a reference estimate based on expected VO₂ reduction during hypothermia, not a direct pump-flow prescription. Oxygen consumption does not fall uniformly in every patient, and adequacy of perfusion should still be assessed with multiple bedside indicators, including SvO₂ or ScvO₂, lactate trend, NIRS, arterial pressure, venous drainage, cannula limitations, hemoglobin, acid-base status, urine output, and institutional protocol. Use the corrected value as contextual information rather than a standalone target.</p>
+                </div>
+                <div class="calculator-faq-item">
                   <p class="calculator-faq-question">Is this calculator for ECMO too?</p>
                   <p class="calculator-faq-answer">The formula can describe indexed oxygen delivery conceptually, but this page is primarily designed for CPB and ECMO interpretation needs additional context such as native cardiac output, recirculation, differential oxygenation, and circuit configuration.</p>
                 </div>
               </div>
             </section>
           </div>
-          <div class="px-6 pb-6 pt-0">
+          <div class="px-6 pb-6 pt-0 space-y-4">
             <section class="calculator-lower-section">
               <h2 class="calculator-lower-title">Related tools</h2>
               <div class="calculator-lower-panel">
@@ -627,6 +709,62 @@
                 <a href="/bsa/" class="calculator-related-link">BSA Calculator</a>
                 <a href="/predicted-hct/" class="calculator-related-link">Predicted Hematocrit</a>
                 </div>
+              </div>
+            </section>
+
+            <section class="selected-references bg-slate-50 dark:bg-primary-900/70 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 p-4 md:p-5 space-y-5" aria-labelledby="gdp-selected-references-title">
+              <h2 id="gdp-selected-references-title" class="text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-slate-300">Selected references</h2>
+
+              <div class="space-y-2">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Guideline &amp; GDP references</h3>
+                <ul class="list-disc pl-5 text-sm text-slate-700 dark:text-slate-300 space-y-2">
+                  <li>
+                    <span>Wahba A, Kunst G, De Somer F, et al. 2024 EACTS/EACTAIC/EBCP Guidelines on cardiopulmonary bypass in adult cardiac surgery. Eur J Cardiothorac Surg. 2025;67(2):ezae354.</span>
+                    <div class="reference-links mt-1 flex flex-wrap gap-1.5">
+                      <a href="https://pubmed.ncbi.nlm.nih.gov/39949326/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
+                      <a href="https://academic.oup.com/ejcts/article/67/2/ezae354/8011475" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Journal</a>
+                      <a href="https://doi.org/10.1093/ejcts/ezae354" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">DOI</a>
+                    </div>
+                  </li>
+                  <li>
+                    <span>Ranucci M, Johnson I, Willcox T, et al. Goal-directed perfusion to reduce acute kidney injury: a randomized trial. J Thorac Cardiovasc Surg. 2018;156(5):1918-1927.e2.</span>
+                    <div class="reference-links mt-1 flex flex-wrap gap-1.5">
+                      <a href="https://pubmed.ncbi.nlm.nih.gov/29778331/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
+                      <a href="https://www.jtcvs.org/article/S0022-5223(18)31029-8/fulltext" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Journal</a>
+                      <a href="https://doi.org/10.1016/j.jtcvs.2018.04.045" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">DOI</a>
+                    </div>
+                  </li>
+                  <li>
+                    <span>Gao P, Liu J, Zhang P, Bai L, Jin Y, Li Y. Goal-directed perfusion for reducing acute kidney injury in cardiac surgery: a systematic review and meta-analysis. Perfusion. 2023;38(3):591-599.</span>
+                    <div class="reference-links mt-1 flex flex-wrap gap-1.5">
+                      <a href="https://pubmed.ncbi.nlm.nih.gov/35125028/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
+                      <a href="https://journals.sagepub.com/doi/10.1177/02676591211073783" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Journal</a>
+                      <a href="https://doi.org/10.1177/02676591211073783" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">DOI</a>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="space-y-2">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Temperature &amp; oxygen consumption references</h3>
+                <ul class="list-disc pl-5 text-sm text-slate-700 dark:text-slate-300 space-y-2">
+                  <li>
+                    <span>Parolari A, Alamanni F, Gherli T, et al. Cardiopulmonary bypass and oxygen consumption: oxygen delivery and hemodynamics. Ann Thorac Surg. 1999;67(5):1320-1327.</span>
+                    <div class="reference-links mt-1 flex flex-wrap gap-1.5">
+                      <a href="https://pubmed.ncbi.nlm.nih.gov/10355405/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
+                      <a href="https://www.annalsthoracicsurgery.org/article/S0003-4975(99)00261-1/fulltext" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Journal</a>
+                      <a href="https://doi.org/10.1016/S0003-4975(99)00261-1" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">DOI</a>
+                    </div>
+                  </li>
+                  <li>
+                    <span>El Dsouki Y, Condello I. A temperature-adjusted algorithm for predicting critical indexed oxygen delivery (DO₂i) during cardiopulmonary bypass. Cureus. 2025;17(7):e87089.</span>
+                    <div class="reference-links mt-1 flex flex-wrap gap-1.5">
+                      <a href="https://pubmed.ncbi.nlm.nih.gov/40606406/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
+                      <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12221110/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PMC</a>
+                      <a href="https://doi.org/10.7759/cureus.87089" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">DOI</a>
+                    </div>
+                  </li>
+                </ul>
               </div>
             </section>
           </div>

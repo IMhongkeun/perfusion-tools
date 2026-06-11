@@ -4782,10 +4782,19 @@ function setText(id, text) {
 // GDP Interaction
 // -----------------------------
   const gdpIds = ['h_cm', 'w_kg', 'bsa', 'bsa-method', 'flow', 'hb', 'sao2', 'pao2'];
+  const GDP_Q10 = 2.2;
+  const GDP_DEFAULT_TEMPERATURE_C = 37;
   let lastChangedId = null;
   let bsaManualOverride = false;
   let targetDO2i = 280;
   let targetMode = 'preset'; // 'preset' | 'custom'
+
+  function getGdpTemperatureC() {
+    const input = el('gdp-temp-c');
+    const value = input ? parseFloat(input.value) : GDP_DEFAULT_TEMPERATURE_C;
+    if (!Number.isFinite(value)) return GDP_DEFAULT_TEMPERATURE_C;
+    return clamp(value, 20, 37);
+  }
 
   function getGdpInputs() {
     const bsaVal = el('bsa').value;
@@ -4793,22 +4802,32 @@ function setText(id, text) {
     const sao2Val = el('sao2').value;
     const pao2Val = el('pao2').value;
     const flowVal = el('flow').value;
+    const temperatureC = getGdpTemperatureC();
 
     return {
       bsaVal,
       hbVal,
       sao2Val,
       pao2Val,
-      flowVal
+      flowVal,
+      temperatureC
     };
+  }
+
+  function calculateGdpVo2Fraction(temperatureC) {
+    // Q10 temperature correction: VO2 fraction = Q10 ^ ((temperatureC - 37) / 10).
+    // This estimates relative metabolic demand during hypothermic CPB and is not a pump-flow prescription.
+    return Math.pow(GDP_Q10, (temperatureC - GDP_DEFAULT_TEMPERATURE_C) / 10);
   }
 
   function computeGdpResults(inputs) {
     const bsa = parseFloat(inputs.bsaVal) || 0;
-  const flow = parseFloat(inputs.flowVal) || 0;
-  const hb = parseFloat(inputs.hbVal) || 0;
+    const flow = parseFloat(inputs.flowVal) || 0;
+    const hb = parseFloat(inputs.hbVal) || 0;
     const sao2 = parseFloat(inputs.sao2Val) || 0;
     const pao2 = parseFloat(inputs.pao2Val) || 0;
+    const temperatureC = Number.isFinite(inputs.temperatureC) ? inputs.temperatureC : GDP_DEFAULT_TEMPERATURE_C;
+    const vo2Fraction = calculateGdpVo2Fraction(temperatureC);
     const currentCI = bsa ? flow / bsa : 0;
     const cao2 = calcCaO2(hb, sao2, pao2);
     const currentDO2i = flow ? calcDO2i(flow, bsa, cao2) : 0;
@@ -4817,6 +4836,8 @@ function setText(id, text) {
     const normothermicMax = Math.round(baseTarget * 1.1);
     const flowTargetDo2i = (normothermicMin + normothermicMax) / 2;
     const requiredFlow = calcRequiredFlowLmin(flowTargetDo2i, bsa, cao2);
+    const tempAdjustedDo2Reference = baseTarget * vo2Fraction;
+    const tempAdjustedReferenceFlow = requiredFlow * vo2Fraction;
 
     return {
       bsa,
@@ -4824,9 +4845,13 @@ function setText(id, text) {
       sao2,
       pao2,
       flow,
+      temperatureC,
+      vo2Fraction,
       currentCI,
       cao2,
       requiredFlow,
+      tempAdjustedDo2Reference,
+      tempAdjustedReferenceFlow,
       currentDO2i,
       baseTarget,
       normothermicMin,
@@ -4877,6 +4902,34 @@ function updateTargetDisplay() {
   });
 }
 
+function formatGdpTemperature(temperatureC) {
+  const safeTemperature = Number.isFinite(temperatureC) ? clamp(temperatureC, 20, 37) : GDP_DEFAULT_TEMPERATURE_C;
+  return `${safeTemperature.toFixed(1)}°C`;
+}
+
+function updateGdpTemperatureDisplay(temperatureC, vo2Fraction) {
+  const safeTemperature = Number.isFinite(temperatureC) ? clamp(temperatureC, 20, 37) : GDP_DEFAULT_TEMPERATURE_C;
+  const slider = el('gdp-temp-slider');
+  const input = el('gdp-temp-c');
+  const fraction = Number.isFinite(vo2Fraction) ? vo2Fraction : calculateGdpVo2Fraction(safeTemperature);
+  const temperatureLabel = formatGdpTemperature(safeTemperature);
+
+  if (slider && document.activeElement !== slider) slider.value = String(safeTemperature);
+  if (input && document.activeElement !== input) input.value = safeTemperature.toFixed(1);
+  setText('gdp-temp-display', temperatureLabel);
+  setText('gdp-vo2-fraction', `${Math.round(fraction * 100)}%`);
+  setText('corrected-flow-label', `Corrected flow (${temperatureLabel})`);
+  setText('corrected-row-label', `${temperatureLabel} corrected`);
+
+  document.querySelectorAll('[data-gdp-temp-preset]').forEach((button) => {
+    const preset = Number(button.dataset.gdpTempPreset);
+    const active = Math.abs(preset - safeTemperature) < 0.05;
+    button.className = 'gdp-temp-preset min-h-9 px-2.5 py-1.5 text-[11px] font-semibold rounded-full border transition-colors ' + (active
+      ? 'bg-accent-500/10 border-accent-500 text-accent-600 dark:text-accent-400 shadow-sm'
+      : 'bg-white dark:bg-primary-800 border-slate-200 dark:border-primary-700 text-slate-600 dark:text-slate-300 hover:border-accent-500/50');
+  });
+}
+
 function updateGDP() {
   updateBSA();
 
@@ -4891,86 +4944,95 @@ function updateGDP() {
   if (!inputs.pao2Val) requiredMissing.push('PaO₂');
   if (!targetDO2i) requiredMissing.push('Target DO₂i');
 
-  const gauge = el('gdp-gauge');
-  const gaugeMsg = el('gdp-gauge-msg');
   const statusText = el('gdp-status-text');
   const statusDetail = el('gdp-status-detail');
-  const ciCommentEl = el('ci-comment');
-
-  el('cao2').value = results.cao2 ? results.cao2.toFixed(2) : '';
+  const cao2Hidden = el('cao2');
+  if (cao2Hidden) cao2Hidden.value = results.cao2 ? results.cao2.toFixed(2) : '';
 
   if (requiredMissing.length || !results.bsa || !results.hb || !results.sao2 || !results.pao2 || !targetDO2i) {
     if (warningEl) {
       warningEl.textContent = `Enter required fields: ${requiredMissing.join(', ')}`;
       warningEl.classList.remove('hidden');
     }
+    setText('cao2-result', '—');
     setText('required-flow', '—');
+    setText('temp-reference-flow', '—');
+    setText('normothermia-flow', '—');
+    setText('normothermia-do2-floor', targetDO2i ? `${Math.round(targetDO2i)} mL/min/m²` : '—');
+    setText('corrected-flow-table', '—');
+    setText('corrected-do2-floor', results.tempAdjustedDo2Reference ? `${Math.round(results.tempAdjustedDo2Reference)} mL/min/m²` : '—');
     setText('current-do2i', '—');
-    statusText.textContent = 'Awaiting data';
-    statusDetail.textContent = 'Provide required inputs to evaluate target vs. current flow.';
-    gauge.style.width = '0%';
-    gauge.className = 'h-3 rounded-full bg-gradient-to-r from-slate-300 to-slate-200 dark:from-primary-800 dark:to-primary-700 transition-all duration-700 ease-out';
-    gaugeMsg.textContent = 'Enter current flow to visualize DO₂i vs. target';
+    const adequacyBar = el('gdp-adequacy-bar');
+    if (adequacyBar) {
+      adequacyBar.style.width = '0%';
+      adequacyBar.className = 'h-full w-0 rounded-full bg-slate-400 transition-all duration-500 ease-out';
+    }
+    updateGdpTemperatureDisplay(results.temperatureC, results.vo2Fraction);
+    if (statusText) statusText.textContent = 'No data';
+    if (statusDetail) statusDetail.textContent = 'Enter required fields to calculate flow and DO₂i.';
     return;
   }
 
   if (warningEl) warningEl.classList.add('hidden');
 
-  setText('required-flow', results.requiredFlow ? `${results.requiredFlow.toFixed(2)} <span class="text-xs text-slate-500 dark:text-slate-400">L/min</span>` : '—');
-  setText('current-do2i', results.currentDO2i ? `${Math.round(results.currentDO2i)} <span class="text-xs text-slate-500 dark:text-slate-400">mL/min/m²</span>` : '—');
+  updateGdpTemperatureDisplay(results.temperatureC, results.vo2Fraction);
+  setText('cao2-result', results.cao2 ? `${results.cao2.toFixed(2)} <span class="text-xs font-medium text-slate-300">mL O₂/dL</span>` : '—');
+  setText('required-flow', results.requiredFlow ? `${results.requiredFlow.toFixed(2)} <span class="text-xs font-medium text-slate-300">L/min</span>` : '—');
+  setText('temp-reference-flow', results.tempAdjustedReferenceFlow ? `${results.tempAdjustedReferenceFlow.toFixed(2)} <span class="text-xs font-medium text-emerald-100/90">L/min</span>` : '—');
+  setText('normothermia-flow', results.requiredFlow ? `${results.requiredFlow.toFixed(2)} L/min` : '—');
+  setText('normothermia-do2-floor', results.baseTarget ? `${Math.round(results.baseTarget)} mL/min/m²` : '—');
+  setText('corrected-flow-table', results.tempAdjustedReferenceFlow ? `${results.tempAdjustedReferenceFlow.toFixed(2)} L/min` : '—');
+  setText('corrected-do2-floor', results.tempAdjustedDo2Reference ? `${Math.round(results.tempAdjustedDo2Reference)} mL/min/m²` : '—');
+  setText('current-do2i', results.currentDO2i ? `${Math.round(results.currentDO2i)} <span class="text-xs font-medium text-slate-300">mL/min/m²</span>` : '—');
 
-  let statusLabel = 'Waiting for current flow';
-  let detail = 'Enter current pump flow to compare against the target DO₂i.';
-  let gaugeColor = 'from-slate-300 to-slate-200 dark:from-primary-800 dark:to-primary-700';
-  let gaugeWidth = '0%';
-  let ciComment = results.currentCI ? `Current CI ${results.currentCI.toFixed(2)} L/min/m².` : '';
+  let statusLabel = 'No data';
+  let detail = 'Enter current pump flow to evaluate DO₂i.';
+  let adequacyWidth = '0%';
+  let adequacyColor = 'bg-slate-400';
 
   const lowerTarget = results.recommendedMin;
   const upperTarget = results.recommendedMax;
 
   if (results.currentDO2i > 0) {
-    const denom = upperTarget > 0 ? upperTarget * 1.05 : targetDO2i || 1;
-    const pct = clamp((results.currentDO2i / denom) * 100, 0, 100);
-    gaugeWidth = `${pct}%`;
+    const temperatureLabel = formatGdpTemperature(results.temperatureC);
+    const flowDelta = results.flow - results.tempAdjustedReferenceFlow;
+    const referencePhrase = flowDelta >= 0
+      ? `flow is ${Math.abs(flowDelta).toFixed(2)} L/min above the ${temperatureLabel} reference floor.`
+      : `flow is ${Math.abs(flowDelta).toFixed(2)} L/min below the ${temperatureLabel} reference floor.`;
+    const adequacyDenominator = upperTarget > 0 ? upperTarget * 1.1 : targetDO2i || 1;
+    adequacyWidth = `${clamp((results.currentDO2i / adequacyDenominator) * 100, 0, 100)}%`;
 
     if (results.currentDO2i < lowerTarget) {
-      const deltaFlow = Math.max(results.requiredFlow - results.flow, 0);
       statusLabel = 'Below target';
-      detail = deltaFlow > 0
-        ? `Needs approximately +${deltaFlow.toFixed(2)} L/min to reach the target.`
-        : 'Increase flow to approach the target.';
-      gaugeColor = 'from-amber-500 to-red-500';
+      detail = `Below the selected normothermic target; ${referencePhrase}`;
+      adequacyColor = 'bg-gradient-to-r from-amber-500 to-red-500';
     } else if (results.currentDO2i > upperTarget) {
       statusLabel = 'Above target';
-      detail = 'Above the goal—verify this is intentional and hemodynamically tolerated.';
-      gaugeColor = 'from-sky-500 to-blue-500';
+      detail = `Above the selected normothermic target; ${referencePhrase}`;
+      adequacyColor = 'bg-gradient-to-r from-sky-500 to-blue-500';
     } else {
-      statusLabel = 'At / near target';
-      detail = 'Current delivery is within ±10% of the selected DO₂i goal.';
-      gaugeColor = 'from-emerald-500 to-emerald-400';
+      statusLabel = 'Borderline';
+      detail = `Within ±10% of the selected target; ${referencePhrase}`;
+      adequacyColor = 'bg-gradient-to-r from-emerald-500 to-emerald-400';
     }
   }
 
-  statusText.textContent = statusLabel;
-  statusDetail.textContent = detail;
-  if (ciCommentEl) ciCommentEl.textContent = ciComment;
-  gauge.style.width = gaugeWidth;
-  gauge.className = `h-3 rounded-full bg-gradient-to-r transition-all duration-700 ease-out shadow-[0_0_10px_rgba(34,211,238,0.25)] ${gaugeColor}`;
-  if (gaugeMsg) {
-    const guidelineLine = '<p>Guideline DO₂i (37°C): 280–300 mL/min/m²</p>';
-    const userAdjustedLine = `<p>Selected DO₂i target range: ${results.recommendedMin}–${results.recommendedMax} mL/min/m²</p>`;
-    const flowLine = results.currentDO2i
-      ? `<p class="text-[11px] text-slate-200/80">Current DO₂i: ${Math.round(results.currentDO2i)} mL/min/m²</p>`
-      : '<p class="text-[11px] text-slate-200/70">Enter current flow to visualize DO₂i against targets.</p>';
-    gaugeMsg.innerHTML = `${guidelineLine}${userAdjustedLine}${flowLine}`;
+  const adequacyBar = el('gdp-adequacy-bar');
+  if (adequacyBar) {
+    adequacyBar.style.width = adequacyWidth;
+    adequacyBar.className = `h-full rounded-full transition-all duration-500 ease-out ${adequacyColor}`;
   }
+  if (statusText) statusText.textContent = statusLabel;
+  if (statusDetail) statusDetail.textContent = detail;
 }
 
 function resetGDP() {
-  ['h_cm', 'w_kg', 'bsa', 'flow', 'hb', 'sao2', 'pao2'].forEach(id => {
+  ['h_cm', 'w_kg', 'bsa', 'flow', 'hb', 'pao2'].forEach(id => {
     const n = el(id);
     if (n) n.value = '';
   });
+  const sao2El = el('sao2');
+  if (sao2El) sao2El.value = '100';
   const customInput = el('target-custom');
   if (customInput) customInput.value = '';
   targetDO2i = 280;
@@ -4978,6 +5040,10 @@ function resetGDP() {
   bsaManualOverride = false;
   const cao2El = el('cao2');
   if (cao2El) cao2El.value = '';
+  const tempInput = el('gdp-temp-c');
+  const tempSlider = el('gdp-temp-slider');
+  if (tempInput) tempInput.value = String(GDP_DEFAULT_TEMPERATURE_C);
+  if (tempSlider) tempSlider.value = String(GDP_DEFAULT_TEMPERATURE_C);
   updateTargetDisplay();
   updateGDP();
 }
@@ -7444,6 +7510,26 @@ window.addEventListener('DOMContentLoaded', () => {
         updateGDP();
       });
     }
+
+    const tempSlider = el('gdp-temp-slider');
+    const tempInput = el('gdp-temp-c');
+    const syncGdpTemperature = (value, options = {}) => {
+      const temperature = clamp(parseFloat(value) || GDP_DEFAULT_TEMPERATURE_C, 20, 37);
+      const displayValue = temperature.toFixed(1);
+      if (tempSlider) tempSlider.value = String(temperature);
+      if (tempInput && options.commitInput !== false) tempInput.value = displayValue;
+      updateGDP();
+    };
+    if (tempSlider) {
+      tempSlider.addEventListener('input', () => syncGdpTemperature(tempSlider.value));
+    }
+    if (tempInput) {
+      tempInput.addEventListener('input', () => syncGdpTemperature(tempInput.value, { commitInput: false }));
+      tempInput.addEventListener('change', () => syncGdpTemperature(tempInput.value));
+    }
+    document.querySelectorAll('[data-gdp-temp-preset]').forEach((button) => {
+      button.addEventListener('click', () => syncGdpTemperature(button.dataset.gdpTempPreset));
+    });
 
     const resetBtn = el('do2i-reset');
     if (resetBtn) {
