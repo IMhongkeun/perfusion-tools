@@ -3936,7 +3936,7 @@ function createPressureDropCandidateList(candidates, onSelect) {
   const wrap = document.createElement('div');
   wrap.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-3';
   const title = document.createElement('div');
-  title.innerHTML = `<h3 class="text-sm font-semibold text-primary-900 dark:text-white">Available matching cannulae</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Select a row to fill the remaining lookup controls.</p>`;
+  title.innerHTML = `<h3 class="text-sm font-semibold text-primary-900 dark:text-white">Available matching cannulae</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Click any row to fill the remaining lookup controls.</p>`;
   wrap.appendChild(title);
   const list = document.createElement('div');
   list.className = 'grid gap-2';
@@ -4109,7 +4109,7 @@ function createPressureDropAvailableDatasetsDetails(entries, onSelect) {
   summary.textContent = `Available datasets (${entries.length})`;
   const note = document.createElement('p');
   note.className = 'mt-2 text-xs text-slate-500 dark:text-slate-400';
-  note.textContent = 'Compact index of available manufacturer datasets. Select an item to load it in the lookup.';
+  note.textContent = 'Compact index of available manufacturer datasets. Click any item to load it in the lookup.';
 
   const list = document.createElement('div');
   list.className = 'mt-3 max-h-96 overflow-y-auto pr-1 grid gap-2';
@@ -4119,7 +4119,7 @@ function createPressureDropAvailableDatasetsDetails(entries, onSelect) {
     button.className = 'w-full text-left rounded-lg border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/70 p-3 hover:border-accent-500/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 transition-colors';
     const connectionText = entry.connectionSite ? ` · ${entry.connectionSite}` : '';
     const sourceText = entry.sourceLabel ? ` · ${entry.sourceLabel}` : '';
-    button.innerHTML = `<span class="block text-sm font-semibold text-primary-900 dark:text-white">${entry.manufacturer || 'Unknown manufacturer'} · ${entry.model || 'Unknown model'}</span><span class="mt-1 block text-xs text-slate-500 dark:text-slate-400">${getPressureDropGroupLabel(entry.category)} · ${entry.size || 'Unknown size'}${connectionText} · ${getPressureDropFlowRange(entry)}${sourceText}</span><span class="mt-2 inline-flex text-xs font-semibold text-accent-700 dark:text-accent-300">Select</span>`;
+    button.innerHTML = `<span class="block text-sm font-semibold text-primary-900 dark:text-white">${entry.manufacturer || 'Unknown manufacturer'} · ${entry.model || 'Unknown model'}</span><span class="mt-1 block text-xs text-slate-500 dark:text-slate-400">${getPressureDropGroupLabel(entry.category)} · ${entry.size || 'Unknown size'}${connectionText} · ${getPressureDropFlowRange(entry)}${sourceText}</span>`;
     button.addEventListener('click', () => onSelect(entry));
     list.appendChild(button);
   });
