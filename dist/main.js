@@ -3933,7 +3933,43 @@ async function initCannulaPressureDropPage() {
   }
 }
 
+
+function getQuickReferenceHashId() {
+  return decodeURIComponent((window.location.hash || '').replace(/^#/, ''));
+}
+
+function getQuickReferenceHashTabId() {
+  const hashId = getQuickReferenceHashId();
+  if (!hashId || hashId === 'cannula-pressure-drop') return '';
+  const tabs = (getQuickReferenceData().tabs || []);
+  return tabs.some(tab => tab.id === hashId) ? hashId : '';
+}
+
+function hasQuickReferenceHashTarget() {
+  const hashId = getQuickReferenceHashId();
+  if (!hashId || hashId === 'cannula-pressure-drop') return false;
+  return Boolean(getQuickReferenceHashTabId() || document.getElementById(hashId));
+}
+
+function isQuickReferencePagePath() {
+  const path = window.location.pathname || '';
+  return path.includes('/quick-reference') || path.endsWith('/quick-reference/') || path === '/quick-reference';
+}
+
+function shouldPreserveQuickReferenceHashScroll() {
+  return isQuickReferencePagePath() && hasQuickReferenceHashTarget();
+}
+
+function shouldRedirectLegacyQuickReferencePressureDropHash() {
+  return isQuickReferencePagePath() && (window.location.hash || '') === '#cannula-pressure-drop';
+}
+
 function initQuickReference() {
+  if (shouldRedirectLegacyQuickReferencePressureDropHash()) {
+    window.location.replace('/cannula-pressure-drop/');
+    return;
+  }
+
   if (quickReferenceInitialized) return;
 
   const data = getQuickReferenceData();
@@ -3943,12 +3979,6 @@ function initQuickReference() {
   const lastReviewedEl = el('quick-reference-last-reviewed');
 
   if (!tabList || !panelContainer || !tabs.length) return;
-
-  // Legacy links to /quick-reference/#cannula-pressure-drop now belong on the dedicated page.
-  if ((window.location.hash || '') === '#cannula-pressure-drop') {
-    window.location.replace('/cannula-pressure-drop/');
-    return;
-  }
 
   tabList.innerHTML = '';
   panelContainer.innerHTML = '';
@@ -4073,15 +4103,17 @@ function initQuickReference() {
     });
   });
 
-  const hashTab = decodeURIComponent((window.location.hash || '').replace(/^#/, ''));
-  if (hashTab && tabs.some(tab => tab.id === hashTab)) {
+  const hashTab = getQuickReferenceHashTabId();
+  if (hashTab) {
     setActiveTab(hashTab);
-    requestAnimationFrame(() => {
-      const activeButton = tabList.querySelector(`[data-tab-id=\"${hashTab}\"]`);
+    const scrollHashPanelIntoView = () => {
+      const activeButton = tabList.querySelector(`[data-tab-id="${hashTab}"]`);
       if (activeButton) activeButton.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-      const panel = panelContainer.querySelector(`[data-tab-id=\"${hashTab}\"]`);
+      const panel = panelContainer.querySelector(`[data-tab-id="${hashTab}"]`);
       if (panel) panel.scrollIntoView({ block: 'start', behavior: 'smooth' });
-    });
+    };
+    requestAnimationFrame(scrollHashPanelIntoView);
+    setTimeout(scrollHashPanelIntoView, 80);
   }
 
   if (lastReviewedEl) lastReviewedEl.textContent = getLatestReviewedDate(tabs);
@@ -4966,7 +4998,7 @@ function route() {
   }
 
   const topResetRoutes = new Set(['timecalc', 'unit-converter', 'quick-reference', 'info']);
-  if (topResetRoutes.has(key)) {
+  if (topResetRoutes.has(key) && !shouldPreserveQuickReferenceHashScroll()) {
     requestAnimationFrame(() => {
       window.scrollTo({ top: 0, behavior: 'auto' });
       document.documentElement.scrollTop = 0;
@@ -4986,6 +5018,8 @@ function route() {
 // Event Wiring
 // -----------------------------
 function resetScrollToTop() {
+  if (shouldPreserveQuickReferenceHashScroll()) return;
+
   window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   document.documentElement.scrollTop = 0;
   document.body.scrollTop = 0;
