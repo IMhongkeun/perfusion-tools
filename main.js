@@ -1097,8 +1097,8 @@ function createPressureDropCurveModel(points) {
 function drawPressureDropChart(svgNode, points, targetFlow, estimatedPressureDrop, options = {}) {
   const validPoints = getValidPressureDropPoints(points);
   if (!svgNode || !validPoints.length) return;
-  const width = 320; const height = 140;
-  const padding = { left: 34, right: 10, top: 10, bottom: 24 };
+  const width = 420; const height = 190;
+  const padding = { left: 44, right: 18, top: 18, bottom: 34 };
   const minFlow = validPoints[0].flow;
   const maxFlow = validPoints[validPoints.length - 1].flow;
   const useLinearOnly = options.curveMode === 'linear';
@@ -3566,24 +3566,29 @@ function getPressureDropGroupLabel(category) {
 
 function getPressureDropSourceNode(entry, compact = false) {
   const sourceWrap = document.createElement('div');
-  sourceWrap.className = compact ? 'space-y-1' : 'min-w-[14rem] space-y-1';
+  sourceWrap.className = compact
+    ? 'rounded-lg border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50 p-3 space-y-2 text-xs'
+    : 'min-w-[14rem] space-y-2';
   const label = document.createElement('div');
   label.className = 'font-medium text-slate-700 dark:text-slate-200';
   label.textContent = entry.sourceLabel || 'Manufacturer reference';
   sourceWrap.appendChild(label);
 
-  if (entry.sourceUrl && /^https?:\/\//i.test(entry.sourceUrl)) {
+  const sourceUrl = String(entry.sourceUrl || '').trim();
+  if (sourceUrl && /^https?:\/\//i.test(sourceUrl)) {
     const link = document.createElement('a');
-    link.href = entry.sourceUrl;
+    link.href = sourceUrl;
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
-    link.className = 'inline-flex text-accent-600 dark:text-accent-400 hover:underline break-all';
-    link.textContent = 'Open manufacturer PDF/reference';
+    link.className = compact
+      ? 'inline-flex w-fit items-center rounded-full border border-accent-500/30 bg-white dark:bg-primary-800 px-2.5 py-1 font-semibold text-accent-600 dark:text-accent-400 hover:border-accent-500/60 hover:text-accent-700 dark:hover:text-accent-300 transition-colors'
+      : 'inline-flex text-accent-600 dark:text-accent-400 hover:underline break-all';
+    link.textContent = /\.pdf(?:[?#].*)?$/i.test(sourceUrl) ? 'Open manufacturer PDF' : 'Open source';
     sourceWrap.appendChild(link);
-  } else if (entry.sourceUrl) {
+  } else if (sourceUrl) {
     const source = document.createElement('div');
     source.className = 'text-slate-500 dark:text-slate-400 break-words';
-    source.textContent = entry.sourceUrl;
+    source.textContent = sourceUrl;
     sourceWrap.appendChild(source);
   }
 
@@ -4034,11 +4039,13 @@ function createPressureDropChartPanel(entry, flowValue, interpolationResult) {
   panel.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-3';
   const header = document.createElement('div');
   header.innerHTML = `<h3 class="text-sm font-semibold text-primary-900 dark:text-white">Pressure-flow curve</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Raw digitized points are shown as markers and connected with straight line segments.</p>`;
+  const svgWrap = document.createElement('div');
+  svgWrap.className = 'flex w-full items-center justify-center overflow-hidden rounded-lg bg-slate-50/60 dark:bg-primary-900/40 px-1 py-2 sm:px-2';
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('viewBox', '0 0 320 140');
+  svg.setAttribute('viewBox', '0 0 420 190');
   svg.setAttribute('role', 'img');
   svg.setAttribute('aria-label', `${entry.manufacturer} ${entry.model} pressure-flow curve`);
-  svg.classList.add('w-full', 'h-auto', 'min-h-[180px]', 'text-slate-500', 'dark:text-slate-300');
+  svg.classList.add('block', 'w-full', 'h-auto', 'max-h-[270px]', 'text-slate-500', 'dark:text-slate-300');
   const hasEstimate = interpolationResult && (interpolationResult.state === 'exact' || interpolationResult.state === 'interpolated');
   drawPressureDropChart(svg, entry.points, hasEstimate ? flowValue : NaN, hasEstimate ? interpolationResult.value : NaN, { curveMode: 'linear' });
   if (!getValidPressureDropPoints(entry.points).length) {
@@ -4048,19 +4055,20 @@ function createPressureDropChartPanel(entry, flowValue, interpolationResult) {
     panel.append(header, empty);
     return panel;
   }
-  panel.append(header, svg);
+  svgWrap.appendChild(svg);
+  panel.append(header, svgWrap);
   return panel;
 }
 
 function createPressureDropSelectedSummary(entry) {
   const card = document.createElement('article');
-  card.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-4';
+  card.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-3 sm:p-4 space-y-3';
   const title = document.createElement('div');
   title.innerHTML = `<p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Selected cannula</p><h3 class="text-base font-semibold text-primary-900 dark:text-white">${entry.manufacturer} · ${entry.model}</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">${getPressureDropGroupLabel(entry.category)} · ${entry.size || 'Unknown size'}</p>`;
   card.appendChild(title);
 
   const facts = document.createElement('dl');
-  facts.className = 'grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs';
+  facts.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-1.5 text-xs';
   [
     entry.connectionSite ? ['Connection site', entry.connectionSite] : null,
     ['Connector size', entry.connectorSize || '—'],
@@ -4108,7 +4116,7 @@ function createPressureDropLookupResult(entry, flowInputValue, flowValue, onFlow
   wrap.className = 'space-y-4';
   wrap.appendChild(createPressureDropEstimateCard(entry, flowInputValue, flowValue, interpolationResult, onFlowInput));
   const grid = document.createElement('div');
-  grid.className = 'grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,0.75fr)]';
+  grid.className = 'grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(260px,0.9fr)]';
   grid.appendChild(createPressureDropChartPanel(entry, flowValue, interpolationResult));
   grid.appendChild(createPressureDropSelectedSummary(entry));
   wrap.appendChild(grid);
