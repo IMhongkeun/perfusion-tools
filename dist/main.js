@@ -4053,7 +4053,7 @@ function createPressureDropChartPanel(entry, flowValue, interpolationResult) {
   svg.setAttribute('viewBox', '0 0 420 190');
   svg.setAttribute('role', 'img');
   svg.setAttribute('aria-label', `${entry.manufacturer} ${entry.model} pressure-flow curve`);
-  svg.classList.add('block', 'w-full', 'h-auto', 'max-h-[240px]', 'text-slate-500', 'dark:text-slate-300');
+  svg.classList.add('block', 'w-full', 'h-auto', 'text-slate-500', 'dark:text-slate-300');
   const hasEstimate = interpolationResult && (interpolationResult.state === 'exact' || interpolationResult.state === 'interpolated');
   drawPressureDropChart(svg, entry.points, hasEstimate ? flowValue : NaN, hasEstimate ? interpolationResult.value : NaN, { curveMode: 'linear' });
   if (!getValidPressureDropPoints(entry.points).length) {
@@ -4076,14 +4076,17 @@ function createPressureDropSelectedSummary(entry) {
   card.appendChild(title);
 
   const facts = document.createElement('dl');
-  facts.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-1.5 text-xs';
+  facts.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5 text-xs';
+  const orderCodeText = getPressureDropOrderCodeText(entry);
+  const dataStatusText = formatPressureDropDataStatus(entry.dataStatus);
+  const flowRangeText = getPressureDropFlowRange(entry);
   [
+    entry.connectorSize ? ['Connector size', entry.connectorSize] : null,
     entry.connectionSite ? ['Connection site', entry.connectionSite] : null,
-    ['Connector size', entry.connectorSize || '—'],
-    ['Order code', getPressureDropOrderCodeText(entry)],
-    ['Test medium', entry.testMedium || '—'],
-    ['Data status', formatPressureDropDataStatus(entry.dataStatus)],
-    ['Flow range', getPressureDropFlowRange(entry)]
+    orderCodeText && orderCodeText !== '—' ? ['Order code', orderCodeText] : null,
+    entry.testMedium ? ['Test medium', entry.testMedium] : null,
+    dataStatusText && dataStatusText !== '—' ? ['Data status', dataStatusText] : null,
+    flowRangeText && flowRangeText !== '—' ? ['Flow range', flowRangeText] : null
   ].filter(Boolean).forEach(([label, value]) => {
     const item = document.createElement('div');
     item.className = 'rounded-lg bg-slate-50 dark:bg-primary-800/60 p-2';
@@ -4123,11 +4126,8 @@ function createPressureDropLookupResult(entry, flowInputValue, flowValue, onFlow
   const wrap = document.createElement('div');
   wrap.className = 'space-y-4';
   wrap.appendChild(createPressureDropEstimateCard(entry, flowInputValue, flowValue, interpolationResult, onFlowInput));
-  const grid = document.createElement('div');
-  grid.className = 'grid items-start gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(260px,0.9fr)]';
-  grid.appendChild(createPressureDropChartPanel(entry, flowValue, interpolationResult));
-  grid.appendChild(createPressureDropSelectedSummary(entry));
-  wrap.appendChild(grid);
+  wrap.appendChild(createPressureDropChartPanel(entry, flowValue, interpolationResult));
+  wrap.appendChild(createPressureDropSelectedSummary(entry));
   return wrap;
 }
 
