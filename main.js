@@ -3876,6 +3876,20 @@ function setPressureDropSelectOptionPairs(selectNode, optionPairs, placeholder) 
   selectNode.disabled = optionPairs.length === 0;
 }
 
+function syncPressureDropConnectionControl(selectNode, wrapNode, optionPairs, shouldShow) {
+  setPressureDropSelectOptionPairs(selectNode, optionPairs, 'Any connection site');
+  if (!selectNode) return;
+
+  if (!shouldShow) {
+    selectNode.value = optionPairs.length === 1 ? optionPairs[0].value : '';
+  }
+
+  if (wrapNode) {
+    wrapNode.classList.toggle('hidden', !shouldShow);
+    wrapNode.setAttribute('aria-hidden', shouldShow ? 'false' : 'true');
+  }
+}
+
 function getPressureDropConnectionOptionValue(entry) {
   return entry.connectionSite || '__not_specified__';
 }
@@ -4048,13 +4062,13 @@ function createPressureDropSelectedSummary(entry) {
   const facts = document.createElement('dl');
   facts.className = 'grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs';
   [
-    ['Connection site', entry.connectionSite || '—'],
+    entry.connectionSite ? ['Connection site', entry.connectionSite] : null,
     ['Connector size', entry.connectorSize || '—'],
     ['Order code', getPressureDropOrderCodeText(entry)],
     ['Test medium', entry.testMedium || '—'],
     ['Data status', formatPressureDropDataStatus(entry.dataStatus)],
     ['Flow range', getPressureDropFlowRange(entry)]
-  ].forEach(([label, value]) => {
+  ].filter(Boolean).forEach(([label, value]) => {
     const item = document.createElement('div');
     item.className = 'rounded-lg bg-slate-50 dark:bg-primary-800/60 p-2';
     const dt = document.createElement('dt');
@@ -4158,7 +4172,8 @@ async function initCannulaPressureDropPage() {
       categorySelect: el('pressure-drop-page-category'),
       sizeSelect: el('pressure-drop-page-size'),
       connectionSelect: el('pressure-drop-page-connection'),
-      flowInput: el('pressure-drop-page-flow')
+      flowInput: el('pressure-drop-page-flow'),
+      connectionWrap: el('pressure-drop-page-connection-wrap')
     };
     const resetButton = el('pressure-drop-page-reset');
 
@@ -4204,7 +4219,12 @@ async function initCannulaPressureDropPage() {
       const connectionOptions = controls.sizeSelect?.value
         ? getUniquePressureDropOptionPairs(connectionEntries, getPressureDropConnectionOptionValue, getPressureDropConnectionOptionLabel)
         : [];
-      setPressureDropSelectOptionPairs(controls.connectionSelect, connectionOptions, 'Any connection site');
+      syncPressureDropConnectionControl(
+        controls.connectionSelect,
+        controls.connectionWrap,
+        connectionOptions,
+        Boolean(controls.sizeSelect?.value) && connectionOptions.length >= 2
+      );
     };
 
     const focusResultFlowInput = () => {
@@ -4276,7 +4296,7 @@ async function initCannulaPressureDropPage() {
     });
     if (controls.flowInput) controls.flowInput.addEventListener('input', render);
     if (resetButton) resetButton.addEventListener('click', () => {
-      Object.values(controls).forEach(control => { if (control) control.value = ''; });
+      Object.values(controls).forEach(control => { if (control && 'value' in control) control.value = ''; });
       populateLookupOptions('manufacturer');
       render();
     });
