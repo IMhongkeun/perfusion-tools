@@ -369,6 +369,7 @@
         <a href="/priming-volume/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Priming Volume</a>
         <a href="/timecalc/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Time Calculator</a>
         <a href="/quick-reference/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Quick Reference</a>
+        <a href="/cannula-pressure-drop/" data-route id="side-cannula-pressure-drop" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Cannula Pressure Drop</a>
         <a href="/unit-converter/" id="side-unit-converter" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-100 text-accent-600 dark:bg-primary-800 dark:text-accent-400">Unit converter</a>
       </div>
       <div class="mt-8 space-y-1">
@@ -586,101 +587,15 @@
                 </div>
                 <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Fr-equivalent values are calculated from diameter only. They should not be used as a direct substitute for manufacturer cannula or tubing specifications. Actual flow performance depends on internal diameter, wall thickness, length, connector geometry, pressure drop, blood viscosity, and cannula design.</p>
 
-                <section class="calculator-lower-section">
-                  <h2 class="calculator-lower-title">Pressure Drop Reference</h2>
-                  <div class="mt-3 space-y-3">
-                    <p class="text-xs text-slate-600 dark:text-slate-300">Pressure drop is manufacturer- and model-specific. It cannot be estimated from Fr size alone.</p>
-                    <div class="grid gap-2 sm:grid-cols-2">
-                      <label class="block space-y-1">
-                        <span class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">Manufacturer</span>
-                        <select id="pressure-drop-manufacturer" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white">
-                          <option value="">Select manufacturer</option>
-                          <option value="Medtronic">Medtronic</option>
-                          <option value="LivaNova">LivaNova</option>
-                          <option value="Getinge / Maquet">Getinge / Maquet</option>
-                          <option value="Edwards">Edwards</option>
-                          <option value="Terumo">Terumo</option>
-                        </select>
-                      </label>
-                      <label class="block space-y-1">
-                        <span class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">Cannula category</span>
-                        <input id="pressure-drop-category" type="text" readonly class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-100 dark:bg-primary-900/50 px-2.5 py-1.5 text-xs text-slate-600 dark:text-slate-300" placeholder="Auto" />
-                      </label>
-                      <label class="block space-y-1">
-                        <span class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">Product family</span>
-                        <select id="pressure-drop-product-family" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white">
-                          <option value="">Select category</option>
-                          <option value="arterial">arterial</option>
-                          <option value="venous">venous</option>
-                          <option value="femoral-arterial">femoral arterial</option>
-                          <option value="femoral-venous">femoral venous</option>
-                          <option value="aortic">aortic</option>
-                        </select>
-                      </label>
-                      <label class="block space-y-1">
-                        <span class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">Model</span>
-                        <select class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" id="pressure-drop-model"><option value="">Select model</option></select>
-                      </label>
-                      <label class="block space-y-1">
-                        <span class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">Size</span>
-                        <select class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" id="pressure-drop-size"><option value="">Select size</option></select>
-                      </label>
+                <section class="calculator-lower-section" aria-labelledby="pressure-drop-redirect-title">
+                  <div class="rounded-xl border border-accent-500/25 bg-accent-500/10 dark:bg-accent-500/15 p-4 space-y-3">
+                    <div>
+                      <h2 id="pressure-drop-redirect-title" class="text-sm font-semibold text-primary-900 dark:text-white">Looking for pressure drop data?</h2>
+                      <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">View manufacturer-based cannula pressure drop references on the dedicated page.</p>
                     </div>
-                    <label class="block space-y-1">
-                      <span class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">Target flow</span>
-                      <input type="number" inputmode="decimal" min="0" step="0.1" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" id="pressure-drop-target-flow" placeholder="Target flow in L/min" />
-                    </label>
-                    <div id="pressure-drop-result-box" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800/40 p-3 space-y-3">
-                      <div>
-                        <div id="pressure-drop-reference-label" class="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">Reference source</div>
-                        <p id="pressure-drop-reference-source" class="mt-1 text-sm font-semibold text-primary-900 dark:text-white">Select a cannula to view pressure-drop reference data.</p>
-                      </div>
-                      <div id="pressure-drop-estimate-card" class="hidden rounded-xl border border-accent-500/30 bg-accent-500/10 dark:bg-accent-500/15 p-4">
-                        <div class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-300">Estimated pressure drop</div>
-                        <div class="mt-1 flex items-baseline gap-2">
-                          <span id="pressure-drop-estimate-value" class="text-3xl md:text-4xl font-bold tabular-nums text-primary-900 dark:text-white">—</span>
-                          <span class="text-sm md:text-base font-normal text-slate-600 dark:text-slate-300">mmHg</span>
-                        </div>
-                        <p id="pressure-drop-estimate-context" class="mt-1 text-sm text-slate-600 dark:text-slate-300">—</p>
-                      </div>
-                      <div id="pressure-drop-chart-range-wrap" class="hidden">
-                        <div class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Manufacturer chart range</div>
-                        <p id="pressure-drop-range" class="mt-1 text-sm font-semibold text-primary-900 dark:text-white">—</p>
-                        <p id="pressure-drop-range-status" class="mt-1 text-xs text-slate-600 dark:text-slate-300">—</p>
-                      </div>
-                      <div id="pressure-drop-data-status-wrap" class="hidden">
-                        <div class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Data status</div>
-                        <p id="pressure-drop-panel-data-status" class="mt-1 text-sm font-semibold text-primary-900 dark:text-white">—</p>
-                      </div>
-                      <div>
-                        <div class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Note</div>
-                        <p class="mt-1 text-xs text-slate-600 dark:text-slate-300"><span id="pressure-drop-status-message">Pressure-drop data is not available for this model yet. Pressure drop cannot be estimated from Fr size alone.</span></p>
-                      </div>
-                    </div>
-                    <div id="pressure-drop-curve-meta" class="hidden text-xs text-slate-600 dark:text-slate-300 space-y-1">
-                      <p id="pressure-drop-selected-model">—</p>
-                      <p id="pressure-drop-interp-note" class="hidden">Digitized from manufacturer chart; fitted/interpolated pressure drop is approximate.</p>
-                    </div>
-                    <div id="pressure-drop-chart-wrap" class="hidden rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800/40 p-2">
-                      <svg id="pressure-drop-chart" viewBox="0 0 320 140" class="w-full h-32" role="img" aria-label="Pressure drop vs flow chart"></svg>
-                    </div>
-                    <div id="pressure-drop-source" class="hidden rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800/40 p-2.5 space-y-1">
-                      <div class="text-[11px] tracking-wider text-slate-500 dark:text-slate-400">Source</div>
-                      <p id="pressure-drop-source-label" class="text-xs text-slate-700 dark:text-slate-200">—</p>
-                      <p id="pressure-drop-source-url" class="text-xs text-slate-600 dark:text-slate-300 break-all">—</p>
-                      <p id="pressure-drop-test-medium" class="text-xs text-slate-600 dark:text-slate-300">Test medium: —</p>
-                      <p id="pressure-drop-data-status" class="text-xs text-slate-600 dark:text-slate-300">Data status: —</p>
-                      <p id="pressure-drop-digitization-note" class="text-xs text-slate-600 dark:text-slate-300">Digitization note: —</p>
-                      <p id="pressure-drop-connection-site" class="text-xs text-slate-600 dark:text-slate-300">Connection site: —</p>
-                      <p id="pressure-drop-notes" class="text-xs text-slate-600 dark:text-slate-300">Notes: —</p>
-                      <p id="pressure-drop-product-meta" class="hidden text-xs text-slate-600 dark:text-slate-300">Product metadata: —</p>
-                    </div>
-                    <section class="calculator-lower-section">
-                      <h2 class="calculator-lower-title">Available curve datasets</h2>
-                      <p class="mt-2 text-xs text-slate-600 dark:text-slate-300">Only manufacturer/model/size combinations with digitized curve data can display a pressure-drop estimate.</p>
-                      <div id="pressure-drop-available-list" class="mt-2 text-xs text-slate-600 dark:text-slate-300 space-y-2"></div>
-                    </section>
-                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Manufacturer pressure-flow curves are usually bench data and may not reflect actual clinical performance with blood. Actual flow performance depends on blood viscosity, Hct, temperature, cannula position, kinking, vessel size, circuit configuration, and patient condition.</p>
+                    <a href="/cannula-pressure-drop/" class="inline-flex min-h-11 items-center justify-center rounded-xl bg-accent-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-accent-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-primary-950 dark:focus-visible:ring-offset-primary-900">
+                      View pressure drop reference
+                    </a>
                   </div>
                 </section>
               </div>
@@ -807,6 +722,10 @@
     <a href="/quick-reference/" data-route id="mob-quick-reference" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6.75A2.75 2.75 0 016.75 4h10.5A2.75 2.75 0 0120 6.75v10.5A2.75 2.75 0 0117.25 20H6.75A2.75 2.75 0 014 17.25V6.75z M8 9h8M8 13h8M8 17h5" /></svg>
       <span class="text-[10px] font-medium leading-tight text-center whitespace-nowrap">Quick Ref</span>
+    </a>
+    <a href="/cannula-pressure-drop/" data-route id="mob-cannula-pressure-drop" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M7 12h10M10 17h4" /></svg>
+      <span class="text-[10px] font-medium leading-tight text-center whitespace-nowrap">Pressure</span>
     </a>
     <a href="/unit-converter/" data-route id="mob-unit-converter" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-accent-600 dark:text-accent-400 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M7 12h10M10 17h4" /></svg>
