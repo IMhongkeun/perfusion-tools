@@ -153,7 +153,13 @@ const TOP_NAV_ITEMS = [
   { path: '/z-score/', label: 'Z-score' },
   { path: '/priming-volume/', label: 'Priming Volume' },
   { path: '/timecalc/', label: 'Time' },
-  { path: '/quick-reference/', label: 'Quick Reference' },
+  {
+    label: 'References',
+    items: [
+      { path: '/quick-reference/', label: 'Quick Reference' },
+      { path: '/cannula-pressure-drop/', label: 'Cannula Pressure Drop' }
+    ]
+  },
   { path: '/unit-converter/', label: 'Unit Converter' },
   { path: '/info/', label: 'Info' },
 ];
@@ -178,16 +184,29 @@ function initStandaloneTopNav() {
     headerRow.insertBefore(nav, themeBtn);
   }
 
-  nav.innerHTML = TOP_NAV_ITEMS.map((item) => {
-    const normalizedItemPath = item.path.length > 1 && item.path.endsWith('/')
-      ? item.path.slice(0, -1)
-      : item.path;
-    const isActive = currentPath === normalizedItemPath;
-    const activeClasses = isActive
-      ? 'bg-slate-100 text-accent-600 dark:bg-primary-800 dark:text-accent-400 border-slate-200 dark:border-primary-700'
-      : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:border-slate-200 dark:hover:border-primary-700 hover:text-primary-900 dark:hover:text-accent-400';
-    return `<a href="${item.path}" class="nav-link px-4 py-2 rounded-full border transition-colors ${activeClasses}">${item.label}</a>`;
-  }).join('');
+  const renderTopNavItem = (item) => {
+    const baseLinkClasses = 'nav-link px-4 py-2 rounded-full border transition-colors';
+    const getLinkMarkup = (linkItem, compact = false) => {
+      const normalizedItemPath = linkItem.path.length > 1 && linkItem.path.endsWith('/')
+        ? linkItem.path.slice(0, -1)
+        : linkItem.path;
+      const isActive = currentPath === normalizedItemPath;
+      const activeClasses = isActive
+        ? 'bg-slate-100 text-accent-600 dark:bg-primary-800 dark:text-accent-400 border-slate-200 dark:border-primary-700'
+        : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:border-slate-200 dark:hover:border-primary-700 hover:text-primary-900 dark:hover:text-accent-400';
+      const padding = compact ? 'px-3 py-2' : 'px-4 py-2';
+      return `<a href="${linkItem.path}" class="${baseLinkClasses} ${padding} ${activeClasses}">${linkItem.label}</a>`;
+    };
+
+    if (Array.isArray(item.items)) {
+      const childLinks = item.items.map(child => getLinkMarkup(child, true)).join('');
+      return `<span class="hidden lg:inline-flex items-center pl-2 pr-1 text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500">${item.label}</span>${childLinks}`;
+    }
+
+    return getLinkMarkup(item);
+  };
+
+  nav.innerHTML = TOP_NAV_ITEMS.map(renderTopNavItem).join('');
 
   attachTopNavOverflowArrow(nav, 'global-top-nav-next');
 }
@@ -3175,12 +3194,6 @@ window.quickReferenceData = {
       ],
       checklist: 'Pre-MUF checklist: Unslave pump, warm exchanger, confirm air-free circuit, maintain positive arterial pressure.',
       cards: []
-    },
-    {
-      id: 'cannula-pressure-drop',
-      label: 'Pressure Drop',
-      pressureDropReference: true,
-      lastReviewed: '2026-06-11'
     }
   ]
 };
@@ -3920,179 +3933,6 @@ async function initCannulaPressureDropPage() {
   }
 }
 
-async function renderPressureDropReferenceTab(panel) {
-  panel.innerHTML = '';
-
-  const intro = document.createElement('section');
-  intro.className = 'rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50 p-5 space-y-3';
-  intro.innerHTML = `
-    <div>
-      <p class="text-xs uppercase tracking-[0.18em] text-accent-600 dark:text-accent-400">CPB / ECMO cannula reference</p>
-      <h3 class="mt-1 text-lg font-semibold text-primary-900 dark:text-white">Cannula pressure drop references</h3>
-    </div>
-    <div class="space-y-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-      <p>Manufacturer-based cannula pressure drop data for arterial cannula pressure drop, venous cannula pressure drop, and CPB cannula reference / ECMO cannula reference workflows.</p>
-      <p>Actual pressure can vary with cannula position, line length, blood viscosity, temperature, hematocrit, and flow condition. Use these pressure-flow references as an adjunct to device labeling, institutional protocol, and clinical judgment—not as a replacement for cannula selection assessment.</p>
-    </div>
-  `;
-  panel.appendChild(intro);
-
-  const status = document.createElement('div');
-  status.className = 'rounded-xl border border-dashed border-slate-300 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/40 p-4 text-sm text-slate-600 dark:text-slate-300';
-  status.textContent = 'Loading cannula pressure-drop references…';
-  panel.appendChild(status);
-
-  let entries = [];
-  try {
-    entries = getCannulaPressureDropReferenceEntries(await loadCannulaPressureDropData());
-  } catch (err) {
-    console.error('Failed to render Quick Reference pressure-drop tab', err);
-    status.className = 'rounded-xl border border-rose-200 dark:border-rose-500/40 bg-rose-50 dark:bg-rose-500/10 p-4 text-sm text-rose-700 dark:text-rose-200';
-    status.textContent = 'Cannula pressure-drop references could not be loaded. Please try again later.';
-    return;
-  }
-
-  if (!entries.length) {
-    status.textContent = 'No cannula pressure-drop references are available.';
-    return;
-  }
-
-  status.remove();
-
-  const groups = entries.reduce((acc, entry) => {
-    const group = getPressureDropGroupLabel(entry.category);
-    acc[group] = acc[group] || [];
-    acc[group].push(entry);
-    return acc;
-  }, {});
-  const groupOrder = ['Arterial cannula', 'Venous cannula', 'Aortic cannula', 'Specialty cannula'];
-
-  groupOrder.filter(group => groups[group]?.length).forEach(group => {
-    const section = document.createElement('section');
-    section.className = 'space-y-3';
-
-    const heading = document.createElement('div');
-    heading.className = 'flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between';
-    heading.innerHTML = `<h3 class="text-base font-semibold text-primary-900 dark:text-white">${group}</h3><p class="text-xs text-slate-500 dark:text-slate-400">Grouped by manufacturer, model, type, and size Fr.</p>`;
-    section.appendChild(heading);
-
-    const tableWrap = document.createElement('div');
-    tableWrap.className = 'hidden md:block overflow-x-auto rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30';
-    const table = document.createElement('table');
-    table.className = 'min-w-[980px] w-full text-xs';
-    table.innerHTML = `
-      <thead class="bg-slate-50 dark:bg-primary-900/80 text-slate-600 dark:text-slate-300">
-        <tr>
-          <th class="px-3 py-2 text-left font-semibold">Manufacturer</th>
-          <th class="px-3 py-2 text-left font-semibold">Model</th>
-          <th class="px-3 py-2 text-left font-semibold">Type</th>
-          <th class="px-3 py-2 text-left font-semibold">Size / metadata</th>
-          <th class="px-3 py-2 text-left font-semibold">Flow condition</th>
-          <th class="px-3 py-2 text-left font-semibold">Pressure drop values</th>
-          <th class="px-3 py-2 text-left font-semibold">Source</th>
-        </tr>
-      </thead>
-    `;
-    const tbody = document.createElement('tbody');
-    groups[group].sort((a, b) => `${a.manufacturer} ${a.model} ${a.size}`.localeCompare(`${b.manufacturer} ${b.model} ${b.size}`)).forEach(entry => {
-      const tr = document.createElement('tr');
-      tr.className = 'border-t border-slate-100 dark:border-primary-800 align-top hover:bg-slate-50/70 dark:hover:bg-primary-900/60';
-
-      const cells = [entry.manufacturer, entry.model, entry.category || '—'];
-      cells.forEach(value => {
-        const td = document.createElement('td');
-        td.className = 'px-3 py-3 text-slate-700 dark:text-slate-200';
-        td.textContent = value;
-        tr.appendChild(td);
-      });
-
-      const sizeTd = document.createElement('td');
-      sizeTd.className = 'px-3 py-3 text-slate-700 dark:text-slate-200';
-      const sizeTitle = document.createElement('div');
-      sizeTitle.className = 'font-semibold';
-      sizeTitle.textContent = entry.size || '—';
-      sizeTd.appendChild(sizeTitle);
-      const meta = document.createElement('div');
-      meta.className = 'mt-1 space-y-1 text-slate-500 dark:text-slate-400';
-      getPressureDropMetadataItems(entry).forEach(item => {
-        const div = document.createElement('div');
-        div.textContent = item;
-        meta.appendChild(div);
-      });
-      sizeTd.appendChild(meta);
-      tr.appendChild(sizeTd);
-
-      const flowTd = document.createElement('td');
-      flowTd.className = 'px-3 py-3 text-slate-700 dark:text-slate-200';
-      flowTd.textContent = `${getPressureDropFlowRange(entry)}${entry.testMedium ? ` (${entry.testMedium})` : ''}`;
-      tr.appendChild(flowTd);
-
-      const pointsTd = document.createElement('td');
-      pointsTd.className = 'px-3 py-3 min-w-[18rem]';
-      pointsTd.appendChild(createPressureDropPointsDetails(entry));
-      tr.appendChild(pointsTd);
-
-      const sourceTd = document.createElement('td');
-      sourceTd.className = 'px-3 py-3 text-slate-600 dark:text-slate-300';
-      sourceTd.appendChild(getPressureDropSourceNode(entry));
-      tr.appendChild(sourceTd);
-
-      tbody.appendChild(tr);
-    });
-    table.appendChild(tbody);
-    tableWrap.appendChild(table);
-    section.appendChild(tableWrap);
-
-    const mobileList = document.createElement('div');
-    mobileList.className = 'md:hidden space-y-3';
-    groups[group].forEach(entry => {
-      const card = document.createElement('article');
-      card.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/40 p-4 space-y-3';
-      const title = document.createElement('div');
-      title.innerHTML = `<p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400"></p><h4 class="mt-1 text-sm font-semibold text-primary-900 dark:text-white"></h4>`;
-      title.querySelector('p').textContent = `${entry.manufacturer} • ${entry.category || 'Cannula'}`;
-      title.querySelector('h4').textContent = `${entry.model} — ${entry.size || 'Size not listed'}`;
-      card.appendChild(title);
-
-      const facts = document.createElement('dl');
-      facts.className = 'grid grid-cols-2 gap-2 text-xs';
-      [
-        ['Flow condition', getPressureDropFlowRange(entry)],
-        ['Data status', formatPressureDropDataStatus(entry.dataStatus)],
-        ['Test medium', entry.testMedium || '—'],
-        ['Metadata', getPressureDropMetadataItems(entry).join('; ') || '—']
-      ].forEach(([label, value]) => {
-        const item = document.createElement('div');
-        item.className = 'rounded-lg bg-slate-50 dark:bg-primary-800/60 p-2';
-        const dt = document.createElement('dt');
-        dt.className = 'text-slate-500 dark:text-slate-400';
-        dt.textContent = label;
-        const dd = document.createElement('dd');
-        dd.className = 'mt-1 font-medium text-slate-700 dark:text-slate-200';
-        dd.textContent = value;
-        item.append(dt, dd);
-        facts.appendChild(item);
-      });
-      card.appendChild(facts);
-      card.appendChild(createPressureDropPointsDetails(entry));
-      card.appendChild(getPressureDropSourceNode(entry, true));
-      mobileList.appendChild(card);
-    });
-    section.appendChild(mobileList);
-    panel.appendChild(section);
-  });
-
-  const reference = document.createElement('section');
-  reference.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/70 dark:bg-primary-900/40 p-4 text-xs text-slate-600 dark:text-slate-300 space-y-2';
-  reference.innerHTML = `
-    <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Source / reference notes</h3>
-    <p>Rows preserve the manufacturer, model, cannula type, size, flow range, pressure-drop chart points, test medium, order-code metadata, and source labels from the original Unit Converter pressure-drop dataset.</p>
-    <p>External PDF links open in a new tab. Uploaded catalog references indicate locally reviewed manufacturer material without a public URL in the dataset.</p>
-  `;
-  panel.appendChild(reference);
-}
-
-
 function initQuickReference() {
   if (quickReferenceInitialized) return;
 
@@ -4103,6 +3943,12 @@ function initQuickReference() {
   const lastReviewedEl = el('quick-reference-last-reviewed');
 
   if (!tabList || !panelContainer || !tabs.length) return;
+
+  // Legacy links to /quick-reference/#cannula-pressure-drop now belong on the dedicated page.
+  if ((window.location.hash || '') === '#cannula-pressure-drop') {
+    window.location.replace('/cannula-pressure-drop/');
+    return;
+  }
 
   tabList.innerHTML = '';
   panelContainer.innerHTML = '';
@@ -4177,12 +4023,6 @@ function initQuickReference() {
 
     if (tab.id === 'tca' && tab.tableRows) {
       renderHcaTable(panel, tab);
-      panelContainer.appendChild(panel);
-      return;
-    }
-
-    if (tab.id === 'cannula-pressure-drop' || tab.pressureDropReference) {
-      renderPressureDropReferenceTab(panel);
       panelContainer.appendChild(panel);
       return;
     }
@@ -5073,6 +4913,7 @@ function route() {
   else if (path.includes('heparin')) { showSection('view-heparin'); key = 'heparin'; }
   else if (path.includes('timecalc')) { showSection('view-timecalc'); key = 'timecalc'; }
   else if (path.includes('unit-converter')) { showSection('view-unit-converter'); key = 'unit-converter'; }
+  else if (path.includes('cannula-pressure-drop')) { key = 'cannula-pressure-drop'; }
   else if (path.includes('quick-reference')) { showSection('view-quick-reference'); key = 'quick-reference'; }
   else if (path.includes('info')) { showSection('view-info'); key = 'info'; }
   else if (path.includes('privacy')) { showSection('view-privacy'); key = 'privacy'; }
@@ -5092,6 +4933,7 @@ function route() {
     'timecalc': ['nav-time', 'side-time', 'mob-time'],
     'unit-converter': ['nav-unit-converter', 'side-unit-converter', 'mob-unit-converter'],
     'quick-reference': ['nav-quick-reference', 'side-quick-reference', 'mob-quick-reference'],
+    'cannula-pressure-drop': ['nav-cannula-pressure-drop', 'side-cannula-pressure-drop', 'mob-cannula-pressure-drop'],
     'info': ['nav-info', 'side-info', 'mob-info']
   };
 

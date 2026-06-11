@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>Perfusion Quick Reference for CPB & ECMO</title>
-  <meta name="description" content="Access practical CPB and ECMO reference values, including ACP/RCP guidance, HCA notes, MUF ranges, and cannula pressure drop references for bedside use." />
+  <meta name="description" content="Access practical CPB and ECMO reference values, including ACP/RCP guidance, HCA notes, and MUF ranges for bedside use." />
   <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
   <link rel="canonical" href="https://perfusiontools.com/quick-reference/" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Perfusion Quick Reference Guide | Perfusion Tools" />
-  <meta property="og:description" content="Fast-access perfusion reference content for CPB/ECMO operations, calculations, and cannula pressure drop lookup." />
+  <meta property="og:description" content="Fast-access perfusion reference content for CPB/ECMO operations, calculations, and bedside quick-reference values." />
   <meta property="og:url" content="https://perfusiontools.com/quick-reference/" />
   <meta name="twitter:title" content="Perfusion Quick Reference Guide | Perfusion Tools" />
-  <meta name="twitter:description" content="Fast-access perfusion reference content for CPB/ECMO operations, calculations, and cannula pressure drop lookup." />
+  <meta name="twitter:description" content="Fast-access perfusion reference content for CPB/ECMO operations, calculations, and bedside quick-reference values." />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -289,14 +289,14 @@
       '/': {
         title: 'Perfusion Quick Reference Guide | Perfusion Tools',
         h1: 'Perfusion Quick Reference Guide',
-        description: 'Quick-reference perfusion guide for CPB and ECMO workflows, including drug dosing, ACT targets, prime planning, cannula pressure drop references, and practical bedside checklists.',
+        description: 'Quick-reference perfusion guide for CPB and ECMO workflows, including drug dosing, ACT targets, prime planning, and practical bedside checklists.',
         canonicalPath: '/quick-reference/'
       },
       '/quick-reference/': {
         title: 'Perfusion Quick Reference Guide | Perfusion Tools',
         h1: 'Perfusion Quick Reference Guide',
-        description: 'Quick-reference perfusion guide for CPB and ECMO workflows, including drug dosing, ACT targets, prime planning, cannula pressure drop references, and practical bedside checklists.',
-        headingDescription: 'Browse concise CPB and ECMO bedside reference cards, including cannula pressure drop references, in a single quick-access page.',
+        description: 'Quick-reference perfusion guide for CPB and ECMO workflows, including drug dosing, ACT targets, prime planning, and practical bedside checklists.',
+        headingDescription: 'Browse concise CPB and ECMO bedside reference cards in a single quick-access page.',
         canonicalPath: '/quick-reference/'
       }
     };
@@ -331,7 +331,7 @@
     window.applyRouteMeta = applyRouteMeta;
     window.addEventListener('load', () => applyRouteMeta('/quick-reference/'));
   </script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/quick-reference/#webpage","url":"https://perfusiontools.com/quick-reference/","name":"Perfusion Quick Reference Guide – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalGuideline","name":"CPB and ECMO bedside quick reference including cannula pressure drop references"},"dateModified":"2026-04-10"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/quick-reference/#webpage","url":"https://perfusiontools.com/quick-reference/","name":"Perfusion Quick Reference Guide – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalGuideline","name":"CPB and ECMO bedside quick reference"},"dateModified":"2026-04-10"}]}</script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
@@ -364,6 +364,7 @@
         <a href="/priming-volume/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Priming Volume</a>
         <a href="/timecalc/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Time Calculator</a>
         <a href="/quick-reference/" id="side-quick-reference" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-100 text-accent-600 dark:bg-primary-800 dark:text-accent-400">Quick Reference</a>
+        <a href="/cannula-pressure-drop/" data-route id="side-cannula-pressure-drop" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Cannula Pressure Drop</a>
         <a href="/unit-converter/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Unit converter</a>
       </div>
       <div class="mt-8 space-y-1">
@@ -392,6 +393,14 @@
             <div id="quick-reference-tabs" role="tablist" aria-label="Quick reference tabs" class="flex flex-wrap gap-2"></div>
             <div id="quick-reference-panels"></div>
           </div>
+
+          <section id="quick-reference-pressure-drop-cta" class="rounded-xl border border-accent-500/25 bg-accent-500/10 dark:bg-accent-500/15 p-4 space-y-3">
+            <div>
+              <h2 class="text-sm font-semibold text-primary-900 dark:text-white">Cannula pressure drop data</h2>
+              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Full manufacturer-based arterial and venous cannula pressure drop references are now available on a dedicated page.</p>
+            </div>
+            <a href="/cannula-pressure-drop/" class="inline-flex min-h-11 items-center justify-center rounded-xl bg-accent-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-accent-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-primary-950 dark:focus-visible:ring-offset-primary-900">View pressure drop reference</a>
+          </section>
 
           <section class="calculator-lower-section">
             <h2 class="calculator-lower-title">Quick reference notes</h2>
@@ -577,6 +586,10 @@
     <a href="/quick-reference/" data-route id="mob-quick-reference" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-accent-600 dark:text-accent-400 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6.75A2.75 2.75 0 016.75 4h10.5A2.75 2.75 0 0120 6.75v10.5A2.75 2.75 0 0117.25 20H6.75A2.75 2.75 0 014 17.25V6.75z M8 9h8M8 13h8M8 17h5" /></svg>
       <span class="text-[10px] font-medium leading-tight text-center whitespace-nowrap">Quick Ref</span>
+    </a>
+    <a href="/cannula-pressure-drop/" data-route id="mob-cannula-pressure-drop" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+      <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M7 12h10M10 17h4" /></svg>
+      <span class="text-[10px] font-medium leading-tight text-center whitespace-nowrap">Pressure</span>
     </a>
     <a href="/unit-converter/" data-route id="mob-unit-converter" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M7 12h10M10 17h4" /></svg>
