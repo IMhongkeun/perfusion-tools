@@ -3564,7 +3564,7 @@ function getPressureDropGroupLabel(category) {
   return 'Specialty cannula';
 }
 
-function getPressureDropSourceNode(entry, compact = false) {
+function getPressureDropSourceNode(entry, compact = false, options = {}) {
   const sourceWrap = document.createElement('div');
   sourceWrap.className = compact
     ? 'rounded-lg border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50 p-3 space-y-2 text-xs'
@@ -3575,7 +3575,8 @@ function getPressureDropSourceNode(entry, compact = false) {
   sourceWrap.appendChild(label);
 
   const sourceUrl = String(entry.sourceUrl || '').trim();
-  if (sourceUrl && /^https?:\/\//i.test(sourceUrl)) {
+  const hasPublicSourceUrl = /^https?:\/\//i.test(sourceUrl);
+  if (sourceUrl && hasPublicSourceUrl) {
     const link = document.createElement('a');
     link.href = sourceUrl;
     link.target = '_blank';
@@ -3590,6 +3591,13 @@ function getPressureDropSourceNode(entry, compact = false) {
     source.className = 'text-slate-500 dark:text-slate-400 break-words';
     source.textContent = sourceUrl;
     sourceWrap.appendChild(source);
+  }
+
+  if (!hasPublicSourceUrl && options.showMissingPublicLinkNote) {
+    const helper = document.createElement('div');
+    helper.className = 'text-[11px] leading-relaxed text-slate-400 dark:text-slate-500';
+    helper.textContent = 'Manufacturer source label is recorded; public PDF link has not been added yet.';
+    sourceWrap.appendChild(helper);
   }
 
   if (entry.testMedium) {
@@ -4036,16 +4044,16 @@ function createPressureDropEstimateCard(entry, flowInputValue, flowValue, interp
 
 function createPressureDropChartPanel(entry, flowValue, interpolationResult) {
   const panel = document.createElement('article');
-  panel.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-3';
+  panel.className = 'self-start h-fit rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-3';
   const header = document.createElement('div');
   header.innerHTML = `<h3 class="text-sm font-semibold text-primary-900 dark:text-white">Pressure-flow curve</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Raw digitized points are shown as markers and connected with straight line segments.</p>`;
   const svgWrap = document.createElement('div');
-  svgWrap.className = 'flex w-full items-center justify-center overflow-hidden rounded-lg bg-slate-50/60 dark:bg-primary-900/40 px-1 py-2 sm:px-2';
+  svgWrap.className = 'flex w-full items-center justify-center overflow-hidden rounded-lg bg-slate-50/60 dark:bg-primary-900/40 px-1 py-1 sm:px-2';
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('viewBox', '0 0 420 190');
   svg.setAttribute('role', 'img');
   svg.setAttribute('aria-label', `${entry.manufacturer} ${entry.model} pressure-flow curve`);
-  svg.classList.add('block', 'w-full', 'h-auto', 'max-h-[270px]', 'text-slate-500', 'dark:text-slate-300');
+  svg.classList.add('block', 'w-full', 'h-auto', 'max-h-[240px]', 'text-slate-500', 'dark:text-slate-300');
   const hasEstimate = interpolationResult && (interpolationResult.state === 'exact' || interpolationResult.state === 'interpolated');
   drawPressureDropChart(svg, entry.points, hasEstimate ? flowValue : NaN, hasEstimate ? interpolationResult.value : NaN, { curveMode: 'linear' });
   if (!getValidPressureDropPoints(entry.points).length) {
@@ -4062,7 +4070,7 @@ function createPressureDropChartPanel(entry, flowValue, interpolationResult) {
 
 function createPressureDropSelectedSummary(entry) {
   const card = document.createElement('article');
-  card.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-3 sm:p-4 space-y-3';
+  card.className = 'self-start rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-3 sm:p-4 space-y-3';
   const title = document.createElement('div');
   title.innerHTML = `<p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Selected cannula</p><h3 class="text-base font-semibold text-primary-900 dark:text-white">${entry.manufacturer} · ${entry.model}</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">${getPressureDropGroupLabel(entry.category)} · ${entry.size || 'Unknown size'}</p>`;
   card.appendChild(title);
@@ -4089,7 +4097,7 @@ function createPressureDropSelectedSummary(entry) {
     facts.appendChild(item);
   });
   card.appendChild(facts);
-  card.appendChild(getPressureDropSourceNode(entry, true));
+  card.appendChild(getPressureDropSourceNode(entry, true, { showMissingPublicLinkNote: true }));
 
   const details = document.createElement('details');
   details.className = 'rounded-lg border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 p-3 text-xs text-slate-600 dark:text-slate-300';
