@@ -3911,6 +3911,13 @@ function getPressureDropLookupSelection(controls) {
   };
 }
 
+function parsePressureDropFlowInput(value) {
+  const normalizedValue = String(value || '').trim().replace(',', '.');
+  if (!normalizedValue || normalizedValue === '.') return NaN;
+  const parsedValue = Number.parseFloat(normalizedValue);
+  return Number.isFinite(parsedValue) ? parsedValue : NaN;
+}
+
 function createPressureDropLookupPrompt(candidates, totalCount) {
   const prompt = document.createElement('div');
   prompt.className = 'rounded-xl border border-dashed border-slate-300 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/40 p-5 text-sm text-slate-600 dark:text-slate-300 space-y-2';
@@ -3972,10 +3979,9 @@ function createPressureDropEstimateCard(entry, flowInputValue, flowValue, interp
   inputLabel.textContent = 'Flow rate (L/min)';
   const input = document.createElement('input');
   input.id = 'pressure-drop-result-flow';
-  input.type = 'number';
-  input.min = '0';
-  input.step = '0.1';
+  input.type = 'text';
   input.inputMode = 'decimal';
+  input.pattern = '[0-9]*[.,]?[0-9]*';
   input.placeholder = 'Enter flow rate';
   input.value = flowInputValue || '';
   input.className = 'w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white';
@@ -4028,7 +4034,7 @@ function createPressureDropChartPanel(entry, flowValue, interpolationResult) {
     panel.append(header, empty);
     return panel;
   }
-  panel.append(header, svg, createPressureDropPointsDetails(entry));
+  panel.append(header, svg);
   return panel;
 }
 
@@ -4095,7 +4101,7 @@ function createPressureDropLookupResult(entry, flowInputValue, flowValue, onFlow
   return wrap;
 }
 
-function createPressureDropAvailableDatasetsDetails(entries) {
+function createPressureDropAvailableDatasetsDetails(entries, onSelect) {
   const details = document.createElement('details');
   details.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/60 dark:bg-primary-900/40 p-4';
   const summary = document.createElement('summary');
@@ -4103,15 +4109,24 @@ function createPressureDropAvailableDatasetsDetails(entries) {
   summary.textContent = `Available datasets (${entries.length})`;
   const note = document.createElement('p');
   note.className = 'mt-2 text-xs text-slate-500 dark:text-slate-400';
-  note.textContent = 'Collapsed by default so the primary workflow stays focused on selecting one cannula and viewing its curve.';
-  const content = document.createElement('div');
-  content.className = 'mt-3 space-y-3';
-  content.appendChild(createPressureDropPageTable(entries));
-  content.appendChild(createPressureDropPageCards(entries));
-  details.append(summary, note, content);
+  note.textContent = 'Compact index of available manufacturer datasets. Select an item to load it in the lookup.';
+
+  const list = document.createElement('div');
+  list.className = 'mt-3 max-h-96 overflow-y-auto pr-1 grid gap-2';
+  entries.forEach(entry => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'w-full text-left rounded-lg border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/70 p-3 hover:border-accent-500/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 transition-colors';
+    const connectionText = entry.connectionSite ? ` · ${entry.connectionSite}` : '';
+    const sourceText = entry.sourceLabel ? ` · ${entry.sourceLabel}` : '';
+    button.innerHTML = `<span class="block text-sm font-semibold text-primary-900 dark:text-white">${entry.manufacturer || 'Unknown manufacturer'} · ${entry.model || 'Unknown model'}</span><span class="mt-1 block text-xs text-slate-500 dark:text-slate-400">${getPressureDropGroupLabel(entry.category)} · ${entry.size || 'Unknown size'}${connectionText} · ${getPressureDropFlowRange(entry)}${sourceText}</span><span class="mt-2 inline-flex text-xs font-semibold text-accent-700 dark:text-accent-300">Select</span>`;
+    button.addEventListener('click', () => onSelect(entry));
+    list.appendChild(button);
+  });
+
+  details.append(summary, note, list);
   return details;
 }
-
 
 async function initCannulaPressureDropPage() {
   const page = el('cannula-pressure-drop-page');
@@ -4223,7 +4238,7 @@ async function initCannulaPressureDropPage() {
       const candidates = getPressureDropLookupMatches(entries, filters);
       const selectedEntry = candidates.length === 1 ? candidates[0] : null;
       const flowInputValue = controls.flowInput?.value || '';
-      const flowValue = parseFloat(flowInputValue);
+      const flowValue = parsePressureDropFlowInput(flowInputValue);
       results.innerHTML = '';
 
       if (!entries.length) {
@@ -4238,14 +4253,14 @@ async function initCannulaPressureDropPage() {
         if (candidates.length && candidates.length < entries.length) {
           results.appendChild(createPressureDropCandidateList(candidates, selectEntry));
         }
-        results.appendChild(createPressureDropAvailableDatasetsDetails(entries));
+        results.appendChild(createPressureDropAvailableDatasetsDetails(entries, selectEntry));
         setState({});
         return;
       }
 
       status.textContent = `Selected ${selectedEntry.manufacturer} · ${selectedEntry.model} · ${selectedEntry.size || 'size not specified'}`;
       results.appendChild(createPressureDropLookupResult(selectedEntry, flowInputValue, flowValue, value => syncFlowInput(value, { focusResultFlow: true })));
-      results.appendChild(createPressureDropAvailableDatasetsDetails(entries));
+      results.appendChild(createPressureDropAvailableDatasetsDetails(entries, selectEntry));
       setState({});
       if (focusResultFlow) requestAnimationFrame(focusResultFlowInput);
     };
