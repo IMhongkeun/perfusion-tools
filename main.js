@@ -153,13 +153,8 @@ const TOP_NAV_ITEMS = [
   { path: '/z-score/', label: 'Z-score' },
   { path: '/priming-volume/', label: 'Priming Volume' },
   { path: '/timecalc/', label: 'Time' },
-  {
-    label: 'References',
-    items: [
-      { path: '/quick-reference/', label: 'Quick Reference' },
-      { path: '/cannula-pressure-drop/', label: 'Cannula Pressure Drop' }
-    ]
-  },
+  { path: '/quick-reference/', label: 'Quick Reference' },
+  { path: '/cannula-pressure-drop/', label: 'Cannula Pressure Drop' },
   { path: '/unit-converter/', label: 'Unit Converter' },
   { path: '/info/', label: 'Info' },
 ];
