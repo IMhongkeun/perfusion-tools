@@ -7699,6 +7699,7 @@ window.addEventListener('DOMContentLoaded', () => {
           '/timecalc/',
           '/z-score/',
           '/quick-reference/',
+          '/cannula-pressure-drop/',
           '/priming-volume/',
           '/unit-converter/',
           '/bsa',
@@ -7709,6 +7710,7 @@ window.addEventListener('DOMContentLoaded', () => {
           '/timecalc',
           '/z-score',
           '/quick-reference',
+          '/cannula-pressure-drop',
           '/priming-volume',
           '/unit-converter'
         ]);
