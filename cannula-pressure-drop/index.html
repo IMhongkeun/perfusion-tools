@@ -4,18 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Perfusion Quick Reference for CPB & ECMO</title>
-  <meta name="description" content="Access practical CPB and ECMO reference values, including ACP/RCP guidance, HCA notes, and MUF ranges for bedside use." />
+  <title>Cannula Pressure Drop Reference | Perfusion Tools</title>
+  <meta name="description" content="Manufacturer-based cannula pressure drop reference data for CPB and ECMO cannula selection, including pressure-flow curve data from published product references." />
   <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
-  <link rel="canonical" href="https://perfusiontools.com/quick-reference/" />
+  <link rel="canonical" href="https://perfusiontools.com/cannula-pressure-drop/" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Perfusion Quick Reference Guide | Perfusion Tools" />
-  <meta property="og:description" content="Fast-access perfusion reference content for CPB/ECMO operations, calculations, and bedside quick-reference values." />
-  <meta property="og:url" content="https://perfusiontools.com/quick-reference/" />
-  <meta name="twitter:title" content="Perfusion Quick Reference Guide | Perfusion Tools" />
-  <meta name="twitter:description" content="Fast-access perfusion reference content for CPB/ECMO operations, calculations, and bedside quick-reference values." />
+  <meta property="og:title" content="Cannula Pressure Drop Reference | Perfusion Tools" />
+  <meta property="og:description" content="Manufacturer-based cannula pressure drop reference data for CPB and ECMO cannula selection, including arterial and venous pressure-flow references." />
+  <meta property="og:url" content="https://perfusiontools.com/cannula-pressure-drop/" />
+  <meta name="twitter:title" content="Cannula Pressure Drop Reference | Perfusion Tools" />
+  <meta name="twitter:description" content="Manufacturer-based cannula pressure drop reference data for CPB and ECMO cannula selection, including arterial and venous pressure-flow references." />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -287,17 +287,18 @@
   <script>
     const routeMeta = {
       '/': {
-        title: 'Perfusion Quick Reference Guide | Perfusion Tools',
-        h1: 'Perfusion Quick Reference Guide',
-        description: 'Quick-reference perfusion guide for CPB and ECMO workflows, including drug dosing, ACT targets, prime planning, and practical bedside checklists.',
-        canonicalPath: '/quick-reference/'
+        title: 'Cannula Pressure Drop Reference | Perfusion Tools',
+        h1: 'Cannula Pressure Drop Reference',
+        description: 'Manufacturer-based cannula pressure drop reference data for CPB and ECMO cannula selection, including pressure-flow curve data from published product references.',
+        headingDescription: 'Manufacturer-based cannula pressure drop reference data for CPB and ECMO cannula selection, including arterial and venous pressure-flow references.',
+        canonicalPath: '/cannula-pressure-drop/'
       },
-      '/quick-reference/': {
-        title: 'Perfusion Quick Reference Guide | Perfusion Tools',
-        h1: 'Perfusion Quick Reference Guide',
-        description: 'Quick-reference perfusion guide for CPB and ECMO workflows, including drug dosing, ACT targets, prime planning, and practical bedside checklists.',
-        headingDescription: 'Browse concise CPB and ECMO bedside reference cards in a single quick-access page.',
-        canonicalPath: '/quick-reference/'
+      '/cannula-pressure-drop/': {
+        title: 'Cannula Pressure Drop Reference | Perfusion Tools',
+        h1: 'Cannula Pressure Drop Reference',
+        description: 'Manufacturer-based cannula pressure drop reference data for CPB and ECMO cannula selection, including pressure-flow curve data from published product references.',
+        headingDescription: 'Manufacturer-based cannula pressure drop reference data for CPB and ECMO cannula selection, including arterial and venous pressure-flow references.',
+        canonicalPath: '/cannula-pressure-drop/'
       }
     };
 
@@ -312,8 +313,8 @@
     }
 
     function applyRouteMeta(rawRoute) {
-      const path = normalizeRoute(rawRoute || window.location.pathname || '/quick-reference/');
-      const meta = routeMeta[path] || routeMeta['/quick-reference/'];
+      const path = normalizeRoute(rawRoute || window.location.pathname || '/cannula-pressure-drop/');
+      const meta = routeMeta[path] || routeMeta['/cannula-pressure-drop/'];
       document.title = meta.title;
       const descTag = document.querySelector('meta[name="description"]');
       if (descTag) descTag.setAttribute('content', meta.description);
@@ -322,16 +323,16 @@
       const subtitleEl = document.getElementById('page-subtitle');
       if (subtitleEl) subtitleEl.textContent = meta.headingDescription || meta.description;
       const canonicalTag = document.querySelector('link[rel="canonical"]');
-      if (canonicalTag) canonicalTag.setAttribute('href', `https://perfusiontools.com${meta.canonicalPath || '/quick-reference/'}`);
+      if (canonicalTag) canonicalTag.setAttribute('href', `https://perfusiontools.com${meta.canonicalPath || '/cannula-pressure-drop/'}`);
       return path;
     }
 
     window.routeMeta = routeMeta;
     window.normalizeRoute = normalizeRoute;
     window.applyRouteMeta = applyRouteMeta;
-    window.addEventListener('load', () => applyRouteMeta('/quick-reference/'));
+    window.addEventListener('load', () => applyRouteMeta('/cannula-pressure-drop/'));
   </script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/quick-reference/#webpage","url":"https://perfusiontools.com/quick-reference/","name":"Perfusion Quick Reference Guide – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalGuideline","name":"CPB and ECMO bedside quick reference"},"dateModified":"2026-04-10"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/cannula-pressure-drop/#webpage","url":"https://perfusiontools.com/cannula-pressure-drop/","name":"Cannula Pressure Drop Reference – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalGuideline","name":"Manufacturer-based CPB and ECMO cannula pressure drop reference"},"description":"Manufacturer-based cannula pressure drop reference data for CPB and ECMO cannula selection, including pressure-flow curve data from published product references.","keywords":["cannula pressure drop","arterial cannula pressure drop","venous cannula pressure drop","CPB cannula reference","ECMO cannula reference","manufacturer pressure drop curve","pressure-flow reference","digitized manufacturer curve"],"dateModified":"2026-06-11"}]}</script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
@@ -363,8 +364,8 @@
         <a href="/z-score/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Z-score Calculator</a>
         <a href="/priming-volume/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Priming Volume</a>
         <a href="/timecalc/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Time Calculator</a>
-        <a href="/quick-reference/" id="side-quick-reference" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-100 text-accent-600 dark:bg-primary-800 dark:text-accent-400">Quick Reference</a>
-        <a href="/cannula-pressure-drop/" data-route id="side-cannula-pressure-drop" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Cannula Pressure Drop</a>
+        <a href="/quick-reference/" id="side-quick-reference" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Quick Reference</a>
+        <a href="/cannula-pressure-drop/" data-route id="side-cannula-pressure-drop" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-100 text-accent-600 dark:bg-primary-800 dark:text-accent-400">Cannula Pressure Drop</a>
         <a href="/unit-converter/" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Unit converter</a>
       </div>
       <div class="mt-8 space-y-1">
@@ -373,164 +374,127 @@
       </div>
     </aside>
 
-    <main class="p-4 md:p-8 max-w-3xl mx-auto w-full space-y-8">
-      <section class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
-        <div class="p-6 space-y-3">
-          <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Perfusion Quick Reference Guide</h1>
-          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Browse concise CPB and ECMO bedside reference cards in a single quick-access page.</p>
-        </div>
-      </section>
+    <main class="p-4 md:p-8 max-w-4xl mx-auto w-full space-y-8">
+      <section id="cannula-pressure-drop-page" class="animate-in fade-in duration-300 space-y-6">
+        <header class="space-y-3">
+          <p class="text-xs uppercase tracking-[0.18em] text-accent-600 dark:text-accent-400 font-semibold">CPB / ECMO reference</p>
+          <h1 id="page-heading" class="text-2xl md:text-3xl font-bold text-primary-900 dark:text-white">Cannula Pressure Drop Reference</h1>
+          <p id="page-subtitle" class="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">Manufacturer-based cannula pressure drop reference data for CPB and ECMO cannula selection, including arterial and venous pressure-flow references.</p>
+        </header>
 
-      <section id="view-quick-reference" class="animate-in fade-in duration-300">
-        <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 p-6 space-y-6">
-          <div class="space-y-2">
-            <h2 class="text-xl font-semibold tracking-tight text-primary-900 dark:text-white">Quick Reference</h2>
-            <p class="text-sm text-slate-600 dark:text-slate-300">Fast intraoperative lookup (reference only)</p>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Follow institutional protocols and patient monitoring; educational use only.</p>
+        <section class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900 shadow-card dark:shadow-none overflow-hidden">
+          <div class="p-5 md:p-6 space-y-4 border-b border-slate-100 dark:border-primary-800 bg-slate-50/60 dark:bg-primary-800/30">
+            <h2 class="text-lg font-semibold text-primary-900 dark:text-white">Manufacturer pressure-flow reference</h2>
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Use this cannula pressure drop reference to compare manufacturer pressure drop curves and pressure-flow reference points for arterial cannula pressure drop, venous cannula pressure drop, CPB cannula reference, and ECMO cannula reference workflows.</p>
           </div>
-
-          <div class="space-y-4">
-            <div id="quick-reference-tabs" role="tablist" aria-label="Quick reference tabs" class="flex flex-wrap gap-2"></div>
-            <div id="quick-reference-panels"></div>
+          <div class="p-5 md:p-6 grid gap-4 md:grid-cols-3">
+            <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 p-4 space-y-2">
+              <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">How to use</p>
+              <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Filter, then compare</h3>
+              <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-300">Start with manufacturer, cannula type, model, size, or connection site, then review source notes and available pressure-drop points.</p>
+            </div>
+            <div class="rounded-xl border border-amber-200 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-500/10 p-4 space-y-2">
+              <p class="text-xs uppercase tracking-wider text-amber-700 dark:text-amber-300">Clinical limitation</p>
+              <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Reference only</h3>
+              <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-300">Manufacturer pressure-drop curves are usually generated under controlled test conditions. Intraoperative and ECMO circuit pressures may differ.</p>
+            </div>
+            <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 p-4 space-y-2">
+              <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Source context</p>
+              <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Digitized manufacturer curve</h3>
+              <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-300">Some rows are based on digitized manufacturer-published curves; use digitized points as practical references, not absolute device guarantees.</p>
+            </div>
           </div>
+        </section>
 
-          <section id="quick-reference-pressure-drop-cta" class="rounded-xl border border-accent-500/25 bg-accent-500/10 dark:bg-accent-500/15 p-4 space-y-3">
+        <section id="pressure-drop-reference-root" class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900 shadow-card dark:shadow-none p-5 md:p-6 space-y-5" aria-live="polite">
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <h2 class="text-sm font-semibold text-primary-900 dark:text-white">Cannula pressure drop data</h2>
-              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Full manufacturer-based arterial and venous cannula pressure drop references are now available on a dedicated page.</p>
+              <h2 class="text-lg font-semibold text-primary-900 dark:text-white">Interactive pressure-flow lookup</h2>
+              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Select a manufacturer, cannula model, type, and size to view the digitized pressure-flow curve and estimate pressure drop at a target flow.</p>
             </div>
-            <a href="/cannula-pressure-drop/" class="inline-flex min-h-11 items-center justify-center rounded-xl bg-accent-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-accent-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-primary-950 dark:focus-visible:ring-offset-primary-900">View pressure drop reference</a>
-          </section>
+            <span id="pressure-drop-result-status" class="inline-flex w-fit rounded-full border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1 text-xs font-semibold text-slate-600 dark:text-slate-300">Preparing lookup</span>
+          </div>
 
-          <section class="calculator-lower-section">
-            <h2 class="calculator-lower-title">Quick reference notes</h2>
+          <div id="pressure-drop-filter-panel" class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/40 p-4 space-y-4">
+            <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+              <label class="block space-y-1">
+                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Manufacturer</span>
+                <select id="pressure-drop-page-manufacturer" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"></select>
+              </label>
+              <label class="block space-y-1">
+                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Model / cannula</span>
+                <select id="pressure-drop-page-model" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"></select>
+              </label>
+              <label class="block space-y-1">
+                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Category / type</span>
+                <select id="pressure-drop-page-category" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"></select>
+              </label>
+              <label class="block space-y-1">
+                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Size Fr</span>
+                <select id="pressure-drop-page-size" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"></select>
+              </label>
+              <label class="block space-y-1">
+                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Connection site</span>
+                <select id="pressure-drop-page-connection" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white disabled:opacity-60"></select>
+              </label>
+              <label class="block space-y-1">
+                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Flow rate (L/min)</span>
+                <input id="pressure-drop-page-flow" type="text" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="Enter flow rate" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+              </label>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+              <button id="pressure-drop-page-reset" type="button" class="inline-flex min-h-10 items-center justify-center rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">Reset lookup</button>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Flow estimates use linear interpolation between available manufacturer curve points; values outside the curve range are not extrapolated.</p>
+            </div>
+          </div>
+
+          <div id="pressure-drop-loading" class="rounded-xl border border-dashed border-slate-300 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/40 p-4 text-sm text-slate-600 dark:text-slate-300">
+            Loading manufacturer pressure-drop references…
+          </div>
+
+          <div id="pressure-drop-error" class="hidden rounded-xl border border-rose-200 dark:border-rose-500/40 bg-rose-50 dark:bg-rose-500/10 p-4 text-sm text-rose-700 dark:text-rose-200">
+            Pressure drop data could not be rendered. Please try again later or confirm the dataset file is available.
+          </div>
+
+          <div id="pressure-drop-empty" class="hidden rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 text-sm text-slate-600 dark:text-slate-300">
+            No pressure drop references are available for the current lookup selection. Reset the lookup or choose another cannula.
+          </div>
+
+          <div id="pressure-drop-results" class="space-y-4"></div>
+        </section>
+
+        <section class="grid gap-4 md:grid-cols-2">
+          <article class="calculator-lower-section">
+            <h2 class="calculator-lower-title">Methodology</h2>
+            <div class="calculator-lower-panel space-y-2">
+              <p>Data are based on manufacturer-published pressure-drop tables, charts, or product documents. Some values are derived from a digitized manufacturer curve when only a published graph is available.</p>
+              <p>Digitized points may include small measurement or rounding error. Interpolation between available curve points should be understood as an estimate, and out-of-range extrapolation should be avoided unless explicitly shown by the source material.</p>
+            </div>
+          </article>
+          <article class="calculator-lower-section">
+            <h2 class="calculator-lower-title">Limitations</h2>
+            <div class="calculator-lower-panel space-y-2">
+              <p>Pressure drop varies with flow rate, blood viscosity, hematocrit, temperature, cannula position, insertion depth, tubing configuration, connector size, and test medium such as water versus blood.</p>
+              <p>Use pressure trends, flow adequacy, drainage or return pressures, hemolysis risk, and patient condition together. Do not use a single pressure-drop estimate as the only basis for cannula selection.</p>
+            </div>
+          </article>
+          <article class="calculator-lower-section">
+            <h2 class="calculator-lower-title">References / source note</h2>
             <div class="calculator-lower-panel">
-              <div class="space-y-1">
-                <p class="font-semibold mb-1">Quick reference guidance</p>
-                <ul class="list-disc pl-4 space-y-1">
-                  <li>These cards provide rapid lookup values for intraoperative use.</li>
-                  <li>Ranges vary by protocol, patient physiology, and monitoring targets.</li>
-                  <li>Always integrate pressure, NIRS/EEG, and lab trends when titrating flow.</li>
-                  <li>This tool is not a medical device and does not replace clinical judgment.</li>
-                  <li>Content is data-driven for easy updates and includes last-reviewed dates.</li>
-                  <li>Educational use only; follow institutional and surgeon-directed protocols.</li>
-                </ul>
-              </div>
-              <div class="space-y-1">
-                <p class="font-semibold mb-1">ACP right radial pressure rationale</p>
-                <ul class="list-disc pl-4 space-y-1">
-                  <li>Most studies and protocols (Annals of Thoracic Surgery, EJCTS, AmSECT) use right radial artery pressure as a surrogate for cerebral perfusion pressure.</li>
-                  <li>Unilateral ACP (often via innominate or right axillary/subclavian) directly supplies the right carotid/right brain.</li>
-                  <li>Consensus target: adjust flow to keep right radial pressure ~40–60 mmHg (or 40–70).</li>
-                  <li>Left radial artery pressure can be lower due to collateral flow and may under-represent left-sided perfusion during unilateral ACP.</li>
-                </ul>
-              </div>
-              <div class="space-y-1">
-                <p class="font-semibold mb-1">ACP detail (adult reference)</p>
-                <ul class="list-disc pl-4 space-y-1">
-                  <li>Flow rate: 8–12 mL/kg/min (≈0.6 mL/min/g cerebral tissue in some references).</li>
-                  <li>Perfusion pressure: 40–60 mmHg (right radial artery reference).</li>
-                  <li>Temperature: 23–28°C moderate hypothermia.</li>
-                  <li>pH management: Alpha-stat to support cerebral autoregulation.</li>
-                  <li>Duration: up to ~80 min reported in selected/elective cases; varies by center, monitoring, and bilateral ACP—if &gt;40–50 min, consider bilateral ACP.</li>
-                  <li>Monitoring: NIRS/EEG with baseline/trend and bilateral symmetry emphasis.</li>
-                </ul>
-              </div>
-              <div class="space-y-1">
-                <p class="font-semibold mb-1">ACP detail (pediatric reference)</p>
-                <ul class="list-disc pl-4 space-y-1">
-                  <li>Flow rate: 40–80 mL/kg/min (reference ~50–64); neonates ~46 ± 6 mL/kg/min.</li>
-                  <li>Perfusion pressure: titrate (often 20–25 mmHg reported; higher MAP targets used in some centers).</li>
-                  <li>Perfusate temp: 18–25°C; many ACP programs favor ~25°C moderate hypothermia.</li>
-                  <li>pH management: pH-stat is frequently used for neonatal/infant cerebral protection during hypothermia.</li>
-                  <li>Duration: ~20–48 min (reference); prolonged times reported in selected cases—if longer expected, avoid DHCA when possible and plan ACP strategy.</li>
-                  <li>Monitoring: Bilateral NIRS (trend-focused) ± EEG; TCD optional (availability dependent).</li>
-                  <li>Hct: neonatal/infant arch ACP + hypothermia commonly uses <strong>~30–35%</strong> as a reference range.</li>
-                  <li>Higher Hct raises O₂ content but increases viscosity—adjust with pressure/flow plus NIRS/EEG response and follow institutional protocols.</li>
-                </ul>
-              </div>
-              <div class="space-y-1">
-                <p class="font-semibold mb-1">RCP detail (reference)</p>
-                <ul class="list-disc pl-4 space-y-1">
-                  <li>SVC pressure: 20–30 mmHg (target 20–25); excessive pressure risks brain edema.</li>
-                  <li>Flow: pressure-driven; 300–500 mL/min commonly cited to maintain SVC pressure &lt;25.</li>
-                  <li>Monitoring: NIRS/EEG with baseline/trend focus and bilateral symmetry.</li>
-                  <li>TCD can be added to track cerebral blood flow velocity.</li>
-                </ul>
-              </div>
-              <div class="space-y-1">
-                <p class="font-semibold mb-1">HCA safety-time notes</p>
-                <ul class="list-disc pl-4 space-y-1">
-                  <li>Varies by center, patient factors (age, comorbidities), neuromonitoring (NIRS baseline/trend with EEG), and use of ACP/RCP.</li>
-                  <li>Always minimize circulatory arrest time.</li>
-                  <li>Cooling time: at least 20–50 min; Rewarming: ≤0.5°C/min recommended.</li>
-                  <li>Reference: 2024 EACTS/EACTAIC/EBCP Guidelines (conservative estimates).</li>
-                  <li>Follow institutional protocols and patient monitoring; educational use only.</li>
-                </ul>
-              </div>
-              <div class="space-y-1">
-                <p class="font-semibold mb-1">MUF detail (clinical reference)</p>
-                <ul class="list-disc pl-4 space-y-1">
-                  <li><strong>Role / Indication:</strong> Pediatric &amp; congenital: Recommended when no contraindications exist. Adult: Selective use for blood conservation and volume management.</li>
-                  <li><strong>Flow rate (typical practice):</strong> Pediatric: 10–20 mL/kg/min. Adult: 150–300 mL/min. Neonates/low-weight infants: Avoid abrupt flow changes; titrate carefully to monitoring trends.</li>
-                  <li><strong>Monitoring / Titration (practical):</strong> Titrate MUF to NIRS + CVP + arterial pressure trends and overall hemodynamics.</li>
-                  <li><strong>Core safety rule (critical):</strong> Maintain positive arterial line pressure at all times to reduce air entrainment/embolism risk. Practical controls may include shunt/clamp management and centrifugal pump RPM adjustments to preserve a favorable pressure gradient.</li>
-                  <li><strong>Duration / Endpoint:</strong> Typical duration: 10–20 min (adult commonly ~10–15 min). Continue until target Hct and/or desired net fluid removal is achieved; adjust to hemodynamics and monitoring trends. Suggested Hct endpoints (reference): Pediatric ≥35–40%; Adult ≥30–35%.</li>
-                  <li><strong>Stop criteria (immediate):</strong> Air detected / air entrainment risk. Inability to maintain positive arterial line pressure. Hemodynamic instability.</li>
-                  <li><strong>Anticoagulation:</strong> Maintain adequate anticoagulation throughout MUF (commonly with ACT monitoring).</li>
-                  <li><strong>Inflammation mediator removal (current perspective):</strong> MUF may reduce circulating cytokines (e.g., IL-6, IL-8), but evidence for meaningful improvement in hard clinical outcomes is limited. Practical emphasis remains fluid removal + hemoconcentration.</li>
-                  <li><strong>Edema / neurologic note (pediatric):</strong> Supports reduction of generalized edema and may reduce cerebral water content, potentially benefiting neurologic recovery.</li>
-                  <li><strong>Temperature management:</strong> Blood can cool in the external MUF loop; for runs &gt;~10 min, monitor core temperature and consider using a heat exchanger to prevent unintended hypothermia.</li>
-                  <li><strong>References:</strong> AmSECT Pediatric &amp; Congenital Standards and Guidelines (2019, section 16.1). 2024 EACTS/EACTAIC/EBCP Adult CPB Guidelines (blood conservation/ultrafiltration-related sections).</li>
-                </ul>
-              </div>
+              <p>Each selected lookup preserves the available manufacturer, model, cannula type, size, flow range, source label, source URL, data status, and digitization note from the pressure-drop dataset. External manufacturer references open in a new tab when a public URL is available.</p>
             </div>
-          </section>
-
-          <section aria-labelledby="quick-reference-faq-title" class="calculator-lower-section">
-            <h2 id="quick-reference-faq-title" class="calculator-lower-title">Quick Reference FAQ</h2>
-            <div class="calculator-lower-panel calculator-faq-list">
-              <div class="calculator-faq-item">
-                <p class="calculator-faq-question">Can I use these quick-reference values as standalone treatment orders?</p>
-                <p class="calculator-faq-answer">No. Quick-reference cards are educational and should be interpreted with institutional protocols, physician direction, and real-time patient monitoring.</p>
-              </div>
-              <div class="calculator-faq-item">
-                <p class="calculator-faq-question">What monitoring should be integrated when applying these reference ranges?</p>
-                <p class="calculator-faq-answer">Integrate pressure trends, NIRS or EEG trends, and laboratory data while titrating flow or perfusion strategy.</p>
-              </div>
-            </div>
-          </section>
-        </div>
-      </section>
-
-      <section id="view-info" class="hidden animate-in fade-in duration-300">
-        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
-          <div class="p-6 space-y-3 border-b border-slate-100 dark:border-primary-800 bg-slate-50/50 dark:bg-primary-800/30">
-            <p class="text-[11px] uppercase tracking-wider text-accent-500 font-semibold">About Perfusion Tools</p>
-            <h2 class="text-xl font-bold text-primary-900 dark:text-white">About Us</h2>
-            <p class="text-sm text-slate-600 dark:text-slate-300">Perfusion Tools is a lightweight, browser-based collection of calculators for perfusionists working in CPB and ECMO. We focus on transparent formulas, educational annotations, and privacy-friendly design that keeps all calculations on your device.</p>
-          </div>
-          <div class="p-6 space-y-4 text-sm text-slate-700 dark:text-slate-300">
-            <div class="grid md:grid-cols-2 gap-3">
-              <div class="bg-slate-50 dark:bg-primary-800/50 border border-slate-200 dark:border-primary-800 rounded-xl p-4 space-y-1">
-                <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Mission</p>
-                <p>Provide evidence-based perfusion calculators that respect clinician privacy and align with contemporary CPB/ECMO best practices.</p>
-              </div>
-              <div class="bg-slate-50 dark:bg-primary-800/50 border border-slate-200 dark:border-primary-800 rounded-xl p-4 space-y-1">
-                <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">What we cover</p>
-                <p>BSA, GDP/DO₂i, heparin dosing, predicted hemodilution, lean body mass, and case timing tools with concise clinical context.</p>
-              </div>
-            </div>
-            <div class="bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-800 rounded-xl p-4 space-y-2">
-              <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Questions or feedback?</p>
-              <p>We welcome suggestions from perfusion teams. Visit the About page for background information or head to the contact form to send a note.</p>
+          </article>
+          <article class="calculator-lower-section">
+            <h2 class="calculator-lower-title">Related tools</h2>
+            <div class="calculator-lower-panel space-y-2">
+              <p>Use Quick Reference for general CPB/ECMO bedside values, or Unit Converter for flow, pressure, and cannula size conversions.</p>
               <div class="flex flex-wrap gap-2">
-                <a href="/info/" data-route class="px-4 py-2 rounded-lg bg-primary-900 text-white text-sm font-semibold hover:bg-primary-800 transition-colors dark:bg-accent-600 dark:hover:bg-accent-500">About Perfusion Tools</a>
-                <a href="/contact/" data-route class="px-4 py-2 rounded-lg bg-slate-100 text-primary-900 text-sm font-semibold hover:bg-slate-200 transition-colors dark:bg-primary-800 dark:text-slate-100 dark:hover:bg-primary-700">Contact</a>
+                <a href="/quick-reference/" class="inline-flex min-h-10 items-center justify-center rounded-lg bg-accent-500 px-3 py-2 text-sm font-semibold text-white hover:bg-accent-600 transition-colors dark:text-primary-950">Open Quick Reference</a>
+                <a href="/unit-converter/" class="inline-flex min-h-10 items-center justify-center rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">Open Unit Converter</a>
               </div>
             </div>
-          </div>
-        </div>
+          </article>
+        </section>
       </section>
     </main>
   </div>
@@ -583,11 +547,11 @@
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
       <span class="text-[10px] font-medium">Time</span>
     </a>
-    <a href="/quick-reference/" data-route id="mob-quick-reference" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-accent-600 dark:text-accent-400 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+    <a href="/quick-reference/" data-route id="mob-quick-reference" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6.75A2.75 2.75 0 016.75 4h10.5A2.75 2.75 0 0120 6.75v10.5A2.75 2.75 0 0117.25 20H6.75A2.75 2.75 0 014 17.25V6.75z M8 9h8M8 13h8M8 17h5" /></svg>
       <span class="text-[10px] font-medium leading-tight text-center whitespace-nowrap">Quick Ref</span>
     </a>
-    <a href="/cannula-pressure-drop/" data-route id="mob-cannula-pressure-drop" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+    <a href="/cannula-pressure-drop/" data-route id="mob-cannula-pressure-drop" class="flex flex-col items-center justify-center min-w-[72px] h-full flex-shrink-0 text-accent-600 dark:text-accent-400 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
       <svg class="w-6 h-6 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M7 12h10M10 17h4" /></svg>
       <span class="text-[10px] font-medium leading-tight text-center whitespace-nowrap">Pressure</span>
     </a>
