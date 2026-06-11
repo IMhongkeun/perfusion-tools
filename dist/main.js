@@ -5974,6 +5974,12 @@ window.quickReferenceData = {
       ],
       checklist: 'Pre-MUF checklist: Unslave pump, warm exchanger, confirm air-free circuit, maintain positive arterial pressure.',
       cards: []
+    },
+    {
+      id: 'cannula-pressure-drop',
+      label: 'Pressure Drop',
+      pressureDropReference: true,
+      lastReviewed: '2026-06-11'
     }
   ]
 };
@@ -6334,6 +6340,249 @@ function renderHcaTable(panel, tab) {
   return;
 }
 
+function getPressureDropGroupLabel(category) {
+  const normalized = normalizePressureDropKey(category);
+  if (normalized.includes('arterial')) return 'Arterial cannula';
+  if (normalized.includes('venous')) return 'Venous cannula';
+  if (normalized.includes('aortic')) return 'Aortic cannula';
+  return 'Specialty cannula';
+}
+
+function getPressureDropSourceNode(entry, compact = false) {
+  const sourceWrap = document.createElement('div');
+  sourceWrap.className = compact ? 'space-y-1' : 'min-w-[14rem] space-y-1';
+  const label = document.createElement('div');
+  label.className = 'font-medium text-slate-700 dark:text-slate-200';
+  label.textContent = entry.sourceLabel || 'Manufacturer reference';
+  sourceWrap.appendChild(label);
+
+  if (entry.sourceUrl && /^https?:\/\//i.test(entry.sourceUrl)) {
+    const link = document.createElement('a');
+    link.href = entry.sourceUrl;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.className = 'inline-flex text-accent-600 dark:text-accent-400 hover:underline break-all';
+    link.textContent = 'Open manufacturer PDF/reference';
+    sourceWrap.appendChild(link);
+  } else if (entry.sourceUrl) {
+    const source = document.createElement('div');
+    source.className = 'text-slate-500 dark:text-slate-400 break-words';
+    source.textContent = entry.sourceUrl;
+    sourceWrap.appendChild(source);
+  }
+
+  if (entry.testMedium) {
+    const medium = document.createElement('div');
+    medium.className = 'text-slate-500 dark:text-slate-400';
+    medium.textContent = `Test medium: ${entry.testMedium}`;
+    sourceWrap.appendChild(medium);
+  }
+  return sourceWrap;
+}
+
+function createPressureDropPointsDetails(entry) {
+  const validPoints = getValidPressureDropPoints(entry.points);
+  const details = document.createElement('details');
+  details.className = 'group rounded-lg border border-slate-200 dark:border-primary-700 bg-white/70 dark:bg-primary-900/40 px-3 py-2';
+
+  const summary = document.createElement('summary');
+  summary.className = 'cursor-pointer text-xs font-semibold text-accent-700 dark:text-accent-300';
+  summary.textContent = validPoints.length ? `${validPoints.length} chart points` : 'Metadata only';
+  details.appendChild(summary);
+
+  const content = document.createElement('div');
+  content.className = 'mt-2 space-y-2 text-xs text-slate-600 dark:text-slate-300';
+  if (validPoints.length) {
+    const pointList = document.createElement('div');
+    pointList.className = 'flex flex-wrap gap-1.5';
+    validPoints.forEach(point => {
+      const chip = document.createElement('span');
+      chip.className = 'rounded-full border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-2 py-1 tabular-nums';
+      chip.textContent = `${formatPressureDropFlowValue(point.flow)} L/min → ${point.pressureDrop} mmHg`;
+      pointList.appendChild(chip);
+    });
+    content.appendChild(pointList);
+  } else {
+    const empty = document.createElement('p');
+    empty.textContent = 'No digitized pressure-drop curve points are available for this row.';
+    content.appendChild(empty);
+  }
+
+  const note = document.createElement('p');
+  note.className = 'leading-relaxed';
+  note.textContent = entry.digitizationNote || 'Manufacturer pressure-drop reference data.';
+  content.appendChild(note);
+  details.appendChild(content);
+  return details;
+}
+
+function getPressureDropFlowRange(entry) {
+  const validPoints = getValidPressureDropPoints(entry.points);
+  return getPressureDropRangeText(validPoints, entry.referenceFlowRangeLabel || '');
+}
+
+function getPressureDropMetadataItems(entry) {
+  return [
+    entry.outerDiameterFr && entry.outerDiameterMm ? `${entry.outerDiameterFr} Fr / ${entry.outerDiameterMm.toFixed(1)} mm OD` : '',
+    entry.connectionSite ? `Connection: ${entry.connectionSite}` : '',
+    entry.connectorSize ? `Connector: ${entry.connectorSize}` : '',
+    entry.cannulaOrderCode ? `${entry.cannulaOrderCodeLabel || 'Order code'}: ${entry.cannulaOrderCode}` : '',
+    entry.cannulaKitOrderCode ? `Kit: ${entry.cannulaKitOrderCode}` : ''
+  ].filter(Boolean);
+}
+
+function renderPressureDropReferenceTab(panel) {
+  panel.innerHTML = '';
+
+  const intro = document.createElement('section');
+  intro.className = 'rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50 p-5 space-y-3';
+  intro.innerHTML = `
+    <div>
+      <p class="text-xs uppercase tracking-[0.18em] text-accent-600 dark:text-accent-400">CPB / ECMO cannula reference</p>
+      <h3 class="mt-1 text-lg font-semibold text-primary-900 dark:text-white">Cannula pressure drop references</h3>
+    </div>
+    <div class="space-y-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+      <p>Manufacturer-based cannula pressure drop data for arterial cannula pressure drop, venous cannula pressure drop, and CPB cannula reference / ECMO cannula reference workflows.</p>
+      <p>Actual pressure can vary with cannula position, line length, blood viscosity, temperature, hematocrit, and flow condition. Use these pressure-flow references as an adjunct to device labeling, institutional protocol, and clinical judgment—not as a replacement for cannula selection assessment.</p>
+    </div>
+  `;
+  panel.appendChild(intro);
+
+  const entries = cannulaPressureDropData.filter(entry => entry && entry.manufacturer && entry.model && !entry.manufacturer.toLowerCase().includes('example placeholder'));
+  const groups = entries.reduce((acc, entry) => {
+    const group = getPressureDropGroupLabel(entry.category);
+    acc[group] = acc[group] || [];
+    acc[group].push(entry);
+    return acc;
+  }, {});
+  const groupOrder = ['Arterial cannula', 'Venous cannula', 'Aortic cannula', 'Specialty cannula'];
+
+  groupOrder.filter(group => groups[group]?.length).forEach(group => {
+    const section = document.createElement('section');
+    section.className = 'space-y-3';
+
+    const heading = document.createElement('div');
+    heading.className = 'flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between';
+    heading.innerHTML = `<h3 class="text-base font-semibold text-primary-900 dark:text-white">${group}</h3><p class="text-xs text-slate-500 dark:text-slate-400">Grouped by manufacturer, model, type, and size Fr.</p>`;
+    section.appendChild(heading);
+
+    const tableWrap = document.createElement('div');
+    tableWrap.className = 'hidden md:block overflow-x-auto rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30';
+    const table = document.createElement('table');
+    table.className = 'min-w-[980px] w-full text-xs';
+    table.innerHTML = `
+      <thead class="bg-slate-50 dark:bg-primary-900/80 text-slate-600 dark:text-slate-300">
+        <tr>
+          <th class="px-3 py-2 text-left font-semibold">Manufacturer</th>
+          <th class="px-3 py-2 text-left font-semibold">Model</th>
+          <th class="px-3 py-2 text-left font-semibold">Type</th>
+          <th class="px-3 py-2 text-left font-semibold">Size / metadata</th>
+          <th class="px-3 py-2 text-left font-semibold">Flow condition</th>
+          <th class="px-3 py-2 text-left font-semibold">Pressure drop values</th>
+          <th class="px-3 py-2 text-left font-semibold">Source</th>
+        </tr>
+      </thead>
+    `;
+    const tbody = document.createElement('tbody');
+    groups[group].sort((a, b) => `${a.manufacturer} ${a.model} ${a.size}`.localeCompare(`${b.manufacturer} ${b.model} ${b.size}`)).forEach(entry => {
+      const tr = document.createElement('tr');
+      tr.className = 'border-t border-slate-100 dark:border-primary-800 align-top hover:bg-slate-50/70 dark:hover:bg-primary-900/60';
+
+      const cells = [entry.manufacturer, entry.model, entry.category || '—'];
+      cells.forEach(value => {
+        const td = document.createElement('td');
+        td.className = 'px-3 py-3 text-slate-700 dark:text-slate-200';
+        td.textContent = value;
+        tr.appendChild(td);
+      });
+
+      const sizeTd = document.createElement('td');
+      sizeTd.className = 'px-3 py-3 text-slate-700 dark:text-slate-200';
+      const sizeTitle = document.createElement('div');
+      sizeTitle.className = 'font-semibold';
+      sizeTitle.textContent = entry.size || '—';
+      sizeTd.appendChild(sizeTitle);
+      const meta = document.createElement('div');
+      meta.className = 'mt-1 space-y-1 text-slate-500 dark:text-slate-400';
+      getPressureDropMetadataItems(entry).forEach(item => {
+        const div = document.createElement('div');
+        div.textContent = item;
+        meta.appendChild(div);
+      });
+      sizeTd.appendChild(meta);
+      tr.appendChild(sizeTd);
+
+      const flowTd = document.createElement('td');
+      flowTd.className = 'px-3 py-3 text-slate-700 dark:text-slate-200';
+      flowTd.textContent = `${getPressureDropFlowRange(entry)}${entry.testMedium ? ` (${entry.testMedium})` : ''}`;
+      tr.appendChild(flowTd);
+
+      const pointsTd = document.createElement('td');
+      pointsTd.className = 'px-3 py-3 min-w-[18rem]';
+      pointsTd.appendChild(createPressureDropPointsDetails(entry));
+      tr.appendChild(pointsTd);
+
+      const sourceTd = document.createElement('td');
+      sourceTd.className = 'px-3 py-3 text-slate-600 dark:text-slate-300';
+      sourceTd.appendChild(getPressureDropSourceNode(entry));
+      tr.appendChild(sourceTd);
+
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    tableWrap.appendChild(table);
+    section.appendChild(tableWrap);
+
+    const mobileList = document.createElement('div');
+    mobileList.className = 'md:hidden space-y-3';
+    groups[group].forEach(entry => {
+      const card = document.createElement('article');
+      card.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/40 p-4 space-y-3';
+      const title = document.createElement('div');
+      title.innerHTML = `<p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400"></p><h4 class="mt-1 text-sm font-semibold text-primary-900 dark:text-white"></h4>`;
+      title.querySelector('p').textContent = `${entry.manufacturer} • ${entry.category || 'Cannula'}`;
+      title.querySelector('h4').textContent = `${entry.model} — ${entry.size || 'Size not listed'}`;
+      card.appendChild(title);
+
+      const facts = document.createElement('dl');
+      facts.className = 'grid grid-cols-2 gap-2 text-xs';
+      [
+        ['Flow condition', getPressureDropFlowRange(entry)],
+        ['Data status', formatPressureDropDataStatus(entry.dataStatus)],
+        ['Test medium', entry.testMedium || '—'],
+        ['Metadata', getPressureDropMetadataItems(entry).join('; ') || '—']
+      ].forEach(([label, value]) => {
+        const item = document.createElement('div');
+        item.className = 'rounded-lg bg-slate-50 dark:bg-primary-800/60 p-2';
+        const dt = document.createElement('dt');
+        dt.className = 'text-slate-500 dark:text-slate-400';
+        dt.textContent = label;
+        const dd = document.createElement('dd');
+        dd.className = 'mt-1 font-medium text-slate-700 dark:text-slate-200';
+        dd.textContent = value;
+        item.append(dt, dd);
+        facts.appendChild(item);
+      });
+      card.appendChild(facts);
+      card.appendChild(createPressureDropPointsDetails(entry));
+      card.appendChild(getPressureDropSourceNode(entry, true));
+      mobileList.appendChild(card);
+    });
+    section.appendChild(mobileList);
+    panel.appendChild(section);
+  });
+
+  const reference = document.createElement('section');
+  reference.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/70 dark:bg-primary-900/40 p-4 text-xs text-slate-600 dark:text-slate-300 space-y-2';
+  reference.innerHTML = `
+    <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Source / reference notes</h3>
+    <p>Rows preserve the manufacturer, model, cannula type, size, flow range, pressure-drop chart points, test medium, order-code metadata, and source labels from the original Unit Converter pressure-drop dataset.</p>
+    <p>External PDF links open in a new tab. Uploaded catalog references indicate locally reviewed manufacturer material without a public URL in the dataset.</p>
+  `;
+  panel.appendChild(reference);
+}
+
+
 function initQuickReference() {
   if (quickReferenceInitialized) return;
 
@@ -6351,7 +6600,7 @@ function initQuickReference() {
   const activeClasses = ['bg-primary-900', 'text-white', 'border-primary-900', 'dark:bg-accent-500', 'dark:text-slate-900', 'dark:border-accent-500'];
   const inactiveClasses = ['bg-white', 'text-slate-600', 'border-slate-200', 'dark:bg-primary-900', 'dark:text-slate-300', 'dark:border-primary-700'];
 
-  const setActiveTab = (tabId, focusTab = false) => {
+  const setActiveTab = (tabId, focusTab = false, updateHash = false) => {
     const buttons = tabList.querySelectorAll('[role=\"tab\"]');
     const panels = panelContainer.querySelectorAll('[role=\"tabpanel\"]');
     buttons.forEach(button => {
@@ -6369,6 +6618,9 @@ function initQuickReference() {
         panel.setAttribute('hidden', '');
       }
     });
+    if (updateHash && window.location.hash !== `#${tabId}`) {
+      history.replaceState(null, '', `#${tabId}`);
+    }
   };
 
   tabs.forEach((tab, index) => {
@@ -6419,6 +6671,12 @@ function initQuickReference() {
       return;
     }
 
+    if (tab.id === 'cannula-pressure-drop' || tab.pressureDropReference) {
+      renderPressureDropReferenceTab(panel);
+      panelContainer.appendChild(panel);
+      return;
+    }
+
     const grid = document.createElement('div');
     grid.className = 'grid gap-4 md:grid-cols-2';
     (tab.cards || []).forEach(card => {
@@ -6432,7 +6690,7 @@ function initQuickReference() {
   tabList.addEventListener('click', (event) => {
     const button = event.target.closest('[role=\"tab\"]');
     if (!button) return;
-    setActiveTab(button.dataset.tabId);
+    setActiveTab(button.dataset.tabId, false, true);
   });
 
   tabList.addEventListener('keydown', (event) => {
@@ -6447,7 +6705,7 @@ function initQuickReference() {
     if (event.key === 'End') nextIndex = buttons.length - 1;
     event.preventDefault();
     const nextButton = buttons[nextIndex];
-    if (nextButton) setActiveTab(nextButton.dataset.tabId, true);
+    if (nextButton) setActiveTab(nextButton.dataset.tabId, true, true);
   });
 
   document.addEventListener('click', (event) => {
@@ -6464,6 +6722,17 @@ function initQuickReference() {
       panel.classList.add('hidden');
     });
   });
+
+  const hashTab = decodeURIComponent((window.location.hash || '').replace(/^#/, ''));
+  if (hashTab && tabs.some(tab => tab.id === hashTab)) {
+    setActiveTab(hashTab);
+    requestAnimationFrame(() => {
+      const activeButton = tabList.querySelector(`[data-tab-id=\"${hashTab}\"]`);
+      if (activeButton) activeButton.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      const panel = panelContainer.querySelector(`[data-tab-id=\"${hashTab}\"]`);
+      if (panel) panel.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+  }
 
   if (lastReviewedEl) lastReviewedEl.textContent = getLatestReviewedDate(tabs);
 
