@@ -409,25 +409,25 @@
         <section id="pressure-drop-reference-root" class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900 shadow-card dark:shadow-none p-5 md:p-6 space-y-5" aria-live="polite">
           <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <h2 class="text-lg font-semibold text-primary-900 dark:text-white">Pressure drop reference dataset</h2>
-              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Filter manufacturer-based cannula pressure drop references by device metadata, source text, or order code.</p>
+              <h2 class="text-lg font-semibold text-primary-900 dark:text-white">Interactive pressure-flow lookup</h2>
+              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Select a manufacturer, cannula model, type, and size to view the digitized pressure-flow curve and estimate pressure drop at a target flow.</p>
             </div>
-            <span id="pressure-drop-result-status" class="inline-flex w-fit rounded-full border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1 text-xs font-semibold text-slate-600 dark:text-slate-300">Preparing references</span>
+            <span id="pressure-drop-result-status" class="inline-flex w-fit rounded-full border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1 text-xs font-semibold text-slate-600 dark:text-slate-300">Preparing lookup</span>
           </div>
 
-          <div id="pressure-drop-filter-panel" class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/40 p-4 space-y-3">
-            <div class="grid gap-3 md:grid-cols-3">
+          <div id="pressure-drop-filter-panel" class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/40 p-4 space-y-4">
+            <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
               <label class="block space-y-1">
                 <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Manufacturer</span>
                 <select id="pressure-drop-page-manufacturer" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"></select>
               </label>
               <label class="block space-y-1">
-                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Category / type</span>
-                <select id="pressure-drop-page-category" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"></select>
+                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Model / cannula</span>
+                <select id="pressure-drop-page-model" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"></select>
               </label>
               <label class="block space-y-1">
-                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Model</span>
-                <select id="pressure-drop-page-model" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"></select>
+                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Category / type</span>
+                <select id="pressure-drop-page-category" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"></select>
               </label>
               <label class="block space-y-1">
                 <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Size Fr</span>
@@ -435,14 +435,17 @@
               </label>
               <label class="block space-y-1">
                 <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Connection site</span>
-                <select id="pressure-drop-page-connection" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"></select>
+                <select id="pressure-drop-page-connection" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white disabled:opacity-60"></select>
               </label>
               <label class="block space-y-1">
-                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Search</span>
-                <input id="pressure-drop-page-search" type="search" placeholder="Model, order code, source, notes" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
+                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Flow rate (L/min)</span>
+                <input id="pressure-drop-page-flow" type="number" min="0" step="0.1" inputmode="decimal" placeholder="Enter flow rate" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
               </label>
             </div>
-            <button id="pressure-drop-page-reset" type="button" class="inline-flex min-h-10 items-center justify-center rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">Reset filters</button>
+            <div class="flex flex-wrap items-center gap-3">
+              <button id="pressure-drop-page-reset" type="button" class="inline-flex min-h-10 items-center justify-center rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">Reset lookup</button>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Flow estimates use linear interpolation between available manufacturer curve points; values outside the curve range are not extrapolated.</p>
+            </div>
           </div>
 
           <div id="pressure-drop-loading" class="rounded-xl border border-dashed border-slate-300 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/40 p-4 text-sm text-slate-600 dark:text-slate-300">
@@ -454,7 +457,7 @@
           </div>
 
           <div id="pressure-drop-empty" class="hidden rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 text-sm text-slate-600 dark:text-slate-300">
-            No pressure drop references match the selected filters. Reset filters or broaden your search.
+            No pressure drop references are available for the current lookup selection. Reset the lookup or choose another cannula.
           </div>
 
           <div id="pressure-drop-results" class="space-y-4"></div>
@@ -478,7 +481,7 @@
           <article class="calculator-lower-section">
             <h2 class="calculator-lower-title">References / source note</h2>
             <div class="calculator-lower-panel">
-              <p>Each row preserves the available manufacturer, model, cannula type, size, flow range, source label, source URL, data status, and digitization note from the pressure-drop dataset. External manufacturer references open in a new tab when a public URL is available.</p>
+              <p>Each selected lookup preserves the available manufacturer, model, cannula type, size, flow range, source label, source URL, data status, and digitization note from the pressure-drop dataset. External manufacturer references open in a new tab when a public URL is available.</p>
             </div>
           </article>
           <article class="calculator-lower-section">
