@@ -565,11 +565,15 @@
                 <h2 id="hep2-during-title" class="text-lg font-bold text-primary-900 dark:text-white">2. During CPB: Additional UFH &amp; Heparin Resistance Cue</h2>
                 <p class="text-sm text-slate-600 dark:text-slate-300">During CPB, additional UFH may be given according to institutional protocol when ACT is below target. Some protocols use incremental boluses such as 50–100 U/kg, but fixed redosing is not universal. If ACT does not increase as expected, use this checklist to consider heparin resistance contributors.</p>
               </div>
-              <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4 space-y-4">
-                <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Heparin Resistance Cue Checklist</h3>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400">Non-validated reminder tool</span>
-                </div>
+              <details class="group bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4">
+                <summary class="flex cursor-pointer list-none flex-col gap-1 sm:flex-row sm:items-center sm:justify-between [&::-webkit-details-marker]:hidden">
+                  <span class="flex items-center gap-2 text-sm font-semibold text-primary-900 dark:text-white">
+                    <span class="text-accent-600 dark:text-accent-400 transition-transform group-open:rotate-90">›</span>
+                    Heparin Resistance Cue Checklist
+                  </span>
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">Non-validated reminder tool · click to expand</span>
+                </summary>
+                <div class="mt-4 space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700 dark:text-slate-300">
                   <label class="flex items-start gap-2 rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/60 p-3"><input type="checkbox" class="hep2-resistance-check mt-0.5 rounded border-slate-300 text-accent-600 focus:ring-accent-500" data-points="2" /><span>Recent or preoperative heparin exposure <span class="text-xs text-slate-500 dark:text-slate-400">(+2)</span></span></label>
                   <label class="flex items-start gap-2 rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/60 p-3"><input type="checkbox" class="hep2-resistance-check mt-0.5 rounded border-slate-300 text-accent-600 focus:ring-accent-500" data-points="3" /><span>Preoperative heparin infusion, IABP, VAD, or ECMO exposure <span class="text-xs text-slate-500 dark:text-slate-400">(+3)</span></span></label>
@@ -587,7 +591,8 @@
                   <p id="hep2-resistance-check-message" class="mt-1">Low heparin resistance cue. Continue institutional ACT/heparin monitoring.</p>
                 </div>
                 <p class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">Non-validated screening aid. This checklist is a reminder tool, not a diagnostic score or medication-order protocol.</p>
-              </div>
+                </div>
+              </details>
             </section>
 
             <section class="space-y-4" aria-labelledby="hep2-post-title">
