@@ -153,13 +153,8 @@ const TOP_NAV_ITEMS = [
   { path: '/z-score/', label: 'Z-score' },
   { path: '/priming-volume/', label: 'Priming Volume' },
   { path: '/timecalc/', label: 'Time' },
-  {
-    label: 'References',
-    items: [
-      { path: '/quick-reference/', label: 'Quick Reference' },
-      { path: '/cannula-pressure-drop/', label: 'Cannula Pressure Drop' }
-    ]
-  },
+  { path: '/quick-reference/', label: 'Quick Reference' },
+  { path: '/cannula-pressure-drop/', label: 'Cannula Pressure Drop' },
   { path: '/unit-converter/', label: 'Unit Converter' },
   { path: '/info/', label: 'Info' },
 ];
@@ -1097,8 +1092,8 @@ function createPressureDropCurveModel(points) {
 function drawPressureDropChart(svgNode, points, targetFlow, estimatedPressureDrop, options = {}) {
   const validPoints = getValidPressureDropPoints(points);
   if (!svgNode || !validPoints.length) return;
-  const width = 320; const height = 140;
-  const padding = { left: 34, right: 10, top: 10, bottom: 24 };
+  const width = 420; const height = 190;
+  const padding = { left: 44, right: 18, top: 18, bottom: 34 };
   const minFlow = validPoints[0].flow;
   const maxFlow = validPoints[validPoints.length - 1].flow;
   const useLinearOnly = options.curveMode === 'linear';
@@ -1122,10 +1117,11 @@ function drawPressureDropChart(svgNode, points, targetFlow, estimatedPressureDro
   const targetX = Number.isFinite(targetFlow) ? scaleX(targetFlow) : null;
   const targetY = Number.isFinite(estimatedPressureDrop) ? scaleY(estimatedPressureDrop) : null;
   const showTargetMarker = Number.isFinite(targetX) && Number.isFinite(targetY);
-  const targetLabelX = showTargetMarker ? Math.min(Math.max(targetX + 7, padding.left + 4), width - 144) : null;
+  const targetLabelWidth = 174;
+  const targetLabelX = showTargetMarker ? Math.min(Math.max(targetX + 7, padding.left + 4), width - targetLabelWidth - 4) : null;
   const targetLabelY = showTargetMarker ? Math.max(targetY - 33, padding.top + 3) : null;
   const targetMarker = showTargetMarker
-    ? `<g><line x1="${targetX.toFixed(1)}" y1="${padding.top}" x2="${targetX.toFixed(1)}" y2="${height - padding.bottom}" stroke="#f59e0b" stroke-dasharray="3 3" /><circle cx="${targetX.toFixed(1)}" cy="${targetY.toFixed(1)}" r="4" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" /><rect x="${targetLabelX.toFixed(1)}" y="${targetLabelY.toFixed(1)}" width="140" height="28" rx="4" fill="#0f172a" opacity="0.88" /><text x="${(targetLabelX + 5).toFixed(1)}" y="${(targetLabelY + 11).toFixed(1)}" font-size="8" fill="#ffffff">Target flow: ${targetFlow.toFixed(1)} L/min</text><text x="${(targetLabelX + 5).toFixed(1)}" y="${(targetLabelY + 22).toFixed(1)}" font-size="8" fill="#ffffff">Estimated pressure drop: ${estimatedPressureDrop.toFixed(1)} mmHg</text></g>`
+    ? `<g><line x1="${targetX.toFixed(1)}" y1="${padding.top}" x2="${targetX.toFixed(1)}" y2="${height - padding.bottom}" stroke="#f59e0b" stroke-dasharray="3 3" /><circle cx="${targetX.toFixed(1)}" cy="${targetY.toFixed(1)}" r="4" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" /><rect x="${targetLabelX.toFixed(1)}" y="${targetLabelY.toFixed(1)}" width="${targetLabelWidth}" height="28" rx="4" fill="#0f172a" opacity="0.88" /><text x="${(targetLabelX + 5).toFixed(1)}" y="${(targetLabelY + 11).toFixed(1)}" font-size="8" fill="#ffffff">Target flow: ${targetFlow.toFixed(1)} L/min</text><text x="${(targetLabelX + 5).toFixed(1)}" y="${(targetLabelY + 22).toFixed(1)}" font-size="8" fill="#ffffff">Est. pressure drop: ${estimatedPressureDrop.toFixed(1)} mmHg</text></g>`
     : '';
   svgNode.innerHTML = `<line x1="${padding.left}" y1="${height - padding.bottom}" x2="${width - padding.right}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><path d="${smoothCurvePath}" fill="none" stroke="#0ea5e9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />${validPoints.map(p => `<circle cx="${scaleX(p.flow).toFixed(1)}" cy="${scaleY(p.pressureDrop).toFixed(1)}" r="2.2" fill="#ffffff" stroke="#0ea5e9" stroke-width="1.4" />`).join('')}${targetMarker}<text x="${padding.left}" y="${height - 6}" font-size="9" fill="currentColor" opacity="0.65">Flow (L/min)</text><text x="${width - 110}" y="${padding.top + 9}" font-size="9" fill="currentColor" opacity="0.65">Pressure drop (mmHg)</text>`;
 }
@@ -3564,27 +3560,40 @@ function getPressureDropGroupLabel(category) {
   return 'Specialty cannula';
 }
 
-function getPressureDropSourceNode(entry, compact = false) {
+function getPressureDropSourceNode(entry, compact = false, options = {}) {
   const sourceWrap = document.createElement('div');
-  sourceWrap.className = compact ? 'space-y-1' : 'min-w-[14rem] space-y-1';
+  sourceWrap.className = compact
+    ? 'rounded-lg border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50 p-3 space-y-2 text-xs'
+    : 'min-w-[14rem] space-y-2';
   const label = document.createElement('div');
   label.className = 'font-medium text-slate-700 dark:text-slate-200';
   label.textContent = entry.sourceLabel || 'Manufacturer reference';
   sourceWrap.appendChild(label);
 
-  if (entry.sourceUrl && /^https?:\/\//i.test(entry.sourceUrl)) {
+  const sourceUrl = String(entry.sourceUrl || '').trim();
+  const hasPublicSourceUrl = /^https?:\/\//i.test(sourceUrl);
+  if (sourceUrl && hasPublicSourceUrl) {
     const link = document.createElement('a');
-    link.href = entry.sourceUrl;
+    link.href = sourceUrl;
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
-    link.className = 'inline-flex text-accent-600 dark:text-accent-400 hover:underline break-all';
-    link.textContent = 'Open manufacturer PDF/reference';
+    link.className = compact
+      ? 'inline-flex w-fit items-center rounded-full border border-accent-500/30 bg-white dark:bg-primary-800 px-2.5 py-1 font-semibold text-accent-600 dark:text-accent-400 hover:border-accent-500/60 hover:text-accent-700 dark:hover:text-accent-300 transition-colors'
+      : 'inline-flex text-accent-600 dark:text-accent-400 hover:underline break-all';
+    link.textContent = /\.pdf(?:[?#].*)?$/i.test(sourceUrl) ? 'Open manufacturer PDF' : 'Open source';
     sourceWrap.appendChild(link);
-  } else if (entry.sourceUrl) {
+  } else if (sourceUrl) {
     const source = document.createElement('div');
     source.className = 'text-slate-500 dark:text-slate-400 break-words';
-    source.textContent = entry.sourceUrl;
+    source.textContent = sourceUrl;
     sourceWrap.appendChild(source);
+  }
+
+  if (!hasPublicSourceUrl && options.showMissingPublicLinkNote) {
+    const helper = document.createElement('div');
+    helper.className = 'text-[11px] leading-relaxed text-slate-400 dark:text-slate-500';
+    helper.textContent = 'Manufacturer source label is recorded; public PDF link has not been added yet.';
+    sourceWrap.appendChild(helper);
   }
 
   if (entry.testMedium) {
@@ -3876,6 +3885,20 @@ function setPressureDropSelectOptionPairs(selectNode, optionPairs, placeholder) 
   selectNode.disabled = optionPairs.length === 0;
 }
 
+function syncPressureDropConnectionControl(selectNode, wrapNode, optionPairs, shouldShow) {
+  setPressureDropSelectOptionPairs(selectNode, optionPairs, 'Any connection site');
+  if (!selectNode) return;
+
+  if (!shouldShow) {
+    selectNode.value = optionPairs.length === 1 ? optionPairs[0].value : '';
+  }
+
+  if (wrapNode) {
+    wrapNode.classList.toggle('hidden', !shouldShow);
+    wrapNode.setAttribute('aria-hidden', shouldShow ? 'false' : 'true');
+  }
+}
+
 function getPressureDropConnectionOptionValue(entry) {
   return entry.connectionSite || '__not_specified__';
 }
@@ -4017,14 +4040,16 @@ function createPressureDropEstimateCard(entry, flowInputValue, flowValue, interp
 
 function createPressureDropChartPanel(entry, flowValue, interpolationResult) {
   const panel = document.createElement('article');
-  panel.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-3';
+  panel.className = 'self-start h-fit rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-3';
   const header = document.createElement('div');
   header.innerHTML = `<h3 class="text-sm font-semibold text-primary-900 dark:text-white">Pressure-flow curve</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Raw digitized points are shown as markers and connected with straight line segments.</p>`;
+  const svgWrap = document.createElement('div');
+  svgWrap.className = 'flex w-full items-center justify-center overflow-hidden rounded-lg bg-slate-50/60 dark:bg-primary-900/40 px-1 py-1 sm:px-2';
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('viewBox', '0 0 320 140');
+  svg.setAttribute('viewBox', '0 0 420 190');
   svg.setAttribute('role', 'img');
   svg.setAttribute('aria-label', `${entry.manufacturer} ${entry.model} pressure-flow curve`);
-  svg.classList.add('w-full', 'h-auto', 'min-h-[180px]', 'text-slate-500', 'dark:text-slate-300');
+  svg.classList.add('block', 'w-full', 'h-auto', 'text-slate-500', 'dark:text-slate-300');
   const hasEstimate = interpolationResult && (interpolationResult.state === 'exact' || interpolationResult.state === 'interpolated');
   drawPressureDropChart(svg, entry.points, hasEstimate ? flowValue : NaN, hasEstimate ? interpolationResult.value : NaN, { curveMode: 'linear' });
   if (!getValidPressureDropPoints(entry.points).length) {
@@ -4034,27 +4059,31 @@ function createPressureDropChartPanel(entry, flowValue, interpolationResult) {
     panel.append(header, empty);
     return panel;
   }
-  panel.append(header, svg);
+  svgWrap.appendChild(svg);
+  panel.append(header, svgWrap);
   return panel;
 }
 
 function createPressureDropSelectedSummary(entry) {
   const card = document.createElement('article');
-  card.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-4';
+  card.className = 'self-start rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-3 sm:p-4 space-y-3';
   const title = document.createElement('div');
   title.innerHTML = `<p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Selected cannula</p><h3 class="text-base font-semibold text-primary-900 dark:text-white">${entry.manufacturer} · ${entry.model}</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">${getPressureDropGroupLabel(entry.category)} · ${entry.size || 'Unknown size'}</p>`;
   card.appendChild(title);
 
   const facts = document.createElement('dl');
-  facts.className = 'grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs';
+  facts.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5 text-xs';
+  const orderCodeText = getPressureDropOrderCodeText(entry);
+  const dataStatusText = formatPressureDropDataStatus(entry.dataStatus);
+  const flowRangeText = getPressureDropFlowRange(entry);
   [
-    ['Connection site', entry.connectionSite || '—'],
-    ['Connector size', entry.connectorSize || '—'],
-    ['Order code', getPressureDropOrderCodeText(entry)],
-    ['Test medium', entry.testMedium || '—'],
-    ['Data status', formatPressureDropDataStatus(entry.dataStatus)],
-    ['Flow range', getPressureDropFlowRange(entry)]
-  ].forEach(([label, value]) => {
+    entry.connectorSize ? ['Connector size', entry.connectorSize] : null,
+    entry.connectionSite ? ['Connection site', entry.connectionSite] : null,
+    orderCodeText && orderCodeText !== '—' ? ['Order code', orderCodeText] : null,
+    entry.testMedium ? ['Test medium', entry.testMedium] : null,
+    dataStatusText && dataStatusText !== '—' ? ['Data status', dataStatusText] : null,
+    flowRangeText && flowRangeText !== '—' ? ['Flow range', flowRangeText] : null
+  ].filter(Boolean).forEach(([label, value]) => {
     const item = document.createElement('div');
     item.className = 'rounded-lg bg-slate-50 dark:bg-primary-800/60 p-2';
     const dt = document.createElement('dt');
@@ -4067,7 +4096,7 @@ function createPressureDropSelectedSummary(entry) {
     facts.appendChild(item);
   });
   card.appendChild(facts);
-  card.appendChild(getPressureDropSourceNode(entry, true));
+  card.appendChild(getPressureDropSourceNode(entry, true, { showMissingPublicLinkNote: true }));
 
   const details = document.createElement('details');
   details.className = 'rounded-lg border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 p-3 text-xs text-slate-600 dark:text-slate-300';
@@ -4093,11 +4122,8 @@ function createPressureDropLookupResult(entry, flowInputValue, flowValue, onFlow
   const wrap = document.createElement('div');
   wrap.className = 'space-y-4';
   wrap.appendChild(createPressureDropEstimateCard(entry, flowInputValue, flowValue, interpolationResult, onFlowInput));
-  const grid = document.createElement('div');
-  grid.className = 'grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,0.75fr)]';
-  grid.appendChild(createPressureDropChartPanel(entry, flowValue, interpolationResult));
-  grid.appendChild(createPressureDropSelectedSummary(entry));
-  wrap.appendChild(grid);
+  wrap.appendChild(createPressureDropChartPanel(entry, flowValue, interpolationResult));
+  wrap.appendChild(createPressureDropSelectedSummary(entry));
   return wrap;
 }
 
@@ -4158,7 +4184,8 @@ async function initCannulaPressureDropPage() {
       categorySelect: el('pressure-drop-page-category'),
       sizeSelect: el('pressure-drop-page-size'),
       connectionSelect: el('pressure-drop-page-connection'),
-      flowInput: el('pressure-drop-page-flow')
+      flowInput: el('pressure-drop-page-flow'),
+      connectionWrap: el('pressure-drop-page-connection-wrap')
     };
     const resetButton = el('pressure-drop-page-reset');
 
@@ -4204,7 +4231,12 @@ async function initCannulaPressureDropPage() {
       const connectionOptions = controls.sizeSelect?.value
         ? getUniquePressureDropOptionPairs(connectionEntries, getPressureDropConnectionOptionValue, getPressureDropConnectionOptionLabel)
         : [];
-      setPressureDropSelectOptionPairs(controls.connectionSelect, connectionOptions, 'Any connection site');
+      syncPressureDropConnectionControl(
+        controls.connectionSelect,
+        controls.connectionWrap,
+        connectionOptions,
+        Boolean(controls.sizeSelect?.value) && connectionOptions.length >= 2
+      );
     };
 
     const focusResultFlowInput = () => {
@@ -4276,7 +4308,7 @@ async function initCannulaPressureDropPage() {
     });
     if (controls.flowInput) controls.flowInput.addEventListener('input', render);
     if (resetButton) resetButton.addEventListener('click', () => {
-      Object.values(controls).forEach(control => { if (control) control.value = ''; });
+      Object.values(controls).forEach(control => { if (control && 'value' in control) control.value = ''; });
       populateLookupOptions('manufacturer');
       render();
     });
