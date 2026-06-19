@@ -58,9 +58,8 @@ function validateFeedbackPayload(payload) {
   const email = typeof payload.email === 'string' ? payload.email.trim() : '';
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: 'Invalid email.' };
 
-  const visitorId = typeof payload.visitor_id === 'string' && /^[a-zA-Z0-9_-]{16,80}$/.test(payload.visitor_id)
-    ? payload.visitor_id
-    : null;
+  const visitorId = typeof payload.visitor_id === 'string' ? payload.visitor_id.trim() : '';
+  if (!/^pt_[a-zA-Z0-9_-]{5,97}$/.test(visitorId)) return { error: 'Invalid visitor_id.' };
   const language = typeof payload.language === 'string' ? payload.language.slice(0, 35) : null;
   const deviceType = ['mobile', 'tablet', 'desktop'].includes(payload.device_type) ? payload.device_type : null;
   const priority = category === 'calculation_issue' ? 'urgent' : 'normal';
