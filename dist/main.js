@@ -5427,6 +5427,165 @@ window.addEventListener('popstate', () => {
   route();
   resetScrollToTop();
 });
+
+// -----------------------------
+// Lightweight Feedback MVP
+// -----------------------------
+const FEEDBACK_CALCULATOR_ROUTES = {
+  '/bsa/': 'bsa',
+  '/gdp/': 'gdp',
+  '/heparin/': 'heparin',
+  '/predicted-hct/': 'predicted_hct',
+  '/lbm/': 'lbm',
+  '/timecalc/': 'timecalc',
+  '/z-score/': 'z_score',
+  '/cannula-pressure-drop/': 'cannula_pressure_drop',
+  '/priming-volume/': 'priming_volume',
+  '/unit-converter/': 'unit_converter',
+  '/phn-echo/': 'phn_echo'
+};
+const FEEDBACK_STORAGE_KEY = 'pt_feedback_visitor_id';
+const FEEDBACK_SESSION_COUNT_KEY = 'pt_feedback_session_count';
+const FEEDBACK_LAST_PROMPT_KEY = 'pt_feedback_last_prompt_at';
+
+function normalizeFeedbackPath(pathname) {
+  const path = pathname || '/';
+  return path.length > 1 && !path.endsWith('/') ? `${path}/` : path;
+}
+
+function getFeedbackVisitorId() {
+  let visitorId = localStorage.getItem(FEEDBACK_STORAGE_KEY);
+  if (!visitorId) {
+    const randomPart = window.crypto && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    visitorId = `pt_${randomPart.replace(/[^a-zA-Z0-9_-]/g, '')}`;
+    localStorage.setItem(FEEDBACK_STORAGE_KEY, visitorId);
+  }
+  return visitorId;
+}
+
+function getDeviceType() {
+  const width = window.innerWidth || 1024;
+  if (width < 640) return 'mobile';
+  if (width < 1024) return 'tablet';
+  return 'desktop';
+}
+
+function canShowFeedbackPrompt() {
+  const lastPromptAt = Number(localStorage.getItem(FEEDBACK_LAST_PROMPT_KEY) || 0);
+  const oneHourMs = 60 * 60 * 1000;
+  return !lastPromptAt || Date.now() - lastPromptAt > oneHourMs;
+}
+
+function markFeedbackPromptShown() {
+  localStorage.setItem(FEEDBACK_LAST_PROMPT_KEY, String(Date.now()));
+}
+
+function getFeedbackCardMarkup(calculatorKey) {
+  return `
+    <section class="feedback-card mt-8 rounded-2xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/80 shadow-card p-4 sm:p-5" data-calculator-key="${calculatorKey}" aria-live="polite">
+      <div data-feedback-step="rating">
+        <h2 class="text-base font-semibold text-primary-900 dark:text-white">Was this calculator helpful?</h2>
+        <div class="mt-3 flex flex-col gap-2 sm:flex-row">
+          <button type="button" data-feedback-rating="useful" class="rounded-xl bg-accent-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Useful</button>
+          <button type="button" data-feedback-rating="needs_improvement" class="rounded-xl border border-slate-300 dark:border-primary-700 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:border-accent-500/60 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Needs improvement</button>
+          <button type="button" data-feedback-rating="not_useful" class="rounded-xl border border-slate-300 dark:border-primary-700 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:border-accent-500/60 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Not useful</button>
+        </div>
+      </div>
+      <form data-feedback-step="details" class="hidden space-y-3">
+        <h2 class="text-base font-semibold text-primary-900 dark:text-white">Could you briefly tell us what could be improved?</h2>
+        <textarea data-feedback-message rows="3" maxlength="1000" class="w-full rounded-xl border border-slate-300 dark:border-primary-700 bg-white dark:bg-primary-950 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-accent-500/50" placeholder="Optional comment"></textarea>
+        <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
+          <input data-feedback-calculation-issue type="checkbox" class="mt-1 h-4 w-4 rounded border-slate-300 text-accent-600 focus:ring-accent-500" />
+          <span>This may be a calculation issue</span>
+        </label>
+        <button type="submit" class="rounded-xl bg-accent-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Submit feedback</button>
+      </form>
+      <p data-feedback-message-status class="mt-3 hidden text-sm font-medium text-accent-600 dark:text-accent-400"></p>
+    </section>`;
+}
+
+function buildFeedbackPayload(card, rating, options = {}) {
+  const isCalculationIssue = Boolean(options.isCalculationIssue);
+  return {
+    visitor_id: getFeedbackVisitorId(),
+    page_path: normalizeFeedbackPath(window.location.pathname),
+    calculator_key: card.dataset.calculatorKey,
+    rating,
+    category: isCalculationIssue ? 'calculation_issue' : 'general_feedback',
+    message: options.message || '',
+    language: navigator.language || '',
+    device_type: getDeviceType()
+  };
+}
+
+async function submitFeedback(card, payload) {
+  const sessionCount = Number(sessionStorage.getItem(FEEDBACK_SESSION_COUNT_KEY) || 0);
+  if (sessionCount >= 5) throw new Error('Please try again later.');
+  const response = await fetch('/api/feedback', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (!response.ok) throw new Error('Unable to submit feedback right now.');
+  sessionStorage.setItem(FEEDBACK_SESSION_COUNT_KEY, String(sessionCount + 1));
+  return response.json();
+}
+
+function setFeedbackStatus(card, text, isError = false) {
+  const status = card.querySelector('[data-feedback-message-status]');
+  if (!status) return;
+  status.textContent = text;
+  status.classList.remove('hidden', 'text-red-600', 'dark:text-red-400', 'text-accent-600', 'dark:text-accent-400');
+  status.classList.add(isError ? 'text-red-600' : 'text-accent-600', isError ? 'dark:text-red-400' : 'dark:text-accent-400');
+}
+
+function initFeedbackCard() {
+  const pagePath = normalizeFeedbackPath(window.location.pathname);
+  const calculatorKey = FEEDBACK_CALCULATOR_ROUTES[pagePath];
+  if (!calculatorKey || document.querySelector('.feedback-card') || !canShowFeedbackPrompt()) return;
+  const main = document.querySelector('main');
+  if (!main) return;
+  main.insertAdjacentHTML('beforeend', `<div class="max-w-3xl mx-auto px-4">${getFeedbackCardMarkup(calculatorKey)}</div>`);
+  markFeedbackPromptShown();
+  const card = document.querySelector('.feedback-card');
+  const details = card.querySelector('[data-feedback-step="details"]');
+  const ratingStep = card.querySelector('[data-feedback-step="rating"]');
+  let selectedRating = '';
+
+  card.querySelectorAll('[data-feedback-rating]').forEach(button => {
+    button.addEventListener('click', async () => {
+      selectedRating = button.dataset.feedbackRating;
+      if (selectedRating === 'useful') {
+        try {
+          await submitFeedback(card, buildFeedbackPayload(card, selectedRating));
+          ratingStep.classList.add('hidden');
+          setFeedbackStatus(card, 'Thank you for your feedback.');
+        } catch (error) {
+          setFeedbackStatus(card, error.message, true);
+        }
+        return;
+      }
+      ratingStep.classList.add('hidden');
+      details.classList.remove('hidden');
+      const textarea = card.querySelector('[data-feedback-message]');
+      if (textarea) textarea.focus();
+    });
+  });
+
+  details.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const message = card.querySelector('[data-feedback-message]').value.trim();
+    const isCalculationIssue = card.querySelector('[data-feedback-calculation-issue]').checked;
+    try {
+      await submitFeedback(card, buildFeedbackPayload(card, selectedRating, { message, isCalculationIssue }));
+      details.classList.add('hidden');
+      setFeedbackStatus(card, 'Feedback submitted. Thank you for helping improve PerfusionTools.');
+    } catch (error) {
+      setFeedbackStatus(card, error.message, true);
+    }
+  });
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   document.documentElement.style.scrollPaddingTop = '0px';
   resetScrollToTop();
@@ -5791,6 +5950,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   setupContactActions();
+  initFeedbackCard();
 
   if (hasTimeCalculator) {
     initTimeCalculator();
