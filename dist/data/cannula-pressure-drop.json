@@ -767,6 +767,155 @@
       "notes": "Aortic Arch Cannulae, Curved Tip with Suture Flange, Wire-reinforced Tubing. Tip size: 5.2 mm. Effective length: 23 cm. Connector size: 3/8 inch. Product codes: A212-52C = connector without luer vent; A212-52B = connector with luer vent down; A212-52A = connector with luer vent up. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Values above 100 mmHg should be treated as caution range; do not extrapolate beyond the digitized source range. Pressure drop exceeds 100 mmHg. Consider a larger arterial cannula or reassess target flow. Other sizes on the same page are intentionally not included because digitized points were not provided for this task."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Arch Cannulae — Curved Tip with Suture Flange, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "20 Fr",
+      "overallLengthCm": 23,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A212-65C (connector without luer vent); A212-65B (connector with luer vent down); A212-65A (connector with luer vent up)",
+      "sourceLabel": "LivaNova Aortic Arch Cannulae Curved Tip with Suture Flange brochure pressure-flow graph",
+      "sourceUrl": "LivaNova Aortic Arch Cannulae Curved Tip with Suture Flange brochure pressure-flow graph",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Curved Tip with Suture Flange brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 7.51 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–7.51",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 7.51 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.42,
+          "pressureDrop": 1.2
+        },
+        {
+          "flow": 0.67,
+          "pressureDrop": 2.7
+        },
+        {
+          "flow": 1.02,
+          "pressureDrop": 5.2
+        },
+        {
+          "flow": 1.46,
+          "pressureDrop": 6.9
+        },
+        {
+          "flow": 1.77,
+          "pressureDrop": 8.8
+        },
+        {
+          "flow": 2.03,
+          "pressureDrop": 11.3
+        },
+        {
+          "flow": 2.34,
+          "pressureDrop": 13.7
+        },
+        {
+          "flow": 2.57,
+          "pressureDrop": 16.2
+        },
+        {
+          "flow": 2.79,
+          "pressureDrop": 19.9
+        },
+        {
+          "flow": 3.0,
+          "pressureDrop": 23.1
+        },
+        {
+          "flow": 3.35,
+          "pressureDrop": 30.4
+        },
+        {
+          "flow": 3.57,
+          "pressureDrop": 34.6
+        },
+        {
+          "flow": 3.8,
+          "pressureDrop": 40.2
+        },
+        {
+          "flow": 4.05,
+          "pressureDrop": 45.4
+        },
+        {
+          "flow": 4.27,
+          "pressureDrop": 49.6
+        },
+        {
+          "flow": 4.52,
+          "pressureDrop": 55.2
+        },
+        {
+          "flow": 4.74,
+          "pressureDrop": 60.1
+        },
+        {
+          "flow": 5.05,
+          "pressureDrop": 67.0
+        },
+        {
+          "flow": 5.3,
+          "pressureDrop": 73.9
+        },
+        {
+          "flow": 5.48,
+          "pressureDrop": 80.2
+        },
+        {
+          "flow": 5.69,
+          "pressureDrop": 86.6
+        },
+        {
+          "flow": 5.9,
+          "pressureDrop": 92.8
+        },
+        {
+          "flow": 6.09,
+          "pressureDrop": 100.1
+        },
+        {
+          "flow": 6.32,
+          "pressureDrop": 106.5
+        },
+        {
+          "flow": 6.53,
+          "pressureDrop": 113.9
+        },
+        {
+          "flow": 6.7,
+          "pressureDrop": 120.0
+        },
+        {
+          "flow": 6.89,
+          "pressureDrop": 126.4
+        },
+        {
+          "flow": 7.06,
+          "pressureDrop": 132.8
+        },
+        {
+          "flow": 7.22,
+          "pressureDrop": 140.1
+        },
+        {
+          "flow": 7.38,
+          "pressureDrop": 145.3
+        },
+        {
+          "flow": 7.51,
+          "pressureDrop": 150.4
+        }
+      ],
+      "notes": "Aortic Arch Cannulae, Curved Tip with Suture Flange, Wire-reinforced Tubing. Tip size: 6.5 mm. Effective length: 23 cm. Connector size: 3/8 inch. Product codes: A212-65C = connector without luer vent; A212-65B = connector with luer vent down; A212-65A = connector with luer vent up. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Values above 100 mmHg should be treated as caution range; do not extrapolate beyond the digitized source range. Pressure drop exceeds 100 mmHg. Consider a larger arterial cannula or reassess target flow. Other sizes on the same page are intentionally not included because digitized points were not provided for this task."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
