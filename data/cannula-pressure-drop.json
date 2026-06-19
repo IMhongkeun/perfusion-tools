@@ -517,6 +517,123 @@
       "notes": "Optiflow Aortic Arch Cannulae, Straight Tip, Wire-reinforced Tubing. Tip size: 8 mm. Effective length: 25 cm. Connector size: 3/8 inch. Product codes: A292-80C = connector without luer vent; A292-80B = connector with luer vent down. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. Common arterial caution threshold: 100 mmHg."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Arch Cannulae — Curved Tip with Suture Flange, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "14 Fr",
+      "overallLengthCm": 23,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "1/4 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A212-45C (connector without luer vent); A212-45B (connector with luer vent down); no connector with luer vent up listed for this size",
+      "sourceLabel": "LivaNova Aortic Arch Cannulae Curved Tip with Suture Flange brochure pressure-flow graph",
+      "sourceUrl": "LivaNova Aortic Arch Cannulae Curved Tip with Suture Flange brochure pressure-flow graph",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Curved Tip with Suture Flange brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 3.03 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–3.03",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 3.03 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.42,
+          "pressureDrop": 5.2
+        },
+        {
+          "flow": 0.74,
+          "pressureDrop": 9.6
+        },
+        {
+          "flow": 0.95,
+          "pressureDrop": 14.2
+        },
+        {
+          "flow": 1.1,
+          "pressureDrop": 19.9
+        },
+        {
+          "flow": 1.27,
+          "pressureDrop": 26.5
+        },
+        {
+          "flow": 1.42,
+          "pressureDrop": 33.6
+        },
+        {
+          "flow": 1.55,
+          "pressureDrop": 40.2
+        },
+        {
+          "flow": 1.7,
+          "pressureDrop": 47.9
+        },
+        {
+          "flow": 1.8,
+          "pressureDrop": 54.7
+        },
+        {
+          "flow": 1.91,
+          "pressureDrop": 60.6
+        },
+        {
+          "flow": 2.01,
+          "pressureDrop": 66.7
+        },
+        {
+          "flow": 2.1,
+          "pressureDrop": 73.9
+        },
+        {
+          "flow": 2.18,
+          "pressureDrop": 80.7
+        },
+        {
+          "flow": 2.23,
+          "pressureDrop": 85.9
+        },
+        {
+          "flow": 2.34,
+          "pressureDrop": 92.5
+        },
+        {
+          "flow": 2.45,
+          "pressureDrop": 99.9
+        },
+        {
+          "flow": 2.54,
+          "pressureDrop": 107.2
+        },
+        {
+          "flow": 2.62,
+          "pressureDrop": 114.1
+        },
+        {
+          "flow": 2.67,
+          "pressureDrop": 120.2
+        },
+        {
+          "flow": 2.76,
+          "pressureDrop": 126.1
+        },
+        {
+          "flow": 2.84,
+          "pressureDrop": 133.0
+        },
+        {
+          "flow": 2.92,
+          "pressureDrop": 140.1
+        },
+        {
+          "flow": 3.03,
+          "pressureDrop": 150.4
+        }
+      ],
+      "notes": "Aortic Arch Cannulae, Curved Tip with Suture Flange, Wire-reinforced Tubing. Tip size: 4.5 mm. Effective length: 23 cm. Connector size: 1/4 inch. Product codes: A212-45C = connector without luer vent; A212-45B = connector with luer vent down; no connector with luer vent up listed for this size. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Values above 100 mmHg should be treated as caution range; do not extrapolate beyond the digitized source range. Pressure drop exceeds 100 mmHg. Consider a larger arterial cannula or reassess target flow. Other sizes on the same page are intentionally not included because digitized points were not provided for this task."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
