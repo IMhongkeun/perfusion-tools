@@ -54,6 +54,50 @@ async function loadFeedbackEndpoint() {
   return import(pathToFileURL(path.join(apiDir, 'index.js')).href);
 }
 
+async function loadAdminMiddleware() {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'feedback-admin-'));
+  fs.writeFileSync(path.join(tmpDir, 'package.json'), '{"type":"module"}');
+  fs.copyFileSync(path.join(__dirname, '..', 'functions', 'admin', 'feedback', '_middleware.js'), path.join(tmpDir, '_middleware.js'));
+  return import(pathToFileURL(path.join(tmpDir, '_middleware.js')).href);
+}
+
+function basicAuth(user, pass) {
+  return `Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`;
+}
+
+function authRequest(authorization) {
+  const headers = authorization ? { authorization } : {};
+  return new Request('https://perfusiontools.com/api/feedback', { headers });
+}
+
+async function assertAdminAccepted(endpoint, authorization, env, label) {
+  const response = await endpoint.onRequestGet({ request: authRequest(authorization), env });
+  assert.strictEqual(response.status, 200, label);
+}
+
+async function assertAdminRejected(endpoint, authorization, env, label) {
+  const response = await endpoint.onRequestGet({ request: authRequest(authorization), env });
+  assert.strictEqual(response.status, 401, label);
+}
+
+async function assertMiddlewareAccepted(middleware, authorization, env, label) {
+  const response = await middleware.onRequest({
+    request: authRequest(authorization),
+    env,
+    next: async () => new Response('ok', { status: 200 }),
+  });
+  assert.strictEqual(response.status, 200, label);
+}
+
+async function assertMiddlewareRejected(middleware, authorization, env, label) {
+  const response = await middleware.onRequest({
+    request: authRequest(authorization),
+    env,
+    next: async () => new Response('ok', { status: 200 }),
+  });
+  assert.strictEqual(response.status, 401, label);
+}
+
 function makeRequest(payload) {
   return new Request('https://perfusiontools.com/api/feedback', {
     method: 'POST',
@@ -82,6 +126,15 @@ function basePayload(overrides = {}) {
 
 async function run() {
   const endpoint = await loadFeedbackEndpoint();
+  const middleware = await loadAdminMiddleware();
+  const adminDb = createMockDb();
+  await assertAdminAccepted(endpoint, basicAuth('admin', 'secret'), { FEEDBACK_DB: adminDb, FEEDBACK_ADMIN_USER: 'admin', FEEDBACK_ADMIN_PASSWORD: 'secret' }, 'Basic Auth should work when only Basic credentials are configured');
+  await assertAdminAccepted(endpoint, 'Bearer token123', { FEEDBACK_DB: adminDb, FEEDBACK_ADMIN_TOKEN: 'token123' }, 'Bearer token should work when only token is configured');
+  await assertAdminAccepted(endpoint, basicAuth('admin', 'secret'), { FEEDBACK_DB: adminDb, FEEDBACK_ADMIN_TOKEN: 'token123', FEEDBACK_ADMIN_USER: 'admin', FEEDBACK_ADMIN_PASSWORD: 'secret' }, 'Basic Auth should work when both auth methods are configured');
+  await assertAdminRejected(endpoint, 'Bearer wrong', { FEEDBACK_DB: adminDb, FEEDBACK_ADMIN_TOKEN: 'token123', FEEDBACK_ADMIN_USER: 'admin', FEEDBACK_ADMIN_PASSWORD: 'secret' }, 'Invalid Bearer token should be rejected even when Basic fallback is configured');
+  await assertAdminRejected(endpoint, null, { FEEDBACK_DB: adminDb, FEEDBACK_ADMIN_TOKEN: 'token123', FEEDBACK_ADMIN_USER: 'admin', FEEDBACK_ADMIN_PASSWORD: 'secret' }, 'Unauthenticated API requests should remain rejected');
+  await assertMiddlewareAccepted(middleware, basicAuth('admin', 'secret'), { FEEDBACK_ADMIN_TOKEN: 'token123', FEEDBACK_ADMIN_USER: 'admin', FEEDBACK_ADMIN_PASSWORD: 'secret' }, 'Admin middleware should accept Basic Auth when token is also configured');
+  await assertMiddlewareRejected(middleware, null, { FEEDBACK_ADMIN_TOKEN: 'token123', FEEDBACK_ADMIN_USER: 'admin', FEEDBACK_ADMIN_PASSWORD: 'secret' }, 'Unauthenticated admin page requests should remain rejected');
   const originalFetch = global.fetch;
   const webhookCalls = [];
   global.fetch = async (url, options) => {
