@@ -247,6 +247,151 @@
       "notes": "Optiflow Aortic Arch Cannulae, Curved Tip, Wire-reinforced Tubing. Tip size: 8 mm. Effective length: 25 cm. Connector size: 3/8 inch. Product codes: A282-80C = connector without luer vent; A282-80B = connector with luer vent down; A282-80A = connector with luer vent up. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. Common arterial caution threshold: 100 mmHg."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Optiflow Aortic Arch Cannulae — Straight Tip, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "21 Fr",
+      "overallLengthCm": 24,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A292-70C (connector without luer vent); A292-70B (connector with luer vent down)",
+      "sourceLabel": "LivaNova Optiflow Aortic Arch Cannulae Straight Tip brochure pressure-flow graph",
+      "sourceUrl": "LivaNova Optiflow Aortic Arch Cannulae Straight Tip brochure pressure-flow graph",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Optiflow Aortic Arch Cannulae Straight Tip brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 9.0 L/min); final digitized x-value capped at the axis maximum of 9.0 L/min; do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–9.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 9.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.35,
+          "pressureDrop": 1.9
+        },
+        {
+          "flow": 0.7,
+          "pressureDrop": 3.0
+        },
+        {
+          "flow": 1.01,
+          "pressureDrop": 3.5
+        },
+        {
+          "flow": 1.36,
+          "pressureDrop": 4.7
+        },
+        {
+          "flow": 1.69,
+          "pressureDrop": 5.6
+        },
+        {
+          "flow": 2.02,
+          "pressureDrop": 6.8
+        },
+        {
+          "flow": 2.33,
+          "pressureDrop": 7.3
+        },
+        {
+          "flow": 2.66,
+          "pressureDrop": 8.7
+        },
+        {
+          "flow": 3.02,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 3.38,
+          "pressureDrop": 12.9
+        },
+        {
+          "flow": 3.68,
+          "pressureDrop": 14.8
+        },
+        {
+          "flow": 4.02,
+          "pressureDrop": 18.0
+        },
+        {
+          "flow": 4.26,
+          "pressureDrop": 21.3
+        },
+        {
+          "flow": 4.61,
+          "pressureDrop": 24.4
+        },
+        {
+          "flow": 4.9,
+          "pressureDrop": 27.2
+        },
+        {
+          "flow": 5.13,
+          "pressureDrop": 30.0
+        },
+        {
+          "flow": 5.39,
+          "pressureDrop": 32.8
+        },
+        {
+          "flow": 5.67,
+          "pressureDrop": 36.3
+        },
+        {
+          "flow": 5.95,
+          "pressureDrop": 39.8
+        },
+        {
+          "flow": 6.21,
+          "pressureDrop": 44.0
+        },
+        {
+          "flow": 6.41,
+          "pressureDrop": 47.1
+        },
+        {
+          "flow": 6.71,
+          "pressureDrop": 52.0
+        },
+        {
+          "flow": 7.01,
+          "pressureDrop": 56.5
+        },
+        {
+          "flow": 7.21,
+          "pressureDrop": 59.5
+        },
+        {
+          "flow": 7.53,
+          "pressureDrop": 65.1
+        },
+        {
+          "flow": 7.79,
+          "pressureDrop": 68.9
+        },
+        {
+          "flow": 8.04,
+          "pressureDrop": 72.4
+        },
+        {
+          "flow": 8.44,
+          "pressureDrop": 79.4
+        },
+        {
+          "flow": 8.72,
+          "pressureDrop": 84.6
+        },
+        {
+          "flow": 9.0,
+          "pressureDrop": 90.7
+        }
+      ],
+      "notes": "Optiflow Aortic Arch Cannulae, Straight Tip, Wire-reinforced Tubing. Tip size: 7 mm. Effective length: 24 cm. Connector size: 3/8 inch. Product codes: A292-70C = connector without luer vent; A292-70B = connector with luer vent down. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. Common arterial caution threshold: 100 mmHg. Straight Tip 24 Fr is intentionally not included because digitized points were not provided for this task."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
