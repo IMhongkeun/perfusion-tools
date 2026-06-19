@@ -5494,6 +5494,7 @@ function getFeedbackCardMarkup(calculatorKey) {
       <form data-feedback-step="details" class="hidden space-y-3">
         <h2 class="text-base font-semibold text-primary-900 dark:text-white">Could you briefly tell us what could be improved?</h2>
         <textarea data-feedback-message rows="3" maxlength="1000" class="w-full rounded-xl border border-slate-300 dark:border-primary-700 bg-white dark:bg-primary-950 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-accent-500/50" placeholder="Optional comment"></textarea>
+        <p class="text-xs leading-relaxed text-slate-500 dark:text-slate-400">Please do not include patient-identifiable information. Feedback is stored with anonymous browser metadata to help improve this tool.</p>
         <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
           <input data-feedback-calculation-issue type="checkbox" class="mt-1 h-4 w-4 rounded border-slate-300 text-accent-600 focus:ring-accent-500" />
           <span>This may be a calculation issue</span>

@@ -128,6 +128,7 @@ async function run() {
 
     const mainJs = fs.readFileSync(path.join(__dirname, '..', 'main.js'), 'utf8');
     assert(mainJs.includes('visitorId = `pt_${randomPart.replace(/[^a-zA-Z0-9_-]/g, \'\')}`'), 'frontend visitor_id should use pt_ prefix and allowed characters');
+    assert(mainJs.includes('Please do not include patient-identifiable information.'), 'feedback details step should warn against patient-identifiable information');
 
     console.log('All feedback API tests passed.');
   } finally {
