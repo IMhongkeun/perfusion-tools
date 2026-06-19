@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Feedback Admin | Perfusion Tools</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h1 class="text-2xl font-bold">Feedback admin</h1>
+        <p class="text-sm text-slate-600">Protected operational view for calculator feedback.</p>
+      </div>
+      <button id="refresh-feedback" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white">Refresh</button>
+    </div>
+
+    <div id="feedback-filters" class="mt-6 flex flex-wrap gap-2"></div>
+    <p id="feedback-admin-message" class="mt-4 text-sm text-slate-600" role="status"></p>
+    <div id="feedback-list" class="mt-4 space-y-3"></div>
+  </main>
+
+  <script>
+    const filters = [
+      ['all', 'All'], ['urgent', 'Urgent'], ['calculation_issues', 'Calculation issues'], ['general_feedback', 'General feedback'],
+      ['open', 'Open'], ['reviewing', 'Reviewing'], ['fixed', 'Fixed'], ['closed', 'Closed']
+    ];
+    const statuses = ['open', 'reviewing', 'fixed', 'closed'];
+    let activeFilter = 'all';
+
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+    }
+
+    function renderFilters() {
+      document.getElementById('feedback-filters').innerHTML = filters.map(([key, label]) => `
+        <button data-filter="${key}" class="rounded-full border px-3 py-1.5 text-sm ${key === activeFilter ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-300 bg-white text-slate-700'}">${label}</button>
+      `).join('');
+      document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {
+        activeFilter = button.dataset.filter;
+        renderFilters();
+        loadFeedback();
+      }));
+    }
+
+    async function loadFeedback() {
+      const message = document.getElementById('feedback-admin-message');
+      const list = document.getElementById('feedback-list');
+      message.textContent = 'Loading feedback…';
+      try {
+        const response = await fetch(`/api/feedback?filter=${encodeURIComponent(activeFilter)}`);
+        if (!response.ok) throw new Error(response.status === 401 ? 'Unauthorized. Sign in with admin credentials.' : 'Unable to load feedback.');
+        const data = await response.json();
+        const entries = data.entries || [];
+        message.textContent = `${entries.length} feedback entr${entries.length === 1 ? 'y' : 'ies'}`;
+        list.innerHTML = entries.map(renderEntry).join('') || '<div class="rounded-xl border bg-white p-5 text-sm text-slate-500">No feedback found.</div>';
+        document.querySelectorAll('[data-status-id]').forEach(select => select.addEventListener('change', updateStatus));
+      } catch (error) {
+        message.textContent = error.message;
+        list.innerHTML = '';
+      }
+    }
+
+    function renderEntry(entry) {
+      const options = statuses.map(status => `<option value="${status}" ${entry.status === status ? 'selected' : ''}>${status}</option>`).join('');
+      return `
+        <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <div class="flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-wide">
+                <span class="rounded-full bg-slate-100 px-2 py-1">${escapeHtml(entry.rating)}</span>
+                <span class="rounded-full ${entry.priority === 'urgent' ? 'bg-red-100 text-red-700' : 'bg-cyan-100 text-cyan-700'} px-2 py-1">${escapeHtml(entry.priority)}</span>
+                <span class="rounded-full bg-slate-100 px-2 py-1">${escapeHtml(entry.category)}</span>
+              </div>
+              <p class="mt-2 text-sm text-slate-600">${escapeHtml(entry.created_at)} · ${escapeHtml(entry.page_path)} · ${escapeHtml(entry.calculator_key)}</p>
+            </div>
+            <label class="text-sm font-medium">Status
+              <select data-status-id="${entry.id}" class="ml-2 rounded-lg border border-slate-300 bg-white px-2 py-1 text-sm">${options}</select>
+            </label>
+          </div>
+          <p class="mt-3 whitespace-pre-wrap text-sm">${escapeHtml(entry.message || 'No comment provided.')}</p>
+          <dl class="mt-3 grid gap-1 text-xs text-slate-500 sm:grid-cols-2 lg:grid-cols-4">
+            <div><dt class="font-semibold">Language</dt><dd>${escapeHtml(entry.language || '—')}</dd></div>
+            <div><dt class="font-semibold">Device</dt><dd>${escapeHtml(entry.device_type || '—')}</dd></div>
+            <div><dt class="font-semibold">App version</dt><dd>${escapeHtml(entry.app_version || '—')}</dd></div>
+            <div><dt class="font-semibold">Commit</dt><dd>${escapeHtml(entry.commit_sha || '—')}</dd></div>
+          </dl>
+        </article>`;
+    }
+
+    async function updateStatus(event) {
+      const id = event.target.dataset.statusId;
+      const status = event.target.value;
+      const response = await fetch(`/api/feedback/${encodeURIComponent(id)}/status`, {
+        method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ status })
+      });
+      document.getElementById('feedback-admin-message').textContent = response.ok ? 'Status updated.' : 'Unable to update status.';
+    }
+
+    document.getElementById('refresh-feedback').addEventListener('click', loadFeedback);
+    renderFilters();
+    loadFeedback();
+  </script>
+</body>
+</html>

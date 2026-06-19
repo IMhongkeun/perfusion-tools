@@ -824,8 +824,10 @@
       <section id="view-privacy" class="hidden p-6 bg-white dark:bg-primary-900 rounded-2xl shadow-card border border-slate-200 dark:border-primary-800 text-slate-700 dark:text-slate-300">
         <h2 class="text-2xl font-bold text-primary-900 dark:text-white mb-4">Privacy Policy</h2>
         <div class="prose prose-sm dark:prose-invert max-w-none">
-          <p>This site is a static calculator that runs entirely in your browser. No clinical inputs, identifiers, or session data are sent to any server.</p>
-          <p>Anonymous, aggregate analytics may be used to understand feature usage (page views, button clicks) without logging IP addresses or patient information.</p>
+          <p>This site is a static calculator that runs in your browser. Calculator inputs and calculated results remain on-device and are not intentionally sent to the server through the calculators.</p>
+          <p>When you submit calculator feedback, PerfusionTools stores the submitted rating and optional comment. The feedback record also stores limited metadata: page path, calculator key, language, device type, app version, commit SHA when available, and an anonymous browser-generated visitor_id.</p>
+          <p>The visitor_id is generated in localStorage and is used only for feedback prompt frequency control, duplicate prevention, and lightweight rate limiting. It is not a login identity and should not be treated as a reliable unique-user analytics identifier.</p>
+          <p>PerfusionTools does not intentionally collect or store patient inputs, calculator inputs, calculated results, hospital names, or IP addresses through the feedback form. Please do not include patient-identifiable information in feedback comments.</p>
           <p>Inputs remain on-device and disappear when you refresh or close the page. Do not store or print screenshots that contain protected health information (PHI) on shared systems.</p>
           <p>If you have privacy concerns or wish to report a data issue, please reach out via the contact form below. We will respond promptly with remediation steps.</p>
         </div>

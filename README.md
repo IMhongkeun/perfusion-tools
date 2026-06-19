@@ -2,7 +2,7 @@
 
 **A browser-based calculator suite for CPB & ECMO Perfusionists**
 
-[perfusiontools.com](https://perfusiontools.com) is a lightweight, privacy-focused collection of web calculators designed for perfusionists working in cardiopulmonary bypass (CPB) and ECMO. All calculations run locally in the browser — no patient data is ever sent to a server.
+[perfusiontools.com](https://perfusiontools.com) is a lightweight, privacy-focused collection of web calculators designed for perfusionists working in cardiopulmonary bypass (CPB) and ECMO. Calculations run locally in the browser; calculator inputs and results are not intentionally sent to the server through the calculators. The optional feedback form stores the submitted rating/comment and limited anonymous browser metadata as described below.
 
 ---
 
@@ -27,7 +27,16 @@
 - **Mobile-friendly** — Fully optimized for use on smartphones and tablets in the OR and ICU
 - **Transparent formulas** — Every calculator displays the exact equations and clinical references
 - **Fully offline capable** — Static site that works without internet connection
-- **Privacy by design** — No tracking, no data collection, no accounts, no server communication
+- **Privacy by design** — No accounts and no intentional collection of patient inputs, calculator inputs, calculated results, hospital names, or IP addresses through the feedback form
+
+
+## Privacy and feedback data
+
+When a user submits calculator feedback, PerfusionTools stores the submitted rating and optional comment. The feedback record also stores limited metadata: page path, calculator key, language, device type, app version, commit SHA when available, and an anonymous browser-generated `visitor_id`.
+
+The `visitor_id` is generated in `localStorage` and is used only for feedback prompt frequency control, duplicate prevention, and lightweight rate limiting. It is not a login identity and should not be treated as a reliable unique-user analytics identifier.
+
+PerfusionTools does not intentionally collect or store patient inputs, calculator inputs, calculated results, hospital names, or IP addresses through the feedback form. Users should not include patient-identifiable information in feedback comments.
 
 ---
 
