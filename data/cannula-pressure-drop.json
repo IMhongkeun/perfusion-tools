@@ -25,6 +25,123 @@
       "notes": "Pressure-flow chart source identified in LivaNova MICS & Femoral Cannulae brochure. Curve points have not yet been digitized."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Optiflow Aortic Arch Cannulae — Curved Tip, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "21 Fr",
+      "overallLengthCm": 24,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A282-70C (connector without luer vent); A282-70B (connector with luer vent down); A282-70A (connector with luer vent up)",
+      "sourceLabel": "LivaNova Optiflow Aortic Arch Cannulae brochure pressure-flow graph",
+      "sourceUrl": "LivaNova Optiflow Aortic Arch Cannulae brochure pressure-flow graph",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Optiflow Aortic Arch Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 7.92 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–7.92",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 7.92 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.53,
+          "pressureDrop": 3.8
+        },
+        {
+          "flow": 1.03,
+          "pressureDrop": 6.4
+        },
+        {
+          "flow": 1.46,
+          "pressureDrop": 8.9
+        },
+        {
+          "flow": 2.0,
+          "pressureDrop": 12.7
+        },
+        {
+          "flow": 2.49,
+          "pressureDrop": 16.7
+        },
+        {
+          "flow": 3.0,
+          "pressureDrop": 20.9
+        },
+        {
+          "flow": 3.49,
+          "pressureDrop": 26.4
+        },
+        {
+          "flow": 4.01,
+          "pressureDrop": 32.5
+        },
+        {
+          "flow": 4.45,
+          "pressureDrop": 37.9
+        },
+        {
+          "flow": 4.63,
+          "pressureDrop": 40.5
+        },
+        {
+          "flow": 5.03,
+          "pressureDrop": 46.8
+        },
+        {
+          "flow": 5.43,
+          "pressureDrop": 52.5
+        },
+        {
+          "flow": 5.62,
+          "pressureDrop": 55.3
+        },
+        {
+          "flow": 5.9,
+          "pressureDrop": 60.2
+        },
+        {
+          "flow": 5.99,
+          "pressureDrop": 62.6
+        },
+        {
+          "flow": 6.27,
+          "pressureDrop": 67.3
+        },
+        {
+          "flow": 6.51,
+          "pressureDrop": 72.0
+        },
+        {
+          "flow": 6.69,
+          "pressureDrop": 75.5
+        },
+        {
+          "flow": 6.86,
+          "pressureDrop": 80.5
+        },
+        {
+          "flow": 7.01,
+          "pressureDrop": 83.1
+        },
+        {
+          "flow": 7.37,
+          "pressureDrop": 91.1
+        },
+        {
+          "flow": 7.71,
+          "pressureDrop": 100.2
+        },
+        {
+          "flow": 7.92,
+          "pressureDrop": 105.9
+        }
+      ],
+      "notes": "Optiflow Aortic Arch Cannulae, Curved Tip, Wire-reinforced Tubing. Tip size: 7 mm. Effective length: 24 cm. Connector size: 3/8 inch. Product codes: A282-70C = connector without luer vent; A282-70B = connector with luer vent down; A282-70A = connector with luer vent up. Source type: digitized_graph. Extrapolation: false. Values above 100 mmHg should be treated as caution range; do not extrapolate beyond the digitized source range. Pressure drop exceeds 100 mmHg. Consider a larger arterial cannula or reassess target flow. The 24 Fr / 8 mm product on the same page is intentionally not included because digitized points have not been provided."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
