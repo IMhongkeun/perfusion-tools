@@ -142,6 +142,111 @@
       "notes": "Optiflow Aortic Arch Cannulae, Curved Tip, Wire-reinforced Tubing. Tip size: 7 mm. Effective length: 24 cm. Connector size: 3/8 inch. Product codes: A282-70C = connector without luer vent; A282-70B = connector with luer vent down; A282-70A = connector with luer vent up. Source type: digitized_graph. Extrapolation: false. Values above 100 mmHg should be treated as caution range; do not extrapolate beyond the digitized source range. Pressure drop exceeds 100 mmHg. Consider a larger arterial cannula or reassess target flow. The 24 Fr / 8 mm product on the same page is intentionally not included because digitized points have not been provided."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Optiflow Aortic Arch Cannulae — Curved Tip, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "24 Fr",
+      "overallLengthCm": 25,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A282-80C (connector without luer vent); A282-80B (connector with luer vent down); A282-80A (connector with luer vent up)",
+      "sourceLabel": "LivaNova Optiflow Aortic Arch Cannulae brochure pressure-flow graph",
+      "sourceUrl": "LivaNova Optiflow Aortic Arch Cannulae brochure pressure-flow graph",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Optiflow Aortic Arch Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 8.56 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–8.56",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 8.56 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.46,
+          "pressureDrop": 1.2
+        },
+        {
+          "flow": 1.01,
+          "pressureDrop": 3.1
+        },
+        {
+          "flow": 1.51,
+          "pressureDrop": 4.9
+        },
+        {
+          "flow": 2.01,
+          "pressureDrop": 6.8
+        },
+        {
+          "flow": 2.5,
+          "pressureDrop": 9.4
+        },
+        {
+          "flow": 3.04,
+          "pressureDrop": 12.2
+        },
+        {
+          "flow": 3.57,
+          "pressureDrop": 16.2
+        },
+        {
+          "flow": 4.01,
+          "pressureDrop": 18.8
+        },
+        {
+          "flow": 4.13,
+          "pressureDrop": 20.5
+        },
+        {
+          "flow": 4.51,
+          "pressureDrop": 23.5
+        },
+        {
+          "flow": 5.06,
+          "pressureDrop": 28.7
+        },
+        {
+          "flow": 5.53,
+          "pressureDrop": 33.9
+        },
+        {
+          "flow": 5.72,
+          "pressureDrop": 36.0
+        },
+        {
+          "flow": 6.14,
+          "pressureDrop": 40.5
+        },
+        {
+          "flow": 6.6,
+          "pressureDrop": 46.1
+        },
+        {
+          "flow": 7.04,
+          "pressureDrop": 51.1
+        },
+        {
+          "flow": 7.44,
+          "pressureDrop": 55.8
+        },
+        {
+          "flow": 7.8,
+          "pressureDrop": 60.2
+        },
+        {
+          "flow": 8.06,
+          "pressureDrop": 64.5
+        },
+        {
+          "flow": 8.56,
+          "pressureDrop": 72.2
+        }
+      ],
+      "notes": "Optiflow Aortic Arch Cannulae, Curved Tip, Wire-reinforced Tubing. Tip size: 8 mm. Effective length: 25 cm. Connector size: 3/8 inch. Product codes: A282-80C = connector without luer vent; A282-80B = connector with luer vent down; A282-80A = connector with luer vent up. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. Common arterial caution threshold: 100 mmHg."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
