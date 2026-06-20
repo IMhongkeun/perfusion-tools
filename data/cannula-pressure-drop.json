@@ -1952,6 +1952,147 @@
       "notes": "Triple Stage Venous Return Cannula, Wire-reinforced Tubing. Stage: Triple stage. Effective length: 40 cm. Connector size: 1/2 inch. Product codes: RTS-13029 = without connector; RTS-13129 = with connector. Available coated: no. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Dual Stage Venous Return Cannulae — Wire-reinforced Tubing",
+      "category": "Adult venous",
+      "size": "29/37 Fr",
+      "overallLengthCm": 40,
+      "connectionSite": "Venous return",
+      "connectorSize": "1/2 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "RDS-61137 (with connector); RDS-61037 (without connector)",
+      "sourceLabel": "LivaNova Dual Stage Venous Return Cannulae brochure pressure-flow graph",
+      "sourceUrl": "LivaNova Dual Stage Venous Return Cannulae brochure pressure-flow graph",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Dual Stage Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Flow values are corrected to the manufacturer's actual 1.0 to 6.0 L/min x-axis; do not use the uncorrected 0 to 6 CSV axis. Source curve digitized to visible endpoint (1.0 to 6.0 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "1.0–6.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (1.0 to 6.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 1.0,
+          "pressureDrop": 0.5
+        },
+        {
+          "flow": 1.37,
+          "pressureDrop": 0.8
+        },
+        {
+          "flow": 1.68,
+          "pressureDrop": 1.2
+        },
+        {
+          "flow": 1.98,
+          "pressureDrop": 1.4
+        },
+        {
+          "flow": 2.27,
+          "pressureDrop": 1.8
+        },
+        {
+          "flow": 2.5,
+          "pressureDrop": 2.1
+        },
+        {
+          "flow": 2.67,
+          "pressureDrop": 2.4
+        },
+        {
+          "flow": 2.85,
+          "pressureDrop": 2.6
+        },
+        {
+          "flow": 2.99,
+          "pressureDrop": 2.8
+        },
+        {
+          "flow": 3.14,
+          "pressureDrop": 3.1
+        },
+        {
+          "flow": 3.28,
+          "pressureDrop": 3.3
+        },
+        {
+          "flow": 3.44,
+          "pressureDrop": 3.5
+        },
+        {
+          "flow": 3.62,
+          "pressureDrop": 3.8
+        },
+        {
+          "flow": 3.78,
+          "pressureDrop": 4.1
+        },
+        {
+          "flow": 3.99,
+          "pressureDrop": 4.4
+        },
+        {
+          "flow": 4.22,
+          "pressureDrop": 5.1
+        },
+        {
+          "flow": 4.33,
+          "pressureDrop": 5.6
+        },
+        {
+          "flow": 4.48,
+          "pressureDrop": 6.0
+        },
+        {
+          "flow": 4.66,
+          "pressureDrop": 6.7
+        },
+        {
+          "flow": 4.81,
+          "pressureDrop": 7.2
+        },
+        {
+          "flow": 4.96,
+          "pressureDrop": 7.7
+        },
+        {
+          "flow": 5.02,
+          "pressureDrop": 8.0
+        },
+        {
+          "flow": 5.13,
+          "pressureDrop": 8.5
+        },
+        {
+          "flow": 5.26,
+          "pressureDrop": 9.0
+        },
+        {
+          "flow": 5.36,
+          "pressureDrop": 9.5
+        },
+        {
+          "flow": 5.47,
+          "pressureDrop": 10.0
+        },
+        {
+          "flow": 5.62,
+          "pressureDrop": 10.8
+        },
+        {
+          "flow": 5.74,
+          "pressureDrop": 11.4
+        },
+        {
+          "flow": 5.86,
+          "pressureDrop": 11.9
+        },
+        {
+          "flow": 5.97,
+          "pressureDrop": 12.5
+        }
+      ],
+      "notes": "Dual Stage Venous Return Cannulae, Wire-reinforced Tubing. Stage: Dual stage. Effective length: 40 cm. Connector size / acceptance: 1/2 inch. Product codes: RDS-61137 = with connector; RDS-61037 = without connector. Connector options are product-code variants and share the same pressure-flow curve for this size. Available coated: no. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold. Other dual-stage sizes on the same page are intentionally not included because digitized points were not provided for this task."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
