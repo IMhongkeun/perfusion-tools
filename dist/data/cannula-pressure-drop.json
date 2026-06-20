@@ -38,9 +38,9 @@
       "sourceUrl": "LivaNova Optiflow Aortic Arch Cannulae brochure pressure-flow graph",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Optiflow Aortic Arch Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 7.92 L/min); do not extrapolate beyond the digitized source range.",
-      "referenceFlowRangeLabel": "0–7.92",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 7.92 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Digitized from LivaNova Optiflow Aortic Arch Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 8.0 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–8.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 8.0 L/min). Pressure drop is not estimated.",
       "points": [
         {
           "flow": 0,
@@ -135,7 +135,7 @@
           "pressureDrop": 100.2
         },
         {
-          "flow": 7.92,
+          "flow": 8.0,
           "pressureDrop": 105.9
         }
       ],
