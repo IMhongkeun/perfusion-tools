@@ -929,9 +929,9 @@
       "sourceUrl": "LivaNova Aortic Arch Cannulae Curved Tip with Suture Flange brochure pressure-flow graph",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Curved Tip with Suture Flange brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 8.98 L/min); do not extrapolate beyond the digitized source range.",
-      "referenceFlowRangeLabel": "0–8.98",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 8.98 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Curved Tip with Suture Flange brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 9.0 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–9.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 9.0 L/min). Pressure drop is not estimated.",
       "points": [
         {
           "flow": 0,
@@ -1066,7 +1066,7 @@
           "pressureDrop": 109.2
         },
         {
-          "flow": 8.98,
+          "flow": 9.0,
           "pressureDrop": 114.4
         }
       ],
@@ -1086,9 +1086,9 @@
       "sourceUrl": "LivaNova Aortic Arch Cannulae Curved Tip with Suture Flange brochure pressure-flow graph",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Curved Tip with Suture Flange brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 8.97 L/min); do not extrapolate beyond the digitized source range.",
-      "referenceFlowRangeLabel": "0–8.97",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 8.97 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Curved Tip with Suture Flange brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 9.0 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–9.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 9.0 L/min). Pressure drop is not estimated.",
       "points": [
         {
           "flow": 0,
@@ -1207,7 +1207,7 @@
           "pressureDrop": 68.0
         },
         {
-          "flow": 8.97,
+          "flow": 9.0,
           "pressureDrop": 72.9
         }
       ],
@@ -1344,9 +1344,9 @@
       "sourceUrl": "LivaNova Aortic Arch Cannulae Straight Tip with Suture Collar brochure pressure-flow graph",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Straight Tip with Suture Collar brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 4.99 L/min); do not extrapolate beyond the digitized source range.",
-      "referenceFlowRangeLabel": "0–4.99",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 4.99 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Straight Tip with Suture Collar brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 5.0 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–5.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 5.0 L/min). Pressure drop is not estimated.",
       "points": [
         {
           "flow": 0,
@@ -1449,7 +1449,7 @@
           "pressureDrop": 140.3
         },
         {
-          "flow": 4.99,
+          "flow": 5.0,
           "pressureDrop": 149.6
         }
       ],
@@ -2086,7 +2086,7 @@
           "pressureDrop": 11.9
         },
         {
-          "flow": 5.97,
+          "flow": 6.0,
           "pressureDrop": 12.5
         }
       ],
