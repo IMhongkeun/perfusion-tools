@@ -1331,6 +1331,131 @@
       "notes": "Aortic Arch Cannulae, Straight Tip with Suture Collar, Wire-reinforced Tubing. Series: A232. Tip size: 4.5 mm. Effective length: 23 cm. Connector size: 1/4 inch. Product codes: A232-45C = connector without luer vent; A232-45B = connector with luer vent down; no connector with luer vent up listed for this size. Connector luer vent options are product-code variants and share the same pressure-flow curve for this size. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Values above 100 mmHg should be treated as caution range; do not extrapolate beyond the digitized source range. Pressure drop exceeds 100 mmHg. Consider a larger arterial cannula or reassess target flow. Other straight-tip sizes on the same page are intentionally not included because digitized points were not provided for this task."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Arch Cannulae — Straight Tip with Suture Collar, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "16 Fr",
+      "overallLengthCm": 23,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A232-52C (connector without luer vent); A232-52B (connector with luer vent down); no connector with luer vent up listed for this size",
+      "sourceLabel": "LivaNova Aortic Arch Cannulae Straight Tip with Suture Collar brochure pressure-flow graph",
+      "sourceUrl": "LivaNova Aortic Arch Cannulae Straight Tip with Suture Collar brochure pressure-flow graph",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Straight Tip with Suture Collar brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 4.99 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–4.99",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 4.99 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.48,
+          "pressureDrop": 4.9
+        },
+        {
+          "flow": 0.81,
+          "pressureDrop": 7.3
+        },
+        {
+          "flow": 1.03,
+          "pressureDrop": 10.4
+        },
+        {
+          "flow": 1.26,
+          "pressureDrop": 12.6
+        },
+        {
+          "flow": 1.54,
+          "pressureDrop": 17.7
+        },
+        {
+          "flow": 1.74,
+          "pressureDrop": 22.1
+        },
+        {
+          "flow": 2.02,
+          "pressureDrop": 28.6
+        },
+        {
+          "flow": 2.22,
+          "pressureDrop": 34.7
+        },
+        {
+          "flow": 2.41,
+          "pressureDrop": 40.8
+        },
+        {
+          "flow": 2.62,
+          "pressureDrop": 47.1
+        },
+        {
+          "flow": 2.85,
+          "pressureDrop": 54.4
+        },
+        {
+          "flow": 3.04,
+          "pressureDrop": 60.9
+        },
+        {
+          "flow": 3.21,
+          "pressureDrop": 67.0
+        },
+        {
+          "flow": 3.36,
+          "pressureDrop": 72.6
+        },
+        {
+          "flow": 3.56,
+          "pressureDrop": 81.1
+        },
+        {
+          "flow": 3.69,
+          "pressureDrop": 88.1
+        },
+        {
+          "flow": 3.88,
+          "pressureDrop": 94.9
+        },
+        {
+          "flow": 3.99,
+          "pressureDrop": 100.8
+        },
+        {
+          "flow": 4.13,
+          "pressureDrop": 106.6
+        },
+        {
+          "flow": 4.3,
+          "pressureDrop": 114.1
+        },
+        {
+          "flow": 4.42,
+          "pressureDrop": 120.4
+        },
+        {
+          "flow": 4.54,
+          "pressureDrop": 126.5
+        },
+        {
+          "flow": 4.68,
+          "pressureDrop": 133.3
+        },
+        {
+          "flow": 4.8,
+          "pressureDrop": 140.3
+        },
+        {
+          "flow": 4.99,
+          "pressureDrop": 149.6
+        }
+      ],
+      "notes": "Aortic Arch Cannulae, Straight Tip with Suture Collar, Wire-reinforced Tubing. Series: A232. Tip size: 5.2 mm. Effective length: 23 cm. Connector size: 3/8 inch. Product codes: A232-52C = connector without luer vent; A232-52B = connector with luer vent down; no connector with luer vent up listed for this size. Connector luer vent options are product-code variants and share the same pressure-flow curve for this size. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Values above 100 mmHg should be treated as caution range; do not extrapolate beyond the digitized source range. Pressure drop exceeds 100 mmHg. Consider a larger arterial cannula or reassess target flow. Other straight-tip sizes on the same page are intentionally not included because digitized points were not provided for this task."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
