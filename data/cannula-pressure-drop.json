@@ -2396,6 +2396,99 @@
       "notes": "Dual Stage Venous Return Cannulae, Wire-reinforced Tubing. Stage: Dual stage. Effective length: 40 cm. Connector size / acceptance: 1/2 inch. Product codes: RDS-61146 = with connector; RDS-61046 = without connector. Connector options are product-code variants and share the same pressure-flow curve for this size. Available coated: no. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold. The 36/50 Fr curve on the same page is intentionally not included because digitized points were not provided for this task."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Dual Stage Venous Return Cannulae — Wire-reinforced Tubing",
+      "category": "Adult venous",
+      "size": "36/50 Fr",
+      "overallLengthCm": 40,
+      "connectionSite": "Venous return",
+      "connectorSize": "1/2 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "RDS-61150 (with connector); RDS-61050 (without connector)",
+      "sourceLabel": "LivaNova Dual Stage Venous Return Cannulae brochure pressure-flow graph",
+      "sourceUrl": "LivaNova Dual Stage Venous Return Cannulae brochure pressure-flow graph",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Dual Stage Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Flow values are corrected to the manufacturer's actual 1.0 to 6.0 L/min x-axis; do not use the uncorrected 0 to 6 CSV axis. Source curve digitized to visible endpoint (1.0 to 6.0 L/min); final point rounded to 6.0 L/min to match the visible endpoint; do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "1.0–6.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (1.0 to 6.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 1.0,
+          "pressureDrop": 0.3
+        },
+        {
+          "flow": 1.32,
+          "pressureDrop": 0.4
+        },
+        {
+          "flow": 1.67,
+          "pressureDrop": 0.5
+        },
+        {
+          "flow": 1.99,
+          "pressureDrop": 0.6
+        },
+        {
+          "flow": 2.27,
+          "pressureDrop": 0.7
+        },
+        {
+          "flow": 2.61,
+          "pressureDrop": 0.8
+        },
+        {
+          "flow": 2.99,
+          "pressureDrop": 1.0
+        },
+        {
+          "flow": 3.31,
+          "pressureDrop": 1.2
+        },
+        {
+          "flow": 3.65,
+          "pressureDrop": 1.5
+        },
+        {
+          "flow": 3.98,
+          "pressureDrop": 1.9
+        },
+        {
+          "flow": 4.09,
+          "pressureDrop": 2.0
+        },
+        {
+          "flow": 4.41,
+          "pressureDrop": 2.4
+        },
+        {
+          "flow": 4.73,
+          "pressureDrop": 2.9
+        },
+        {
+          "flow": 5.02,
+          "pressureDrop": 3.3
+        },
+        {
+          "flow": 5.27,
+          "pressureDrop": 3.7
+        },
+        {
+          "flow": 5.49,
+          "pressureDrop": 4.0
+        },
+        {
+          "flow": 5.69,
+          "pressureDrop": 4.3
+        },
+        {
+          "flow": 6.0,
+          "pressureDrop": 4.7
+        }
+      ],
+      "notes": "Dual Stage Venous Return Cannulae, Wire-reinforced Tubing. Stage: Dual stage. Effective length: 40 cm. Connector size / acceptance: 1/2 inch. Product codes: RDS-61150 = with connector; RDS-61050 = without connector. Connector options are product-code variants and share the same pressure-flow curve for this size. Available coated: no. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
