@@ -2884,6 +2884,103 @@
       "notes": "Single Stage Straight Bullet Tip Venous Return Cannulae, Straight Bullet Tip, Wire-reinforced Tubing. Stage: Single stage. Effective length: 38 cm. Connector acceptance: 3/8 inch. Catalog number: V122-32. Catalog number with suture ring: V900-62. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Single Stage Straight Bullet Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 9.0 L/min. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Single Stage Straight Bullet Tip Venous Return Cannulae — Straight Bullet Tip, Wire-reinforced Tubing",
+      "category": "Adult venous",
+      "size": "34 Fr",
+      "overallLengthCm": 39,
+      "connectionSite": "Venous return",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "V122-34",
+      "sourceLabel": "LivaNova Single Stage Straight Bullet Tip Venous Return Cannulae brochure",
+      "sourceUrl": "",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Single Stage Straight Bullet Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin. Final digitized x-value normalized from approximately 8.97 L/min to the 9.0 L/min graph axis endpoint. Source curve digitized to visible endpoint (0 to 9.0 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–9.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 9.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.52,
+          "pressureDrop": 1.6
+        },
+        {
+          "flow": 0.99,
+          "pressureDrop": 3.2
+        },
+        {
+          "flow": 1.46,
+          "pressureDrop": 4.6
+        },
+        {
+          "flow": 2.02,
+          "pressureDrop": 6.5
+        },
+        {
+          "flow": 2.5,
+          "pressureDrop": 7.8
+        },
+        {
+          "flow": 3.01,
+          "pressureDrop": 9.9
+        },
+        {
+          "flow": 3.52,
+          "pressureDrop": 12.6
+        },
+        {
+          "flow": 4.02,
+          "pressureDrop": 15.6
+        },
+        {
+          "flow": 4.51,
+          "pressureDrop": 19.4
+        },
+        {
+          "flow": 5.0,
+          "pressureDrop": 23.9
+        },
+        {
+          "flow": 5.49,
+          "pressureDrop": 29.0
+        },
+        {
+          "flow": 6.01,
+          "pressureDrop": 34.7
+        },
+        {
+          "flow": 6.49,
+          "pressureDrop": 39.5
+        },
+        {
+          "flow": 7.0,
+          "pressureDrop": 44.6
+        },
+        {
+          "flow": 7.54,
+          "pressureDrop": 50.0
+        },
+        {
+          "flow": 7.93,
+          "pressureDrop": 54.1
+        },
+        {
+          "flow": 8.47,
+          "pressureDrop": 60.0
+        },
+        {
+          "flow": 9.0,
+          "pressureDrop": 66.2
+        }
+      ],
+      "notes": "Single Stage Straight Bullet Tip Venous Return Cannulae, Straight Bullet Tip, Wire-reinforced Tubing. Stage: Single stage. Effective length: 39 cm. Connector acceptance: 3/8 inch. Catalog number: V122-34. Catalog number with suture ring: -. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Single Stage Straight Bullet Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 9.0 L/min. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
