@@ -2489,6 +2489,163 @@
       "notes": "Dual Stage Venous Return Cannulae, Wire-reinforced Tubing. Stage: Dual stage. Effective length: 40 cm. Connector size / acceptance: 1/2 inch. Product codes: RDS-61150 = with connector; RDS-61050 = without connector. Connector options are product-code variants and share the same pressure-flow curve for this size. Available coated: no. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Single Stage Straight Bullet Tip Venous Return Cannulae — Straight Bullet Tip, Wire-reinforced Tubing",
+      "category": "Adult venous",
+      "size": "24 Fr",
+      "overallLengthCm": 38,
+      "connectionSite": "Venous return",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "V122-24",
+      "sourceLabel": "LivaNova Single Stage Straight Bullet Tip Venous Return Cannulae brochure",
+      "sourceUrl": "",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Single Stage Straight Bullet Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin. Final digitized x-value normalized from approximately 8.98 L/min to the 9.0 L/min graph axis endpoint. Source curve digitized to visible endpoint (0 to 9.0 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–9.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 9.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.32,
+          "pressureDrop": 2.2
+        },
+        {
+          "flow": 0.64,
+          "pressureDrop": 4.0
+        },
+        {
+          "flow": 1.0,
+          "pressureDrop": 6.7
+        },
+        {
+          "flow": 1.62,
+          "pressureDrop": 10.8
+        },
+        {
+          "flow": 1.98,
+          "pressureDrop": 13.7
+        },
+        {
+          "flow": 2.42,
+          "pressureDrop": 16.4
+        },
+        {
+          "flow": 2.73,
+          "pressureDrop": 19.4
+        },
+        {
+          "flow": 3.0,
+          "pressureDrop": 22.9
+        },
+        {
+          "flow": 3.26,
+          "pressureDrop": 26.1
+        },
+        {
+          "flow": 3.55,
+          "pressureDrop": 30.7
+        },
+        {
+          "flow": 3.81,
+          "pressureDrop": 34.4
+        },
+        {
+          "flow": 4.03,
+          "pressureDrop": 39.8
+        },
+        {
+          "flow": 4.36,
+          "pressureDrop": 45.7
+        },
+        {
+          "flow": 4.61,
+          "pressureDrop": 51.1
+        },
+        {
+          "flow": 4.81,
+          "pressureDrop": 55.4
+        },
+        {
+          "flow": 5.01,
+          "pressureDrop": 60.0
+        },
+        {
+          "flow": 5.25,
+          "pressureDrop": 64.3
+        },
+        {
+          "flow": 5.48,
+          "pressureDrop": 69.1
+        },
+        {
+          "flow": 5.74,
+          "pressureDrop": 74.2
+        },
+        {
+          "flow": 5.96,
+          "pressureDrop": 79.9
+        },
+        {
+          "flow": 6.24,
+          "pressureDrop": 85.8
+        },
+        {
+          "flow": 6.46,
+          "pressureDrop": 90.4
+        },
+        {
+          "flow": 6.71,
+          "pressureDrop": 95.2
+        },
+        {
+          "flow": 6.93,
+          "pressureDrop": 100.6
+        },
+        {
+          "flow": 7.09,
+          "pressureDrop": 104.1
+        },
+        {
+          "flow": 7.29,
+          "pressureDrop": 108.6
+        },
+        {
+          "flow": 7.54,
+          "pressureDrop": 113.7
+        },
+        {
+          "flow": 7.85,
+          "pressureDrop": 119.9
+        },
+        {
+          "flow": 8.02,
+          "pressureDrop": 124.2
+        },
+        {
+          "flow": 8.27,
+          "pressureDrop": 129.3
+        },
+        {
+          "flow": 8.55,
+          "pressureDrop": 135.3
+        },
+        {
+          "flow": 8.74,
+          "pressureDrop": 140.1
+        },
+        {
+          "flow": 9.0,
+          "pressureDrop": 145.2
+        }
+      ],
+      "notes": "Single Stage Straight Bullet Tip Venous Return Cannulae, Straight Bullet Tip, Wire-reinforced Tubing. Stage: Single stage. Effective length: 38 cm. Connector acceptance: 3/8 inch. Catalog number: V122-24. Catalog number with suture ring: -. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Single Stage Straight Bullet Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 9.0 L/min. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
