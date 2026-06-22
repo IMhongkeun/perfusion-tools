@@ -2502,9 +2502,9 @@
       "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/venous-return-cannulae/single-stage/straight-bullet-tip-wire-reinforced-tubing/v122-24",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Single Stage Straight Bullet Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin. Final digitized x-value normalized from approximately 8.98 L/min to the 9.0 L/min graph axis endpoint. Source curve digitized to visible endpoint (0 to 9.0 L/min); do not extrapolate beyond the digitized source range.",
-      "referenceFlowRangeLabel": "0–9.0",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 9.0 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Digitized from LivaNova Single Stage Straight Bullet Tip Venous Return Cannulae brochure pressure-flow graph; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin. The digitized point at approximately 8.02 L/min is normalized to 8.0 L/min and used as the endpoint because the official LivaNova product page publishes a maximum flow rate of 8 L/min. Usable range is capped at the published LivaNova maximum flow rate of 8 L/min; do not extrapolate or present estimates above this rating.",
+      "referenceFlowRangeLabel": "0–8.0",
+      "outOfRangeMessage": "Target flow is outside the usable source range capped by the published LivaNova maximum flow rate (0 to 8.0 L/min). Pressure drop is not estimated.",
       "points": [
         {
           "flow": 0,
@@ -2623,27 +2623,11 @@
           "pressureDrop": 119.9
         },
         {
-          "flow": 8.02,
+          "flow": 8.0,
           "pressureDrop": 124.2
-        },
-        {
-          "flow": 8.27,
-          "pressureDrop": 129.3
-        },
-        {
-          "flow": 8.55,
-          "pressureDrop": 135.3
-        },
-        {
-          "flow": 8.74,
-          "pressureDrop": 140.1
-        },
-        {
-          "flow": 9.0,
-          "pressureDrop": 145.2
         }
       ],
-      "notes": "Single Stage Straight Bullet Tip Venous Return Cannulae, Straight Bullet Tip, Wire-reinforced Tubing. Stage: Single stage. Effective length: 38 cm. Connector acceptance: 3/8 inch. Catalog number: V122-24. Catalog number with suture ring: -. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Single Stage Straight Bullet Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 9.0 L/min. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
+      "notes": "Single Stage Straight Bullet Tip Venous Return Cannulae, Straight Bullet Tip, Wire-reinforced Tubing. Stage: Single stage. Effective length: 38 cm. Connector acceptance: 3/8 inch. Catalog number: V122-24. Catalog number with suture ring: -. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Single Stage Straight Bullet Tip Venous Return Cannulae brochure pressure-flow graph. Published max flow rate: 8 L/min (official LivaNova product page). Extrapolation: false. Source/usable range: 0 to 8.0 L/min. Usable range capped at the published LivaNova maximum flow rate of 8 L/min. Do not extrapolate or present estimates above this rating. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
     },
     {
       "manufacturer": "LivaNova",
