@@ -4522,6 +4522,98 @@
       "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 6 cm. Connector acceptance: 3/8 inch. Catalog number: RV-41038. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 6.0 L/min. Source curve digitized to the visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Single Stage Right Angle Bullet Tip Venous Return Cannulae with Suture Ring — Right Angle Bullet Tip with Suture Ring, Wire-reinforced Tubing",
+      "category": "Adult venous",
+      "size": "28 Fr",
+      "connectionSite": "Venous return",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "V900-01",
+      "sourceLabel": "LivaNova Single Stage Right Angle Bullet Tip Venous Return Cannulae with Suture Ring brochure",
+      "sourceUrl": "",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Bullet Tip Venous Return Cannulae with Suture Ring brochure pressure-flow graph; values rounded for practical reference use. The first visible source point is normalized to 1.0 L/min and 0 mmHg, and the final endpoint is normalized to 8.0 L/min. Source curve digitized from 1.0 to 8.0 L/min; do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "1.0–8.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (1.0 to 8.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 1.0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 1.55,
+          "pressureDrop": 7.4
+        },
+        {
+          "flow": 2.04,
+          "pressureDrop": 13.9
+        },
+        {
+          "flow": 2.55,
+          "pressureDrop": 21.6
+        },
+        {
+          "flow": 2.98,
+          "pressureDrop": 27.6
+        },
+        {
+          "flow": 3.38,
+          "pressureDrop": 33.9
+        },
+        {
+          "flow": 3.8,
+          "pressureDrop": 41.1
+        },
+        {
+          "flow": 4.05,
+          "pressureDrop": 45.3
+        },
+        {
+          "flow": 4.42,
+          "pressureDrop": 51.1
+        },
+        {
+          "flow": 4.95,
+          "pressureDrop": 60.8
+        },
+        {
+          "flow": 5.56,
+          "pressureDrop": 71.6
+        },
+        {
+          "flow": 6.02,
+          "pressureDrop": 80.3
+        },
+        {
+          "flow": 6.51,
+          "pressureDrop": 88.7
+        },
+        {
+          "flow": 6.86,
+          "pressureDrop": 95.8
+        },
+        {
+          "flow": 7.07,
+          "pressureDrop": 99.5
+        },
+        {
+          "flow": 7.32,
+          "pressureDrop": 104.7
+        },
+        {
+          "flow": 7.61,
+          "pressureDrop": 110.3
+        },
+        {
+          "flow": 8.0,
+          "pressureDrop": 116.8
+        }
+      ],
+      "notes": "Single Stage Right Angle Bullet Tip Venous Return Cannulae with Suture Ring, Right Angle Bullet Tip with Suture Ring, Wire-reinforced Tubing. Stage: Single stage. Angled tip length: 1.15 cm. Connector acceptance: 3/8 inch. Catalog number: V900-01. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Bullet Tip Venous Return Cannulae with Suture Ring brochure pressure-flow graph. Extrapolation: false. Source range: 1.0 to 8.0 L/min. Source curve digitized from 1.0 to 8.0 L/min. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
