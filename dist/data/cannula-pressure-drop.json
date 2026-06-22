@@ -4118,6 +4118,94 @@
       "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 4 cm. Connector acceptance: 3/8 inch. Catalog number: RV-41028. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 6.0 L/min. Source curve digitized to the visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae — Right Angle Lighthouse Tip, Wire-reinforced Tubing",
+      "category": "Adult venous",
+      "size": "32 Fr",
+      "connectionSite": "Venous return",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "RV-41032",
+      "sourceLabel": "LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure",
+      "sourceUrl": "",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin. Source curve digitized to visible endpoint (0 to 6.0 L/min); do not extrapolate beyond the digitized source range. The full graph x-axis extends to 6 L/min, and this 32 Fr curve remains visible to the 6.0 L/min endpoint.",
+      "referenceFlowRangeLabel": "0–6.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.49,
+          "pressureDrop": 0.4
+        },
+        {
+          "flow": 1.01,
+          "pressureDrop": 0.5
+        },
+        {
+          "flow": 1.44,
+          "pressureDrop": 1.8
+        },
+        {
+          "flow": 2.0,
+          "pressureDrop": 2.5
+        },
+        {
+          "flow": 2.49,
+          "pressureDrop": 4.0
+        },
+        {
+          "flow": 2.96,
+          "pressureDrop": 5.6
+        },
+        {
+          "flow": 3.28,
+          "pressureDrop": 7.2
+        },
+        {
+          "flow": 3.61,
+          "pressureDrop": 8.7
+        },
+        {
+          "flow": 3.95,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 4.3,
+          "pressureDrop": 11.9
+        },
+        {
+          "flow": 4.61,
+          "pressureDrop": 13.7
+        },
+        {
+          "flow": 4.97,
+          "pressureDrop": 16.1
+        },
+        {
+          "flow": 5.33,
+          "pressureDrop": 18.4
+        },
+        {
+          "flow": 5.58,
+          "pressureDrop": 20.4
+        },
+        {
+          "flow": 5.72,
+          "pressureDrop": 21.7
+        },
+        {
+          "flow": 6.0,
+          "pressureDrop": 23.5
+        }
+      ],
+      "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 5.5 cm. Connector acceptance: 3/8 inch. Catalog number: RV-41032. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 6.0 L/min. Source curve digitized to the visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
