@@ -3650,6 +3650,142 @@
       "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 3.5 cm. Connector acceptance: 1/4 inch–3/8 inch. Catalog number: RV-41020. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 4.22 L/min. Source curve digitized to the visible endpoint near the y-axis upper limit. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae — Right Angle Lighthouse Tip, Wire-reinforced Tubing",
+      "category": "Adult venous",
+      "size": "22 Fr",
+      "connectionSite": "Venous return",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "RV-41022",
+      "sourceLabel": "LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure",
+      "sourceUrl": "",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint near the y-axis upper limit; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin. Source curve digitized to visible endpoint (0 to 5.38 L/min); do not extrapolate beyond the digitized source range. The full graph x-axis extends to 6 L/min, but this 22 Fr curve reaches the visible endpoint near 100 mmHg at approximately 5.38 L/min.",
+      "referenceFlowRangeLabel": "0–5.38",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 5.38 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.42,
+          "pressureDrop": 1.1
+        },
+        {
+          "flow": 0.71,
+          "pressureDrop": 2.5
+        },
+        {
+          "flow": 0.99,
+          "pressureDrop": 4.2
+        },
+        {
+          "flow": 1.19,
+          "pressureDrop": 5.6
+        },
+        {
+          "flow": 1.43,
+          "pressureDrop": 7.9
+        },
+        {
+          "flow": 1.65,
+          "pressureDrop": 10.5
+        },
+        {
+          "flow": 1.77,
+          "pressureDrop": 11.7
+        },
+        {
+          "flow": 1.98,
+          "pressureDrop": 14.3
+        },
+        {
+          "flow": 2.19,
+          "pressureDrop": 17.3
+        },
+        {
+          "flow": 2.37,
+          "pressureDrop": 20.4
+        },
+        {
+          "flow": 2.5,
+          "pressureDrop": 22.6
+        },
+        {
+          "flow": 2.71,
+          "pressureDrop": 26.5
+        },
+        {
+          "flow": 2.97,
+          "pressureDrop": 30.9
+        },
+        {
+          "flow": 3.2,
+          "pressureDrop": 36.3
+        },
+        {
+          "flow": 3.4,
+          "pressureDrop": 40.3
+        },
+        {
+          "flow": 3.49,
+          "pressureDrop": 42.8
+        },
+        {
+          "flow": 3.66,
+          "pressureDrop": 46.8
+        },
+        {
+          "flow": 3.8,
+          "pressureDrop": 50.2
+        },
+        {
+          "flow": 3.96,
+          "pressureDrop": 54.3
+        },
+        {
+          "flow": 4.16,
+          "pressureDrop": 60.3
+        },
+        {
+          "flow": 4.35,
+          "pressureDrop": 65.7
+        },
+        {
+          "flow": 4.49,
+          "pressureDrop": 70.0
+        },
+        {
+          "flow": 4.64,
+          "pressureDrop": 74.4
+        },
+        {
+          "flow": 4.8,
+          "pressureDrop": 80.1
+        },
+        {
+          "flow": 4.93,
+          "pressureDrop": 84.1
+        },
+        {
+          "flow": 5.09,
+          "pressureDrop": 90.1
+        },
+        {
+          "flow": 5.21,
+          "pressureDrop": 94.2
+        },
+        {
+          "flow": 5.38,
+          "pressureDrop": 100.0
+        }
+      ],
+      "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 4 cm. Connector acceptance: 3/8 inch. Catalog number: RV-41022. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 5.38 L/min. Source curve digitized to the visible endpoint near the y-axis upper limit. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
