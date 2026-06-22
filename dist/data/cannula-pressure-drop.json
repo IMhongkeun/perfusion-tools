@@ -4710,6 +4710,98 @@
       "notes": "Single Stage Right Angle Bullet Tip Venous Return Cannulae with Suture Ring, Right Angle Bullet Tip with Suture Ring, Wire-reinforced Tubing. Stage: Single stage. Angled tip length: 1.4 cm. Short angled tip. Connector acceptance: 3/8 inch. Catalog number: V900-02. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Bullet Tip Venous Return Cannulae with Suture Ring brochure pressure-flow graph. Extrapolation: false. Source range: 1.0 to 8.0 L/min. Source curve digitized from 1.0 to 8.0 L/min. This is the upper/more resistive 32 Fr curve corresponding to catalog V900-02 with 1.4 cm angled tip length. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Single Stage Right Angle Bullet Tip Venous Return Cannulae with Suture Ring — Right Angle Bullet Tip with Suture Ring, Wire-reinforced Tubing, V152-32 long angled tip 8.5 cm",
+      "category": "Adult venous",
+      "size": "32 Fr",
+      "connectionSite": "Venous return",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "V152-32",
+      "sourceLabel": "LivaNova Single Stage Right Angle Bullet Tip Venous Return Cannulae with Suture Ring brochure",
+      "sourceUrl": "",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Bullet Tip Venous Return Cannulae with Suture Ring brochure pressure-flow graph; values rounded for practical reference use. The first visible source point is normalized to 1.0 L/min and 0 mmHg, and the final endpoint is normalized to 8.0 L/min. Source curve digitized from 1.0 to 8.0 L/min; do not extrapolate beyond the digitized source range. This is the lower/less resistive 32 Fr curve corresponding to catalog V152-32 with 8.5 cm angled tip length.",
+      "referenceFlowRangeLabel": "1.0–8.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (1.0 to 8.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 1.0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 1.52,
+          "pressureDrop": 3.4
+        },
+        {
+          "flow": 2.01,
+          "pressureDrop": 7.4
+        },
+        {
+          "flow": 2.54,
+          "pressureDrop": 12.1
+        },
+        {
+          "flow": 3.0,
+          "pressureDrop": 16.3
+        },
+        {
+          "flow": 3.46,
+          "pressureDrop": 21.6
+        },
+        {
+          "flow": 3.69,
+          "pressureDrop": 23.4
+        },
+        {
+          "flow": 4.06,
+          "pressureDrop": 27.4
+        },
+        {
+          "flow": 4.58,
+          "pressureDrop": 32.9
+        },
+        {
+          "flow": 4.99,
+          "pressureDrop": 37.4
+        },
+        {
+          "flow": 5.25,
+          "pressureDrop": 41.6
+        },
+        {
+          "flow": 5.57,
+          "pressureDrop": 44.7
+        },
+        {
+          "flow": 5.95,
+          "pressureDrop": 49.7
+        },
+        {
+          "flow": 6.36,
+          "pressureDrop": 55.3
+        },
+        {
+          "flow": 6.67,
+          "pressureDrop": 60.3
+        },
+        {
+          "flow": 6.94,
+          "pressureDrop": 63.9
+        },
+        {
+          "flow": 7.31,
+          "pressureDrop": 68.9
+        },
+        {
+          "flow": 8.0,
+          "pressureDrop": 77.1
+        }
+      ],
+      "notes": "Single Stage Right Angle Bullet Tip Venous Return Cannulae with Suture Ring, Right Angle Bullet Tip with Suture Ring, Wire-reinforced Tubing. Stage: Single stage. Angled tip length: 8.5 cm. Long angled tip. Connector acceptance: 3/8 inch. Catalog number: V152-32. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Bullet Tip Venous Return Cannulae with Suture Ring brochure pressure-flow graph. Extrapolation: false. Source range: 1.0 to 8.0 L/min. Source curve digitized from 1.0 to 8.0 L/min. This is the lower/less resistive 32 Fr curve corresponding to catalog V152-32 with 8.5 cm angled tip length. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
