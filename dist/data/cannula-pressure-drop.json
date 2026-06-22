@@ -25,6 +25,2470 @@
       "notes": "Pressure-flow chart source identified in LivaNova MICS & Femoral Cannulae brochure. Curve points have not yet been digitized."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Optiflow Aortic Arch Cannulae — Curved Tip, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "21 Fr",
+      "overallLengthCm": 24,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A282-70C (connector without luer vent); A282-70B (connector with luer vent down); A282-70A (connector with luer vent up)",
+      "sourceLabel": "LivaNova Optiflow Aortic Arch Cannulae brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/arterial-cannulae/optiflow-arterial",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Optiflow Aortic Arch Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 8.0 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–8.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 8.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.53,
+          "pressureDrop": 3.8
+        },
+        {
+          "flow": 1.03,
+          "pressureDrop": 6.4
+        },
+        {
+          "flow": 1.46,
+          "pressureDrop": 8.9
+        },
+        {
+          "flow": 2.0,
+          "pressureDrop": 12.7
+        },
+        {
+          "flow": 2.49,
+          "pressureDrop": 16.7
+        },
+        {
+          "flow": 3.0,
+          "pressureDrop": 20.9
+        },
+        {
+          "flow": 3.49,
+          "pressureDrop": 26.4
+        },
+        {
+          "flow": 4.01,
+          "pressureDrop": 32.5
+        },
+        {
+          "flow": 4.45,
+          "pressureDrop": 37.9
+        },
+        {
+          "flow": 4.63,
+          "pressureDrop": 40.5
+        },
+        {
+          "flow": 5.03,
+          "pressureDrop": 46.8
+        },
+        {
+          "flow": 5.43,
+          "pressureDrop": 52.5
+        },
+        {
+          "flow": 5.62,
+          "pressureDrop": 55.3
+        },
+        {
+          "flow": 5.9,
+          "pressureDrop": 60.2
+        },
+        {
+          "flow": 5.99,
+          "pressureDrop": 62.6
+        },
+        {
+          "flow": 6.27,
+          "pressureDrop": 67.3
+        },
+        {
+          "flow": 6.51,
+          "pressureDrop": 72.0
+        },
+        {
+          "flow": 6.69,
+          "pressureDrop": 75.5
+        },
+        {
+          "flow": 6.86,
+          "pressureDrop": 80.5
+        },
+        {
+          "flow": 7.01,
+          "pressureDrop": 83.1
+        },
+        {
+          "flow": 7.37,
+          "pressureDrop": 91.1
+        },
+        {
+          "flow": 7.71,
+          "pressureDrop": 100.2
+        },
+        {
+          "flow": 8.0,
+          "pressureDrop": 105.9
+        }
+      ],
+      "notes": "Optiflow Aortic Arch Cannulae, Curved Tip, Wire-reinforced Tubing. Tip size: 7 mm. Effective length: 24 cm. Connector size: 3/8 inch. Product codes: A282-70C = connector without luer vent; A282-70B = connector with luer vent down; A282-70A = connector with luer vent up. Source type: digitized_graph. Extrapolation: false. Values above 100 mmHg should be treated as caution range; do not extrapolate beyond the digitized source range. Pressure drop exceeds 100 mmHg. Consider a larger arterial cannula or reassess target flow. The 24 Fr / 8 mm product on the same page is intentionally not included because digitized points have not been provided."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Optiflow Aortic Arch Cannulae — Curved Tip, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "24 Fr",
+      "overallLengthCm": 25,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A282-80C (connector without luer vent); A282-80B (connector with luer vent down); A282-80A (connector with luer vent up)",
+      "sourceLabel": "LivaNova Optiflow Aortic Arch Cannulae brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/arterial-cannulae/optiflow-arterial",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Optiflow Aortic Arch Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 8.56 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–8.56",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 8.56 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.46,
+          "pressureDrop": 1.2
+        },
+        {
+          "flow": 1.01,
+          "pressureDrop": 3.1
+        },
+        {
+          "flow": 1.51,
+          "pressureDrop": 4.9
+        },
+        {
+          "flow": 2.01,
+          "pressureDrop": 6.8
+        },
+        {
+          "flow": 2.5,
+          "pressureDrop": 9.4
+        },
+        {
+          "flow": 3.04,
+          "pressureDrop": 12.2
+        },
+        {
+          "flow": 3.57,
+          "pressureDrop": 16.2
+        },
+        {
+          "flow": 4.01,
+          "pressureDrop": 18.8
+        },
+        {
+          "flow": 4.13,
+          "pressureDrop": 20.5
+        },
+        {
+          "flow": 4.51,
+          "pressureDrop": 23.5
+        },
+        {
+          "flow": 5.06,
+          "pressureDrop": 28.7
+        },
+        {
+          "flow": 5.53,
+          "pressureDrop": 33.9
+        },
+        {
+          "flow": 5.72,
+          "pressureDrop": 36.0
+        },
+        {
+          "flow": 6.14,
+          "pressureDrop": 40.5
+        },
+        {
+          "flow": 6.6,
+          "pressureDrop": 46.1
+        },
+        {
+          "flow": 7.04,
+          "pressureDrop": 51.1
+        },
+        {
+          "flow": 7.44,
+          "pressureDrop": 55.8
+        },
+        {
+          "flow": 7.8,
+          "pressureDrop": 60.2
+        },
+        {
+          "flow": 8.06,
+          "pressureDrop": 64.5
+        },
+        {
+          "flow": 8.56,
+          "pressureDrop": 72.2
+        }
+      ],
+      "notes": "Optiflow Aortic Arch Cannulae, Curved Tip, Wire-reinforced Tubing. Tip size: 8 mm. Effective length: 25 cm. Connector size: 3/8 inch. Product codes: A282-80C = connector without luer vent; A282-80B = connector with luer vent down; A282-80A = connector with luer vent up. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. Common arterial caution threshold: 100 mmHg."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Optiflow Aortic Arch Cannulae — Straight Tip, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "21 Fr",
+      "overallLengthCm": 24,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A292-70C (connector without luer vent); A292-70B (connector with luer vent down)",
+      "sourceLabel": "LivaNova Optiflow Aortic Arch Cannulae brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/arterial-cannulae/optiflow-arterial",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Optiflow Aortic Arch Cannulae Straight Tip brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 9.0 L/min); final digitized x-value capped at the axis maximum of 9.0 L/min; do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–9.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 9.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.35,
+          "pressureDrop": 1.9
+        },
+        {
+          "flow": 0.7,
+          "pressureDrop": 3.0
+        },
+        {
+          "flow": 1.01,
+          "pressureDrop": 3.5
+        },
+        {
+          "flow": 1.36,
+          "pressureDrop": 4.7
+        },
+        {
+          "flow": 1.69,
+          "pressureDrop": 5.6
+        },
+        {
+          "flow": 2.02,
+          "pressureDrop": 6.8
+        },
+        {
+          "flow": 2.33,
+          "pressureDrop": 7.3
+        },
+        {
+          "flow": 2.66,
+          "pressureDrop": 8.7
+        },
+        {
+          "flow": 3.02,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 3.38,
+          "pressureDrop": 12.9
+        },
+        {
+          "flow": 3.68,
+          "pressureDrop": 14.8
+        },
+        {
+          "flow": 4.02,
+          "pressureDrop": 18.0
+        },
+        {
+          "flow": 4.26,
+          "pressureDrop": 21.3
+        },
+        {
+          "flow": 4.61,
+          "pressureDrop": 24.4
+        },
+        {
+          "flow": 4.9,
+          "pressureDrop": 27.2
+        },
+        {
+          "flow": 5.13,
+          "pressureDrop": 30.0
+        },
+        {
+          "flow": 5.39,
+          "pressureDrop": 32.8
+        },
+        {
+          "flow": 5.67,
+          "pressureDrop": 36.3
+        },
+        {
+          "flow": 5.95,
+          "pressureDrop": 39.8
+        },
+        {
+          "flow": 6.21,
+          "pressureDrop": 44.0
+        },
+        {
+          "flow": 6.41,
+          "pressureDrop": 47.1
+        },
+        {
+          "flow": 6.71,
+          "pressureDrop": 52.0
+        },
+        {
+          "flow": 7.01,
+          "pressureDrop": 56.5
+        },
+        {
+          "flow": 7.21,
+          "pressureDrop": 59.5
+        },
+        {
+          "flow": 7.53,
+          "pressureDrop": 65.1
+        },
+        {
+          "flow": 7.79,
+          "pressureDrop": 68.9
+        },
+        {
+          "flow": 8.04,
+          "pressureDrop": 72.4
+        },
+        {
+          "flow": 8.44,
+          "pressureDrop": 79.4
+        },
+        {
+          "flow": 8.72,
+          "pressureDrop": 84.6
+        },
+        {
+          "flow": 9.0,
+          "pressureDrop": 90.7
+        }
+      ],
+      "notes": "Optiflow Aortic Arch Cannulae, Straight Tip, Wire-reinforced Tubing. Tip size: 7 mm. Effective length: 24 cm. Connector size: 3/8 inch. Product codes: A292-70C = connector without luer vent; A292-70B = connector with luer vent down. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. Common arterial caution threshold: 100 mmHg. Straight Tip 24 Fr is intentionally not included because digitized points were not provided for this task."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Optiflow Aortic Arch Cannulae — Straight Tip, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "24 Fr",
+      "overallLengthCm": 25,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A292-80C (connector without luer vent); A292-80B (connector with luer vent down)",
+      "sourceLabel": "LivaNova Optiflow Aortic Arch Cannulae brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/arterial-cannulae/optiflow-arterial",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Optiflow Aortic Arch Cannulae Straight Tip brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 9.0 L/min); final digitized x-value capped at the axis maximum of 9.0 L/min; do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–9.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 9.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.34,
+          "pressureDrop": 1.6
+        },
+        {
+          "flow": 0.69,
+          "pressureDrop": 2.3
+        },
+        {
+          "flow": 1.01,
+          "pressureDrop": 3.0
+        },
+        {
+          "flow": 1.26,
+          "pressureDrop": 3.3
+        },
+        {
+          "flow": 1.65,
+          "pressureDrop": 4.0
+        },
+        {
+          "flow": 2.06,
+          "pressureDrop": 4.9
+        },
+        {
+          "flow": 2.34,
+          "pressureDrop": 5.2
+        },
+        {
+          "flow": 2.7,
+          "pressureDrop": 6.3
+        },
+        {
+          "flow": 3.02,
+          "pressureDrop": 7.3
+        },
+        {
+          "flow": 3.33,
+          "pressureDrop": 8.0
+        },
+        {
+          "flow": 3.63,
+          "pressureDrop": 8.7
+        },
+        {
+          "flow": 4.03,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 4.37,
+          "pressureDrop": 11.7
+        },
+        {
+          "flow": 4.7,
+          "pressureDrop": 13.6
+        },
+        {
+          "flow": 5.04,
+          "pressureDrop": 15.5
+        },
+        {
+          "flow": 5.31,
+          "pressureDrop": 17.3
+        },
+        {
+          "flow": 5.64,
+          "pressureDrop": 20.1
+        },
+        {
+          "flow": 6.01,
+          "pressureDrop": 23.0
+        },
+        {
+          "flow": 6.53,
+          "pressureDrop": 27.2
+        },
+        {
+          "flow": 7.01,
+          "pressureDrop": 31.2
+        },
+        {
+          "flow": 7.33,
+          "pressureDrop": 33.7
+        },
+        {
+          "flow": 7.71,
+          "pressureDrop": 36.5
+        },
+        {
+          "flow": 8.09,
+          "pressureDrop": 40.1
+        },
+        {
+          "flow": 8.53,
+          "pressureDrop": 43.6
+        },
+        {
+          "flow": 9.0,
+          "pressureDrop": 47.3
+        }
+      ],
+      "notes": "Optiflow Aortic Arch Cannulae, Straight Tip, Wire-reinforced Tubing. Tip size: 8 mm. Effective length: 25 cm. Connector size: 3/8 inch. Product codes: A292-80C = connector without luer vent; A292-80B = connector with luer vent down. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. Common arterial caution threshold: 100 mmHg."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Arch Cannulae — Curved Tip with Suture Flange, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "14 Fr",
+      "overallLengthCm": 23,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "1/4 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A212-45C (connector without luer vent); A212-45B (connector with luer vent down); no connector with luer vent up listed for this size",
+      "sourceLabel": "LivaNova Aortic Arch Cannulae brochure",
+      "sourceUrl": "https://d2wzb2yxq0vcns.cloudfront.net/wp-content/uploads/2021/12/LN_BROCHURE_CONVENTIONAL_CANNUALAE_09295-179-A.pdf",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Curved Tip with Suture Flange brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 3.03 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–3.03",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 3.03 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.42,
+          "pressureDrop": 5.2
+        },
+        {
+          "flow": 0.74,
+          "pressureDrop": 9.6
+        },
+        {
+          "flow": 0.95,
+          "pressureDrop": 14.2
+        },
+        {
+          "flow": 1.1,
+          "pressureDrop": 19.9
+        },
+        {
+          "flow": 1.27,
+          "pressureDrop": 26.5
+        },
+        {
+          "flow": 1.42,
+          "pressureDrop": 33.6
+        },
+        {
+          "flow": 1.55,
+          "pressureDrop": 40.2
+        },
+        {
+          "flow": 1.7,
+          "pressureDrop": 47.9
+        },
+        {
+          "flow": 1.8,
+          "pressureDrop": 54.7
+        },
+        {
+          "flow": 1.91,
+          "pressureDrop": 60.6
+        },
+        {
+          "flow": 2.01,
+          "pressureDrop": 66.7
+        },
+        {
+          "flow": 2.1,
+          "pressureDrop": 73.9
+        },
+        {
+          "flow": 2.18,
+          "pressureDrop": 80.7
+        },
+        {
+          "flow": 2.23,
+          "pressureDrop": 85.9
+        },
+        {
+          "flow": 2.34,
+          "pressureDrop": 92.5
+        },
+        {
+          "flow": 2.45,
+          "pressureDrop": 99.9
+        },
+        {
+          "flow": 2.54,
+          "pressureDrop": 107.2
+        },
+        {
+          "flow": 2.62,
+          "pressureDrop": 114.1
+        },
+        {
+          "flow": 2.67,
+          "pressureDrop": 120.2
+        },
+        {
+          "flow": 2.76,
+          "pressureDrop": 126.1
+        },
+        {
+          "flow": 2.84,
+          "pressureDrop": 133.0
+        },
+        {
+          "flow": 2.92,
+          "pressureDrop": 140.1
+        },
+        {
+          "flow": 3.03,
+          "pressureDrop": 150.4
+        }
+      ],
+      "notes": "Aortic Arch Cannulae, Curved Tip with Suture Flange, Wire-reinforced Tubing. Tip size: 4.5 mm. Effective length: 23 cm. Connector size: 1/4 inch. Product codes: A212-45C = connector without luer vent; A212-45B = connector with luer vent down; no connector with luer vent up listed for this size. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Values above 100 mmHg should be treated as caution range; do not extrapolate beyond the digitized source range. Pressure drop exceeds 100 mmHg. Consider a larger arterial cannula or reassess target flow. Other sizes on the same page are intentionally not included because digitized points were not provided for this task."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Arch Cannulae — Curved Tip with Suture Flange, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "16 Fr",
+      "overallLengthCm": 23,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A212-52C (connector without luer vent); A212-52B (connector with luer vent down); A212-52A (connector with luer vent up)",
+      "sourceLabel": "LivaNova Aortic Arch Cannulae brochure",
+      "sourceUrl": "https://d2wzb2yxq0vcns.cloudfront.net/wp-content/uploads/2021/12/LN_BROCHURE_CONVENTIONAL_CANNUALAE_09295-179-A.pdf",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Curved Tip with Suture Flange brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 4.53 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–4.53",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 4.53 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.25,
+          "pressureDrop": 2.5
+        },
+        {
+          "flow": 0.52,
+          "pressureDrop": 3.9
+        },
+        {
+          "flow": 0.69,
+          "pressureDrop": 5.4
+        },
+        {
+          "flow": 0.9,
+          "pressureDrop": 7.6
+        },
+        {
+          "flow": 1.05,
+          "pressureDrop": 9.6
+        },
+        {
+          "flow": 1.22,
+          "pressureDrop": 10.8
+        },
+        {
+          "flow": 1.37,
+          "pressureDrop": 15.2
+        },
+        {
+          "flow": 1.53,
+          "pressureDrop": 20.6
+        },
+        {
+          "flow": 1.74,
+          "pressureDrop": 25.0
+        },
+        {
+          "flow": 2.06,
+          "pressureDrop": 32.6
+        },
+        {
+          "flow": 2.26,
+          "pressureDrop": 39.3
+        },
+        {
+          "flow": 2.5,
+          "pressureDrop": 47.9
+        },
+        {
+          "flow": 2.67,
+          "pressureDrop": 53.5
+        },
+        {
+          "flow": 2.84,
+          "pressureDrop": 60.4
+        },
+        {
+          "flow": 2.99,
+          "pressureDrop": 66.7
+        },
+        {
+          "flow": 3.12,
+          "pressureDrop": 73.9
+        },
+        {
+          "flow": 3.28,
+          "pressureDrop": 80.2
+        },
+        {
+          "flow": 3.38,
+          "pressureDrop": 85.9
+        },
+        {
+          "flow": 3.53,
+          "pressureDrop": 93.0
+        },
+        {
+          "flow": 3.66,
+          "pressureDrop": 100.1
+        },
+        {
+          "flow": 3.77,
+          "pressureDrop": 106.3
+        },
+        {
+          "flow": 3.91,
+          "pressureDrop": 113.4
+        },
+        {
+          "flow": 4.03,
+          "pressureDrop": 120.2
+        },
+        {
+          "flow": 4.15,
+          "pressureDrop": 127.1
+        },
+        {
+          "flow": 4.27,
+          "pressureDrop": 134.5
+        },
+        {
+          "flow": 4.36,
+          "pressureDrop": 140.4
+        },
+        {
+          "flow": 4.53,
+          "pressureDrop": 150.2
+        }
+      ],
+      "notes": "Aortic Arch Cannulae, Curved Tip with Suture Flange, Wire-reinforced Tubing. Tip size: 5.2 mm. Effective length: 23 cm. Connector size: 3/8 inch. Product codes: A212-52C = connector without luer vent; A212-52B = connector with luer vent down; A212-52A = connector with luer vent up. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Values above 100 mmHg should be treated as caution range; do not extrapolate beyond the digitized source range. Pressure drop exceeds 100 mmHg. Consider a larger arterial cannula or reassess target flow. Other sizes on the same page are intentionally not included because digitized points were not provided for this task."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Arch Cannulae — Curved Tip with Suture Flange, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "20 Fr",
+      "overallLengthCm": 23,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A212-65C (connector without luer vent); A212-65B (connector with luer vent down); A212-65A (connector with luer vent up)",
+      "sourceLabel": "LivaNova Aortic Arch Cannulae brochure",
+      "sourceUrl": "https://d2wzb2yxq0vcns.cloudfront.net/wp-content/uploads/2021/12/LN_BROCHURE_CONVENTIONAL_CANNUALAE_09295-179-A.pdf",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Curved Tip with Suture Flange brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 7.51 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–7.51",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 7.51 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.42,
+          "pressureDrop": 1.2
+        },
+        {
+          "flow": 0.67,
+          "pressureDrop": 2.7
+        },
+        {
+          "flow": 1.02,
+          "pressureDrop": 5.2
+        },
+        {
+          "flow": 1.46,
+          "pressureDrop": 6.9
+        },
+        {
+          "flow": 1.77,
+          "pressureDrop": 8.8
+        },
+        {
+          "flow": 2.03,
+          "pressureDrop": 11.3
+        },
+        {
+          "flow": 2.34,
+          "pressureDrop": 13.7
+        },
+        {
+          "flow": 2.57,
+          "pressureDrop": 16.2
+        },
+        {
+          "flow": 2.79,
+          "pressureDrop": 19.9
+        },
+        {
+          "flow": 3.0,
+          "pressureDrop": 23.1
+        },
+        {
+          "flow": 3.35,
+          "pressureDrop": 30.4
+        },
+        {
+          "flow": 3.57,
+          "pressureDrop": 34.6
+        },
+        {
+          "flow": 3.8,
+          "pressureDrop": 40.2
+        },
+        {
+          "flow": 4.05,
+          "pressureDrop": 45.4
+        },
+        {
+          "flow": 4.27,
+          "pressureDrop": 49.6
+        },
+        {
+          "flow": 4.52,
+          "pressureDrop": 55.2
+        },
+        {
+          "flow": 4.74,
+          "pressureDrop": 60.1
+        },
+        {
+          "flow": 5.05,
+          "pressureDrop": 67.0
+        },
+        {
+          "flow": 5.3,
+          "pressureDrop": 73.9
+        },
+        {
+          "flow": 5.48,
+          "pressureDrop": 80.2
+        },
+        {
+          "flow": 5.69,
+          "pressureDrop": 86.6
+        },
+        {
+          "flow": 5.9,
+          "pressureDrop": 92.8
+        },
+        {
+          "flow": 6.09,
+          "pressureDrop": 100.1
+        },
+        {
+          "flow": 6.32,
+          "pressureDrop": 106.5
+        },
+        {
+          "flow": 6.53,
+          "pressureDrop": 113.9
+        },
+        {
+          "flow": 6.7,
+          "pressureDrop": 120.0
+        },
+        {
+          "flow": 6.89,
+          "pressureDrop": 126.4
+        },
+        {
+          "flow": 7.06,
+          "pressureDrop": 132.8
+        },
+        {
+          "flow": 7.22,
+          "pressureDrop": 140.1
+        },
+        {
+          "flow": 7.38,
+          "pressureDrop": 145.3
+        },
+        {
+          "flow": 7.51,
+          "pressureDrop": 150.4
+        }
+      ],
+      "notes": "Aortic Arch Cannulae, Curved Tip with Suture Flange, Wire-reinforced Tubing. Tip size: 6.5 mm. Effective length: 23 cm. Connector size: 3/8 inch. Product codes: A212-65C = connector without luer vent; A212-65B = connector with luer vent down; A212-65A = connector with luer vent up. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Values above 100 mmHg should be treated as caution range; do not extrapolate beyond the digitized source range. Pressure drop exceeds 100 mmHg. Consider a larger arterial cannula or reassess target flow. Other sizes on the same page are intentionally not included because digitized points were not provided for this task."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Arch Cannulae — Curved Tip with Suture Flange, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "22 Fr",
+      "overallLengthCm": 23,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A212-73C (connector without luer vent); A212-73B (connector with luer vent down); A212-73A (connector with luer vent up)",
+      "sourceLabel": "LivaNova Aortic Arch Cannulae brochure",
+      "sourceUrl": "https://d2wzb2yxq0vcns.cloudfront.net/wp-content/uploads/2021/12/LN_BROCHURE_CONVENTIONAL_CANNUALAE_09295-179-A.pdf",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Curved Tip with Suture Flange brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 9.0 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–9.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 9.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.4,
+          "pressureDrop": 1.0
+        },
+        {
+          "flow": 0.74,
+          "pressureDrop": 2.0
+        },
+        {
+          "flow": 1.05,
+          "pressureDrop": 3.4
+        },
+        {
+          "flow": 1.28,
+          "pressureDrop": 4.2
+        },
+        {
+          "flow": 1.69,
+          "pressureDrop": 6.1
+        },
+        {
+          "flow": 2.03,
+          "pressureDrop": 7.6
+        },
+        {
+          "flow": 2.36,
+          "pressureDrop": 8.8
+        },
+        {
+          "flow": 2.73,
+          "pressureDrop": 11.0
+        },
+        {
+          "flow": 3.0,
+          "pressureDrop": 13.3
+        },
+        {
+          "flow": 3.3,
+          "pressureDrop": 16.7
+        },
+        {
+          "flow": 3.51,
+          "pressureDrop": 19.9
+        },
+        {
+          "flow": 3.79,
+          "pressureDrop": 23.3
+        },
+        {
+          "flow": 4.06,
+          "pressureDrop": 26.7
+        },
+        {
+          "flow": 4.41,
+          "pressureDrop": 31.2
+        },
+        {
+          "flow": 4.7,
+          "pressureDrop": 33.9
+        },
+        {
+          "flow": 5.03,
+          "pressureDrop": 37.3
+        },
+        {
+          "flow": 5.23,
+          "pressureDrop": 40.0
+        },
+        {
+          "flow": 5.47,
+          "pressureDrop": 43.7
+        },
+        {
+          "flow": 5.72,
+          "pressureDrop": 47.6
+        },
+        {
+          "flow": 5.97,
+          "pressureDrop": 52.3
+        },
+        {
+          "flow": 6.2,
+          "pressureDrop": 56.0
+        },
+        {
+          "flow": 6.45,
+          "pressureDrop": 59.9
+        },
+        {
+          "flow": 6.71,
+          "pressureDrop": 65.8
+        },
+        {
+          "flow": 6.98,
+          "pressureDrop": 70.9
+        },
+        {
+          "flow": 7.12,
+          "pressureDrop": 74.4
+        },
+        {
+          "flow": 7.37,
+          "pressureDrop": 80.2
+        },
+        {
+          "flow": 7.57,
+          "pressureDrop": 83.7
+        },
+        {
+          "flow": 7.79,
+          "pressureDrop": 89.1
+        },
+        {
+          "flow": 8.09,
+          "pressureDrop": 95.0
+        },
+        {
+          "flow": 8.3,
+          "pressureDrop": 100.1
+        },
+        {
+          "flow": 8.52,
+          "pressureDrop": 104.5
+        },
+        {
+          "flow": 8.73,
+          "pressureDrop": 109.2
+        },
+        {
+          "flow": 9.0,
+          "pressureDrop": 114.4
+        }
+      ],
+      "notes": "Aortic Arch Cannulae, Curved Tip with Suture Flange, Wire-reinforced Tubing. Tip size: 7.3 mm. Effective length: 23 cm. Connector size: 3/8 inch. Product codes: A212-73C = connector without luer vent; A212-73B = connector with luer vent down; A212-73A = connector with luer vent up. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Values above 100 mmHg should be treated as caution range; do not extrapolate beyond the digitized source range. Pressure drop exceeds 100 mmHg. Consider a larger arterial cannula or reassess target flow. The 24 Fr curve on the same page is intentionally not included because digitized points were not provided for this task."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Arch Cannulae — Curved Tip with Suture Flange, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "24 Fr",
+      "overallLengthCm": 24,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A212-80C (connector without luer vent); A212-80B (connector with luer vent down); A212-80A (connector with luer vent up)",
+      "sourceLabel": "LivaNova Aortic Arch Cannulae brochure",
+      "sourceUrl": "https://d2wzb2yxq0vcns.cloudfront.net/wp-content/uploads/2021/12/LN_BROCHURE_CONVENTIONAL_CANNUALAE_09295-179-A.pdf",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Curved Tip with Suture Flange brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 9.0 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–9.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 9.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.47,
+          "pressureDrop": 1.0
+        },
+        {
+          "flow": 0.75,
+          "pressureDrop": 1.7
+        },
+        {
+          "flow": 1.03,
+          "pressureDrop": 2.9
+        },
+        {
+          "flow": 1.29,
+          "pressureDrop": 3.2
+        },
+        {
+          "flow": 1.64,
+          "pressureDrop": 3.9
+        },
+        {
+          "flow": 2.07,
+          "pressureDrop": 5.4
+        },
+        {
+          "flow": 2.38,
+          "pressureDrop": 6.4
+        },
+        {
+          "flow": 2.66,
+          "pressureDrop": 7.9
+        },
+        {
+          "flow": 3.0,
+          "pressureDrop": 8.6
+        },
+        {
+          "flow": 3.28,
+          "pressureDrop": 9.8
+        },
+        {
+          "flow": 3.66,
+          "pressureDrop": 12.0
+        },
+        {
+          "flow": 4.0,
+          "pressureDrop": 15.0
+        },
+        {
+          "flow": 4.27,
+          "pressureDrop": 17.2
+        },
+        {
+          "flow": 4.54,
+          "pressureDrop": 20.1
+        },
+        {
+          "flow": 4.75,
+          "pressureDrop": 21.3
+        },
+        {
+          "flow": 5.04,
+          "pressureDrop": 24.3
+        },
+        {
+          "flow": 5.32,
+          "pressureDrop": 26.7
+        },
+        {
+          "flow": 5.71,
+          "pressureDrop": 31.2
+        },
+        {
+          "flow": 6.02,
+          "pressureDrop": 34.4
+        },
+        {
+          "flow": 6.21,
+          "pressureDrop": 36.1
+        },
+        {
+          "flow": 6.48,
+          "pressureDrop": 39.5
+        },
+        {
+          "flow": 6.76,
+          "pressureDrop": 42.9
+        },
+        {
+          "flow": 7.01,
+          "pressureDrop": 46.1
+        },
+        {
+          "flow": 7.46,
+          "pressureDrop": 51.0
+        },
+        {
+          "flow": 7.74,
+          "pressureDrop": 54.7
+        },
+        {
+          "flow": 8.06,
+          "pressureDrop": 59.4
+        },
+        {
+          "flow": 8.37,
+          "pressureDrop": 63.6
+        },
+        {
+          "flow": 8.65,
+          "pressureDrop": 68.0
+        },
+        {
+          "flow": 9.0,
+          "pressureDrop": 72.9
+        }
+      ],
+      "notes": "Aortic Arch Cannulae, Curved Tip with Suture Flange, Wire-reinforced Tubing. Tip size: 8.0 mm. Effective length: 24 cm. Connector size: 3/8 inch. Product codes: A212-80C = connector without luer vent; A212-80B = connector with luer vent down; A212-80A = connector with luer vent up. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. Common arterial caution threshold: 100 mmHg."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Arch Cannulae — Straight Tip with Suture Collar, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "14 Fr",
+      "overallLengthCm": 23,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "1/4 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A232-45C (connector without luer vent); A232-45B (connector with luer vent down); no connector with luer vent up listed for this size",
+      "sourceLabel": "LivaNova Aortic Arch Cannulae brochure",
+      "sourceUrl": "https://d2wzb2yxq0vcns.cloudfront.net/wp-content/uploads/2021/12/LN_BROCHURE_CONVENTIONAL_CANNUALAE_09295-179-A.pdf",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Straight Tip with Suture Collar brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 3.37 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–3.37",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 3.37 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.41,
+          "pressureDrop": 5.8
+        },
+        {
+          "flow": 0.76,
+          "pressureDrop": 10.0
+        },
+        {
+          "flow": 0.92,
+          "pressureDrop": 15.1
+        },
+        {
+          "flow": 1.07,
+          "pressureDrop": 21.1
+        },
+        {
+          "flow": 1.36,
+          "pressureDrop": 27.4
+        },
+        {
+          "flow": 1.53,
+          "pressureDrop": 33.0
+        },
+        {
+          "flow": 1.72,
+          "pressureDrop": 40.5
+        },
+        {
+          "flow": 1.86,
+          "pressureDrop": 46.9
+        },
+        {
+          "flow": 2.02,
+          "pressureDrop": 55.4
+        },
+        {
+          "flow": 2.12,
+          "pressureDrop": 60.7
+        },
+        {
+          "flow": 2.21,
+          "pressureDrop": 66.8
+        },
+        {
+          "flow": 2.34,
+          "pressureDrop": 74.3
+        },
+        {
+          "flow": 2.43,
+          "pressureDrop": 80.6
+        },
+        {
+          "flow": 2.53,
+          "pressureDrop": 87.9
+        },
+        {
+          "flow": 2.63,
+          "pressureDrop": 94.0
+        },
+        {
+          "flow": 2.72,
+          "pressureDrop": 100.5
+        },
+        {
+          "flow": 2.82,
+          "pressureDrop": 107.3
+        },
+        {
+          "flow": 2.92,
+          "pressureDrop": 114.1
+        },
+        {
+          "flow": 2.99,
+          "pressureDrop": 120.2
+        },
+        {
+          "flow": 3.08,
+          "pressureDrop": 126.3
+        },
+        {
+          "flow": 3.17,
+          "pressureDrop": 134.3
+        },
+        {
+          "flow": 3.27,
+          "pressureDrop": 140.1
+        },
+        {
+          "flow": 3.37,
+          "pressureDrop": 150.0
+        }
+      ],
+      "notes": "Aortic Arch Cannulae, Straight Tip with Suture Collar, Wire-reinforced Tubing. Series: A232. Tip size: 4.5 mm. Effective length: 23 cm. Connector size: 1/4 inch. Product codes: A232-45C = connector without luer vent; A232-45B = connector with luer vent down; no connector with luer vent up listed for this size. Connector luer vent options are product-code variants and share the same pressure-flow curve for this size. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Values above 100 mmHg should be treated as caution range; do not extrapolate beyond the digitized source range. Pressure drop exceeds 100 mmHg. Consider a larger arterial cannula or reassess target flow. Other straight-tip sizes on the same page are intentionally not included because digitized points were not provided for this task."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Arch Cannulae — Straight Tip with Suture Collar, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "16 Fr",
+      "overallLengthCm": 23,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A232-52C (connector without luer vent); A232-52B (connector with luer vent down); no connector with luer vent up listed for this size",
+      "sourceLabel": "LivaNova Aortic Arch Cannulae brochure",
+      "sourceUrl": "https://d2wzb2yxq0vcns.cloudfront.net/wp-content/uploads/2021/12/LN_BROCHURE_CONVENTIONAL_CANNUALAE_09295-179-A.pdf",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Straight Tip with Suture Collar brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 5.0 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–5.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 5.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.48,
+          "pressureDrop": 4.9
+        },
+        {
+          "flow": 0.81,
+          "pressureDrop": 7.3
+        },
+        {
+          "flow": 1.03,
+          "pressureDrop": 10.4
+        },
+        {
+          "flow": 1.26,
+          "pressureDrop": 12.6
+        },
+        {
+          "flow": 1.54,
+          "pressureDrop": 17.7
+        },
+        {
+          "flow": 1.74,
+          "pressureDrop": 22.1
+        },
+        {
+          "flow": 2.02,
+          "pressureDrop": 28.6
+        },
+        {
+          "flow": 2.22,
+          "pressureDrop": 34.7
+        },
+        {
+          "flow": 2.41,
+          "pressureDrop": 40.8
+        },
+        {
+          "flow": 2.62,
+          "pressureDrop": 47.1
+        },
+        {
+          "flow": 2.85,
+          "pressureDrop": 54.4
+        },
+        {
+          "flow": 3.04,
+          "pressureDrop": 60.9
+        },
+        {
+          "flow": 3.21,
+          "pressureDrop": 67.0
+        },
+        {
+          "flow": 3.36,
+          "pressureDrop": 72.6
+        },
+        {
+          "flow": 3.56,
+          "pressureDrop": 81.1
+        },
+        {
+          "flow": 3.69,
+          "pressureDrop": 88.1
+        },
+        {
+          "flow": 3.88,
+          "pressureDrop": 94.9
+        },
+        {
+          "flow": 3.99,
+          "pressureDrop": 100.8
+        },
+        {
+          "flow": 4.13,
+          "pressureDrop": 106.6
+        },
+        {
+          "flow": 4.3,
+          "pressureDrop": 114.1
+        },
+        {
+          "flow": 4.42,
+          "pressureDrop": 120.4
+        },
+        {
+          "flow": 4.54,
+          "pressureDrop": 126.5
+        },
+        {
+          "flow": 4.68,
+          "pressureDrop": 133.3
+        },
+        {
+          "flow": 4.8,
+          "pressureDrop": 140.3
+        },
+        {
+          "flow": 5.0,
+          "pressureDrop": 149.6
+        }
+      ],
+      "notes": "Aortic Arch Cannulae, Straight Tip with Suture Collar, Wire-reinforced Tubing. Series: A232. Tip size: 5.2 mm. Effective length: 23 cm. Connector size: 3/8 inch. Product codes: A232-52C = connector without luer vent; A232-52B = connector with luer vent down; no connector with luer vent up listed for this size. Connector luer vent options are product-code variants and share the same pressure-flow curve for this size. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Values above 100 mmHg should be treated as caution range; do not extrapolate beyond the digitized source range. Pressure drop exceeds 100 mmHg. Consider a larger arterial cannula or reassess target flow. Other straight-tip sizes on the same page are intentionally not included because digitized points were not provided for this task."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Arch Cannulae — Straight Tip with Suture Collar, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "20 Fr",
+      "overallLengthCm": 23,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A232-65C (connector without luer vent); A232-65B (connector with luer vent down); A232-65A (connector with luer vent up)",
+      "sourceLabel": "LivaNova Aortic Arch Cannulae brochure",
+      "sourceUrl": "https://d2wzb2yxq0vcns.cloudfront.net/wp-content/uploads/2021/12/LN_BROCHURE_CONVENTIONAL_CANNUALAE_09295-179-A.pdf",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Straight Tip with Suture Collar brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 8.78 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–8.78",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 8.78 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.44,
+          "pressureDrop": 2.7
+        },
+        {
+          "flow": 0.78,
+          "pressureDrop": 3.6
+        },
+        {
+          "flow": 1.04,
+          "pressureDrop": 5.3
+        },
+        {
+          "flow": 1.43,
+          "pressureDrop": 6.8
+        },
+        {
+          "flow": 1.75,
+          "pressureDrop": 8.5
+        },
+        {
+          "flow": 2.04,
+          "pressureDrop": 10.2
+        },
+        {
+          "flow": 2.27,
+          "pressureDrop": 11.9
+        },
+        {
+          "flow": 2.53,
+          "pressureDrop": 13.8
+        },
+        {
+          "flow": 2.84,
+          "pressureDrop": 17.0
+        },
+        {
+          "flow": 3.08,
+          "pressureDrop": 20.2
+        },
+        {
+          "flow": 3.23,
+          "pressureDrop": 22.6
+        },
+        {
+          "flow": 3.43,
+          "pressureDrop": 24.8
+        },
+        {
+          "flow": 3.74,
+          "pressureDrop": 28.9
+        },
+        {
+          "flow": 4.05,
+          "pressureDrop": 33.5
+        },
+        {
+          "flow": 4.23,
+          "pressureDrop": 36.4
+        },
+        {
+          "flow": 4.51,
+          "pressureDrop": 41.3
+        },
+        {
+          "flow": 4.75,
+          "pressureDrop": 44.7
+        },
+        {
+          "flow": 5.03,
+          "pressureDrop": 49.3
+        },
+        {
+          "flow": 5.29,
+          "pressureDrop": 54.9
+        },
+        {
+          "flow": 5.57,
+          "pressureDrop": 60.9
+        },
+        {
+          "flow": 5.89,
+          "pressureDrop": 67.5
+        },
+        {
+          "flow": 6.14,
+          "pressureDrop": 73.6
+        },
+        {
+          "flow": 6.38,
+          "pressureDrop": 80.6
+        },
+        {
+          "flow": 6.61,
+          "pressureDrop": 87.2
+        },
+        {
+          "flow": 6.82,
+          "pressureDrop": 93.2
+        },
+        {
+          "flow": 7.06,
+          "pressureDrop": 100.5
+        },
+        {
+          "flow": 7.25,
+          "pressureDrop": 105.9
+        },
+        {
+          "flow": 7.54,
+          "pressureDrop": 113.4
+        },
+        {
+          "flow": 7.75,
+          "pressureDrop": 119.9
+        },
+        {
+          "flow": 7.96,
+          "pressureDrop": 126.0
+        },
+        {
+          "flow": 8.24,
+          "pressureDrop": 133.5
+        },
+        {
+          "flow": 8.45,
+          "pressureDrop": 139.8
+        },
+        {
+          "flow": 8.78,
+          "pressureDrop": 149.1
+        }
+      ],
+      "notes": "Aortic Arch Cannulae, Straight Tip with Suture Collar, Wire-reinforced Tubing. Series: A232. Tip size: 6.5 mm. Effective length: 23 cm. Connector size: 3/8 inch. Product codes: A232-65C = connector without luer vent; A232-65B = connector with luer vent down; A232-65A = connector with luer vent up. Connector luer vent options are product-code variants and share the same pressure-flow curve for this size. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Values above 100 mmHg should be treated as caution range; do not extrapolate beyond the digitized source range. Pressure drop exceeds 100 mmHg. Consider a larger arterial cannula or reassess target flow. The 24 Fr straight-tip curve on the same page is intentionally not included because digitized points were not provided for this task."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Arch Cannulae — Straight Tip with Suture Collar, Wire-reinforced Tubing",
+      "category": "Adult arterial",
+      "size": "24 Fr",
+      "overallLengthCm": 24,
+      "connectionSite": "Aortic arch",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "A232-80C (connector without luer vent); A232-80B (connector with luer vent down); no connector with luer vent up listed for this size",
+      "sourceLabel": "LivaNova Aortic Arch Cannulae brochure",
+      "sourceUrl": "https://d2wzb2yxq0vcns.cloudfront.net/wp-content/uploads/2021/12/LN_BROCHURE_CONVENTIONAL_CANNUALAE_09295-179-A.pdf",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Aortic Arch Cannulae Straight Tip with Suture Collar brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 9.0 L/min); final digitized x-value capped at the axis maximum of 9.0 L/min; do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–9.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 9.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.68,
+          "pressureDrop": 2.4
+        },
+        {
+          "flow": 1.01,
+          "pressureDrop": 3.6
+        },
+        {
+          "flow": 1.34,
+          "pressureDrop": 4.6
+        },
+        {
+          "flow": 1.72,
+          "pressureDrop": 4.9
+        },
+        {
+          "flow": 2.06,
+          "pressureDrop": 5.8
+        },
+        {
+          "flow": 2.39,
+          "pressureDrop": 6.8
+        },
+        {
+          "flow": 2.7,
+          "pressureDrop": 7.8
+        },
+        {
+          "flow": 3.04,
+          "pressureDrop": 8.7
+        },
+        {
+          "flow": 3.38,
+          "pressureDrop": 10.0
+        },
+        {
+          "flow": 3.68,
+          "pressureDrop": 11.7
+        },
+        {
+          "flow": 4.03,
+          "pressureDrop": 12.9
+        },
+        {
+          "flow": 4.42,
+          "pressureDrop": 14.8
+        },
+        {
+          "flow": 4.71,
+          "pressureDrop": 16.8
+        },
+        {
+          "flow": 5.08,
+          "pressureDrop": 18.9
+        },
+        {
+          "flow": 5.46,
+          "pressureDrop": 22.1
+        },
+        {
+          "flow": 5.75,
+          "pressureDrop": 25.0
+        },
+        {
+          "flow": 6.05,
+          "pressureDrop": 27.4
+        },
+        {
+          "flow": 6.39,
+          "pressureDrop": 30.3
+        },
+        {
+          "flow": 6.75,
+          "pressureDrop": 34.5
+        },
+        {
+          "flow": 7.07,
+          "pressureDrop": 37.6
+        },
+        {
+          "flow": 7.4,
+          "pressureDrop": 40.8
+        },
+        {
+          "flow": 7.74,
+          "pressureDrop": 44.7
+        },
+        {
+          "flow": 8.03,
+          "pressureDrop": 47.1
+        },
+        {
+          "flow": 8.37,
+          "pressureDrop": 51.0
+        },
+        {
+          "flow": 8.71,
+          "pressureDrop": 54.9
+        },
+        {
+          "flow": 9.0,
+          "pressureDrop": 58.5
+        }
+      ],
+      "notes": "Aortic Arch Cannulae, Straight Tip with Suture Collar, Wire-reinforced Tubing. Series: A232. Tip size: 8.0 mm. Effective length: 24 cm. Connector size: 3/8 inch. Product codes: A232-80C = connector without luer vent; A232-80B = connector with luer vent down; no connector with luer vent up listed for this size. Connector luer vent options are product-code variants and share the same pressure-flow curve for this size. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. Common arterial caution threshold: 100 mmHg."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Triple Stage Venous Return — Wire-reinforced Tubing",
+      "category": "Adult venous",
+      "size": "29/29/29 Fr",
+      "overallLengthCm": 40,
+      "connectionSite": "Venous return",
+      "connectorSize": "3/8 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "RTS-11029 (without connector); RTS-11129 (with connector)",
+      "sourceLabel": "LivaNova Triple Stage Venous Return Cannulae brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/venous-return-cannulae/triple-stage",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Triple Stage Venous Return Cannula brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (1.0 to 6.0 L/min); final digitized x-value capped at the axis maximum of 6.0 L/min; do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "1.0–6.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (1.0 to 6.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 1.0,
+          "pressureDrop": 0.0
+        },
+        {
+          "flow": 1.22,
+          "pressureDrop": 0.3
+        },
+        {
+          "flow": 1.47,
+          "pressureDrop": 0.6
+        },
+        {
+          "flow": 1.77,
+          "pressureDrop": 0.9
+        },
+        {
+          "flow": 2.01,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 2.22,
+          "pressureDrop": 1.7
+        },
+        {
+          "flow": 2.44,
+          "pressureDrop": 2.2
+        },
+        {
+          "flow": 2.63,
+          "pressureDrop": 2.8
+        },
+        {
+          "flow": 2.83,
+          "pressureDrop": 3.4
+        },
+        {
+          "flow": 3.04,
+          "pressureDrop": 4.0
+        },
+        {
+          "flow": 3.14,
+          "pressureDrop": 4.4
+        },
+        {
+          "flow": 3.31,
+          "pressureDrop": 5.1
+        },
+        {
+          "flow": 3.61,
+          "pressureDrop": 6.2
+        },
+        {
+          "flow": 3.84,
+          "pressureDrop": 7.1
+        },
+        {
+          "flow": 4.04,
+          "pressureDrop": 8.1
+        },
+        {
+          "flow": 4.28,
+          "pressureDrop": 9.1
+        },
+        {
+          "flow": 4.47,
+          "pressureDrop": 10.0
+        },
+        {
+          "flow": 4.63,
+          "pressureDrop": 10.9
+        },
+        {
+          "flow": 4.8,
+          "pressureDrop": 11.9
+        },
+        {
+          "flow": 5.07,
+          "pressureDrop": 13.5
+        },
+        {
+          "flow": 5.32,
+          "pressureDrop": 15.0
+        },
+        {
+          "flow": 5.53,
+          "pressureDrop": 16.4
+        },
+        {
+          "flow": 5.7,
+          "pressureDrop": 17.6
+        },
+        {
+          "flow": 5.87,
+          "pressureDrop": 18.7
+        },
+        {
+          "flow": 6.0,
+          "pressureDrop": 19.6
+        }
+      ],
+      "notes": "Triple Stage Venous Return Cannula, Wire-reinforced Tubing. Stage: Triple stage. Effective length: 40 cm. Connector size: 3/8 inch. Product codes: RTS-11029 = without connector; RTS-11129 = with connector. Available coated: no. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold. The 29/37/37 Fr curve on the same page is intentionally not included because digitized points were not provided for this task."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Triple Stage Venous Return — Wire-reinforced Tubing",
+      "category": "Adult venous",
+      "size": "29/37/37 Fr",
+      "overallLengthCm": 40,
+      "connectionSite": "Venous return",
+      "connectorSize": "1/2 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "RTS-13029 (without connector); RTS-13129 (with connector)",
+      "sourceLabel": "LivaNova Triple Stage Venous Return Cannulae brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/venous-return-cannulae/triple-stage",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Triple Stage Venous Return Cannula brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (1.0 to 6.0 L/min); final digitized x-value capped at the axis maximum of 6.0 L/min; do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "1.0–6.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (1.0 to 6.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 1.0,
+          "pressureDrop": 0.0
+        },
+        {
+          "flow": 1.4,
+          "pressureDrop": 0.2
+        },
+        {
+          "flow": 1.73,
+          "pressureDrop": 0.4
+        },
+        {
+          "flow": 2.0,
+          "pressureDrop": 0.5
+        },
+        {
+          "flow": 2.28,
+          "pressureDrop": 0.6
+        },
+        {
+          "flow": 2.69,
+          "pressureDrop": 0.8
+        },
+        {
+          "flow": 3.02,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 3.34,
+          "pressureDrop": 1.7
+        },
+        {
+          "flow": 3.71,
+          "pressureDrop": 2.4
+        },
+        {
+          "flow": 4.02,
+          "pressureDrop": 3.2
+        },
+        {
+          "flow": 4.42,
+          "pressureDrop": 4.1
+        },
+        {
+          "flow": 4.75,
+          "pressureDrop": 5.0
+        },
+        {
+          "flow": 5.04,
+          "pressureDrop": 5.9
+        },
+        {
+          "flow": 5.3,
+          "pressureDrop": 6.7
+        },
+        {
+          "flow": 5.57,
+          "pressureDrop": 7.6
+        },
+        {
+          "flow": 5.79,
+          "pressureDrop": 8.4
+        },
+        {
+          "flow": 6.0,
+          "pressureDrop": 9.1
+        }
+      ],
+      "notes": "Triple Stage Venous Return Cannula, Wire-reinforced Tubing. Stage: Triple stage. Effective length: 40 cm. Connector size: 1/2 inch. Product codes: RTS-13029 = without connector; RTS-13129 = with connector. Available coated: no. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Dual Stage Venous Return Cannulae — Wire-reinforced Tubing",
+      "category": "Adult venous",
+      "size": "29/37 Fr",
+      "overallLengthCm": 40,
+      "connectionSite": "Venous return",
+      "connectorSize": "1/2 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "RDS-61137 (with connector); RDS-61037 (without connector)",
+      "sourceLabel": "LivaNova Dual Stage Venous Return Cannulae brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/venous-return-cannulae/dual-stage",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Dual Stage Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Flow values are corrected to the manufacturer's actual 1.0 to 6.0 L/min x-axis; do not use the uncorrected 0 to 6 CSV axis. Source curve digitized to visible endpoint (1.0 to 6.0 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "1.0–6.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (1.0 to 6.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 1.0,
+          "pressureDrop": 0.5
+        },
+        {
+          "flow": 1.37,
+          "pressureDrop": 0.8
+        },
+        {
+          "flow": 1.68,
+          "pressureDrop": 1.2
+        },
+        {
+          "flow": 1.98,
+          "pressureDrop": 1.4
+        },
+        {
+          "flow": 2.27,
+          "pressureDrop": 1.8
+        },
+        {
+          "flow": 2.5,
+          "pressureDrop": 2.1
+        },
+        {
+          "flow": 2.67,
+          "pressureDrop": 2.4
+        },
+        {
+          "flow": 2.85,
+          "pressureDrop": 2.6
+        },
+        {
+          "flow": 2.99,
+          "pressureDrop": 2.8
+        },
+        {
+          "flow": 3.14,
+          "pressureDrop": 3.1
+        },
+        {
+          "flow": 3.28,
+          "pressureDrop": 3.3
+        },
+        {
+          "flow": 3.44,
+          "pressureDrop": 3.5
+        },
+        {
+          "flow": 3.62,
+          "pressureDrop": 3.8
+        },
+        {
+          "flow": 3.78,
+          "pressureDrop": 4.1
+        },
+        {
+          "flow": 3.99,
+          "pressureDrop": 4.4
+        },
+        {
+          "flow": 4.22,
+          "pressureDrop": 5.1
+        },
+        {
+          "flow": 4.33,
+          "pressureDrop": 5.6
+        },
+        {
+          "flow": 4.48,
+          "pressureDrop": 6.0
+        },
+        {
+          "flow": 4.66,
+          "pressureDrop": 6.7
+        },
+        {
+          "flow": 4.81,
+          "pressureDrop": 7.2
+        },
+        {
+          "flow": 4.96,
+          "pressureDrop": 7.7
+        },
+        {
+          "flow": 5.02,
+          "pressureDrop": 8.0
+        },
+        {
+          "flow": 5.13,
+          "pressureDrop": 8.5
+        },
+        {
+          "flow": 5.26,
+          "pressureDrop": 9.0
+        },
+        {
+          "flow": 5.36,
+          "pressureDrop": 9.5
+        },
+        {
+          "flow": 5.47,
+          "pressureDrop": 10.0
+        },
+        {
+          "flow": 5.62,
+          "pressureDrop": 10.8
+        },
+        {
+          "flow": 5.74,
+          "pressureDrop": 11.4
+        },
+        {
+          "flow": 5.86,
+          "pressureDrop": 11.9
+        },
+        {
+          "flow": 6.0,
+          "pressureDrop": 12.5
+        }
+      ],
+      "notes": "Dual Stage Venous Return Cannulae, Wire-reinforced Tubing. Stage: Dual stage. Effective length: 40 cm. Connector size / acceptance: 1/2 inch. Product codes: RDS-61137 = with connector; RDS-61037 = without connector. Connector options are product-code variants and share the same pressure-flow curve for this size. Available coated: no. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold. Other dual-stage sizes on the same page are intentionally not included because digitized points were not provided for this task."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Dual Stage Venous Return Cannulae — Wire-reinforced Tubing",
+      "category": "Adult venous",
+      "size": "32/40 Fr",
+      "overallLengthCm": 40,
+      "connectionSite": "Venous return",
+      "connectorSize": "1/2 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "RDS-61140 (with connector); RDS-61040 (without connector)",
+      "sourceLabel": "LivaNova Dual Stage Venous Return Cannulae brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/venous-return-cannulae/dual-stage",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Dual Stage Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Flow values are corrected to the manufacturer's actual 1.0 to 6.0 L/min x-axis; do not use the uncorrected 0 to 6 CSV axis. Source curve digitized to visible endpoint (1.0 to 6.0 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "1.0–6.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (1.0 to 6.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 1.0,
+          "pressureDrop": 0.4
+        },
+        {
+          "flow": 1.38,
+          "pressureDrop": 0.7
+        },
+        {
+          "flow": 1.76,
+          "pressureDrop": 1.0
+        },
+        {
+          "flow": 1.99,
+          "pressureDrop": 1.1
+        },
+        {
+          "flow": 2.34,
+          "pressureDrop": 1.4
+        },
+        {
+          "flow": 2.66,
+          "pressureDrop": 1.7
+        },
+        {
+          "flow": 3.0,
+          "pressureDrop": 2.0
+        },
+        {
+          "flow": 3.24,
+          "pressureDrop": 2.3
+        },
+        {
+          "flow": 3.48,
+          "pressureDrop": 2.7
+        },
+        {
+          "flow": 3.78,
+          "pressureDrop": 3.1
+        },
+        {
+          "flow": 3.99,
+          "pressureDrop": 3.4
+        },
+        {
+          "flow": 4.23,
+          "pressureDrop": 4.1
+        },
+        {
+          "flow": 4.52,
+          "pressureDrop": 4.9
+        },
+        {
+          "flow": 4.74,
+          "pressureDrop": 5.5
+        },
+        {
+          "flow": 4.97,
+          "pressureDrop": 6.1
+        },
+        {
+          "flow": 5.21,
+          "pressureDrop": 6.8
+        },
+        {
+          "flow": 5.45,
+          "pressureDrop": 7.4
+        },
+        {
+          "flow": 5.68,
+          "pressureDrop": 8.0
+        },
+        {
+          "flow": 6.0,
+          "pressureDrop": 8.8
+        }
+      ],
+      "notes": "Dual Stage Venous Return Cannulae, Wire-reinforced Tubing. Stage: Dual stage. Effective length: 40 cm. Connector size / acceptance: 1/2 inch. Product codes: RDS-61140 = with connector; RDS-61040 = without connector. Connector options are product-code variants and share the same pressure-flow curve for this size. Available coated: no. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold. Other dual-stage sizes on the same page are intentionally not included because digitized points were not provided for this task."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Dual Stage Venous Return Cannulae — Wire-reinforced Tubing",
+      "category": "Adult venous",
+      "size": "34/46 Fr",
+      "overallLengthCm": 40,
+      "connectionSite": "Venous return",
+      "connectorSize": "1/2 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "RDS-61134 (with connector); RDS-61034 (without connector)",
+      "sourceLabel": "LivaNova Dual Stage Venous Return Cannulae brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/venous-return-cannulae/dual-stage",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Dual Stage Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Flow values are corrected to the manufacturer's actual 1.0 to 6.0 L/min x-axis; do not use the uncorrected 0 to 6 CSV axis. Source curve digitized to visible endpoint (1.0 to 6.0 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "1.0–6.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (1.0 to 6.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 1.0,
+          "pressureDrop": 0.3
+        },
+        {
+          "flow": 1.31,
+          "pressureDrop": 0.4
+        },
+        {
+          "flow": 1.63,
+          "pressureDrop": 0.5
+        },
+        {
+          "flow": 1.99,
+          "pressureDrop": 0.6
+        },
+        {
+          "flow": 2.26,
+          "pressureDrop": 0.7
+        },
+        {
+          "flow": 2.64,
+          "pressureDrop": 0.8
+        },
+        {
+          "flow": 3.02,
+          "pressureDrop": 1.0
+        },
+        {
+          "flow": 3.3,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 3.56,
+          "pressureDrop": 1.5
+        },
+        {
+          "flow": 3.76,
+          "pressureDrop": 1.7
+        },
+        {
+          "flow": 3.99,
+          "pressureDrop": 1.9
+        },
+        {
+          "flow": 4.05,
+          "pressureDrop": 2.1
+        },
+        {
+          "flow": 4.31,
+          "pressureDrop": 2.5
+        },
+        {
+          "flow": 4.56,
+          "pressureDrop": 2.9
+        },
+        {
+          "flow": 4.78,
+          "pressureDrop": 3.2
+        },
+        {
+          "flow": 4.98,
+          "pressureDrop": 3.5
+        },
+        {
+          "flow": 5.09,
+          "pressureDrop": 3.7
+        },
+        {
+          "flow": 5.23,
+          "pressureDrop": 4.0
+        },
+        {
+          "flow": 5.47,
+          "pressureDrop": 4.6
+        },
+        {
+          "flow": 5.59,
+          "pressureDrop": 5.0
+        },
+        {
+          "flow": 5.77,
+          "pressureDrop": 5.4
+        },
+        {
+          "flow": 6.0,
+          "pressureDrop": 5.9
+        }
+      ],
+      "notes": "Dual Stage Venous Return Cannulae, Wire-reinforced Tubing. Stage: Dual stage. Effective length: 40 cm. Connector size / acceptance: 1/2 inch. Product codes: RDS-61134 = with connector; RDS-61034 = without connector. Connector options are product-code variants and share the same pressure-flow curve for this size. Available coated: no. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold. Other dual-stage sizes on the same page are intentionally not included because digitized points were not provided for this task."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Dual Stage Venous Return Cannulae — Wire-reinforced Tubing",
+      "category": "Adult venous",
+      "size": "36/46 Fr",
+      "overallLengthCm": 40,
+      "connectionSite": "Venous return",
+      "connectorSize": "1/2 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "RDS-61146 (with connector); RDS-61046 (without connector)",
+      "sourceLabel": "LivaNova Dual Stage Venous Return Cannulae brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/venous-return-cannulae/dual-stage",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Dual Stage Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Flow values are corrected to the manufacturer's actual 1.0 to 6.0 L/min x-axis; do not use the uncorrected 0 to 6 CSV axis. Source curve digitized to visible endpoint (1.0 to 6.0 L/min); final point rounded to 6.0 L/min to match the visible endpoint; do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "1.0–6.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (1.0 to 6.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 1.0,
+          "pressureDrop": 0.3
+        },
+        {
+          "flow": 1.3,
+          "pressureDrop": 0.4
+        },
+        {
+          "flow": 1.64,
+          "pressureDrop": 0.5
+        },
+        {
+          "flow": 1.99,
+          "pressureDrop": 0.7
+        },
+        {
+          "flow": 2.32,
+          "pressureDrop": 0.8
+        },
+        {
+          "flow": 2.69,
+          "pressureDrop": 0.9
+        },
+        {
+          "flow": 3.01,
+          "pressureDrop": 1.0
+        },
+        {
+          "flow": 3.36,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 3.66,
+          "pressureDrop": 1.6
+        },
+        {
+          "flow": 3.98,
+          "pressureDrop": 1.9
+        },
+        {
+          "flow": 4.07,
+          "pressureDrop": 2.1
+        },
+        {
+          "flow": 4.49,
+          "pressureDrop": 2.7
+        },
+        {
+          "flow": 4.78,
+          "pressureDrop": 3.2
+        },
+        {
+          "flow": 5.0,
+          "pressureDrop": 3.5
+        },
+        {
+          "flow": 5.08,
+          "pressureDrop": 3.7
+        },
+        {
+          "flow": 5.32,
+          "pressureDrop": 4.1
+        },
+        {
+          "flow": 5.48,
+          "pressureDrop": 4.3
+        },
+        {
+          "flow": 5.73,
+          "pressureDrop": 4.7
+        },
+        {
+          "flow": 6.0,
+          "pressureDrop": 5.1
+        }
+      ],
+      "notes": "Dual Stage Venous Return Cannulae, Wire-reinforced Tubing. Stage: Dual stage. Effective length: 40 cm. Connector size / acceptance: 1/2 inch. Product codes: RDS-61146 = with connector; RDS-61046 = without connector. Connector options are product-code variants and share the same pressure-flow curve for this size. Available coated: no. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold. The 36/50 Fr curve on the same page is intentionally not included because digitized points were not provided for this task."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Dual Stage Venous Return Cannulae — Wire-reinforced Tubing",
+      "category": "Adult venous",
+      "size": "36/50 Fr",
+      "overallLengthCm": 40,
+      "connectionSite": "Venous return",
+      "connectorSize": "1/2 inch",
+      "cannulaOrderCodeLabel": "Product codes",
+      "cannulaOrderCode": "RDS-61150 (with connector); RDS-61050 (without connector)",
+      "sourceLabel": "LivaNova Dual Stage Venous Return Cannulae brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/venous-return-cannulae/dual-stage",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Dual Stage Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Flow values are corrected to the manufacturer's actual 1.0 to 6.0 L/min x-axis; do not use the uncorrected 0 to 6 CSV axis. Source curve digitized to visible endpoint (1.0 to 6.0 L/min); final point rounded to 6.0 L/min to match the visible endpoint; do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "1.0–6.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (1.0 to 6.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 1.0,
+          "pressureDrop": 0.3
+        },
+        {
+          "flow": 1.32,
+          "pressureDrop": 0.4
+        },
+        {
+          "flow": 1.67,
+          "pressureDrop": 0.5
+        },
+        {
+          "flow": 1.99,
+          "pressureDrop": 0.6
+        },
+        {
+          "flow": 2.27,
+          "pressureDrop": 0.7
+        },
+        {
+          "flow": 2.61,
+          "pressureDrop": 0.8
+        },
+        {
+          "flow": 2.99,
+          "pressureDrop": 1.0
+        },
+        {
+          "flow": 3.31,
+          "pressureDrop": 1.2
+        },
+        {
+          "flow": 3.65,
+          "pressureDrop": 1.5
+        },
+        {
+          "flow": 3.98,
+          "pressureDrop": 1.9
+        },
+        {
+          "flow": 4.09,
+          "pressureDrop": 2.0
+        },
+        {
+          "flow": 4.41,
+          "pressureDrop": 2.4
+        },
+        {
+          "flow": 4.73,
+          "pressureDrop": 2.9
+        },
+        {
+          "flow": 5.02,
+          "pressureDrop": 3.3
+        },
+        {
+          "flow": 5.27,
+          "pressureDrop": 3.7
+        },
+        {
+          "flow": 5.49,
+          "pressureDrop": 4.0
+        },
+        {
+          "flow": 5.69,
+          "pressureDrop": 4.3
+        },
+        {
+          "flow": 6.0,
+          "pressureDrop": 4.7
+        }
+      ],
+      "notes": "Dual Stage Venous Return Cannulae, Wire-reinforced Tubing. Stage: Dual stage. Effective length: 40 cm. Connector size / acceptance: 1/2 inch. Product codes: RDS-61150 = with connector; RDS-61050 = without connector. Connector options are product-code variants and share the same pressure-flow curve for this size. Available coated: no. Source type: digitized_graph. Extrapolation: false. Source curve digitized to visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
