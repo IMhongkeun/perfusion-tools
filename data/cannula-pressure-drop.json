@@ -6962,6 +6962,151 @@
       "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and 1/4\" Tubing Connector. Type/site: Coronary ostia perfusion. Size: 9 Fr. 45° tip catalog number: P608-30. 90° tip catalog number: P606-30. Connection size: 1/4\" tubing connector. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 0.68 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 9 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.68 L/min. Catalog numbers include P608-30 for 45° tip and P606-30 for 90° tip."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Conical Tip, Stainless Steel Shaft and 1/4\" Tubing Connector",
+      "category": "Cardioplegia",
+      "size": "11 Fr",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "1/4\" tubing connector",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog numbers",
+      "cannulaOrderCode": "P608-35 (45° tip); P606-35 (90° tip)",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 11 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.94 L/min.",
+      "referenceFlowRangeLabel": "0–0.94",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.94 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.13,
+          "pressureDrop": 6.4
+        },
+        {
+          "flow": 0.21,
+          "pressureDrop": 10.1
+        },
+        {
+          "flow": 0.27,
+          "pressureDrop": 16.5
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 20.6
+        },
+        {
+          "flow": 0.35,
+          "pressureDrop": 25.2
+        },
+        {
+          "flow": 0.39,
+          "pressureDrop": 29.2
+        },
+        {
+          "flow": 0.42,
+          "pressureDrop": 34.9
+        },
+        {
+          "flow": 0.44,
+          "pressureDrop": 40.2
+        },
+        {
+          "flow": 0.46,
+          "pressureDrop": 43.2
+        },
+        {
+          "flow": 0.5,
+          "pressureDrop": 48.9
+        },
+        {
+          "flow": 0.53,
+          "pressureDrop": 54.9
+        },
+        {
+          "flow": 0.56,
+          "pressureDrop": 60.4
+        },
+        {
+          "flow": 0.58,
+          "pressureDrop": 63.4
+        },
+        {
+          "flow": 0.61,
+          "pressureDrop": 70.0
+        },
+        {
+          "flow": 0.63,
+          "pressureDrop": 74.2
+        },
+        {
+          "flow": 0.65,
+          "pressureDrop": 79.9
+        },
+        {
+          "flow": 0.66,
+          "pressureDrop": 84.7
+        },
+        {
+          "flow": 0.68,
+          "pressureDrop": 89.3
+        },
+        {
+          "flow": 0.69,
+          "pressureDrop": 94.2
+        },
+        {
+          "flow": 0.72,
+          "pressureDrop": 99.9
+        },
+        {
+          "flow": 0.73,
+          "pressureDrop": 103.8
+        },
+        {
+          "flow": 0.75,
+          "pressureDrop": 109.3
+        },
+        {
+          "flow": 0.77,
+          "pressureDrop": 114.3
+        },
+        {
+          "flow": 0.8,
+          "pressureDrop": 119.6
+        },
+        {
+          "flow": 0.81,
+          "pressureDrop": 123.3
+        },
+        {
+          "flow": 0.83,
+          "pressureDrop": 128.6
+        },
+        {
+          "flow": 0.86,
+          "pressureDrop": 133.7
+        },
+        {
+          "flow": 0.89,
+          "pressureDrop": 139.8
+        },
+        {
+          "flow": 0.91,
+          "pressureDrop": 144.4
+        },
+        {
+          "flow": 0.94,
+          "pressureDrop": 150.1
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and 1/4\" Tubing Connector. Type/site: Coronary ostia perfusion. Size: 11 Fr. 45° tip catalog number: P608-35. 90° tip catalog number: P606-35. Connection size: 1/4\" tubing connector. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 0.94 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 11 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.94 L/min. Catalog numbers include P608-35 for 45° tip and P606-35 for 90° tip."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
