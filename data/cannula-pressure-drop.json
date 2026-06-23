@@ -7353,6 +7353,123 @@
       "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 9 Fr. 45° tip catalog number: P618-30. 90° tip catalog number: P616-30. Connection size: female luer lock. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 0.85 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 9 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.85 L/min. Catalog numbers include P618-30 for 45° tip and P616-30 for 90° tip."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector",
+      "category": "Cardioplegia",
+      "size": "11 Fr",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "female luer lock",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog numbers",
+      "cannulaOrderCode": "P618-35 (45° tip); P616-35 (90° tip)",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 11 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.16 L/min.",
+      "referenceFlowRangeLabel": "0–1.16",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.16 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.13,
+          "pressureDrop": 5.8
+        },
+        {
+          "flow": 0.21,
+          "pressureDrop": 10.1
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 14.6
+        },
+        {
+          "flow": 0.38,
+          "pressureDrop": 20.4
+        },
+        {
+          "flow": 0.45,
+          "pressureDrop": 26.7
+        },
+        {
+          "flow": 0.51,
+          "pressureDrop": 32.5
+        },
+        {
+          "flow": 0.55,
+          "pressureDrop": 40.2
+        },
+        {
+          "flow": 0.59,
+          "pressureDrop": 47.1
+        },
+        {
+          "flow": 0.64,
+          "pressureDrop": 53.6
+        },
+        {
+          "flow": 0.68,
+          "pressureDrop": 60.1
+        },
+        {
+          "flow": 0.71,
+          "pressureDrop": 66.2
+        },
+        {
+          "flow": 0.74,
+          "pressureDrop": 73.2
+        },
+        {
+          "flow": 0.77,
+          "pressureDrop": 79.9
+        },
+        {
+          "flow": 0.8,
+          "pressureDrop": 85.9
+        },
+        {
+          "flow": 0.83,
+          "pressureDrop": 92.5
+        },
+        {
+          "flow": 0.87,
+          "pressureDrop": 99.9
+        },
+        {
+          "flow": 0.89,
+          "pressureDrop": 105.2
+        },
+        {
+          "flow": 0.93,
+          "pressureDrop": 112.7
+        },
+        {
+          "flow": 0.97,
+          "pressureDrop": 119.6
+        },
+        {
+          "flow": 1.01,
+          "pressureDrop": 125.4
+        },
+        {
+          "flow": 1.05,
+          "pressureDrop": 132.4
+        },
+        {
+          "flow": 1.1,
+          "pressureDrop": 139.8
+        },
+        {
+          "flow": 1.16,
+          "pressureDrop": 149.5
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 11 Fr. 45° tip catalog number: P618-35. 90° tip catalog number: P616-35. Connection size: female luer lock. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 1.16 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 11 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.16 L/min. Catalog numbers include P618-35 for 45° tip and P616-35 for 90° tip."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
