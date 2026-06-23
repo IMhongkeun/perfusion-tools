@@ -672,6 +672,114 @@
     },
     {
       "manufacturer": "LivaNova",
+      "model": "Arterial Femoral Cannulae — Straight Tip with Suture Collar, Wire-reinforced",
+      "category": "Adult arterial",
+      "size": "20 Fr / 6.5 mm",
+      "outerDiameterFr": 20,
+      "outerDiameterMm": 6.5,
+      "overallLengthCm": 22,
+      "connectionSite": "Femoral arterial",
+      "connectorSize": "3/8 inch with female luer lock down",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "A252-65E",
+      "sourceLabel": "LivaNova Adult Cannulae - Femoral Cannulae brochure",
+      "sourceUrl": "https://imko.ru/upload/iblock/02c/02cc5ebbc40d378992bf24e61295942d.pdf",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Adult Cannulae - Femoral Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 8.34 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–8.34",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 8.34 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.49,
+          "pressureDrop": 2.6
+        },
+        {
+          "flow": 0.99,
+          "pressureDrop": 4.9
+        },
+        {
+          "flow": 1.51,
+          "pressureDrop": 7.8
+        },
+        {
+          "flow": 2.02,
+          "pressureDrop": 10.4
+        },
+        {
+          "flow": 2.48,
+          "pressureDrop": 14.5
+        },
+        {
+          "flow": 2.96,
+          "pressureDrop": 22.0
+        },
+        {
+          "flow": 3.52,
+          "pressureDrop": 29.8
+        },
+        {
+          "flow": 3.93,
+          "pressureDrop": 36.2
+        },
+        {
+          "flow": 4.13,
+          "pressureDrop": 40.5
+        },
+        {
+          "flow": 4.6,
+          "pressureDrop": 50.6
+        },
+        {
+          "flow": 5.04,
+          "pressureDrop": 59.9
+        },
+        {
+          "flow": 5.53,
+          "pressureDrop": 70.3
+        },
+        {
+          "flow": 5.88,
+          "pressureDrop": 79.6
+        },
+        {
+          "flow": 6.27,
+          "pressureDrop": 90.6
+        },
+        {
+          "flow": 6.63,
+          "pressureDrop": 100.4
+        },
+        {
+          "flow": 6.94,
+          "pressureDrop": 110.5
+        },
+        {
+          "flow": 7.26,
+          "pressureDrop": 120.1
+        },
+        {
+          "flow": 7.6,
+          "pressureDrop": 129.9
+        },
+        {
+          "flow": 7.97,
+          "pressureDrop": 140.0
+        },
+        {
+          "flow": 8.34,
+          "pressureDrop": 151.9
+        }
+      ],
+      "notes": "Source curve digitized to the visible endpoint. Do not extrapolate beyond the digitized source range. This is an adult arterial femoral cannula dataset; apply the existing arterial pressure-drop caution threshold if configured. Available coated: Depends on Country Registration."
+    },
+    {
+      "manufacturer": "LivaNova",
       "model": "Optiflow Aortic Arch Cannulae — Curved Tip, Wire-reinforced Tubing",
       "category": "Adult arterial",
       "size": "21 Fr",
