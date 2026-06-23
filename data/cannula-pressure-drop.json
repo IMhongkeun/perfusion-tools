@@ -880,6 +880,84 @@
     },
     {
       "manufacturer": "LivaNova",
+      "model": "Venous Femoral Cannulae — Wire-reinforced, Silicone Introducer",
+      "category": "Adult venous",
+      "size": "22 Fr",
+      "overallLengthCm": 67,
+      "connectionSite": "Femoral venous",
+      "connectorSize": "3/8 inch-1/2 inch",
+      "cartonQuantity": 3,
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "V172-22",
+      "sourceLabel": "LivaNova Adult Cannulae - Femoral Cannulae brochure",
+      "sourceUrl": "https://www.medicare-hellas.gr/media/uploads_file/2017/11/06/p1bu8u7tnp1n96sr18t81g161gbl5.pdf",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Adult Cannulae - Femoral Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 6.16 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–6.16",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.16 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.55,
+          "pressureDrop": 6.0
+        },
+        {
+          "flow": 1.02,
+          "pressureDrop": 10.6
+        },
+        {
+          "flow": 1.49,
+          "pressureDrop": 16.1
+        },
+        {
+          "flow": 2.0,
+          "pressureDrop": 22.4
+        },
+        {
+          "flow": 2.45,
+          "pressureDrop": 31.6
+        },
+        {
+          "flow": 2.95,
+          "pressureDrop": 45.4
+        },
+        {
+          "flow": 3.44,
+          "pressureDrop": 59.7
+        },
+        {
+          "flow": 3.95,
+          "pressureDrop": 75.5
+        },
+        {
+          "flow": 4.37,
+          "pressureDrop": 89.9
+        },
+        {
+          "flow": 4.65,
+          "pressureDrop": 99.7
+        },
+        {
+          "flow": 5.02,
+          "pressureDrop": 112.0
+        },
+        {
+          "flow": 5.59,
+          "pressureDrop": 131.6
+        },
+        {
+          "flow": 6.16,
+          "pressureDrop": 150.8
+        }
+      ],
+      "notes": "Venous Femoral Cannulae, Wire-reinforced, Silicone Introducer. Catalog number: V172-22. Connection size: 3/8 inch-1/2 inch. Effective length: 67 cm. Quantity per box: 3. Available coated: Depends on Country Registration. Source type: digitized_graph. Extrapolation: false. Source curve digitized to the visible endpoint. Do not extrapolate beyond the digitized source range. This is an adult femoral venous cannula dataset; do not apply arterial-only pressure-drop caution thresholds unless the existing app intentionally uses a category-agnostic threshold. The 28 Fr curve on the same source graph is intentionally not included because digitized points were not provided."
+    },
+    {
+      "manufacturer": "LivaNova",
       "model": "Optiflow Aortic Arch Cannulae — Curved Tip, Wire-reinforced Tubing",
       "category": "Adult arterial",
       "size": "21 Fr",
