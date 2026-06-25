@@ -6139,19 +6139,19 @@
     },
     {
       "manufacturer": "LivaNova",
-      "model": "Aortic Root Cannula with Vent Line",
-      "category": "Adult arterial",
-      "size": "16 Ga (5 Fr)",
+      "model": "Aortic Root Cannula / without Vent Line",
+      "category": "Aortic root",
+      "size": "18Ga",
       "overallLengthCm": 12.5,
       "connectionSite": "Aortic root",
       "cartonQuantity": 10,
       "cannulaOrderCodeLabel": "Catalog number",
-      "cannulaOrderCode": "AR-11116",
-      "sourceLabel": "LivaNova Aortic Root Cannula pressure-flow graph",
+      "cannulaOrderCode": "AR-11018",
+      "sourceLabel": "LivaNova Aortic Root Cannula without Vent Line pressure-flow graph",
       "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-aortic-root/with-and-whitout-vent-line",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Aortic Root Cannula with Vent Line source graph label 18Ga. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. Visible source curve begins near 0.10 L/min and ends near 0.40 L/min. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.40 L/min.",
+      "digitizationNote": "Source curve digitized from the Aortic Root Cannula without Vent Line 18Ga curve. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. Visible source curve begins near 0.10 L/min and ends near 0.40 L/min. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.40 L/min.",
       "referenceFlowRangeLabel": "0–0.40",
       "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.40 L/min). Pressure drop is not estimated.",
       "points": [
@@ -6228,7 +6228,7 @@
           "pressureDrop": 77.4
         }
       ],
-      "notes": "Aortic root cannula / with vent line dataset; do not categorize as femoral arterial or femoral venous. Source type: digitized_graph. Product/family: Aortic Root Cannula. Model/description: with Vent Line. Type/site: Aortic root. Display size/catalog: 16 Ga (5 Fr) — AR-11116. Source graph label: 18Ga. Insertion needle: 18 Ga - Pink. Effective length: 12.5 cm. Quantity per box: 10. Available coated: no. Source range: 0 to 0.40 L/min. Extrapolation: false."
+      "notes": "Aortic root cannula / without vent line dataset; do not categorize as femoral arterial, femoral venous, coronary ostia perfusion, or retrograde cardioplegia. Source type: digitized_graph. Product/family: Aortic Root Cannula. Model/description: without Vent Line. Type/site: Aortic root. Product/model display: Aortic Root Cannula / without Vent Line. Source graph label: 18Ga. Without vent line catalog number: AR-11018. With vent line catalog number: not available / -. Primary catalog number for this without-vent-line dataset: AR-11018. Effective length: 12.5 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula without Vent Line pressure-flow graph. Source range: 0 to 0.40 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula without Vent Line 18Ga curve. This dataset must not be labeled as with Vent Line. The source page/catalog metadata for this curve corresponds to the without-vent-line item AR-11018. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range."
     },
     {
       "manufacturer": "LivaNova",
