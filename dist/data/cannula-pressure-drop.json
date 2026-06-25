@@ -9126,37 +9126,128 @@
     },
     {
       "manufacturer": "Getinge / Maquet",
-      "model": "HLS Arterial Cannula",
-      "category": "femoral arterial",
-      "size": "PAS 1315",
-      "sourceLabel": "Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table",
-      "sourceUrl": "Uploaded Getinge/Maquet HLS arterial cannula chart and product order table",
-      "testMedium": "Water at room temperature",
-      "dataStatus": "Digitized curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.",
+      "model": "Arterial HLS Cannulae / PAS arterial HLS cannula",
+      "category": "Adult arterial",
+      "size": "13 Fr / 4.3 mm",
+      "sourceLabel": "Arterial HLS cannulae product pressure-flow graph",
+      "sourceUrl": "",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "PAS 1315 pressure-flow data were updated with a denser digitized point set. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range of 2.91 L/min.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 9
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 24
+          "flow": 0.2,
+          "pressureDrop": 2.7
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 49
+          "flow": 0.37,
+          "pressureDrop": 5.4
         },
         {
-          "flow": 2,
-          "pressureDrop": 86
+          "flow": 0.52,
+          "pressureDrop": 9.0
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 140
+          "flow": 0.69,
+          "pressureDrop": 13.0
+        },
+        {
+          "flow": 0.84,
+          "pressureDrop": 17.0
+        },
+        {
+          "flow": 0.96,
+          "pressureDrop": 22.0
+        },
+        {
+          "flow": 1.08,
+          "pressureDrop": 27.8
+        },
+        {
+          "flow": 1.21,
+          "pressureDrop": 33.2
+        },
+        {
+          "flow": 1.36,
+          "pressureDrop": 40.4
+        },
+        {
+          "flow": 1.53,
+          "pressureDrop": 51.1
+        },
+        {
+          "flow": 1.68,
+          "pressureDrop": 61.0
+        },
+        {
+          "flow": 1.8,
+          "pressureDrop": 70.0
+        },
+        {
+          "flow": 1.92,
+          "pressureDrop": 80.7
+        },
+        {
+          "flow": 2.03,
+          "pressureDrop": 89.7
+        },
+        {
+          "flow": 2.15,
+          "pressureDrop": 100.0
+        },
+        {
+          "flow": 2.23,
+          "pressureDrop": 110.3
+        },
+        {
+          "flow": 2.32,
+          "pressureDrop": 119.7
+        },
+        {
+          "flow": 2.38,
+          "pressureDrop": 129.6
+        },
+        {
+          "flow": 2.47,
+          "pressureDrop": 140.8
+        },
+        {
+          "flow": 2.55,
+          "pressureDrop": 149.8
+        },
+        {
+          "flow": 2.63,
+          "pressureDrop": 160.1
+        },
+        {
+          "flow": 2.69,
+          "pressureDrop": 169.5
+        },
+        {
+          "flow": 2.76,
+          "pressureDrop": 180.3
+        },
+        {
+          "flow": 2.84,
+          "pressureDrop": 189.7
+        },
+        {
+          "flow": 2.91,
+          "pressureDrop": 199.6
         }
       ],
-      "notes": "PAS 1315: 13 Fr (4.3 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAS 1315 Bioline coating."
+      "notes": "Adult arterial / arterial HLS cannula dataset; do not categorize as venous, cardioplegia, aortic root, coronary ostia, or retrograde cardioplegia. Product/family: Arterial HLS Cannulae. Model/description: PAS arterial HLS cannula. Type/site: Arterial HLS cannula. Size: 13 Fr / 4.3 mm. Type/catalog number: PAS 1315. Bioline coated catalog number: BE-PAS 1315. Insertion length: 15 cm. Side holes: 2. Perforation length: 1 cm. Connector: 3/8 inch LL. Quantity per carton/box: 1. Source type: digitized_graph. Source description: Arterial HLS cannulae product pressure-flow graph. Source range: 0 to 2.91 L/min. Extrapolation: false. PAS 1315 pressure-flow data were updated with a denser digitized point set. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range of 2.91 L/min. This is an adult arterial HLS cannula dataset; preserve the existing arterial pressure-drop caution behavior if configured. Do not use this dataset for PAS 1515, PAS 1715, PAS 1915, PAS 2115, PAS 2315, PAL 1523, PAL 1723, PAL 1923, PAL 2123, or PAL 2323.",
+      "connectionSite": "Arterial HLS cannula",
+      "connectorSize": "3/8 inch LL",
+      "cartonQuantity": 1,
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PAS 1315",
+      "referenceFlowRangeLabel": "0–2.91",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 2.91 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Getinge / Maquet",
