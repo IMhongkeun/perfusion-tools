@@ -12062,44 +12062,127 @@
     {
       "manufacturer": "Medtronic",
       "model": "DLP Single Stage Venous Cannulae with Right Angle Metal Tip",
-      "category": "venous",
-      "size": "14 Fr",
+      "category": "Adult venous",
+      "size": "14 Fr / 4.7 mm",
       "outerDiameterFr": 14,
       "outerDiameterMm": 4.7,
       "overallLengthIn": 14,
       "overallLengthCm": 35.6,
-      "connectionSite": "3/8 in (0.95 cm)",
+      "connectionSite": "Single stage venous",
       "cannulaOrderCode": "69314",
-      "cartonQuantity": "10 per carton",
-      "sourceLabel": "Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 3/8 in connection site pressure-loss chart",
-      "sourceUrl": "Uploaded Medtronic Cannula Catalog 2020",
+      "cartonQuantity": 10,
+      "sourceLabel": "DLP Single Stage Venous Cannulae with Right Angle Metal Tip pressure-flow graph",
+      "sourceUrl": "",
       "testMedium": "Water",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 3/8 in connection site chart.",
-      "outOfRangeMessage": "Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.",
+      "digitizationNote": "Pressure-loss data were updated with a denser digitized point set from the DLP Single Stage Venous Cannulae with Right Angle Metal Tip 3/8 inch connection site 14 Fr curve. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range of 2.71 L/min.",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 2.71 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 4
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 17
+          "flow": 0.2,
+          "pressureDrop": 1.4
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 34
+          "flow": 0.35,
+          "pressureDrop": 2.3
         },
         {
-          "flow": 2,
-          "pressureDrop": 58
+          "flow": 0.48,
+          "pressureDrop": 4.5
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 88
+          "flow": 0.61,
+          "pressureDrop": 7.0
+        },
+        {
+          "flow": 0.76,
+          "pressureDrop": 10.2
+        },
+        {
+          "flow": 0.87,
+          "pressureDrop": 13.0
+        },
+        {
+          "flow": 1.0,
+          "pressureDrop": 16.4
+        },
+        {
+          "flow": 1.12,
+          "pressureDrop": 20.2
+        },
+        {
+          "flow": 1.27,
+          "pressureDrop": 25.4
+        },
+        {
+          "flow": 1.4,
+          "pressureDrop": 30.4
+        },
+        {
+          "flow": 1.52,
+          "pressureDrop": 35.4
+        },
+        {
+          "flow": 1.63,
+          "pressureDrop": 40.4
+        },
+        {
+          "flow": 1.74,
+          "pressureDrop": 44.9
+        },
+        {
+          "flow": 1.85,
+          "pressureDrop": 50.1
+        },
+        {
+          "flow": 1.94,
+          "pressureDrop": 54.7
+        },
+        {
+          "flow": 2.04,
+          "pressureDrop": 60.1
+        },
+        {
+          "flow": 2.14,
+          "pressureDrop": 65.1
+        },
+        {
+          "flow": 2.23,
+          "pressureDrop": 70.5
+        },
+        {
+          "flow": 2.31,
+          "pressureDrop": 75.1
+        },
+        {
+          "flow": 2.41,
+          "pressureDrop": 80.1
+        },
+        {
+          "flow": 2.48,
+          "pressureDrop": 85.0
+        },
+        {
+          "flow": 2.57,
+          "pressureDrop": 90.3
+        },
+        {
+          "flow": 2.63,
+          "pressureDrop": 94.6
+        },
+        {
+          "flow": 2.71,
+          "pressureDrop": 99.8
         }
       ],
-      "notes": "DLP Single Stage Venous Cannula with Right Angle Metal Tip. 14 Fr (4.7 mm), 14 in (35.6 cm) overall length, 3/8 in (0.95 cm) connection site. Order code 69314."
+      "notes": "Single stage venous cannula / right angle metal tip dataset; do not categorize as femoral arterial, aortic root, coronary ostia perfusion, or retrograde cardioplegia. Product/family: DLP Single Stage Venous Cannulae. Model/description: Right Angle Metal Tip. Type/site: Single stage venous. Size: 14 Fr / 4.7 mm. Overall length: 14 in / 35.6 cm. Connection site/connection size: 3/8 inch / 0.95 cm. Catalog number: 69314. Quantity per carton: 10. Source type: digitized_graph. Source description: DLP Single Stage Venous Cannulae with Right Angle Metal Tip pressure-flow graph. Test medium: water (source graph x-axis specifies L/min of water). Source graph: DLP Single Stage Venous Cannulae with Right Angle Metal Tip and 3/8 inch connection site. Source graph label: 14 Fr. Source graph x-axis is Flow Rate (L/min of water); y-axis is Pressure Loss (mmHg). Source range: 0 to 2.71 L/min. Extrapolation: false. Pressure-loss data were updated with a denser digitized point set from the DLP Single Stage Venous Cannulae with Right Angle Metal Tip 3/8 inch connection site 14 Fr curve. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range of 2.71 L/min. This is a venous cannula dataset; do not apply arterial-only pressure-drop caution thresholds unless the existing app intentionally uses a shared threshold. Do not use this dataset for 12 Fr, 16 Fr, 18 Fr, 20 Fr, 22 Fr, 24 Fr, 28 Fr, 31 Fr, or 1/4 inch connection site curves.",
+      "connectorSize": "3/8 inch / 0.95 cm",
+      "cannulaOrderCodeLabel": "Catalog number",
+      "referenceFlowRangeLabel": "0–2.71"
     },
     {
       "manufacturer": "Medtronic",
