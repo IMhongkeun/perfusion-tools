@@ -126,14 +126,133 @@
     },
     {
       "manufacturer": "LivaNova",
-      "model": "RAP Femoral Venous Cannula",
-      "category": "femoral venous",
+      "model": "RAP FV Femoral Venous Cannulae",
+      "category": "Adult venous",
       "size": "23 Fr distal / 25 Fr proximal",
-      "sourceLabel": "LivaNova MICS & Femoral Cannulae Brochure",
+      "overallLengthCm": 72.5,
+      "connectionSite": "Femoral venous",
+      "connectorSize": "3/8 inch and 1/2 inch",
+      "cartonQuantity": 5,
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "200-150",
+      "sourceLabel": "LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure",
       "sourceUrl": "https://replantmed.hu/images/LN_BROCHURE_MICS_FEMORAL_CANNULAE_09295-178-A2.pdf",
-      "testMedium": "Not specified on product page",
-      "points": [],
-      "notes": "Pressure-flow chart source identified in LivaNova MICS & Femoral Cannulae brochure. Curve points have not yet been digitized."
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the RAP FV Femoral Venous Cannulae F23/25 curve. The source graph x-axis is labeled 0–9 L/min and y-axis is labeled 0–140 mmHg. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the visible digitized source range of 7.18 L/min.",
+      "referenceFlowRangeLabel": "0–7.18",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 7.18 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.96,
+          "pressureDrop": 2.5
+        },
+        {
+          "flow": 1.29,
+          "pressureDrop": 5.8
+        },
+        {
+          "flow": 1.5,
+          "pressureDrop": 7.8
+        },
+        {
+          "flow": 1.75,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 2.01,
+          "pressureDrop": 11.6
+        },
+        {
+          "flow": 2.24,
+          "pressureDrop": 11.6
+        },
+        {
+          "flow": 2.54,
+          "pressureDrop": 11.3
+        },
+        {
+          "flow": 2.83,
+          "pressureDrop": 13.3
+        },
+        {
+          "flow": 3.12,
+          "pressureDrop": 15.3
+        },
+        {
+          "flow": 3.43,
+          "pressureDrop": 18.1
+        },
+        {
+          "flow": 3.69,
+          "pressureDrop": 21.6
+        },
+        {
+          "flow": 3.92,
+          "pressureDrop": 26.4
+        },
+        {
+          "flow": 4.13,
+          "pressureDrop": 30.6
+        },
+        {
+          "flow": 4.35,
+          "pressureDrop": 35.9
+        },
+        {
+          "flow": 4.69,
+          "pressureDrop": 40.9
+        },
+        {
+          "flow": 5.1,
+          "pressureDrop": 46.1
+        },
+        {
+          "flow": 5.43,
+          "pressureDrop": 50.9
+        },
+        {
+          "flow": 5.67,
+          "pressureDrop": 55.7
+        },
+        {
+          "flow": 5.93,
+          "pressureDrop": 61.2
+        },
+        {
+          "flow": 6.07,
+          "pressureDrop": 64.2
+        },
+        {
+          "flow": 6.26,
+          "pressureDrop": 68.7
+        },
+        {
+          "flow": 6.44,
+          "pressureDrop": 74.2
+        },
+        {
+          "flow": 6.6,
+          "pressureDrop": 80.4
+        },
+        {
+          "flow": 6.77,
+          "pressureDrop": 85.2
+        },
+        {
+          "flow": 6.96,
+          "pressureDrop": 92.9
+        },
+        {
+          "flow": 7.18,
+          "pressureDrop": 100.2
+        }
+      ],
+      "notes": "Adult venous / MICS femoral venous cannula dataset; do not categorize as femoral arterial, aortic root, coronary ostia perfusion, or retrograde cardioplegia. Product/family: RAP FV Femoral Venous Cannulae. Model/description: Femoral Venous Cannulae for minimally invasive cardiac surgery. Section/use: Minimally invasive cardiac surgery. Type/site: Femoral venous. Source graph label: F23/25. Size: 23 Fr distal / 25 Fr proximal. Catalog number: 200-150. Outer diameter: 7.7 / 8.3 mm. Effective length: 72.5 cm. Connection size: 3/8 inch and 1/2 inch. Quantity per box: 5. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure pressure-flow graph. Source range: 0 to 7.18 L/min. Extrapolation: false. Source curve digitized from the RAP FV Femoral Venous Cannulae F23/25 curve. This dataset corresponds to catalog number 200-150, with 23 Fr distal / 25 Fr proximal outer diameter and 7.7 / 8.3 mm diameter. The source graph x-axis is labeled 0–9 L/min and y-axis is labeled 0–140 mmHg. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the visible digitized source range of 7.18 L/min. This is an adult femoral venous cannula dataset; do not apply arterial-only pressure-drop caution thresholds unless the existing app intentionally uses a category-agnostic threshold. Do not use the 22/22 Fr catalog number 200-100 for this dataset."
     },
     {
       "manufacturer": "LivaNova",
