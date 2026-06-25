@@ -4,25 +4,255 @@
   "items": [
     {
       "manufacturer": "LivaNova",
-      "model": "RAP Femoral Venous Cannula",
-      "category": "femoral venous",
+      "model": "RAP FV Femoral Venous Cannulae",
+      "category": "Adult venous",
       "size": "22 Fr distal / 22 Fr proximal",
-      "sourceLabel": "LivaNova MICS & Femoral Cannulae Brochure",
+      "overallLengthCm": 68.7,
+      "connectionSite": "Femoral venous",
+      "connectorSize": "3/8 inch and 1/2 inch",
+      "cartonQuantity": 5,
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "200-100",
+      "sourceLabel": "LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure",
       "sourceUrl": "https://replantmed.hu/images/LN_BROCHURE_MICS_FEMORAL_CANNULAE_09295-178-A2.pdf",
-      "testMedium": "Not specified on product page",
-      "points": [],
-      "notes": "Pressure-flow chart source identified in LivaNova MICS & Femoral Cannulae brochure. Curve points have not yet been digitized."
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the RAP FV Femoral Venous Cannulae F22/22 curve. The source graph x-axis is labeled 0–9 L/min and y-axis is labeled 0–140 mmHg. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the visible digitized source range of 6.29 L/min.",
+      "referenceFlowRangeLabel": "0–6.29",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.29 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.94,
+          "pressureDrop": 2.0
+        },
+        {
+          "flow": 1.24,
+          "pressureDrop": 2.0
+        },
+        {
+          "flow": 1.52,
+          "pressureDrop": 2.5
+        },
+        {
+          "flow": 1.79,
+          "pressureDrop": 3.8
+        },
+        {
+          "flow": 2.01,
+          "pressureDrop": 6.6
+        },
+        {
+          "flow": 2.35,
+          "pressureDrop": 11.3
+        },
+        {
+          "flow": 2.63,
+          "pressureDrop": 16.1
+        },
+        {
+          "flow": 2.91,
+          "pressureDrop": 21.6
+        },
+        {
+          "flow": 3.15,
+          "pressureDrop": 27.3
+        },
+        {
+          "flow": 3.46,
+          "pressureDrop": 33.8
+        },
+        {
+          "flow": 3.75,
+          "pressureDrop": 40.9
+        },
+        {
+          "flow": 3.99,
+          "pressureDrop": 47.1
+        },
+        {
+          "flow": 4.31,
+          "pressureDrop": 55.1
+        },
+        {
+          "flow": 4.52,
+          "pressureDrop": 61.4
+        },
+        {
+          "flow": 4.68,
+          "pressureDrop": 66.4
+        },
+        {
+          "flow": 4.91,
+          "pressureDrop": 74.6
+        },
+        {
+          "flow": 5.1,
+          "pressureDrop": 80.6
+        },
+        {
+          "flow": 5.29,
+          "pressureDrop": 88.4
+        },
+        {
+          "flow": 5.46,
+          "pressureDrop": 94.4
+        },
+        {
+          "flow": 5.62,
+          "pressureDrop": 100.9
+        },
+        {
+          "flow": 5.79,
+          "pressureDrop": 108.2
+        },
+        {
+          "flow": 5.91,
+          "pressureDrop": 113.4
+        },
+        {
+          "flow": 6.08,
+          "pressureDrop": 120.2
+        },
+        {
+          "flow": 6.29,
+          "pressureDrop": 129.7
+        }
+      ],
+      "notes": "Adult venous / MICS femoral venous cannula dataset; do not categorize as femoral arterial, aortic root, coronary ostia perfusion, or retrograde cardioplegia. Product/family: RAP FV Femoral Venous Cannulae. Model/description: Femoral Venous Cannulae for minimally invasive cardiac surgery. Section/use: Minimally invasive cardiac surgery. Type/site: Femoral venous. Source graph label: F22/22. Size: 22 Fr distal / 22 Fr proximal. Catalog number: 200-100. Outer diameter: 7.3 / 7.3 mm. Effective length: 68.7 cm. Connection size: 3/8 inch and 1/2 inch. Quantity per box: 5. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure pressure-flow graph. Source range: 0 to 6.29 L/min. Extrapolation: false. Source curve digitized from the RAP FV Femoral Venous Cannulae F22/22 curve. This dataset corresponds to catalog number 200-100, with 22 Fr distal / 22 Fr proximal outer diameter and 7.3 / 7.3 mm diameter. The source graph x-axis is labeled 0–9 L/min and y-axis is labeled 0–140 mmHg. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the visible digitized source range of 6.29 L/min. This is an adult femoral venous cannula dataset; do not apply arterial-only pressure-drop caution thresholds unless the existing app intentionally uses a category-agnostic threshold. Do not use the 23/25 Fr catalog number 200-150 for this dataset."
     },
     {
       "manufacturer": "LivaNova",
-      "model": "RAP Femoral Venous Cannula",
-      "category": "femoral venous",
+      "model": "RAP FV Femoral Venous Cannulae",
+      "category": "Adult venous",
       "size": "23 Fr distal / 25 Fr proximal",
-      "sourceLabel": "LivaNova MICS & Femoral Cannulae Brochure",
+      "overallLengthCm": 72.5,
+      "connectionSite": "Femoral venous",
+      "connectorSize": "3/8 inch and 1/2 inch",
+      "cartonQuantity": 5,
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "200-150",
+      "sourceLabel": "LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure",
       "sourceUrl": "https://replantmed.hu/images/LN_BROCHURE_MICS_FEMORAL_CANNULAE_09295-178-A2.pdf",
-      "testMedium": "Not specified on product page",
-      "points": [],
-      "notes": "Pressure-flow chart source identified in LivaNova MICS & Femoral Cannulae brochure. Curve points have not yet been digitized."
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the RAP FV Femoral Venous Cannulae F23/25 curve. The source graph x-axis is labeled 0–9 L/min and y-axis is labeled 0–140 mmHg. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the visible digitized source range of 7.18 L/min.",
+      "referenceFlowRangeLabel": "0–7.18",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 7.18 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.96,
+          "pressureDrop": 2.5
+        },
+        {
+          "flow": 1.29,
+          "pressureDrop": 5.8
+        },
+        {
+          "flow": 1.5,
+          "pressureDrop": 7.8
+        },
+        {
+          "flow": 1.75,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 2.01,
+          "pressureDrop": 11.6
+        },
+        {
+          "flow": 2.24,
+          "pressureDrop": 11.6
+        },
+        {
+          "flow": 2.54,
+          "pressureDrop": 11.3
+        },
+        {
+          "flow": 2.83,
+          "pressureDrop": 13.3
+        },
+        {
+          "flow": 3.12,
+          "pressureDrop": 15.3
+        },
+        {
+          "flow": 3.43,
+          "pressureDrop": 18.1
+        },
+        {
+          "flow": 3.69,
+          "pressureDrop": 21.6
+        },
+        {
+          "flow": 3.92,
+          "pressureDrop": 26.4
+        },
+        {
+          "flow": 4.13,
+          "pressureDrop": 30.6
+        },
+        {
+          "flow": 4.35,
+          "pressureDrop": 35.9
+        },
+        {
+          "flow": 4.69,
+          "pressureDrop": 40.9
+        },
+        {
+          "flow": 5.1,
+          "pressureDrop": 46.1
+        },
+        {
+          "flow": 5.43,
+          "pressureDrop": 50.9
+        },
+        {
+          "flow": 5.67,
+          "pressureDrop": 55.7
+        },
+        {
+          "flow": 5.93,
+          "pressureDrop": 61.2
+        },
+        {
+          "flow": 6.07,
+          "pressureDrop": 64.2
+        },
+        {
+          "flow": 6.26,
+          "pressureDrop": 68.7
+        },
+        {
+          "flow": 6.44,
+          "pressureDrop": 74.2
+        },
+        {
+          "flow": 6.6,
+          "pressureDrop": 80.4
+        },
+        {
+          "flow": 6.77,
+          "pressureDrop": 85.2
+        },
+        {
+          "flow": 6.96,
+          "pressureDrop": 92.9
+        },
+        {
+          "flow": 7.18,
+          "pressureDrop": 100.2
+        }
+      ],
+      "notes": "Adult venous / MICS femoral venous cannula dataset; do not categorize as femoral arterial, aortic root, coronary ostia perfusion, or retrograde cardioplegia. Product/family: RAP FV Femoral Venous Cannulae. Model/description: Femoral Venous Cannulae for minimally invasive cardiac surgery. Section/use: Minimally invasive cardiac surgery. Type/site: Femoral venous. Source graph label: F23/25. Size: 23 Fr distal / 25 Fr proximal. Catalog number: 200-150. Outer diameter: 7.7 / 8.3 mm. Effective length: 72.5 cm. Connection size: 3/8 inch and 1/2 inch. Quantity per box: 5. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure pressure-flow graph. Source range: 0 to 7.18 L/min. Extrapolation: false. Source curve digitized from the RAP FV Femoral Venous Cannulae F23/25 curve. This dataset corresponds to catalog number 200-150, with 23 Fr distal / 25 Fr proximal outer diameter and 7.7 / 8.3 mm diameter. The source graph x-axis is labeled 0–9 L/min and y-axis is labeled 0–140 mmHg. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the visible digitized source range of 7.18 L/min. This is an adult femoral venous cannula dataset; do not apply arterial-only pressure-drop caution thresholds unless the existing app intentionally uses a category-agnostic threshold. Do not use the 22/22 Fr catalog number 200-100 for this dataset."
     },
     {
       "manufacturer": "LivaNova",
@@ -954,7 +1184,105 @@
           "pressureDrop": 150.8
         }
       ],
-      "notes": "Venous Femoral Cannulae, Wire-reinforced, Silicone Introducer. Catalog number: V172-22. Connection size: 3/8 inch-1/2 inch. Effective length: 67 cm. Quantity per box: 3. Available coated: Depends on Country Registration. Source type: digitized_graph. Extrapolation: false. Source curve digitized to the visible endpoint. Do not extrapolate beyond the digitized source range. This is an adult femoral venous cannula dataset; do not apply arterial-only pressure-drop caution thresholds unless the existing app intentionally uses a category-agnostic threshold. The 28 Fr curve on the same source graph is intentionally not included because digitized points were not provided."
+      "notes": "Venous Femoral Cannulae, Wire-reinforced, Silicone Introducer. Catalog number: V172-22. Connection size: 3/8 inch-1/2 inch. Effective length: 67 cm. Quantity per box: 3. Available coated: Depends on Country Registration. Source type: digitized_graph. Extrapolation: false. Source curve digitized to the visible endpoint. Do not extrapolate beyond the digitized source range. This is an adult femoral venous cannula dataset; do not apply arterial-only pressure-drop caution thresholds unless the existing app intentionally uses a category-agnostic threshold."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Venous Femoral Cannulae — Wire-reinforced, Silicone Introducer",
+      "category": "Adult venous",
+      "size": "28 Fr",
+      "overallLengthCm": 87,
+      "connectionSite": "Femoral venous",
+      "connectorSize": "1/2 inch",
+      "cartonQuantity": 3,
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "V172-28",
+      "sourceLabel": "LivaNova Adult Cannulae - Femoral Cannulae brochure",
+      "sourceUrl": "https://www.medicare-hellas.gr/media/uploads_file/2017/11/06/p1bu8u7tnp1n96sr18t81g161gbl5.pdf",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Digitized from LivaNova Adult Cannulae - Femoral Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 9.0 L/min); do not extrapolate beyond the digitized source range.",
+      "referenceFlowRangeLabel": "0–9.0",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 9.0 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.56,
+          "pressureDrop": 2.6
+        },
+        {
+          "flow": 1.0,
+          "pressureDrop": 4.3
+        },
+        {
+          "flow": 1.46,
+          "pressureDrop": 5.7
+        },
+        {
+          "flow": 2.02,
+          "pressureDrop": 8.3
+        },
+        {
+          "flow": 2.43,
+          "pressureDrop": 10.1
+        },
+        {
+          "flow": 3.01,
+          "pressureDrop": 12.9
+        },
+        {
+          "flow": 3.49,
+          "pressureDrop": 17.2
+        },
+        {
+          "flow": 4.0,
+          "pressureDrop": 22.4
+        },
+        {
+          "flow": 4.47,
+          "pressureDrop": 27.3
+        },
+        {
+          "flow": 5.02,
+          "pressureDrop": 33.9
+        },
+        {
+          "flow": 5.49,
+          "pressureDrop": 39.6
+        },
+        {
+          "flow": 6.0,
+          "pressureDrop": 45.7
+        },
+        {
+          "flow": 6.46,
+          "pressureDrop": 51.1
+        },
+        {
+          "flow": 6.98,
+          "pressureDrop": 58.0
+        },
+        {
+          "flow": 7.49,
+          "pressureDrop": 65.5
+        },
+        {
+          "flow": 7.96,
+          "pressureDrop": 71.5
+        },
+        {
+          "flow": 8.43,
+          "pressureDrop": 76.4
+        },
+        {
+          "flow": 9.0,
+          "pressureDrop": 83.3
+        }
+      ],
+      "notes": "Venous Femoral Cannulae, Wire-reinforced, Silicone Introducer. Catalog number: V172-28. Connection size: 1/2 inch. Effective length: 87 cm. Quantity per box: 3. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Femoral Cannulae brochure pressure-flow graph. Source range: 0 to 9.0 L/min. Extrapolation: false. Source curve digitized to the visible endpoint. Do not extrapolate beyond the digitized source range. This is an adult femoral venous cannula dataset; do not apply arterial-only pressure-drop caution thresholds unless the existing app intentionally uses a category-agnostic threshold."
     },
     {
       "manufacturer": "LivaNova",
@@ -5810,38 +6138,3116 @@
       "notes": "Single Stage Right Angle Bullet Tip Venous Return Cannulae with Suture Ring, Right Angle Bullet Tip with Suture Ring, Wire-reinforced Tubing. Stage: Single stage. Angled tip length: 8.6 cm. Connector acceptance: 3/8 inch. Catalog number: V152-36. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Bullet Tip Venous Return Cannulae with Suture Ring brochure pressure-flow graph. Extrapolation: false. Source range: 1.0 to 8.0 L/min. Source curve digitized from 1.0 to 8.0 L/min. This is the 36 Fr curve corresponding to catalog V152-36 with 8.6 cm angled tip length. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
     },
     {
-      "manufacturer": "Getinge / Maquet",
-      "model": "HLS Arterial Cannula",
-      "category": "femoral arterial",
-      "size": "PAS 1315",
-      "sourceLabel": "Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table",
-      "sourceUrl": "Uploaded Getinge/Maquet HLS arterial cannula chart and product order table",
-      "testMedium": "Water at room temperature",
-      "dataStatus": "Digitized curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.",
+      "manufacturer": "LivaNova",
+      "model": "Aortic Root Cannula / without Vent Line",
+      "category": "Aortic root",
+      "size": "18Ga",
+      "overallLengthCm": 12.5,
+      "connectionSite": "Aortic root",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "AR-11018",
+      "sourceLabel": "LivaNova Aortic Root Cannula without Vent Line pressure-flow graph",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-aortic-root/with-and-whitout-vent-line",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Aortic Root Cannula without Vent Line 18Ga curve. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. Visible source curve begins near 0.10 L/min and ends near 0.40 L/min. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.40 L/min.",
+      "referenceFlowRangeLabel": "0–0.40",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.40 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 9
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 24
+          "flow": 0.1,
+          "pressureDrop": 6.1
+        },
+        {
+          "flow": 0.12,
+          "pressureDrop": 8.1
+        },
+        {
+          "flow": 0.14,
+          "pressureDrop": 10.6
+        },
+        {
+          "flow": 0.17,
+          "pressureDrop": 13.5
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 16.3
+        },
+        {
+          "flow": 0.22,
+          "pressureDrop": 20.1
+        },
+        {
+          "flow": 0.24,
+          "pressureDrop": 25.1
+        },
+        {
+          "flow": 0.26,
+          "pressureDrop": 30.0
+        },
+        {
+          "flow": 0.28,
+          "pressureDrop": 34.6
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 39.8
+        },
+        {
+          "flow": 0.32,
+          "pressureDrop": 45.3
+        },
+        {
+          "flow": 0.33,
+          "pressureDrop": 49.9
+        },
+        {
+          "flow": 0.34,
+          "pressureDrop": 54.6
+        },
+        {
+          "flow": 0.35,
+          "pressureDrop": 59.8
+        },
+        {
+          "flow": 0.37,
+          "pressureDrop": 64.7
+        },
+        {
+          "flow": 0.38,
+          "pressureDrop": 69.8
+        },
+        {
+          "flow": 0.4,
+          "pressureDrop": 77.4
+        }
+      ],
+      "notes": "Aortic root cannula / without vent line dataset; do not categorize as femoral arterial, femoral venous, coronary ostia perfusion, or retrograde cardioplegia. Source type: digitized_graph. Product/family: Aortic Root Cannula. Model/description: without Vent Line. Type/site: Aortic root. Product/model display: Aortic Root Cannula / without Vent Line. Source graph label: 18Ga. Without vent line catalog number: AR-11018. With vent line catalog number: not available / -. Primary catalog number for this without-vent-line dataset: AR-11018. Effective length: 12.5 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula without Vent Line pressure-flow graph. Source range: 0 to 0.40 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula without Vent Line 18Ga curve. This dataset must not be labeled as with Vent Line. The source page/catalog metadata for this curve corresponds to the without-vent-line item AR-11018. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Root Cannula with Vent Line",
+      "category": "Adult arterial",
+      "size": "14 Ga / 7 Fr",
+      "overallLengthCm": 15,
+      "connectionSite": "Aortic root",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "AR-11114",
+      "sourceLabel": "LivaNova Aortic Root Cannula with Vent Line pressure-flow graph",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-aortic-root/with-and-whitout-vent-line",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Aortic Root Cannula with Vent Line 16Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. This dataset maps source graph label 16Ga to the product table row with cannula tip size 14 Ga / 7 Fr, insertion needle 16 Ga - White, and with-vent catalog number AR-11114. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min.",
+      "referenceFlowRangeLabel": "0–0.60",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.60 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.1,
+          "pressureDrop": 4.0
+        },
+        {
+          "flow": 0.14,
+          "pressureDrop": 6.1
+        },
+        {
+          "flow": 0.17,
+          "pressureDrop": 8.1
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 0.23,
+          "pressureDrop": 13.1
+        },
+        {
+          "flow": 0.27,
+          "pressureDrop": 16.5
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 19.2
+        },
+        {
+          "flow": 0.34,
+          "pressureDrop": 25.1
+        },
+        {
+          "flow": 0.38,
+          "pressureDrop": 30.0
+        },
+        {
+          "flow": 0.4,
+          "pressureDrop": 33.4
+        },
+        {
+          "flow": 0.43,
+          "pressureDrop": 39.9
+        },
+        {
+          "flow": 0.46,
+          "pressureDrop": 44.8
+        },
+        {
+          "flow": 0.5,
+          "pressureDrop": 52.1
+        },
+        {
+          "flow": 0.51,
+          "pressureDrop": 56.0
+        },
+        {
+          "flow": 0.53,
+          "pressureDrop": 59.8
+        },
+        {
+          "flow": 0.56,
+          "pressureDrop": 65.1
+        },
+        {
+          "flow": 0.57,
+          "pressureDrop": 69.8
+        },
+        {
+          "flow": 0.6,
+          "pressureDrop": 75.7
+        }
+      ],
+      "notes": "Aortic root cannula / with vent line dataset; do not categorize as femoral arterial or femoral venous. Source type: digitized_graph. Product/family: Aortic Root Cannula. Model/description: with Vent Line. Type/site: Aortic root. Displayed cannula tip size: 14 Ga / 7 Fr. Source graph label: 16Ga. Insertion needle: 16 Ga - White. Without vent line catalog number: AR-11014. With vent line catalog number: AR-11114. Primary catalog number for this with-vent-line dataset: AR-11114. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula with Vent Line pressure-flow graph. Source range: 0 to 0.60 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula with Vent Line 16Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Root Cannula with Vent Line",
+      "category": "Adult arterial",
+      "size": "12 Ga / 9 Fr",
+      "overallLengthCm": 15,
+      "connectionSite": "Aortic root",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "AR-11112",
+      "sourceLabel": "LivaNova Aortic Root Cannula with Vent Line pressure-flow graph",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-aortic-root/with-and-whitout-vent-line",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Aortic Root Cannula with Vent Line 14Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. This dataset maps source graph label 14Ga to the product table row with cannula tip size 12 Ga / 9 Fr, insertion needle 14 Ga - Green, and with-vent catalog number AR-11112. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min.",
+      "referenceFlowRangeLabel": "0–0.60",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.60 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.14,
+          "pressureDrop": 4.2
+        },
+        {
+          "flow": 0.16,
+          "pressureDrop": 5.1
+        },
+        {
+          "flow": 0.18,
+          "pressureDrop": 5.7
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 6.4
+        },
+        {
+          "flow": 0.22,
+          "pressureDrop": 7.4
+        },
+        {
+          "flow": 0.24,
+          "pressureDrop": 8.6
+        },
+        {
+          "flow": 0.27,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 12.5
+        },
+        {
+          "flow": 0.32,
+          "pressureDrop": 13.8
+        },
+        {
+          "flow": 0.35,
+          "pressureDrop": 15.8
+        },
+        {
+          "flow": 0.37,
+          "pressureDrop": 18.0
+        },
+        {
+          "flow": 0.4,
+          "pressureDrop": 20.2
+        },
+        {
+          "flow": 0.43,
+          "pressureDrop": 23.4
+        },
+        {
+          "flow": 0.45,
+          "pressureDrop": 25.6
+        },
+        {
+          "flow": 0.47,
+          "pressureDrop": 27.5
+        },
+        {
+          "flow": 0.49,
+          "pressureDrop": 30.0
+        },
+        {
+          "flow": 0.51,
+          "pressureDrop": 32.2
+        },
+        {
+          "flow": 0.53,
+          "pressureDrop": 34.6
+        },
+        {
+          "flow": 0.55,
+          "pressureDrop": 37.4
+        },
+        {
+          "flow": 0.57,
+          "pressureDrop": 39.8
+        },
+        {
+          "flow": 0.58,
+          "pressureDrop": 41.6
+        },
+        {
+          "flow": 0.6,
+          "pressureDrop": 44.0
+        }
+      ],
+      "notes": "Aortic root cannula / with vent line dataset; do not categorize as femoral arterial or femoral venous. Source type: digitized_graph. Product/family: Aortic Root Cannula. Model/description: with Vent Line. Type/site: Aortic root. Displayed cannula tip size: 12 Ga / 9 Fr. Source graph label: 14Ga. Insertion needle: 14 Ga - Green. Without vent line catalog number: AR-11012. With vent line catalog number: AR-11112. Primary catalog number for this with-vent-line dataset: AR-11112. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula with Vent Line pressure-flow graph. Source range: 0 to 0.60 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula with Vent Line 14Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Root Cannula without Vent Line",
+      "category": "Adult arterial",
+      "size": "16 Ga / 5 Fr",
+      "overallLengthCm": 15,
+      "connectionSite": "Aortic root",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "AR-11016",
+      "sourceLabel": "LivaNova Aortic Root Cannula without Vent Line pressure-flow graph",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-aortic-root/with-and-whitout-vent-line",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Aortic Root Cannula without Vent Line 18Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. This dataset maps source graph label 18Ga to the product table row with cannula tip size 16 Ga / 5 Fr, insertion needle 18 Ga - Pink, and without-vent catalog number AR-11016. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.40 L/min.",
+      "referenceFlowRangeLabel": "0–0.40",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.40 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.1,
+          "pressureDrop": 6.1
+        },
+        {
+          "flow": 0.12,
+          "pressureDrop": 8.3
+        },
+        {
+          "flow": 0.14,
+          "pressureDrop": 10.2
+        },
+        {
+          "flow": 0.16,
+          "pressureDrop": 12.7
+        },
+        {
+          "flow": 0.18,
+          "pressureDrop": 14.8
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 16.8
+        },
+        {
+          "flow": 0.22,
+          "pressureDrop": 19.9
+        },
+        {
+          "flow": 0.23,
+          "pressureDrop": 23.7
+        },
+        {
+          "flow": 0.25,
+          "pressureDrop": 27.3
+        },
+        {
+          "flow": 0.26,
+          "pressureDrop": 30.0
+        },
+        {
+          "flow": 0.28,
+          "pressureDrop": 32.8
+        },
+        {
+          "flow": 0.29,
+          "pressureDrop": 36.0
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 39.9
+        },
+        {
+          "flow": 0.31,
+          "pressureDrop": 43.7
+        },
+        {
+          "flow": 0.32,
+          "pressureDrop": 46.8
+        },
+        {
+          "flow": 0.33,
+          "pressureDrop": 50.1
+        },
+        {
+          "flow": 0.34,
+          "pressureDrop": 53.7
+        },
+        {
+          "flow": 0.35,
+          "pressureDrop": 57.0
+        },
+        {
+          "flow": 0.36,
+          "pressureDrop": 60.2
+        },
+        {
+          "flow": 0.37,
+          "pressureDrop": 63.9
+        },
+        {
+          "flow": 0.38,
+          "pressureDrop": 69.9
+        },
+        {
+          "flow": 0.39,
+          "pressureDrop": 72.4
+        },
+        {
+          "flow": 0.4,
+          "pressureDrop": 75.9
+        }
+      ],
+      "notes": "Aortic root cannula / without vent line dataset; do not categorize as femoral arterial or femoral venous. Source type: digitized_graph. Product/family: Aortic Root Cannula. Model/description: without Vent Line. Type/site: Aortic root. Displayed cannula tip size: 16 Ga / 5 Fr. Source graph label: 18Ga. Insertion needle: 18 Ga - Pink. Without vent line catalog number: AR-11016. With vent line catalog number: AR-11116. Primary catalog number for this without-vent-line dataset: AR-11016. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula without Vent Line pressure-flow graph. Source range: 0 to 0.40 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula without Vent Line 18Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.40 L/min."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Root Cannula without Vent Line",
+      "category": "Adult arterial",
+      "size": "14 Ga / 7 Fr",
+      "overallLengthCm": 15,
+      "connectionSite": "Aortic root",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "AR-11014",
+      "sourceLabel": "LivaNova Aortic Root Cannula without Vent Line pressure-flow graph",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-aortic-root/with-and-whitout-vent-line",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Aortic Root Cannula without Vent Line 16Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. This dataset maps source graph label 16Ga to the product table row with cannula tip size 14 Ga / 7 Fr, insertion needle 16 Ga - White, and without-vent catalog number AR-11014. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min.",
+      "referenceFlowRangeLabel": "0–0.60",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.60 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.12,
+          "pressureDrop": 4.7
+        },
+        {
+          "flow": 0.15,
+          "pressureDrop": 6.0
+        },
+        {
+          "flow": 0.17,
+          "pressureDrop": 7.2
+        },
+        {
+          "flow": 0.19,
+          "pressureDrop": 8.5
+        },
+        {
+          "flow": 0.21,
+          "pressureDrop": 10.2
+        },
+        {
+          "flow": 0.24,
+          "pressureDrop": 12.1
+        },
+        {
+          "flow": 0.26,
+          "pressureDrop": 14.8
+        },
+        {
+          "flow": 0.28,
+          "pressureDrop": 16.5
+        },
+        {
+          "flow": 0.31,
+          "pressureDrop": 20.1
+        },
+        {
+          "flow": 0.34,
+          "pressureDrop": 24.5
+        },
+        {
+          "flow": 0.38,
+          "pressureDrop": 30.0
+        },
+        {
+          "flow": 0.41,
+          "pressureDrop": 35.3
+        },
+        {
+          "flow": 0.43,
+          "pressureDrop": 40.1
+        },
+        {
+          "flow": 0.46,
+          "pressureDrop": 45.5
+        },
+        {
+          "flow": 0.48,
+          "pressureDrop": 50.1
+        },
+        {
+          "flow": 0.5,
+          "pressureDrop": 54.5
+        },
+        {
+          "flow": 0.52,
+          "pressureDrop": 60.2
+        },
+        {
+          "flow": 0.54,
+          "pressureDrop": 65.3
+        },
+        {
+          "flow": 0.56,
+          "pressureDrop": 70.1
+        },
+        {
+          "flow": 0.58,
+          "pressureDrop": 75.1
+        },
+        {
+          "flow": 0.6,
+          "pressureDrop": 80.1
+        }
+      ],
+      "notes": "Aortic root cannula / without vent line dataset; do not categorize as femoral arterial or femoral venous. Source type: digitized_graph. Product/family: Aortic Root Cannula. Model/description: without Vent Line. Type/site: Aortic root. Displayed cannula tip size: 14 Ga / 7 Fr. Source graph label: 16Ga. Insertion needle: 16 Ga - White. Without vent line catalog number: AR-11014. With vent line catalog number: AR-11114. Primary catalog number for this without-vent-line dataset: AR-11014. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula without Vent Line pressure-flow graph. Source range: 0 to 0.60 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula without Vent Line 16Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Root Cannula without Vent Line",
+      "category": "Adult arterial",
+      "size": "12 Ga / 9 Fr",
+      "overallLengthCm": 15,
+      "connectionSite": "Aortic root",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "AR-11012",
+      "sourceLabel": "LivaNova Aortic Root Cannula without Vent Line pressure-flow graph",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-aortic-root/with-and-whitout-vent-line",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Aortic Root Cannula without Vent Line 14Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. This dataset maps source graph label 14Ga to the product table row with cannula tip size 12 Ga / 9 Fr, insertion needle 14 Ga - Green, and without-vent catalog number AR-11012. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min.",
+      "referenceFlowRangeLabel": "0–0.60",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.60 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.11,
+          "pressureDrop": 3.8
+        },
+        {
+          "flow": 0.14,
+          "pressureDrop": 4.4
+        },
+        {
+          "flow": 0.17,
+          "pressureDrop": 5.0
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 6.1
+        },
+        {
+          "flow": 0.22,
+          "pressureDrop": 7.1
+        },
+        {
+          "flow": 0.25,
+          "pressureDrop": 8.5
+        },
+        {
+          "flow": 0.28,
+          "pressureDrop": 10.1
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 11.8
+        },
+        {
+          "flow": 0.32,
+          "pressureDrop": 13.4
+        },
+        {
+          "flow": 0.34,
+          "pressureDrop": 14.9
+        },
+        {
+          "flow": 0.37,
+          "pressureDrop": 16.5
+        },
+        {
+          "flow": 0.39,
+          "pressureDrop": 18.2
+        },
+        {
+          "flow": 0.41,
+          "pressureDrop": 20.1
+        },
+        {
+          "flow": 0.44,
+          "pressureDrop": 23.1
+        },
+        {
+          "flow": 0.47,
+          "pressureDrop": 25.3
+        },
+        {
+          "flow": 0.49,
+          "pressureDrop": 27.5
+        },
+        {
+          "flow": 0.51,
+          "pressureDrop": 30.0
+        },
+        {
+          "flow": 0.54,
+          "pressureDrop": 34.2
+        },
+        {
+          "flow": 0.57,
+          "pressureDrop": 37.2
+        },
+        {
+          "flow": 0.59,
+          "pressureDrop": 39.9
+        },
+        {
+          "flow": 0.6,
+          "pressureDrop": 41.0
+        }
+      ],
+      "notes": "Aortic root cannula / without vent line dataset; do not categorize as femoral arterial or femoral venous. Source type: digitized_graph. Product/family: Aortic Root Cannula. Model/description: without Vent Line. Type/site: Aortic root. Displayed cannula tip size: 12 Ga / 9 Fr. Source graph label: 14Ga. Insertion needle: 14 Ga - Green. Without vent line catalog number: AR-11012. With vent line catalog number: AR-11112. Primary catalog number for this without-vent-line dataset: AR-11012. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula without Vent Line pressure-flow graph. Source range: 0 to 0.60 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula without Vent Line 14Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Root Long Needle",
+      "category": "Adult arterial",
+      "size": "14 Ga / 7 Fr",
+      "overallLengthCm": 35,
+      "connectionSite": "Aortic root",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "AR-17014",
+      "sourceLabel": "LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure",
+      "sourceUrl": "",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Aortic Root Long Needle 14Ga curve. The source graph x-axis is labeled 100–600 ml/min and was converted to L/min; digitized raw x values were mapped to the source-labeled axis with the raw left edge mapped to 0.10 L/min and raw right edge mapped to 0.60 L/min. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min.",
+      "referenceFlowRangeLabel": "0–0.60",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.60 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.1,
+          "pressureDrop": 3.7
+        },
+        {
+          "flow": 0.13,
+          "pressureDrop": 6.0
+        },
+        {
+          "flow": 0.15,
+          "pressureDrop": 7.9
+        },
+        {
+          "flow": 0.18,
+          "pressureDrop": 10.2
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 12.4
+        },
+        {
+          "flow": 0.23,
+          "pressureDrop": 14.8
+        },
+        {
+          "flow": 0.26,
+          "pressureDrop": 17.3
+        },
+        {
+          "flow": 0.29,
+          "pressureDrop": 20.0
+        },
+        {
+          "flow": 0.31,
+          "pressureDrop": 23.5
+        },
+        {
+          "flow": 0.34,
+          "pressureDrop": 26.8
+        },
+        {
+          "flow": 0.36,
+          "pressureDrop": 30.0
+        },
+        {
+          "flow": 0.38,
+          "pressureDrop": 33.2
+        },
+        {
+          "flow": 0.41,
+          "pressureDrop": 36.5
+        },
+        {
+          "flow": 0.43,
+          "pressureDrop": 40.0
+        },
+        {
+          "flow": 0.46,
+          "pressureDrop": 45.7
+        },
+        {
+          "flow": 0.49,
+          "pressureDrop": 50.2
+        },
+        {
+          "flow": 0.51,
+          "pressureDrop": 54.6
+        },
+        {
+          "flow": 0.53,
+          "pressureDrop": 60.0
+        },
+        {
+          "flow": 0.55,
+          "pressureDrop": 65.1
+        },
+        {
+          "flow": 0.57,
+          "pressureDrop": 70.2
+        },
+        {
+          "flow": 0.6,
+          "pressureDrop": 76.5
+        }
+      ],
+      "notes": "Aortic root long needle / minimally invasive cardiac surgery cannula dataset; do not categorize as femoral arterial, femoral venous, coronary ostia perfusion, or retrograde cardioplegia. Product/family: Aortic Root Long Needle. Model/description: Minimally invasive cardiac surgery aortic root long needle. Type/site: Aortic root. Cannula tip outer diameter: 14 Ga / 7 Fr. Source graph label: 14Ga. In this source page, the graph label 14Ga corresponds to the table's cannula tip outer diameter 14 Ga / 7 Fr, not the insertion needle. Insertion needle: 16 Ga - White. Catalog number: AR-17014. Effective length: 35 cm. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure pressure-flow graph. Source range: 0 to 0.60 L/min. Extrapolation: false. The source graph x-axis is labeled 100–600 ml/min and was converted to L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min. Do not use the 12 Ga catalog number AR-17012 for this dataset."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Root Long Needle",
+      "category": "Adult arterial",
+      "size": "12 Ga / 9 Fr",
+      "overallLengthCm": 35,
+      "connectionSite": "Aortic root",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "AR-17012",
+      "sourceLabel": "LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure",
+      "sourceUrl": "",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Aortic Root Long Needle 12Ga curve. The source graph x-axis is labeled 100–600 ml/min and was converted to L/min; digitized raw x values were mapped to the source-labeled axis with the raw left edge mapped to 0.10 L/min and raw right edge mapped to 0.60 L/min. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min.",
+      "referenceFlowRangeLabel": "0–0.60",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.60 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.1,
+          "pressureDrop": 2.2
+        },
+        {
+          "flow": 0.13,
+          "pressureDrop": 4.1
+        },
+        {
+          "flow": 0.16,
+          "pressureDrop": 6.2
+        },
+        {
+          "flow": 0.19,
+          "pressureDrop": 8.1
+        },
+        {
+          "flow": 0.22,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 0.25,
+          "pressureDrop": 12.9
+        },
+        {
+          "flow": 0.29,
+          "pressureDrop": 15.2
+        },
+        {
+          "flow": 0.31,
+          "pressureDrop": 17.5
+        },
+        {
+          "flow": 0.34,
+          "pressureDrop": 20.2
+        },
+        {
+          "flow": 0.36,
+          "pressureDrop": 22.5
+        },
+        {
+          "flow": 0.38,
+          "pressureDrop": 24.6
+        },
+        {
+          "flow": 0.4,
+          "pressureDrop": 27.3
+        },
+        {
+          "flow": 0.42,
+          "pressureDrop": 30.0
+        },
+        {
+          "flow": 0.45,
+          "pressureDrop": 33.5
+        },
+        {
+          "flow": 0.47,
+          "pressureDrop": 36.8
+        },
+        {
+          "flow": 0.5,
+          "pressureDrop": 40.0
+        },
+        {
+          "flow": 0.52,
+          "pressureDrop": 43.7
+        },
+        {
+          "flow": 0.54,
+          "pressureDrop": 47.0
+        },
+        {
+          "flow": 0.56,
+          "pressureDrop": 50.0
+        },
+        {
+          "flow": 0.58,
+          "pressureDrop": 53.5
+        },
+        {
+          "flow": 0.6,
+          "pressureDrop": 57.0
+        }
+      ],
+      "notes": "Aortic root long needle / minimally invasive cardiac surgery cannula dataset; do not categorize as femoral arterial, femoral venous, coronary ostia perfusion, or retrograde cardioplegia. Product/family: Aortic Root Long Needle. Model/description: Minimally invasive cardiac surgery aortic root long needle. Type/site: Aortic root. Cannula tip outer diameter: 12 Ga / 9 Fr. Source graph label: 12Ga. In this source page, the graph label 12Ga corresponds to the table's cannula tip outer diameter 12 Ga / 9 Fr, not the insertion needle. Insertion needle: 14 Ga - Green. Catalog number: AR-17012. Effective length: 35 cm. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure pressure-flow graph. Source range: 0 to 0.60 L/min. Extrapolation: false. The source graph x-axis is labeled 100–600 ml/min and was converted to L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min. Do not use the 14 Ga catalog number AR-17014 for this dataset."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Basket Tip, Stainless Steel Shaft and Female Luer Lock Connector",
+      "category": "Cardioplegia",
+      "size": "10 Fr",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "female luer lock",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog numbers",
+      "cannulaOrderCode": "CP-11010 (45° tip); CP-12010 (90° tip)",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Basket Tip 10 Fr curve. The source graph x-axis is labeled 0.05–0.30 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.30 L/min.",
+      "referenceFlowRangeLabel": "0–0.30",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.30 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.05,
+          "pressureDrop": 1.4
+        },
+        {
+          "flow": 0.06,
+          "pressureDrop": 1.8
+        },
+        {
+          "flow": 0.07,
+          "pressureDrop": 2.0
+        },
+        {
+          "flow": 0.09,
+          "pressureDrop": 2.5
+        },
+        {
+          "flow": 0.1,
+          "pressureDrop": 3.0
+        },
+        {
+          "flow": 0.12,
+          "pressureDrop": 3.5
+        },
+        {
+          "flow": 0.13,
+          "pressureDrop": 4.0
+        },
+        {
+          "flow": 0.14,
+          "pressureDrop": 4.6
+        },
+        {
+          "flow": 0.16,
+          "pressureDrop": 5.3
+        },
+        {
+          "flow": 0.18,
+          "pressureDrop": 6.1
+        },
+        {
+          "flow": 0.19,
+          "pressureDrop": 6.6
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 7.3
+        },
+        {
+          "flow": 0.21,
+          "pressureDrop": 8.0
+        },
+        {
+          "flow": 0.23,
+          "pressureDrop": 8.7
+        },
+        {
+          "flow": 0.24,
+          "pressureDrop": 9.3
+        },
+        {
+          "flow": 0.25,
+          "pressureDrop": 10.0
+        },
+        {
+          "flow": 0.26,
+          "pressureDrop": 10.7
+        },
+        {
+          "flow": 0.27,
+          "pressureDrop": 11.3
+        },
+        {
+          "flow": 0.28,
+          "pressureDrop": 12.0
+        },
+        {
+          "flow": 0.29,
+          "pressureDrop": 12.6
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 13.2
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Basket Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 10 Fr. 45° tip catalog number: CP-11010. 90° tip catalog number: CP-12010. Connection size: female luer lock. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 0.30 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Basket Tip 10 Fr curve. The source graph x-axis is labeled 0.05–0.30 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.30 L/min. Catalog numbers include CP-11010 for 45° tip and CP-12010 for 90° tip."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Basket Tip, Stainless Steel Shaft and Female Luer Lock Connector",
+      "category": "Cardioplegia",
+      "size": "12 Fr",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "female luer lock",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog numbers",
+      "cannulaOrderCode": "CP-11012 (45° tip); CP-12012 (90° tip)",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Basket Tip 12 Fr curve. The source graph x-axis is labeled 0.05–0.30 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.30 L/min.",
+      "referenceFlowRangeLabel": "0–0.30",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.30 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.05,
+          "pressureDrop": 1.0
+        },
+        {
+          "flow": 0.07,
+          "pressureDrop": 1.6
+        },
+        {
+          "flow": 0.08,
+          "pressureDrop": 2.1
+        },
+        {
+          "flow": 0.1,
+          "pressureDrop": 2.8
+        },
+        {
+          "flow": 0.12,
+          "pressureDrop": 3.5
+        },
+        {
+          "flow": 0.14,
+          "pressureDrop": 4.0
+        },
+        {
+          "flow": 0.15,
+          "pressureDrop": 4.5
+        },
+        {
+          "flow": 0.17,
+          "pressureDrop": 5.1
+        },
+        {
+          "flow": 0.19,
+          "pressureDrop": 5.7
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 6.0
+        },
+        {
+          "flow": 0.21,
+          "pressureDrop": 6.6
+        },
+        {
+          "flow": 0.23,
+          "pressureDrop": 7.1
+        },
+        {
+          "flow": 0.24,
+          "pressureDrop": 7.5
+        },
+        {
+          "flow": 0.26,
+          "pressureDrop": 8.0
+        },
+        {
+          "flow": 0.27,
+          "pressureDrop": 8.5
+        },
+        {
+          "flow": 0.28,
+          "pressureDrop": 9.0
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 9.6
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Basket Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 12 Fr. 45° tip catalog number: CP-11012. 90° tip catalog number: CP-12012. Connection size: female luer lock. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 0.30 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Basket Tip 12 Fr curve. The source graph x-axis is labeled 0.05–0.30 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.30 L/min. Catalog numbers include CP-11012 for 45° tip and CP-12012 for 90° tip."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Basket Tip, Stainless Steel Shaft and Female Luer Lock Connector",
+      "category": "Cardioplegia",
+      "size": "14 Fr",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "female luer lock",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog numbers",
+      "cannulaOrderCode": "CP-11014 (45° tip); CP-12014 (90° tip)",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Basket Tip 14 Fr curve. The source graph x-axis is labeled 0.05–0.30 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.30 L/min.",
+      "referenceFlowRangeLabel": "0–0.30",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.30 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.05,
+          "pressureDrop": 0.9
+        },
+        {
+          "flow": 0.06,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 0.08,
+          "pressureDrop": 1.7
+        },
+        {
+          "flow": 0.09,
+          "pressureDrop": 2.0
+        },
+        {
+          "flow": 0.1,
+          "pressureDrop": 2.4
+        },
+        {
+          "flow": 0.11,
+          "pressureDrop": 2.8
+        },
+        {
+          "flow": 0.13,
+          "pressureDrop": 3.4
+        },
+        {
+          "flow": 0.15,
+          "pressureDrop": 4.0
+        },
+        {
+          "flow": 0.17,
+          "pressureDrop": 4.7
+        },
+        {
+          "flow": 0.19,
+          "pressureDrop": 5.3
+        },
+        {
+          "flow": 0.21,
+          "pressureDrop": 6.0
+        },
+        {
+          "flow": 0.23,
+          "pressureDrop": 6.7
+        },
+        {
+          "flow": 0.25,
+          "pressureDrop": 7.4
+        },
+        {
+          "flow": 0.26,
+          "pressureDrop": 8.0
+        },
+        {
+          "flow": 0.28,
+          "pressureDrop": 8.5
+        },
+        {
+          "flow": 0.29,
+          "pressureDrop": 8.9
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 9.4
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Basket Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 14 Fr. 45° tip catalog number: CP-11014. 90° tip catalog number: CP-12014. Connection size: female luer lock. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 0.30 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Basket Tip 14 Fr curve. The source graph x-axis is labeled 0.05–0.30 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.30 L/min. Catalog numbers include CP-11014 for 45° tip and CP-12014 for 90° tip."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Conical Tip, Stainless Steel Shaft and 1/4\" Tubing Connector",
+      "category": "Cardioplegia",
+      "size": "9 Fr",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "1/4\" tubing connector",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog numbers",
+      "cannulaOrderCode": "P608-30 (45° tip); P606-30 (90° tip)",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 9 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.68 L/min.",
+      "referenceFlowRangeLabel": "0–0.68",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.68 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.05,
+          "pressureDrop": 3.7
+        },
+        {
+          "flow": 0.1,
+          "pressureDrop": 6.6
+        },
+        {
+          "flow": 0.16,
+          "pressureDrop": 11.2
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 16.2
+        },
+        {
+          "flow": 0.24,
+          "pressureDrop": 20.6
+        },
+        {
+          "flow": 0.28,
+          "pressureDrop": 25.9
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 32.7
+        },
+        {
+          "flow": 0.33,
+          "pressureDrop": 39.7
+        },
+        {
+          "flow": 0.36,
+          "pressureDrop": 46.1
+        },
+        {
+          "flow": 0.38,
+          "pressureDrop": 52.5
+        },
+        {
+          "flow": 0.41,
+          "pressureDrop": 60.1
+        },
+        {
+          "flow": 0.44,
+          "pressureDrop": 66.3
+        },
+        {
+          "flow": 0.46,
+          "pressureDrop": 72.2
+        },
+        {
+          "flow": 0.48,
+          "pressureDrop": 79.9
+        },
+        {
+          "flow": 0.5,
+          "pressureDrop": 85.8
+        },
+        {
+          "flow": 0.53,
+          "pressureDrop": 93.3
+        },
+        {
+          "flow": 0.54,
+          "pressureDrop": 100.5
+        },
+        {
+          "flow": 0.56,
+          "pressureDrop": 105.6
+        },
+        {
+          "flow": 0.58,
+          "pressureDrop": 112.4
+        },
+        {
+          "flow": 0.6,
+          "pressureDrop": 119.8
+        },
+        {
+          "flow": 0.62,
+          "pressureDrop": 125.8
+        },
+        {
+          "flow": 0.64,
+          "pressureDrop": 133.2
+        },
+        {
+          "flow": 0.66,
+          "pressureDrop": 140.5
+        },
+        {
+          "flow": 0.68,
+          "pressureDrop": 150.1
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and 1/4\" Tubing Connector. Type/site: Coronary ostia perfusion. Size: 9 Fr. 45° tip catalog number: P608-30. 90° tip catalog number: P606-30. Connection size: 1/4\" tubing connector. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 0.68 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 9 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.68 L/min. Catalog numbers include P608-30 for 45° tip and P606-30 for 90° tip."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Conical Tip, Stainless Steel Shaft and 1/4\" Tubing Connector",
+      "category": "Cardioplegia",
+      "size": "11 Fr",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "1/4\" tubing connector",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog numbers",
+      "cannulaOrderCode": "P608-35 (45° tip); P606-35 (90° tip)",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 11 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.94 L/min.",
+      "referenceFlowRangeLabel": "0–0.94",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.94 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.13,
+          "pressureDrop": 6.4
+        },
+        {
+          "flow": 0.21,
+          "pressureDrop": 10.1
+        },
+        {
+          "flow": 0.27,
+          "pressureDrop": 16.5
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 20.6
+        },
+        {
+          "flow": 0.35,
+          "pressureDrop": 25.2
+        },
+        {
+          "flow": 0.39,
+          "pressureDrop": 29.2
+        },
+        {
+          "flow": 0.42,
+          "pressureDrop": 34.9
+        },
+        {
+          "flow": 0.44,
+          "pressureDrop": 40.2
+        },
+        {
+          "flow": 0.46,
+          "pressureDrop": 43.2
+        },
+        {
+          "flow": 0.5,
+          "pressureDrop": 48.9
+        },
+        {
+          "flow": 0.53,
+          "pressureDrop": 54.9
+        },
+        {
+          "flow": 0.56,
+          "pressureDrop": 60.4
+        },
+        {
+          "flow": 0.58,
+          "pressureDrop": 63.4
+        },
+        {
+          "flow": 0.61,
+          "pressureDrop": 70.0
+        },
+        {
+          "flow": 0.63,
+          "pressureDrop": 74.2
+        },
+        {
+          "flow": 0.65,
+          "pressureDrop": 79.9
+        },
+        {
+          "flow": 0.66,
+          "pressureDrop": 84.7
+        },
+        {
+          "flow": 0.68,
+          "pressureDrop": 89.3
+        },
+        {
+          "flow": 0.69,
+          "pressureDrop": 94.2
+        },
+        {
+          "flow": 0.72,
+          "pressureDrop": 99.9
+        },
+        {
+          "flow": 0.73,
+          "pressureDrop": 103.8
+        },
+        {
+          "flow": 0.75,
+          "pressureDrop": 109.3
+        },
+        {
+          "flow": 0.77,
+          "pressureDrop": 114.3
+        },
+        {
+          "flow": 0.8,
+          "pressureDrop": 119.6
+        },
+        {
+          "flow": 0.81,
+          "pressureDrop": 123.3
+        },
+        {
+          "flow": 0.83,
+          "pressureDrop": 128.6
+        },
+        {
+          "flow": 0.86,
+          "pressureDrop": 133.7
+        },
+        {
+          "flow": 0.89,
+          "pressureDrop": 139.8
+        },
+        {
+          "flow": 0.91,
+          "pressureDrop": 144.4
+        },
+        {
+          "flow": 0.94,
+          "pressureDrop": 150.1
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and 1/4\" Tubing Connector. Type/site: Coronary ostia perfusion. Size: 11 Fr. 45° tip catalog number: P608-35. 90° tip catalog number: P606-35. Connection size: 1/4\" tubing connector. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 0.94 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 11 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.94 L/min. Catalog numbers include P608-35 for 45° tip and P606-35 for 90° tip."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Conical Tip, Stainless Steel Shaft and 1/4\" Tubing Connector",
+      "category": "Cardioplegia",
+      "size": "12 Fr",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "1/4\" tubing connector",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog numbers",
+      "cannulaOrderCode": "P608-40 (45° tip); P606-40 (90° tip)",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 12 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.20 L/min.",
+      "referenceFlowRangeLabel": "0–1.20",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.20 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.12,
+          "pressureDrop": 3.3
+        },
+        {
+          "flow": 0.21,
+          "pressureDrop": 6.4
+        },
+        {
+          "flow": 0.28,
+          "pressureDrop": 9.0
+        },
+        {
+          "flow": 0.35,
+          "pressureDrop": 12.3
+        },
+        {
+          "flow": 0.4,
+          "pressureDrop": 15.6
+        },
+        {
+          "flow": 0.46,
+          "pressureDrop": 20.6
+        },
+        {
+          "flow": 0.51,
+          "pressureDrop": 26.3
+        },
+        {
+          "flow": 0.56,
+          "pressureDrop": 34.0
+        },
+        {
+          "flow": 0.6,
+          "pressureDrop": 39.9
+        },
+        {
+          "flow": 0.65,
+          "pressureDrop": 47.0
+        },
+        {
+          "flow": 0.7,
+          "pressureDrop": 54.2
+        },
+        {
+          "flow": 0.74,
+          "pressureDrop": 60.1
+        },
+        {
+          "flow": 0.79,
+          "pressureDrop": 72.2
+        },
+        {
+          "flow": 0.84,
+          "pressureDrop": 80.5
+        },
+        {
+          "flow": 0.88,
+          "pressureDrop": 86.3
+        },
+        {
+          "flow": 0.93,
+          "pressureDrop": 93.3
+        },
+        {
+          "flow": 0.97,
+          "pressureDrop": 100.3
+        },
+        {
+          "flow": 1.0,
+          "pressureDrop": 105.8
+        },
+        {
+          "flow": 1.04,
+          "pressureDrop": 113.7
+        },
+        {
+          "flow": 1.07,
+          "pressureDrop": 120.1
+        },
+        {
+          "flow": 1.1,
+          "pressureDrop": 126.9
+        },
+        {
+          "flow": 1.13,
+          "pressureDrop": 133.4
+        },
+        {
+          "flow": 1.16,
+          "pressureDrop": 140.2
+        },
+        {
+          "flow": 1.18,
+          "pressureDrop": 144.6
+        },
+        {
+          "flow": 1.2,
+          "pressureDrop": 150.1
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and 1/4\" Tubing Connector. Type/site: Coronary ostia perfusion. Size: 12 Fr. 45° tip catalog number: P608-40. 90° tip catalog number: P606-40. Connection size: 1/4\" tubing connector. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 1.20 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 12 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.20 L/min. Catalog numbers include P608-40 for 45° tip and P606-40 for 90° tip."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector",
+      "category": "Cardioplegia",
+      "size": "9 Fr",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "female luer lock",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog numbers",
+      "cannulaOrderCode": "P618-30 (45° tip); P616-30 (90° tip)",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 9 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.85 L/min.",
+      "referenceFlowRangeLabel": "0–0.85",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.85 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.08,
+          "pressureDrop": 4.0
+        },
+        {
+          "flow": 0.14,
+          "pressureDrop": 7.2
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 10.8
+        },
+        {
+          "flow": 0.24,
+          "pressureDrop": 15.0
+        },
+        {
+          "flow": 0.28,
+          "pressureDrop": 20.6
+        },
+        {
+          "flow": 0.32,
+          "pressureDrop": 25.8
+        },
+        {
+          "flow": 0.38,
+          "pressureDrop": 33.4
+        },
+        {
+          "flow": 0.42,
+          "pressureDrop": 40.2
+        },
+        {
+          "flow": 0.45,
+          "pressureDrop": 45.8
+        },
+        {
+          "flow": 0.49,
+          "pressureDrop": 53.2
+        },
+        {
+          "flow": 0.52,
+          "pressureDrop": 60.1
+        },
+        {
+          "flow": 0.55,
+          "pressureDrop": 66.2
+        },
+        {
+          "flow": 0.57,
+          "pressureDrop": 73.6
+        },
+        {
+          "flow": 0.6,
+          "pressureDrop": 80.1
+        },
+        {
+          "flow": 0.63,
+          "pressureDrop": 86.4
+        },
+        {
+          "flow": 0.66,
+          "pressureDrop": 93.4
+        },
+        {
+          "flow": 0.7,
+          "pressureDrop": 99.9
+        },
+        {
+          "flow": 0.72,
+          "pressureDrop": 105.5
+        },
+        {
+          "flow": 0.75,
+          "pressureDrop": 113.3
+        },
+        {
+          "flow": 0.77,
+          "pressureDrop": 119.4
+        },
+        {
+          "flow": 0.79,
+          "pressureDrop": 126.3
+        },
+        {
+          "flow": 0.81,
+          "pressureDrop": 134.4
+        },
+        {
+          "flow": 0.82,
+          "pressureDrop": 139.8
+        },
+        {
+          "flow": 0.85,
+          "pressureDrop": 149.9
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 9 Fr. 45° tip catalog number: P618-30. 90° tip catalog number: P616-30. Connection size: female luer lock. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 0.85 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 9 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.85 L/min. Catalog numbers include P618-30 for 45° tip and P616-30 for 90° tip."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector",
+      "category": "Cardioplegia",
+      "size": "11 Fr",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "female luer lock",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog numbers",
+      "cannulaOrderCode": "P618-35 (45° tip); P616-35 (90° tip)",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 11 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.16 L/min.",
+      "referenceFlowRangeLabel": "0–1.16",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.16 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.13,
+          "pressureDrop": 5.8
+        },
+        {
+          "flow": 0.21,
+          "pressureDrop": 10.1
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 14.6
+        },
+        {
+          "flow": 0.38,
+          "pressureDrop": 20.4
+        },
+        {
+          "flow": 0.45,
+          "pressureDrop": 26.7
+        },
+        {
+          "flow": 0.51,
+          "pressureDrop": 32.5
+        },
+        {
+          "flow": 0.55,
+          "pressureDrop": 40.2
+        },
+        {
+          "flow": 0.59,
+          "pressureDrop": 47.1
+        },
+        {
+          "flow": 0.64,
+          "pressureDrop": 53.6
+        },
+        {
+          "flow": 0.68,
+          "pressureDrop": 60.1
+        },
+        {
+          "flow": 0.71,
+          "pressureDrop": 66.2
+        },
+        {
+          "flow": 0.74,
+          "pressureDrop": 73.2
+        },
+        {
+          "flow": 0.77,
+          "pressureDrop": 79.9
+        },
+        {
+          "flow": 0.8,
+          "pressureDrop": 85.9
+        },
+        {
+          "flow": 0.83,
+          "pressureDrop": 92.5
+        },
+        {
+          "flow": 0.87,
+          "pressureDrop": 99.9
+        },
+        {
+          "flow": 0.89,
+          "pressureDrop": 105.2
+        },
+        {
+          "flow": 0.93,
+          "pressureDrop": 112.7
+        },
+        {
+          "flow": 0.97,
+          "pressureDrop": 119.6
+        },
+        {
+          "flow": 1.01,
+          "pressureDrop": 125.4
+        },
+        {
+          "flow": 1.05,
+          "pressureDrop": 132.4
+        },
+        {
+          "flow": 1.1,
+          "pressureDrop": 139.8
+        },
+        {
+          "flow": 1.16,
+          "pressureDrop": 149.5
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 11 Fr. 45° tip catalog number: P618-35. 90° tip catalog number: P616-35. Connection size: female luer lock. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 1.16 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 11 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.16 L/min. Catalog numbers include P618-35 for 45° tip and P616-35 for 90° tip."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector",
+      "category": "Cardioplegia",
+      "size": "12 Fr",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "female luer lock",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog numbers",
+      "cannulaOrderCode": "P618-40 (45° tip); P616-40 (90° tip)",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 12 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.51 L/min.",
+      "referenceFlowRangeLabel": "0–1.51",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.51 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.08,
+          "pressureDrop": 2.9
+        },
+        {
+          "flow": 0.16,
+          "pressureDrop": 4.5
+        },
+        {
+          "flow": 0.26,
+          "pressureDrop": 6.7
+        },
+        {
+          "flow": 0.35,
+          "pressureDrop": 9.0
+        },
+        {
+          "flow": 0.44,
+          "pressureDrop": 12.1
+        },
+        {
+          "flow": 0.49,
+          "pressureDrop": 20.2
+        },
+        {
+          "flow": 0.54,
+          "pressureDrop": 24.2
+        },
+        {
+          "flow": 0.6,
+          "pressureDrop": 30.7
+        },
+        {
+          "flow": 0.66,
+          "pressureDrop": 34.3
+        },
+        {
+          "flow": 0.74,
+          "pressureDrop": 40.4
+        },
+        {
+          "flow": 0.82,
+          "pressureDrop": 49.4
+        },
+        {
+          "flow": 0.91,
+          "pressureDrop": 60.1
+        },
+        {
+          "flow": 0.99,
+          "pressureDrop": 70.0
+        },
+        {
+          "flow": 1.06,
+          "pressureDrop": 80.1
+        },
+        {
+          "flow": 1.13,
+          "pressureDrop": 89.8
+        },
+        {
+          "flow": 1.2,
+          "pressureDrop": 99.9
+        },
+        {
+          "flow": 1.27,
+          "pressureDrop": 108.6
+        },
+        {
+          "flow": 1.34,
+          "pressureDrop": 119.6
+        },
+        {
+          "flow": 1.4,
+          "pressureDrop": 129.7
+        },
+        {
+          "flow": 1.45,
+          "pressureDrop": 139.6
+        },
+        {
+          "flow": 1.51,
+          "pressureDrop": 149.9
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 12 Fr. 45° tip catalog number: P618-40. 90° tip catalog number: P616-40. Connection size: female luer lock. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 1.51 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 12 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.51 L/min. Catalog numbers include P618-40 for 45° tip and P616-40 for 90° tip."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector",
+      "category": "Cardioplegia",
+      "size": "14 Fr",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "female luer lock",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog numbers",
+      "cannulaOrderCode": "P618-45 (45° tip); P616-45 (90° tip)",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 14 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.63 L/min.",
+      "referenceFlowRangeLabel": "0–1.63",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.63 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.1,
+          "pressureDrop": 2.5
+        },
+        {
+          "flow": 0.21,
+          "pressureDrop": 4.7
+        },
+        {
+          "flow": 0.32,
+          "pressureDrop": 7.2
+        },
+        {
+          "flow": 0.41,
+          "pressureDrop": 9.2
+        },
+        {
+          "flow": 0.53,
+          "pressureDrop": 14.4
+        },
+        {
+          "flow": 0.6,
+          "pressureDrop": 20.2
+        },
+        {
+          "flow": 0.67,
+          "pressureDrop": 28.3
+        },
+        {
+          "flow": 0.73,
+          "pressureDrop": 34.3
+        },
+        {
+          "flow": 0.8,
+          "pressureDrop": 40.2
+        },
+        {
+          "flow": 0.87,
+          "pressureDrop": 46.9
+        },
+        {
+          "flow": 0.93,
+          "pressureDrop": 53.0
+        },
+        {
+          "flow": 0.99,
+          "pressureDrop": 59.9
+        },
+        {
+          "flow": 1.09,
+          "pressureDrop": 69.6
+        },
+        {
+          "flow": 1.16,
+          "pressureDrop": 79.9
+        },
+        {
+          "flow": 1.24,
+          "pressureDrop": 91.1
+        },
+        {
+          "flow": 1.3,
+          "pressureDrop": 100.3
+        },
+        {
+          "flow": 1.37,
+          "pressureDrop": 110.4
+        },
+        {
+          "flow": 1.43,
+          "pressureDrop": 120.1
         },
         {
           "flow": 1.5,
-          "pressureDrop": 49
+          "pressureDrop": 130.4
         },
         {
-          "flow": 2,
-          "pressureDrop": 86
+          "flow": 1.56,
+          "pressureDrop": 139.6
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 140
+          "flow": 1.63,
+          "pressureDrop": 150.4
         }
       ],
-      "notes": "PAS 1315: 13 Fr (4.3 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAS 1315 Bioline coating."
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 14 Fr. 45° tip catalog number: P618-45. 90° tip catalog number: P616-45. Connection size: female luer lock. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 1.63 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 14 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.63 L/min. Catalog numbers include P618-45 for 45° tip and P616-45 for 90° tip."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector",
+      "category": "Cardioplegia",
+      "size": "15 Fr",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "female luer lock",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog numbers",
+      "cannulaOrderCode": "P618-50 (45° tip); P616-50 (90° tip)",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 15 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.94 L/min.",
+      "referenceFlowRangeLabel": "0–1.94",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.94 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.07,
+          "pressureDrop": 2.0
+        },
+        {
+          "flow": 0.14,
+          "pressureDrop": 2.7
+        },
+        {
+          "flow": 0.23,
+          "pressureDrop": 4.5
+        },
+        {
+          "flow": 0.34,
+          "pressureDrop": 6.1
+        },
+        {
+          "flow": 0.44,
+          "pressureDrop": 8.1
+        },
+        {
+          "flow": 0.54,
+          "pressureDrop": 9.9
+        },
+        {
+          "flow": 0.62,
+          "pressureDrop": 13.7
+        },
+        {
+          "flow": 0.69,
+          "pressureDrop": 20.6
+        },
+        {
+          "flow": 0.78,
+          "pressureDrop": 28.9
+        },
+        {
+          "flow": 0.87,
+          "pressureDrop": 34.8
+        },
+        {
+          "flow": 0.95,
+          "pressureDrop": 40.6
+        },
+        {
+          "flow": 1.03,
+          "pressureDrop": 47.1
+        },
+        {
+          "flow": 1.13,
+          "pressureDrop": 54.8
+        },
+        {
+          "flow": 1.19,
+          "pressureDrop": 60.1
+        },
+        {
+          "flow": 1.3,
+          "pressureDrop": 69.8
+        },
+        {
+          "flow": 1.39,
+          "pressureDrop": 79.9
+        },
+        {
+          "flow": 1.47,
+          "pressureDrop": 89.1
+        },
+        {
+          "flow": 1.56,
+          "pressureDrop": 100.3
+        },
+        {
+          "flow": 1.64,
+          "pressureDrop": 109.5
+        },
+        {
+          "flow": 1.72,
+          "pressureDrop": 119.6
+        },
+        {
+          "flow": 1.79,
+          "pressureDrop": 130.2
+        },
+        {
+          "flow": 1.86,
+          "pressureDrop": 139.6
+        },
+        {
+          "flow": 1.94,
+          "pressureDrop": 149.9
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 15 Fr. 45° tip catalog number: P618-50. 90° tip catalog number: P616-50. Connection size: female luer lock. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 1.94 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 15 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.94 L/min. Catalog numbers include P618-50 for 45° tip and P616-50 for 90° tip."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — 3D Tip, Stainless Steel Shaft and 1/4\" Tubing Connector",
+      "category": "Cardioplegia",
+      "size": "12 Fr",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "1/4\" tubing connector",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog numbers",
+      "cannulaOrderCode": "P604-40 (45° tip); P602-40 (90° tip)",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with 3D Tip and 1/4\" Tubing Connector 12 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.51 L/min.",
+      "referenceFlowRangeLabel": "0–1.51",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.51 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.12,
+          "pressureDrop": 3.1
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 4.8
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 6.8
+        },
+        {
+          "flow": 0.4,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 0.46,
+          "pressureDrop": 15.1
+        },
+        {
+          "flow": 0.5,
+          "pressureDrop": 20.4
+        },
+        {
+          "flow": 0.57,
+          "pressureDrop": 26.9
+        },
+        {
+          "flow": 0.64,
+          "pressureDrop": 32.6
+        },
+        {
+          "flow": 0.74,
+          "pressureDrop": 39.8
+        },
+        {
+          "flow": 0.84,
+          "pressureDrop": 49.5
+        },
+        {
+          "flow": 0.92,
+          "pressureDrop": 59.8
+        },
+        {
+          "flow": 0.99,
+          "pressureDrop": 70.9
+        },
+        {
+          "flow": 1.06,
+          "pressureDrop": 79.9
+        },
+        {
+          "flow": 1.14,
+          "pressureDrop": 90.4
+        },
+        {
+          "flow": 1.22,
+          "pressureDrop": 100.5
+        },
+        {
+          "flow": 1.28,
+          "pressureDrop": 110.1
+        },
+        {
+          "flow": 1.34,
+          "pressureDrop": 119.7
+        },
+        {
+          "flow": 1.41,
+          "pressureDrop": 131.5
+        },
+        {
+          "flow": 1.46,
+          "pressureDrop": 140.1
+        },
+        {
+          "flow": 1.51,
+          "pressureDrop": 149.9
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: 3D Tip, Stainless Steel Shaft and 1/4\" Tubing Connector. Type/site: Coronary ostia perfusion. Size: 12 Fr. 45° tip catalog number: P604-40. 90° tip catalog number: P602-40. Connection size: 1/4\" tubing connector. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 1.51 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with 3D Tip and 1/4\" Tubing Connector 12 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.51 L/min. Catalog numbers include P604-40 for 45° tip and P602-40 for 90° tip."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — 3D Tip, Stainless Steel Shaft and 1/4\" Tubing Connector",
+      "category": "Cardioplegia",
+      "size": "15 Fr",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "1/4\" tubing connector",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog numbers",
+      "cannulaOrderCode": "P604-50 (45° tip); P602-50 (90° tip)",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with 3D Tip and 1/4\" Tubing Connector 15 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.94 L/min.",
+      "referenceFlowRangeLabel": "0–1.94",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.94 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.12,
+          "pressureDrop": 1.8
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 3.1
+        },
+        {
+          "flow": 0.29,
+          "pressureDrop": 5.0
+        },
+        {
+          "flow": 0.4,
+          "pressureDrop": 6.6
+        },
+        {
+          "flow": 0.53,
+          "pressureDrop": 9.2
+        },
+        {
+          "flow": 0.62,
+          "pressureDrop": 13.6
+        },
+        {
+          "flow": 0.71,
+          "pressureDrop": 19.9
+        },
+        {
+          "flow": 0.78,
+          "pressureDrop": 27.1
+        },
+        {
+          "flow": 0.87,
+          "pressureDrop": 34.4
+        },
+        {
+          "flow": 0.95,
+          "pressureDrop": 39.8
+        },
+        {
+          "flow": 1.03,
+          "pressureDrop": 46.0
+        },
+        {
+          "flow": 1.1,
+          "pressureDrop": 51.2
+        },
+        {
+          "flow": 1.19,
+          "pressureDrop": 60.2
+        },
+        {
+          "flow": 1.3,
+          "pressureDrop": 69.4
+        },
+        {
+          "flow": 1.39,
+          "pressureDrop": 79.9
+        },
+        {
+          "flow": 1.48,
+          "pressureDrop": 90.2
+        },
+        {
+          "flow": 1.56,
+          "pressureDrop": 99.8
+        },
+        {
+          "flow": 1.65,
+          "pressureDrop": 110.3
+        },
+        {
+          "flow": 1.72,
+          "pressureDrop": 119.7
+        },
+        {
+          "flow": 1.8,
+          "pressureDrop": 130.7
+        },
+        {
+          "flow": 1.86,
+          "pressureDrop": 139.9
+        },
+        {
+          "flow": 1.94,
+          "pressureDrop": 149.9
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: 3D Tip, Stainless Steel Shaft and 1/4\" Tubing Connector. Type/site: Coronary ostia perfusion. Size: 15 Fr. 45° tip catalog number: P604-50. 90° tip catalog number: P602-50. Connection size: 1/4\" tubing connector. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 1.94 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with 3D Tip and 1/4\" Tubing Connector 15 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.94 L/min. Catalog numbers include P604-50 for 45° tip and P602-50 for 90° tip."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Balloon Tip, Plastic Tubing and Female Luer Lock Connector — Straight Tip",
+      "category": "Cardioplegia",
+      "size": "4.0 mm balloon / 2.1 mm distal tip",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "female luer lock",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Straight tip catalog number",
+      "cannulaOrderCode": "CP-21004",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the upper Straight Tip graph for Coronary Ostia Perfusion Cannulae with Balloon Tip, Plastic Tubing and Female Luer Lock Connector. The source graph x-axis is labeled 0.05–0.30 L/min and y-axis is labeled 0–600 mmHg; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.30 L/min.",
+      "referenceFlowRangeLabel": "0–0.30",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.30 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.05,
+          "pressureDrop": 19.5
+        },
+        {
+          "flow": 0.06,
+          "pressureDrop": 28.9
+        },
+        {
+          "flow": 0.07,
+          "pressureDrop": 42.4
+        },
+        {
+          "flow": 0.08,
+          "pressureDrop": 54.2
+        },
+        {
+          "flow": 0.09,
+          "pressureDrop": 67.3
+        },
+        {
+          "flow": 0.1,
+          "pressureDrop": 81.5
+        },
+        {
+          "flow": 0.11,
+          "pressureDrop": 95.6
+        },
+        {
+          "flow": 0.12,
+          "pressureDrop": 109.5
+        },
+        {
+          "flow": 0.13,
+          "pressureDrop": 124.8
+        },
+        {
+          "flow": 0.14,
+          "pressureDrop": 139.8
+        },
+        {
+          "flow": 0.15,
+          "pressureDrop": 156.9
+        },
+        {
+          "flow": 0.16,
+          "pressureDrop": 176.2
+        },
+        {
+          "flow": 0.17,
+          "pressureDrop": 195.7
+        },
+        {
+          "flow": 0.18,
+          "pressureDrop": 218.1
+        },
+        {
+          "flow": 0.19,
+          "pressureDrop": 238.3
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 258.6
+        },
+        {
+          "flow": 0.21,
+          "pressureDrop": 280.6
+        },
+        {
+          "flow": 0.22,
+          "pressureDrop": 302.9
+        },
+        {
+          "flow": 0.23,
+          "pressureDrop": 325.2
+        },
+        {
+          "flow": 0.24,
+          "pressureDrop": 352.1
+        },
+        {
+          "flow": 0.25,
+          "pressureDrop": 379.0
+        },
+        {
+          "flow": 0.26,
+          "pressureDrop": 405.1
+        },
+        {
+          "flow": 0.27,
+          "pressureDrop": 433.0
+        },
+        {
+          "flow": 0.28,
+          "pressureDrop": 462.3
+        },
+        {
+          "flow": 0.29,
+          "pressureDrop": 489.2
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 517.9
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula with balloon tip dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Balloon Tip, Plastic Tubing and Female Luer Lock Connector. Variant: Straight Tip. Balloon size: 4.0 mm. Distal cannula tip size: 2.1 mm. Straight tip catalog number: CP-21004. Corresponding right angle tip catalog number: CP-22004; do not use CP-22004 as the primary catalog number for this dataset and do not use this dataset for the right-angle tip catalog CP-22004. Connection size: female luer lock. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source graph section: upper graph / Straight Tip catalog numbers CP-21004, CP-21005, CP-21006, CP-21007, CP-21008. Source range: 0 to 0.30 L/min. Extrapolation: false. Source curve digitized from the upper Straight Tip graph for Coronary Ostia Perfusion Cannulae with Balloon Tip, Plastic Tubing and Female Luer Lock Connector. This dataset corresponds to balloon size 4.0 mm, distal cannula tip size 2.1 mm, straight tip catalog number CP-21004. The source graph x-axis is labeled 0.05–0.30 L/min and y-axis is labeled 0–600 mmHg; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.30 L/min."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Balloon Tip, Plastic Tubing and Female Luer Lock Connector — Straight Tip",
+      "category": "Cardioplegia",
+      "size": "5.0 mm balloon / 2.1 mm distal tip",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "female luer lock",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Straight tip catalog number",
+      "cannulaOrderCode": "CP-21005",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the upper Straight Tip graph for Coronary Ostia Perfusion Cannulae with Balloon Tip, Plastic Tubing and Female Luer Lock Connector. The source graph x-axis is labeled 0.05–0.30 L/min and y-axis is labeled 0–600 mmHg; digitized raw x values were mapped to the source-labeled axis with the raw left edge mapped to 0.05 L/min and raw right edge mapped to 0.30 L/min. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.30 L/min.",
+      "referenceFlowRangeLabel": "0–0.30",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.30 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.05,
+          "pressureDrop": 27.9
+        },
+        {
+          "flow": 0.062,
+          "pressureDrop": 36.4
+        },
+        {
+          "flow": 0.072,
+          "pressureDrop": 42.3
+        },
+        {
+          "flow": 0.083,
+          "pressureDrop": 51.6
+        },
+        {
+          "flow": 0.096,
+          "pressureDrop": 60.1
+        },
+        {
+          "flow": 0.108,
+          "pressureDrop": 72.8
+        },
+        {
+          "flow": 0.12,
+          "pressureDrop": 88.0
+        },
+        {
+          "flow": 0.131,
+          "pressureDrop": 99.0
+        },
+        {
+          "flow": 0.143,
+          "pressureDrop": 116.8
+        },
+        {
+          "flow": 0.152,
+          "pressureDrop": 132.9
+        },
+        {
+          "flow": 0.163,
+          "pressureDrop": 151.5
+        },
+        {
+          "flow": 0.177,
+          "pressureDrop": 176.0
+        },
+        {
+          "flow": 0.19,
+          "pressureDrop": 201.4
+        },
+        {
+          "flow": 0.199,
+          "pressureDrop": 219.2
+        },
+        {
+          "flow": 0.208,
+          "pressureDrop": 238.6
+        },
+        {
+          "flow": 0.217,
+          "pressureDrop": 259.0
+        },
+        {
+          "flow": 0.226,
+          "pressureDrop": 279.3
+        },
+        {
+          "flow": 0.233,
+          "pressureDrop": 299.6
+        },
+        {
+          "flow": 0.241,
+          "pressureDrop": 320.7
+        },
+        {
+          "flow": 0.248,
+          "pressureDrop": 337.7
+        },
+        {
+          "flow": 0.256,
+          "pressureDrop": 358.8
+        },
+        {
+          "flow": 0.262,
+          "pressureDrop": 379.1
+        },
+        {
+          "flow": 0.269,
+          "pressureDrop": 400.3
+        },
+        {
+          "flow": 0.276,
+          "pressureDrop": 421.4
+        },
+        {
+          "flow": 0.283,
+          "pressureDrop": 440.1
+        },
+        {
+          "flow": 0.291,
+          "pressureDrop": 464.6
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 490.8
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula with balloon tip dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Balloon Tip, Plastic Tubing and Female Luer Lock Connector. Variant: Straight Tip. Balloon size: 5.0 mm. Distal cannula tip size: 2.1 mm. Straight tip catalog number: CP-21005. Corresponding right angle tip catalog number: CP-22005; do not use CP-22005 as the primary catalog number for this dataset and do not use this dataset for the right-angle tip catalog CP-22005. Connection size: female luer lock. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source graph section: upper graph / Straight Tip catalog numbers CP-21004, CP-21005, CP-21006, CP-21007, CP-21008. Source range: 0 to 0.30 L/min. Extrapolation: false. Source curve digitized from the upper Straight Tip graph for Coronary Ostia Perfusion Cannulae with Balloon Tip, Plastic Tubing and Female Luer Lock Connector. This dataset corresponds to balloon size 5.0 mm, distal cannula tip size 2.1 mm, straight tip catalog number CP-21005. The source graph x-axis is labeled 0.05–0.30 L/min and y-axis is labeled 0–600 mmHg; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.30 L/min."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Balloon Tip, Plastic Tubing and Female Luer Lock Connector — Straight Tip",
+      "category": "Cardioplegia",
+      "size": "6.0 mm balloon / 3.0 mm distal tip",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "female luer lock",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Straight tip catalog number",
+      "cannulaOrderCode": "CP-21006",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the upper Straight Tip graph for Coronary Ostia Perfusion Cannulae with Balloon Tip, Plastic Tubing and Female Luer Lock Connector. The source graph x-axis is labeled 0.05–0.30 L/min and y-axis is labeled 0–600 mmHg; digitized raw x values were mapped to the source-labeled axis with the raw left edge mapped to 0.05 L/min and raw right edge mapped to 0.30 L/min. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.30 L/min.",
+      "referenceFlowRangeLabel": "0–0.30",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.30 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.051,
+          "pressureDrop": 7.6
+        },
+        {
+          "flow": 0.07,
+          "pressureDrop": 11.0
+        },
+        {
+          "flow": 0.086,
+          "pressureDrop": 14.4
+        },
+        {
+          "flow": 0.101,
+          "pressureDrop": 19.5
+        },
+        {
+          "flow": 0.112,
+          "pressureDrop": 22.8
+        },
+        {
+          "flow": 0.123,
+          "pressureDrop": 26.2
+        },
+        {
+          "flow": 0.136,
+          "pressureDrop": 31.3
+        },
+        {
+          "flow": 0.151,
+          "pressureDrop": 38.1
+        },
+        {
+          "flow": 0.167,
+          "pressureDrop": 46.5
+        },
+        {
+          "flow": 0.183,
+          "pressureDrop": 55.0
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 66.0
+        },
+        {
+          "flow": 0.218,
+          "pressureDrop": 78.7
+        },
+        {
+          "flow": 0.231,
+          "pressureDrop": 88.9
+        },
+        {
+          "flow": 0.246,
+          "pressureDrop": 99.9
+        },
+        {
+          "flow": 0.261,
+          "pressureDrop": 113.4
+        },
+        {
+          "flow": 0.276,
+          "pressureDrop": 127.8
+        },
+        {
+          "flow": 0.288,
+          "pressureDrop": 139.6
+        },
+        {
+          "flow": 0.299,
+          "pressureDrop": 150.6
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula with balloon tip dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Balloon Tip, Plastic Tubing and Female Luer Lock Connector. Variant: Straight Tip. Balloon size: 6.0 mm. Distal cannula tip size: 3.0 mm. Straight tip catalog number: CP-21006. Corresponding right angle tip catalog number: CP-22006; do not use CP-22006 as the primary catalog number for this dataset and do not use this dataset for the right-angle tip catalog CP-22006. Connection size: female luer lock. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source graph section: upper graph / Straight Tip catalog numbers CP-21004, CP-21005, CP-21006, CP-21007, CP-21008. Source range: 0 to 0.30 L/min. Extrapolation: false. Source curve digitized from the upper Straight Tip graph for Coronary Ostia Perfusion Cannulae with Balloon Tip, Plastic Tubing and Female Luer Lock Connector. This dataset corresponds to balloon size 6.0 mm, distal cannula tip size 3.0 mm, straight tip catalog number CP-21006. The source graph x-axis is labeled 0.05–0.30 L/min and y-axis is labeled 0–600 mmHg; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.30 L/min."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Balloon Tip, Plastic Tubing and Female Luer Lock Connector — Straight Tip",
+      "category": "Cardioplegia",
+      "size": "7.0 mm balloon / 3.0 mm distal tip",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "female luer lock",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Straight tip catalog number",
+      "cannulaOrderCode": "CP-21007",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the upper Straight Tip graph for Coronary Ostia Perfusion Cannulae with Balloon Tip, Plastic Tubing and Female Luer Lock Connector. The source graph x-axis is labeled 0.05–0.30 L/min and y-axis is labeled 0–600 mmHg; digitized raw x values were mapped to the source-labeled axis with the raw left edge mapped to 0.05 L/min and raw right edge mapped to 0.30 L/min. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.30 L/min.",
+      "referenceFlowRangeLabel": "0–0.30",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.30 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.051,
+          "pressureDrop": 4.2
+        },
+        {
+          "flow": 0.065,
+          "pressureDrop": 5.9
+        },
+        {
+          "flow": 0.082,
+          "pressureDrop": 10.2
+        },
+        {
+          "flow": 0.1,
+          "pressureDrop": 15.2
+        },
+        {
+          "flow": 0.12,
+          "pressureDrop": 19.5
+        },
+        {
+          "flow": 0.134,
+          "pressureDrop": 24.5
+        },
+        {
+          "flow": 0.151,
+          "pressureDrop": 33.0
+        },
+        {
+          "flow": 0.168,
+          "pressureDrop": 39.8
+        },
+        {
+          "flow": 0.184,
+          "pressureDrop": 47.4
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 58.4
+        },
+        {
+          "flow": 0.215,
+          "pressureDrop": 67.7
+        },
+        {
+          "flow": 0.228,
+          "pressureDrop": 77.9
+        },
+        {
+          "flow": 0.241,
+          "pressureDrop": 88.0
+        },
+        {
+          "flow": 0.253,
+          "pressureDrop": 99.9
+        },
+        {
+          "flow": 0.272,
+          "pressureDrop": 116.8
+        },
+        {
+          "flow": 0.286,
+          "pressureDrop": 130.3
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 140.5
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula with balloon tip dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Balloon Tip, Plastic Tubing and Female Luer Lock Connector. Variant: Straight Tip. Balloon size: 7.0 mm. Distal cannula tip size: 3.0 mm. Straight tip catalog number: CP-21007. Corresponding right angle tip catalog number: CP-22007; do not use CP-22007 as the primary catalog number for this dataset and do not use this dataset for the right-angle tip catalog CP-22007. Connection size: female luer lock. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source graph section: upper graph / Straight Tip catalog numbers CP-21004, CP-21005, CP-21006, CP-21007, CP-21008. Source range: 0 to 0.30 L/min. Extrapolation: false. Source curve digitized from the upper Straight Tip graph for Coronary Ostia Perfusion Cannulae with Balloon Tip, Plastic Tubing and Female Luer Lock Connector. This dataset corresponds to balloon size 7.0 mm, distal cannula tip size 3.0 mm, straight tip catalog number CP-21007. The source graph x-axis is labeled 0.05–0.30 L/min and y-axis is labeled 0–600 mmHg; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.30 L/min."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Balloon Tip, Plastic Tubing and Female Luer Lock Connector — Straight Tip",
+      "category": "Cardioplegia",
+      "size": "8.0 mm balloon / 3.5 mm distal tip",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "female luer lock",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Straight tip catalog number",
+      "cannulaOrderCode": "CP-21008",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the upper Straight Tip graph for Coronary Ostia Perfusion Cannulae with Balloon Tip, Plastic Tubing and Female Luer Lock Connector. The source graph x-axis is labeled 0.05–0.30 L/min and y-axis is labeled 0–600 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond 0.30 L/min.",
+      "referenceFlowRangeLabel": "0–0.30",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.30 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.019,
+          "pressureDrop": 3.4
+        },
+        {
+          "flow": 0.042,
+          "pressureDrop": 5.1
+        },
+        {
+          "flow": 0.06,
+          "pressureDrop": 6.8
+        },
+        {
+          "flow": 0.083,
+          "pressureDrop": 10.2
+        },
+        {
+          "flow": 0.103,
+          "pressureDrop": 14.4
+        },
+        {
+          "flow": 0.12,
+          "pressureDrop": 16.9
+        },
+        {
+          "flow": 0.134,
+          "pressureDrop": 20.3
+        },
+        {
+          "flow": 0.149,
+          "pressureDrop": 22.8
+        },
+        {
+          "flow": 0.164,
+          "pressureDrop": 27.9
+        },
+        {
+          "flow": 0.18,
+          "pressureDrop": 32.2
+        },
+        {
+          "flow": 0.194,
+          "pressureDrop": 34.7
+        },
+        {
+          "flow": 0.208,
+          "pressureDrop": 39.8
+        },
+        {
+          "flow": 0.222,
+          "pressureDrop": 44.9
+        },
+        {
+          "flow": 0.24,
+          "pressureDrop": 50.8
+        },
+        {
+          "flow": 0.258,
+          "pressureDrop": 57.5
+        },
+        {
+          "flow": 0.28,
+          "pressureDrop": 65.2
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 71.9
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula with balloon tip dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Balloon Tip, Plastic Tubing and Female Luer Lock Connector. Variant: Straight Tip. Balloon size: 8.0 mm. Distal cannula tip size: 3.5 mm. Straight tip catalog number: CP-21008. Corresponding right angle tip catalog number: CP-22008; do not use CP-22008 as the primary catalog number for this dataset and do not use this dataset for the right-angle tip catalog CP-22008. Connection size: female luer lock. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source graph section: upper graph / Straight Tip catalog numbers CP-21004, CP-21005, CP-21006, CP-21007, CP-21008. Source range: 0 to 0.30 L/min. Extrapolation: false. Source curve digitized from the upper Straight Tip graph for Coronary Ostia Perfusion Cannulae with Balloon Tip, Plastic Tubing and Female Luer Lock Connector. This dataset corresponds to balloon size 8.0 mm, distal cannula tip size 3.5 mm, straight tip catalog number CP-21008. The source graph x-axis is labeled 0.05–0.30 L/min and y-axis is labeled 0–600 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond 0.30 L/min."
+    },
+    {
+      "manufacturer": "LivaNova",
+      "model": "Retrograde Cardioplegia Cannulae — Self-Inflating PVC Balloon",
+      "category": "Cardioplegia",
+      "size": "14 Fr",
+      "overallLengthCm": 30.5,
+      "connectionSite": "Retrograde cardioplegia / coronary sinus",
+      "cartonQuantity": 5,
+      "cannulaOrderCodeLabel": "Catalog variants",
+      "cannulaOrderCode": "RCS-11114; RCS-12114; RCS-13114; RCS-11214; RCS-12214; RCS-13214; RCS-11314; RCS-12314; RCS-13314",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/retrograde-coronary-sinus",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Retrograde Cardioplegia Cannulae with Self-Inflating PVC Balloon F14 curve. The source graph x-axis is labeled 0–0.6 L/min and y-axis is labeled 0–60 mmHg. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the visible digitized source range of 0.60 L/min.",
+      "referenceFlowRangeLabel": "0–0.60",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.60 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.05,
+          "pressureDrop": 0.5
+        },
+        {
+          "flow": 0.09,
+          "pressureDrop": 2.9
+        },
+        {
+          "flow": 0.11,
+          "pressureDrop": 4.5
+        },
+        {
+          "flow": 0.14,
+          "pressureDrop": 6.1
+        },
+        {
+          "flow": 0.17,
+          "pressureDrop": 8.1
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 0.23,
+          "pressureDrop": 12.5
+        },
+        {
+          "flow": 0.26,
+          "pressureDrop": 14.7
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 17.0
+        },
+        {
+          "flow": 0.34,
+          "pressureDrop": 20.3
+        },
+        {
+          "flow": 0.36,
+          "pressureDrop": 22.5
+        },
+        {
+          "flow": 0.4,
+          "pressureDrop": 25.6
+        },
+        {
+          "flow": 0.42,
+          "pressureDrop": 28.4
+        },
+        {
+          "flow": 0.44,
+          "pressureDrop": 30.2
+        },
+        {
+          "flow": 0.47,
+          "pressureDrop": 33.2
+        },
+        {
+          "flow": 0.5,
+          "pressureDrop": 36.8
+        },
+        {
+          "flow": 0.52,
+          "pressureDrop": 40.2
+        },
+        {
+          "flow": 0.55,
+          "pressureDrop": 44.0
+        },
+        {
+          "flow": 0.56,
+          "pressureDrop": 46.8
+        },
+        {
+          "flow": 0.58,
+          "pressureDrop": 49.9
+        },
+        {
+          "flow": 0.6,
+          "pressureDrop": 53.0
+        }
+      ],
+      "notes": "Cardioplegia product / Retrograde cardioplegia cannula / coronary sinus cannula dataset; do not categorize as femoral arterial, femoral venous, aortic root, or coronary ostia perfusion. Product/family: Retrograde Cardioplegia Cannulae. Model/description: Self-Inflating PVC Balloon. Type/site: Retrograde cardioplegia / coronary sinus. Cannula tip size: 14 Fr. Balloon diameter options: 14 mm; 18 mm; 20 mm. Without stylet catalog numbers: RCS-11114 for 14 mm balloon, RCS-12114 for 18 mm balloon, RCS-13114 for 20 mm balloon. Solid malleable stylet catalog numbers: RCS-11214 for 14 mm balloon, RCS-12214 for 18 mm balloon, RCS-13214 for 20 mm balloon. Solid malleable stylet with handle catalog numbers: RCS-11314 for 14 mm balloon, RCS-12314 for 18 mm balloon, RCS-13314 for 20 mm balloon. Effective length: 30.5 cm. Quantity per box: 5. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source graph label: F14. Source range: 0 to 0.60 L/min. Extrapolation: false. Source curve digitized from the Retrograde Cardioplegia Cannulae with Self-Inflating PVC Balloon F14 curve. The source graph x-axis is labeled 0–0.6 L/min and y-axis is labeled 0–60 mmHg. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the visible digitized source range of 0.60 L/min. The source graph provides a single F14 curve; balloon diameter options 14 mm, 18 mm, and 20 mm are included as catalog variants rather than separate pressure-flow datasets."
+    },
+    {
+      "manufacturer": "Getinge / Maquet",
+      "model": "Arterial HLS Cannulae / PAS arterial HLS cannula",
+      "category": "Adult arterial",
+      "size": "13 Fr / 4.3 mm",
+      "sourceLabel": "Arterial HLS cannulae product pressure-flow graph",
+      "sourceUrl": "",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "PAS 1315 pressure-flow data were updated with a denser digitized point set. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range of 2.91 L/min.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 2.7
+        },
+        {
+          "flow": 0.37,
+          "pressureDrop": 5.4
+        },
+        {
+          "flow": 0.52,
+          "pressureDrop": 9.0
+        },
+        {
+          "flow": 0.69,
+          "pressureDrop": 13.0
+        },
+        {
+          "flow": 0.84,
+          "pressureDrop": 17.0
+        },
+        {
+          "flow": 0.96,
+          "pressureDrop": 22.0
+        },
+        {
+          "flow": 1.08,
+          "pressureDrop": 27.8
+        },
+        {
+          "flow": 1.21,
+          "pressureDrop": 33.2
+        },
+        {
+          "flow": 1.36,
+          "pressureDrop": 40.4
+        },
+        {
+          "flow": 1.53,
+          "pressureDrop": 51.1
+        },
+        {
+          "flow": 1.68,
+          "pressureDrop": 61.0
+        },
+        {
+          "flow": 1.8,
+          "pressureDrop": 70.0
+        },
+        {
+          "flow": 1.92,
+          "pressureDrop": 80.7
+        },
+        {
+          "flow": 2.03,
+          "pressureDrop": 89.7
+        },
+        {
+          "flow": 2.15,
+          "pressureDrop": 100.0
+        },
+        {
+          "flow": 2.23,
+          "pressureDrop": 110.3
+        },
+        {
+          "flow": 2.32,
+          "pressureDrop": 119.7
+        },
+        {
+          "flow": 2.38,
+          "pressureDrop": 129.6
+        },
+        {
+          "flow": 2.47,
+          "pressureDrop": 140.8
+        },
+        {
+          "flow": 2.55,
+          "pressureDrop": 149.8
+        },
+        {
+          "flow": 2.63,
+          "pressureDrop": 160.1
+        },
+        {
+          "flow": 2.69,
+          "pressureDrop": 169.5
+        },
+        {
+          "flow": 2.76,
+          "pressureDrop": 180.3
+        },
+        {
+          "flow": 2.84,
+          "pressureDrop": 189.7
+        },
+        {
+          "flow": 2.91,
+          "pressureDrop": 199.6
+        }
+      ],
+      "notes": "Adult arterial / arterial HLS cannula dataset; do not categorize as venous, cardioplegia, aortic root, coronary ostia, or retrograde cardioplegia. Product/family: Arterial HLS Cannulae. Model/description: PAS arterial HLS cannula. Type/site: Arterial HLS cannula. Size: 13 Fr / 4.3 mm. Type/catalog number: PAS 1315. Bioline coated catalog number: BE-PAS 1315. Insertion length: 15 cm. Side holes: 2. Perforation length: 1 cm. Connector: 3/8 inch LL. Quantity per carton/box: 1. Source type: digitized_graph. Source description: Arterial HLS cannulae product pressure-flow graph. Source range: 0 to 2.91 L/min. Extrapolation: false. PAS 1315 pressure-flow data were updated with a denser digitized point set. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range of 2.91 L/min. This is an adult arterial HLS cannula dataset; preserve the existing arterial pressure-drop caution behavior if configured. Do not use this dataset for PAS 1515, PAS 1715, PAS 1915, PAS 2115, PAS 2315, PAL 1523, PAL 1723, PAL 1923, PAL 2123, or PAL 2323.",
+      "connectionSite": "Arterial HLS cannula",
+      "connectorSize": "3/8 inch LL",
+      "cartonQuantity": 1,
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PAS 1315",
+      "referenceFlowRangeLabel": "0–2.91",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 2.91 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Getinge / Maquet",
@@ -8426,116 +11832,357 @@
     {
       "manufacturer": "Medtronic",
       "model": "DLP Single Stage Venous Cannulae with Right Angle Metal Tip",
-      "category": "venous",
-      "size": "12 Fr",
+      "category": "Adult venous",
+      "size": "12 Fr / 4.0 mm",
       "outerDiameterFr": 12,
-      "outerDiameterMm": 4,
+      "outerDiameterMm": 4.0,
       "overallLengthIn": 14,
       "overallLengthCm": 35.6,
-      "connectionSite": "1/4 in (0.64 cm)",
+      "connectionSite": "Single stage venous",
       "cannulaOrderCode": "67312",
-      "cartonQuantity": "10 per carton",
-      "sourceLabel": "Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 1/4 in connection site pressure-loss chart",
-      "sourceUrl": "Uploaded Medtronic Cannula Catalog 2020",
+      "cartonQuantity": 10,
+      "sourceLabel": "DLP Single Stage Venous Cannulae with Right Angle Metal Tip pressure-flow graph",
+      "sourceUrl": "",
       "testMedium": "Water",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 1/4 in connection site chart.",
-      "outOfRangeMessage": "Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.",
+      "digitizationNote": "Pressure-loss data were updated with a denser digitized point set from the DLP Single Stage Venous Cannulae with Right Angle Metal Tip 1/4 inch connection site 12 Fr curve. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range of 2.21 L/min.",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 2.21 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 14
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 48
+          "flow": 0.19,
+          "pressureDrop": 3.3
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 98
+          "flow": 0.36,
+          "pressureDrop": 8.4
         },
         {
-          "flow": 2,
-          "pressureDrop": 163
+          "flow": 0.49,
+          "pressureDrop": 13.9
+        },
+        {
+          "flow": 0.61,
+          "pressureDrop": 20.4
+        },
+        {
+          "flow": 0.76,
+          "pressureDrop": 29.6
+        },
+        {
+          "flow": 0.91,
+          "pressureDrop": 39.8
+        },
+        {
+          "flow": 1.01,
+          "pressureDrop": 48.6
+        },
+        {
+          "flow": 1.15,
+          "pressureDrop": 60.6
+        },
+        {
+          "flow": 1.25,
+          "pressureDrop": 71.2
+        },
+        {
+          "flow": 1.33,
+          "pressureDrop": 80.0
+        },
+        {
+          "flow": 1.41,
+          "pressureDrop": 89.5
+        },
+        {
+          "flow": 1.49,
+          "pressureDrop": 99.7
+        },
+        {
+          "flow": 1.6,
+          "pressureDrop": 110.3
+        },
+        {
+          "flow": 1.67,
+          "pressureDrop": 120.9
+        },
+        {
+          "flow": 1.74,
+          "pressureDrop": 130.4
+        },
+        {
+          "flow": 1.82,
+          "pressureDrop": 140.3
+        },
+        {
+          "flow": 1.89,
+          "pressureDrop": 149.1
+        },
+        {
+          "flow": 1.96,
+          "pressureDrop": 160.4
+        },
+        {
+          "flow": 2.02,
+          "pressureDrop": 170.6
+        },
+        {
+          "flow": 2.1,
+          "pressureDrop": 180.1
+        },
+        {
+          "flow": 2.14,
+          "pressureDrop": 190.0
+        },
+        {
+          "flow": 2.21,
+          "pressureDrop": 200.6
         }
       ],
-      "notes": "DLP Single Stage Venous Cannula with Right Angle Metal Tip. 12 Fr (4.0 mm), 14 in (35.6 cm) overall length, 1/4 in (0.64 cm) connection site. Order code 67312."
+      "notes": "Single stage venous cannula / right angle metal tip dataset; do not categorize as femoral arterial, aortic root, coronary ostia perfusion, or retrograde cardioplegia. Product/family: DLP Single Stage Venous Cannulae. Model/description: Right Angle Metal Tip. Type/site: Single stage venous. Size: 12 Fr / 4.0 mm. Overall length: 14 in / 35.6 cm. Connection site/connection size: 1/4 inch / 0.64 cm. Catalog number: 67312. Quantity per carton: 10. Source type: digitized_graph. Source description: DLP Single Stage Venous Cannulae with Right Angle Metal Tip pressure-flow graph. Test medium: water (source graph x-axis specifies L/min of water). Source graph: DLP Single Stage Venous Cannulae with Right Angle Metal Tip and 1/4 inch connection site. Source graph label: 12 Fr. Source graph x-axis is Flow Rate (L/min of water); y-axis is Pressure Loss (mmHg). Source range: 0 to 2.21 L/min. Extrapolation: false. Pressure-loss data were updated with a denser digitized point set from the DLP Single Stage Venous Cannulae with Right Angle Metal Tip 1/4 inch connection site 12 Fr curve. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range of 2.21 L/min. This is a venous cannula dataset; do not apply arterial-only pressure-drop caution thresholds unless the existing app intentionally uses a shared threshold. Do not use this dataset for 14 Fr, 16 Fr, 18 Fr, 20 Fr, or 3/8 inch connection site curves.",
+      "connectorSize": "1/4 inch / 0.64 cm",
+      "cannulaOrderCodeLabel": "Catalog number",
+      "referenceFlowRangeLabel": "0–2.21"
     },
     {
       "manufacturer": "Medtronic",
       "model": "DLP Single Stage Venous Cannulae with Right Angle Metal Tip",
-      "category": "venous",
-      "size": "12 Fr",
+      "category": "Adult venous",
+      "size": "12 Fr / 4.0 mm",
       "outerDiameterFr": 12,
-      "outerDiameterMm": 4,
+      "outerDiameterMm": 4.0,
       "overallLengthIn": 14,
       "overallLengthCm": 35.6,
-      "connectionSite": "3/8 in (0.95 cm)",
+      "connectionSite": "Single stage venous",
       "cannulaOrderCode": "69312",
-      "cartonQuantity": "10 per carton",
-      "sourceLabel": "Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 3/8 in connection site pressure-loss chart",
-      "sourceUrl": "Uploaded Medtronic Cannula Catalog 2020",
+      "cartonQuantity": 10,
+      "sourceLabel": "DLP Single Stage Venous Cannulae with Right Angle Metal Tip pressure-flow graph",
+      "sourceUrl": "",
       "testMedium": "Water",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 3/8 in connection site chart.",
-      "outOfRangeMessage": "Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.",
+      "digitizationNote": "Pressure-loss data were updated with a denser digitized point set from the DLP Single Stage Venous Cannulae with Right Angle Metal Tip 3/8 inch connection site 12 Fr curve. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range of 1.57 L/min.",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.57 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 12
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 45
+          "flow": 0.14,
+          "pressureDrop": 2.0
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 92
+          "flow": 0.29,
+          "pressureDrop": 5.2
+        },
+        {
+          "flow": 0.42,
+          "pressureDrop": 10.0
+        },
+        {
+          "flow": 0.54,
+          "pressureDrop": 15.6
+        },
+        {
+          "flow": 0.65,
+          "pressureDrop": 20.6
+        },
+        {
+          "flow": 0.73,
+          "pressureDrop": 25.8
+        },
+        {
+          "flow": 0.79,
+          "pressureDrop": 30.1
+        },
+        {
+          "flow": 0.86,
+          "pressureDrop": 33.8
+        },
+        {
+          "flow": 0.92,
+          "pressureDrop": 39.7
+        },
+        {
+          "flow": 0.99,
+          "pressureDrop": 45.1
+        },
+        {
+          "flow": 1.07,
+          "pressureDrop": 50.3
+        },
+        {
+          "flow": 1.11,
+          "pressureDrop": 54.6
+        },
+        {
+          "flow": 1.19,
+          "pressureDrop": 60.1
+        },
+        {
+          "flow": 1.25,
+          "pressureDrop": 65.5
+        },
+        {
+          "flow": 1.3,
+          "pressureDrop": 70.5
+        },
+        {
+          "flow": 1.34,
+          "pressureDrop": 75.0
+        },
+        {
+          "flow": 1.39,
+          "pressureDrop": 80.4
+        },
+        {
+          "flow": 1.43,
+          "pressureDrop": 84.3
+        },
+        {
+          "flow": 1.48,
+          "pressureDrop": 90.6
+        },
+        {
+          "flow": 1.53,
+          "pressureDrop": 95.2
+        },
+        {
+          "flow": 1.57,
+          "pressureDrop": 100.1
         }
       ],
-      "notes": "DLP Single Stage Venous Cannula with Right Angle Metal Tip. 12 Fr (4.0 mm), 14 in (35.6 cm) overall length, 3/8 in (0.95 cm) connection site. Order code 69312."
+      "notes": "Single stage venous cannula / right angle metal tip dataset; do not categorize as femoral arterial, aortic root, coronary ostia perfusion, or retrograde cardioplegia. Product/family: DLP Single Stage Venous Cannulae. Model/description: Right Angle Metal Tip. Type/site: Single stage venous. Size: 12 Fr / 4.0 mm. Overall length: 14 in / 35.6 cm. Connection site/connection size: 3/8 inch / 0.95 cm. Catalog number: 69312. Quantity per carton: 10. Source type: digitized_graph. Source description: DLP Single Stage Venous Cannulae with Right Angle Metal Tip pressure-flow graph. Test medium: water (source graph x-axis specifies L/min of water). Source graph: DLP Single Stage Venous Cannulae with Right Angle Metal Tip and 3/8 inch connection site. Source graph label: 12 Fr. Source graph x-axis is Flow Rate (L/min of water); y-axis is Pressure Loss (mmHg). Source range: 0 to 1.57 L/min. Extrapolation: false. Pressure-loss data were updated with a denser digitized point set from the DLP Single Stage Venous Cannulae with Right Angle Metal Tip 3/8 inch connection site 12 Fr curve. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range of 1.57 L/min. This is a venous cannula dataset; do not apply arterial-only pressure-drop caution thresholds unless the existing app intentionally uses a shared threshold. Do not use this dataset for 14 Fr, 16 Fr, 18 Fr, 20 Fr, 22 Fr, 24 Fr, 28 Fr, 31 Fr, or 1/4 inch connection site curves.",
+      "connectorSize": "3/8 inch / 0.95 cm",
+      "cannulaOrderCodeLabel": "Catalog number",
+      "referenceFlowRangeLabel": "0–1.57"
     },
     {
       "manufacturer": "Medtronic",
       "model": "DLP Single Stage Venous Cannulae with Right Angle Metal Tip",
-      "category": "venous",
-      "size": "14 Fr",
+      "category": "Adult venous",
+      "size": "14 Fr / 4.7 mm",
       "outerDiameterFr": 14,
       "outerDiameterMm": 4.7,
       "overallLengthIn": 14,
       "overallLengthCm": 35.6,
-      "connectionSite": "3/8 in (0.95 cm)",
+      "connectionSite": "Single stage venous",
       "cannulaOrderCode": "69314",
-      "cartonQuantity": "10 per carton",
-      "sourceLabel": "Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 3/8 in connection site pressure-loss chart",
-      "sourceUrl": "Uploaded Medtronic Cannula Catalog 2020",
+      "cartonQuantity": 10,
+      "sourceLabel": "DLP Single Stage Venous Cannulae with Right Angle Metal Tip pressure-flow graph",
+      "sourceUrl": "",
       "testMedium": "Water",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 3/8 in connection site chart.",
-      "outOfRangeMessage": "Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.",
+      "digitizationNote": "Pressure-loss data were updated with a denser digitized point set from the DLP Single Stage Venous Cannulae with Right Angle Metal Tip 3/8 inch connection site 14 Fr curve. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range of 2.71 L/min.",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 2.71 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 4
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 17
+          "flow": 0.2,
+          "pressureDrop": 1.4
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 34
+          "flow": 0.35,
+          "pressureDrop": 2.3
         },
         {
-          "flow": 2,
-          "pressureDrop": 58
+          "flow": 0.48,
+          "pressureDrop": 4.5
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 88
+          "flow": 0.61,
+          "pressureDrop": 7.0
+        },
+        {
+          "flow": 0.76,
+          "pressureDrop": 10.2
+        },
+        {
+          "flow": 0.87,
+          "pressureDrop": 13.0
+        },
+        {
+          "flow": 1.0,
+          "pressureDrop": 16.4
+        },
+        {
+          "flow": 1.12,
+          "pressureDrop": 20.2
+        },
+        {
+          "flow": 1.27,
+          "pressureDrop": 25.4
+        },
+        {
+          "flow": 1.4,
+          "pressureDrop": 30.4
+        },
+        {
+          "flow": 1.52,
+          "pressureDrop": 35.4
+        },
+        {
+          "flow": 1.63,
+          "pressureDrop": 40.4
+        },
+        {
+          "flow": 1.74,
+          "pressureDrop": 44.9
+        },
+        {
+          "flow": 1.85,
+          "pressureDrop": 50.1
+        },
+        {
+          "flow": 1.94,
+          "pressureDrop": 54.7
+        },
+        {
+          "flow": 2.04,
+          "pressureDrop": 60.1
+        },
+        {
+          "flow": 2.14,
+          "pressureDrop": 65.1
+        },
+        {
+          "flow": 2.23,
+          "pressureDrop": 70.5
+        },
+        {
+          "flow": 2.31,
+          "pressureDrop": 75.1
+        },
+        {
+          "flow": 2.41,
+          "pressureDrop": 80.1
+        },
+        {
+          "flow": 2.48,
+          "pressureDrop": 85.0
+        },
+        {
+          "flow": 2.57,
+          "pressureDrop": 90.3
+        },
+        {
+          "flow": 2.63,
+          "pressureDrop": 94.6
+        },
+        {
+          "flow": 2.71,
+          "pressureDrop": 99.8
         }
       ],
-      "notes": "DLP Single Stage Venous Cannula with Right Angle Metal Tip. 14 Fr (4.7 mm), 14 in (35.6 cm) overall length, 3/8 in (0.95 cm) connection site. Order code 69314."
+      "notes": "Single stage venous cannula / right angle metal tip dataset; do not categorize as femoral arterial, aortic root, coronary ostia perfusion, or retrograde cardioplegia. Product/family: DLP Single Stage Venous Cannulae. Model/description: Right Angle Metal Tip. Type/site: Single stage venous. Size: 14 Fr / 4.7 mm. Overall length: 14 in / 35.6 cm. Connection site/connection size: 3/8 inch / 0.95 cm. Catalog number: 69314. Quantity per carton: 10. Source type: digitized_graph. Source description: DLP Single Stage Venous Cannulae with Right Angle Metal Tip pressure-flow graph. Test medium: water (source graph x-axis specifies L/min of water). Source graph: DLP Single Stage Venous Cannulae with Right Angle Metal Tip and 3/8 inch connection site. Source graph label: 14 Fr. Source graph x-axis is Flow Rate (L/min of water); y-axis is Pressure Loss (mmHg). Source range: 0 to 2.71 L/min. Extrapolation: false. Pressure-loss data were updated with a denser digitized point set from the DLP Single Stage Venous Cannulae with Right Angle Metal Tip 3/8 inch connection site 14 Fr curve. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range of 2.71 L/min. This is a venous cannula dataset; do not apply arterial-only pressure-drop caution thresholds unless the existing app intentionally uses a shared threshold. Do not use this dataset for 12 Fr, 16 Fr, 18 Fr, 20 Fr, 22 Fr, 24 Fr, 28 Fr, 31 Fr, or 1/4 inch connection site curves.",
+      "connectorSize": "3/8 inch / 0.95 cm",
+      "cannulaOrderCodeLabel": "Catalog number",
+      "referenceFlowRangeLabel": "0–2.71"
     },
     {
       "manufacturer": "Medtronic",
