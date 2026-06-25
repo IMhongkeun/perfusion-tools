@@ -969,7 +969,7 @@ function findPressureDropEntry({ manufacturer, category, model, size }, entries 
   )) || null;
 }
 
-const PRESSURE_DROP_EXACT_FLOW_TOLERANCE = 0.01;
+const PRESSURE_DROP_EXACT_FLOW_TOLERANCE = 1e-6;
 
 function getValidPressureDropPoints(points) {
   if (!Array.isArray(points)) return [];
