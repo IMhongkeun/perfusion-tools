@@ -11832,40 +11832,119 @@
     {
       "manufacturer": "Medtronic",
       "model": "DLP Single Stage Venous Cannulae with Right Angle Metal Tip",
-      "category": "venous",
-      "size": "12 Fr",
+      "category": "Adult venous",
+      "size": "12 Fr / 4.0 mm",
       "outerDiameterFr": 12,
-      "outerDiameterMm": 4,
+      "outerDiameterMm": 4.0,
       "overallLengthIn": 14,
       "overallLengthCm": 35.6,
-      "connectionSite": "1/4 in (0.64 cm)",
+      "connectionSite": "Single stage venous",
       "cannulaOrderCode": "67312",
-      "cartonQuantity": "10 per carton",
-      "sourceLabel": "Medtronic Cannula Catalog 2020 — DLP Single Stage Venous Cannulae with Right Angle Metal Tip, 1/4 in connection site pressure-loss chart",
-      "sourceUrl": "Uploaded Medtronic Cannula Catalog 2020",
+      "cartonQuantity": 10,
+      "sourceLabel": "DLP Single Stage Venous Cannulae with Right Angle Metal Tip pressure-flow graph",
+      "sourceUrl": "",
       "testMedium": "Water",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. This dataset is specific to the 1/4 in connection site chart.",
-      "outOfRangeMessage": "Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.",
+      "digitizationNote": "Pressure-loss data were updated with a denser digitized point set from the DLP Single Stage Venous Cannulae with Right Angle Metal Tip 1/4 inch connection site 12 Fr curve. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range of 2.21 L/min.",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 2.21 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 14
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 48
+          "flow": 0.19,
+          "pressureDrop": 3.3
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 98
+          "flow": 0.36,
+          "pressureDrop": 8.4
         },
         {
-          "flow": 2,
-          "pressureDrop": 163
+          "flow": 0.49,
+          "pressureDrop": 13.9
+        },
+        {
+          "flow": 0.61,
+          "pressureDrop": 20.4
+        },
+        {
+          "flow": 0.76,
+          "pressureDrop": 29.6
+        },
+        {
+          "flow": 0.91,
+          "pressureDrop": 39.8
+        },
+        {
+          "flow": 1.01,
+          "pressureDrop": 48.6
+        },
+        {
+          "flow": 1.15,
+          "pressureDrop": 60.6
+        },
+        {
+          "flow": 1.25,
+          "pressureDrop": 71.2
+        },
+        {
+          "flow": 1.33,
+          "pressureDrop": 80.0
+        },
+        {
+          "flow": 1.41,
+          "pressureDrop": 89.5
+        },
+        {
+          "flow": 1.49,
+          "pressureDrop": 99.7
+        },
+        {
+          "flow": 1.6,
+          "pressureDrop": 110.3
+        },
+        {
+          "flow": 1.67,
+          "pressureDrop": 120.9
+        },
+        {
+          "flow": 1.74,
+          "pressureDrop": 130.4
+        },
+        {
+          "flow": 1.82,
+          "pressureDrop": 140.3
+        },
+        {
+          "flow": 1.89,
+          "pressureDrop": 149.1
+        },
+        {
+          "flow": 1.96,
+          "pressureDrop": 160.4
+        },
+        {
+          "flow": 2.02,
+          "pressureDrop": 170.6
+        },
+        {
+          "flow": 2.1,
+          "pressureDrop": 180.1
+        },
+        {
+          "flow": 2.14,
+          "pressureDrop": 190.0
+        },
+        {
+          "flow": 2.21,
+          "pressureDrop": 200.6
         }
       ],
-      "notes": "DLP Single Stage Venous Cannula with Right Angle Metal Tip. 12 Fr (4.0 mm), 14 in (35.6 cm) overall length, 1/4 in (0.64 cm) connection site. Order code 67312."
+      "notes": "Single stage venous cannula / right angle metal tip dataset; do not categorize as femoral arterial, aortic root, coronary ostia perfusion, or retrograde cardioplegia. Product/family: DLP Single Stage Venous Cannulae. Model/description: Right Angle Metal Tip. Type/site: Single stage venous. Size: 12 Fr / 4.0 mm. Overall length: 14 in / 35.6 cm. Connection site/connection size: 1/4 inch / 0.64 cm. Catalog number: 67312. Quantity per carton: 10. Source type: digitized_graph. Source description: DLP Single Stage Venous Cannulae with Right Angle Metal Tip pressure-flow graph. Test medium: water (source graph x-axis specifies L/min of water). Source graph: DLP Single Stage Venous Cannulae with Right Angle Metal Tip and 1/4 inch connection site. Source graph label: 12 Fr. Source graph x-axis is Flow Rate (L/min of water); y-axis is Pressure Loss (mmHg). Source range: 0 to 2.21 L/min. Extrapolation: false. Pressure-loss data were updated with a denser digitized point set from the DLP Single Stage Venous Cannulae with Right Angle Metal Tip 1/4 inch connection site 12 Fr curve. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range of 2.21 L/min. This is a venous cannula dataset; do not apply arterial-only pressure-drop caution thresholds unless the existing app intentionally uses a shared threshold. Do not use this dataset for 14 Fr, 16 Fr, 18 Fr, 20 Fr, or 3/8 inch connection site curves.",
+      "connectorSize": "1/4 inch / 0.64 cm",
+      "cannulaOrderCodeLabel": "Catalog number",
+      "referenceFlowRangeLabel": "0–2.21"
     },
     {
       "manufacturer": "Medtronic",
