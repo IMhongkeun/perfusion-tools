@@ -54,6 +54,28 @@ function interpolatePressureDrop(points, targetFlow) {
   return { state: 'out_of_range', value: null, minFlow, maxFlow };
 }
 
+
+function getPressureDropSizeOptionValue(entry) {
+  const connectionSite = entry.connectionSite || '';
+  const connectorSize = entry.connectorSize || '';
+  const cannulaOrderCode = entry.cannulaOrderCode || '';
+  const outerDiameterFr = Number.isFinite(entry.outerDiameterFr) ? entry.outerDiameterFr : '';
+  return `${entry.size || ''}||${connectionSite}||${connectorSize}||${cannulaOrderCode}||${outerDiameterFr}`;
+}
+
+function getPressureDropConnectionOptionValue(entry) {
+  const connectionSite = entry.connectionSite || '__not_specified__';
+  const connectorSize = entry.connectorSize || '';
+  const cannulaOrderCode = entry.cannulaOrderCode || '';
+  return `${connectionSite}||${connectorSize}||${cannulaOrderCode}`;
+}
+
+function getPressureDropConnectionOptionLabel(value) {
+  const [connectionSite = '__not_specified__', connectorSize = '', cannulaOrderCode = ''] = String(value || '').split('||');
+  const parts = [connectionSite === '__not_specified__' ? 'Not specified' : connectionSite, connectorSize, cannulaOrderCode].filter(Boolean);
+  return parts.join(' — ');
+}
+
 function nearlyEqual(actual, expected, tolerance = 1e-9) {
   return Math.abs(actual - expected) <= tolerance;
 }
@@ -87,6 +109,42 @@ function run() {
   const nearRight = interpolatePressureDrop(densePoints, 0.339);
   assert.strictEqual(nearRight.state, 'interpolated');
   assert(!nearlyEqual(nearRight.value, 54.6), '0.339 L/min must not return the 0.34 L/min exact point');
+
+
+  const dlpQuarterInch = {
+    manufacturer: 'Medtronic',
+    model: 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    category: 'Adult venous',
+    size: '12 Fr / 4.0 mm',
+    connectionSite: 'Single stage venous',
+    connectorSize: '1/4 inch / 0.64 cm',
+    cannulaOrderCode: '67312',
+    outerDiameterFr: 12
+  };
+  const dlpThreeEighthsInch = {
+    ...dlpQuarterInch,
+    connectorSize: '3/8 inch / 0.95 cm',
+    cannulaOrderCode: '69312'
+  };
+
+  assert.notStrictEqual(
+    getPressureDropSizeOptionValue(dlpQuarterInch),
+    getPressureDropSizeOptionValue(dlpThreeEighthsInch),
+    'DLP 12 Fr connector variants should have unique legacy size lookup keys.'
+  );
+  assert.notStrictEqual(
+    getPressureDropConnectionOptionValue(dlpQuarterInch),
+    getPressureDropConnectionOptionValue(dlpThreeEighthsInch),
+    'DLP 12 Fr connector variants should have unique connection lookup keys.'
+  );
+  assert.strictEqual(
+    getPressureDropConnectionOptionLabel(getPressureDropConnectionOptionValue(dlpQuarterInch)),
+    'Single stage venous — 1/4 inch / 0.64 cm — 67312'
+  );
+  assert.strictEqual(
+    getPressureDropConnectionOptionLabel(getPressureDropConnectionOptionValue(dlpThreeEighthsInch)),
+    'Single stage venous — 3/8 inch / 0.95 cm — 69312'
+  );
 
   console.log('All cannula pressure-drop interpolation tests passed.');
 }

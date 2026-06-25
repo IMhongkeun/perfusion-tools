@@ -939,13 +939,15 @@ function normalizePressureDropKey(value) {
 
 function getPressureDropSizeOptionValue(entry) {
   const connectionSite = entry.connectionSite || '';
+  const connectorSize = entry.connectorSize || '';
+  const cannulaOrderCode = entry.cannulaOrderCode || '';
   const outerDiameterFr = Number.isFinite(entry.outerDiameterFr) ? entry.outerDiameterFr : '';
-  return `${entry.size || ''}||${connectionSite}||${outerDiameterFr}`;
+  return `${entry.size || ''}||${connectionSite}||${connectorSize}||${cannulaOrderCode}||${outerDiameterFr}`;
 }
 
 function parsePressureDropSizeOptionValue(value) {
-  const [size = '', connectionSite = '', outerDiameterFr = ''] = String(value || '').split('||');
-  return { size, connectionSite, outerDiameterFr: parseFloat(outerDiameterFr) };
+  const [size = '', connectionSite = '', connectorSize = '', cannulaOrderCode = '', outerDiameterFr = ''] = String(value || '').split('||');
+  return { size, connectionSite, connectorSize, cannulaOrderCode, outerDiameterFr: parseFloat(outerDiameterFr) };
 }
 
 function findPressureDropEntry({ manufacturer, category, model, size }, entries = []) {
@@ -965,6 +967,8 @@ function findPressureDropEntry({ manufacturer, category, model, size }, entries 
     normalizePressureDropKey(entry.model) === normalizedModel &&
     normalizePressureDropKey(entry.size) === normalizedSize &&
     (!normalizedConnectionSite || normalizePressureDropKey(entry.connectionSite) === normalizedConnectionSite) &&
+    (!selectedSize.connectorSize || normalizePressureDropKey(entry.connectorSize) === normalizePressureDropKey(selectedSize.connectorSize)) &&
+    (!selectedSize.cannulaOrderCode || normalizePressureDropKey(entry.cannulaOrderCode) === normalizePressureDropKey(selectedSize.cannulaOrderCode)) &&
     (!Number.isFinite(selectedOuterDiameterFr) || entry.outerDiameterFr === selectedOuterDiameterFr)
   )) || null;
 }
@@ -1216,8 +1220,10 @@ function syncPressureDropSelectors(changedLevel = 'manufacturer', entries = []) 
   if (changedLevel === 'model') {
     setSelectOptions(sizeSelect, byModel.map(entry => {
       const connectionLabel = entry.connectionSite ? ` — ${entry.connectionSite}` : '';
+      const connectorLabel = entry.connectorSize ? ` — ${entry.connectorSize}` : '';
+      const orderCodeLabel = entry.cannulaOrderCode ? ` — ${entry.cannulaOrderCode}` : '';
       const dataLabel = (entry.points || []).length ? 'curve available' : 'metadata only';
-      return { value: getPressureDropSizeOptionValue(entry), label: `${entry.size}${connectionLabel} — ${dataLabel}` };
+      return { value: getPressureDropSizeOptionValue(entry), label: `${entry.size}${connectionLabel}${connectorLabel}${orderCodeLabel} — ${dataLabel}` };
     }), 'Select size');
     categoryInput.value='';
     if (sizeSelect.options.length === 2) { sizeSelect.value = sizeSelect.options[1].value; syncPressureDropSelectors('size'); }
@@ -1227,6 +1233,8 @@ function syncPressureDropSelectors(changedLevel = 'manufacturer', entries = []) 
   const match = byModel.find(entry => (
     entry.size === selectedSize.size &&
     (!selectedSize.connectionSite || entry.connectionSite === selectedSize.connectionSite) &&
+    (!selectedSize.connectorSize || entry.connectorSize === selectedSize.connectorSize) &&
+    (!selectedSize.cannulaOrderCode || entry.cannulaOrderCode === selectedSize.cannulaOrderCode) &&
     (!Number.isFinite(selectedSize.outerDiameterFr) || entry.outerDiameterFr === selectedSize.outerDiameterFr)
   ));
   categoryInput.value = match ? match.category : '';
@@ -3900,11 +3908,16 @@ function syncPressureDropConnectionControl(selectNode, wrapNode, optionPairs, sh
 }
 
 function getPressureDropConnectionOptionValue(entry) {
-  return entry.connectionSite || '__not_specified__';
+  const connectionSite = entry.connectionSite || '__not_specified__';
+  const connectorSize = entry.connectorSize || '';
+  const cannulaOrderCode = entry.cannulaOrderCode || '';
+  return `${connectionSite}||${connectorSize}||${cannulaOrderCode}`;
 }
 
 function getPressureDropConnectionOptionLabel(value) {
-  return value === '__not_specified__' ? 'Not specified' : value;
+  const [connectionSite = '__not_specified__', connectorSize = '', cannulaOrderCode = ''] = String(value || '').split('||');
+  const parts = [connectionSite === '__not_specified__' ? 'Not specified' : connectionSite, connectorSize, cannulaOrderCode].filter(Boolean);
+  return parts.join(' — ');
 }
 
 function getUniquePressureDropOptionPairs(entries, getter, labeler = value => value) {
