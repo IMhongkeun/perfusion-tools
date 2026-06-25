@@ -8152,6 +8152,139 @@
       "notes": "Cardioplegia product / Coronary ostia perfusion cannula with balloon tip dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Balloon Tip, Plastic Tubing and Female Luer Lock Connector. Variant: Straight Tip. Balloon size: 4.0 mm. Distal cannula tip size: 2.1 mm. Straight tip catalog number: CP-21004. Corresponding right angle tip catalog number: CP-22004; do not use CP-22004 as the primary catalog number for this dataset and do not use this dataset for the right-angle tip catalog CP-22004. Connection size: female luer lock. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source graph section: upper graph / Straight Tip catalog numbers CP-21004, CP-21005, CP-21006, CP-21007, CP-21008. Source range: 0 to 0.30 L/min. Extrapolation: false. Source curve digitized from the upper Straight Tip graph for Coronary Ostia Perfusion Cannulae with Balloon Tip, Plastic Tubing and Female Luer Lock Connector. This dataset corresponds to balloon size 4.0 mm, distal cannula tip size 2.1 mm, straight tip catalog number CP-21004. The source graph x-axis is labeled 0.05–0.30 L/min and y-axis is labeled 0–600 mmHg; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.30 L/min."
     },
     {
+      "manufacturer": "LivaNova",
+      "model": "Coronary Ostia Perfusion Cannulae — Balloon Tip, Plastic Tubing and Female Luer Lock Connector — Straight Tip",
+      "category": "Cardioplegia",
+      "size": "5.0 mm balloon / 2.1 mm distal tip",
+      "connectionSite": "Coronary ostia perfusion",
+      "connectorSize": "female luer lock",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Straight tip catalog number",
+      "cannulaOrderCode": "CP-21005",
+      "sourceLabel": "LivaNova Adult Cannulae - Cardioplegia Products brochure",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the upper Straight Tip graph for Coronary Ostia Perfusion Cannulae with Balloon Tip, Plastic Tubing and Female Luer Lock Connector. The source graph x-axis is labeled 0.05–0.30 L/min and y-axis is labeled 0–600 mmHg; digitized raw x values were mapped to the source-labeled axis with the raw left edge mapped to 0.05 L/min and raw right edge mapped to 0.30 L/min. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.30 L/min.",
+      "referenceFlowRangeLabel": "0–0.30",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.30 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.05,
+          "pressureDrop": 27.9
+        },
+        {
+          "flow": 0.062,
+          "pressureDrop": 36.4
+        },
+        {
+          "flow": 0.072,
+          "pressureDrop": 42.3
+        },
+        {
+          "flow": 0.083,
+          "pressureDrop": 51.6
+        },
+        {
+          "flow": 0.096,
+          "pressureDrop": 60.1
+        },
+        {
+          "flow": 0.108,
+          "pressureDrop": 72.8
+        },
+        {
+          "flow": 0.12,
+          "pressureDrop": 88.0
+        },
+        {
+          "flow": 0.131,
+          "pressureDrop": 99.0
+        },
+        {
+          "flow": 0.143,
+          "pressureDrop": 116.8
+        },
+        {
+          "flow": 0.152,
+          "pressureDrop": 132.9
+        },
+        {
+          "flow": 0.163,
+          "pressureDrop": 151.5
+        },
+        {
+          "flow": 0.177,
+          "pressureDrop": 176.0
+        },
+        {
+          "flow": 0.19,
+          "pressureDrop": 201.4
+        },
+        {
+          "flow": 0.199,
+          "pressureDrop": 219.2
+        },
+        {
+          "flow": 0.208,
+          "pressureDrop": 238.6
+        },
+        {
+          "flow": 0.217,
+          "pressureDrop": 259.0
+        },
+        {
+          "flow": 0.226,
+          "pressureDrop": 279.3
+        },
+        {
+          "flow": 0.233,
+          "pressureDrop": 299.6
+        },
+        {
+          "flow": 0.241,
+          "pressureDrop": 320.7
+        },
+        {
+          "flow": 0.248,
+          "pressureDrop": 337.7
+        },
+        {
+          "flow": 0.256,
+          "pressureDrop": 358.8
+        },
+        {
+          "flow": 0.262,
+          "pressureDrop": 379.1
+        },
+        {
+          "flow": 0.269,
+          "pressureDrop": 400.3
+        },
+        {
+          "flow": 0.276,
+          "pressureDrop": 421.4
+        },
+        {
+          "flow": 0.283,
+          "pressureDrop": 440.1
+        },
+        {
+          "flow": 0.291,
+          "pressureDrop": 464.6
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 490.8
+        }
+      ],
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula with balloon tip dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Balloon Tip, Plastic Tubing and Female Luer Lock Connector. Variant: Straight Tip. Balloon size: 5.0 mm. Distal cannula tip size: 2.1 mm. Straight tip catalog number: CP-21005. Corresponding right angle tip catalog number: CP-22005; do not use CP-22005 as the primary catalog number for this dataset and do not use this dataset for the right-angle tip catalog CP-22005. Connection size: female luer lock. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source graph section: upper graph / Straight Tip catalog numbers CP-21004, CP-21005, CP-21006, CP-21007, CP-21008. Source range: 0 to 0.30 L/min. Extrapolation: false. Source curve digitized from the upper Straight Tip graph for Coronary Ostia Perfusion Cannulae with Balloon Tip, Plastic Tubing and Female Luer Lock Connector. This dataset corresponds to balloon size 5.0 mm, distal cannula tip size 2.1 mm, straight tip catalog number CP-21005. The source graph x-axis is labeled 0.05–0.30 L/min and y-axis is labeled 0–600 mmHg; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.30 L/min."
+    },
+    {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
