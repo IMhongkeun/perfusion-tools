@@ -6656,6 +6656,115 @@
     },
     {
       "manufacturer": "LivaNova",
+      "model": "Aortic Root Long Needle",
+      "category": "Adult arterial",
+      "size": "12 Ga / 9 Fr",
+      "overallLengthCm": 35,
+      "connectionSite": "Aortic root",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "AR-17012",
+      "sourceLabel": "LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure",
+      "sourceUrl": "",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source curve digitized from the Aortic Root Long Needle 12Ga curve. The source graph x-axis is labeled 100–600 ml/min and was converted to L/min; digitized raw x values were mapped to the source-labeled axis with the raw left edge mapped to 0.10 L/min and raw right edge mapped to 0.60 L/min. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min.",
+      "referenceFlowRangeLabel": "0–0.60",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.60 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.1,
+          "pressureDrop": 2.2
+        },
+        {
+          "flow": 0.13,
+          "pressureDrop": 4.1
+        },
+        {
+          "flow": 0.16,
+          "pressureDrop": 6.2
+        },
+        {
+          "flow": 0.19,
+          "pressureDrop": 8.1
+        },
+        {
+          "flow": 0.22,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 0.25,
+          "pressureDrop": 12.9
+        },
+        {
+          "flow": 0.29,
+          "pressureDrop": 15.2
+        },
+        {
+          "flow": 0.31,
+          "pressureDrop": 17.5
+        },
+        {
+          "flow": 0.34,
+          "pressureDrop": 20.2
+        },
+        {
+          "flow": 0.36,
+          "pressureDrop": 22.5
+        },
+        {
+          "flow": 0.38,
+          "pressureDrop": 24.6
+        },
+        {
+          "flow": 0.4,
+          "pressureDrop": 27.3
+        },
+        {
+          "flow": 0.42,
+          "pressureDrop": 30.0
+        },
+        {
+          "flow": 0.45,
+          "pressureDrop": 33.5
+        },
+        {
+          "flow": 0.47,
+          "pressureDrop": 36.8
+        },
+        {
+          "flow": 0.5,
+          "pressureDrop": 40.0
+        },
+        {
+          "flow": 0.52,
+          "pressureDrop": 43.7
+        },
+        {
+          "flow": 0.54,
+          "pressureDrop": 47.0
+        },
+        {
+          "flow": 0.56,
+          "pressureDrop": 50.0
+        },
+        {
+          "flow": 0.58,
+          "pressureDrop": 53.5
+        },
+        {
+          "flow": 0.6,
+          "pressureDrop": 57.0
+        }
+      ],
+      "notes": "Aortic root long needle / minimally invasive cardiac surgery cannula dataset; do not categorize as femoral arterial, femoral venous, coronary ostia perfusion, or retrograde cardioplegia. Product/family: Aortic Root Long Needle. Model/description: Minimally invasive cardiac surgery aortic root long needle. Type/site: Aortic root. Cannula tip outer diameter: 12 Ga / 9 Fr. Source graph label: 12Ga. In this source page, the graph label 12Ga corresponds to the table's cannula tip outer diameter 12 Ga / 9 Fr, not the insertion needle. Insertion needle: 14 Ga - Green. Catalog number: AR-17012. Effective length: 35 cm. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure pressure-flow graph. Source range: 0 to 0.60 L/min. Extrapolation: false. The source graph x-axis is labeled 100–600 ml/min and was converted to L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min. Do not use the 14 Ga catalog number AR-17014 for this dataset."
+    },
+    {
+      "manufacturer": "LivaNova",
       "model": "Coronary Ostia Perfusion Cannulae — Basket Tip, Stainless Steel Shaft and Female Luer Lock Connector",
       "category": "Cardioplegia",
       "size": "10 Fr",
