@@ -2302,8 +2302,8 @@ function resetGDP() {
   targetMode = 'preset';
   bsaManualOverride = false;
   const cao2El = el('cao2');
-  if (cao2El) cao2El.value = '';
-  const tempInput = el('gdp-temp-c');
+      ? 'On-pump: start from measured current Hct and estimate RBC, fluid, or UF changes.'
+      : 'Pre-CPB: estimate Hct after prime and planned RBC prime.';
   const tempSlider = el('gdp-temp-slider');
   if (tempInput) tempInput.value = String(GDP_DEFAULT_TEMPERATURE_C);
   if (tempSlider) tempSlider.value = String(GDP_DEFAULT_TEMPERATURE_C);
@@ -2356,7 +2356,7 @@ function updateHct() {
     setText('onpump_estimated_volume', `${r.estimatedCpbVolume.toFixed(0)} mL`);
     setText('onpump_ebv_auto', `${r.ebv.toFixed(0)} mL`);
     setText('onpump_estimated_auto', `${r.estimatedCpbVolumeAuto.toFixed(0)} mL`);
-    const manualWrapEl = el('manual-current-volume-wrap');
+  if (rightLabelEl) rightLabelEl.textContent = 'Est. total vol';
     const manualEnabled = !!el('use_manual_current_volume')?.checked;
     if (manualWrapEl) manualWrapEl.classList.toggle('hidden', !manualEnabled);
     const manualActiveNoteEl = el('manual-override-active-note');
