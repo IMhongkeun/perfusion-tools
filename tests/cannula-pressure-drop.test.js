@@ -9,8 +9,29 @@ assert(
   mainJs.includes('const PRESSURE_DROP_EXACT_FLOW_TOLERANCE = 1e-6;'),
   'Pressure-drop exact flow tolerance should be a tiny epsilon so dense adjacent points still interpolate.'
 );
+assert(
+  mainJs.includes('drawPressureDropChart(svg, entry.points, hasEstimate ? flowValue : NaN, hasEstimate ? interpolationResult.value : NaN, { curveMode: \'linear\' });'),
+  'The active cannula pressure-drop page should render charts with the linear point-to-point path, not fitted/smoothed mode.'
+);
+assert(
+  mainJs.includes('function buildPressureDropAxisTicks') &&
+  mainJs.includes('stroke-opacity="0.10"') &&
+  mainJs.includes('formatPressureDropAxisTick'),
+  'Pressure-drop chart should include lightweight axis tick/gridline rendering helpers.'
+);
 
 const pressureDropExactFlowTolerance = 1e-6;
+
+function buildPressureDropAxisTicks(minValue, maxValue, tickCount = 4) {
+  const safeMin = Number.isFinite(minValue) ? minValue : 0;
+  const safeMax = Number.isFinite(maxValue) ? maxValue : safeMin;
+  const count = Math.max(Math.floor(tickCount), 2);
+  if (Math.abs(safeMax - safeMin) < Number.EPSILON) return [safeMin];
+  return Array.from({ length: count }, (_, index) => {
+    const ratio = index / (count - 1);
+    return safeMin + ((safeMax - safeMin) * ratio);
+  }).filter(Number.isFinite);
+}
 
 function getValidPressureDropPoints(points) {
   if (!Array.isArray(points)) return [];
@@ -85,6 +106,14 @@ function run() {
     { flow: 0.33, pressureDrop: 49.9 },
     { flow: 0.34, pressureDrop: 54.6 }
   ];
+  const flowTicks = buildPressureDropAxisTicks(0.33, 0.34, 4);
+  assert.strictEqual(flowTicks.length, 4);
+  assert(flowTicks.every(Number.isFinite), 'Axis ticks should only contain finite numbers.');
+  assert(nearlyEqual(flowTicks[0], 0.33), 'Axis ticks should preserve the minimum endpoint.');
+  assert(nearlyEqual(flowTicks[flowTicks.length - 1], 0.34), 'Axis ticks should preserve the maximum endpoint.');
+
+  const equalRangeTicks = buildPressureDropAxisTicks(5, 5, 4);
+  assert.deepStrictEqual(equalRangeTicks, [5], 'Equal chart ranges should produce one finite axis tick and avoid NaN.');
 
   const exactLeft = interpolatePressureDrop(densePoints, 0.33);
   assert.strictEqual(exactLeft.state, 'exact');
@@ -101,6 +130,18 @@ function run() {
   const midpoint = interpolatePressureDrop(densePoints, 0.335);
   assert.strictEqual(midpoint.state, 'interpolated');
   assert(nearlyEqual(midpoint.value, 52.25), `0.335 L/min should interpolate to 52.25 mmHg, got ${midpoint.value}`);
+
+  const belowRange = interpolatePressureDrop(densePoints, 0.329);
+  assert.strictEqual(belowRange.state, 'out_of_range');
+  assert.strictEqual(belowRange.value, null);
+  assert.strictEqual(belowRange.minFlow, 0.33);
+  assert.strictEqual(belowRange.maxFlow, 0.34);
+
+  const aboveRange = interpolatePressureDrop(densePoints, 0.341);
+  assert.strictEqual(aboveRange.state, 'out_of_range');
+  assert.strictEqual(aboveRange.value, null);
+  assert.strictEqual(aboveRange.minFlow, 0.33);
+  assert.strictEqual(aboveRange.maxFlow, 0.34);
 
   const nearLeft = interpolatePressureDrop(densePoints, 0.331);
   assert.strictEqual(nearLeft.state, 'interpolated');

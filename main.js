@@ -1093,6 +1093,24 @@ function createPressureDropCurveModel(points) {
   return fitPressureDropPowerLaw(points) || createMonotonePressureDropModel(points);
 }
 
+function buildPressureDropAxisTicks(minValue, maxValue, tickCount = 4) {
+  const safeMin = Number.isFinite(minValue) ? minValue : 0;
+  const safeMax = Number.isFinite(maxValue) ? maxValue : safeMin;
+  const count = Math.max(Math.floor(tickCount), 2);
+  if (Math.abs(safeMax - safeMin) < Number.EPSILON) return [safeMin];
+  return Array.from({ length: count }, (_, index) => {
+    const ratio = index / (count - 1);
+    return safeMin + ((safeMax - safeMin) * ratio);
+  }).filter(Number.isFinite);
+}
+
+function formatPressureDropAxisTick(value, range = 0) {
+  if (!Number.isFinite(value)) return '';
+  const absRange = Math.abs(range);
+  const decimals = absRange > 0 && absRange < 1 ? 2 : (absRange > 0 && absRange < 10 ? 1 : 0);
+  return value.toFixed(decimals).replace(/\.0+$/, '').replace(/(\.\d*[1-9])0+$/, '$1');
+}
+
 function drawPressureDropChart(svgNode, points, targetFlow, estimatedPressureDrop, options = {}) {
   const validPoints = getValidPressureDropPoints(points);
   if (!svgNode || !validPoints.length) return;
@@ -1118,6 +1136,24 @@ function drawPressureDropChart(svgNode, points, targetFlow, estimatedPressureDro
   const scaleX = flow => padding.left + ((flow - minFlow) / Math.max(maxFlow - minFlow, 0.0001)) * (width - padding.left - padding.right);
   const scaleY = drop => height - padding.bottom - (drop / maxDrop) * (height - padding.top - padding.bottom);
   const smoothCurvePath = curveSamples.map((point, index) => `${index === 0 ? 'M' : 'L'} ${scaleX(point.flow).toFixed(1)} ${scaleY(point.pressureDrop).toFixed(1)}`).join(' ');
+  const plotRight = width - padding.right;
+  const plotBottom = height - padding.bottom;
+  const xTicks = buildPressureDropAxisTicks(minFlow, maxFlow, 4);
+  const yTicks = buildPressureDropAxisTicks(0, maxDrop, 4);
+  const xTickLabels = xTicks.map(flow => {
+    const rawX = scaleX(flow);
+    const labelX = Math.min(Math.max(rawX, padding.left + 7), plotRight - 7);
+    return `<text x="${labelX.toFixed(1)}" y="${(plotBottom + 12).toFixed(1)}" font-size="8" text-anchor="middle" fill="currentColor" opacity="0.65">${formatPressureDropAxisTick(flow, maxFlow - minFlow)}</text>`;
+  }).join('');
+  const yTickLabels = yTicks.map(drop => `<text x="${(padding.left - 6).toFixed(1)}" y="${scaleY(drop).toFixed(1)}" font-size="8" text-anchor="end" dominant-baseline="middle" fill="currentColor" opacity="0.65">${formatPressureDropAxisTick(drop, maxDrop)}</text>`).join('');
+  const xGridlines = xTicks.map(flow => {
+    const x = scaleX(flow);
+    return `<line x1="${x.toFixed(1)}" y1="${padding.top}" x2="${x.toFixed(1)}" y2="${plotBottom}" stroke="currentColor" stroke-opacity="0.10" stroke-width="0.75" />`;
+  }).join('');
+  const yGridlines = yTicks.map(drop => {
+    const y = scaleY(drop);
+    return `<line x1="${padding.left}" y1="${y.toFixed(1)}" x2="${plotRight}" y2="${y.toFixed(1)}" stroke="currentColor" stroke-opacity="0.10" stroke-width="0.75" />`;
+  }).join('');
   const targetX = Number.isFinite(targetFlow) ? scaleX(targetFlow) : null;
   const targetY = Number.isFinite(estimatedPressureDrop) ? scaleY(estimatedPressureDrop) : null;
   const showTargetMarker = Number.isFinite(targetX) && Number.isFinite(targetY);
@@ -1127,7 +1163,7 @@ function drawPressureDropChart(svgNode, points, targetFlow, estimatedPressureDro
   const targetMarker = showTargetMarker
     ? `<g><line x1="${targetX.toFixed(1)}" y1="${padding.top}" x2="${targetX.toFixed(1)}" y2="${height - padding.bottom}" stroke="#f59e0b" stroke-dasharray="3 3" /><circle cx="${targetX.toFixed(1)}" cy="${targetY.toFixed(1)}" r="4" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" /><rect x="${targetLabelX.toFixed(1)}" y="${targetLabelY.toFixed(1)}" width="${targetLabelWidth}" height="28" rx="4" fill="#0f172a" opacity="0.88" /><text x="${(targetLabelX + 5).toFixed(1)}" y="${(targetLabelY + 11).toFixed(1)}" font-size="8" fill="#ffffff">Target flow: ${targetFlow.toFixed(1)} L/min</text><text x="${(targetLabelX + 5).toFixed(1)}" y="${(targetLabelY + 22).toFixed(1)}" font-size="8" fill="#ffffff">Est. pressure drop: ${estimatedPressureDrop.toFixed(1)} mmHg</text></g>`
     : '';
-  svgNode.innerHTML = `<line x1="${padding.left}" y1="${height - padding.bottom}" x2="${width - padding.right}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${height - padding.bottom}" stroke="currentColor" stroke-opacity="0.35" /><path d="${smoothCurvePath}" fill="none" stroke="#0ea5e9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />${validPoints.map(p => `<circle cx="${scaleX(p.flow).toFixed(1)}" cy="${scaleY(p.pressureDrop).toFixed(1)}" r="2.2" fill="#ffffff" stroke="#0ea5e9" stroke-width="1.4" />`).join('')}${targetMarker}<text x="${padding.left}" y="${height - 6}" font-size="9" fill="currentColor" opacity="0.65">Flow (L/min)</text><text x="${width - 110}" y="${padding.top + 9}" font-size="9" fill="currentColor" opacity="0.65">Pressure drop (mmHg)</text>`;
+  svgNode.innerHTML = `${xGridlines}${yGridlines}<line x1="${padding.left}" y1="${plotBottom}" x2="${plotRight}" y2="${plotBottom}" stroke="currentColor" stroke-opacity="0.35" /><line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${plotBottom}" stroke="currentColor" stroke-opacity="0.35" /><path d="${smoothCurvePath}" fill="none" stroke="#0ea5e9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />${validPoints.map(p => `<circle cx="${scaleX(p.flow).toFixed(1)}" cy="${scaleY(p.pressureDrop).toFixed(1)}" r="2.2" fill="#ffffff" stroke="#0ea5e9" stroke-width="1.4" />`).join('')}${targetMarker}${xTickLabels}${yTickLabels}<text x="${padding.left}" y="${height - 6}" font-size="9" fill="currentColor" opacity="0.65">Flow (L/min)</text><text x="${width - 110}" y="${padding.top + 9}" font-size="9" fill="currentColor" opacity="0.65">Pressure drop (mmHg)</text>`;
 }
 
 
@@ -4024,7 +4060,7 @@ function createPressureDropEstimateCard(entry, flowInputValue, flowValue, interp
   input.addEventListener('input', () => onFlowInput(input.value));
   const helper = document.createElement('span');
   helper.className = 'block text-xs text-slate-500 dark:text-slate-400';
-  helper.textContent = validPoints.length ? `Available manufacturer curve range: ${rangeText}.` : 'No digitized curve range is available for this cannula.';
+  helper.textContent = validPoints.length ? `Same target flow as the lookup field above. Available manufacturer curve range: ${rangeText}.` : 'Same target flow as the lookup field above. No digitized curve range is available for this cannula.';
   inputWrap.append(inputLabel, input, helper);
 
   if (!validPoints.length) {
@@ -4041,7 +4077,7 @@ function createPressureDropEstimateCard(entry, flowInputValue, flowValue, interp
     note.textContent = `The entered flow is outside the available manufacturer curve range (${formatPressureDropFlowValue(interpolationResult.minFlow)}–${formatPressureDropFlowValue(interpolationResult.maxFlow)} L/min). Values outside the curve range are not extrapolated.`;
   } else if (interpolationResult.state === 'exact' || interpolationResult.state === 'interpolated') {
     value.textContent = `${interpolationResult.value.toFixed(1)} mmHg`;
-    note.textContent = `At ${flowValue.toFixed(1)} L/min, estimated pressure drop is approximately ${interpolationResult.value.toFixed(1)} mmHg. ${interpolationResult.state === 'exact' ? 'This matches a digitized manufacturer curve point.' : 'Interpolated from digitized manufacturer-published curve data.'}`;
+    note.textContent = `At ${flowValue.toFixed(1)} L/min, estimated pressure drop is approximately ${interpolationResult.value.toFixed(1)} mmHg. ${interpolationResult.state === 'exact' ? 'This matches a digitized manufacturer curve point.' : 'Linearly interpolated from adjacent digitized manufacturer-published curve points.'}`;
   } else {
     value.textContent = '—';
     note.textContent = `Available manufacturer curve range: ${rangeText}.`;
