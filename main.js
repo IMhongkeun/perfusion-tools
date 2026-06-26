@@ -4024,7 +4024,7 @@ function createPressureDropEstimateCard(entry, flowInputValue, flowValue, interp
   input.addEventListener('input', () => onFlowInput(input.value));
   const helper = document.createElement('span');
   helper.className = 'block text-xs text-slate-500 dark:text-slate-400';
-  helper.textContent = validPoints.length ? `Available manufacturer curve range: ${rangeText}.` : 'No digitized curve range is available for this cannula.';
+  helper.textContent = validPoints.length ? `Same target flow as the lookup field above. Available manufacturer curve range: ${rangeText}.` : 'Same target flow as the lookup field above. No digitized curve range is available for this cannula.';
   inputWrap.append(inputLabel, input, helper);
 
   if (!validPoints.length) {
@@ -4041,7 +4041,7 @@ function createPressureDropEstimateCard(entry, flowInputValue, flowValue, interp
     note.textContent = `The entered flow is outside the available manufacturer curve range (${formatPressureDropFlowValue(interpolationResult.minFlow)}–${formatPressureDropFlowValue(interpolationResult.maxFlow)} L/min). Values outside the curve range are not extrapolated.`;
   } else if (interpolationResult.state === 'exact' || interpolationResult.state === 'interpolated') {
     value.textContent = `${interpolationResult.value.toFixed(1)} mmHg`;
-    note.textContent = `At ${flowValue.toFixed(1)} L/min, estimated pressure drop is approximately ${interpolationResult.value.toFixed(1)} mmHg. ${interpolationResult.state === 'exact' ? 'This matches a digitized manufacturer curve point.' : 'Interpolated from digitized manufacturer-published curve data.'}`;
+    note.textContent = `At ${flowValue.toFixed(1)} L/min, estimated pressure drop is approximately ${interpolationResult.value.toFixed(1)} mmHg. ${interpolationResult.state === 'exact' ? 'This matches a digitized manufacturer curve point.' : 'Linearly interpolated from adjacent digitized manufacturer-published curve points.'}`;
   } else {
     value.textContent = '—';
     note.textContent = `Available manufacturer curve range: ${rangeText}.`;
