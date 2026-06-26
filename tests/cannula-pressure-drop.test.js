@@ -97,6 +97,14 @@ function getPressureDropConnectionOptionLabel(value) {
   return parts.join(' — ');
 }
 
+
+function formatPressureDropAxisTick(value, range = 0) {
+  if (!Number.isFinite(value)) return '';
+  const absRange = Math.abs(range);
+  const decimals = absRange > 0 && absRange < 1 ? 2 : (absRange > 0 && absRange < 10 ? 1 : 0);
+  return value.toFixed(decimals).replace(/\.0+$/, '').replace(/(\.\d*[1-9])0+$/, '$1');
+}
+
 function nearlyEqual(actual, expected, tolerance = 1e-9) {
   return Math.abs(actual - expected) <= tolerance;
 }
@@ -114,6 +122,9 @@ function run() {
 
   const equalRangeTicks = buildPressureDropAxisTicks(5, 5, 4);
   assert.deepStrictEqual(equalRangeTicks, [5], 'Equal chart ranges should produce one finite axis tick and avoid NaN.');
+  assert.strictEqual(formatPressureDropAxisTick(4, 20), '4', 'Whole-number axis ticks should render without decimals.');
+  assert.strictEqual(formatPressureDropAxisTick(4.5, 8), '4.5', 'Simple decimal axis ticks should render with one decimal.');
+  assert.strictEqual(formatPressureDropAxisTick(0.335, 0.01), '0.34', 'Very small axis ranges may use up to two decimals.');
 
   const exactLeft = interpolatePressureDrop(densePoints, 0.33);
   assert.strictEqual(exactLeft.state, 'exact');

@@ -1140,9 +1140,10 @@ function drawPressureDropChart(svgNode, points, targetFlow, estimatedPressureDro
   const plotBottom = height - padding.bottom;
   const xTicks = buildPressureDropAxisTicks(minFlow, maxFlow, 4);
   const yTicks = buildPressureDropAxisTicks(0, maxDrop, 4);
+  const tickLabelInset = 7;
   const xTickLabels = xTicks.map(flow => {
     const rawX = scaleX(flow);
-    const labelX = Math.min(Math.max(rawX, padding.left + 7), plotRight - 7);
+    const labelX = Math.min(Math.max(rawX, padding.left + tickLabelInset), plotRight - tickLabelInset);
     return `<text x="${labelX.toFixed(1)}" y="${(plotBottom + 12).toFixed(1)}" font-size="8" text-anchor="middle" fill="currentColor" opacity="0.65">${formatPressureDropAxisTick(flow, maxFlow - minFlow)}</text>`;
   }).join('');
   const yTickLabels = yTicks.map(drop => `<text x="${(padding.left - 6).toFixed(1)}" y="${scaleY(drop).toFixed(1)}" font-size="8" text-anchor="end" dominant-baseline="middle" fill="currentColor" opacity="0.65">${formatPressureDropAxisTick(drop, maxDrop)}</text>`).join('');
