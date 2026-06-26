@@ -13,8 +13,25 @@ assert(
   mainJs.includes('drawPressureDropChart(svg, entry.points, hasEstimate ? flowValue : NaN, hasEstimate ? interpolationResult.value : NaN, { curveMode: \'linear\' });'),
   'The active cannula pressure-drop page should render charts with the linear point-to-point path, not fitted/smoothed mode.'
 );
+assert(
+  mainJs.includes('function buildPressureDropAxisTicks') &&
+  mainJs.includes('stroke-opacity="0.10"') &&
+  mainJs.includes('formatPressureDropAxisTick'),
+  'Pressure-drop chart should include lightweight axis tick/gridline rendering helpers.'
+);
 
 const pressureDropExactFlowTolerance = 1e-6;
+
+function buildPressureDropAxisTicks(minValue, maxValue, tickCount = 4) {
+  const safeMin = Number.isFinite(minValue) ? minValue : 0;
+  const safeMax = Number.isFinite(maxValue) ? maxValue : safeMin;
+  const count = Math.max(Math.floor(tickCount), 2);
+  if (Math.abs(safeMax - safeMin) < Number.EPSILON) return [safeMin];
+  return Array.from({ length: count }, (_, index) => {
+    const ratio = index / (count - 1);
+    return safeMin + ((safeMax - safeMin) * ratio);
+  }).filter(Number.isFinite);
+}
 
 function getValidPressureDropPoints(points) {
   if (!Array.isArray(points)) return [];
@@ -89,6 +106,14 @@ function run() {
     { flow: 0.33, pressureDrop: 49.9 },
     { flow: 0.34, pressureDrop: 54.6 }
   ];
+  const flowTicks = buildPressureDropAxisTicks(0.33, 0.34, 4);
+  assert.strictEqual(flowTicks.length, 4);
+  assert(flowTicks.every(Number.isFinite), 'Axis ticks should only contain finite numbers.');
+  assert(nearlyEqual(flowTicks[0], 0.33), 'Axis ticks should preserve the minimum endpoint.');
+  assert(nearlyEqual(flowTicks[flowTicks.length - 1], 0.34), 'Axis ticks should preserve the maximum endpoint.');
+
+  const equalRangeTicks = buildPressureDropAxisTicks(5, 5, 4);
+  assert.deepStrictEqual(equalRangeTicks, [5], 'Equal chart ranges should produce one finite axis tick and avoid NaN.');
 
   const exactLeft = interpolatePressureDrop(densePoints, 0.33);
   assert.strictEqual(exactLeft.state, 'exact');
