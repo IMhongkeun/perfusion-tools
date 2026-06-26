@@ -9,6 +9,10 @@ assert(
   mainJs.includes('const PRESSURE_DROP_EXACT_FLOW_TOLERANCE = 1e-6;'),
   'Pressure-drop exact flow tolerance should be a tiny epsilon so dense adjacent points still interpolate.'
 );
+assert(
+  mainJs.includes('drawPressureDropChart(svg, entry.points, hasEstimate ? flowValue : NaN, hasEstimate ? interpolationResult.value : NaN, { curveMode: \'linear\' });'),
+  'The active cannula pressure-drop page should render charts with the linear point-to-point path, not fitted/smoothed mode.'
+);
 
 const pressureDropExactFlowTolerance = 1e-6;
 
@@ -101,6 +105,18 @@ function run() {
   const midpoint = interpolatePressureDrop(densePoints, 0.335);
   assert.strictEqual(midpoint.state, 'interpolated');
   assert(nearlyEqual(midpoint.value, 52.25), `0.335 L/min should interpolate to 52.25 mmHg, got ${midpoint.value}`);
+
+  const belowRange = interpolatePressureDrop(densePoints, 0.329);
+  assert.strictEqual(belowRange.state, 'out_of_range');
+  assert.strictEqual(belowRange.value, null);
+  assert.strictEqual(belowRange.minFlow, 0.33);
+  assert.strictEqual(belowRange.maxFlow, 0.34);
+
+  const aboveRange = interpolatePressureDrop(densePoints, 0.341);
+  assert.strictEqual(aboveRange.state, 'out_of_range');
+  assert.strictEqual(aboveRange.value, null);
+  assert.strictEqual(aboveRange.minFlow, 0.33);
+  assert.strictEqual(aboveRange.maxFlow, 0.34);
 
   const nearLeft = interpolatePressureDrop(densePoints, 0.331);
   assert.strictEqual(nearLeft.state, 'interpolated');
