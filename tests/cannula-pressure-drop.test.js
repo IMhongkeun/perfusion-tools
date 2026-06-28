@@ -45,12 +45,18 @@ assert(
   'Pressure-drop chart should include lightweight axis tick/gridline rendering helpers.'
 );
 assert(
-  mainJs.includes('>Flow (L/min)</text>') &&
-  mainJs.includes('>Pressure drop (mmHg)</text>') &&
-  mainJs.includes('<text x="${padding.left}" y="10" font-size="9" fill="currentColor" opacity="0.65">Pressure drop (mmHg)</text>') &&
+  mainJs.includes('>Flow [L/min]</text>') &&
+  mainJs.includes('>Pressure drop [mmHg]</text>') &&
+  mainJs.includes('transform="rotate(-90 14 ${plotMiddleY.toFixed(1)})"') &&
+  mainJs.includes('text-anchor="end" fill="currentColor" opacity="0.65">Flow [L/min]</text>') &&
+  !mainJs.includes('>Pressure drop (mmHg)</text>') &&
   mainJs.includes('Target flow: ${targetFlow.toFixed(1)} L/min') &&
   mainJs.includes('Est. pressure drop: ${estimatedPressureDrop.toFixed(1)} mmHg'),
-  'Pressure-drop chart should keep the x-axis label and target tooltip text while moving the y-axis unit label to the y-axis area.'
+  'Pressure-drop chart should use bracketed axis units with a rotated y-axis label while keeping target tooltip text unchanged.'
+);
+assert(
+  mainJs.includes("svg.classList.add('block', 'w-full', 'h-auto'") || mainJs.includes("svg.classList.add('block', 'w-full', 'h-auto',"),
+  'Pressure-drop chart SVG should remain constrained to the container width for narrow viewports.'
 );
 
 const pressureDropExactFlowTolerance = 1e-6;
