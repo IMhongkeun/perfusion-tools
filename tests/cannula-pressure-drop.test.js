@@ -37,6 +37,16 @@ assert(
   pressureDropPageHtml.includes('white-space: nowrap;'),
   'Pressure-drop combobox CSS should prevent horizontal overflow and truncate long selected/option labels.'
 );
+assert(
+  pressureDropPageHtml.includes('<title>Cannula Pressure Drop Reference | Perfusion Tools</title>') &&
+  pressureDropPageHtml.includes('<meta name="description" content="Manufacturer-based cannula pressure drop reference for CPB and ECMO perfusion planning, with pressure-flow curves to support arterial and venous cannula selection." />') &&
+  pressureDropPageHtml.includes('<link rel="canonical" href="https://perfusiontools.com/cannula-pressure-drop/" />'),
+  'Cannula pressure-drop page should expose unique title, description, and exact canonical URL metadata.'
+);
+assert(
+  !/<meta\s+name=["'](?:robots|googlebot)["'][^>]*noindex/i.test(pressureDropPageHtml),
+  'Cannula pressure-drop page should not include robots/googlebot noindex metadata.'
+);
 
 assert(
   mainJs.includes('function buildPressureDropAxisTicks') &&
