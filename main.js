@@ -4384,8 +4384,12 @@ function getPressureDropComparisonKey(entry) {
 }
 
 function getPressureDropComparisonSizeLabel(entry) {
+  if (entry.size) return entry.size;
+  return entry.cannulaOrderCode || 'Unknown size';
+}
+
+function getPressureDropComparisonSecondaryLabel(entry) {
   return [
-    entry.size || 'Unknown size',
     entry.connectionSite,
     entry.connectorSize,
     entry.cannulaOrderCode
@@ -4441,7 +4445,15 @@ function createPressureDropComparisonTable(selectedEntries, flowValue, onRemove)
     const label = document.createElement('div');
     label.className = 'font-semibold text-primary-900 dark:text-white';
     label.textContent = getPressureDropComparisonSizeLabel(entry);
-    th.append(label, removeButton);
+    const secondaryLabel = getPressureDropComparisonSecondaryLabel(entry);
+    if (secondaryLabel) {
+      const secondary = document.createElement('div');
+      secondary.className = 'mt-1 text-xs font-normal text-slate-500 dark:text-slate-400';
+      secondary.textContent = secondaryLabel;
+      th.append(label, secondary, removeButton);
+    } else {
+      th.append(label, removeButton);
+    }
     headRow.appendChild(th);
   });
   head.appendChild(headRow);
@@ -4489,7 +4501,20 @@ function createPressureDropComparisonCards(selectedEntries, flowValue, onRemove)
     const header = document.createElement('div');
     header.className = 'flex items-start justify-between gap-3';
     const title = document.createElement('div');
-    title.innerHTML = `<h3 class="text-sm font-semibold text-primary-900 dark:text-white">${getPressureDropComparisonSizeLabel(entry)}</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">${entry.manufacturer || '—'} · ${getPressureDropGroupLabel(entry.category)}</p>`;
+    const secondaryLabel = getPressureDropComparisonSecondaryLabel(entry);
+    const primaryTitle = document.createElement('h3');
+    primaryTitle.className = 'text-sm font-semibold text-primary-900 dark:text-white';
+    primaryTitle.textContent = getPressureDropComparisonSizeLabel(entry);
+    const scopeText = document.createElement('p');
+    scopeText.className = 'mt-1 text-xs text-slate-500 dark:text-slate-400';
+    scopeText.textContent = `${entry.manufacturer || '—'} · ${getPressureDropGroupLabel(entry.category)}`;
+    title.append(primaryTitle, scopeText);
+    if (secondaryLabel) {
+      const secondaryText = document.createElement('p');
+      secondaryText.className = 'mt-1 text-xs text-slate-500 dark:text-slate-400';
+      secondaryText.textContent = secondaryLabel;
+      title.appendChild(secondaryText);
+    }
     const removeButton = document.createElement('button');
     removeButton.type = 'button';
     removeButton.className = 'text-xs font-semibold text-rose-600 dark:text-rose-300';
