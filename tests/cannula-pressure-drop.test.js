@@ -55,6 +55,11 @@ assert(
   'Pressure-drop chart should use bracketed axis units with a rotated y-axis label while keeping target tooltip text unchanged.'
 );
 assert(
+  mainJs.includes("svg.setAttribute('viewBox', '0 0 420 200');") &&
+  mainJs.includes('const width = 420; const height = 200;'),
+  'Pressure-drop chart SVG viewBox should match the drawing height so the x-axis label is not clipped.'
+);
+assert(
   mainJs.includes("svg.classList.add('block', 'w-full', 'h-auto'") || mainJs.includes("svg.classList.add('block', 'w-full', 'h-auto',"),
   'Pressure-drop chart SVG should remain constrained to the container width for narrow viewports.'
 );

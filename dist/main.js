@@ -4264,7 +4264,7 @@ function createPressureDropChartPanel(entry, flowValue, interpolationResult) {
   const svgWrap = document.createElement('div');
   svgWrap.className = 'flex w-full items-center justify-center overflow-hidden rounded-lg bg-slate-50/60 dark:bg-primary-900/40 px-1 py-1 sm:px-2';
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('viewBox', '0 0 420 190');
+  svg.setAttribute('viewBox', '0 0 420 200');
   svg.setAttribute('role', 'img');
   svg.setAttribute('aria-label', `${entry.manufacturer} ${entry.model} pressure-flow curve`);
   svg.classList.add('block', 'w-full', 'h-auto', 'text-slate-500', 'dark:text-slate-300');
