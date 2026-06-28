@@ -44,6 +44,14 @@ assert(
   mainJs.includes('formatPressureDropAxisTick'),
   'Pressure-drop chart should include lightweight axis tick/gridline rendering helpers.'
 );
+assert(
+  mainJs.includes('>Flow (L/min)</text>') &&
+  mainJs.includes('>Pressure drop (mmHg)</text>') &&
+  mainJs.includes('<text x="${padding.left}" y="10" font-size="9" fill="currentColor" opacity="0.65">Pressure drop (mmHg)</text>') &&
+  mainJs.includes('Target flow: ${targetFlow.toFixed(1)} L/min') &&
+  mainJs.includes('Est. pressure drop: ${estimatedPressureDrop.toFixed(1)} mmHg'),
+  'Pressure-drop chart should keep the x-axis label and target tooltip text while moving the y-axis unit label to the y-axis area.'
+);
 
 const pressureDropExactFlowTolerance = 1e-6;
 
