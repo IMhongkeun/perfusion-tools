@@ -82,6 +82,27 @@
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
     .dark ::-webkit-scrollbar-thumb { background: #334155; }
 
+    .pressure-drop-combobox { max-width: 100%; }
+    .pressure-drop-combobox-panel {
+      max-width: min(520px, calc(100vw - 32px));
+      max-height: 320px;
+      overflow-x: hidden;
+    }
+    .pressure-drop-combobox-panel [role="option"],
+    .pressure-drop-combobox button > span:first-child {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    @media (max-width: 768px) {
+      .pressure-drop-combobox-panel {
+        position: fixed;
+        left: 16px !important;
+        right: 16px !important;
+        width: calc(100vw - 32px) !important;
+      }
+    }
+
 
     /* Shared expanded lower-section pattern for methodology, FAQ, references, and related tools */
     .calculator-lower-section {

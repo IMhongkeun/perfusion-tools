@@ -13,6 +13,30 @@ assert(
   mainJs.includes('drawPressureDropChart(svg, entry.points, hasEstimate ? flowValue : NaN, hasEstimate ? interpolationResult.value : NaN, { curveMode: \'linear\' });'),
   'The active cannula pressure-drop page should render charts with the linear point-to-point path, not fitted/smoothed mode.'
 );
+
+assert(
+  mainJs.includes('function createPressureDropSearchableSelect') &&
+  mainJs.includes("panel.style.maxWidth = 'min(520px, calc(100vw - 32px))';") &&
+  mainJs.includes("panel.style.maxHeight = '320px';") &&
+  mainJs.includes("item.className = `block w-full overflow-hidden text-ellipsis whitespace-nowrap"),
+  'Model/cannula lookup should use a constrained searchable combobox with truncating one-line options.'
+);
+assert(
+  mainJs.includes("selectNode.dispatchEvent(new Event('change', { bubbles: true }))") &&
+  mainJs.includes("['manufacturer', controls.manufacturerSelect]") &&
+  mainJs.includes("['model', controls.modelSelect]") &&
+  mainJs.includes("['category', controls.categorySelect]"),
+  'Searchable model combobox should preserve existing select-driven filtering for model and category/type controls.'
+);
+const pressureDropPageHtml = fs.readFileSync(path.join(__dirname, '..', 'cannula-pressure-drop', 'index.html'), 'utf8');
+assert(
+  pressureDropPageHtml.includes('.pressure-drop-combobox-panel') &&
+  pressureDropPageHtml.includes('width: calc(100vw - 32px) !important;') &&
+  pressureDropPageHtml.includes('text-overflow: ellipsis;') &&
+  pressureDropPageHtml.includes('white-space: nowrap;'),
+  'Pressure-drop combobox CSS should prevent horizontal overflow and truncate long selected/option labels.'
+);
+
 assert(
   mainJs.includes('function buildPressureDropAxisTicks') &&
   mainJs.includes('stroke-opacity="0.10"') &&
@@ -95,6 +119,17 @@ function getPressureDropConnectionOptionLabel(value) {
   const [connectionSite = '__not_specified__', connectorSize = '', cannulaOrderCode = ''] = String(value || '').split('||');
   const parts = [connectionSite === '__not_specified__' ? 'Not specified' : connectionSite, connectorSize, cannulaOrderCode].filter(Boolean);
   return parts.join(' — ');
+}
+
+function getPressureDropLookupMatches(entries, filters = {}) {
+  return entries.filter(entry => {
+    if (filters.manufacturer && entry.manufacturer !== filters.manufacturer) return false;
+    if (filters.model && entry.model !== filters.model) return false;
+    if (filters.category && entry.category !== filters.category) return false;
+    if (filters.size && entry.size !== filters.size) return false;
+    if (filters.connectionSite && getPressureDropConnectionOptionValue(entry) !== filters.connectionSite) return false;
+    return true;
+  });
 }
 
 function nearlyEqual(actual, expected, tolerance = 1e-9) {
@@ -187,7 +222,24 @@ function run() {
     'Single stage venous — 3/8 inch / 0.95 cm — 69312'
   );
 
-  console.log('All cannula pressure-drop interpolation tests passed.');
+  const veryLongModelName = 'Very Long Pediatric Arterial Cannula Model Name With Extra Manufacturer Descriptor That Used To Stretch Native Select Menus';
+  const lookupEntries = [
+    { manufacturer: 'Acme', model: veryLongModelName, category: 'Adult arterial', size: '18 Fr' },
+    { manufacturer: 'Acme', model: 'Short Venous Model', category: 'Adult venous', size: '22 Fr' },
+    { manufacturer: 'Other', model: veryLongModelName, category: 'Adult arterial', size: '20 Fr' }
+  ];
+  assert.deepStrictEqual(
+    getPressureDropLookupMatches(lookupEntries, { manufacturer: 'Acme', model: veryLongModelName }),
+    [lookupEntries[0]],
+    'Selecting a long model label through the combobox should still filter to the same dataset entry.'
+  );
+  assert.deepStrictEqual(
+    getPressureDropLookupMatches(lookupEntries, { manufacturer: 'Acme', category: 'Adult venous' }),
+    [lookupEntries[1]],
+    'Category/type filtering should keep working after the model select UI is wrapped.'
+  );
+
+  console.log('All cannula pressure-drop interpolation and dropdown UX tests passed.');
 }
 
 run();
