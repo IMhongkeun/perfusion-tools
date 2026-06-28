@@ -200,6 +200,7 @@ function normalizePressureDropKey(value) {
 
 function getPressureDropGroupLabel(category) {
   const normalized = normalizePressureDropKey(category);
+  if (normalized.includes('aortic root')) return 'Aortic root / cardioplegia';
   if (normalized.includes('cardioplegia')) return 'Cardioplegia cannula';
   if (normalized.includes('vent')) return 'Vent cannula';
   if (normalized.includes('arterial')) return 'Arterial cannula';
@@ -445,6 +446,58 @@ function run() {
     ['Arterial A', 'Arterial B'],
     'Selecting a deduplicated category/type option should filter the model list to matching raw categories.'
   );
+
+  const livaNovaEntries = pressureDropData.filter(entry => entry.manufacturer === 'LivaNova');
+  const livaNovaRootEntries = livaNovaEntries.filter(entry => /aortic root/i.test(entry.model || ''));
+  assert.strictEqual(livaNovaRootEntries.length, 8, 'LivaNova root-related entries should remain present.');
+  assert(
+    livaNovaRootEntries.every(entry => getPressureDropCategoryFilterValue(entry.category) === 'aortic root / cardioplegia'),
+    'All LivaNova root-related entries should be classified as Aortic root / cardioplegia.'
+  );
+  assert(
+    getPressureDropLookupMatches(livaNovaEntries, { category: 'arterial cannula' }).every(entry => !/aortic root/i.test(entry.model || '')),
+    'LivaNova Aortic Root Cannula and Aortic Root Long Needle entries should not appear under Arterial cannula.'
+  );
+  const livaNovaRootMatches = getPressureDropLookupMatches(livaNovaEntries, { category: 'aortic root / cardioplegia' });
+  assert.deepStrictEqual(
+    Array.from(new Set(livaNovaRootMatches.map(entry => entry.model))).sort(),
+    [
+      'Aortic Root Cannula / without Vent Line',
+      'Aortic Root Cannula with Vent Line',
+      'Aortic Root Cannula without Vent Line',
+      'Aortic Root Long Needle'
+    ].sort(),
+    'The root-specific category should expose the LivaNova root cannula and root long needle models.'
+  );
+  assert(
+    getPressureDropLookupMatches(livaNovaEntries, { category: 'arterial cannula' }).some(entry => entry.model === 'Aortic Arch Cannulae — Curved Tip with Suture Flange, Wire-reinforced Tubing'),
+    'LivaNova Aortic Arch Cannulae should remain classified as Arterial cannula.'
+  );
+  assert(
+    getPressureDropLookupMatches(livaNovaEntries, { category: 'arterial cannula' }).some(entry => entry.model === 'Optiflow Aortic Arch Cannulae — Curved Tip, Wire-reinforced Tubing'),
+    'LivaNova Optiflow Aortic Arch Cannulae should remain classified as Arterial cannula.'
+  );
+  assert(
+    getPressureDropLookupMatches(livaNovaEntries, { category: 'arterial cannula' }).some(entry => entry.model === 'Arterial Femoral Cannulae — Polyurethane tubing with suture ring, with introducer'),
+    'LivaNova Arterial Femoral Cannulae should remain classified as Arterial cannula.'
+  );
+  const rootPressureDropSnapshots = [
+    ['Aortic Root Cannula / without Vent Line', '18Ga', 0.28, 34.6],
+    ['Aortic Root Cannula with Vent Line', '14 Ga / 7 Fr', 0.38, 30],
+    ['Aortic Root Cannula with Vent Line', '12 Ga / 9 Fr', 0.37, 18],
+    ['Aortic Root Cannula without Vent Line', '16 Ga / 5 Fr', 0.29, 36],
+    ['Aortic Root Cannula without Vent Line', '14 Ga / 7 Fr', 0.38, 30],
+    ['Aortic Root Cannula without Vent Line', '12 Ga / 9 Fr', 0.37, 16.5],
+    ['Aortic Root Long Needle', '14 Ga / 7 Fr', 0.36, 30],
+    ['Aortic Root Long Needle', '12 Ga / 9 Fr', 0.38, 24.6]
+  ];
+  rootPressureDropSnapshots.forEach(([model, size, flow, expectedDrop]) => {
+    const entry = livaNovaRootEntries.find(item => item.model === model && item.size === size);
+    assert(entry, `${model} ${size} should remain available after root reclassification.`);
+    const result = interpolatePressureDrop(entry.points, flow);
+    assert.strictEqual(result.state, 'exact', `${model} ${size} should retain the same exact pressure-flow point at ${flow} L/min.`);
+    assert.strictEqual(result.value, expectedDrop, `${model} ${size} pressure-drop data should remain unchanged.`);
+  });
 
   const veryLongModelName = 'Very Long Pediatric Arterial Cannula Model Name With Extra Manufacturer Descriptor That Used To Stretch Native Select Menus';
   const lookupEntries = [

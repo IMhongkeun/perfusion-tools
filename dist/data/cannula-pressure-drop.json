@@ -6140,7 +6140,7 @@
     {
       "manufacturer": "LivaNova",
       "model": "Aortic Root Cannula / without Vent Line",
-      "category": "Aortic root",
+      "category": "Aortic root / cardioplegia",
       "size": "18Ga",
       "overallLengthCm": 12.5,
       "connectionSite": "Aortic root",
@@ -6233,7 +6233,7 @@
     {
       "manufacturer": "LivaNova",
       "model": "Aortic Root Cannula with Vent Line",
-      "category": "Adult arterial",
+      "category": "Aortic root / cardioplegia",
       "size": "14 Ga / 7 Fr",
       "overallLengthCm": 15,
       "connectionSite": "Aortic root",
@@ -6330,7 +6330,7 @@
     {
       "manufacturer": "LivaNova",
       "model": "Aortic Root Cannula with Vent Line",
-      "category": "Adult arterial",
+      "category": "Aortic root / cardioplegia",
       "size": "12 Ga / 9 Fr",
       "overallLengthCm": 15,
       "connectionSite": "Aortic root",
@@ -6443,7 +6443,7 @@
     {
       "manufacturer": "LivaNova",
       "model": "Aortic Root Cannula without Vent Line",
-      "category": "Adult arterial",
+      "category": "Aortic root / cardioplegia",
       "size": "16 Ga / 5 Fr",
       "overallLengthCm": 15,
       "connectionSite": "Aortic root",
@@ -6560,7 +6560,7 @@
     {
       "manufacturer": "LivaNova",
       "model": "Aortic Root Cannula without Vent Line",
-      "category": "Adult arterial",
+      "category": "Aortic root / cardioplegia",
       "size": "14 Ga / 7 Fr",
       "overallLengthCm": 15,
       "connectionSite": "Aortic root",
@@ -6669,7 +6669,7 @@
     {
       "manufacturer": "LivaNova",
       "model": "Aortic Root Cannula without Vent Line",
-      "category": "Adult arterial",
+      "category": "Aortic root / cardioplegia",
       "size": "12 Ga / 9 Fr",
       "overallLengthCm": 15,
       "connectionSite": "Aortic root",
@@ -6778,7 +6778,7 @@
     {
       "manufacturer": "LivaNova",
       "model": "Aortic Root Long Needle",
-      "category": "Adult arterial",
+      "category": "Aortic root / cardioplegia",
       "size": "14 Ga / 7 Fr",
       "overallLengthCm": 35,
       "connectionSite": "Aortic root",
@@ -6887,7 +6887,7 @@
     {
       "manufacturer": "LivaNova",
       "model": "Aortic Root Long Needle",
-      "category": "Adult arterial",
+      "category": "Aortic root / cardioplegia",
       "size": "12 Ga / 9 Fr",
       "overallLengthCm": 35,
       "connectionSite": "Aortic root",

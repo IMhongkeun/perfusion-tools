@@ -3603,6 +3603,7 @@ function normalizePressureDropFilterLabel(value) {
 
 function getPressureDropGroupLabel(category) {
   const normalized = normalizePressureDropKey(category);
+  if (normalized.includes('aortic root')) return 'Aortic root / cardioplegia';
   if (normalized.includes('cardioplegia')) return 'Cardioplegia cannula';
   if (normalized.includes('vent')) return 'Vent cannula';
   if (normalized.includes('arterial')) return 'Arterial cannula';
