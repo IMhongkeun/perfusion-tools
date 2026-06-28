@@ -44,6 +44,13 @@ assert(
   'Cannula pressure-drop page should expose unique title, description, and exact canonical URL metadata.'
 );
 assert(
+  pressureDropPageHtml.includes('id="pressure-drop-single-tab"') &&
+  pressureDropPageHtml.includes('id="pressure-drop-compare-tab"') &&
+  pressureDropPageHtml.includes('id="pressure-drop-compare-flow"') &&
+  pressureDropPageHtml.includes('id="pressure-drop-compare-results"'),
+  'Cannula pressure-drop page should add a separate tabbed Compare sizes view while keeping the single lookup markup present.'
+);
+assert(
   !/<meta\s+name=["'](?:robots|googlebot)["'][^>]*noindex/i.test(pressureDropPageHtml),
   'Cannula pressure-drop page should not include robots/googlebot noindex metadata.'
 );
@@ -72,6 +79,31 @@ assert(
 assert(
   mainJs.includes("svg.classList.add('block', 'w-full', 'h-auto'") || mainJs.includes("svg.classList.add('block', 'w-full', 'h-auto',"),
   'Pressure-drop chart SVG should remain constrained to the container width for narrow viewports.'
+);
+assert(
+  mainJs.includes('function getPressureDropComparisonResult') &&
+  mainJs.includes('interpolatePressureDrop(entry.points, flowValue)') &&
+  !mainJs.includes('function interpolatePressureDropComparison'),
+  'Comparison mode should reuse the shared interpolation helper without duplicating calculation logic.'
+);
+assert(
+  mainJs.includes('selectedComparisonKeys.length >= 4') &&
+  mainJs.includes('selectedComparisonKeys.includes(key)') &&
+  mainJs.includes('selectedComparisonKeys = selectedComparisonKeys.filter(key => validScopeKeys.has(key))'),
+  'Comparison mode should prevent duplicates, cap selection at four cannulas, and clear selections that no longer match the same-family scope.'
+);
+assert(
+  mainJs.includes('Out of source range') &&
+  mainJs.includes('No extrapolation is shown') &&
+  mainJs.includes('High pressure drop warning (>100 mmHg).'),
+  'Comparison mode should show explicit out-of-source-range and high pressure status labels.'
+);
+assert(
+  mainJs.includes("wrap.className = 'hidden md:block overflow-x-auto") &&
+  mainJs.includes("stack.className = 'grid gap-3 md:hidden'") &&
+  mainJs.includes('createPressureDropComparisonTable') &&
+  mainJs.includes('createPressureDropComparisonCards'),
+  'Comparison mode should render a desktop table and mobile card stack rather than a wide mobile table.'
 );
 
 const pressureDropExactFlowTolerance = 1e-6;
@@ -194,6 +226,17 @@ function getPressureDropLookupMatches(entries, filters = {}) {
     if (filters.connectionSite && getPressureDropConnectionOptionValue(entry) !== filters.connectionSite) return false;
     return true;
   });
+}
+
+function getPressureDropComparisonKey(entry) {
+  return [
+    entry.lookupId,
+    entry.manufacturer,
+    getPressureDropCategoryFilterValue(entry.category),
+    entry.model,
+    getPressureDropSizeOptionValue(entry),
+    getPressureDropConnectionOptionValue(entry)
+  ].filter(Boolean).join('||');
 }
 
 function nearlyEqual(actual, expected, tolerance = 1e-9) {
@@ -323,6 +366,27 @@ function run() {
   const pas1315Exact = interpolatePressureDrop(pas1315.points, 0.2);
   assert.strictEqual(pas1315Exact.state, 'exact');
   assert.strictEqual(pas1315Exact.value, 2.7, 'PAS 1315 should still use its own unchanged pressure-flow curve points.');
+
+  const comparisonEntries = getingeArterialMatches
+    .filter(entry => ['PAS 1915', 'PAS 2115', 'PAS 2315'].includes(entry.cannulaOrderCode))
+    .map((entry, index) => ({ ...entry, lookupId: `test-hls-${index}` }));
+  assert.strictEqual(comparisonEntries.length, 3, 'Same-family comparison should support selecting multiple Getinge / Maquet HLS arterial PAS sizes.');
+  assert.strictEqual(new Set(comparisonEntries.map(entry => entry.manufacturer)).size, 1, 'Comparison entries should share one manufacturer.');
+  assert.strictEqual(new Set(comparisonEntries.map(entry => getPressureDropCategoryFilterValue(entry.category))).size, 1, 'Comparison entries should share one category/type.');
+  assert.strictEqual(new Set(comparisonEntries.map(entry => entry.model)).size, 1, 'Comparison entries should share one model/family.');
+  const comparisonKeys = comparisonEntries.map(getPressureDropComparisonKey);
+  assert.strictEqual(new Set(comparisonKeys).size, comparisonEntries.length, 'Comparison keys should uniquely identify size/code variants and prevent duplicate selections.');
+  const targetFiveResults = comparisonEntries.map(entry => interpolatePressureDrop(entry.points, 5.0));
+  assert(targetFiveResults.every(result => result.state === 'exact' || result.state === 'interpolated'), 'Changing the shared target flow to 5.0 L/min should compute all selected comparison ΔP values.');
+  const targetFourResults = comparisonEntries.map(entry => interpolatePressureDrop(entry.points, 4.0));
+  assert(
+    targetFiveResults.some((result, index) => !nearlyEqual(result.value, targetFourResults[index].value)),
+    'Changing target flow should update comparison ΔP values rather than reusing stale results.'
+  );
+  const outOfRangeComparison = interpolatePressureDrop(comparisonEntries[0].points, 99);
+  assert.strictEqual(outOfRangeComparison.state, 'out_of_range', 'Out-of-range comparison flow should not extrapolate.');
+  assert.strictEqual(outOfRangeComparison.value, null, 'Out-of-range comparison flow should return no pressure-drop value.');
+  assert.strictEqual(comparisonKeys.slice(0, 5).length <= 4, true, 'Comparison UI should limit selections to a maximum of four cannulas.');
 
   const messyCategoryEntries = [
     { manufacturer: 'Messy', model: 'Arterial A', category: ' arterial   cannula ', size: '16 Fr' },
