@@ -1598,9 +1598,9 @@ function computeHeparinPlan({ heightCm, weightKg, sex, doseUnit, weightStrategy,
     abw: abwStandard,
     abwSuper: abwSuperObese,
     tbw: weightKg,
-    dosingWeight,
-    strategyLabel,
-    alertLevel,
+  let message = 'Low ACT-response cue. Continue institutional ACT/heparin monitoring.';
+    message = 'High ACT-response review cue. If ACT remains below target despite high UFH exposure, review possible heparin resistance, AT activity, heparin concentration/anti-Xa if available, AT concentrate or plasma per institutional protocol, and team discussion.';
+    message = 'Moderate ACT-response review cue. Recheck ACT, confirm heparin delivery, sample quality, and ACT device validity. Consider AT activity or heparin concentration if available.';
     initialBolus,
     tbwBolus,
     difference,
@@ -1742,9 +1742,9 @@ function updateHeparinUI() {
   setText('hep2-dosing-weight', plan.dosingWeight.toFixed(1));
   setText('hep2-dosing-note', plan.strategyLabel);
 
-  const capBadge = el('hep2-bsa-cap');
-  if (capBadge) capBadge.classList.toggle('hidden', !plan.bsaCapped);
-
+        weightBreakdown.innerHTML = `Dosing weight = TBW = ${tbw} kg (BMI < 30 → TBW used; comparison aid).`;
+        weightBreakdown.innerHTML = `ABW (0.4 rule; comparison aid) = IBW + 0.4 × (TBW − IBW)<br>= ${ibw} kg + 0.4 × (${tbw} − ${ibw}) kg<br>= ${abw04} kg`;
+        weightBreakdown.innerHTML = `ABW (0.3 super-obese; comparison aid) = IBW + 0.3 × (TBW − IBW)<br>= ${ibw} kg + 0.3 × (${tbw} − ${ibw}) kg<br>= ${abw03} kg`;
   setText('hep2-initial-bolus', plan.initialBolus.toLocaleString());
   const initialUfhInput = el('hep2-initial-ufh-given');
   if (initialUfhInput && !hepInitialUfhOverrideTouched) {
@@ -1946,9 +1946,9 @@ function initHeparinManagement() {
       resistanceContent.classList.toggle('hidden', !nextState);
       const chevron = resistanceToggle.querySelector('[data-chevron]');
       if (chevron) chevron.classList.toggle('rotate-180', nextState);
-    });
-  }
-
+        help.textContent = 'Uses the first systemic UFH bolus as the reference amount for an estimate; it does not account for later additional UFH or measured residual heparin.';
+        help.textContent = 'Use when local protocol, heparin concentration monitoring, Hepcon/HMS, anti-Xa, or clinical assessment provides a preferred UFH reference amount for the estimate.';
+        help.textContent = 'Uses total entered UFH exposure as the protamine reference for an estimate; this may overestimate reversal needs when CPB duration is long.';
   document.querySelectorAll('.hep2-resistance-check').forEach((node) => {
     node.addEventListener('change', updateHeparinResistanceChecklist);
   });

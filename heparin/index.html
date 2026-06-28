@@ -324,7 +324,7 @@
         title: 'Heparin & Protamine Calculator for CPB | Perfusion Tools',
         h1: 'Heparin & Protamine Calculator for Adult CPB',
         description: 'Adult CPB heparin and protamine calculator with weight-strategy UFH bolus planning, protamine basis options, and concise safety notes.',
-        headingDescription: 'Plan an initial UFH bolus using weight strategy, then estimate post-CPB protamine reversal using total UFH, initial bolus, or a custom UFH reference.',
+        headingDescription: 'Plan an initial UFH bolus as decision support, then estimate post-CPB protamine using the selected UFH basis and ratio.',
         canonicalPath: '/heparin/'
       }
     };
@@ -364,7 +364,7 @@
     window.applyRouteMeta = applyRouteMeta;
     window.addEventListener('load', () => applyRouteMeta('/heparin'));
   </script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/heparin#webpage","url":"https://perfusiontools.com/heparin/","name":"Heparin Management Calculator – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalEntity","name":"Heparin dosing support during cardiopulmonary bypass"},"dateModified":"2026-04-10"},{"@type":"WebApplication","@id":"https://perfusiontools.com/heparin#app","name":"Heparin Management Calculator","url":"https://perfusiontools.com/heparin/","applicationCategory":"MedicalApplication","operatingSystem":"Any","isPartOf":{"@id":"https://perfusiontools.com/heparin#webpage"},"publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/heparin#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"Heparin Management","item":"https://perfusiontools.com/heparin/"}]},{"@type":"FAQPage","@id":"https://perfusiontools.com/heparin#faq","isPartOf":{"@id":"https://perfusiontools.com/heparin#webpage"},"mainEntity":[{"@type":"Question","name":"How is initial heparin dose calculated for adult CPB?","acceptedAnswer":{"@type":"Answer","text":"Initial UFH bolus is commonly estimated from a selected dosing weight multiplied by a dose such as 250–400 U/kg, depending on institutional protocol. This calculator supports TBW, IBW, adjusted body weight, and auto-detect weight strategy to help compare initial adult CPB dosing estimates."}},{"@type":"Question","name":"Which weight strategy should be used for obese patients?","acceptedAnswer":{"@type":"Answer","text":"There is no single universal strategy for all institutions. This calculator’s auto mode uses TBW when BMI is <30, ABW 0.4 when BMI is 30–39, and ABW 0.3 when BMI is ≥40. The sensitivity comparison shows how TBW, ABW, and IBW change the estimated initial UFH dose."}},{"@type":"Question","name":"How is protamine dose estimated after CPB?","acceptedAnswer":{"@type":"Answer","text":"Protamine dose may be estimated using a selected UFH reference amount and a protamine-to-heparin ratio. This page supports total UFH administered, initial systemic UFH bolus, or a custom UFH reference basis. The displayed dose is an estimate and should be interpreted with institutional protocol and clinical assessment."}},{"@type":"Question","name":"What is the difference between total UFH and initial-bolus protamine basis?","acceptedAnswer":{"@type":"Answer","text":"Total UFH basis includes entered heparin exposure such as initial UFH, additional UFH during CPB, and circuit prime heparin when included. Initial-bolus basis uses only the first systemic patient bolus as the reference amount. Total-dose methods are simple but may overestimate reversal needs when CPB duration is long; initial-bolus methods may reduce protamine exposure but may underestimate reversal needs after additional UFH."}},{"@type":"Question","name":"Why can protamine overdose worsen bleeding?","acceptedAnswer":{"@type":"Answer","text":"Protamine is needed to reverse heparin, but excess protamine can impair coagulation and platelet function and may contribute to hypotension or other adverse reactions. Avoid interpreting the estimate as an automatic medication order; evaluate residual heparin, surgical bleeding, platelets, fibrinogen, temperature, calcium, and local protocol."}},{"@type":"Question","name":"When should heparin resistance be suspected?","acceptedAnswer":{"@type":"Answer","text":"Heparin resistance should be considered when adequate ACT is not achieved despite high-dose UFH exposure, after confirming heparin delivery, sample quality, and ACT device validity. ACT targets are monitoring references, not dosing inputs in this calculator. A 2024 ISTH SSC communication proposed inability to reach ACT ≥480 seconds after 500 U/kg UFH as a standardized adult cardiac surgery definition."}},{"@type":"Question","name":"Is this calculator for ECMO or ICU heparin infusion?","acceptedAnswer":{"@type":"Answer","text":"No. This calculator is for adult CPB heparin planning and post-CPB protamine estimation. It is not intended for ECMO maintenance anticoagulation, ICU heparin infusion, dialysis anticoagulation, VTE treatment, or pediatric CPB protocols."}}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/heparin#webpage","url":"https://perfusiontools.com/heparin/","name":"Heparin Management Calculator – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalEntity","name":"Heparin dosing support during cardiopulmonary bypass"},"dateModified":"2026-04-10"},{"@type":"WebApplication","@id":"https://perfusiontools.com/heparin#app","name":"Heparin Management Calculator","url":"https://perfusiontools.com/heparin/","applicationCategory":"MedicalApplication","operatingSystem":"Any","isPartOf":{"@id":"https://perfusiontools.com/heparin#webpage"},"publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/heparin#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"Heparin Management","item":"https://perfusiontools.com/heparin/"}]},{"@type":"FAQPage","@id":"https://perfusiontools.com/heparin#faq","isPartOf":{"@id":"https://perfusiontools.com/heparin#webpage"},"mainEntity":[{"@type":"Question","name":"How is initial heparin dose calculated for adult CPB?","acceptedAnswer":{"@type":"Answer","text":"Initial UFH bolus is commonly estimated from a selected dosing weight multiplied by a dose such as 250–400 U/kg, depending on institutional protocol. This calculator supports TBW, IBW, adjusted body weight, and auto-detect weight strategy to help compare initial adult CPB dosing estimates."}},{"@type":"Question","name":"Which weight strategy should be used for obese patients?","acceptedAnswer":{"@type":"Answer","text":"There is no single universal strategy for all institutions. This calculator’s auto mode uses TBW when BMI is <30, ABW 0.4 when BMI is 30–39, and ABW 0.3 when BMI is ≥40 as a comparison aid. The sensitivity comparison shows how TBW, ABW, and IBW change the estimated initial UFH dose."}},{"@type":"Question","name":"How is protamine dose estimated after CPB?","acceptedAnswer":{"@type":"Answer","text":"Protamine dose may be estimated using a selected UFH reference amount and a protamine-to-heparin ratio. This page supports total UFH administered, initial systemic UFH bolus, or a custom UFH reference basis. The displayed dose is an estimate to verify with monitoring, bleeding status, local protocol, and clinical assessment."}},{"@type":"Question","name":"What is the difference between total UFH and initial-bolus protamine basis?","acceptedAnswer":{"@type":"Answer","text":"Total UFH basis includes entered heparin exposure such as initial UFH, additional UFH during CPB, and circuit prime heparin when included. Initial-bolus basis uses only the first systemic patient bolus as the reference amount. Total-dose methods are simple but may overestimate reversal needs when CPB duration is long; initial-bolus methods may reduce protamine exposure but may underestimate reversal needs after additional UFH."}},{"@type":"Question","name":"Why can protamine overdose worsen bleeding?","acceptedAnswer":{"@type":"Answer","text":"Protamine is needed to reverse heparin, but excess protamine can impair coagulation and platelet function and may contribute to hypotension or other adverse reactions. Avoid interpreting the estimate as an automatic medication order; evaluate residual heparin, surgical bleeding, platelets, fibrinogen, temperature, calcium, and local protocol."}},{"@type":"Question","name":"When should heparin resistance be suspected?","acceptedAnswer":{"@type":"Answer","text":"Possible heparin resistance should be reviewed when adequate ACT is not achieved despite high-dose UFH exposure, after confirming heparin delivery, sample quality, and ACT device validity. ACT targets are monitoring references, not dosing inputs in this calculator. A 2024 ISTH SSC communication proposed inability to reach ACT ≥480 seconds after 500 U/kg UFH as a standardized adult cardiac surgery definition."}},{"@type":"Question","name":"Is this calculator for ECMO or ICU heparin infusion?","acceptedAnswer":{"@type":"Answer","text":"No. This calculator is for adult CPB heparin planning and post-CPB protamine estimation. It is not intended for ECMO maintenance anticoagulation, ICU heparin infusion, dialysis anticoagulation, VTE treatment, or pediatric CPB protocols."}}]}]}</script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
@@ -410,7 +410,7 @@
       <section class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
         <div class="p-6 space-y-3">
           <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Heparin & Protamine Calculator for Adult CPB</h1>
-          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Plan an initial UFH bolus using weight strategy, then estimate post-CPB protamine reversal using total UFH, initial bolus, or a custom UFH reference.</p>
+          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Plan an initial UFH bolus as decision support, then estimate post-CPB protamine using the selected UFH basis and ratio.</p>
         </div>
       </section>
 
@@ -425,13 +425,13 @@
           <div class="p-6 space-y-8">
             <div class="space-y-2">
               <h2 class="text-xl font-bold text-primary-900 dark:text-white">Adult CPB workflow</h2>
-              <p class="text-sm text-slate-600 dark:text-slate-300">Use Section 1 before bypass to estimate the initial UFH plan, Section 2 during CPB if ACT response is unexpectedly low or heparin resistance is suspected, and Section 3 after bypass to estimate protamine from the selected heparin exposure basis.</p>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Use Section 1 before bypass to estimate the initial UFH plan, Section 2 during CPB to review unexpectedly low ACT response, and Section 3 after bypass to estimate protamine from the selected UFH basis and ratio.</p>
             </div>
 
             <section class="space-y-4" aria-labelledby="hep2-pre-title">
               <div class="space-y-1">
                 <h2 id="hep2-pre-title" class="text-lg font-bold text-primary-900 dark:text-white">1. Pre-CPB: Initial UFH Plan</h2>
-                <p class="text-sm text-slate-600 dark:text-slate-300">How much initial heparin should I plan based on this patient and weight strategy?</p>
+                <p class="text-sm text-slate-600 dark:text-slate-300">How much initial heparin should I estimate for this patient and selected weight strategy?</p>
               </div>
 
               <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
@@ -478,7 +478,7 @@
                   <div id="hep2-weight-info" class="hidden text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-100 dark:bg-primary-800/60 border border-slate-200 dark:border-primary-700 rounded-xl p-3 space-y-1">
                     <p><strong class="text-primary-900 dark:text-white">Devine IBW:</strong> Male = 50 + 0.91 × (cm − 152.4), Female = 45.5 + 0.91 × (cm − 152.4).</p>
                     <p><strong class="text-primary-900 dark:text-white">ABW 0.4 / 0.3 rules:</strong> ABW = IBW + factor × (TBW − IBW); factor 0.4 when BMI 30–39, factor 0.3 when BMI ≥ 40.</p>
-                    <p><strong class="text-primary-900 dark:text-white">Auto logic:</strong> BMI &lt; 30 → TBW; BMI 30–39 → ABW (0.4); BMI ≥ 40 → ABW (0.3).</p>
+                    <p><strong class="text-primary-900 dark:text-white">Auto logic:</strong> BMI &lt; 30 → TBW; BMI 30–39 → ABW (0.4); BMI ≥ 40 → ABW (0.3). Auto is a comparison aid; follow institutional anticoagulation protocol.</p>
                   </div>
                   <div class="space-y-2">
                     <p class="text-xs text-slate-500 dark:text-slate-400">Initial dose (U/kg)</p>
@@ -530,8 +530,8 @@
                     </div>
                     <div id="hep2-weight-breakdown" class="hidden text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 rounded-xl p-3 leading-relaxed"></div>
                     <div id="hep2-peds-warning" class="hidden info-block warn"><h4 class="text-sm font-semibold text-red-500 mb-1">Adult CPB only</h4><p class="text-sm text-red-200/80">For patients &lt; 20 kg or height &lt; 120 cm, follow institutional pediatric protocols.</p></div>
-                    <div id="hep2-extreme-obesity" class="hidden info-block alert"><h4 class="text-sm font-semibold text-orange-500 mb-1">Extreme obesity safety cue</h4><p class="text-sm text-orange-200/80">BMI ≥ 50 kg/m². Dosing weight uses ABW (0.3) in auto mode to reduce extreme UFH estimates. Consider heparin concentration or anti-Xa when ACT is unreliable.</p></div>
-                    <div id="hep2-obesity-warning" class="info-block alert hidden"><h4 class="text-sm font-semibold text-orange-500 mb-1">Obesity dosing cue</h4><p class="text-sm text-orange-200/80">Auto mode is using adjusted body weight. Confirm anticoagulation using local monitoring and protocol.</p></div>
+                    <div id="hep2-extreme-obesity" class="hidden info-block alert"><h4 class="text-sm font-semibold text-orange-500 mb-1">Extreme obesity safety cue</h4><p class="text-sm text-orange-200/80">BMI ≥ 50 kg/m². Auto mode uses ABW (0.3) as a decision-support estimate to reduce extreme UFH estimates. Consider heparin concentration or anti-Xa when ACT is unreliable.</p></div>
+                    <div id="hep2-obesity-warning" class="info-block alert hidden"><h4 class="text-sm font-semibold text-orange-500 mb-1">Obesity dosing cue</h4><p class="text-sm text-orange-200/80">Auto mode is using adjusted body weight as a comparison aid. Confirm anticoagulation using local monitoring and protocol.</p></div>
                   </div>
                 </div>
               </div>
@@ -562,14 +562,14 @@
 
             <section class="space-y-4" aria-labelledby="hep2-during-title">
               <div class="space-y-1">
-                <h2 id="hep2-during-title" class="text-lg font-bold text-primary-900 dark:text-white">2. During CPB: Additional UFH &amp; Heparin Resistance Cue</h2>
-                <p class="text-sm text-slate-600 dark:text-slate-300">During CPB, additional UFH may be given according to institutional protocol when ACT is below target. Some protocols use incremental boluses such as 50–100 U/kg, but fixed redosing is not universal. If ACT does not increase as expected, use this checklist to consider heparin resistance contributors.</p>
+                <h2 id="hep2-during-title" class="text-lg font-bold text-primary-900 dark:text-white">2. During CPB: Additional UFH &amp; ACT-response Review</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-300">During CPB, additional UFH may be given according to institutional protocol when ACT is below target. If ACT does not increase as expected, use this checklist as a non-diagnostic review of possible resistance contributors.</p>
               </div>
               <details class="group bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4">
                 <summary class="flex cursor-pointer list-none flex-col gap-1 sm:flex-row sm:items-center sm:justify-between [&::-webkit-details-marker]:hidden">
                   <span class="flex items-center gap-2 text-sm font-semibold text-primary-900 dark:text-white">
                     <span class="text-accent-600 dark:text-accent-400 transition-transform group-open:rotate-90">›</span>
-                    Heparin Resistance Cue Checklist
+                    ACT-response cue checklist
                   </span>
                   <span class="text-[11px] text-slate-500 dark:text-slate-400">Non-validated reminder tool · click to expand</span>
                 </summary>
@@ -588,7 +588,7 @@
                     <span id="hep2-resistance-check-label" class="font-semibold">Low cue</span>
                     <span id="hep2-resistance-check-score" class="text-xs opacity-80">0 points</span>
                   </div>
-                  <p id="hep2-resistance-check-message" class="mt-1">Low heparin resistance cue. Continue institutional ACT/heparin monitoring.</p>
+                  <p id="hep2-resistance-check-message" class="mt-1">Low ACT-response cue. Continue institutional ACT/heparin monitoring.</p>
                 </div>
                 <p class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">Non-validated screening aid. This checklist is a reminder tool, not a diagnostic score or medication-order protocol.</p>
                 </div>
@@ -598,7 +598,7 @@
             <section class="space-y-4" aria-labelledby="hep2-post-title">
               <div class="space-y-1">
                 <h2 id="hep2-post-title" class="text-lg font-bold text-primary-900 dark:text-white">3. Post-CPB: Protamine Reversal</h2>
-                <p class="text-sm text-slate-600 dark:text-slate-300">Given the planned or actual heparin exposure and selected protamine strategy, what is the estimated protamine dose?</p>
+                <p class="text-sm text-slate-600 dark:text-slate-300">Given the planned or actual UFH exposure, selected basis, and ratio, what is the estimated protamine dose?</p>
               </div>
 
               <div class="bg-slate-50 dark:bg-primary-900/40 border border-slate-200 dark:border-primary-800 rounded-2xl p-4">
@@ -635,7 +635,7 @@
                       <option value="custom">Custom UFH reference</option>
                     </select>
                     <div id="hep2-custom-ufh-wrap" class="hidden heparin-form-field"><label class="heparin-field-label text-xs text-slate-500 dark:text-slate-400">Custom UFH reference (U)</label><input id="hep2-custom-ufh" type="number" min="0" step="1" placeholder="25000" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm" /></div>
-                    <p id="hep2-protamine-basis-help" class="text-[11px] text-slate-500 dark:text-slate-400">Uses total entered UFH exposure as the protamine reference. Simple and common, but may overestimate reversal needs when CPB duration is long.</p>
+                    <p id="hep2-protamine-basis-help" class="text-[11px] text-slate-500 dark:text-slate-400">Uses total entered UFH exposure as the protamine reference for an estimate; this may overestimate reversal needs when CPB duration is long.</p>
                   </div>
                   <div class="space-y-3">
                     <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">C. Protamine-to-heparin ratio</p>
@@ -657,16 +657,16 @@
                     <div class="flex justify-between gap-3"><span class="text-slate-600 dark:text-slate-400">Selected calculation basis</span><span id="hep2-selected-basis" class="font-semibold text-right">-</span></div>
                     <div class="flex justify-between gap-3"><span class="text-slate-600 dark:text-slate-400">Selected ratio</span><span id="hep2-selected-ratio" class="font-mono text-right">-</span></div>
                     <div class="rounded-xl bg-slate-50 dark:bg-primary-900/50 border border-slate-200 dark:border-primary-800 p-4">
-                      <p class="text-xs text-slate-500 dark:text-slate-400">Estimated protamine dose</p>
+                      <p class="text-xs text-slate-500 dark:text-slate-400">Estimated protamine</p>
                       <p id="hep2-protamine-mg" class="text-3xl font-mono font-bold text-primary-900 dark:text-white">-</p>
                     </div>
                     <div class="flex justify-between gap-3"><span class="text-slate-600 dark:text-slate-400">Practical rounded dose</span><span id="hep2-protamine-rounded" class="font-mono text-right">-</span></div>
                     <div class="flex justify-between gap-3"><span class="text-slate-600 dark:text-slate-400">Rounding note</span><span class="font-mono text-right">rounded to nearest 25 mg</span></div>
                     <div class="flex justify-between gap-3"><span class="text-slate-600 dark:text-slate-400">Ratio interpretation</span><span id="hep2-ratio-label" class="font-semibold text-right">-</span></div>
                   </div>
-                  <p id="hep2-protamine-ratio-warn" class="hidden text-xs text-amber-600 dark:text-amber-300">Warning: protamine ratio above 1.0 may increase bleeding/coagulopathy risk.</p>
-                  <p id="hep2-protamine-high-warn" class="hidden text-xs text-red-600 dark:text-red-300">Warning: calculated protamine dose is unusually high. Reassess the UFH reference amount and workflow context.</p>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400">Protamine dosing may be estimated from total UFH, initial systemic UFH bolus, measured heparin concentration, or local protocol. Use institutional protocol and clinical assessment.</p>
+                  <p id="hep2-protamine-ratio-warn" class="hidden text-xs text-amber-600 dark:text-amber-300">Safety prompt: protamine ratio above 1.0 may increase bleeding/coagulopathy risk.</p>
+                  <p id="hep2-protamine-high-warn" class="hidden text-xs text-red-600 dark:text-red-300">Safety prompt: estimated protamine dose is unusually high. Reassess UFH basis, residual heparin, and workflow context.</p>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400">Estimate only: verify selected UFH basis and ratio with ACT/heparin assay, bleeding status, and local protocol.</p>
                 </div>
               </div>
             </section>
@@ -675,13 +675,13 @@
               <h2 id="hep2-safety-title" class="calculator-lower-title">Clinical safety notes</h2>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="calculator-lower-panel">
-                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Heparin resistance cue</h3>
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">ACT-response review cue</h3>
                   <div class="grid grid-cols-1 gap-2 text-sm">
                     <div>Cumulative systemic UFH: <span id="hep2-systemic-ufh" class="font-mono">-</span></div>
                     <div>Cumulative systemic UFH (U/kg): <span id="hep2-systemic-ufh-kg" class="font-mono">-</span></div>
                   </div>
                   <div id="hep2-resistance-cue" class="hidden info-block warn">
-                    <p class="text-sm font-semibold text-amber-700 dark:text-amber-300">High cumulative UFH exposure. If ACT remains below institutional target or &lt;480 sec despite ≥500 U/kg UFH, consider heparin resistance evaluation.</p>
+                    <p class="text-sm font-semibold text-amber-700 dark:text-amber-300">Possible heparin-resistance cue: if ACT remains below institutional target or &lt;480 sec despite ≥500 U/kg UFH, review AT status, circuit context, assay data, and local protocol.</p>
                     <ul class="list-disc list-inside text-sm mt-2 space-y-1">
                       <li>Confirm full heparin delivery.</li>
                       <li>Confirm sample quality and ACT device validity.</li>
@@ -710,8 +710,8 @@
                   <p class="calculator-lower-subheading">Methodology notes</p>
                   <ul class="list-disc list-inside space-y-1">
                     <li>Initial UFH bolus = selected dosing weight × selected U/kg preset.</li>
-                    <li>Auto weight strategy uses TBW when BMI &lt;30, ABW 0.4 when BMI 30–39, and ABW 0.3 when BMI ≥40.</li>
-                    <li>Protamine estimate = UFH reference amount ÷ 100 × selected protamine-to-heparin ratio.</li>
+                    <li>Auto weight strategy uses TBW when BMI &lt;30, ABW 0.4 when BMI 30–39, and ABW 0.3 when BMI ≥40 as a comparison aid, not a universal dosing recommendation.</li>
+                    <li>Protamine estimate = UFH reference amount ÷ 100 × selected protamine-to-heparin ratio; interpret as an estimate, not a fixed order.</li>
                     <li>Total UFH basis includes initial systemic UFH, additional systemic UFH during CPB, and circuit prime heparin when entered.</li>
                     <li>Initial-bolus basis uses only the initial systemic UFH amount, while custom basis uses the entered custom UFH reference.</li>
                     <li>ACT targets vary by institution, circuit, and device. This calculator does not use ACT target to calculate UFH or protamine dose. Confirm anticoagulation using local ACT/heparin monitoring protocol.</li>
@@ -728,11 +728,11 @@
                     </div>
                     <div class="calculator-faq-item">
                       <p class="calculator-faq-question">Which weight strategy should be used for obese patients?</p>
-                      <p class="calculator-faq-answer">There is no single universal strategy for all institutions. This calculator’s auto mode uses TBW when BMI is &lt;30, ABW 0.4 when BMI is 30–39, and ABW 0.3 when BMI is ≥40. The sensitivity comparison shows how TBW, ABW, and IBW change the estimated initial UFH dose.</p>
+                      <p class="calculator-faq-answer">There is no single universal strategy for all institutions. This calculator’s auto mode uses TBW when BMI is &lt;30, ABW 0.4 when BMI is 30–39, and ABW 0.3 when BMI is ≥40 as a comparison aid. The sensitivity comparison shows how TBW, ABW, and IBW change the estimated initial UFH dose.</p>
                     </div>
                     <div class="calculator-faq-item">
                       <p class="calculator-faq-question">How is protamine dose estimated after CPB?</p>
-                      <p class="calculator-faq-answer">Protamine dose may be estimated using a selected UFH reference amount and a protamine-to-heparin ratio. This page supports total UFH administered, initial systemic UFH bolus, or a custom UFH reference basis. The displayed dose is an estimate and should be interpreted with institutional protocol and clinical assessment.</p>
+                      <p class="calculator-faq-answer">Protamine dose may be estimated using a selected UFH reference amount and a protamine-to-heparin ratio. This page supports total UFH administered, initial systemic UFH bolus, or a custom UFH reference basis. The displayed dose is an estimate to verify with monitoring, bleeding status, local protocol, and clinical assessment.</p>
                     </div>
                     <div class="calculator-faq-item">
                       <p class="calculator-faq-question">What is the difference between total UFH and initial-bolus protamine basis?</p>
@@ -744,7 +744,7 @@
                     </div>
                     <div class="calculator-faq-item">
                       <p class="calculator-faq-question">When should heparin resistance be suspected?</p>
-                      <p class="calculator-faq-answer">Heparin resistance should be considered when adequate ACT is not achieved despite high-dose UFH exposure, after confirming heparin delivery, sample quality, and ACT device validity. ACT targets are monitoring references, not dosing inputs in this calculator. A 2024 ISTH SSC communication proposed inability to reach ACT ≥480 seconds after 500 U/kg UFH as a standardized adult cardiac surgery definition.</p>
+                      <p class="calculator-faq-answer">Possible heparin resistance should be reviewed when adequate ACT is not achieved despite high-dose UFH exposure, after confirming heparin delivery, sample quality, and ACT device validity. ACT targets are monitoring references, not dosing inputs in this calculator. A 2024 ISTH SSC communication proposed inability to reach ACT ≥480 seconds after 500 U/kg UFH as a standardized adult cardiac surgery definition.</p>
                     </div>
                     <div class="calculator-faq-item">
                       <p class="calculator-faq-question">Is this calculator for ECMO or ICU heparin infusion?</p>
