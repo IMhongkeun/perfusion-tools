@@ -3596,12 +3596,22 @@ function renderHcaTable(panel, tab) {
   return;
 }
 
+function normalizePressureDropFilterLabel(value) {
+  return String(value || '').trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
 function getPressureDropGroupLabel(category) {
   const normalized = normalizePressureDropKey(category);
+  if (normalized.includes('cardioplegia')) return 'Cardioplegia cannula';
+  if (normalized.includes('vent')) return 'Vent cannula';
   if (normalized.includes('arterial')) return 'Arterial cannula';
   if (normalized.includes('venous')) return 'Venous cannula';
   if (normalized.includes('aortic')) return 'Aortic cannula';
-  return 'Specialty cannula';
+  return String(category || '').trim().replace(/\s+/g, ' ') || 'Specialty cannula';
+}
+
+function getPressureDropCategoryFilterValue(category) {
+  return normalizePressureDropFilterLabel(getPressureDropGroupLabel(category));
 }
 
 function getPressureDropSourceNode(entry, compact = false, options = {}) {
@@ -3757,7 +3767,7 @@ function filterPressureDropEntries(entries, filters) {
   const normalizedQuery = normalizePressureDropKey(filters.search);
   return entries.filter(entry => {
     if (filters.manufacturer && entry.manufacturer !== filters.manufacturer) return false;
-    if (filters.category && entry.category !== filters.category) return false;
+    if (filters.category && getPressureDropCategoryFilterValue(entry.category) !== filters.category) return false;
     if (filters.model && entry.model !== filters.model) return false;
     if (filters.size && entry.size !== filters.size) return false;
     if (filters.connectionSite && (entry.connectionSite || '') !== filters.connectionSite) return false;
@@ -4108,11 +4118,23 @@ function getUniquePressureDropOptionPairs(entries, getter, labeler = value => va
     .map(value => ({ value, label: labeler(value) }));
 }
 
+function getUniquePressureDropCategoryOptionPairs(entries) {
+  const optionMap = new Map();
+  entries.forEach(entry => {
+    const label = getPressureDropGroupLabel(entry.category);
+    const key = normalizePressureDropFilterLabel(label);
+    if (!key || optionMap.has(key)) return;
+    optionMap.set(key, { value: key, label });
+  });
+  return Array.from(optionMap.values())
+    .sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true }));
+}
+
 function getPressureDropLookupMatches(entries, filters = {}) {
   return entries.filter(entry => {
     if (filters.manufacturer && entry.manufacturer !== filters.manufacturer) return false;
     if (filters.model && entry.model !== filters.model) return false;
-    if (filters.category && entry.category !== filters.category) return false;
+    if (filters.category && getPressureDropCategoryFilterValue(entry.category) !== filters.category) return false;
     if (filters.size && entry.size !== filters.size) return false;
     if (filters.connectionSite && getPressureDropConnectionOptionValue(entry) !== filters.connectionSite) return false;
     return true;
@@ -4396,37 +4418,38 @@ async function initCannulaPressureDropPage() {
         if (controls.sizeSelect) controls.sizeSelect.value = '';
         if (controls.connectionSelect) controls.connectionSelect.value = '';
       } else if (changedLevel === 'model') {
-        if (controls.categorySelect) controls.categorySelect.value = '';
         if (controls.sizeSelect) controls.sizeSelect.value = '';
         if (controls.connectionSelect) controls.connectionSelect.value = '';
       } else if (changedLevel === 'category') {
+        if (controls.modelSelect) controls.modelSelect.value = '';
         if (controls.sizeSelect) controls.sizeSelect.value = '';
         if (controls.connectionSelect) controls.connectionSelect.value = '';
       } else if (changedLevel === 'size') {
         if (controls.connectionSelect) controls.connectionSelect.value = '';
       }
 
-      const selected = getPressureDropLookupSelection(controls);
       setPressureDropSelectOptionPairs(controls.manufacturerSelect, getUniquePressureDropOptionPairs(entries, entry => entry.manufacturer), 'Select manufacturer');
 
-      const modelEntries = getPressureDropLookupMatches(entries, { manufacturer: selected.manufacturer });
+      const manufacturerValue = controls.manufacturerSelect?.value || '';
+      const categoryEntries = getPressureDropLookupMatches(entries, { manufacturer: manufacturerValue });
+      setPressureDropSelectOptionPairs(controls.categorySelect, getUniquePressureDropCategoryOptionPairs(categoryEntries), 'Select type');
+
+      const categoryValue = controls.categorySelect?.value || '';
+      const modelEntries = getPressureDropLookupMatches(entries, { manufacturer: manufacturerValue, category: categoryValue });
       setPressureDropSelectOptionPairs(controls.modelSelect, getUniquePressureDropOptionPairs(modelEntries, entry => entry.model), 'Select model / cannula');
       refreshModelCombobox();
 
-      const categoryEntries = getPressureDropLookupMatches(entries, { manufacturer: controls.manufacturerSelect?.value || '', model: controls.modelSelect?.value || '' });
-      setPressureDropSelectOptionPairs(controls.categorySelect, getUniquePressureDropOptionPairs(categoryEntries, entry => entry.category, getPressureDropGroupLabel), 'Select type');
-
       const sizeEntries = getPressureDropLookupMatches(entries, {
-        manufacturer: controls.manufacturerSelect?.value || '',
-        model: controls.modelSelect?.value || '',
-        category: controls.categorySelect?.value || ''
+        manufacturer: manufacturerValue,
+        category: controls.categorySelect?.value || '',
+        model: controls.modelSelect?.value || ''
       });
       setPressureDropSelectOptionPairs(controls.sizeSelect, getUniquePressureDropOptionPairs(sizeEntries, entry => entry.size), 'Select size');
 
       const connectionEntries = getPressureDropLookupMatches(entries, {
         manufacturer: controls.manufacturerSelect?.value || '',
-        model: controls.modelSelect?.value || '',
         category: controls.categorySelect?.value || '',
+        model: controls.modelSelect?.value || '',
         size: controls.sizeSelect?.value || ''
       });
       const connectionOptions = controls.sizeSelect?.value
@@ -4452,7 +4475,7 @@ async function initCannulaPressureDropPage() {
       populateLookupOptions('');
       if (controls.modelSelect) controls.modelSelect.value = entry.model || '';
       populateLookupOptions('');
-      if (controls.categorySelect) controls.categorySelect.value = entry.category || '';
+      if (controls.categorySelect) controls.categorySelect.value = getPressureDropCategoryFilterValue(entry.category);
       populateLookupOptions('');
       if (controls.sizeSelect) controls.sizeSelect.value = entry.size || '';
       populateLookupOptions('');

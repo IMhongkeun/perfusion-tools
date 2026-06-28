@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 const mainJs = fs.readFileSync(path.join(__dirname, '..', 'main.js'), 'utf8');
+const pressureDropData = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'cannula-pressure-drop.json'), 'utf8')).items;
 assert(
   mainJs.includes('const PRESSURE_DROP_EXACT_FLOW_TOLERANCE = 1e-6;'),
   'Pressure-drop exact flow tolerance should be a tiny epsilon so dense adjacent points still interpolate.'
@@ -121,11 +122,45 @@ function getPressureDropConnectionOptionLabel(value) {
   return parts.join(' — ');
 }
 
+function normalizePressureDropFilterLabel(value) {
+  return String(value || '').trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+function normalizePressureDropKey(value) {
+  return String(value || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, ' ');
+}
+
+function getPressureDropGroupLabel(category) {
+  const normalized = normalizePressureDropKey(category);
+  if (normalized.includes('cardioplegia')) return 'Cardioplegia cannula';
+  if (normalized.includes('vent')) return 'Vent cannula';
+  if (normalized.includes('arterial')) return 'Arterial cannula';
+  if (normalized.includes('venous')) return 'Venous cannula';
+  if (normalized.includes('aortic')) return 'Aortic cannula';
+  return String(category || '').trim().replace(/\s+/g, ' ') || 'Specialty cannula';
+}
+
+function getPressureDropCategoryFilterValue(category) {
+  return normalizePressureDropFilterLabel(getPressureDropGroupLabel(category));
+}
+
+function getUniquePressureDropCategoryOptionPairs(entries) {
+  const optionMap = new Map();
+  entries.forEach(entry => {
+    const label = getPressureDropGroupLabel(entry.category);
+    const key = normalizePressureDropFilterLabel(label);
+    if (!key || optionMap.has(key)) return;
+    optionMap.set(key, { value: key, label });
+  });
+  return Array.from(optionMap.values())
+    .sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true }));
+}
+
 function getPressureDropLookupMatches(entries, filters = {}) {
   return entries.filter(entry => {
     if (filters.manufacturer && entry.manufacturer !== filters.manufacturer) return false;
     if (filters.model && entry.model !== filters.model) return false;
-    if (filters.category && entry.category !== filters.category) return false;
+    if (filters.category && getPressureDropCategoryFilterValue(entry.category) !== filters.category) return false;
     if (filters.size && entry.size !== filters.size) return false;
     if (filters.connectionSite && getPressureDropConnectionOptionValue(entry) !== filters.connectionSite) return false;
     return true;
@@ -222,6 +257,36 @@ function run() {
     'Single stage venous — 3/8 inch / 0.95 cm — 69312'
   );
 
+
+  const getingeEntries = pressureDropData.filter(entry => entry.manufacturer === 'Getinge / Maquet');
+  const getingeCategoryOptions = getUniquePressureDropCategoryOptionPairs(getingeEntries);
+  assert.deepStrictEqual(
+    getingeCategoryOptions.map(option => option.label),
+    Array.from(new Set(getingeCategoryOptions.map(option => option.label))),
+    'Getinge / Maquet category/type options should not show duplicate human-readable labels.'
+  );
+  assert(getingeCategoryOptions.some(option => option.label === 'Arterial cannula'), 'Getinge / Maquet should include one arterial category option.');
+  assert(getingeCategoryOptions.some(option => option.label === 'Venous cannula'), 'Getinge / Maquet should include one venous category option.');
+
+  const messyCategoryEntries = [
+    { manufacturer: 'Messy', model: 'Arterial A', category: ' arterial   cannula ', size: '16 Fr' },
+    { manufacturer: 'Messy', model: 'Arterial B', category: 'ARTERIAL CANNULA', size: '18 Fr' },
+    { manufacturer: 'Messy', model: 'Venous A', category: ' venous     cannula ', size: '20 Fr' }
+  ];
+  assert.deepStrictEqual(
+    getUniquePressureDropCategoryOptionPairs(messyCategoryEntries),
+    [
+      { value: 'arterial cannula', label: 'Arterial cannula' },
+      { value: 'venous cannula', label: 'Venous cannula' }
+    ],
+    'Category labels should be deduplicated across whitespace and casing differences.'
+  );
+  assert.deepStrictEqual(
+    getPressureDropLookupMatches(messyCategoryEntries, { manufacturer: 'Messy', category: 'arterial cannula' }).map(entry => entry.model),
+    ['Arterial A', 'Arterial B'],
+    'Selecting a deduplicated category/type option should filter the model list to matching raw categories.'
+  );
+
   const veryLongModelName = 'Very Long Pediatric Arterial Cannula Model Name With Extra Manufacturer Descriptor That Used To Stretch Native Select Menus';
   const lookupEntries = [
     { manufacturer: 'Acme', model: veryLongModelName, category: 'Adult arterial', size: '18 Fr' },
@@ -234,7 +299,7 @@ function run() {
     'Selecting a long model label through the combobox should still filter to the same dataset entry.'
   );
   assert.deepStrictEqual(
-    getPressureDropLookupMatches(lookupEntries, { manufacturer: 'Acme', category: 'Adult venous' }),
+    getPressureDropLookupMatches(lookupEntries, { manufacturer: 'Acme', category: 'venous cannula' }),
     [lookupEntries[1]],
     'Category/type filtering should keep working after the model select UI is wrapped.'
   );
