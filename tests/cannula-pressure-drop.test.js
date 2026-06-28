@@ -268,6 +268,33 @@ function run() {
   assert(getingeCategoryOptions.some(option => option.label === 'Arterial cannula'), 'Getinge / Maquet should include one arterial category option.');
   assert(getingeCategoryOptions.some(option => option.label === 'Venous cannula'), 'Getinge / Maquet should include one venous category option.');
 
+
+  const getingeArterialMatches = getPressureDropLookupMatches(pressureDropData, {
+    manufacturer: 'Getinge / Maquet',
+    category: 'arterial cannula',
+    model: 'HLS Arterial Cannula'
+  });
+  const getingeHlsSizeLabels = getingeArterialMatches.map(entry => entry.size).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  assert.deepStrictEqual(
+    getingeHlsSizeLabels,
+    [
+      'PAS 1315 · 13 Fr / 4.3 mm · 15 cm',
+      'PAS 1515 · 15 Fr / 5.0 mm · 15 cm',
+      'PAS 1715 · 17 Fr / 5.7 mm · 15 cm',
+      'PAS 1915 · 19 Fr / 6.3 mm · 15 cm',
+      'PAS 2115 · 21 Fr / 7.0 mm · 15 cm',
+      'PAS 2315 · 23 Fr / 7.7 mm · 15 cm'
+    ],
+    'Getinge / Maquet HLS arterial cannula lookup should group PAS 1315 with the other HLS arterial PAS sizes.'
+  );
+  const getingeArterialModelOptions = Array.from(new Set(getingeArterialMatches.map(entry => entry.model)));
+  assert.deepStrictEqual(getingeArterialModelOptions, ['HLS Arterial Cannula'], 'Getinge / Maquet HLS arterial entries should expose one canonical model option.');
+  const pas1315 = getingeArterialMatches.find(entry => entry.cannulaOrderCode === 'PAS 1315');
+  assert(pas1315, 'PAS 1315 should remain available after canonical model regrouping.');
+  const pas1315Exact = interpolatePressureDrop(pas1315.points, 0.2);
+  assert.strictEqual(pas1315Exact.state, 'exact');
+  assert.strictEqual(pas1315Exact.value, 2.7, 'PAS 1315 should still use its own unchanged pressure-flow curve points.');
+
   const messyCategoryEntries = [
     { manufacturer: 'Messy', model: 'Arterial A', category: ' arterial   cannula ', size: '16 Fr' },
     { manufacturer: 'Messy', model: 'Arterial B', category: 'ARTERIAL CANNULA', size: '18 Fr' },

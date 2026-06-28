@@ -9126,9 +9126,9 @@
     },
     {
       "manufacturer": "Getinge / Maquet",
-      "model": "Arterial HLS Cannulae / PAS arterial HLS cannula",
+      "model": "HLS Arterial Cannula",
       "category": "Adult arterial",
-      "size": "13 Fr / 4.3 mm",
+      "size": "PAS 1315 · 13 Fr / 4.3 mm · 15 cm",
       "sourceLabel": "Arterial HLS cannulae product pressure-flow graph",
       "sourceUrl": "",
       "testMedium": "Manufacturer graph; medium not specified",
@@ -9253,7 +9253,7 @@
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
-      "size": "PAS 1515",
+      "size": "PAS 1515 · 15 Fr / 5.0 mm · 15 cm",
       "sourceLabel": "Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table",
       "sourceUrl": "Uploaded Getinge/Maquet HLS arterial cannula chart and product order table",
       "testMedium": "Water at room temperature",
@@ -9289,13 +9289,15 @@
           "pressureDrop": 156
         }
       ],
-      "notes": "PAS 1515: 15 Fr (5.0 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAS 1515 Bioline coating."
+      "notes": "PAS 1515: 15 Fr (5.0 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAS 1515 Bioline coating.",
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PAS 1515"
     },
     {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
-      "size": "PAS 1715",
+      "size": "PAS 1715 · 17 Fr / 5.7 mm · 15 cm",
       "sourceLabel": "Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table",
       "sourceUrl": "Uploaded Getinge/Maquet HLS arterial cannula chart and product order table",
       "testMedium": "Water at room temperature",
@@ -9347,13 +9349,15 @@
           "pressureDrop": 195
         }
       ],
-      "notes": "PAS 1715: 17 Fr (5.7 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAS 1715 Bioline coating."
+      "notes": "PAS 1715: 17 Fr (5.7 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAS 1715 Bioline coating.",
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PAS 1715"
     },
     {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
-      "size": "PAS 1915",
+      "size": "PAS 1915 · 19 Fr / 6.3 mm · 15 cm",
       "sourceLabel": "Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table",
       "sourceUrl": "Uploaded Getinge/Maquet HLS arterial cannula chart and product order table",
       "testMedium": "Water at room temperature",
@@ -9413,13 +9417,15 @@
           "pressureDrop": 165
         }
       ],
-      "notes": "PAS 1915: 19 Fr (6.3 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAS 1915 Bioline coating."
+      "notes": "PAS 1915: 19 Fr (6.3 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAS 1915 Bioline coating.",
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PAS 1915"
     },
     {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
-      "size": "PAS 2315",
+      "size": "PAS 2315 · 23 Fr / 7.7 mm · 15 cm",
       "sourceLabel": "Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table",
       "sourceUrl": "Uploaded Getinge/Maquet HLS arterial cannula chart and product order table",
       "testMedium": "Water at room temperature",
@@ -9483,13 +9489,15 @@
           "pressureDrop": 82
         }
       ],
-      "notes": "PAS 2315: 23 Fr (7.7 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAS 2315 Bioline coating."
+      "notes": "PAS 2315: 23 Fr (7.7 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAS 2315 Bioline coating.",
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PAS 2315"
     },
     {
       "manufacturer": "Getinge / Maquet",
       "model": "HLS Arterial Cannula",
       "category": "femoral arterial",
-      "size": "PAS 2115",
+      "size": "PAS 2115 · 21 Fr / 7.0 mm · 15 cm",
       "sourceLabel": "Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table",
       "sourceUrl": "Uploaded Getinge/Maquet HLS arterial cannula chart and product order table",
       "testMedium": "Water at room temperature",
@@ -9553,7 +9561,9 @@
           "pressureDrop": 121
         }
       ],
-      "notes": "PAS 2115: 21 Fr (7.0 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAS 2115 Bioline coating."
+      "notes": "PAS 2115: 21 Fr (7.0 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAS 2115 Bioline coating.",
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PAS 2115"
     },
     {
       "manufacturer": "Getinge / Maquet",
