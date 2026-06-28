@@ -1114,8 +1114,8 @@ function formatPressureDropAxisTick(value, range = 0) {
 function drawPressureDropChart(svgNode, points, targetFlow, estimatedPressureDrop, options = {}) {
   const validPoints = getValidPressureDropPoints(points);
   if (!svgNode || !validPoints.length) return;
-  const width = 420; const height = 190;
-  const padding = { left: 44, right: 18, top: 18, bottom: 34 };
+  const width = 420; const height = 200;
+  const padding = { left: 58, right: 18, top: 18, bottom: 42 };
   const minFlow = validPoints[0].flow;
   const maxFlow = validPoints[validPoints.length - 1].flow;
   const useLinearOnly = options.curveMode === 'linear';
@@ -1138,6 +1138,7 @@ function drawPressureDropChart(svgNode, points, targetFlow, estimatedPressureDro
   const smoothCurvePath = curveSamples.map((point, index) => `${index === 0 ? 'M' : 'L'} ${scaleX(point.flow).toFixed(1)} ${scaleY(point.pressureDrop).toFixed(1)}`).join(' ');
   const plotRight = width - padding.right;
   const plotBottom = height - padding.bottom;
+  const plotMiddleY = padding.top + ((plotBottom - padding.top) / 2);
   const xTicks = buildPressureDropAxisTicks(minFlow, maxFlow, 4);
   const yTicks = buildPressureDropAxisTicks(0, maxDrop, 4);
   const xTickLabels = xTicks.map(flow => {
@@ -1163,7 +1164,7 @@ function drawPressureDropChart(svgNode, points, targetFlow, estimatedPressureDro
   const targetMarker = showTargetMarker
     ? `<g><line x1="${targetX.toFixed(1)}" y1="${padding.top}" x2="${targetX.toFixed(1)}" y2="${height - padding.bottom}" stroke="#f59e0b" stroke-dasharray="3 3" /><circle cx="${targetX.toFixed(1)}" cy="${targetY.toFixed(1)}" r="4" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" /><rect x="${targetLabelX.toFixed(1)}" y="${targetLabelY.toFixed(1)}" width="${targetLabelWidth}" height="28" rx="4" fill="#0f172a" opacity="0.88" /><text x="${(targetLabelX + 5).toFixed(1)}" y="${(targetLabelY + 11).toFixed(1)}" font-size="8" fill="#ffffff">Target flow: ${targetFlow.toFixed(1)} L/min</text><text x="${(targetLabelX + 5).toFixed(1)}" y="${(targetLabelY + 22).toFixed(1)}" font-size="8" fill="#ffffff">Est. pressure drop: ${estimatedPressureDrop.toFixed(1)} mmHg</text></g>`
     : '';
-  svgNode.innerHTML = `${xGridlines}${yGridlines}<line x1="${padding.left}" y1="${plotBottom}" x2="${plotRight}" y2="${plotBottom}" stroke="currentColor" stroke-opacity="0.35" /><line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${plotBottom}" stroke="currentColor" stroke-opacity="0.35" /><path d="${smoothCurvePath}" fill="none" stroke="#0ea5e9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />${validPoints.map(p => `<circle cx="${scaleX(p.flow).toFixed(1)}" cy="${scaleY(p.pressureDrop).toFixed(1)}" r="2.2" fill="#ffffff" stroke="#0ea5e9" stroke-width="1.4" />`).join('')}${targetMarker}${xTickLabels}${yTickLabels}<text x="${padding.left}" y="${height - 6}" font-size="9" fill="currentColor" opacity="0.65">Flow (L/min)</text><text x="${width - 110}" y="${padding.top + 9}" font-size="9" fill="currentColor" opacity="0.65">Pressure drop (mmHg)</text>`;
+  svgNode.innerHTML = `${xGridlines}${yGridlines}<line x1="${padding.left}" y1="${plotBottom}" x2="${plotRight}" y2="${plotBottom}" stroke="currentColor" stroke-opacity="0.35" /><line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${plotBottom}" stroke="currentColor" stroke-opacity="0.35" /><path d="${smoothCurvePath}" fill="none" stroke="#0ea5e9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />${validPoints.map(p => `<circle cx="${scaleX(p.flow).toFixed(1)}" cy="${scaleY(p.pressureDrop).toFixed(1)}" r="2.2" fill="#ffffff" stroke="#0ea5e9" stroke-width="1.4" />`).join('')}${targetMarker}${xTickLabels}${yTickLabels}<text x="${plotRight}" y="${height - 8}" font-size="9" text-anchor="end" fill="currentColor" opacity="0.65">Flow [L/min]</text><text x="14" y="${plotMiddleY.toFixed(1)}" transform="rotate(-90 14 ${plotMiddleY.toFixed(1)})" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.65">Pressure drop [mmHg]</text>`;
 }
 
 
@@ -3596,12 +3597,22 @@ function renderHcaTable(panel, tab) {
   return;
 }
 
+function normalizePressureDropFilterLabel(value) {
+  return String(value || '').trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
 function getPressureDropGroupLabel(category) {
   const normalized = normalizePressureDropKey(category);
+  if (normalized.includes('cardioplegia')) return 'Cardioplegia cannula';
+  if (normalized.includes('vent')) return 'Vent cannula';
   if (normalized.includes('arterial')) return 'Arterial cannula';
   if (normalized.includes('venous')) return 'Venous cannula';
   if (normalized.includes('aortic')) return 'Aortic cannula';
-  return 'Specialty cannula';
+  return String(category || '').trim().replace(/\s+/g, ' ') || 'Specialty cannula';
+}
+
+function getPressureDropCategoryFilterValue(category) {
+  return normalizePressureDropFilterLabel(getPressureDropGroupLabel(category));
 }
 
 function getPressureDropSourceNode(entry, compact = false, options = {}) {
@@ -3757,7 +3768,7 @@ function filterPressureDropEntries(entries, filters) {
   const normalizedQuery = normalizePressureDropKey(filters.search);
   return entries.filter(entry => {
     if (filters.manufacturer && entry.manufacturer !== filters.manufacturer) return false;
-    if (filters.category && entry.category !== filters.category) return false;
+    if (filters.category && getPressureDropCategoryFilterValue(entry.category) !== filters.category) return false;
     if (filters.model && entry.model !== filters.model) return false;
     if (filters.size && entry.size !== filters.size) return false;
     if (filters.connectionSite && (entry.connectionSite || '') !== filters.connectionSite) return false;
@@ -3929,6 +3940,152 @@ function setPressureDropSelectOptionPairs(selectNode, optionPairs, placeholder) 
   selectNode.disabled = optionPairs.length === 0;
 }
 
+
+function createPressureDropSearchableSelect(selectNode, placeholder, onChange) {
+  if (!selectNode || selectNode.dataset.searchableCombobox === 'ready') return null;
+  selectNode.dataset.searchableCombobox = 'ready';
+  selectNode.classList.add('hidden');
+  selectNode.setAttribute('aria-hidden', 'true');
+  selectNode.tabIndex = -1;
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'pressure-drop-combobox relative';
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'flex w-full items-center justify-between gap-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-left text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white disabled:opacity-60';
+  button.setAttribute('aria-haspopup', 'listbox');
+  button.setAttribute('aria-expanded', 'false');
+  const label = document.createElement('span');
+  label.className = 'min-w-0 flex-1 truncate';
+  const icon = document.createElement('span');
+  icon.className = 'flex-shrink-0 text-slate-400 dark:text-slate-500';
+  icon.setAttribute('aria-hidden', 'true');
+  icon.textContent = '▾';
+  button.append(label, icon);
+
+  const panel = document.createElement('div');
+  panel.className = 'pressure-drop-combobox-panel absolute z-30 mt-1 hidden rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 shadow-xl p-2';
+  panel.style.maxWidth = 'min(520px, calc(100vw - 32px))';
+  panel.style.width = 'min(520px, calc(100vw - 32px))';
+  panel.style.maxHeight = '320px';
+  panel.style.overflow = 'hidden';
+
+  const search = document.createElement('input');
+  search.type = 'search';
+  search.className = 'mb-2 w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-950 px-3 py-2 text-sm text-primary-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none';
+  search.placeholder = 'Search cannula model';
+  search.setAttribute('aria-label', 'Search cannula model');
+
+  const list = document.createElement('div');
+  list.className = 'max-h-[260px] overflow-y-auto overflow-x-hidden pr-1';
+  list.setAttribute('role', 'listbox');
+  panel.append(search, list);
+  wrapper.append(button, panel);
+  selectNode.insertAdjacentElement('afterend', wrapper);
+
+  let options = [];
+  let visibleOptions = [];
+  let highlightedIndex = -1;
+
+  const close = () => {
+    panel.classList.add('hidden');
+    button.setAttribute('aria-expanded', 'false');
+    highlightedIndex = -1;
+  };
+  const updatePanelPosition = () => {
+    const rect = wrapper.getBoundingClientRect();
+    const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
+    if (viewportWidth <= 768) {
+      panel.style.top = `${Math.max(rect.bottom + 4, 16)}px`;
+      panel.style.left = '16px';
+      panel.style.right = '16px';
+      return;
+    }
+    panel.style.top = '';
+    if (viewportWidth && rect.left + 520 > viewportWidth - 16) {
+      panel.style.left = 'auto';
+      panel.style.right = '0';
+    } else {
+      panel.style.left = '0';
+      panel.style.right = 'auto';
+    }
+  };
+  const selectValue = (value) => {
+    selectNode.value = value;
+    selectNode.dispatchEvent(new Event('change', { bubbles: true }));
+    if (typeof onChange === 'function') onChange(value);
+    close();
+    button.focus();
+  };
+  const renderOptions = () => {
+    const query = search.value.trim().toLowerCase();
+    visibleOptions = options.filter(option => !query || option.label.toLowerCase().includes(query));
+    list.innerHTML = '';
+    visibleOptions.forEach((option, index) => {
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = `block w-full overflow-hidden text-ellipsis whitespace-nowrap rounded-lg px-3 py-2 text-left text-sm ${option.value === selectNode.value ? 'bg-accent-500/10 text-accent-700 dark:text-accent-300' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-primary-800'}`;
+      item.setAttribute('role', 'option');
+      item.setAttribute('aria-selected', option.value === selectNode.value ? 'true' : 'false');
+      item.title = option.label;
+      item.textContent = option.label;
+      item.addEventListener('mousedown', event => event.preventDefault());
+      item.addEventListener('click', () => selectValue(option.value));
+      list.appendChild(item);
+      if (option.value === selectNode.value) highlightedIndex = index;
+    });
+    if (!visibleOptions.length) {
+      const empty = document.createElement('div');
+      empty.className = 'px-3 py-2 text-sm text-slate-500 dark:text-slate-400';
+      empty.textContent = 'No matching cannula models';
+      list.appendChild(empty);
+    }
+  };
+  const highlight = (nextIndex) => {
+    if (!visibleOptions.length) return;
+    highlightedIndex = (nextIndex + visibleOptions.length) % visibleOptions.length;
+    Array.from(list.querySelectorAll('[role="option"]')).forEach((item, index) => {
+      item.classList.toggle('bg-accent-500/20', index === highlightedIndex);
+      if (index === highlightedIndex) item.scrollIntoView({ block: 'nearest' });
+    });
+  };
+  const open = () => {
+    if (selectNode.disabled) return;
+    updatePanelPosition();
+    search.value = '';
+    renderOptions();
+    panel.classList.remove('hidden');
+    button.setAttribute('aria-expanded', 'true');
+    setTimeout(() => search.focus(), 0);
+  };
+  const refresh = () => {
+    options = Array.from(selectNode.options).map(option => ({ value: option.value, label: option.textContent || option.value }));
+    const selected = options.find(option => option.value === selectNode.value);
+    label.textContent = selected?.label || placeholder;
+    label.title = selected?.label || placeholder;
+    button.disabled = selectNode.disabled;
+    renderOptions();
+  };
+
+  button.addEventListener('click', () => panel.classList.contains('hidden') ? open() : close());
+  search.addEventListener('input', () => { highlightedIndex = -1; renderOptions(); });
+  search.addEventListener('keydown', event => {
+    if (event.key === 'ArrowDown') { event.preventDefault(); highlight(highlightedIndex + 1); }
+    else if (event.key === 'ArrowUp') { event.preventDefault(); highlight(highlightedIndex - 1); }
+    else if (event.key === 'Enter') { event.preventDefault(); if (visibleOptions[highlightedIndex]) selectValue(visibleOptions[highlightedIndex].value); }
+    else if (event.key === 'Escape') { event.preventDefault(); close(); button.focus(); }
+  });
+  button.addEventListener('keydown', event => {
+    if (['ArrowDown', 'Enter', ' '].includes(event.key)) { event.preventDefault(); open(); }
+    else if (event.key === 'Escape') close();
+  });
+  document.addEventListener('mousedown', event => { if (!wrapper.contains(event.target)) close(); });
+  window.addEventListener('resize', updatePanelPosition);
+
+  refresh();
+  return { refresh, close, open, panel, button, search, list };
+}
+
 function syncPressureDropConnectionControl(selectNode, wrapNode, optionPairs, shouldShow) {
   setPressureDropSelectOptionPairs(selectNode, optionPairs, 'Any connection site');
   if (!selectNode) return;
@@ -3962,11 +4119,23 @@ function getUniquePressureDropOptionPairs(entries, getter, labeler = value => va
     .map(value => ({ value, label: labeler(value) }));
 }
 
+function getUniquePressureDropCategoryOptionPairs(entries) {
+  const optionMap = new Map();
+  entries.forEach(entry => {
+    const label = getPressureDropGroupLabel(entry.category);
+    const key = normalizePressureDropFilterLabel(label);
+    if (!key || optionMap.has(key)) return;
+    optionMap.set(key, { value: key, label });
+  });
+  return Array.from(optionMap.values())
+    .sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true }));
+}
+
 function getPressureDropLookupMatches(entries, filters = {}) {
   return entries.filter(entry => {
     if (filters.manufacturer && entry.manufacturer !== filters.manufacturer) return false;
     if (filters.model && entry.model !== filters.model) return false;
-    if (filters.category && entry.category !== filters.category) return false;
+    if (filters.category && getPressureDropCategoryFilterValue(entry.category) !== filters.category) return false;
     if (filters.size && entry.size !== filters.size) return false;
     if (filters.connectionSite && getPressureDropConnectionOptionValue(entry) !== filters.connectionSite) return false;
     return true;
@@ -4095,7 +4264,7 @@ function createPressureDropChartPanel(entry, flowValue, interpolationResult) {
   const svgWrap = document.createElement('div');
   svgWrap.className = 'flex w-full items-center justify-center overflow-hidden rounded-lg bg-slate-50/60 dark:bg-primary-900/40 px-1 py-1 sm:px-2';
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('viewBox', '0 0 420 190');
+  svg.setAttribute('viewBox', '0 0 420 200');
   svg.setAttribute('role', 'img');
   svg.setAttribute('aria-label', `${entry.manufacturer} ${entry.model} pressure-flow curve`);
   svg.classList.add('block', 'w-full', 'h-auto', 'text-slate-500', 'dark:text-slate-300');
@@ -4237,6 +4406,11 @@ async function initCannulaPressureDropPage() {
       connectionWrap: el('pressure-drop-page-connection-wrap')
     };
     const resetButton = el('pressure-drop-page-reset');
+    const modelCombobox = createPressureDropSearchableSelect(controls.modelSelect, 'Select model / cannula');
+
+    const refreshModelCombobox = () => {
+      if (modelCombobox) modelCombobox.refresh();
+    };
 
     const populateLookupOptions = (changedLevel = '') => {
       if (changedLevel === 'manufacturer') {
@@ -4245,36 +4419,38 @@ async function initCannulaPressureDropPage() {
         if (controls.sizeSelect) controls.sizeSelect.value = '';
         if (controls.connectionSelect) controls.connectionSelect.value = '';
       } else if (changedLevel === 'model') {
-        if (controls.categorySelect) controls.categorySelect.value = '';
         if (controls.sizeSelect) controls.sizeSelect.value = '';
         if (controls.connectionSelect) controls.connectionSelect.value = '';
       } else if (changedLevel === 'category') {
+        if (controls.modelSelect) controls.modelSelect.value = '';
         if (controls.sizeSelect) controls.sizeSelect.value = '';
         if (controls.connectionSelect) controls.connectionSelect.value = '';
       } else if (changedLevel === 'size') {
         if (controls.connectionSelect) controls.connectionSelect.value = '';
       }
 
-      const selected = getPressureDropLookupSelection(controls);
       setPressureDropSelectOptionPairs(controls.manufacturerSelect, getUniquePressureDropOptionPairs(entries, entry => entry.manufacturer), 'Select manufacturer');
 
-      const modelEntries = getPressureDropLookupMatches(entries, { manufacturer: selected.manufacturer });
-      setPressureDropSelectOptionPairs(controls.modelSelect, getUniquePressureDropOptionPairs(modelEntries, entry => entry.model), 'Select model / cannula');
+      const manufacturerValue = controls.manufacturerSelect?.value || '';
+      const categoryEntries = getPressureDropLookupMatches(entries, { manufacturer: manufacturerValue });
+      setPressureDropSelectOptionPairs(controls.categorySelect, getUniquePressureDropCategoryOptionPairs(categoryEntries), 'Select type');
 
-      const categoryEntries = getPressureDropLookupMatches(entries, { manufacturer: controls.manufacturerSelect?.value || '', model: controls.modelSelect?.value || '' });
-      setPressureDropSelectOptionPairs(controls.categorySelect, getUniquePressureDropOptionPairs(categoryEntries, entry => entry.category, getPressureDropGroupLabel), 'Select type');
+      const categoryValue = controls.categorySelect?.value || '';
+      const modelEntries = getPressureDropLookupMatches(entries, { manufacturer: manufacturerValue, category: categoryValue });
+      setPressureDropSelectOptionPairs(controls.modelSelect, getUniquePressureDropOptionPairs(modelEntries, entry => entry.model), 'Select model / cannula');
+      refreshModelCombobox();
 
       const sizeEntries = getPressureDropLookupMatches(entries, {
-        manufacturer: controls.manufacturerSelect?.value || '',
-        model: controls.modelSelect?.value || '',
-        category: controls.categorySelect?.value || ''
+        manufacturer: manufacturerValue,
+        category: controls.categorySelect?.value || '',
+        model: controls.modelSelect?.value || ''
       });
       setPressureDropSelectOptionPairs(controls.sizeSelect, getUniquePressureDropOptionPairs(sizeEntries, entry => entry.size), 'Select size');
 
       const connectionEntries = getPressureDropLookupMatches(entries, {
         manufacturer: controls.manufacturerSelect?.value || '',
-        model: controls.modelSelect?.value || '',
         category: controls.categorySelect?.value || '',
+        model: controls.modelSelect?.value || '',
         size: controls.sizeSelect?.value || ''
       });
       const connectionOptions = controls.sizeSelect?.value
@@ -4300,7 +4476,7 @@ async function initCannulaPressureDropPage() {
       populateLookupOptions('');
       if (controls.modelSelect) controls.modelSelect.value = entry.model || '';
       populateLookupOptions('');
-      if (controls.categorySelect) controls.categorySelect.value = entry.category || '';
+      if (controls.categorySelect) controls.categorySelect.value = getPressureDropCategoryFilterValue(entry.category);
       populateLookupOptions('');
       if (controls.sizeSelect) controls.sizeSelect.value = entry.size || '';
       populateLookupOptions('');

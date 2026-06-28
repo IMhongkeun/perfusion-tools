@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 const mainJs = fs.readFileSync(path.join(__dirname, '..', 'main.js'), 'utf8');
+const pressureDropData = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'cannula-pressure-drop.json'), 'utf8')).items;
 assert(
   mainJs.includes('const PRESSURE_DROP_EXACT_FLOW_TOLERANCE = 1e-6;'),
   'Pressure-drop exact flow tolerance should be a tiny epsilon so dense adjacent points still interpolate.'
@@ -13,11 +14,64 @@ assert(
   mainJs.includes('drawPressureDropChart(svg, entry.points, hasEstimate ? flowValue : NaN, hasEstimate ? interpolationResult.value : NaN, { curveMode: \'linear\' });'),
   'The active cannula pressure-drop page should render charts with the linear point-to-point path, not fitted/smoothed mode.'
 );
+
+assert(
+  mainJs.includes('function createPressureDropSearchableSelect') &&
+  mainJs.includes("panel.style.maxWidth = 'min(520px, calc(100vw - 32px))';") &&
+  mainJs.includes("panel.style.maxHeight = '320px';") &&
+  mainJs.includes("item.className = `block w-full overflow-hidden text-ellipsis whitespace-nowrap"),
+  'Model/cannula lookup should use a constrained searchable combobox with truncating one-line options.'
+);
+assert(
+  mainJs.includes("selectNode.dispatchEvent(new Event('change', { bubbles: true }))") &&
+  mainJs.includes("['manufacturer', controls.manufacturerSelect]") &&
+  mainJs.includes("['model', controls.modelSelect]") &&
+  mainJs.includes("['category', controls.categorySelect]"),
+  'Searchable model combobox should preserve existing select-driven filtering for model and category/type controls.'
+);
+const pressureDropPageHtml = fs.readFileSync(path.join(__dirname, '..', 'cannula-pressure-drop', 'index.html'), 'utf8');
+assert(
+  pressureDropPageHtml.includes('.pressure-drop-combobox-panel') &&
+  pressureDropPageHtml.includes('width: calc(100vw - 32px) !important;') &&
+  pressureDropPageHtml.includes('text-overflow: ellipsis;') &&
+  pressureDropPageHtml.includes('white-space: nowrap;'),
+  'Pressure-drop combobox CSS should prevent horizontal overflow and truncate long selected/option labels.'
+);
+assert(
+  pressureDropPageHtml.includes('<title>Cannula Pressure Drop Reference &amp; Calculator | Perfusion Tools</title>') &&
+  pressureDropPageHtml.includes('<meta name="description" content="Manufacturer-based cannula pressure drop reference for CPB and ECMO perfusion planning, with pressure-flow curves to support arterial and venous cannula selection." />') &&
+  pressureDropPageHtml.includes('<link rel="canonical" href="https://perfusiontools.com/cannula-pressure-drop/" />'),
+  'Cannula pressure-drop page should expose unique title, description, and exact canonical URL metadata.'
+);
+assert(
+  !/<meta\s+name=["'](?:robots|googlebot)["'][^>]*noindex/i.test(pressureDropPageHtml),
+  'Cannula pressure-drop page should not include robots/googlebot noindex metadata.'
+);
+
 assert(
   mainJs.includes('function buildPressureDropAxisTicks') &&
   mainJs.includes('stroke-opacity="0.10"') &&
   mainJs.includes('formatPressureDropAxisTick'),
   'Pressure-drop chart should include lightweight axis tick/gridline rendering helpers.'
+);
+assert(
+  mainJs.includes('>Flow [L/min]</text>') &&
+  mainJs.includes('>Pressure drop [mmHg]</text>') &&
+  mainJs.includes('transform="rotate(-90 14 ${plotMiddleY.toFixed(1)})"') &&
+  mainJs.includes('text-anchor="end" fill="currentColor" opacity="0.65">Flow [L/min]</text>') &&
+  !mainJs.includes('>Pressure drop (mmHg)</text>') &&
+  mainJs.includes('Target flow: ${targetFlow.toFixed(1)} L/min') &&
+  mainJs.includes('Est. pressure drop: ${estimatedPressureDrop.toFixed(1)} mmHg'),
+  'Pressure-drop chart should use bracketed axis units with a rotated y-axis label while keeping target tooltip text unchanged.'
+);
+assert(
+  mainJs.includes("svg.setAttribute('viewBox', '0 0 420 200');") &&
+  mainJs.includes('const width = 420; const height = 200;'),
+  'Pressure-drop chart SVG viewBox should match the drawing height so the x-axis label is not clipped.'
+);
+assert(
+  mainJs.includes("svg.classList.add('block', 'w-full', 'h-auto'") || mainJs.includes("svg.classList.add('block', 'w-full', 'h-auto',"),
+  'Pressure-drop chart SVG should remain constrained to the container width for narrow viewports.'
 );
 
 const pressureDropExactFlowTolerance = 1e-6;
@@ -95,6 +149,51 @@ function getPressureDropConnectionOptionLabel(value) {
   const [connectionSite = '__not_specified__', connectorSize = '', cannulaOrderCode = ''] = String(value || '').split('||');
   const parts = [connectionSite === '__not_specified__' ? 'Not specified' : connectionSite, connectorSize, cannulaOrderCode].filter(Boolean);
   return parts.join(' — ');
+}
+
+function normalizePressureDropFilterLabel(value) {
+  return String(value || '').trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+function normalizePressureDropKey(value) {
+  return String(value || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, ' ');
+}
+
+function getPressureDropGroupLabel(category) {
+  const normalized = normalizePressureDropKey(category);
+  if (normalized.includes('cardioplegia')) return 'Cardioplegia cannula';
+  if (normalized.includes('vent')) return 'Vent cannula';
+  if (normalized.includes('arterial')) return 'Arterial cannula';
+  if (normalized.includes('venous')) return 'Venous cannula';
+  if (normalized.includes('aortic')) return 'Aortic cannula';
+  return String(category || '').trim().replace(/\s+/g, ' ') || 'Specialty cannula';
+}
+
+function getPressureDropCategoryFilterValue(category) {
+  return normalizePressureDropFilterLabel(getPressureDropGroupLabel(category));
+}
+
+function getUniquePressureDropCategoryOptionPairs(entries) {
+  const optionMap = new Map();
+  entries.forEach(entry => {
+    const label = getPressureDropGroupLabel(entry.category);
+    const key = normalizePressureDropFilterLabel(label);
+    if (!key || optionMap.has(key)) return;
+    optionMap.set(key, { value: key, label });
+  });
+  return Array.from(optionMap.values())
+    .sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true }));
+}
+
+function getPressureDropLookupMatches(entries, filters = {}) {
+  return entries.filter(entry => {
+    if (filters.manufacturer && entry.manufacturer !== filters.manufacturer) return false;
+    if (filters.model && entry.model !== filters.model) return false;
+    if (filters.category && getPressureDropCategoryFilterValue(entry.category) !== filters.category) return false;
+    if (filters.size && entry.size !== filters.size) return false;
+    if (filters.connectionSite && getPressureDropConnectionOptionValue(entry) !== filters.connectionSite) return false;
+    return true;
+  });
 }
 
 function nearlyEqual(actual, expected, tolerance = 1e-9) {
@@ -187,7 +286,81 @@ function run() {
     'Single stage venous — 3/8 inch / 0.95 cm — 69312'
   );
 
-  console.log('All cannula pressure-drop interpolation tests passed.');
+
+  const getingeEntries = pressureDropData.filter(entry => entry.manufacturer === 'Getinge / Maquet');
+  const getingeCategoryOptions = getUniquePressureDropCategoryOptionPairs(getingeEntries);
+  assert.deepStrictEqual(
+    getingeCategoryOptions.map(option => option.label),
+    Array.from(new Set(getingeCategoryOptions.map(option => option.label))),
+    'Getinge / Maquet category/type options should not show duplicate human-readable labels.'
+  );
+  assert(getingeCategoryOptions.some(option => option.label === 'Arterial cannula'), 'Getinge / Maquet should include one arterial category option.');
+  assert(getingeCategoryOptions.some(option => option.label === 'Venous cannula'), 'Getinge / Maquet should include one venous category option.');
+
+
+  const getingeArterialMatches = getPressureDropLookupMatches(pressureDropData, {
+    manufacturer: 'Getinge / Maquet',
+    category: 'arterial cannula',
+    model: 'HLS Arterial Cannula'
+  });
+  const getingeHlsSizeLabels = getingeArterialMatches.map(entry => entry.size).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  assert.deepStrictEqual(
+    getingeHlsSizeLabels,
+    [
+      'PAS 1315 · 13 Fr / 4.3 mm · 15 cm',
+      'PAS 1515 · 15 Fr / 5.0 mm · 15 cm',
+      'PAS 1715 · 17 Fr / 5.7 mm · 15 cm',
+      'PAS 1915 · 19 Fr / 6.3 mm · 15 cm',
+      'PAS 2115 · 21 Fr / 7.0 mm · 15 cm',
+      'PAS 2315 · 23 Fr / 7.7 mm · 15 cm'
+    ],
+    'Getinge / Maquet HLS arterial cannula lookup should group PAS 1315 with the other HLS arterial PAS sizes.'
+  );
+  const getingeArterialModelOptions = Array.from(new Set(getingeArterialMatches.map(entry => entry.model)));
+  assert.deepStrictEqual(getingeArterialModelOptions, ['HLS Arterial Cannula'], 'Getinge / Maquet HLS arterial entries should expose one canonical model option.');
+  const pas1315 = getingeArterialMatches.find(entry => entry.cannulaOrderCode === 'PAS 1315');
+  assert(pas1315, 'PAS 1315 should remain available after canonical model regrouping.');
+  const pas1315Exact = interpolatePressureDrop(pas1315.points, 0.2);
+  assert.strictEqual(pas1315Exact.state, 'exact');
+  assert.strictEqual(pas1315Exact.value, 2.7, 'PAS 1315 should still use its own unchanged pressure-flow curve points.');
+
+  const messyCategoryEntries = [
+    { manufacturer: 'Messy', model: 'Arterial A', category: ' arterial   cannula ', size: '16 Fr' },
+    { manufacturer: 'Messy', model: 'Arterial B', category: 'ARTERIAL CANNULA', size: '18 Fr' },
+    { manufacturer: 'Messy', model: 'Venous A', category: ' venous     cannula ', size: '20 Fr' }
+  ];
+  assert.deepStrictEqual(
+    getUniquePressureDropCategoryOptionPairs(messyCategoryEntries),
+    [
+      { value: 'arterial cannula', label: 'Arterial cannula' },
+      { value: 'venous cannula', label: 'Venous cannula' }
+    ],
+    'Category labels should be deduplicated across whitespace and casing differences.'
+  );
+  assert.deepStrictEqual(
+    getPressureDropLookupMatches(messyCategoryEntries, { manufacturer: 'Messy', category: 'arterial cannula' }).map(entry => entry.model),
+    ['Arterial A', 'Arterial B'],
+    'Selecting a deduplicated category/type option should filter the model list to matching raw categories.'
+  );
+
+  const veryLongModelName = 'Very Long Pediatric Arterial Cannula Model Name With Extra Manufacturer Descriptor That Used To Stretch Native Select Menus';
+  const lookupEntries = [
+    { manufacturer: 'Acme', model: veryLongModelName, category: 'Adult arterial', size: '18 Fr' },
+    { manufacturer: 'Acme', model: 'Short Venous Model', category: 'Adult venous', size: '22 Fr' },
+    { manufacturer: 'Other', model: veryLongModelName, category: 'Adult arterial', size: '20 Fr' }
+  ];
+  assert.deepStrictEqual(
+    getPressureDropLookupMatches(lookupEntries, { manufacturer: 'Acme', model: veryLongModelName }),
+    [lookupEntries[0]],
+    'Selecting a long model label through the combobox should still filter to the same dataset entry.'
+  );
+  assert.deepStrictEqual(
+    getPressureDropLookupMatches(lookupEntries, { manufacturer: 'Acme', category: 'venous cannula' }),
+    [lookupEntries[1]],
+    'Category/type filtering should keep working after the model select UI is wrapped.'
+  );
+
+  console.log('All cannula pressure-drop interpolation and dropdown UX tests passed.');
 }
 
 run();
