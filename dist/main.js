@@ -4697,6 +4697,19 @@ async function initCannulaPressureDropPage() {
       model: compareControls.modelSelect?.value || ''
     });
 
+    const hasCompleteComparisonScope = () => Boolean(
+      compareControls.manufacturerSelect?.value &&
+      compareControls.categorySelect?.value &&
+      compareControls.modelSelect?.value
+    );
+
+    const canAddComparisonSize = () => (
+      selectedComparisonKeys.length < 4 &&
+      Number.isFinite(parsePressureDropFlowInput(compareControls.flowInput?.value || '')) &&
+      hasCompleteComparisonScope() &&
+      Boolean(compareControls.sizeSelect?.value)
+    );
+
     const renderCompare = () => {
       if (!compareControls.results) return;
       const flowValue = parsePressureDropFlowInput(compareControls.flowInput?.value || '');
@@ -4726,7 +4739,7 @@ async function initCannulaPressureDropPage() {
         }));
       }
       if (compareControls.addButton) {
-        compareControls.addButton.disabled = selectedComparisonKeys.length >= 4 || !compareControls.sizeSelect?.value;
+        compareControls.addButton.disabled = !canAddComparisonSize();
         compareControls.addButton.textContent = selectedComparisonKeys.length >= 4 ? 'Maximum 4 selected' : 'Add size';
       }
     };
@@ -4745,24 +4758,28 @@ async function initCannulaPressureDropPage() {
 
       setPressureDropSelectOptionPairs(compareControls.manufacturerSelect, getUniquePressureDropOptionPairs(entries, entry => entry.manufacturer), 'Select manufacturer');
       const manufacturerValue = compareControls.manufacturerSelect?.value || '';
-      const categoryEntries = getPressureDropLookupMatches(entries, { manufacturer: manufacturerValue });
-      setPressureDropSelectOptionPairs(compareControls.categorySelect, getUniquePressureDropCategoryOptionPairs(categoryEntries), 'Select type');
+      const categoryEntries = manufacturerValue ? getPressureDropLookupMatches(entries, { manufacturer: manufacturerValue }) : [];
+      setPressureDropSelectOptionPairs(compareControls.categorySelect, getUniquePressureDropCategoryOptionPairs(categoryEntries), manufacturerValue ? 'Select type' : 'Select manufacturer first');
       const categoryValue = compareControls.categorySelect?.value || '';
-      const modelEntries = getPressureDropLookupMatches(entries, { manufacturer: manufacturerValue, category: categoryValue });
-      setPressureDropSelectOptionPairs(compareControls.modelSelect, getUniquePressureDropOptionPairs(modelEntries, entry => entry.model), 'Select model / family');
-      const scopeEntries = getComparisonScopeEntries();
+      const modelEntries = manufacturerValue && categoryValue ? getPressureDropLookupMatches(entries, { manufacturer: manufacturerValue, category: categoryValue }) : [];
+      setPressureDropSelectOptionPairs(compareControls.modelSelect, getUniquePressureDropOptionPairs(modelEntries, entry => entry.model), categoryValue ? 'Select model / family' : 'Select type first');
+      const scopeComplete = hasCompleteComparisonScope();
+      const scopeEntries = scopeComplete ? getComparisonScopeEntries() : [];
       const selectedSet = new Set(selectedComparisonKeys);
+      const availableSizeOptions = scopeEntries
+        .filter(entry => !selectedSet.has(getPressureDropComparisonKey(entry)))
+        .map(entry => ({ value: getPressureDropComparisonKey(entry), label: getPressureDropComparisonSizeLabel(entry) }))
+        .sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true }));
       setPressureDropSelectOptionPairs(
         compareControls.sizeSelect,
-        scopeEntries
-          .filter(entry => !selectedSet.has(getPressureDropComparisonKey(entry)))
-          .map(entry => ({ value: getPressureDropComparisonKey(entry), label: getPressureDropComparisonSizeLabel(entry) }))
-          .sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true })),
-        'Select size to add'
+        availableSizeOptions,
+        scopeComplete ? (availableSizeOptions.length ? 'Select size to add' : 'No sizes available for this selection') : 'Select manufacturer, type, and model first'
       );
-      const validScopeKeys = new Set(scopeEntries.map(getPressureDropComparisonKey));
-      selectedComparisonKeys = selectedComparisonKeys.filter(key => validScopeKeys.has(key));
-      if (compareControls.addButton) compareControls.addButton.disabled = selectedComparisonKeys.length >= 4 || !compareControls.sizeSelect?.value;
+      if (scopeComplete) {
+        const validScopeKeys = new Set(scopeEntries.map(getPressureDropComparisonKey));
+        selectedComparisonKeys = selectedComparisonKeys.filter(key => validScopeKeys.has(key));
+      }
+      if (compareControls.addButton) compareControls.addButton.disabled = !canAddComparisonSize();
     };
 
     const setPressureDropView = (view) => {
@@ -4813,7 +4830,7 @@ async function initCannulaPressureDropPage() {
     if (compareControls.flowInput) compareControls.flowInput.addEventListener('input', renderCompare);
     if (compareControls.addButton) compareControls.addButton.addEventListener('click', () => {
       const key = compareControls.sizeSelect?.value || '';
-      if (!key || selectedComparisonKeys.includes(key) || selectedComparisonKeys.length >= 4) return;
+      if (!canAddComparisonSize() || selectedComparisonKeys.includes(key)) return;
       selectedComparisonKeys.push(key);
       if (compareControls.sizeSelect) compareControls.sizeSelect.value = '';
       populateCompareOptions('');

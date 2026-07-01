@@ -101,6 +101,20 @@ assert(
   'Comparison mode should prevent duplicates, cap selection at four cannulas, and clear selections that no longer match the same-family scope.'
 );
 assert(
+  mainJs.includes('const hasCompleteComparisonScope = () => Boolean(') &&
+  mainJs.includes("manufacturerValue ? 'Select type' : 'Select manufacturer first'") &&
+  mainJs.includes("categoryValue ? 'Select model / family' : 'Select type first'") &&
+  mainJs.includes("scopeComplete ? (availableSizeOptions.length ? 'Select size to add' : 'No sizes available for this selection') : 'Select manufacturer, type, and model first'"),
+  'Compare size options should stay disabled/placeholder-only until manufacturer, category/type, and model/family are selected.'
+);
+assert(
+  mainJs.includes('const canAddComparisonSize = () => (') &&
+  mainJs.includes("Number.isFinite(parsePressureDropFlowInput(compareControls.flowInput?.value || ''))") &&
+  mainJs.includes('compareControls.addButton.disabled = !canAddComparisonSize()') &&
+  mainJs.includes('if (!canAddComparisonSize() || selectedComparisonKeys.includes(key)) return;'),
+  'Compare Add size button should require valid flow, complete scope, selected size, non-duplicate key, and the max-count limit.'
+);
+assert(
   mainJs.includes('Out of source range') &&
   mainJs.includes('No extrapolation is shown') &&
   mainJs.includes('High pressure drop warning (>100 mmHg).'),
