@@ -4570,6 +4570,8 @@ async function initCannulaPressureDropPage() {
       modelSelect: el('pressure-drop-compare-model'),
       sizeSelect: el('pressure-drop-compare-size'),
       addButton: el('pressure-drop-compare-add'),
+      clearButton: el('pressure-drop-compare-clear'),
+      scopeLock: el('pressure-drop-compare-scope-lock'),
       results: el('pressure-drop-compare-results')
     };
     let activePressureDropView = 'single';
@@ -4691,17 +4693,20 @@ async function initCannulaPressureDropPage() {
       if (focusResultFlow) requestAnimationFrame(focusResultFlowInput);
     };
 
-    const getComparisonScopeEntries = () => getPressureDropLookupMatches(entries, {
-      manufacturer: compareControls.manufacturerSelect?.value || '',
-      category: compareControls.categorySelect?.value || '',
-      model: compareControls.modelSelect?.value || ''
-    });
-
     const hasCompleteComparisonScope = () => Boolean(
       compareControls.manufacturerSelect?.value &&
       compareControls.categorySelect?.value &&
       compareControls.modelSelect?.value
     );
+
+    const getComparisonScopeEntries = () => {
+      if (!hasCompleteComparisonScope()) return [];
+      return getPressureDropLookupMatches(entries, {
+        manufacturer: compareControls.manufacturerSelect.value,
+        category: compareControls.categorySelect.value,
+        model: compareControls.modelSelect.value
+      });
+    };
 
     const canAddComparisonSize = () => (
       selectedComparisonKeys.length < 4 &&
@@ -4745,6 +4750,7 @@ async function initCannulaPressureDropPage() {
     };
 
     const populateCompareOptions = (changedLevel = '') => {
+      let hasSelectedComparisonItems = selectedComparisonKeys.length > 0;
       if (changedLevel === 'manufacturer') {
         if (compareControls.categorySelect) compareControls.categorySelect.value = '';
         if (compareControls.modelSelect) compareControls.modelSelect.value = '';
@@ -4779,6 +4785,11 @@ async function initCannulaPressureDropPage() {
         const validScopeKeys = new Set(scopeEntries.map(getPressureDropComparisonKey));
         selectedComparisonKeys = selectedComparisonKeys.filter(key => validScopeKeys.has(key));
       }
+      hasSelectedComparisonItems = selectedComparisonKeys.length > 0;
+      if (compareControls.manufacturerSelect) compareControls.manufacturerSelect.disabled = hasSelectedComparisonItems;
+      if (compareControls.categorySelect) compareControls.categorySelect.disabled = hasSelectedComparisonItems || !manufacturerValue;
+      if (compareControls.modelSelect) compareControls.modelSelect.disabled = hasSelectedComparisonItems || !categoryValue;
+      if (compareControls.scopeLock) compareControls.scopeLock.classList.toggle('hidden', !hasSelectedComparisonItems);
       if (compareControls.addButton) compareControls.addButton.disabled = !canAddComparisonSize();
     };
 
@@ -4836,6 +4847,13 @@ async function initCannulaPressureDropPage() {
       populateCompareOptions('');
       renderCompare();
       status.textContent = `${selectedComparisonKeys.length} selected for size comparison`;
+    });
+    if (compareControls.clearButton) compareControls.clearButton.addEventListener('click', () => {
+      selectedComparisonKeys = [];
+      if (compareControls.sizeSelect) compareControls.sizeSelect.value = '';
+      populateCompareOptions('');
+      renderCompare();
+      status.textContent = '0 selected for size comparison';
     });
     compareControls.singleTab?.addEventListener('click', () => setPressureDropView('single'));
     compareControls.compareTab?.addEventListener('click', () => setPressureDropView('compare'));

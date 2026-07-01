@@ -166,10 +166,12 @@ assert(
 );
 assert(
   mainJs.includes('const hasCompleteComparisonScope = () => Boolean(') &&
+  mainJs.includes('if (!hasCompleteComparisonScope()) return [];') &&
+  mainJs.includes('manufacturer: compareControls.manufacturerSelect.value') &&
   mainJs.includes("manufacturerValue ? 'Select type' : 'Select manufacturer first'") &&
   mainJs.includes("categoryValue ? 'Select model / family' : 'Select type first'") &&
   mainJs.includes("scopeComplete ? (availableSizeOptions.length ? 'Select size to add' : 'No sizes available for this selection') : 'Select manufacturer, type, and model first'"),
-  'Compare size options should stay disabled/placeholder-only until manufacturer, category/type, and model/family are selected.'
+  'Compare scope entries and size options should stay empty/placeholder-only until manufacturer, category/type, and model/family are selected.'
 );
 assert(
   mainJs.includes('const canAddComparisonSize = () => (') &&
@@ -177,6 +179,16 @@ assert(
   mainJs.includes('compareControls.addButton.disabled = !canAddComparisonSize()') &&
   mainJs.includes('if (!canAddComparisonSize() || selectedComparisonKeys.includes(key)) return;'),
   'Compare Add size button should require valid flow, complete scope, selected size, non-duplicate key, and the max-count limit.'
+);
+assert(
+  pressureDropPageHtml.includes('id="pressure-drop-compare-scope-lock"') &&
+  pressureDropPageHtml.includes('Clear selected sizes to change comparison scope.') &&
+  pressureDropPageHtml.includes('id="pressure-drop-compare-clear"') &&
+  mainJs.includes('compareControls.manufacturerSelect.disabled = hasSelectedComparisonItems') &&
+  mainJs.includes('compareControls.categorySelect.disabled = hasSelectedComparisonItems || !manufacturerValue') &&
+  mainJs.includes('compareControls.modelSelect.disabled = hasSelectedComparisonItems || !categoryValue') &&
+  mainJs.includes('selectedComparisonKeys = [];'),
+  'Compare mode should lock parent scope controls while selected sizes exist and provide a clear comparison control.'
 );
 assert(
   mainJs.includes('Out of source range') &&
