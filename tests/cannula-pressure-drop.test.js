@@ -114,6 +114,18 @@ assert(
   pressureDropPageHtml.includes('href="/bsa/"'),
   'Cannula pressure-drop related tools should link to Quick Reference, Unit Converter, and BSA Calculator.'
 );
+
+const medtronicCatalogUrl = 'https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf';
+const medtronicEntries = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic');
+assert(medtronicEntries.length > 0, 'Medtronic pressure-drop entries should remain available.');
+assert(
+  medtronicEntries.every(entry => entry.sourceUrl === medtronicCatalogUrl),
+  'Every Medtronic pressure-drop entry should link to the public Medtronic Cannula Catalog PDF because individual cannula PDF links are unavailable.'
+);
+assert(
+  medtronicEntries.every(entry => entry.sourceUrl !== 'Uploaded Medtronic Cannula Catalog 2020' && entry.sourceUrl !== ''),
+  'Medtronic source URLs should not use upload placeholders or blank links.'
+);
 assert(
   !/<meta\s+name=["'](?:robots|googlebot)["'][^>]*noindex/i.test(pressureDropPageHtml),
   'Cannula pressure-drop page should not include robots/googlebot noindex metadata.'
