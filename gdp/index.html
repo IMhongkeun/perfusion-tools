@@ -82,6 +82,19 @@
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
     .dark ::-webkit-scrollbar-thumb { background: #334155; }
 
+    .gdp-temp-tile {
+      min-height: 4.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.25rem;
+      border-radius: 0.5rem;
+      background: #f8fafc;
+      padding: 0.5rem 0.625rem;
+    }
+    .dark .gdp-temp-tile {
+      background: rgba(36, 59, 83, 0.7);
+    }
 
     /* Shared expanded lower-section pattern for methodology, FAQ, references, and related tools */
     .calculator-lower-section {
@@ -490,16 +503,16 @@
                   <p class="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">Fixed Q10 = 2.2 hypothermic CPB reference.</p>
                 </div>
 
-                <div class="grid grid-cols-1 min-[420px]:grid-cols-3 gap-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/40 p-2.5 min-w-0 lg:min-w-[420px] items-start">
-                  <label class="space-y-1 min-w-0">
+                <div class="grid grid-cols-1 min-[420px]:grid-cols-3 gap-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/40 p-2.5 min-w-0 lg:min-w-[420px] items-stretch">
+                  <label class="gdp-temp-tile min-w-0">
                     <span class="text-[10px] uppercase tracking-wide text-slate-500 dark:text-slate-400">Temperature (°C)</span>
-                    <input id="gdp-temp-c" type="number" inputmode="decimal" min="20" max="37" step="0.5" value="37" class="w-full h-9 bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-lg px-2.5 py-1.5 text-sm font-semibold text-primary-900 dark:text-white focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all" aria-label="Patient temperature in degrees Celsius" />
+                    <input id="gdp-temp-c" type="number" inputmode="decimal" min="20" max="37" step="0.5" value="37" class="w-full h-8 bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-700 rounded-lg px-2.5 py-1 text-sm font-semibold text-primary-900 dark:text-white focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all" aria-label="Patient temperature in degrees Celsius" />
                   </label>
-                  <div class="rounded-lg bg-slate-50 dark:bg-primary-800/70 px-2.5 py-1.5">
+                  <div class="gdp-temp-tile">
                     <div id="gdp-temp-display" class="text-sm font-bold text-primary-900 dark:text-white">37.0°C</div>
                     <div class="text-[10px] uppercase tracking-wide text-slate-500 dark:text-slate-400">selected temp</div>
                   </div>
-                  <div class="rounded-lg bg-slate-50 dark:bg-primary-800/70 px-2.5 py-1.5">
+                  <div class="gdp-temp-tile">
                     <div id="gdp-vo2-fraction" class="text-sm font-bold text-emerald-600 dark:text-emerald-300">100%</div>
                     <div class="text-[10px] uppercase tracking-wide text-slate-500 dark:text-slate-400">VO₂ fraction</div>
                   </div>
