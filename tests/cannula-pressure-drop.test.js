@@ -84,6 +84,31 @@ assert(
   'Cannula pressure-drop lower content should distinguish cannula pressure drop from total CPB arterial line pressure and list circuit/patient factors.'
 );
 assert(
+  pressureDropPageHtml.includes('Practical pressure monitoring during CPB and ECMO') &&
+  pressureDropPageHtml.includes('Arterial pressure monitoring') &&
+  pressureDropPageHtml.includes('Arterial cannula pressure test after cannulation') &&
+  pressureDropPageHtml.includes('A sudden rise in arterial line pressure with reduced systemic pressure') &&
+  pressureDropPageHtml.includes('arterial filter pressure gradient') &&
+  pressureDropPageHtml.includes('oxygenator pressure gradient'),
+  'Cannula pressure-drop page should include practical arterial pressure monitoring and arterial cannula pressure-test guidance.'
+);
+assert(
+  pressureDropPageHtml.includes('Venous pressure and drainage monitoring') &&
+  pressureDropPageHtml.includes('reservoir level, venous line chatter') &&
+  pressureDropPageHtml.includes('patient CVP') &&
+  pressureDropPageHtml.includes('VAVD setting') &&
+  pressureDropPageHtml.includes('Very negative venous line pressure'),
+  'Cannula pressure-drop page should include practical venous drainage and pressure monitoring guidance.'
+);
+assert(
+  pressureDropPageHtml.includes('VAVD precautions') &&
+  pressureDropPageHtml.includes('Monitor reservoir pressure when VAVD is used') &&
+  pressureDropPageHtml.includes('avoid excessive negative pressure') &&
+  pressureDropPageHtml.includes('How should VAVD pressure be monitored?') &&
+  pressureDropPageHtml.includes('How should venous pressure-drop data be used?'),
+  'Cannula pressure-drop page should include VAVD precautions and matching FAQ content.'
+);
+assert(
   pressureDropPageHtml.includes('href="/quick-reference/"') &&
   pressureDropPageHtml.includes('href="/unit-converter/"') &&
   pressureDropPageHtml.includes('href="/bsa/"'),
