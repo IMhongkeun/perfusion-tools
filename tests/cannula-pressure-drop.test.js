@@ -112,6 +112,20 @@ assert(
   mainJs.includes('createPressureDropComparisonCards'),
   'Comparison mode should render a desktop table and mobile card stack rather than a wide mobile table.'
 );
+assert(
+  mainJs.includes('selectedEntries.length === 0') &&
+  mainJs.includes('Add at least one size to compare.') &&
+  mainJs.includes('selectedEntries.length === 1') &&
+  mainJs.includes('Add one more size to compare.') &&
+  !mainJs.includes('Add at least two sizes to compare.'),
+  'Comparison mode should show an empty state only for zero selections and render the table/card after one selected size.'
+);
+assert(
+  mainJs.includes("removeButton.textContent = '×'") &&
+  mainJs.includes("Remove ${getPressureDropComparisonSizeLabel(entry)} from comparison") &&
+  !mainJs.includes("removeButton.textContent = 'Remove'"),
+  'Comparison remove controls should use compact accessible X buttons rather than large red text links.'
+);
 
 const pressureDropExactFlowTolerance = 1e-6;
 

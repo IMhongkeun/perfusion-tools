@@ -4440,20 +4440,24 @@ function createPressureDropComparisonTable(selectedEntries, flowValue, onRemove)
     th.className = 'min-w-44 p-3 text-left align-top';
     const removeButton = document.createElement('button');
     removeButton.type = 'button';
-    removeButton.className = 'mt-2 text-xs font-semibold text-rose-600 dark:text-rose-300 hover:underline';
-    removeButton.textContent = 'Remove';
+    removeButton.className = 'ml-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 dark:border-primary-700 text-base leading-none text-slate-500 dark:text-slate-300 hover:border-rose-300 hover:text-rose-600 dark:hover:border-rose-500/60 dark:hover:text-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500';
+    removeButton.textContent = '×';
+    removeButton.setAttribute('aria-label', `Remove ${getPressureDropComparisonSizeLabel(entry)} from comparison`);
     removeButton.addEventListener('click', () => onRemove(getPressureDropComparisonKey(entry)));
+    const headerTop = document.createElement('div');
+    headerTop.className = 'flex items-start justify-between gap-2';
     const label = document.createElement('div');
-    label.className = 'font-semibold text-primary-900 dark:text-white';
+    label.className = 'min-w-0 font-semibold text-primary-900 dark:text-white';
     label.textContent = getPressureDropComparisonSizeLabel(entry);
+    headerTop.append(label, removeButton);
     const secondaryLabel = getPressureDropComparisonSecondaryLabel(entry);
     if (secondaryLabel) {
       const secondary = document.createElement('div');
       secondary.className = 'mt-1 text-xs font-normal text-slate-500 dark:text-slate-400';
       secondary.textContent = secondaryLabel;
-      th.append(label, secondary, removeButton);
+      th.append(headerTop, secondary);
     } else {
-      th.append(label, removeButton);
+      th.append(headerTop);
     }
     headRow.appendChild(th);
   });
@@ -4518,8 +4522,9 @@ function createPressureDropComparisonCards(selectedEntries, flowValue, onRemove)
     }
     const removeButton = document.createElement('button');
     removeButton.type = 'button';
-    removeButton.className = 'text-xs font-semibold text-rose-600 dark:text-rose-300';
-    removeButton.textContent = 'Remove';
+    removeButton.className = 'inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-slate-200 dark:border-primary-700 text-lg leading-none text-slate-500 dark:text-slate-300 hover:border-rose-300 hover:text-rose-600 dark:hover:border-rose-500/60 dark:hover:text-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500';
+    removeButton.textContent = '×';
+    removeButton.setAttribute('aria-label', `Remove ${getPressureDropComparisonSizeLabel(entry)} from comparison`);
     removeButton.addEventListener('click', () => onRemove(getPressureDropComparisonKey(entry)));
     header.append(title, removeButton);
     const value = document.createElement('div');
@@ -4720,12 +4725,18 @@ async function initCannulaPressureDropPage() {
       const flowValue = parsePressureDropFlowInput(compareControls.flowInput?.value || '');
       const selectedEntries = entries.filter(entry => selectedComparisonKeys.includes(getPressureDropComparisonKey(entry)));
       compareControls.results.innerHTML = '';
-      if (selectedEntries.length < 2) {
+      if (selectedEntries.length === 0) {
         const emptyState = document.createElement('div');
         emptyState.className = 'rounded-xl border border-dashed border-slate-300 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/40 p-5 text-sm text-slate-600 dark:text-slate-300';
-        emptyState.innerHTML = '<h3 class="text-base font-semibold text-primary-900 dark:text-white">Add at least two sizes to compare.</h3><p class="mt-2">Choose a manufacturer, category/type, and model family, then add 2–4 sizes from that same family.</p>';
+        emptyState.innerHTML = '<h3 class="text-base font-semibold text-primary-900 dark:text-white">Add at least one size to compare.</h3><p class="mt-2">Choose a manufacturer, category/type, and model family, then add a size from that same family.</p>';
         compareControls.results.appendChild(emptyState);
       } else {
+        if (selectedEntries.length === 1) {
+          const helper = document.createElement('p');
+          helper.className = 'rounded-lg border border-accent-500/20 bg-accent-500/10 dark:bg-accent-500/15 px-3 py-2 text-xs font-medium text-accent-700 dark:text-accent-300';
+          helper.textContent = 'Add one more size to compare.';
+          compareControls.results.appendChild(helper);
+        }
         compareControls.results.appendChild(createPressureDropComparisonTable(selectedEntries, flowValue, removeKey => {
           selectedComparisonKeys = selectedComparisonKeys.filter(key => key !== removeKey);
           populateCompareOptions('');
