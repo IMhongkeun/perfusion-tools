@@ -44,6 +44,89 @@ assert(
   'Cannula pressure-drop page should expose unique title, description, and exact canonical URL metadata.'
 );
 assert(
+  pressureDropPageHtml.includes('id="pressure-drop-single-tab"') &&
+  pressureDropPageHtml.includes('id="pressure-drop-compare-tab"') &&
+  pressureDropPageHtml.includes('id="pressure-drop-compare-flow"') &&
+  pressureDropPageHtml.includes('id="pressure-drop-compare-results"'),
+  'Cannula pressure-drop page should add a separate tabbed Compare sizes view while keeping the single lookup markup present.'
+);
+assert(
+  pressureDropPageHtml.includes('manufacturer-published pressure-flow data') &&
+  pressureDropPageHtml.includes('linear interpolation between adjacent source points') &&
+  pressureDropPageHtml.includes('Compare sizes view applies one shared target flow'),
+  'Cannula pressure-drop methodology should explain manufacturer source data, linear interpolation, and shared-flow Compare sizes behavior.'
+);
+assert(
+  pressureDropPageHtml.includes('blood viscosity, hematocrit, temperature, cannula position') &&
+  pressureDropPageHtml.includes('connector size, tubing configuration') &&
+  pressureDropPageHtml.includes('not extrapolated unless explicitly supported by the source') &&
+  pressureDropPageHtml.includes('limited to the currently included manufacturer datasets'),
+  'Cannula pressure-drop limitations should describe clinical factors, source-range limits, and dataset coverage limits.'
+);
+assert(
+  pressureDropPageHtml.includes('What is cannula pressure drop?') &&
+  pressureDropPageHtml.includes('Can I compare cannula sizes at the same flow?') &&
+  pressureDropPageHtml.includes('Can this tool choose the best cannula for CPB or ECMO?'),
+  'Cannula pressure-drop page should include compact FAQ/AEO content for key user questions.'
+);
+assert(
+  pressureDropPageHtml.includes('Getinge / Maquet HLS cannula entries are commonly interpreted in an ECMO context') &&
+  pressureDropPageHtml.includes('intended ECMO configuration') &&
+  pressureDropPageHtml.includes('Are HLS cannulas used for ECMO?'),
+  'Cannula pressure-drop lower content should describe HLS cannula interpretation in an ECMO context without making a product recommendation.'
+);
+assert(
+  pressureDropPageHtml.includes('measured arterial line pressure is not determined by cannula pressure drop alone') &&
+  pressureDropPageHtml.includes('oxygenator pressure gradient') &&
+  pressureDropPageHtml.includes('arterial filter pressure gradient') &&
+  pressureDropPageHtml.includes('patient MAP/afterload') &&
+  pressureDropPageHtml.includes('Is cannula pressure drop the same as CPB arterial line pressure?'),
+  'Cannula pressure-drop lower content should distinguish cannula pressure drop from total CPB arterial line pressure and list circuit/patient factors.'
+);
+assert(
+  pressureDropPageHtml.includes('Practical pressure monitoring during CPB and ECMO') &&
+  pressureDropPageHtml.includes('Arterial pressure monitoring') &&
+  pressureDropPageHtml.includes('Arterial cannula pressure test after cannulation') &&
+  pressureDropPageHtml.includes('A sudden rise in arterial line pressure with reduced systemic pressure') &&
+  pressureDropPageHtml.includes('arterial filter pressure gradient') &&
+  pressureDropPageHtml.includes('oxygenator pressure gradient'),
+  'Cannula pressure-drop page should include practical arterial pressure monitoring and arterial cannula pressure-test guidance.'
+);
+assert(
+  pressureDropPageHtml.includes('Venous pressure and drainage monitoring') &&
+  pressureDropPageHtml.includes('reservoir level, venous line chatter') &&
+  pressureDropPageHtml.includes('patient CVP') &&
+  pressureDropPageHtml.includes('VAVD setting') &&
+  pressureDropPageHtml.includes('Very negative venous line pressure'),
+  'Cannula pressure-drop page should include practical venous drainage and pressure monitoring guidance.'
+);
+assert(
+  pressureDropPageHtml.includes('VAVD precautions') &&
+  pressureDropPageHtml.includes('Monitor reservoir pressure when VAVD is used') &&
+  pressureDropPageHtml.includes('avoid excessive negative pressure') &&
+  pressureDropPageHtml.includes('How should VAVD pressure be monitored?') &&
+  pressureDropPageHtml.includes('How should venous pressure-drop data be used?'),
+  'Cannula pressure-drop page should include VAVD precautions and matching FAQ content.'
+);
+assert(
+  pressureDropPageHtml.includes('href="/quick-reference/"') &&
+  pressureDropPageHtml.includes('href="/unit-converter/"') &&
+  pressureDropPageHtml.includes('href="/bsa/"'),
+  'Cannula pressure-drop related tools should link to Quick Reference, Unit Converter, and BSA Calculator.'
+);
+
+const medtronicCatalogUrl = 'https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf';
+const medtronicEntries = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic');
+assert(medtronicEntries.length > 0, 'Medtronic pressure-drop entries should remain available.');
+assert(
+  medtronicEntries.every(entry => entry.sourceUrl === medtronicCatalogUrl),
+  'Every Medtronic pressure-drop entry should link to the public Medtronic Cannula Catalog PDF because individual cannula PDF links are unavailable.'
+);
+assert(
+  medtronicEntries.every(entry => entry.sourceUrl !== 'Uploaded Medtronic Cannula Catalog 2020' && entry.sourceUrl !== ''),
+  'Medtronic source URLs should not use upload placeholders or blank links.'
+);
+assert(
   !/<meta\s+name=["'](?:robots|googlebot)["'][^>]*noindex/i.test(pressureDropPageHtml),
   'Cannula pressure-drop page should not include robots/googlebot noindex metadata.'
 );
@@ -72,6 +155,81 @@ assert(
 assert(
   mainJs.includes("svg.classList.add('block', 'w-full', 'h-auto'") || mainJs.includes("svg.classList.add('block', 'w-full', 'h-auto',"),
   'Pressure-drop chart SVG should remain constrained to the container width for narrow viewports.'
+);
+assert(
+  mainJs.includes('function getPressureDropComparisonResult') &&
+  mainJs.includes('interpolatePressureDrop(entry.points, flowValue)') &&
+  !mainJs.includes('function interpolatePressureDropComparison'),
+  'Comparison mode should reuse the shared interpolation helper without duplicating calculation logic.'
+);
+assert(
+  mainJs.includes('function getPressureDropComparisonSizeLabel(entry)') &&
+  mainJs.includes('if (entry.size) return entry.size;') &&
+  mainJs.includes('label: getPressureDropComparisonSizeLabel(entry)') &&
+  !mainJs.includes('function getPressureDropComparisonSecondaryLabel(entry)') &&
+  !mainJs.includes('secondaryLabel'),
+  'Comparison dropdown, column headers, cards, and summaries should share one concise primary size-label formatter without secondary header metadata.'
+);
+assert(
+  mainJs.includes('selectedComparisonKeys.length >= 4') &&
+  mainJs.includes('selectedComparisonKeys.includes(key)') &&
+  mainJs.includes('selectedComparisonKeys = selectedComparisonKeys.filter(key => validScopeKeys.has(key))'),
+  'Comparison mode should prevent duplicates, cap selection at four cannulas, and clear selections that no longer match the same-family scope.'
+);
+assert(
+  mainJs.includes('const hasCompleteComparisonScope = () => Boolean(') &&
+  mainJs.includes('if (!hasCompleteComparisonScope()) return [];') &&
+  mainJs.includes('manufacturer: compareControls.manufacturerSelect.value') &&
+  mainJs.includes("manufacturerValue ? 'Select type' : 'Select manufacturer first'") &&
+  mainJs.includes("categoryValue ? 'Select model / family' : 'Select type first'") &&
+  mainJs.includes("scopeComplete ? (availableSizeOptions.length ? 'Select size to add' : 'No sizes available for this selection') : 'Select manufacturer, type, and model first'"),
+  'Compare scope entries and size options should stay empty/placeholder-only until manufacturer, category/type, and model/family are selected.'
+);
+assert(
+  mainJs.includes('const canAddComparisonSize = () => (') &&
+  mainJs.includes("Number.isFinite(parsePressureDropFlowInput(compareControls.flowInput?.value || ''))") &&
+  mainJs.includes('compareControls.addButton.disabled = !canAddComparisonSize()') &&
+  mainJs.includes('if (!canAddComparisonSize() || selectedComparisonKeys.includes(key)) return;'),
+  'Compare Add size button should require valid flow, complete scope, selected size, non-duplicate key, and the max-count limit.'
+);
+assert(
+  pressureDropPageHtml.includes('id="pressure-drop-compare-scope-lock"') &&
+  pressureDropPageHtml.includes('Clear selected sizes to change comparison scope.') &&
+  pressureDropPageHtml.includes('id="pressure-drop-compare-clear"') &&
+  mainJs.includes('compareControls.manufacturerSelect.disabled = hasSelectedComparisonItems') &&
+  mainJs.includes('compareControls.categorySelect.disabled = hasSelectedComparisonItems || !manufacturerValue') &&
+  mainJs.includes('compareControls.modelSelect.disabled = hasSelectedComparisonItems || !categoryValue') &&
+  mainJs.includes('selectedComparisonKeys = [];'),
+  'Compare mode should lock parent scope controls while selected sizes exist and provide a clear comparison control.'
+);
+assert(
+  mainJs.includes('Out of source range') &&
+  mainJs.includes('No extrapolation is shown') &&
+  mainJs.includes('High pressure drop warning (>100 mmHg).') &&
+  mainJs.includes('function shouldApplyPressureDropHighWarning(entry)') &&
+  mainJs.includes("getPressureDropCategoryFilterValue(entry?.category) === 'arterial cannula'"),
+  'Comparison mode should show explicit out-of-source-range labels and gate high pressure status to applicable arterial cannulas.'
+);
+assert(
+  mainJs.includes("wrap.className = 'hidden md:block overflow-x-auto") &&
+  mainJs.includes("stack.className = 'grid gap-3 md:hidden'") &&
+  mainJs.includes('createPressureDropComparisonTable') &&
+  mainJs.includes('createPressureDropComparisonCards'),
+  'Comparison mode should render a desktop table and mobile card stack rather than a wide mobile table.'
+);
+assert(
+  mainJs.includes('selectedEntries.length === 0') &&
+  mainJs.includes('Add at least one size to compare.') &&
+  mainJs.includes('selectedEntries.length === 1') &&
+  mainJs.includes('Add one more size to compare.') &&
+  !mainJs.includes('Add at least two sizes to compare.'),
+  'Comparison mode should show an empty state only for zero selections and render the table/card after one selected size.'
+);
+assert(
+  mainJs.includes("removeButton.textContent = '×'") &&
+  mainJs.includes("Remove ${getPressureDropComparisonSizeLabel(entry)} from comparison") &&
+  !mainJs.includes("removeButton.textContent = 'Remove'"),
+  'Comparison remove controls should use compact accessible X buttons rather than large red text links.'
 );
 
 const pressureDropExactFlowTolerance = 1e-6;
@@ -161,6 +319,7 @@ function normalizePressureDropKey(value) {
 
 function getPressureDropGroupLabel(category) {
   const normalized = normalizePressureDropKey(category);
+  if (normalized.includes('aortic root')) return 'Aortic root / cardioplegia';
   if (normalized.includes('cardioplegia')) return 'Cardioplegia cannula';
   if (normalized.includes('vent')) return 'Vent cannula';
   if (normalized.includes('arterial')) return 'Arterial cannula';
@@ -194,6 +353,47 @@ function getPressureDropLookupMatches(entries, filters = {}) {
     if (filters.connectionSite && getPressureDropConnectionOptionValue(entry) !== filters.connectionSite) return false;
     return true;
   });
+}
+
+function getPressureDropComparisonKey(entry) {
+  return [
+    entry.lookupId,
+    entry.manufacturer,
+    getPressureDropCategoryFilterValue(entry.category),
+    entry.model,
+    getPressureDropSizeOptionValue(entry),
+    getPressureDropConnectionOptionValue(entry)
+  ].filter(Boolean).join('||');
+}
+
+function getPressureDropComparisonSizeLabel(entry) {
+  if (entry.size) return entry.size;
+  return entry.cannulaOrderCode || 'Unknown size';
+}
+
+function shouldApplyPressureDropHighWarning(entry) {
+  const noteText = normalizePressureDropFilterLabel([
+    entry?.notes,
+    entry?.note,
+    entry?.dataNote,
+    entry?.digitizationNote,
+    entry?.sourceNote,
+    entry?.validationNote
+  ].filter(Boolean).join(' '));
+  if (noteText.includes('100 mmhg') && (noteText.includes('not apply') || noteText.includes('do not apply'))) return false;
+  return getPressureDropCategoryFilterValue(entry?.category) === 'arterial cannula';
+}
+
+function getPressureDropComparisonResult(entry, flowValue) {
+  const interpolationResult = interpolatePressureDrop(entry.points, flowValue);
+  if (interpolationResult.state === 'exact' || interpolationResult.state === 'interpolated') {
+    const isHighPressure = shouldApplyPressureDropHighWarning(entry) && interpolationResult.value > 100;
+    return {
+      warningText: isHighPressure ? 'High pressure drop warning (>100 mmHg).' : (interpolationResult.state === 'exact' ? 'Digitized source point.' : 'Linearly interpolated between adjacent source points.'),
+      isHighPressure
+    };
+  }
+  return { warningText: interpolationResult.state, isHighPressure: false };
 }
 
 function nearlyEqual(actual, expected, tolerance = 1e-9) {
@@ -323,6 +523,45 @@ function run() {
   const pas1315Exact = interpolatePressureDrop(pas1315.points, 0.2);
   assert.strictEqual(pas1315Exact.state, 'exact');
   assert.strictEqual(pas1315Exact.value, 2.7, 'PAS 1315 should still use its own unchanged pressure-flow curve points.');
+  assert.strictEqual(
+    getPressureDropComparisonSizeLabel(pas1315),
+    'PAS 1315 · 13 Fr / 4.3 mm · 15 cm',
+    'PAS 1315 comparison primary label should not append family, connector, or duplicate order-code text.'
+  );
+  assert(!mainJs.includes('Arterial HLS cannula · 3/8 inch LL · PAS 1315'), 'PAS 1315-only secondary header text should not be rendered in the comparison UI.');
+  ['PAS 1515', 'PAS 1715', 'PAS 1915', 'PAS 2115', 'PAS 2315'].forEach(orderCode => {
+    const entry = getingeArterialMatches.find(item => item.cannulaOrderCode === orderCode);
+    assert(entry, `${orderCode} should remain available for label regression coverage.`);
+    assert.strictEqual(
+      getPressureDropComparisonSizeLabel(entry),
+      entry.size,
+      `${orderCode} comparison primary label should use the same concise size field formatter as PAS 1315.`
+    );
+  });
+  const pas1715 = getingeArterialMatches.find(entry => entry.cannulaOrderCode === 'PAS 1715');
+  assert.strictEqual(interpolatePressureDrop(pas1715.points, 5).state, 'exact', 'Comparison warning/status should still be able to identify exact digitized source points.');
+  assert.strictEqual(interpolatePressureDrop(pas1715.points, 5.25).state, 'interpolated', 'Comparison warning/status should still be able to distinguish interpolated values.');
+
+  const comparisonEntries = getingeArterialMatches
+    .filter(entry => ['PAS 1915', 'PAS 2115', 'PAS 2315'].includes(entry.cannulaOrderCode))
+    .map((entry, index) => ({ ...entry, lookupId: `test-hls-${index}` }));
+  assert.strictEqual(comparisonEntries.length, 3, 'Same-family comparison should support selecting multiple Getinge / Maquet HLS arterial PAS sizes.');
+  assert.strictEqual(new Set(comparisonEntries.map(entry => entry.manufacturer)).size, 1, 'Comparison entries should share one manufacturer.');
+  assert.strictEqual(new Set(comparisonEntries.map(entry => getPressureDropCategoryFilterValue(entry.category))).size, 1, 'Comparison entries should share one category/type.');
+  assert.strictEqual(new Set(comparisonEntries.map(entry => entry.model)).size, 1, 'Comparison entries should share one model/family.');
+  const comparisonKeys = comparisonEntries.map(getPressureDropComparisonKey);
+  assert.strictEqual(new Set(comparisonKeys).size, comparisonEntries.length, 'Comparison keys should uniquely identify size/code variants and prevent duplicate selections.');
+  const targetFiveResults = comparisonEntries.map(entry => interpolatePressureDrop(entry.points, 5.0));
+  assert(targetFiveResults.every(result => result.state === 'exact' || result.state === 'interpolated'), 'Changing the shared target flow to 5.0 L/min should compute all selected comparison ΔP values.');
+  const targetFourResults = comparisonEntries.map(entry => interpolatePressureDrop(entry.points, 4.0));
+  assert(
+    targetFiveResults.some((result, index) => !nearlyEqual(result.value, targetFourResults[index].value)),
+    'Changing target flow should update comparison ΔP values rather than reusing stale results.'
+  );
+  const outOfRangeComparison = interpolatePressureDrop(comparisonEntries[0].points, 99);
+  assert.strictEqual(outOfRangeComparison.state, 'out_of_range', 'Out-of-range comparison flow should not extrapolate.');
+  assert.strictEqual(outOfRangeComparison.value, null, 'Out-of-range comparison flow should return no pressure-drop value.');
+  assert.strictEqual(comparisonKeys.slice(0, 5).length <= 4, true, 'Comparison UI should limit selections to a maximum of four cannulas.');
 
   const messyCategoryEntries = [
     { manufacturer: 'Messy', model: 'Arterial A', category: ' arterial   cannula ', size: '16 Fr' },
@@ -342,6 +581,73 @@ function run() {
     ['Arterial A', 'Arterial B'],
     'Selecting a deduplicated category/type option should filter the model list to matching raw categories.'
   );
+
+  const livaNovaEntries = pressureDropData.filter(entry => entry.manufacturer === 'LivaNova');
+  const livaNovaRootEntries = livaNovaEntries.filter(entry => /aortic root/i.test(entry.model || ''));
+  assert.strictEqual(livaNovaRootEntries.length, 8, 'LivaNova root-related entries should remain present.');
+  assert(
+    livaNovaRootEntries.every(entry => getPressureDropCategoryFilterValue(entry.category) === 'aortic root / cardioplegia'),
+    'All LivaNova root-related entries should be classified as Aortic root / cardioplegia.'
+  );
+  assert(
+    getPressureDropLookupMatches(livaNovaEntries, { category: 'arterial cannula' }).every(entry => !/aortic root/i.test(entry.model || '')),
+    'LivaNova Aortic Root Cannula and Aortic Root Long Needle entries should not appear under Arterial cannula.'
+  );
+  const livaNovaRootMatches = getPressureDropLookupMatches(livaNovaEntries, { category: 'aortic root / cardioplegia' });
+  assert.deepStrictEqual(
+    Array.from(new Set(livaNovaRootMatches.map(entry => entry.model))).sort(),
+    [
+      'Aortic Root Cannula / without Vent Line',
+      'Aortic Root Cannula with Vent Line',
+      'Aortic Root Cannula without Vent Line',
+      'Aortic Root Long Needle'
+    ].sort(),
+    'The root-specific category should expose the LivaNova root cannula and root long needle models.'
+  );
+  assert(
+    getPressureDropLookupMatches(livaNovaEntries, { category: 'arterial cannula' }).some(entry => entry.model === 'Aortic Arch Cannulae — Curved Tip with Suture Flange, Wire-reinforced Tubing'),
+    'LivaNova Aortic Arch Cannulae should remain classified as Arterial cannula.'
+  );
+  assert(
+    getPressureDropLookupMatches(livaNovaEntries, { category: 'arterial cannula' }).some(entry => entry.model === 'Optiflow Aortic Arch Cannulae — Curved Tip, Wire-reinforced Tubing'),
+    'LivaNova Optiflow Aortic Arch Cannulae should remain classified as Arterial cannula.'
+  );
+  assert(
+    getPressureDropLookupMatches(livaNovaEntries, { category: 'arterial cannula' }).some(entry => entry.model === 'Arterial Femoral Cannulae — Polyurethane tubing with suture ring, with introducer'),
+    'LivaNova Arterial Femoral Cannulae should remain classified as Arterial cannula.'
+  );
+  const rootPressureDropSnapshots = [
+    ['Aortic Root Cannula / without Vent Line', '18Ga', 0.28, 34.6],
+    ['Aortic Root Cannula with Vent Line', '14 Ga / 7 Fr', 0.38, 30],
+    ['Aortic Root Cannula with Vent Line', '12 Ga / 9 Fr', 0.37, 18],
+    ['Aortic Root Cannula without Vent Line', '16 Ga / 5 Fr', 0.29, 36],
+    ['Aortic Root Cannula without Vent Line', '14 Ga / 7 Fr', 0.38, 30],
+    ['Aortic Root Cannula without Vent Line', '12 Ga / 9 Fr', 0.37, 16.5],
+    ['Aortic Root Long Needle', '14 Ga / 7 Fr', 0.36, 30],
+    ['Aortic Root Long Needle', '12 Ga / 9 Fr', 0.38, 24.6]
+  ];
+  rootPressureDropSnapshots.forEach(([model, size, flow, expectedDrop]) => {
+    const entry = livaNovaRootEntries.find(item => item.model === model && item.size === size);
+    assert(entry, `${model} ${size} should remain available after root reclassification.`);
+    const result = interpolatePressureDrop(entry.points, flow);
+    assert.strictEqual(result.state, 'exact', `${model} ${size} should retain the same exact pressure-flow point at ${flow} L/min.`);
+    assert.strictEqual(result.value, expectedDrop, `${model} ${size} pressure-drop data should remain unchanged.`);
+  });
+
+  const livaNovaArterialHighDrop = livaNovaEntries.find(entry => entry.model === 'Arterial Femoral Cannulae — Polyurethane tubing with suture ring, with introducer' && entry.size === '19 Fr');
+  assert(livaNovaArterialHighDrop, 'A LivaNova arterial high-pressure example should remain available.');
+  const arterialHighDropResult = getPressureDropComparisonResult(livaNovaArterialHighDrop, 5.26);
+  assert.strictEqual(arterialHighDropResult.isHighPressure, true, 'Arterial cannula ΔP above 100 mmHg should retain the high-pressure warning.');
+  assert.strictEqual(arterialHighDropResult.warningText, 'High pressure drop warning (>100 mmHg).');
+
+  const livaNovaRapFv = livaNovaEntries.find(entry => entry.model === 'RAP FV Femoral Venous Cannulae' && entry.cannulaOrderCode === '200-100');
+  assert(livaNovaRapFv, 'LivaNova RAP FV F22/22 venous example should remain available.');
+  const rapFvHighDrop = interpolatePressureDrop(livaNovaRapFv.points, 6.29);
+  assert.strictEqual(rapFvHighDrop.value, 129.7, 'RAP FV F22/22 source pressure-drop value should remain unchanged.');
+  const rapFvComparisonResult = getPressureDropComparisonResult(livaNovaRapFv, 6.29);
+  assert.strictEqual(shouldApplyPressureDropHighWarning(livaNovaRapFv), false, 'Venous dataset note should suppress the arterial-only 100 mmHg threshold.');
+  assert.strictEqual(rapFvComparisonResult.isHighPressure, false, 'Venous cannula ΔP above 100 mmHg must not show the arterial high-pressure warning.');
+  assert.strictEqual(rapFvComparisonResult.warningText, 'Digitized source point.', 'Venous high ΔP should keep the normal exact/interpolated status text.');
 
   const veryLongModelName = 'Very Long Pediatric Arterial Cannula Model Name With Extra Manufacturer Descriptor That Used To Stretch Native Select Menus';
   const lookupEntries = [
