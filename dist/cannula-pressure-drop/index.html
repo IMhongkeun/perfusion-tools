@@ -538,6 +538,9 @@
           <div class="calculator-lower-panel space-y-2">
             <p>Pressure drop increases as flow rises. At the same target flow, a higher pressure drop suggests greater resistance through the selected cannula and related connector geometry.</p>
             <p>Comparing nearby sizes, such as 19 Fr versus 21 Fr or 21 Fr versus 23 Fr within the same product family, may help perfusion teams understand relative resistance before CPB or ECMO setup.</p>
+            <p>Getinge / Maquet HLS cannula entries are commonly interpreted in an ECMO context. When comparing HLS cannula sizes, consider the intended ECMO configuration, cannulation site, drainage or return role, expected flow target, and local institutional practice.</p>
+            <p>Cannula pressure drop represents the pressure gradient across the selected cannula or manufacturer-tested cannula segment at a given flow. During CPB, measured arterial line pressure is not determined by cannula pressure drop alone and may reflect perfusion circuit resistance plus patient arterial pressure or afterload.</p>
+            <p>For example, a high arterial line pressure during CPB should not be interpreted as a cannula-size problem automatically. Evaluate the entire arterial pathway, including flow target, MAP/afterload, arterial cannula position, tubing clamps or kinks, connector size, arterial filter or oxygenator pressure gradient, blood temperature, hematocrit, and trends over time.</p>
             <p>Interpret the result as a pressure-flow reference, not as an automatic cannula recommendation. Use it alongside target flow, line pressure, drainage or return performance, hemolysis risk, surgical approach, and institutional practice.</p>
           </div>
         </section>
@@ -546,6 +549,7 @@
           <h2 class="calculator-lower-title">Limitations</h2>
           <div class="calculator-lower-panel space-y-2">
             <p>Manufacturer pressure-flow curves are often generated under controlled bench conditions and may not fully reproduce clinical conditions. Actual pressure drop can vary with blood viscosity, hematocrit, temperature, cannula position, insertion depth, connector size, tubing configuration, kinking or partial obstruction, pulsatility, pump type, and test medium such as water versus blood.</p>
+            <p>This tool estimates cannula pressure drop from source pressure-flow data. It does not calculate total CPB arterial line pressure and does not account for patient MAP/afterload, oxygenator pressure gradient, arterial filter pressure gradient, tubing resistance, connector resistance, temperature, hematocrit, viscosity, cannula malposition, or obstruction.</p>
             <p>Digitized values may include small rounding or measurement errors. Dataset coverage is limited to the currently included manufacturer datasets and may not include every manufacturer, model, size, coating, connector option, or updated product revision.</p>
             <p>Values outside the available manufacturer chart range are not extrapolated unless explicitly supported by the source. Use this tool as a reference alongside patient size, target flow, surgical approach, institutional inventory, pressure trends, and local protocols.</p>
           </div>
@@ -569,6 +573,14 @@
             <div class="calculator-faq-item">
               <p class="calculator-faq-question">What does out of source range mean?</p>
               <p class="calculator-faq-answer">It means the selected target flow is below or above the available manufacturer curve range for that cannula. The tool avoids extrapolating beyond the source data.</p>
+            </div>
+            <div class="calculator-faq-item">
+              <p class="calculator-faq-question">Is cannula pressure drop the same as CPB arterial line pressure?</p>
+              <p class="calculator-faq-answer">No. Cannula pressure drop is only one component of the pressure observed in an arterial circuit. Measured CPB arterial line pressure may also include patient afterload, oxygenator and arterial filter resistance, tubing and connector resistance, blood viscosity, temperature, hematocrit, cannula position, and circuit configuration.</p>
+            </div>
+            <div class="calculator-faq-item">
+              <p class="calculator-faq-question">Are HLS cannulas used for ECMO?</p>
+              <p class="calculator-faq-answer">Getinge / Maquet HLS cannula entries are commonly used in ECMO practice. In this tool, HLS cannula pressure-flow data should be interpreted with the intended ECMO configuration, cannulation role, target flow, and local protocol.</p>
             </div>
             <div class="calculator-faq-item">
               <p class="calculator-faq-question">Can this tool choose the best cannula for CPB or ECMO?</p>

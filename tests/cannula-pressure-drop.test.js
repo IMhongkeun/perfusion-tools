@@ -70,6 +70,20 @@ assert(
   'Cannula pressure-drop page should include compact FAQ/AEO content for key user questions.'
 );
 assert(
+  pressureDropPageHtml.includes('Getinge / Maquet HLS cannula entries are commonly interpreted in an ECMO context') &&
+  pressureDropPageHtml.includes('intended ECMO configuration') &&
+  pressureDropPageHtml.includes('Are HLS cannulas used for ECMO?'),
+  'Cannula pressure-drop lower content should describe HLS cannula interpretation in an ECMO context without making a product recommendation.'
+);
+assert(
+  pressureDropPageHtml.includes('measured arterial line pressure is not determined by cannula pressure drop alone') &&
+  pressureDropPageHtml.includes('oxygenator pressure gradient') &&
+  pressureDropPageHtml.includes('arterial filter pressure gradient') &&
+  pressureDropPageHtml.includes('patient MAP/afterload') &&
+  pressureDropPageHtml.includes('Is cannula pressure drop the same as CPB arterial line pressure?'),
+  'Cannula pressure-drop lower content should distinguish cannula pressure drop from total CPB arterial line pressure and list circuit/patient factors.'
+);
+assert(
   pressureDropPageHtml.includes('href="/quick-reference/"') &&
   pressureDropPageHtml.includes('href="/unit-converter/"') &&
   pressureDropPageHtml.includes('href="/bsa/"'),
