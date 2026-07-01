@@ -193,8 +193,10 @@ assert(
 assert(
   mainJs.includes('Out of source range') &&
   mainJs.includes('No extrapolation is shown') &&
-  mainJs.includes('High pressure drop warning (>100 mmHg).'),
-  'Comparison mode should show explicit out-of-source-range and high pressure status labels.'
+  mainJs.includes('High pressure drop warning (>100 mmHg).') &&
+  mainJs.includes('function shouldApplyPressureDropHighWarning(entry)') &&
+  mainJs.includes("getPressureDropCategoryFilterValue(entry?.category) === 'arterial cannula'"),
+  'Comparison mode should show explicit out-of-source-range labels and gate high pressure status to applicable arterial cannulas.'
 );
 assert(
   mainJs.includes("wrap.className = 'hidden md:block overflow-x-auto") &&
@@ -355,6 +357,31 @@ function getPressureDropComparisonKey(entry) {
 function getPressureDropComparisonSizeLabel(entry) {
   if (entry.size) return entry.size;
   return entry.cannulaOrderCode || 'Unknown size';
+}
+
+function shouldApplyPressureDropHighWarning(entry) {
+  const noteText = normalizePressureDropFilterLabel([
+    entry?.notes,
+    entry?.note,
+    entry?.dataNote,
+    entry?.digitizationNote,
+    entry?.sourceNote,
+    entry?.validationNote
+  ].filter(Boolean).join(' '));
+  if (noteText.includes('100 mmhg') && (noteText.includes('not apply') || noteText.includes('do not apply'))) return false;
+  return getPressureDropCategoryFilterValue(entry?.category) === 'arterial cannula';
+}
+
+function getPressureDropComparisonResult(entry, flowValue) {
+  const interpolationResult = interpolatePressureDrop(entry.points, flowValue);
+  if (interpolationResult.state === 'exact' || interpolationResult.state === 'interpolated') {
+    const isHighPressure = shouldApplyPressureDropHighWarning(entry) && interpolationResult.value > 100;
+    return {
+      warningText: isHighPressure ? 'High pressure drop warning (>100 mmHg).' : (interpolationResult.state === 'exact' ? 'Digitized source point.' : 'Linearly interpolated between adjacent source points.'),
+      isHighPressure
+    };
+  }
+  return { warningText: interpolationResult.state, isHighPressure: false };
 }
 
 function nearlyEqual(actual, expected, tolerance = 1e-9) {
@@ -594,6 +621,21 @@ function run() {
     assert.strictEqual(result.state, 'exact', `${model} ${size} should retain the same exact pressure-flow point at ${flow} L/min.`);
     assert.strictEqual(result.value, expectedDrop, `${model} ${size} pressure-drop data should remain unchanged.`);
   });
+
+  const livaNovaArterialHighDrop = livaNovaEntries.find(entry => entry.model === 'Arterial Femoral Cannulae — Polyurethane tubing with suture ring, with introducer' && entry.size === '19 Fr');
+  assert(livaNovaArterialHighDrop, 'A LivaNova arterial high-pressure example should remain available.');
+  const arterialHighDropResult = getPressureDropComparisonResult(livaNovaArterialHighDrop, 5.26);
+  assert.strictEqual(arterialHighDropResult.isHighPressure, true, 'Arterial cannula ΔP above 100 mmHg should retain the high-pressure warning.');
+  assert.strictEqual(arterialHighDropResult.warningText, 'High pressure drop warning (>100 mmHg).');
+
+  const livaNovaRapFv = livaNovaEntries.find(entry => entry.model === 'RAP FV Femoral Venous Cannulae' && entry.cannulaOrderCode === '200-100');
+  assert(livaNovaRapFv, 'LivaNova RAP FV F22/22 venous example should remain available.');
+  const rapFvHighDrop = interpolatePressureDrop(livaNovaRapFv.points, 6.29);
+  assert.strictEqual(rapFvHighDrop.value, 129.7, 'RAP FV F22/22 source pressure-drop value should remain unchanged.');
+  const rapFvComparisonResult = getPressureDropComparisonResult(livaNovaRapFv, 6.29);
+  assert.strictEqual(shouldApplyPressureDropHighWarning(livaNovaRapFv), false, 'Venous dataset note should suppress the arterial-only 100 mmHg threshold.');
+  assert.strictEqual(rapFvComparisonResult.isHighPressure, false, 'Venous cannula ΔP above 100 mmHg must not show the arterial high-pressure warning.');
+  assert.strictEqual(rapFvComparisonResult.warningText, 'Digitized source point.', 'Venous high ΔP should keep the normal exact/interpolated status text.');
 
   const veryLongModelName = 'Very Long Pediatric Arterial Cannula Model Name With Extra Manufacturer Descriptor That Used To Stretch Native Select Menus';
   const lookupEntries = [

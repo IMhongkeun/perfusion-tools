@@ -4389,6 +4389,19 @@ function getPressureDropComparisonSizeLabel(entry) {
   return entry.cannulaOrderCode || 'Unknown size';
 }
 
+function shouldApplyPressureDropHighWarning(entry) {
+  const noteText = normalizePressureDropFilterLabel([
+    entry?.notes,
+    entry?.note,
+    entry?.dataNote,
+    entry?.digitizationNote,
+    entry?.sourceNote,
+    entry?.validationNote
+  ].filter(Boolean).join(' '));
+  if (noteText.includes('100 mmhg') && (noteText.includes('not apply') || noteText.includes('do not apply'))) return false;
+  return getPressureDropCategoryFilterValue(entry?.category) === 'arterial cannula';
+}
+
 function getPressureDropComparisonResult(entry, flowValue) {
   const validPoints = getValidPressureDropPoints(entry.points);
   const rangeText = getPressureDropRangeText(validPoints, entry.referenceFlowRangeLabel || '');
@@ -4406,7 +4419,7 @@ function getPressureDropComparisonResult(entry, flowValue) {
     };
   }
   if (interpolationResult.state === 'exact' || interpolationResult.state === 'interpolated') {
-    const isHighPressure = interpolationResult.value > 100;
+    const isHighPressure = shouldApplyPressureDropHighWarning(entry) && interpolationResult.value > 100;
     return {
       valueText: `${interpolationResult.value.toFixed(1)} mmHg`,
       warningText: isHighPressure ? 'High pressure drop warning (>100 mmHg).' : (interpolationResult.state === 'exact' ? 'Digitized source point.' : 'Linearly interpolated between adjacent source points.'),
