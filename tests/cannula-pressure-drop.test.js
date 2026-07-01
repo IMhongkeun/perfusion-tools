@@ -89,9 +89,10 @@ assert(
 assert(
   mainJs.includes('function getPressureDropComparisonSizeLabel(entry)') &&
   mainJs.includes('if (entry.size) return entry.size;') &&
-  mainJs.includes('function getPressureDropComparisonSecondaryLabel(entry)') &&
-  mainJs.includes('label: getPressureDropComparisonSizeLabel(entry)'),
-  'Comparison dropdown, column headers, cards, and summaries should share one concise primary size-label formatter with secondary metadata separated.'
+  mainJs.includes('label: getPressureDropComparisonSizeLabel(entry)') &&
+  !mainJs.includes('function getPressureDropComparisonSecondaryLabel(entry)') &&
+  !mainJs.includes('secondaryLabel'),
+  'Comparison dropdown, column headers, cards, and summaries should share one concise primary size-label formatter without secondary header metadata.'
 );
 assert(
   mainJs.includes('selectedComparisonKeys.length >= 4') &&
@@ -266,14 +267,6 @@ function getPressureDropComparisonSizeLabel(entry) {
   return entry.cannulaOrderCode || 'Unknown size';
 }
 
-function getPressureDropComparisonSecondaryLabel(entry) {
-  return [
-    entry.connectionSite,
-    entry.connectorSize,
-    entry.cannulaOrderCode
-  ].filter(Boolean).join(' · ');
-}
-
 function nearlyEqual(actual, expected, tolerance = 1e-9) {
   return Math.abs(actual - expected) <= tolerance;
 }
@@ -406,11 +399,7 @@ function run() {
     'PAS 1315 · 13 Fr / 4.3 mm · 15 cm',
     'PAS 1315 comparison primary label should not append family, connector, or duplicate order-code text.'
   );
-  assert.strictEqual(
-    getPressureDropComparisonSecondaryLabel(pas1315),
-    'Arterial HLS cannula · 3/8 inch LL · PAS 1315',
-    'PAS 1315 connection details should remain available as secondary metadata.'
-  );
+  assert(!mainJs.includes('Arterial HLS cannula · 3/8 inch LL · PAS 1315'), 'PAS 1315-only secondary header text should not be rendered in the comparison UI.');
   ['PAS 1515', 'PAS 1715', 'PAS 1915', 'PAS 2115', 'PAS 2315'].forEach(orderCode => {
     const entry = getingeArterialMatches.find(item => item.cannulaOrderCode === orderCode);
     assert(entry, `${orderCode} should remain available for label regression coverage.`);
@@ -420,6 +409,9 @@ function run() {
       `${orderCode} comparison primary label should use the same concise size field formatter as PAS 1315.`
     );
   });
+  const pas1715 = getingeArterialMatches.find(entry => entry.cannulaOrderCode === 'PAS 1715');
+  assert.strictEqual(interpolatePressureDrop(pas1715.points, 5).state, 'exact', 'Comparison warning/status should still be able to identify exact digitized source points.');
+  assert.strictEqual(interpolatePressureDrop(pas1715.points, 5.25).state, 'interpolated', 'Comparison warning/status should still be able to distinguish interpolated values.');
 
   const comparisonEntries = getingeArterialMatches
     .filter(entry => ['PAS 1915', 'PAS 2115', 'PAS 2315'].includes(entry.cannulaOrderCode))

@@ -4389,14 +4389,6 @@ function getPressureDropComparisonSizeLabel(entry) {
   return entry.cannulaOrderCode || 'Unknown size';
 }
 
-function getPressureDropComparisonSecondaryLabel(entry) {
-  return [
-    entry.connectionSite,
-    entry.connectorSize,
-    entry.cannulaOrderCode
-  ].filter(Boolean).join(' · ');
-}
-
 function getPressureDropComparisonResult(entry, flowValue) {
   const validPoints = getValidPressureDropPoints(entry.points);
   const rangeText = getPressureDropRangeText(validPoints, entry.referenceFlowRangeLabel || '');
@@ -4450,15 +4442,7 @@ function createPressureDropComparisonTable(selectedEntries, flowValue, onRemove)
     label.className = 'min-w-0 font-semibold text-primary-900 dark:text-white';
     label.textContent = getPressureDropComparisonSizeLabel(entry);
     headerTop.append(label, removeButton);
-    const secondaryLabel = getPressureDropComparisonSecondaryLabel(entry);
-    if (secondaryLabel) {
-      const secondary = document.createElement('div');
-      secondary.className = 'mt-1 text-xs font-normal text-slate-500 dark:text-slate-400';
-      secondary.textContent = secondaryLabel;
-      th.append(headerTop, secondary);
-    } else {
-      th.append(headerTop);
-    }
+    th.append(headerTop);
     headRow.appendChild(th);
   });
   head.appendChild(headRow);
@@ -4506,7 +4490,6 @@ function createPressureDropComparisonCards(selectedEntries, flowValue, onRemove)
     const header = document.createElement('div');
     header.className = 'flex items-start justify-between gap-3';
     const title = document.createElement('div');
-    const secondaryLabel = getPressureDropComparisonSecondaryLabel(entry);
     const primaryTitle = document.createElement('h3');
     primaryTitle.className = 'text-sm font-semibold text-primary-900 dark:text-white';
     primaryTitle.textContent = getPressureDropComparisonSizeLabel(entry);
@@ -4514,12 +4497,6 @@ function createPressureDropComparisonCards(selectedEntries, flowValue, onRemove)
     scopeText.className = 'mt-1 text-xs text-slate-500 dark:text-slate-400';
     scopeText.textContent = `${entry.manufacturer || '—'} · ${getPressureDropGroupLabel(entry.category)}`;
     title.append(primaryTitle, scopeText);
-    if (secondaryLabel) {
-      const secondaryText = document.createElement('p');
-      secondaryText.className = 'mt-1 text-xs text-slate-500 dark:text-slate-400';
-      secondaryText.textContent = secondaryLabel;
-      title.appendChild(secondaryText);
-    }
     const removeButton = document.createElement('button');
     removeButton.type = 'button';
     removeButton.className = 'inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-slate-200 dark:border-primary-700 text-lg leading-none text-slate-500 dark:text-slate-300 hover:border-rose-300 hover:text-rose-600 dark:hover:border-rose-500/60 dark:hover:text-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500';
