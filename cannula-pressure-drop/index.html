@@ -526,33 +526,78 @@
         <section class="calculator-lower-section">
           <h2 class="calculator-lower-title">Methodology</h2>
           <div class="calculator-lower-panel space-y-2">
-            <p>Data are based on manufacturer-published pressure-drop tables, charts, or product documents. Some values are derived from a digitized manufacturer curve when only a published graph is available.</p>
-            <p>Digitized points may include small measurement or rounding error. Interpolation between available curve points should be understood as an estimate, and out-of-range extrapolation should be avoided unless explicitly shown by the source material.</p>
+            <p>Pressure-drop estimates are calculated from manufacturer-published pressure-flow data when available, including pressure-flow charts, pressure-drop tables, and product documents for CPB and ECMO cannulae.</p>
+            <p>When a manufacturer provides only a graph, curve points may be manually digitized and stored as source points. The calculator uses linear interpolation between adjacent source points to estimate ΔP at the selected target flow.</p>
+            <p>If the target flow exactly matches a digitized source point, the result can be labeled as a digitized source point. If the target flow falls outside the available chart range, the tool reports out of source range rather than extrapolating beyond the source data.</p>
+            <p>The Compare sizes view applies one shared target flow to each selected cannula size, allowing side-by-side ΔP comparison within the same manufacturer, category/type, and model family.</p>
+          </div>
+        </section>
+
+        <section class="calculator-lower-section">
+          <h2 class="calculator-lower-title">Clinical interpretation</h2>
+          <div class="calculator-lower-panel space-y-2">
+            <p>Pressure drop increases as flow rises. At the same target flow, a higher pressure drop suggests greater resistance through the selected cannula and related connector geometry.</p>
+            <p>Comparing nearby sizes, such as 19 Fr versus 21 Fr or 21 Fr versus 23 Fr within the same product family, may help perfusion teams understand relative resistance before CPB or ECMO setup.</p>
+            <p>Interpret the result as a pressure-flow reference, not as an automatic cannula recommendation. Use it alongside target flow, line pressure, drainage or return performance, hemolysis risk, surgical approach, and institutional practice.</p>
           </div>
         </section>
 
         <section class="calculator-lower-section">
           <h2 class="calculator-lower-title">Limitations</h2>
           <div class="calculator-lower-panel space-y-2">
-            <p>Pressure drop varies with flow rate, blood viscosity, hematocrit, temperature, cannula position, insertion depth, tubing configuration, connector size, and test medium such as water versus blood.</p>
-            <p>Use pressure trends, flow adequacy, drainage or return pressures, hemolysis risk, and patient condition together. Do not use a single pressure-drop estimate as the only basis for cannula selection.</p>
+            <p>Manufacturer pressure-flow curves are often generated under controlled bench conditions and may not fully reproduce clinical conditions. Actual pressure drop can vary with blood viscosity, hematocrit, temperature, cannula position, insertion depth, connector size, tubing configuration, kinking or partial obstruction, pulsatility, pump type, and test medium such as water versus blood.</p>
+            <p>Digitized values may include small rounding or measurement errors. Dataset coverage is limited to the currently included manufacturer datasets and may not include every manufacturer, model, size, coating, connector option, or updated product revision.</p>
+            <p>Values outside the available manufacturer chart range are not extrapolated unless explicitly supported by the source. Use this tool as a reference alongside patient size, target flow, surgical approach, institutional inventory, pressure trends, and local protocols.</p>
+          </div>
+        </section>
+
+        <section class="calculator-lower-section">
+          <h2 class="calculator-lower-title">FAQ</h2>
+          <div class="calculator-lower-panel calculator-faq-list">
+            <div class="calculator-faq-item">
+              <p class="calculator-faq-question">What is cannula pressure drop?</p>
+              <p class="calculator-faq-answer">Cannula pressure drop is the pressure difference associated with flow through a cannula. At a given flow, a higher pressure drop generally reflects higher resistance through the cannula and related connector geometry.</p>
+            </div>
+            <div class="calculator-faq-item">
+              <p class="calculator-faq-question">How does this calculator estimate cannula pressure drop?</p>
+              <p class="calculator-faq-answer">The calculator uses manufacturer pressure-flow data or digitized curve points. It estimates pressure drop at the selected target flow by linear interpolation between adjacent source points.</p>
+            </div>
+            <div class="calculator-faq-item">
+              <p class="calculator-faq-question">Can I compare cannula sizes at the same flow?</p>
+              <p class="calculator-faq-answer">Yes. Compare sizes mode applies one target flow to multiple selected cannula sizes from the same manufacturer, category/type, and model family, then displays each estimated ΔP side by side.</p>
+            </div>
+            <div class="calculator-faq-item">
+              <p class="calculator-faq-question">What does out of source range mean?</p>
+              <p class="calculator-faq-answer">It means the selected target flow is below or above the available manufacturer curve range for that cannula. The tool avoids extrapolating beyond the source data.</p>
+            </div>
+            <div class="calculator-faq-item">
+              <p class="calculator-faq-question">Can this tool choose the best cannula for CPB or ECMO?</p>
+              <p class="calculator-faq-answer">No. The tool provides pressure-flow reference data only. Cannula selection should also consider patient size, target flow, surgical approach, cannulation site, drainage or return pressures, hemolysis risk, institutional inventory, and local protocols.</p>
+            </div>
+            <div class="calculator-faq-item">
+              <p class="calculator-faq-question">Why can two cannulas with the same Fr size have different pressure drops?</p>
+              <p class="calculator-faq-answer">Fr size alone does not fully describe hydraulic resistance. Internal diameter, effective lumen, cannula length, side holes, tip design, connector size, and manufacturer design can all affect pressure drop.</p>
+            </div>
           </div>
         </section>
 
         <section class="calculator-lower-section">
           <h2 class="calculator-lower-title">References / source note</h2>
-          <div class="calculator-lower-panel">
-            <p>Each selected lookup preserves the available manufacturer, model, cannula type, size, flow range, source label, source URL, data status, and digitization note from the pressure-drop dataset. External manufacturer references open in a new tab when a public URL is available.</p>
+          <div class="calculator-lower-panel space-y-2">
+            <p>Each selected lookup preserves the available manufacturer, model family, cannula type, size/code label, flow range, source label, source URL, data status, and digitization note from the pressure-drop dataset.</p>
+            <p>Public manufacturer references open in a new tab when available. Some products may have source labels or internal dataset notes without a public PDF or product page URL.</p>
+            <p>In Compare sizes mode, each column or card retains its own source range and data status because different cannula sizes may come from different curves or digitized source points.</p>
           </div>
         </section>
 
         <section class="calculator-lower-section">
           <h2 class="calculator-lower-title">Related tools</h2>
           <div class="calculator-lower-panel">
-            <p>Use Quick Reference for general CPB/ECMO bedside values, or Unit Converter for flow, pressure, and cannula size conversions.</p>
+            <p>Use Quick Reference for general CPB/ECMO bedside values, Unit Converter for flow and pressure conversions, and BSA Calculator when estimating target perfusion flow before comparing cannula pressure drop.</p>
             <div class="calculator-related-links">
               <a href="/quick-reference/" class="calculator-related-link">Open Quick Reference</a>
               <a href="/unit-converter/" class="calculator-related-link">Open Unit Converter</a>
+              <a href="/bsa/" class="calculator-related-link">Open BSA Calculator</a>
             </div>
           </div>
         </section>

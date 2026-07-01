@@ -51,6 +51,31 @@ assert(
   'Cannula pressure-drop page should add a separate tabbed Compare sizes view while keeping the single lookup markup present.'
 );
 assert(
+  pressureDropPageHtml.includes('manufacturer-published pressure-flow data') &&
+  pressureDropPageHtml.includes('linear interpolation between adjacent source points') &&
+  pressureDropPageHtml.includes('Compare sizes view applies one shared target flow'),
+  'Cannula pressure-drop methodology should explain manufacturer source data, linear interpolation, and shared-flow Compare sizes behavior.'
+);
+assert(
+  pressureDropPageHtml.includes('blood viscosity, hematocrit, temperature, cannula position') &&
+  pressureDropPageHtml.includes('connector size, tubing configuration') &&
+  pressureDropPageHtml.includes('not extrapolated unless explicitly supported by the source') &&
+  pressureDropPageHtml.includes('limited to the currently included manufacturer datasets'),
+  'Cannula pressure-drop limitations should describe clinical factors, source-range limits, and dataset coverage limits.'
+);
+assert(
+  pressureDropPageHtml.includes('What is cannula pressure drop?') &&
+  pressureDropPageHtml.includes('Can I compare cannula sizes at the same flow?') &&
+  pressureDropPageHtml.includes('Can this tool choose the best cannula for CPB or ECMO?'),
+  'Cannula pressure-drop page should include compact FAQ/AEO content for key user questions.'
+);
+assert(
+  pressureDropPageHtml.includes('href="/quick-reference/"') &&
+  pressureDropPageHtml.includes('href="/unit-converter/"') &&
+  pressureDropPageHtml.includes('href="/bsa/"'),
+  'Cannula pressure-drop related tools should link to Quick Reference, Unit Converter, and BSA Calculator.'
+);
+assert(
   !/<meta\s+name=["'](?:robots|googlebot)["'][^>]*noindex/i.test(pressureDropPageHtml),
   'Cannula pressure-drop page should not include robots/googlebot noindex metadata.'
 );
