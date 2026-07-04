@@ -30,7 +30,15 @@ function manualDuration(start, end) {
 }
 
 function liveDuration(startAtEpoch, nowEpoch) {
-  return formatDuration(Math.floor(Math.max(0, nowEpoch - startAtEpoch) / 60000));
+  const safeMs = Math.max(0, nowEpoch - startAtEpoch);
+  const totalSeconds = Math.floor(safeMs / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  const exactTime = [hours, minutes, seconds].map(value => value.toString().padStart(2, '0')).join(':');
+  const chartingMinutes = Math.floor(safeMs / 60000);
+  const chartingSummary = chartingMinutes < 1 ? '<1 min' : `${chartingMinutes} min`;
+  return `${exactTime} (${chartingSummary})`;
 }
 
 function run() {
@@ -40,7 +48,8 @@ function run() {
 
   assert.strictEqual(manualDuration('08:15', '10:45'), '150 min (2:30)', 'manual start/end duration should remain unchanged');
   assert.strictEqual(manualDuration('23:30', '00:15'), '45 min (0:45)', 'manual cross-midnight duration should remain unchanged');
-  assert.strictEqual(liveDuration(100000, 100000 + (7 * 60000) + 30000), '7 min (0:07)', 'live duration should be recalculated from epoch timestamps');
+  assert.strictEqual(liveDuration(100000, 100000 + (7 * 60000) + 30000), '00:07:30 (7 min)', 'live duration should show exact HH:MM:SS with floored minute summary');
+  assert.strictEqual(liveDuration(100000, 100000 + 34000), '00:00:34 (<1 min)', 'live duration under one minute should not round up to 1 min');
   assert.strictEqual(manualDuration('09:00', '09:05'), '5 min (0:05)', 'manual calculation should remain the source of truth when users edit inputs');
 
   assert(timecalcHtml.includes('id="time-mode-record"'), 'Record mode toggle should exist');
@@ -48,6 +57,7 @@ function run() {
   assert(timecalcHtml.includes('id="time-live-notice"'), 'Live mode safety notice should exist');
   assert(mainJs.includes("perfusiontools.timecalc.liveTimers.v1"), 'versioned localStorage key should be used');
   assert(mainJs.includes('Date.now() - state.startAtEpoch'), 'running duration should be based on Date.now and startAtEpoch');
+  assert(mainJs.includes('const chartingMinutes = Math.floor(safeMs / 60000)'), 'live charting summary should floor elapsed minutes');
   assert(mainJs.includes("const canUseLiveState = timeLiveMode === 'live' && inputMatchesLiveState"), 'Record mode and manual edits should fall back to manual calculation instead of live state');
   assert(mainJs.includes('startAtEpoch: now'), 'Start should store startAtEpoch');
   assert(mainJs.includes('state.endAtEpoch = now'), 'Stop should store endAtEpoch');

@@ -2795,7 +2795,14 @@ function getTimeRowState(idx) {
 
 function formatDurationFromMs(elapsedMs) {
   const safeMs = Math.max(0, elapsedMs || 0);
-  return formatDuration(Math.floor(safeMs / 60000));
+  const totalSeconds = Math.floor(safeMs / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  const exactTime = [hours, minutes, seconds].map(value => value.toString().padStart(2, '0')).join(':');
+  const chartingMinutes = Math.floor(safeMs / 60000);
+  const chartingSummary = chartingMinutes < 1 ? '<1 min' : `${chartingMinutes} min`;
+  return `${exactTime} (${chartingSummary})`;
 }
 
 function saveTimeLiveState() {
