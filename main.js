@@ -2776,9 +2776,92 @@ function clearPrimingBuilderItems() {
   renderPrimingBuilder();
 }
 
+const TIME_LIVE_STORAGE_KEY = 'perfusiontools.timecalc.liveTimers.v1';
+let timeLiveMode = 'record';
+let timeLiveTimers = {};
+let timeLiveTickId = null;
+
 function setTimeError(inputEl, hasError) {
   if (!inputEl) return;
   ['ring-1', 'ring-rose-400', 'border-rose-400'].forEach(cls => inputEl.classList.toggle(cls, hasError));
+}
+
+function getTimeRowState(idx) {
+  if (!timeLiveTimers[idx]) {
+    timeLiveTimers[idx] = { id: String(idx), label: '', startAtEpoch: null, endAtEpoch: null, running: false, startDisplay: '', endDisplay: '' };
+  }
+  return timeLiveTimers[idx];
+}
+
+function formatDurationFromMs(elapsedMs) {
+  const safeMs = Math.max(0, elapsedMs || 0);
+  return formatDuration(Math.floor(safeMs / 60000));
+}
+
+function saveTimeLiveState() {
+  try {
+    const rows = {};
+    for (let i = 1; i <= 5; i++) {
+      const state = getTimeRowState(i);
+      const labelInput = document.getElementById(`time-label-${i}`);
+      const startInput = document.getElementById(`time-start-${i}`);
+      const endInput = document.getElementById(`time-end-${i}`);
+      rows[i] = {
+        id: String(i),
+        label: labelInput ? labelInput.value : state.label || '',
+        startAtEpoch: state.startAtEpoch || null,
+        endAtEpoch: state.endAtEpoch || null,
+        running: Boolean(state.running),
+        startDisplay: startInput ? startInput.value : state.startDisplay || '',
+        endDisplay: endInput ? endInput.value : state.endDisplay || ''
+      };
+    }
+    localStorage.setItem(TIME_LIVE_STORAGE_KEY, JSON.stringify({ mode: timeLiveMode, rows }));
+  } catch (err) {
+    // localStorage can be unavailable in privacy-restricted contexts; manual calculations still work.
+  }
+}
+
+function loadTimeLiveState() {
+  try {
+    const raw = localStorage.getItem(TIME_LIVE_STORAGE_KEY);
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+    timeLiveMode = saved.mode === 'live' ? 'live' : 'record';
+    timeLiveTimers = saved.rows || {};
+    for (let i = 1; i <= 5; i++) {
+      const row = timeLiveTimers[i];
+      if (!row) continue;
+      const labelInput = document.getElementById(`time-label-${i}`);
+      const startInput = document.getElementById(`time-start-${i}`);
+      const endInput = document.getElementById(`time-end-${i}`);
+      if (labelInput) labelInput.value = row.label || '';
+      if (startInput) startInput.value = row.startDisplay || '';
+      if (endInput) endInput.value = row.endDisplay || '';
+    }
+  } catch (err) {
+    timeLiveMode = 'record';
+    timeLiveTimers = {};
+  }
+}
+
+function updateTimeLiveControls(idx) {
+  const rowEl = document.querySelectorAll('#time-rows .time-row')[idx - 1];
+  const controlsEl = document.getElementById(`time-live-controls-${idx}`);
+  const badgeEl = document.getElementById(`time-running-badge-${idx}`);
+  const startBtn = document.getElementById(`time-live-start-${idx}`);
+  const stopBtn = document.getElementById(`time-live-stop-${idx}`);
+  const state = getTimeRowState(idx);
+  const isLive = timeLiveMode === 'live';
+  if (controlsEl) controlsEl.classList.toggle('hidden', !isLive);
+  if (badgeEl) badgeEl.classList.toggle('hidden', !(isLive && state.running));
+  if (rowEl) {
+    rowEl.classList.toggle('border-accent-400', isLive && state.running);
+    rowEl.classList.toggle('bg-accent-50', isLive && state.running);
+    rowEl.classList.toggle('dark:bg-primary-800', isLive && state.running);
+  }
+  if (startBtn) startBtn.disabled = state.running;
+  if (stopBtn) stopBtn.disabled = !state.running;
 }
 
 function updateTimeRow(idx) {
@@ -2786,6 +2869,21 @@ function updateTimeRow(idx) {
   const endInput = document.getElementById(`time-end-${idx}`);
   const resultEl = document.getElementById(`time-result-${idx}`);
   if (!startInput || !endInput || !resultEl) return;
+
+  const state = getTimeRowState(idx);
+  if (state.running && state.startAtEpoch) {
+    resultEl.textContent = formatDurationFromMs(Date.now() - state.startAtEpoch);
+    resultEl.classList.add('font-semibold', 'text-accent-700', 'dark:text-accent-300');
+    updateTimeLiveControls(idx);
+    return;
+  }
+  resultEl.classList.remove('font-semibold', 'text-accent-700', 'dark:text-accent-300');
+
+  if (state.startAtEpoch && state.endAtEpoch && startInput.value === state.startDisplay && endInput.value === state.endDisplay) {
+    resultEl.textContent = formatDurationFromMs(state.endAtEpoch - state.startAtEpoch);
+    updateTimeLiveControls(idx);
+    return;
+  }
 
   const startMin = parseTimeToMinutes(startInput.value);
   const endMin = parseTimeToMinutes(endInput.value);
@@ -2816,6 +2914,69 @@ function updateTimeRow(idx) {
   if (diff < 0) diff += 24 * 60;
 
   resultEl.textContent = formatDuration(diff);
+  updateTimeLiveControls(idx);
+}
+
+function clearTimeLiveRow(idx) {
+  delete timeLiveTimers[idx];
+  updateTimeRow(idx);
+  updateTimeLiveControls(idx);
+  saveTimeLiveState();
+}
+
+function handleManualTimeEdit(idx, inputEl) {
+  autoFormatTimeInput(inputEl);
+  const state = getTimeRowState(idx);
+  const startInput = document.getElementById(`time-start-${idx}`);
+  const endInput = document.getElementById(`time-end-${idx}`);
+  if ((startInput && startInput.value !== (state.startDisplay || '')) || (endInput && endInput.value !== (state.endDisplay || ''))) {
+    delete timeLiveTimers[idx];
+  }
+  updateTimeRow(idx);
+  updateTimeLiveControls(idx);
+  saveTimeLiveState();
+}
+
+function setTimeLiveMode(nextMode) {
+  timeLiveMode = nextMode === 'live' ? 'live' : 'record';
+  const recordBtn = document.getElementById('time-mode-record');
+  const liveBtn = document.getElementById('time-mode-live');
+  const notice = document.getElementById('time-live-notice');
+  [recordBtn, liveBtn].forEach(btn => {
+    if (!btn) return;
+    btn.classList.remove('bg-accent-600', 'text-white');
+    btn.classList.add('text-slate-600', 'dark:text-slate-200');
+  });
+  const activeBtn = timeLiveMode === 'live' ? liveBtn : recordBtn;
+  if (activeBtn) {
+    activeBtn.classList.add('bg-accent-600', 'text-white');
+    activeBtn.classList.remove('text-slate-600', 'dark:text-slate-200');
+  }
+  if (notice) notice.classList.toggle('hidden', timeLiveMode !== 'live');
+  for (let i = 1; i <= 5; i++) updateTimeLiveControls(i);
+  saveTimeLiveState();
+}
+
+function createTimeLiveControls(idx, rowEl) {
+  if (!rowEl || document.getElementById(`time-live-controls-${idx}`)) return;
+  const controls = document.createElement('div');
+  controls.id = `time-live-controls-${idx}`;
+  controls.className = 'time-live-controls hidden flex flex-wrap items-center gap-2 pt-1';
+  controls.innerHTML = `
+    <span id="time-running-badge-${idx}" class="hidden rounded-full bg-accent-100 dark:bg-accent-500/20 px-2 py-1 text-[11px] font-semibold text-accent-700 dark:text-accent-300">Running</span>
+    <button id="time-live-start-${idx}" type="button" class="rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed">Start</button>
+    <button id="time-live-stop-${idx}" type="button" class="rounded-lg border border-accent-600 bg-accent-600 px-3 py-1.5 text-xs font-semibold text-white disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 dark:disabled:border-primary-700 dark:disabled:bg-primary-800 dark:disabled:text-slate-500 disabled:cursor-not-allowed">Stop</button>
+    <button id="time-live-reset-${idx}" type="button" class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-200">Reset</button>`;
+  rowEl.appendChild(controls);
+}
+
+function initTimeLiveInterval() {
+  if (timeLiveTickId) window.clearInterval(timeLiveTickId);
+  timeLiveTickId = window.setInterval(() => {
+    for (let i = 1; i <= 5; i++) {
+      if (getTimeRowState(i).running) updateTimeRow(i);
+    }
+  }, 1000);
 }
 
 function autoFormatTimeInput(inputEl) {
@@ -2850,37 +3011,94 @@ function initTimeCalculator() {
     });
   });
 
+  const rowEls = document.querySelectorAll('#time-rows .time-row');
+  rowEls.forEach((rowEl, rowIdx) => createTimeLiveControls(rowIdx + 1, rowEl));
+  loadTimeLiveState();
+
+  const recordModeBtn = document.getElementById('time-mode-record');
+  const liveModeBtn = document.getElementById('time-mode-live');
+  if (recordModeBtn) recordModeBtn.addEventListener('click', () => setTimeLiveMode('record'));
+  if (liveModeBtn) liveModeBtn.addEventListener('click', () => setTimeLiveMode('live'));
+
   for (let i = 1; i <= 5; i++) {
     const s = document.getElementById(`time-start-${i}`);
     const e = document.getElementById(`time-end-${i}`);
+    const label = document.getElementById(`time-label-${i}`);
     const sNow = document.getElementById(`time-start-now-${i}`);
     const eNow = document.getElementById(`time-end-now-${i}`);
+    const liveStart = document.getElementById(`time-live-start-${i}`);
+    const liveStop = document.getElementById(`time-live-stop-${i}`);
+    const liveReset = document.getElementById(`time-live-reset-${i}`);
     [s, e, sNow, eNow].forEach(elRef => {
       if (elRef) elRef.removeAttribute('title');
     });
+    if (label) label.addEventListener('input', saveTimeLiveState);
     if (s) {
-      s.addEventListener('input', () => { autoFormatTimeInput(s); updateTimeRow(i); });
+      s.addEventListener('input', () => handleManualTimeEdit(i, s));
       s.addEventListener('blur', () => updateTimeRow(i));
     }
     if (e) {
-      e.addEventListener('input', () => { autoFormatTimeInput(e); updateTimeRow(i); });
+      e.addEventListener('input', () => handleManualTimeEdit(i, e));
       e.addEventListener('blur', () => updateTimeRow(i));
     }
     if (s && sNow) {
       sNow.addEventListener('click', () => {
         s.value = getCurrentTimeHHMM();
+        delete timeLiveTimers[i];
         setTimeError(s, false);
         updateTimeRow(i);
+        saveTimeLiveState();
       });
     }
     if (e && eNow) {
       eNow.addEventListener('click', () => {
         e.value = getCurrentTimeHHMM();
+        delete timeLiveTimers[i];
         setTimeError(e, false);
         updateTimeRow(i);
+        saveTimeLiveState();
       });
     }
+    if (s && e && liveStart) {
+      liveStart.addEventListener('click', () => {
+        const now = Date.now();
+        const startDisplay = getCurrentTimeHHMM();
+        s.value = startDisplay;
+        e.value = '';
+        timeLiveTimers[i] = { id: String(i), label: label ? label.value : '', startAtEpoch: now, endAtEpoch: null, running: true, startDisplay, endDisplay: '' };
+        setTimeError(s, false);
+        setTimeError(e, false);
+        updateTimeRow(i);
+        saveTimeLiveState();
+      });
+    }
+    if (e && liveStop) {
+      liveStop.addEventListener('click', () => {
+        const state = getTimeRowState(i);
+        if (!state.running) return;
+        const now = Date.now();
+        const endDisplay = getCurrentTimeHHMM();
+        e.value = endDisplay;
+        state.endAtEpoch = now;
+        state.running = false;
+        state.endDisplay = endDisplay;
+        updateTimeRow(i);
+        saveTimeLiveState();
+      });
+    }
+    if (s && e && liveReset) {
+      liveReset.addEventListener('click', () => {
+        s.value = '';
+        e.value = '';
+        const resultEl = document.getElementById(`time-result-${i}`);
+        if (resultEl) resultEl.textContent = '-';
+        clearTimeLiveRow(i);
+      });
+    }
+    updateTimeRow(i);
   }
+  setTimeLiveMode(timeLiveMode);
+  initTimeLiveInterval();
 }
 
 // -----------------------------

@@ -392,6 +392,20 @@
           <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Enter 24-hour start/end times to see elapsed minutes and an H:MM readout.</p>
           <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Tap the clock icon to insert the current time.</p>
 
+          <div class="mb-4 rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50 p-3 space-y-2">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <div class="text-sm font-semibold text-primary-900 dark:text-white">Timer mode</div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">Record mode keeps manual entry. Live mode adds per-row Start, Stop, Reset tracking.</p>
+              </div>
+              <div class="inline-flex rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 p-1 text-xs font-semibold" role="group" aria-label="Time calculator mode">
+                <button id="time-mode-record" type="button" class="time-mode-btn rounded-lg px-3 py-1.5 bg-accent-600 text-white">Record</button>
+                <button id="time-mode-live" type="button" class="time-mode-btn rounded-lg px-3 py-1.5 text-slate-600 dark:text-slate-200">Live</button>
+              </div>
+            </div>
+            <p id="time-live-notice" class="hidden text-[11px] leading-snug text-slate-500 dark:text-slate-400">Live mode is a workflow timer for documentation support. Verify all times against the heart-lung machine, anesthesia record, and institutional charting workflow.</p>
+          </div>
+
           <div class="space-y-4" id="time-rows">
             <div class="time-row rounded-2xl border border-slate-100 dark:border-primary-800/60 bg-white/70 dark:bg-primary-900/40 p-3 space-y-3">
               <div class="flex items-center gap-2">
