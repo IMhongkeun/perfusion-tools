@@ -41,12 +41,14 @@ function run() {
   assert.strictEqual(manualDuration('08:15', '10:45'), '150 min (2:30)', 'manual start/end duration should remain unchanged');
   assert.strictEqual(manualDuration('23:30', '00:15'), '45 min (0:45)', 'manual cross-midnight duration should remain unchanged');
   assert.strictEqual(liveDuration(100000, 100000 + (7 * 60000) + 30000), '7 min (0:07)', 'live duration should be recalculated from epoch timestamps');
+  assert.strictEqual(manualDuration('09:00', '09:05'), '5 min (0:05)', 'manual calculation should remain the source of truth when users edit inputs');
 
   assert(timecalcHtml.includes('id="time-mode-record"'), 'Record mode toggle should exist');
   assert(timecalcHtml.includes('id="time-mode-live"'), 'Live mode toggle should exist');
   assert(timecalcHtml.includes('id="time-live-notice"'), 'Live mode safety notice should exist');
   assert(mainJs.includes("perfusiontools.timecalc.liveTimers.v1"), 'versioned localStorage key should be used');
   assert(mainJs.includes('Date.now() - state.startAtEpoch'), 'running duration should be based on Date.now and startAtEpoch');
+  assert(mainJs.includes("const canUseLiveState = timeLiveMode === 'live' && inputMatchesLiveState"), 'Record mode and manual edits should fall back to manual calculation instead of live state');
   assert(mainJs.includes('startAtEpoch: now'), 'Start should store startAtEpoch');
   assert(mainJs.includes('state.endAtEpoch = now'), 'Stop should store endAtEpoch');
   assert(mainJs.includes('delete timeLiveTimers[idx]'), 'Reset/manual override should clear row live state');

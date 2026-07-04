@@ -2871,7 +2871,9 @@ function updateTimeRow(idx) {
   if (!startInput || !endInput || !resultEl) return;
 
   const state = getTimeRowState(idx);
-  if (state.running && state.startAtEpoch) {
+  const inputMatchesLiveState = startInput.value === (state.startDisplay || '') && endInput.value === (state.endDisplay || '');
+  const canUseLiveState = timeLiveMode === 'live' && inputMatchesLiveState;
+  if (canUseLiveState && state.running && state.startAtEpoch) {
     resultEl.textContent = formatDurationFromMs(Date.now() - state.startAtEpoch);
     resultEl.classList.add('font-semibold', 'text-accent-700', 'dark:text-accent-300');
     updateTimeLiveControls(idx);
@@ -2879,7 +2881,7 @@ function updateTimeRow(idx) {
   }
   resultEl.classList.remove('font-semibold', 'text-accent-700', 'dark:text-accent-300');
 
-  if (state.startAtEpoch && state.endAtEpoch && startInput.value === state.startDisplay && endInput.value === state.endDisplay) {
+  if (canUseLiveState && state.startAtEpoch && state.endAtEpoch) {
     resultEl.textContent = formatDurationFromMs(state.endAtEpoch - state.startAtEpoch);
     updateTimeLiveControls(idx);
     return;
@@ -2953,7 +2955,10 @@ function setTimeLiveMode(nextMode) {
     activeBtn.classList.remove('text-slate-600', 'dark:text-slate-200');
   }
   if (notice) notice.classList.toggle('hidden', timeLiveMode !== 'live');
-  for (let i = 1; i <= 5; i++) updateTimeLiveControls(i);
+  for (let i = 1; i <= 5; i++) {
+    updateTimeRow(i);
+    updateTimeLiveControls(i);
+  }
   saveTimeLiveState();
 }
 
@@ -2974,7 +2979,7 @@ function initTimeLiveInterval() {
   if (timeLiveTickId) window.clearInterval(timeLiveTickId);
   timeLiveTickId = window.setInterval(() => {
     for (let i = 1; i <= 5; i++) {
-      if (getTimeRowState(i).running) updateTimeRow(i);
+      if (timeLiveMode === 'live' && getTimeRowState(i).running) updateTimeRow(i);
     }
   }, 1000);
 }
