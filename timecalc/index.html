@@ -392,11 +392,35 @@
           <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Enter 24-hour start/end times to see elapsed minutes and an H:MM readout.</p>
           <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Tap the clock icon to insert the current time.</p>
 
+          <div class="mb-4 rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+              <div class="space-y-1">
+                <div class="text-sm font-semibold text-primary-900 dark:text-white">Timer mode</div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">Record mode keeps manual entry. Live mode adds per-row Start, Stop, Reset tracking.</p>
+              </div>
+              <div class="inline-flex w-fit rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 p-1 text-xs font-semibold" role="group" aria-label="Time calculator mode">
+                <button id="time-mode-record" type="button" class="time-mode-btn rounded-lg px-3 py-1.5 bg-accent-600 text-white">Record</button>
+                <button id="time-mode-live" type="button" class="time-mode-btn rounded-lg px-3 py-1.5 text-slate-600 dark:text-slate-200">Live</button>
+              </div>
+            </div>
+            <div id="time-case-actions" class="flex justify-start sm:justify-end">
+              <button id="time-new-case" type="button" class="rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 px-3 py-2 text-xs font-semibold text-rose-700 dark:text-rose-300">New case / Clear all</button>
+            </div>
+            <div id="time-case-prompt" class="hidden rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30 px-3 py-3 space-y-3">
+              <p id="time-case-prompt-message" class="text-[11px] leading-snug text-amber-800 dark:text-amber-200">Previous case data found. Continue previous timers or start a new case?</p>
+              <div class="flex flex-wrap gap-2">
+                <button id="time-case-continue" type="button" class="rounded-lg bg-accent-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-accent-700">Continue</button>
+                <button id="time-case-start-new" type="button" class="rounded-lg border border-amber-300 dark:border-amber-700 bg-white dark:bg-primary-900 px-3 py-1.5 text-xs font-semibold text-amber-800 dark:text-amber-200">Start new case</button>
+              </div>
+            </div>
+            <p id="time-live-notice" class="hidden border-t border-slate-200/80 dark:border-primary-800 pt-3 text-[11px] leading-snug text-slate-500 dark:text-slate-400">Live mode is a workflow timer for documentation support. Verify all times against the heart-lung machine, anesthesia record, and institutional charting workflow. Do not enter patient identifiers. Live timer data is stored only in this browser; use New case / Clear all to remove stored case data.</p>
+          </div>
+
           <div class="space-y-4" id="time-rows">
             <div class="time-row rounded-2xl border border-slate-100 dark:border-primary-800/60 bg-white/70 dark:bg-primary-900/40 p-3 space-y-3">
               <div class="flex items-center gap-2">
                 <div class="text-[11px] text-slate-500 dark:text-slate-400">#1</div>
-                <input id="time-label-1" type="text" inputmode="text" placeholder="Label" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                <input id="time-label-1" type="text" inputmode="text" value="CPB / Pump time" placeholder="Label" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
               </div>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
@@ -428,10 +452,10 @@
               </div>
             </div>
 
-            <div class="time-row rounded-2xl border border-slate-100 dark:border-primary-800/60 bg-white/70 dark:bg-primary-900/40 p-3 space-y-3">
+            <div class="time-row rounded-2xl border border-slate-100 dark:border-primary-800/60 bg-white/70 dark:bg-primary-900/40 p-3 space-y-3" data-time-event-type="x-clamp">
               <div class="flex items-center gap-2">
                 <div class="text-[11px] text-slate-500 dark:text-slate-400">#2</div>
-                <input id="time-label-2" type="text" inputmode="text" placeholder="Label" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                <input id="time-label-2" type="text" inputmode="text" value="Aortic cross-clamp" data-time-event-type="x-clamp" placeholder="Label" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
               </div>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
@@ -466,7 +490,7 @@
             <div class="time-row rounded-2xl border border-slate-100 dark:border-primary-800/60 bg-white/70 dark:bg-primary-900/40 p-3 space-y-3">
               <div class="flex items-center gap-2">
                 <div class="text-[11px] text-slate-500 dark:text-slate-400">#3</div>
-                <input id="time-label-3" type="text" inputmode="text" placeholder="Label" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                <input id="time-label-3" type="text" inputmode="text" placeholder="Optional event" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
               </div>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
@@ -501,7 +525,7 @@
             <div class="time-row rounded-2xl border border-slate-100 dark:border-primary-800/60 bg-white/70 dark:bg-primary-900/40 p-3 space-y-3">
               <div class="flex items-center gap-2">
                 <div class="text-[11px] text-slate-500 dark:text-slate-400">#4</div>
-                <input id="time-label-4" type="text" inputmode="text" placeholder="Label" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                <input id="time-label-4" type="text" inputmode="text" placeholder="Optional event" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
               </div>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
@@ -536,7 +560,7 @@
             <div class="time-row rounded-2xl border border-slate-100 dark:border-primary-800/60 bg-white/70 dark:bg-primary-900/40 p-3 space-y-3">
               <div class="flex items-center gap-2">
                 <div class="text-[11px] text-slate-500 dark:text-slate-400">#5</div>
-                <input id="time-label-5" type="text" inputmode="text" placeholder="Label" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                <input id="time-label-5" type="text" inputmode="text" placeholder="Optional event" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
               </div>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="flex flex-col gap-1">
@@ -566,6 +590,70 @@
                   <div id="time-result-5" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">-</div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div id="cardioplegia-reminder" class="hidden mt-5 rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-3">
+            <div class="flex flex-col gap-1">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Cardioplegia reminder</h3>
+                <span id="cardioplegia-status" class="rounded-full bg-slate-100 dark:bg-primary-800 px-2 py-1 text-[11px] font-semibold text-slate-600 dark:text-slate-300">Not started</span>
+              </div>
+              <p class="text-[11px] leading-snug text-slate-500 dark:text-slate-400">Optional reminder from dose completion. Verify against pump timer, charting record, and local myocardial protection protocol.</p>
+              <p class="text-[11px] leading-snug text-slate-500 dark:text-slate-400">Starts from dose completion. Use as an optional workflow reminder; verify against pump timer and institutional practice.</p>
+            </div>
+
+            <div class="space-y-2">
+              <div class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Quick presets</div>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" role="group" aria-label="Cardioplegia interval quick presets">
+                <button type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200" data-preset="del-nido-60" data-minutes="60">Del Nido 60 min</button>
+                <button type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200" data-preset="del-nido-75" data-minutes="75">Del Nido 75 min</button>
+                <button type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200" data-preset="del-nido-90" data-minutes="90">Del Nido 90 min</button>
+                <button type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200" data-preset="blood-15" data-minutes="15">Blood 15 min</button>
+                <button type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200" data-preset="blood-20" data-minutes="20">Blood 20 min</button>
+                <button type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200" data-preset="blood-30" data-minutes="30">Blood 30 min</button>
+                <button id="cardioplegia-custom-preset" type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200 sm:col-span-2" data-preset="custom">Custom interval</button>
+              </div>
+              <div class="flex flex-col sm:flex-row sm:items-end gap-2">
+                <label class="flex flex-col gap-1 text-[11px] text-slate-500 dark:text-slate-400 sm:w-44">
+                  Custom interval (min)
+                  <input id="cardioplegia-custom-interval" type="number" min="1" max="180" step="1" inputmode="numeric" placeholder="1–180" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-100 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+                </label>
+                <div id="cardioplegia-validation" class="min-h-5 text-[11px] text-rose-600 dark:text-rose-300" aria-live="polite"></div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              <button id="cardioplegia-complete" type="button" class="rounded-xl bg-accent-600 px-4 py-2 text-sm font-semibold text-white hover:bg-accent-700 disabled:opacity-50 disabled:cursor-not-allowed">Cardioplegia complete</button>
+              <button id="cardioplegia-undo" type="button" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed">Undo last</button>
+              <button id="cardioplegia-reset" type="button" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200">Reset timer</button>
+              <button id="cardioplegia-clear-log" type="button" class="rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 px-3 py-2 text-xs font-semibold text-rose-700 dark:text-rose-300 disabled:opacity-50 disabled:cursor-not-allowed">Clear log</button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+              <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-white/80 dark:bg-primary-900 px-3 py-2"><span class="block text-[11px] text-slate-500 dark:text-slate-400">Last complete</span><span id="cardioplegia-last" class="font-semibold text-slate-700 dark:text-slate-100">—</span></div>
+              <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-white/80 dark:bg-primary-900 px-3 py-2"><span class="block text-[11px] text-slate-500 dark:text-slate-400">Next due</span><span id="cardioplegia-next" class="font-semibold text-slate-700 dark:text-slate-100">—</span></div>
+              <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-white/80 dark:bg-primary-900 px-3 py-2"><span class="block text-[11px] text-slate-500 dark:text-slate-400">Remaining</span><span id="cardioplegia-remaining" class="font-semibold text-slate-700 dark:text-slate-100">—</span></div>
+            </div>
+
+            <div>
+              <div class="mb-1 text-[11px] font-semibold text-slate-500 dark:text-slate-400">Dose log</div>
+              <div id="cardioplegia-log" class="rounded-xl border border-slate-200 dark:border-primary-800 bg-white/80 dark:bg-primary-900 px-3 py-2 text-xs text-slate-600 dark:text-slate-300">No completed doses yet.</div>
+            </div>
+          </div>
+
+          <div id="cardioplegia-shortcut" class="hidden fixed inset-x-3 bottom-3 z-40 rounded-2xl border border-accent-200 dark:border-accent-800 bg-white/95 dark:bg-primary-900/95 shadow-card p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:left-auto md:right-6 md:max-w-md" role="status" aria-live="polite">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0">
+                <div id="cardioplegia-shortcut-title" class="text-xs font-semibold text-primary-900 dark:text-white">X-clamp running · Cardioplegia reminder</div>
+                <div class="text-[11px] leading-snug text-slate-500 dark:text-slate-400">Optional reminder. Verify against pump timer and charting record.</div>
+                <div id="cardioplegia-shortcut-confirmation" class="mt-1 hidden text-[11px] font-semibold text-accent-700 dark:text-accent-300"></div>
+              </div>
+              <button id="cardioplegia-shortcut-dismiss" type="button" class="rounded-lg px-2 py-1 text-xs font-semibold text-slate-500 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-primary-800" aria-label="Dismiss cardioplegia shortcut">×</button>
+            </div>
+            <div class="mt-2 flex flex-wrap gap-2">
+              <button id="cardioplegia-shortcut-complete" type="button" class="rounded-xl bg-accent-600 px-3 py-2 text-xs font-semibold text-white hover:bg-accent-700 disabled:opacity-50 disabled:cursor-not-allowed">Cardioplegia complete</button>
+              <button id="cardioplegia-shortcut-view" type="button" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200">View reminder</button>
             </div>
           </div>
 

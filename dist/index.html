@@ -828,7 +828,8 @@
           <p>When you submit calculator feedback, PerfusionTools stores the submitted rating and optional comment. The feedback record also stores limited metadata: page path, calculator key, language, device type, app version, commit SHA when available, and an anonymous browser-generated visitor_id.</p>
           <p>The visitor_id is generated in localStorage and is used only for feedback prompt frequency control, duplicate prevention, and lightweight rate limiting. It is not a login identity and should not be treated as a reliable unique-user analytics identifier.</p>
           <p>PerfusionTools does not intentionally collect or store patient inputs, calculator inputs, calculated results, hospital names, or IP addresses through the feedback form. Please do not include patient-identifiable information in feedback comments.</p>
-          <p>Inputs remain on-device and disappear when you refresh or close the page. Do not store or print screenshots that contain protected health information (PHI) on shared systems.</p>
+          <p>Most calculator inputs are not saved. Timecalc Live mode stores timer state locally in this browser so running timers can be restored after refresh. This data is not sent to a server. Use New case / Clear all to remove stored case data.</p>
+          <p>Do not enter patient identifiers in calculator labels or notes. Do not store or print screenshots that contain protected health information (PHI) on shared systems.</p>
           <p>If you have privacy concerns or wish to report a data issue, please reach out via the contact form below. We will respond promptly with remediation steps.</p>
         </div>
       </section>
