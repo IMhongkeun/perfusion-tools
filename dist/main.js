@@ -3576,6 +3576,8 @@ function initTimeCalculator() {
         delete timeLiveTimers[i];
         setTimeError(s, false);
         updateTimeRow(i);
+        updateTimeLiveControls(i);
+        renderCardioplegiaShortcut();
         saveTimeLiveState();
       });
     }
@@ -3585,6 +3587,8 @@ function initTimeCalculator() {
         delete timeLiveTimers[i];
         setTimeError(e, false);
         updateTimeRow(i);
+        updateTimeLiveControls(i);
+        renderCardioplegiaShortcut();
         saveTimeLiveState();
       });
     }

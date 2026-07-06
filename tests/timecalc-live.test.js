@@ -41,6 +41,12 @@ function liveDuration(startAtEpoch, nowEpoch) {
   return `${exactTime} (${chartingSummary})`;
 }
 
+
+function controlsAfterLiveStateCleared() {
+  const state = { running: false };
+  return { runningBadgeVisible: state.running, startDisabled: state.running, stopDisabled: !state.running };
+}
+
 function run() {
   const repoRoot = path.join(__dirname, '..');
   const mainJs = fs.readFileSync(path.join(repoRoot, 'main.js'), 'utf8');
@@ -65,6 +71,13 @@ function run() {
   assert(mainJs.includes('startAtEpoch: now'), 'Start should store startAtEpoch');
   assert(mainJs.includes('state.endAtEpoch = now'), 'Stop should store endAtEpoch');
   assert(mainJs.includes('delete timeLiveTimers[idx]'), 'Reset/manual override should clear row live state');
+  const startClockHandlerSource = mainJs.slice(mainJs.indexOf('if (s && sNow)'), mainJs.indexOf('if (e && eNow)'));
+  const endClockHandlerSource = mainJs.slice(mainJs.indexOf('if (e && eNow)'), mainJs.indexOf('if (s && e && liveStart)'));
+  assert(startClockHandlerSource.includes('delete timeLiveTimers[i]'), 'start-time clock override should clear live state');
+  assert(startClockHandlerSource.includes('updateTimeLiveControls(i)'), 'start-time clock override should refresh controls after missing-end early return');
+  assert(endClockHandlerSource.includes('delete timeLiveTimers[i]'), 'end-time clock override should clear live state');
+  assert(endClockHandlerSource.includes('updateTimeLiveControls(i)'), 'end-time clock override should refresh controls after live-state clear');
+  assert.deepStrictEqual(controlsAfterLiveStateCleared(), { runningBadgeVisible: false, startDisabled: false, stopDisabled: true }, 'cleared live state should hide Running badge, enable Start, and disable Stop');
   assert(mainJs.includes("controls.className = 'time-live-controls hidden"), 'Live controls should be hidden in Record mode by default');
 
   console.log('All timecalc live tests passed.');
