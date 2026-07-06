@@ -3960,6 +3960,7 @@ function initCardioplegiaReminder() {
       restoreCardioplegiaFromLastLogEntry();
       saveCardioplegiaReminderState();
       renderCardioplegiaReminder();
+      renderTimeCaseSummary();
     });
   }
 
@@ -3969,6 +3970,7 @@ function initCardioplegiaReminder() {
       cardioplegiaReminderState.nextDueAtEpoch = null;
       saveCardioplegiaReminderState();
       renderCardioplegiaReminder();
+      renderTimeCaseSummary();
     });
   }
 

@@ -62,6 +62,14 @@ function rowSummary({ label, startInput, endInput, state }) {
   return `${label}: ${startDisplay}–${endDisplay} (${formatSummaryDuration(summaryDurationMinutes({ startInput: startDisplay, endInput: endDisplay, state }))})`;
 }
 
+function buildDoseLogSummary(doseLog) {
+  return `Cardioplegia complete: ${doseLog.length ? doseLog.join(', ') : '—'}`;
+}
+
+function undoLastDose(doseLog) {
+  return doseLog.slice(0, -1);
+}
+
 function validateCardioplegiaInterval(value) {
   const intervalMinutes = Number.parseInt(value, 10);
   return Number.isInteger(intervalMinutes) && intervalMinutes >= 1 && intervalMinutes <= 180 ? intervalMinutes : null;
@@ -135,6 +143,17 @@ function run() {
   status = renderSummaryStatus(status);
   assert.strictEqual(status, '', 'ordinary refresh should clear copy failure message');
 
+  const twoDoseSummary = buildDoseLogSummary(['12:46', '13:30']);
+  assert(twoDoseSummary.includes('12:46') && twoDoseSummary.includes('13:30'), 'summary should include all cardioplegia doseLog entries before undo');
+  const afterUndoDoseLog = undoLastDose(['12:46', '13:30']);
+  assert.deepStrictEqual(afterUndoDoseLog, ['12:46'], 'Undo last should remove the latest doseLog entry');
+  const afterUndoSummary = buildDoseLogSummary(afterUndoDoseLog);
+  assert(afterUndoSummary.includes('12:46'), 'Undo summary should keep the earlier dose');
+  assert(!afterUndoSummary.includes('13:30'), 'Undo summary should remove the undone dose');
+  const afterUndoCopyText = `Perfusion time summary\n${afterUndoSummary}`;
+  assert(!afterUndoCopyText.includes('13:30'), 'Copy summary text after undo should not include the undone dose');
+  assert.strictEqual(renderSummaryStatus('Summary copied'), '', 'Undo refresh should clear copied status');
+
   assert(buildCardioplegiaSummaryLines({ selectedPreset: 'blood-20', intervalMinutes: 20, customIntervalMinutes: '', doseLog: [] }).includes('Cardioplegia interval setting: 20 min'), 'valid preset should be included in summary interval');
   assert(buildCardioplegiaSummaryLines({ selectedPreset: 'custom', intervalMinutes: 20, customIntervalMinutes: '75', doseLog: [] }).includes('Cardioplegia interval setting: 75 min'), 'valid custom interval should be included in summary interval');
   const emptyCustomLines = buildCardioplegiaSummaryLines({ selectedPreset: 'custom', intervalMinutes: 20, customIntervalMinutes: '', doseLog: ['09:37'] });
@@ -152,6 +171,11 @@ function run() {
   assert(mainJs.includes('if (status) status.textContent = message'), 'summary render should always update status text');
   assert(mainJs.includes('function getCardioplegiaSummaryIntervalMinutes'), 'summary interval helper should exist');
   assert(mainJs.includes("cardioplegiaReminderState.selectedPreset === 'custom'"), 'summary interval should branch on custom preset');
+  const undoHandlerSource = mainJs.slice(mainJs.indexOf('if (undoBtn)'), mainJs.indexOf('if (resetBtn)'));
+  assert(undoHandlerSource.includes('renderTimeCaseSummary();'), 'Undo last handler should refresh case summary preview');
+  const resetStart = mainJs.indexOf("resetBtn.addEventListener('click'");
+  const resetHandlerSource = mainJs.slice(resetStart, mainJs.indexOf('if (clearLogBtn)', resetStart));
+  assert(resetHandlerSource.includes('renderTimeCaseSummary();'), 'Reset timer handler should refresh/clear summary status');
   assert(!/localStorage\.setItem\([^)]*summary/i.test(mainJs), 'summary text should not be persisted to localStorage');
   assert(packageJson.includes('tests/timecalc-summary.test.js'), 'test script should include summary regression test');
 
