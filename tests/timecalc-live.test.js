@@ -115,21 +115,21 @@ function run() {
   const snapshotSource = mainJs.slice(mainJs.indexOf('function getTimeRowsSnapshot'), mainJs.indexOf('function hasTimeCaseData'));
   assert(!/startDisplay:|endDisplay:/.test(snapshotSource), 'localStorage case payload should not persist display strings that could contain 24+ hour values');
   const intervalSource = mainJs.slice(mainJs.indexOf('function initTimeLiveInterval'), mainJs.indexOf('function autoFormatTimeInput'));
-  assert(intervalSource.includes("timeLiveMode === 'live' && getTimeRowState(i).running"), 'interval tick should only update running rows in Live mode');
+  assert(intervalSource.includes("timeLiveMode === 'live' && getTimeRowState(row.id).running"), 'interval tick should only update running rows in Live mode');
   const liveFormatterSource = mainJs.slice(mainJs.indexOf('function formatDurationFromMs'), mainJs.indexOf('function saveTimeLiveState'));
   assert(!/Math\.(round|ceil)/.test(liveFormatterSource), 'live duration formatting should not round or ceil elapsed minutes');
   assert(mainJs.includes('const canUseLiveState = isLiveModeActive && inputMatchesLiveState'), 'Record mode and manual edits should fall back to manual calculation instead of live state');
   assert(mainJs.includes('startAtEpoch: now'), 'Start should store startAtEpoch');
   assert(mainJs.includes('state.endAtEpoch = now'), 'Stop should store endAtEpoch');
-  assert(mainJs.includes('delete timeLiveTimers[idx]'), 'Reset/manual override should clear row live state');
+  assert(mainJs.includes('delete timeLiveTimers[rowId]'), 'Reset/manual override should clear row live state');
   const startClockHandlerSource = mainJs.slice(mainJs.indexOf('if (s && sNow)'), mainJs.indexOf('if (e && eNow)'));
   const endClockHandlerSource = mainJs.slice(mainJs.indexOf('if (e && eNow)'), mainJs.indexOf('if (s && e && liveStart)'));
-  assert(startClockHandlerSource.includes('delete timeLiveTimers[i]'), 'start-time clock override should clear live state');
-  assert(startClockHandlerSource.includes('updateTimeLiveControls(i)'), 'start-time clock override should refresh controls after missing-end early return');
-  assert(endClockHandlerSource.includes('delete timeLiveTimers[i]'), 'end-time clock override should clear live state');
-  assert(endClockHandlerSource.includes('updateTimeLiveControls(i)'), 'end-time clock override should refresh controls after live-state clear');
+  assert(startClockHandlerSource.includes('delete timeLiveTimers[rowId]'), 'start-time clock override should clear live state');
+  assert(startClockHandlerSource.includes('updateTimeLiveControls(rowId)'), 'start-time clock override should refresh controls after missing-end early return');
+  assert(endClockHandlerSource.includes('delete timeLiveTimers[rowId]'), 'end-time clock override should clear live state');
+  assert(endClockHandlerSource.includes('updateTimeLiveControls(rowId)'), 'end-time clock override should refresh controls after live-state clear');
   assert.deepStrictEqual(controlsAfterLiveStateCleared(), { runningBadgeVisible: false, startDisabled: false, stopDisabled: true }, 'cleared live state should hide Running badge, enable Start, and disable Stop');
-  assert(mainJs.includes("controls.className = 'time-live-controls hidden"), 'Live controls should be hidden in Record mode by default');
+  assert(mainJs.includes('class="time-live-controls hidden'), 'Live controls should be hidden in Record mode by default');
 
   console.log('All timecalc live tests passed.');
 }

@@ -2780,42 +2780,178 @@ const TIME_LIVE_STORAGE_KEY = 'perfusiontools.timecalc.liveTimers.v1';
 const TIME_CASE_STORAGE_KEY = 'perfusiontools.timecalc.caseData.v2';
 const TIME_PREFERENCES_STORAGE_KEY = 'perfusiontools.timecalc.preferences.v2';
 const TIME_CASE_STALE_MS = 18 * 60 * 60 * 1000;
+const TIME_MIN_ROWS = 3;
+const TIME_MAX_ROWS = 10;
+const TIME_DEFAULT_ROWS = [
+  { id: 'row-cpb', eventType: 'cpb' },
+  { id: 'row-xclamp', eventType: 'x-clamp' },
+  { id: 'row-custom-default', eventType: 'custom' }
+];
 let timeLiveMode = 'record';
 let timeLiveTimers = {};
+let timeRows = getDefaultTimeRows();
 let timeLiveTickId = null;
 let timeCaseStartedAtEpoch = null;
 let pendingTimeCaseData = null;
 let pendingTimeCaseIsStale = false;
+let timeCustomRowCounter = 0;
 
 function setTimeError(inputEl, hasError) {
   if (!inputEl) return;
   ['ring-1', 'ring-rose-400', 'border-rose-400'].forEach(cls => inputEl.classList.toggle(cls, hasError));
 }
 
-function getTimeRowState(idx) {
-  if (!timeLiveTimers[idx]) {
-    timeLiveTimers[idx] = { id: String(idx), label: '', startAtEpoch: null, endAtEpoch: null, running: false, startDisplay: '', endDisplay: '' };
-  }
-  return timeLiveTimers[idx];
+function getDefaultTimeRows() {
+  return TIME_DEFAULT_ROWS.map(row => ({ ...row }));
 }
 
-function getDefaultTimeLabel(idx) {
-  if (idx === 1) return 'CPB / Pump time';
-  if (idx === 2) return 'Aortic cross-clamp';
+function getDefaultTimeLabel(row) {
+  const eventType = typeof row === 'string' ? row : row?.eventType;
+  if (eventType === 'cpb') return 'CPB / Pump time';
+  if (eventType === 'x-clamp') return 'Aortic cross-clamp';
   return '';
 }
 
-function getTimeRowEventType(idx) {
-  const labelInput = document.getElementById(`time-label-${idx}`);
-  const rowEl = document.querySelectorAll('#time-rows .time-row')[idx - 1];
-  return labelInput?.dataset.timeEventType || rowEl?.dataset.timeEventType || '';
+function getTimeRowById(rowId) {
+  return timeRows.find(row => row.id === rowId) || null;
 }
 
-function resetTimeRowLabelsToDefaults() {
-  for (let i = 1; i <= 5; i++) {
-    const labelInput = document.getElementById(`time-label-${i}`);
-    if (labelInput) labelInput.value = getDefaultTimeLabel(i);
+function getTimeRowState(rowId) {
+  if (!timeLiveTimers[rowId]) {
+    timeLiveTimers[rowId] = { id: rowId, startAtEpoch: null, endAtEpoch: null, running: false, startDisplay: '', endDisplay: '' };
   }
+  return timeLiveTimers[rowId];
+}
+
+function getTimeRowEventType(rowId) {
+  return getTimeRowById(rowId)?.eventType || 'custom';
+}
+
+function getTimeRowDom(rowId) {
+  return document.querySelector(`#time-rows .time-row[data-row-id="${rowId}"]`);
+}
+
+function getOrderedTimeRows() {
+  return timeRows.slice();
+}
+
+function createCustomTimeRowId() {
+  timeCustomRowCounter += 1;
+  return `row-custom-${Date.now().toString(36)}-${timeCustomRowCounter.toString(36)}`;
+}
+
+function normalizeStoredTimeRows(rows) {
+  if (!Array.isArray(rows)) return null;
+  const seen = new Set();
+  const normalized = [];
+  rows.forEach((row, index) => {
+    if (!row || typeof row.id !== 'string' || seen.has(row.id)) return;
+    const eventType = row.eventType === 'cpb' || row.eventType === 'x-clamp' ? row.eventType : 'custom';
+    normalized.push({ id: row.id, eventType, order: Number.isFinite(row.order) ? row.order : index });
+    seen.add(row.id);
+  });
+  return normalized.sort((a, b) => a.order - b.order).slice(0, TIME_MAX_ROWS).map(({ id, eventType }) => ({ id, eventType }));
+}
+
+function buildTimeRowHtml(row, index) {
+  const rowNumber = index + 1;
+  const defaultLabel = getDefaultTimeLabel(row);
+  const placeholder = row.eventType === 'custom' ? 'Optional event' : 'Label';
+  const canRemove = rowNumber > TIME_MIN_ROWS && row.eventType === 'custom';
+  return `
+    <div class="time-row rounded-2xl border border-slate-100 dark:border-primary-800/60 bg-white/70 dark:bg-primary-900/40 p-3 space-y-3" data-row-id="${row.id}" data-time-event-type="${row.eventType}">
+      <div class="flex items-center gap-2">
+        <div class="text-[11px] text-slate-500 dark:text-slate-400">#${rowNumber}</div>
+        <input id="time-label-${row.id}" type="text" inputmode="text" value="${defaultLabel}" placeholder="${placeholder}" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+        ${canRemove ? `<button type="button" class="time-remove-row rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-2 py-1 text-[11px] font-semibold text-slate-500 dark:text-slate-300 hover:border-rose-300 hover:text-rose-600" data-row-id="${row.id}">Remove</button>` : ''}
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div class="flex flex-col gap-1">
+          <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
+          <div class="flex items-center gap-2">
+            <input id="time-start-${row.id}" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+            <button id="time-start-now-${row.id}" type="button" class="time-start-now p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500" data-row-id="${row.id}">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /></svg>
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-col gap-1">
+          <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
+          <div class="flex items-center gap-2">
+            <input id="time-end-${row.id}" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+            <button id="time-end-now-${row.id}" type="button" class="time-end-now p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500" data-row-id="${row.id}">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /></svg>
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-col gap-1">
+          <span class="text-[11px] text-slate-500 dark:text-slate-400">Duration</span>
+          <div id="time-result-${row.id}" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-200">-</div>
+        </div>
+      </div>
+      <div id="time-live-controls-${row.id}" class="time-live-controls hidden flex flex-wrap items-center gap-2 pt-1">
+        <span id="time-running-badge-${row.id}" class="hidden rounded-full bg-accent-100 dark:bg-accent-500/20 px-2 py-1 text-[11px] font-semibold text-accent-700 dark:text-accent-300">Running</span>
+        <button id="time-live-start-${row.id}" type="button" class="time-live-start rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed" data-row-id="${row.id}">Start</button>
+        <button id="time-live-stop-${row.id}" type="button" class="time-live-stop rounded-lg border border-accent-600 bg-accent-600 px-3 py-1.5 text-xs font-semibold text-white disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 dark:disabled:border-primary-700 dark:disabled:bg-primary-800 dark:disabled:text-slate-500 disabled:cursor-not-allowed" data-row-id="${row.id}">Stop</button>
+        <button id="time-live-reset-${row.id}" type="button" class="time-live-reset rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-200" data-row-id="${row.id}">Reset</button>
+      </div>
+    </div>`;
+}
+
+function renderTimeRows() {
+  const rowsEl = document.getElementById('time-rows');
+  if (!rowsEl) return;
+  rowsEl.innerHTML = timeRows.map(buildTimeRowHtml).join('');
+  timeRows.forEach(row => {
+    const state = timeLiveTimers[row.id];
+    const startInput = document.getElementById(`time-start-${row.id}`);
+    const endInput = document.getElementById(`time-end-${row.id}`);
+    if (startInput && state?.startAtEpoch) startInput.value = formatEpochToHHMM(state.startAtEpoch);
+    if (endInput && state?.endAtEpoch) endInput.value = formatEpochToHHMM(state.endAtEpoch);
+    if (state) {
+      state.startDisplay = startInput?.value || '';
+      state.endDisplay = endInput?.value || '';
+    }
+    bindTimeRowEvents(row.id);
+    updateTimeRow(row.id);
+    updateTimeLiveControls(row.id);
+  });
+  updateAddTimeRowUi();
+}
+
+function updateAddTimeRowUi() {
+  const addBtn = document.getElementById('time-add-row');
+  const statusEl = document.getElementById('time-add-row-status');
+  const atMax = timeRows.length >= TIME_MAX_ROWS;
+  if (addBtn) addBtn.disabled = atMax;
+  if (statusEl) statusEl.textContent = atMax ? 'Maximum 10 events' : '';
+}
+
+function addTimeEventRow() {
+  if (timeRows.length >= TIME_MAX_ROWS) {
+    updateAddTimeRowUi();
+    return null;
+  }
+  const row = { id: createCustomTimeRowId(), eventType: 'custom' };
+  timeRows.push(row);
+  renderTimeRows();
+  saveTimeLiveState();
+  return row;
+}
+
+function removeTimeEventRow(rowId) {
+  const rowIndex = timeRows.findIndex(row => row.id === rowId);
+  if (rowIndex < TIME_MIN_ROWS || rowIndex === -1) return false;
+  const row = timeRows[rowIndex];
+  if (row.eventType !== 'custom') return false;
+  const state = timeLiveTimers[rowId];
+  if (state?.running && !window.confirm('Remove this running event timer?')) return false;
+  delete timeLiveTimers[rowId];
+  timeRows.splice(rowIndex, 1);
+  renderTimeRows();
+  saveTimeLiveState();
+  renderCardioplegiaShortcut();
+  return true;
 }
 
 function formatDurationFromMs(elapsedMs) {
@@ -2836,80 +2972,6 @@ function formatEpochToHHMM(epochMs) {
   return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
 }
 
-function formatSummaryDuration(totalMinutes) {
-  const safeMinutes = Math.max(0, totalMinutes || 0);
-  const hours = Math.floor(safeMinutes / 60);
-  const minutes = safeMinutes % 60;
-  return `${safeMinutes} min / ${hours}:${minutes.toString().padStart(2, '0')}`;
-}
-
-function getCompletedTimeRowSummary(idx) {
-  const labelInput = document.getElementById(`time-label-${idx}`);
-  const startInput = document.getElementById(`time-start-${idx}`);
-  const endInput = document.getElementById(`time-end-${idx}`);
-  if (!startInput || !endInput) return null;
-
-  const startMin = parseTimeToMinutes(startInput.value);
-  const endMin = parseTimeToMinutes(endInput.value);
-  if (startMin == null || endMin == null) return null;
-
-  const label = (labelInput?.value || '').trim() || `Event ${idx}`;
-  const startDisplay = formatMinutesToHHMM(startMin);
-  const endDisplay = formatMinutesToHHMM(endMin);
-  let adjustedEnd = endMin;
-  if (endMin < startMin) adjustedEnd = endMin + 24 * 60;
-  const durationMinutes = adjustedEnd - startMin;
-  return `${label}: ${startDisplay}–${endDisplay} (${formatSummaryDuration(durationMinutes)})`;
-}
-
-function buildTimeCaseSummaryText() {
-  const lines = ['Perfusion time summary'];
-  for (let i = 1; i <= 5; i++) {
-    const rowSummary = getCompletedTimeRowSummary(i);
-    if (rowSummary) lines.push(rowSummary);
-  }
-
-  const doseLog = Array.isArray(cardioplegiaReminderState.doseLog) ? cardioplegiaReminderState.doseLog : [];
-  const doseText = doseLog.length ? doseLog.map(formatCardioplegiaClock).join(', ') : '—';
-  lines.push(`Cardioplegia complete: ${doseText}`);
-  const intervalMinutes = getCardioplegiaIntervalMinutes();
-  if (intervalMinutes) lines.push(`Cardioplegia interval setting: ${intervalMinutes} min`);
-  return lines.join('\n');
-}
-
-function renderTimeCaseSummary(message = null) {
-  const preview = document.getElementById('time-summary-preview');
-  const status = document.getElementById('time-summary-status');
-  if (preview) preview.value = buildTimeCaseSummaryText();
-  if (status && message != null) status.textContent = message;
-}
-
-function fallbackCopyTimeCaseSummary(summaryText) {
-  const preview = document.getElementById('time-summary-preview');
-  if (!preview) return false;
-  preview.value = summaryText;
-  preview.focus();
-  preview.select();
-  try {
-    return document.execCommand && document.execCommand('copy');
-  } catch (err) {
-    return false;
-  }
-}
-
-async function copyTimeCaseSummary() {
-  const summaryText = buildTimeCaseSummaryText();
-  renderTimeCaseSummary('');
-  try {
-    if (!navigator.clipboard?.writeText) throw new Error('Clipboard API unavailable');
-    await navigator.clipboard.writeText(summaryText);
-    renderTimeCaseSummary('Summary copied');
-  } catch (err) {
-    const fallbackSucceeded = fallbackCopyTimeCaseSummary(summaryText);
-    renderTimeCaseSummary(fallbackSucceeded ? 'Summary copied' : 'Copy failed. Select and copy manually.');
-  }
-}
-
 function getDefaultCardioplegiaReminderState() {
   return {
     reminderEnabled: true,
@@ -2923,23 +2985,27 @@ function getDefaultCardioplegiaReminderState() {
 }
 
 function getTimeRowsSnapshot() {
-  const rows = {};
-  for (let i = 1; i <= 5; i++) {
-    const state = getTimeRowState(i);
-    if (!state.startAtEpoch && !state.endAtEpoch && !state.running) continue;
-    rows[i] = {
-      id: String(i),
+  return timeRows.map((row, index) => {
+    const state = timeLiveTimers[row.id] || {};
+    return {
+      id: row.id,
+      order: index,
+      eventType: row.eventType || 'custom',
       startAtEpoch: state.startAtEpoch || null,
       endAtEpoch: state.endAtEpoch || null,
       running: Boolean(state.running),
-      lastUpdatedAtEpoch: Date.now()
+      lastUpdatedAtEpoch: state.startAtEpoch || state.endAtEpoch || state.running ? Date.now() : null
     };
-  }
-  return rows;
+  });
+}
+
+function hasNonDefaultTimeRows(rows) {
+  if (!Array.isArray(rows) || rows.length !== TIME_DEFAULT_ROWS.length) return true;
+  return rows.some((row, index) => row.id !== TIME_DEFAULT_ROWS[index].id || row.eventType !== TIME_DEFAULT_ROWS[index].eventType);
 }
 
 function hasTimeCaseRows(rows) {
-  return Object.values(rows || {}).some(row => row.startAtEpoch || row.endAtEpoch || row.running);
+  return Array.isArray(rows) && rows.some(row => row.startAtEpoch || row.endAtEpoch || row.running || hasNonDefaultTimeRows(rows));
 }
 
 function hasTimeCaseData(caseData) {
@@ -3024,30 +3090,58 @@ function saveTimeLiveState() {
   saveTimeCaseData();
 }
 
+function normalizeLegacyTimeRows(rows, saved) {
+  const entries = Object.entries(rows || {});
+  if (!entries.length) return getDefaultTimeRows();
+  const highestIndex = Math.min(TIME_MAX_ROWS, Math.max(TIME_MIN_ROWS, ...entries.map(([idx]) => Number(idx) || 0)));
+  return Array.from({ length: highestIndex }, (_, index) => {
+    if (index === 0) return { id: 'row-cpb', eventType: 'cpb' };
+    if (index === 1) return { id: 'row-xclamp', eventType: 'x-clamp' };
+    if (index === 2) return { id: 'row-custom-default', eventType: 'custom' };
+    return { id: `row-custom-legacy-${index + 1}`, eventType: 'custom' };
+  });
+}
+
 function applyTimeCaseData(caseData) {
   if (!caseData) return;
   timeCaseStartedAtEpoch = caseData.caseStartedAtEpoch || Date.now();
   timeLiveTimers = {};
-  for (let i = 1; i <= 5; i++) {
-    const row = caseData.rows?.[i];
-    const labelInput = document.getElementById(`time-label-${i}`);
-    const startInput = document.getElementById(`time-start-${i}`);
-    const endInput = document.getElementById(`time-end-${i}`);
-    const startDisplay = formatEpochToHHMM(row?.startAtEpoch);
-    const endDisplay = formatEpochToHHMM(row?.endAtEpoch);
-    if (labelInput) labelInput.value = getDefaultTimeLabel(i);
-    if (startInput) startInput.value = startDisplay;
-    if (endInput) endInput.value = endDisplay;
-    if (row) {
-      timeLiveTimers[i] = { id: String(i), label: '', startAtEpoch: row.startAtEpoch || null, endAtEpoch: row.endAtEpoch || null, running: Boolean(row.running), startDisplay, endDisplay };
+  const restoredRows = normalizeStoredTimeRows(caseData.rows) || normalizeLegacyTimeRows(caseData.rows, caseData);
+  timeRows = restoredRows.length >= TIME_MIN_ROWS ? restoredRows : getDefaultTimeRows();
+  caseData.rows?.forEach?.(row => {
+    if (!row || !row.id) return;
+    if (row.startAtEpoch || row.endAtEpoch || row.running) {
+      timeLiveTimers[row.id] = {
+        id: row.id,
+        startAtEpoch: row.startAtEpoch || null,
+        endAtEpoch: row.endAtEpoch || null,
+        running: Boolean(row.running),
+        startDisplay: formatEpochToHHMM(row.startAtEpoch),
+        endDisplay: formatEpochToHHMM(row.endAtEpoch)
+      };
     }
+  });
+  if (!Array.isArray(caseData.rows) && caseData.rows) {
+    Object.entries(caseData.rows).forEach(([idx, row]) => {
+      if (!row || (!row.startAtEpoch && !row.endAtEpoch && !row.running)) return;
+      const mappedRow = timeRows[(Number(idx) || 1) - 1];
+      if (!mappedRow) return;
+      timeLiveTimers[mappedRow.id] = {
+        id: mappedRow.id,
+        startAtEpoch: row.startAtEpoch || null,
+        endAtEpoch: row.endAtEpoch || null,
+        running: Boolean(row.running),
+        startDisplay: formatEpochToHHMM(row.startAtEpoch),
+        endDisplay: formatEpochToHHMM(row.endAtEpoch)
+      };
+    });
   }
   if (caseData.cardioplegia) {
     cardioplegiaReminderState.lastCompletedAtEpoch = caseData.cardioplegia.lastCompletedAtEpoch || null;
     cardioplegiaReminderState.nextDueAtEpoch = caseData.cardioplegia.nextDueAtEpoch || null;
     cardioplegiaReminderState.doseLog = Array.isArray(caseData.cardioplegia.doseLog) ? caseData.cardioplegia.doseLog.filter(Number.isFinite) : [];
   }
-  for (let i = 1; i <= 5; i++) updateTimeRow(i);
+  renderTimeRows();
   renderCardioplegiaReminder();
 }
 
@@ -3056,6 +3150,22 @@ function readStoredTimeCaseData() {
     const raw = localStorage.getItem(TIME_CASE_STORAGE_KEY) || localStorage.getItem(TIME_LIVE_STORAGE_KEY);
     if (!raw) return null;
     const saved = JSON.parse(raw);
+    if (Array.isArray(saved.rows)) {
+      return {
+        caseStartedAtEpoch: saved.caseStartedAtEpoch || saved.lastUpdatedAtEpoch || Date.now(),
+        lastUpdatedAtEpoch: saved.lastUpdatedAtEpoch || Date.now(),
+        rows: saved.rows.map((row, index) => ({
+          id: String(row.id),
+          order: Number.isFinite(row.order) ? row.order : index,
+          eventType: row.eventType === 'cpb' || row.eventType === 'x-clamp' ? row.eventType : 'custom',
+          startAtEpoch: row.startAtEpoch || null,
+          endAtEpoch: row.endAtEpoch || null,
+          running: Boolean(row.running),
+          lastUpdatedAtEpoch: row.lastUpdatedAtEpoch || saved.lastUpdatedAtEpoch || null
+        })).filter(row => row.id),
+        cardioplegia: saved.cardioplegia || { intervalMinutes: null, lastCompletedAtEpoch: null, nextDueAtEpoch: null, doseLog: [], lastUpdatedAtEpoch: null }
+      };
+    }
     if (saved.rows) {
       const rows = {};
       Object.entries(saved.rows).forEach(([idx, row]) => {
@@ -3101,22 +3211,7 @@ function hideTimeCasePrompt() {
 }
 
 function clearTimecalcCaseData(options = {}) {
-  for (let i = 1; i <= 5; i++) {
-    const labelInput = document.getElementById(`time-label-${i}`);
-    const startInput = document.getElementById(`time-start-${i}`);
-    const endInput = document.getElementById(`time-end-${i}`);
-    const resultEl = document.getElementById(`time-result-${i}`);
-    if (labelInput) labelInput.value = getDefaultTimeLabel(i);
-    if (startInput) {
-      startInput.value = '';
-      setTimeError(startInput, false);
-    }
-    if (endInput) {
-      endInput.value = '';
-      setTimeError(endInput, false);
-    }
-    if (resultEl) resultEl.textContent = '-';
-  }
+  timeRows = getDefaultTimeRows();
   timeLiveTimers = {};
   timeCaseStartedAtEpoch = null;
   pendingTimeCaseData = null;
@@ -3133,10 +3228,9 @@ function clearTimecalcCaseData(options = {}) {
     // Case clear should still reset the in-memory UI when storage is unavailable.
   }
   hideTimeCasePrompt();
-  for (let i = 1; i <= 5; i++) updateTimeLiveControls(i);
+  renderTimeRows();
   renderCardioplegiaReminder();
   renderCardioplegiaShortcut();
-  renderTimeCaseSummary();
   if (options.keepPreferences !== false) saveTimePreferencesState();
 }
 
@@ -3149,13 +3243,13 @@ function loadTimeLiveState() {
   showTimeCasePrompt(caseData, pendingTimeCaseIsStale);
 }
 
-function updateTimeLiveControls(idx) {
-  const rowEl = document.querySelectorAll('#time-rows .time-row')[idx - 1];
-  const controlsEl = document.getElementById(`time-live-controls-${idx}`);
-  const badgeEl = document.getElementById(`time-running-badge-${idx}`);
-  const startBtn = document.getElementById(`time-live-start-${idx}`);
-  const stopBtn = document.getElementById(`time-live-stop-${idx}`);
-  const state = getTimeRowState(idx);
+function updateTimeLiveControls(rowId) {
+  const rowEl = getTimeRowDom(rowId);
+  const controlsEl = document.getElementById(`time-live-controls-${rowId}`);
+  const badgeEl = document.getElementById(`time-running-badge-${rowId}`);
+  const startBtn = document.getElementById(`time-live-start-${rowId}`);
+  const stopBtn = document.getElementById(`time-live-stop-${rowId}`);
+  const state = getTimeRowState(rowId);
   const isLive = timeLiveMode === 'live';
   if (controlsEl) controlsEl.classList.toggle('hidden', !isLive);
   if (badgeEl) badgeEl.classList.toggle('hidden', !(isLive && state.running));
@@ -3168,29 +3262,27 @@ function updateTimeLiveControls(idx) {
   if (stopBtn) stopBtn.disabled = !state.running;
 }
 
-function updateTimeRow(idx) {
-  const startInput = document.getElementById(`time-start-${idx}`);
-  const endInput = document.getElementById(`time-end-${idx}`);
-  const resultEl = document.getElementById(`time-result-${idx}`);
+function updateTimeRow(rowId) {
+  const startInput = document.getElementById(`time-start-${rowId}`);
+  const endInput = document.getElementById(`time-end-${rowId}`);
+  const resultEl = document.getElementById(`time-result-${rowId}`);
   if (!startInput || !endInput || !resultEl) return;
 
-  const state = getTimeRowState(idx);
+  const state = getTimeRowState(rowId);
   const inputMatchesLiveState = startInput.value === (state.startDisplay || '') && endInput.value === (state.endDisplay || '');
   const isLiveModeActive = timeLiveMode === 'live';
   const canUseLiveState = isLiveModeActive && inputMatchesLiveState;
   if (isLiveModeActive && canUseLiveState && state.running && state.startAtEpoch) {
     resultEl.textContent = formatDurationFromMs(Date.now() - state.startAtEpoch);
     resultEl.classList.add('font-semibold', 'text-accent-700', 'dark:text-accent-300');
-    updateTimeLiveControls(idx);
-    renderTimeCaseSummary();
+    updateTimeLiveControls(rowId);
     return;
   }
   resultEl.classList.remove('font-semibold', 'text-accent-700', 'dark:text-accent-300');
 
   if (canUseLiveState && state.startAtEpoch && state.endAtEpoch) {
     resultEl.textContent = formatDurationFromMs(state.endAtEpoch - state.startAtEpoch);
-    updateTimeLiveControls(idx);
-    renderTimeCaseSummary();
+    updateTimeLiveControls(rowId);
     return;
   }
 
@@ -3210,7 +3302,6 @@ function updateTimeRow(idx) {
 
   if (startMin == null || endMin == null) {
     resultEl.textContent = '-';
-    renderTimeCaseSummary();
     return;
   }
 
@@ -3223,28 +3314,37 @@ function updateTimeRow(idx) {
   if (diff < 0) diff += 24 * 60;
 
   resultEl.textContent = formatDuration(diff);
-  updateTimeLiveControls(idx);
-  renderTimeCaseSummary();
+  updateTimeLiveControls(rowId);
 }
 
-function clearTimeLiveRow(idx) {
-  delete timeLiveTimers[idx];
-  updateTimeRow(idx);
-  updateTimeLiveControls(idx);
-  saveTimeLiveState();
-  renderTimeCaseSummary();
-}
-
-function handleManualTimeEdit(idx, inputEl) {
-  autoFormatTimeInput(inputEl);
-  const state = getTimeRowState(idx);
-  const startInput = document.getElementById(`time-start-${idx}`);
-  const endInput = document.getElementById(`time-end-${idx}`);
-  if ((startInput && startInput.value !== (state.startDisplay || '')) || (endInput && endInput.value !== (state.endDisplay || ''))) {
-    delete timeLiveTimers[idx];
+function clearTimeLiveRow(rowId) {
+  delete timeLiveTimers[rowId];
+  const startInput = document.getElementById(`time-start-${rowId}`);
+  const endInput = document.getElementById(`time-end-${rowId}`);
+  const resultEl = document.getElementById(`time-result-${rowId}`);
+  if (startInput) {
+    startInput.value = '';
+    setTimeError(startInput, false);
   }
-  updateTimeRow(idx);
-  updateTimeLiveControls(idx);
+  if (endInput) {
+    endInput.value = '';
+    setTimeError(endInput, false);
+  }
+  if (resultEl) resultEl.textContent = '-';
+  updateTimeLiveControls(rowId);
+  saveTimeLiveState();
+}
+
+function handleManualTimeEdit(rowId, inputEl) {
+  autoFormatTimeInput(inputEl);
+  const state = getTimeRowState(rowId);
+  const startInput = document.getElementById(`time-start-${rowId}`);
+  const endInput = document.getElementById(`time-end-${rowId}`);
+  if ((startInput && startInput.value !== (state.startDisplay || '')) || (endInput && endInput.value !== (state.endDisplay || ''))) {
+    delete timeLiveTimers[rowId];
+  }
+  updateTimeRow(rowId);
+  updateTimeLiveControls(rowId);
   saveTimeLiveState();
 }
 
@@ -3266,33 +3366,108 @@ function setTimeLiveMode(nextMode) {
   if (notice) notice.classList.toggle('hidden', timeLiveMode !== 'live');
   renderCardioplegiaReminder();
   renderCardioplegiaShortcut();
-  for (let i = 1; i <= 5; i++) {
-    updateTimeRow(i);
-    updateTimeLiveControls(i);
-  }
+  getOrderedTimeRows().forEach(row => {
+    updateTimeRow(row.id);
+    updateTimeLiveControls(row.id);
+  });
   if (pendingTimeCaseData) saveTimePreferencesState();
   else saveTimeLiveState();
 }
 
-function createTimeLiveControls(idx, rowEl) {
-  if (!rowEl || document.getElementById(`time-live-controls-${idx}`)) return;
-  const controls = document.createElement('div');
-  controls.id = `time-live-controls-${idx}`;
-  controls.className = 'time-live-controls hidden flex flex-wrap items-center gap-2 pt-1';
-  controls.innerHTML = `
-    <span id="time-running-badge-${idx}" class="hidden rounded-full bg-accent-100 dark:bg-accent-500/20 px-2 py-1 text-[11px] font-semibold text-accent-700 dark:text-accent-300">Running</span>
-    <button id="time-live-start-${idx}" type="button" class="rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed">Start</button>
-    <button id="time-live-stop-${idx}" type="button" class="rounded-lg border border-accent-600 bg-accent-600 px-3 py-1.5 text-xs font-semibold text-white disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 dark:disabled:border-primary-700 dark:disabled:bg-primary-800 dark:disabled:text-slate-500 disabled:cursor-not-allowed">Stop</button>
-    <button id="time-live-reset-${idx}" type="button" class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-200">Reset</button>`;
-  rowEl.appendChild(controls);
+function bindTimeRowEvents(rowId) {
+  const s = document.getElementById(`time-start-${rowId}`);
+  const e = document.getElementById(`time-end-${rowId}`);
+  const label = document.getElementById(`time-label-${rowId}`);
+  const sNow = document.getElementById(`time-start-now-${rowId}`);
+  const eNow = document.getElementById(`time-end-now-${rowId}`);
+  const liveStart = document.getElementById(`time-live-start-${rowId}`);
+  const liveStop = document.getElementById(`time-live-stop-${rowId}`);
+  const liveReset = document.getElementById(`time-live-reset-${rowId}`);
+  const removeBtn = document.querySelector(`.time-remove-row[data-row-id="${rowId}"]`);
+  [s, e, sNow, eNow].forEach(elRef => {
+    if (elRef) elRef.removeAttribute('title');
+  });
+  if (label) {
+    label.addEventListener('input', () => {
+      saveTimeLiveState();
+      renderCardioplegiaShortcut();
+    });
+  }
+  if (s) {
+    s.addEventListener('input', () => handleManualTimeEdit(rowId, s));
+    s.addEventListener('blur', () => updateTimeRow(rowId));
+  }
+  if (e) {
+    e.addEventListener('input', () => handleManualTimeEdit(rowId, e));
+    e.addEventListener('blur', () => updateTimeRow(rowId));
+  }
+  if (s && sNow) {
+    sNow.addEventListener('click', () => {
+      s.value = getCurrentTimeHHMM();
+      delete timeLiveTimers[rowId];
+      setTimeError(s, false);
+      updateTimeRow(rowId);
+      updateTimeLiveControls(rowId);
+      renderCardioplegiaShortcut();
+      saveTimeLiveState();
+    });
+  }
+  if (e && eNow) {
+    eNow.addEventListener('click', () => {
+      e.value = getCurrentTimeHHMM();
+      delete timeLiveTimers[rowId];
+      setTimeError(e, false);
+      updateTimeRow(rowId);
+      updateTimeLiveControls(rowId);
+      renderCardioplegiaShortcut();
+      saveTimeLiveState();
+    });
+  }
+  if (s && e && liveStart) {
+    liveStart.addEventListener('click', () => {
+      const now = Date.now();
+      const startDisplay = getCurrentTimeHHMM();
+      s.value = startDisplay;
+      e.value = '';
+      timeLiveTimers[rowId] = { id: rowId, startAtEpoch: now, endAtEpoch: null, running: true, startDisplay, endDisplay: '' };
+      if (getTimeRowEventType(rowId) === 'x-clamp') cardioplegiaShortcutDismissed = false;
+      setTimeError(s, false);
+      setTimeError(e, false);
+      updateTimeRow(rowId);
+      saveTimeLiveState();
+      renderCardioplegiaShortcut();
+    });
+  }
+  if (e && liveStop) {
+    liveStop.addEventListener('click', () => {
+      const state = getTimeRowState(rowId);
+      if (!state.running) return;
+      const now = Date.now();
+      const endDisplay = getCurrentTimeHHMM();
+      e.value = endDisplay;
+      state.endAtEpoch = now;
+      state.running = false;
+      state.endDisplay = endDisplay;
+      updateTimeRow(rowId);
+      saveTimeLiveState();
+      renderCardioplegiaShortcut();
+    });
+  }
+  if (s && e && liveReset) {
+    liveReset.addEventListener('click', () => {
+      clearTimeLiveRow(rowId);
+      renderCardioplegiaShortcut();
+    });
+  }
+  if (removeBtn) removeBtn.addEventListener('click', () => removeTimeEventRow(rowId));
 }
 
 function initTimeLiveInterval() {
   if (timeLiveTickId) window.clearInterval(timeLiveTickId);
   timeLiveTickId = window.setInterval(() => {
-    for (let i = 1; i <= 5; i++) {
-      if (timeLiveMode === 'live' && getTimeRowState(i).running) updateTimeRow(i);
-    }
+    getOrderedTimeRows().forEach(row => {
+      if (timeLiveMode === 'live' && getTimeRowState(row.id).running) updateTimeRow(row.id);
+    });
   }, 1000);
 }
 
@@ -3390,12 +3565,9 @@ function isCrossClampLabel(label) {
 }
 
 function getRunningCrossClampRow() {
-  for (let i = 1; i <= 5; i++) {
-    const state = getTimeRowState(i);
-    const labelInput = document.getElementById(`time-label-${i}`);
-    const label = labelInput ? labelInput.value : state.label;
-    const eventType = getTimeRowEventType(i);
-    if (state.running && (eventType === 'x-clamp' || isCrossClampLabel(label))) return { idx: i, label, eventType };
+  for (const row of getOrderedTimeRows()) {
+    const state = getTimeRowState(row.id);
+    if (state.running && getTimeRowEventType(row.id) === 'x-clamp') return { rowId: row.id, eventType: row.eventType };
   }
   return null;
 }
@@ -3463,7 +3635,6 @@ function completeCardioplegiaDose(source = 'card') {
   saveCardioplegiaReminderState();
   renderCardioplegiaReminder();
   renderCardioplegiaShortcut();
-  renderTimeCaseSummary();
   if (source === 'shortcut') {
     showCardioplegiaShortcutConfirmation(completedAtEpoch, nextDueAtEpoch);
     temporarilyDisableCardioplegiaShortcutComplete();
@@ -3609,7 +3780,6 @@ function initCardioplegiaReminder() {
       }
       saveCardioplegiaReminderState();
       renderCardioplegiaReminder();
-      renderTimeCaseSummary();
     });
   }
 
@@ -3621,7 +3791,6 @@ function initCardioplegiaReminder() {
       restoreCardioplegiaFromLastLogEntry();
       saveCardioplegiaReminderState();
       renderCardioplegiaReminder();
-      renderTimeCaseSummary();
     });
   }
 
@@ -3640,7 +3809,6 @@ function initCardioplegiaReminder() {
       cardioplegiaReminderState.doseLog = [];
       saveCardioplegiaReminderState();
       renderCardioplegiaReminder();
-      renderTimeCaseSummary();
     });
   }
 
@@ -3667,19 +3835,19 @@ function initTimeCalculator() {
     });
   });
 
-  const rowEls = document.querySelectorAll('#time-rows .time-row');
-  rowEls.forEach((rowEl, rowIdx) => createTimeLiveControls(rowIdx + 1, rowEl));
+  renderTimeRows();
   loadTimeLiveState();
 
   const recordModeBtn = document.getElementById('time-mode-record');
   const liveModeBtn = document.getElementById('time-mode-live');
-  if (recordModeBtn) recordModeBtn.addEventListener('click', () => setTimeLiveMode('record'));
-  if (liveModeBtn) liveModeBtn.addEventListener('click', () => setTimeLiveMode('live'));
   const newCaseBtn = document.getElementById('time-new-case');
-  const summaryCopyBtn = document.getElementById('time-summary-copy');
-  const summaryRefreshBtn = document.getElementById('time-summary-refresh');
+  const addRowBtn = document.getElementById('time-add-row');
   const continueCaseBtn = document.getElementById('time-case-continue');
   const startNewCaseBtn = document.getElementById('time-case-start-new');
+
+  if (recordModeBtn) recordModeBtn.addEventListener('click', () => setTimeLiveMode('record'));
+  if (liveModeBtn) liveModeBtn.addEventListener('click', () => setTimeLiveMode('live'));
+  if (addRowBtn) addRowBtn.addEventListener('click', addTimeEventRow);
   if (newCaseBtn) {
     newCaseBtn.addEventListener('click', () => {
       if (!window.confirm('Clear all Time Calculator case data and start a new case? Interval preferences will be kept.')) return;
@@ -3696,109 +3864,10 @@ function initTimeCalculator() {
     });
   }
   if (startNewCaseBtn) startNewCaseBtn.addEventListener('click', () => clearTimecalcCaseData({ keepPreferences: true }));
-  if (summaryCopyBtn) summaryCopyBtn.addEventListener('click', copyTimeCaseSummary);
-  if (summaryRefreshBtn) summaryRefreshBtn.addEventListener('click', () => renderTimeCaseSummary());
 
-  for (let i = 1; i <= 5; i++) {
-    const s = document.getElementById(`time-start-${i}`);
-    const e = document.getElementById(`time-end-${i}`);
-    const label = document.getElementById(`time-label-${i}`);
-    const sNow = document.getElementById(`time-start-now-${i}`);
-    const eNow = document.getElementById(`time-end-now-${i}`);
-    const liveStart = document.getElementById(`time-live-start-${i}`);
-    const liveStop = document.getElementById(`time-live-stop-${i}`);
-    const liveReset = document.getElementById(`time-live-reset-${i}`);
-    [s, e, sNow, eNow].forEach(elRef => {
-      if (elRef) elRef.removeAttribute('title');
-    });
-    if (label) {
-      label.addEventListener('input', () => {
-        saveTimeLiveState();
-        renderCardioplegiaShortcut();
-        renderTimeCaseSummary();
-      });
-    }
-    if (s) {
-      s.addEventListener('input', () => handleManualTimeEdit(i, s));
-      s.addEventListener('blur', () => updateTimeRow(i));
-    }
-    if (e) {
-      e.addEventListener('input', () => handleManualTimeEdit(i, e));
-      e.addEventListener('blur', () => updateTimeRow(i));
-    }
-    if (s && sNow) {
-      sNow.addEventListener('click', () => {
-        s.value = getCurrentTimeHHMM();
-        delete timeLiveTimers[i];
-        setTimeError(s, false);
-        updateTimeRow(i);
-        updateTimeLiveControls(i);
-        renderCardioplegiaShortcut();
-        renderTimeCaseSummary();
-        saveTimeLiveState();
-      });
-    }
-    if (e && eNow) {
-      eNow.addEventListener('click', () => {
-        e.value = getCurrentTimeHHMM();
-        delete timeLiveTimers[i];
-        setTimeError(e, false);
-        updateTimeRow(i);
-        updateTimeLiveControls(i);
-        renderCardioplegiaShortcut();
-        renderTimeCaseSummary();
-        saveTimeLiveState();
-      });
-    }
-    if (s && e && liveStart) {
-      liveStart.addEventListener('click', () => {
-        const now = Date.now();
-        const startDisplay = getCurrentTimeHHMM();
-        s.value = startDisplay;
-        e.value = '';
-        timeLiveTimers[i] = { id: String(i), label: label ? label.value : '', startAtEpoch: now, endAtEpoch: null, running: true, startDisplay, endDisplay: '' };
-        if (getTimeRowEventType(i) === 'x-clamp' || isCrossClampLabel(label ? label.value : '')) cardioplegiaShortcutDismissed = false;
-        setTimeError(s, false);
-        setTimeError(e, false);
-        updateTimeRow(i);
-        saveTimeLiveState();
-        renderCardioplegiaShortcut();
-        renderTimeCaseSummary();
-      });
-    }
-    if (e && liveStop) {
-      liveStop.addEventListener('click', () => {
-        const state = getTimeRowState(i);
-        if (!state.running) return;
-        const now = Date.now();
-        const endDisplay = getCurrentTimeHHMM();
-        e.value = endDisplay;
-        state.endAtEpoch = now;
-        state.running = false;
-        state.endDisplay = endDisplay;
-        updateTimeRow(i);
-        saveTimeLiveState();
-        renderCardioplegiaShortcut();
-        renderTimeCaseSummary();
-      });
-    }
-    if (s && e && liveReset) {
-      liveReset.addEventListener('click', () => {
-        s.value = '';
-        e.value = '';
-        const resultEl = document.getElementById(`time-result-${i}`);
-        if (resultEl) resultEl.textContent = '-';
-        clearTimeLiveRow(i);
-        renderCardioplegiaShortcut();
-        renderTimeCaseSummary();
-      });
-    }
-    updateTimeRow(i);
-  }
   initCardioplegiaReminder();
   setTimeLiveMode(timeLiveMode);
   initTimeLiveInterval();
-  renderTimeCaseSummary();
 }
 
 // -----------------------------

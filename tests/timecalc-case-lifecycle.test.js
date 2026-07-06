@@ -7,7 +7,7 @@ const path = require('path');
 const STALE_MS = 18 * 60 * 60 * 1000;
 
 function hasCaseRows(rows) {
-  return Object.values(rows || {}).some(row => row.startAtEpoch || row.endAtEpoch || row.running);
+  return Array.isArray(rows) && rows.some(row => row.startAtEpoch || row.endAtEpoch || row.running || rows.length !== 3);
 }
 
 function hasCaseData(caseData) {
@@ -34,18 +34,15 @@ function isStale(caseData, nowMs) {
 
 
 function buildMinimalCaseRows(rows) {
-  const sanitized = {};
-  Object.entries(rows || {}).forEach(([idx, row]) => {
-    if (!row.startAtEpoch && !row.endAtEpoch && !row.running) return;
-    sanitized[idx] = {
-      id: String(idx),
-      startAtEpoch: row.startAtEpoch || null,
-      endAtEpoch: row.endAtEpoch || null,
-      running: Boolean(row.running),
-      lastUpdatedAtEpoch: row.lastUpdatedAtEpoch || null
-    };
-  });
-  return sanitized;
+  return rows.map((row, index) => ({
+    id: row.id,
+    order: index,
+    eventType: row.eventType || 'custom',
+    startAtEpoch: row.startAtEpoch || null,
+    endAtEpoch: row.endAtEpoch || null,
+    running: Boolean(row.running),
+    lastUpdatedAtEpoch: row.lastUpdatedAtEpoch || null
+  }));
 }
 
 function formatEpochToHHMM(epochMs) {
@@ -61,13 +58,9 @@ function run() {
   const packageJson = fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8');
 
   assert(timecalcHtml.includes('id="time-new-case"'), 'New case / Clear all button should exist');
-  assert(timecalcHtml.includes('id="time-label-1"') && timecalcHtml.includes('value="CPB / Pump time"'), 'Row 1 should default to CPB / Pump time');
-  assert(timecalcHtml.includes('id="time-label-2"') && timecalcHtml.includes('value="Aortic cross-clamp"'), 'Row 2 should default to Aortic cross-clamp');
-  assert(timecalcHtml.includes('id="time-label-2"') && timecalcHtml.includes('data-time-event-type="x-clamp"'), 'Row 2 should have stable x-clamp event type');
-  [3, 4, 5].forEach(idx => {
-    assert(timecalcHtml.includes(`id="time-label-${idx}"`) && timecalcHtml.includes('placeholder="Optional event"'), `Row ${idx} should remain optional free text`);
-    assert(!timecalcHtml.includes(`id="time-label-${idx}" list=`), `Row ${idx} should not add a datalist or suggestion dropdown`);
-  });
+  assert(timecalcHtml.includes('id="time-rows"'), 'dynamic rows container should exist');
+  assert(timecalcHtml.includes('id="time-add-row"'), 'Add event button should exist');
+  assert(!timecalcHtml.includes('id="time-label-4"'), 'fixed five-row markup should not be present');
   assert(timecalcHtml.includes('id="time-case-actions"'), 'New case / Clear all should live in a separate action row');
   assert(timecalcHtml.includes('border-t border-slate-200/80'), 'privacy/local storage notice should be visually separated with a subtle divider');
   assert(timecalcHtml.includes('New case / Clear all'), 'clear-all button label should be visible');
@@ -80,12 +73,13 @@ function run() {
   const caseData = {
     caseStartedAtEpoch: 1000,
     lastUpdatedAtEpoch: 2000,
-    rows: { 1: { label: 'Patient Jane Doe CPB', startDisplay: '08:00', endDisplay: '', startAtEpoch: 1000, endAtEpoch: null, running: true }, 2: { label: 'Manual note', startDisplay: '09:00', endDisplay: '09:05', startAtEpoch: null, endAtEpoch: null, running: false } },
+    rows: [{ id: 'row-cpb', order: 0, eventType: 'cpb', label: 'Patient Jane Doe CPB', startDisplay: '08:00', endDisplay: '', startAtEpoch: 1000, endAtEpoch: null, running: true }, { id: 'row-xclamp', order: 1, eventType: 'x-clamp', label: 'Manual note', startDisplay: '09:00', endDisplay: '09:05', startAtEpoch: null, endAtEpoch: null, running: false }, { id: 'row-custom-default', order: 2, eventType: 'custom' }, { id: 'row-custom-extra', order: 3, eventType: 'custom' }],
     cardioplegia: { lastCompletedAtEpoch: 5000, nextDueAtEpoch: 5000 + 30 * 60000, doseLog: [5000] }
   };
   assert(hasCaseData(caseData), 'stored rows and cardioplegia log should count as case data');
   const minimalRows = buildMinimalCaseRows(caseData.rows);
-  assert.deepStrictEqual(minimalRows, { 1: { id: '1', startAtEpoch: 1000, endAtEpoch: null, running: true, lastUpdatedAtEpoch: null } }, 'case storage should keep only epoch-based live timer fields');
+  assert.deepStrictEqual(minimalRows[0], { id: 'row-cpb', order: 0, eventType: 'cpb', startAtEpoch: 1000, endAtEpoch: null, running: true, lastUpdatedAtEpoch: null }, 'case storage should keep stable id/order/eventType and epoch-based live timer fields');
+  assert.strictEqual(minimalRows.length, 4, 'case storage should keep dynamic row structure for restore');
   assert(!JSON.stringify(minimalRows).includes('Patient Jane Doe'), 'case storage should not include user-entered labels or PHI');
   assert(!JSON.stringify(minimalRows).includes('08:00'), 'case storage should not include raw startDisplay/manual input values');
   assert.strictEqual(formatEpochToHHMM(Date.UTC(2026, 0, 1, 8, 5)), '08:05', 'restored display should be regenerated from epoch as HH:MM');
@@ -110,9 +104,9 @@ function run() {
   assert(mainJs.includes('function saveTimeCaseData()'), 'case persistence should be split from preference persistence');
   assert(mainJs.includes('function clearTimecalcCaseData'), 'clear-all case lifecycle function should exist');
   assert(mainJs.includes('function getDefaultTimeLabel'), 'main code should centralize default row labels');
-  assert(mainJs.includes("if (idx === 1) return 'CPB / Pump time'"), 'New case should be able to restore Row 1 default label');
-  assert(mainJs.includes("if (idx === 2) return 'Aortic cross-clamp'"), 'New case should be able to restore Row 2 default label');
-  assert(mainJs.includes('labelInput.value = getDefaultTimeLabel(i)'), 'restore/clear paths should reset labels to defaults without persisting custom labels');
+  assert(mainJs.includes("if (eventType === 'cpb') return 'CPB / Pump time'"), 'New case should be able to restore Row 1 default label');
+  assert(mainJs.includes("if (eventType === 'x-clamp') return 'Aortic cross-clamp'"), 'New case should be able to restore Row 2 default label');
+  assert(mainJs.includes('timeRows = getDefaultTimeRows()'), 'clear paths should reset dynamic rows to default 3');
   assert(mainJs.includes("actionsEl.classList.add('hidden')"), 'previous case prompt should hide the standalone New case action row');
   assert(mainJs.includes("actionsEl.classList.remove('hidden')"), 'hiding the previous case prompt should restore the standalone New case action row');
   assert(mainJs.includes('localStorage.removeItem(TIME_CASE_STORAGE_KEY)'), 'new case should remove current case storage');
