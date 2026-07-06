@@ -3004,6 +3004,7 @@ function clearTimecalcCaseData(options = {}) {
   timeCaseStartedAtEpoch = null;
   pendingTimeCaseData = null;
   pendingTimeCaseIsStale = false;
+  cardioplegiaShortcutDismissed = false;
   cardioplegiaReminderState.lastCompletedAtEpoch = null;
   cardioplegiaReminderState.nextDueAtEpoch = null;
   cardioplegiaReminderState.doseLog = [];
@@ -3017,6 +3018,7 @@ function clearTimecalcCaseData(options = {}) {
   hideTimeCasePrompt();
   for (let i = 1; i <= 5; i++) updateTimeLiveControls(i);
   renderCardioplegiaReminder();
+  renderCardioplegiaShortcut();
   if (options.keepPreferences !== false) saveTimePreferencesState();
 }
 
@@ -3140,6 +3142,7 @@ function setTimeLiveMode(nextMode) {
   }
   if (notice) notice.classList.toggle('hidden', timeLiveMode !== 'live');
   renderCardioplegiaReminder();
+  renderCardioplegiaShortcut();
   for (let i = 1; i <= 5; i++) {
     updateTimeRow(i);
     updateTimeLiveControls(i);
@@ -3213,6 +3216,8 @@ let cardioplegiaReminderState = {
   doseLog: []
 };
 let cardioplegiaReminderTickId = null;
+let cardioplegiaShortcutDismissed = false;
+let cardioplegiaShortcutConfirmTimeoutId = null;
 
 function formatCardioplegiaClock(epochMs) {
   if (!epochMs) return '—';
@@ -3245,6 +3250,78 @@ function validateCardioplegiaInterval(value) {
 
 function getCardioplegiaIntervalMinutes() {
   return validateCardioplegiaInterval(cardioplegiaReminderState.intervalMinutes);
+}
+
+function isCrossClampLabel(label) {
+  const normalized = String(label || '').trim().toLowerCase();
+  if (!normalized) return false;
+  return normalized.includes('cross-clamp') ||
+    normalized.includes('cross clamp') ||
+    normalized.includes('x-clamp') ||
+    normalized.includes('x clamp') ||
+    normalized.includes('aortic clamp') ||
+    normalized === 'acc' ||
+    normalized.includes(' acc ') ||
+    normalized.startsWith('acc ') ||
+    normalized.endsWith(' acc');
+}
+
+function getRunningCrossClampRow() {
+  for (let i = 1; i <= 5; i++) {
+    const state = getTimeRowState(i);
+    const labelInput = document.getElementById(`time-label-${i}`);
+    const label = labelInput ? labelInput.value : state.label;
+    if (state.running && isCrossClampLabel(label)) return { idx: i, label };
+  }
+  return null;
+}
+
+function showCardioplegiaShortcutConfirmation(completedAtEpoch, nextDueAtEpoch) {
+  const confirmationEl = document.getElementById('cardioplegia-shortcut-confirmation');
+  if (!confirmationEl) return;
+  confirmationEl.textContent = `Cardioplegia completed at ${formatCardioplegiaClock(completedAtEpoch)} · Next due ${formatCardioplegiaClock(nextDueAtEpoch)}`;
+  confirmationEl.classList.remove('hidden');
+  if (cardioplegiaShortcutConfirmTimeoutId) window.clearTimeout(cardioplegiaShortcutConfirmTimeoutId);
+  cardioplegiaShortcutConfirmTimeoutId = window.setTimeout(() => {
+    confirmationEl.classList.add('hidden');
+  }, 7000);
+}
+
+function highlightCardioplegiaReminder() {
+  const root = document.getElementById('cardioplegia-reminder');
+  if (!root) return;
+  root.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  root.setAttribute('tabindex', '-1');
+  root.focus({ preventScroll: true });
+  root.classList.add('ring-2', 'ring-accent-400', 'ring-offset-2', 'dark:ring-offset-primary-950');
+  window.setTimeout(() => {
+    root.classList.remove('ring-2', 'ring-accent-400', 'ring-offset-2', 'dark:ring-offset-primary-950');
+  }, 1800);
+}
+
+function renderCardioplegiaShortcut() {
+  const shortcutEl = document.getElementById('cardioplegia-shortcut');
+  const completeBtn = document.getElementById('cardioplegia-shortcut-complete');
+  if (!shortcutEl) return;
+  const crossClampRow = getRunningCrossClampRow();
+  const shouldShow = timeLiveMode === 'live' && Boolean(crossClampRow) && !cardioplegiaShortcutDismissed;
+  shortcutEl.classList.toggle('hidden', !shouldShow);
+  if (completeBtn) completeBtn.disabled = !getCardioplegiaIntervalMinutes();
+}
+
+function completeCardioplegiaDose(source = 'card') {
+  const intervalMinutes = getCardioplegiaIntervalMinutes();
+  if (!intervalMinutes) return null;
+  const completedAtEpoch = Date.now();
+  const nextDueAtEpoch = completedAtEpoch + intervalMinutes * 60000;
+  cardioplegiaReminderState.lastCompletedAtEpoch = completedAtEpoch;
+  cardioplegiaReminderState.nextDueAtEpoch = nextDueAtEpoch;
+  cardioplegiaReminderState.doseLog.push(completedAtEpoch);
+  saveCardioplegiaReminderState();
+  renderCardioplegiaReminder();
+  renderCardioplegiaShortcut();
+  if (source === 'shortcut') showCardioplegiaShortcutConfirmation(completedAtEpoch, nextDueAtEpoch);
+  return { completedAtEpoch, nextDueAtEpoch };
 }
 
 function saveCardioplegiaReminderState() {
@@ -3321,6 +3398,7 @@ function renderCardioplegiaReminder() {
     else remainingEl.classList.add('text-accent-700', 'dark:text-accent-300');
   }
 
+  renderCardioplegiaShortcut();
   if (!cardioplegiaReminderState.doseLog.length) {
     logEl.textContent = 'No completed doses yet.';
     return;
@@ -3329,6 +3407,7 @@ function renderCardioplegiaReminder() {
   const moreCount = cardioplegiaReminderState.doseLog.length - recentLog.length;
   const logText = recentLog.map(formatCardioplegiaClock).join(', ');
   logEl.textContent = `Dose log: ${logText}${moreCount > 0 ? `, +${moreCount} more` : ''}`;
+  renderCardioplegiaShortcut();
 }
 
 function restoreCardioplegiaFromLastLogEntry() {
@@ -3347,6 +3426,9 @@ function initCardioplegiaReminder() {
   const undoBtn = document.getElementById('cardioplegia-undo');
   const resetBtn = document.getElementById('cardioplegia-reset');
   const clearLogBtn = document.getElementById('cardioplegia-clear-log');
+  const shortcutCompleteBtn = document.getElementById('cardioplegia-shortcut-complete');
+  const shortcutViewBtn = document.getElementById('cardioplegia-shortcut-view');
+  const shortcutDismissBtn = document.getElementById('cardioplegia-shortcut-dismiss');
 
   loadCardioplegiaReminderState();
 
@@ -3382,19 +3464,7 @@ function initCardioplegiaReminder() {
     });
   }
 
-  if (completeBtn) {
-    completeBtn.addEventListener('click', () => {
-      const intervalMinutes = getCardioplegiaIntervalMinutes();
-      if (!intervalMinutes) return;
-      const completedAtEpoch = Date.now();
-      const nextDueAtEpoch = completedAtEpoch + intervalMinutes * 60000;
-      cardioplegiaReminderState.lastCompletedAtEpoch = completedAtEpoch;
-      cardioplegiaReminderState.nextDueAtEpoch = nextDueAtEpoch;
-      cardioplegiaReminderState.doseLog.push(completedAtEpoch);
-      saveCardioplegiaReminderState();
-      renderCardioplegiaReminder();
-    });
-  }
+  if (completeBtn) completeBtn.addEventListener('click', () => completeCardioplegiaDose('card'));
 
   if (undoBtn) {
     undoBtn.addEventListener('click', () => {
@@ -3420,6 +3490,15 @@ function initCardioplegiaReminder() {
       cardioplegiaReminderState.doseLog = [];
       saveCardioplegiaReminderState();
       renderCardioplegiaReminder();
+    });
+  }
+
+  if (shortcutCompleteBtn) shortcutCompleteBtn.addEventListener('click', () => completeCardioplegiaDose('shortcut'));
+  if (shortcutViewBtn) shortcutViewBtn.addEventListener('click', highlightCardioplegiaReminder);
+  if (shortcutDismissBtn) {
+    shortcutDismissBtn.addEventListener('click', () => {
+      cardioplegiaShortcutDismissed = true;
+      renderCardioplegiaShortcut();
     });
   }
 
@@ -3477,7 +3556,12 @@ function initTimeCalculator() {
     [s, e, sNow, eNow].forEach(elRef => {
       if (elRef) elRef.removeAttribute('title');
     });
-    if (label) label.addEventListener('input', saveTimeLiveState);
+    if (label) {
+      label.addEventListener('input', () => {
+        saveTimeLiveState();
+        renderCardioplegiaShortcut();
+      });
+    }
     if (s) {
       s.addEventListener('input', () => handleManualTimeEdit(i, s));
       s.addEventListener('blur', () => updateTimeRow(i));
@@ -3511,10 +3595,12 @@ function initTimeCalculator() {
         s.value = startDisplay;
         e.value = '';
         timeLiveTimers[i] = { id: String(i), label: label ? label.value : '', startAtEpoch: now, endAtEpoch: null, running: true, startDisplay, endDisplay: '' };
+        if (isCrossClampLabel(label ? label.value : '')) cardioplegiaShortcutDismissed = false;
         setTimeError(s, false);
         setTimeError(e, false);
         updateTimeRow(i);
         saveTimeLiveState();
+        renderCardioplegiaShortcut();
       });
     }
     if (e && liveStop) {
@@ -3529,6 +3615,7 @@ function initTimeCalculator() {
         state.endDisplay = endDisplay;
         updateTimeRow(i);
         saveTimeLiveState();
+        renderCardioplegiaShortcut();
       });
     }
     if (s && e && liveReset) {
@@ -3538,6 +3625,7 @@ function initTimeCalculator() {
         const resultEl = document.getElementById(`time-result-${i}`);
         if (resultEl) resultEl.textContent = '-';
         clearTimeLiveRow(i);
+        renderCardioplegiaShortcut();
       });
     }
     updateTimeRow(i);
