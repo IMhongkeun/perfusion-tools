@@ -2991,8 +2991,10 @@ function readStoredTimeCaseData() {
 function showTimeCasePrompt(caseData, isStale) {
   const promptEl = document.getElementById('time-case-prompt');
   const messageEl = document.getElementById('time-case-prompt-message');
+  const actionsEl = document.getElementById('time-case-actions');
   if (!promptEl || !messageEl) return;
   promptEl.classList.remove('hidden');
+  if (actionsEl) actionsEl.classList.add('hidden');
   messageEl.textContent = isStale
     ? 'Previous case data is old. Continue previous timers or start a new case?'
     : 'Previous case data found. Continue previous timers or start a new case?';
@@ -3000,7 +3002,9 @@ function showTimeCasePrompt(caseData, isStale) {
 
 function hideTimeCasePrompt() {
   const promptEl = document.getElementById('time-case-prompt');
+  const actionsEl = document.getElementById('time-case-actions');
   if (promptEl) promptEl.classList.add('hidden');
+  if (actionsEl) actionsEl.classList.remove('hidden');
 }
 
 function clearTimecalcCaseData(options = {}) {

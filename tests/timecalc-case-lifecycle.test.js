@@ -61,6 +61,8 @@ function run() {
   const packageJson = fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8');
 
   assert(timecalcHtml.includes('id="time-new-case"'), 'New case / Clear all button should exist');
+  assert(timecalcHtml.includes('id="time-case-actions"'), 'New case / Clear all should live in a separate action row');
+  assert(timecalcHtml.includes('border-t border-slate-200/80'), 'privacy/local storage notice should be visually separated with a subtle divider');
   assert(timecalcHtml.includes('New case / Clear all'), 'clear-all button label should be visible');
   assert(timecalcHtml.includes('id="time-case-prompt"'), 'previous case prompt should exist');
   assert(timecalcHtml.includes('Previous case data found. Continue previous timers or start a new case?'), 'previous case prompt copy should be present');
@@ -100,6 +102,8 @@ function run() {
   assert(mainJs.includes('function saveTimePreferencesState()'), 'preference persistence should be split from case persistence');
   assert(mainJs.includes('function saveTimeCaseData()'), 'case persistence should be split from preference persistence');
   assert(mainJs.includes('function clearTimecalcCaseData'), 'clear-all case lifecycle function should exist');
+  assert(mainJs.includes("actionsEl.classList.add('hidden')"), 'previous case prompt should hide the standalone New case action row');
+  assert(mainJs.includes("actionsEl.classList.remove('hidden')"), 'hiding the previous case prompt should restore the standalone New case action row');
   assert(mainJs.includes('localStorage.removeItem(TIME_CASE_STORAGE_KEY)'), 'new case should remove current case storage');
   assert(mainJs.includes('localStorage.removeItem(TIME_LIVE_STORAGE_KEY)'), 'new case should remove legacy v1 live timer storage');
   assert(mainJs.includes('localStorage.removeItem(CARDIOPLEGIA_REMINDER_STORAGE_KEY)'), 'new case should remove legacy v2 cardioplegia case storage');
