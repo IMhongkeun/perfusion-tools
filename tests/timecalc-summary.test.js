@@ -62,6 +62,24 @@ function rowSummary({ label, startInput, endInput, state }) {
   return `${label}: ${startDisplay}–${endDisplay} (${formatSummaryDuration(summaryDurationMinutes({ startInput: startDisplay, endInput: endDisplay, state }))})`;
 }
 
+function validateCardioplegiaInterval(value) {
+  const intervalMinutes = Number.parseInt(value, 10);
+  return Number.isInteger(intervalMinutes) && intervalMinutes >= 1 && intervalMinutes <= 180 ? intervalMinutes : null;
+}
+
+function getCardioplegiaSummaryIntervalMinutes(state) {
+  if (state.selectedPreset === 'custom') return validateCardioplegiaInterval(state.customIntervalMinutes);
+  return validateCardioplegiaInterval(state.intervalMinutes);
+}
+
+function buildCardioplegiaSummaryLines(state) {
+  const doseText = state.doseLog.length ? state.doseLog.join(', ') : '—';
+  const lines = [`Cardioplegia complete: ${doseText}`];
+  const intervalMinutes = getCardioplegiaSummaryIntervalMinutes(state);
+  if (intervalMinutes) lines.push(`Cardioplegia interval setting: ${intervalMinutes} min`);
+  return lines;
+}
+
 function renderSummaryStatus(currentStatus, message = '') {
   return message;
 }
@@ -117,12 +135,23 @@ function run() {
   status = renderSummaryStatus(status);
   assert.strictEqual(status, '', 'ordinary refresh should clear copy failure message');
 
+  assert(buildCardioplegiaSummaryLines({ selectedPreset: 'blood-20', intervalMinutes: 20, customIntervalMinutes: '', doseLog: [] }).includes('Cardioplegia interval setting: 20 min'), 'valid preset should be included in summary interval');
+  assert(buildCardioplegiaSummaryLines({ selectedPreset: 'custom', intervalMinutes: 20, customIntervalMinutes: '75', doseLog: [] }).includes('Cardioplegia interval setting: 75 min'), 'valid custom interval should be included in summary interval');
+  const emptyCustomLines = buildCardioplegiaSummaryLines({ selectedPreset: 'custom', intervalMinutes: 20, customIntervalMinutes: '', doseLog: ['09:37'] });
+  assert(!emptyCustomLines.includes('Cardioplegia interval setting: 20 min'), 'empty custom interval should not show stale preset interval');
+  assert(emptyCustomLines.includes('Cardioplegia complete: 09:37'), 'doseLog summary should remain when custom interval is empty');
+  const invalidCustomLines = buildCardioplegiaSummaryLines({ selectedPreset: 'custom', intervalMinutes: 20, customIntervalMinutes: 'abc', doseLog: ['09:37'] });
+  assert(!invalidCustomLines.includes('Cardioplegia interval setting: 20 min'), 'invalid custom interval should not show stale preset interval');
+  assert(invalidCustomLines.includes('Cardioplegia complete: 09:37'), 'doseLog summary should remain when custom interval is invalid');
+
   assert(mainJs.includes('function getSummaryDurationMinutes'), 'summary duration source helper should exist');
   assert(mainJs.includes('Math.floor(Math.max(0, state.endAtEpoch - state.startAtEpoch) / 60000)'), 'stopped live summary should floor epoch duration minutes');
   assert(mainJs.includes('startValue === formatEpochToHHMM(state.startAtEpoch)'), 'stopped live summary should require matching start input');
   assert(mainJs.includes('endValue === formatEpochToHHMM(state.endAtEpoch)'), 'stopped live summary should require matching end input');
   assert(mainJs.includes("function renderTimeCaseSummary(message = '')"), 'ordinary summary render should default to clearing status');
   assert(mainJs.includes('if (status) status.textContent = message'), 'summary render should always update status text');
+  assert(mainJs.includes('function getCardioplegiaSummaryIntervalMinutes'), 'summary interval helper should exist');
+  assert(mainJs.includes("cardioplegiaReminderState.selectedPreset === 'custom'"), 'summary interval should branch on custom preset');
   assert(!/localStorage\.setItem\([^)]*summary/i.test(mainJs), 'summary text should not be persisted to localStorage');
   assert(packageJson.includes('tests/timecalc-summary.test.js'), 'test script should include summary regression test');
 
