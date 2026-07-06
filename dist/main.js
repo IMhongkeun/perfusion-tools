@@ -3115,7 +3115,6 @@ function updateTimeRow(idx) {
   let adjustedEnd = endMin;
   if (endMin < startMin && endMin < 24 * 60 && startMin < 24 * 60) {
     adjustedEnd = endMin + 24 * 60;
-    endInput.value = formatMinutesToHHMM(adjustedEnd);
   }
 
   let diff = adjustedEnd - startMin;
