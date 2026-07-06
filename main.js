@@ -3078,8 +3078,9 @@ function updateTimeRow(idx) {
 
   const state = getTimeRowState(idx);
   const inputMatchesLiveState = startInput.value === (state.startDisplay || '') && endInput.value === (state.endDisplay || '');
-  const canUseLiveState = timeLiveMode === 'live' && inputMatchesLiveState;
-  if (canUseLiveState && state.running && state.startAtEpoch) {
+  const isLiveModeActive = timeLiveMode === 'live';
+  const canUseLiveState = isLiveModeActive && inputMatchesLiveState;
+  if (isLiveModeActive && canUseLiveState && state.running && state.startAtEpoch) {
     resultEl.textContent = formatDurationFromMs(Date.now() - state.startAtEpoch);
     resultEl.classList.add('font-semibold', 'text-accent-700', 'dark:text-accent-300');
     updateTimeLiveControls(idx);

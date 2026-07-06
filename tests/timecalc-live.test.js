@@ -65,6 +65,14 @@ function liveStoppedCrossMidnight(startAtEpoch, endAtEpoch) {
   };
 }
 
+function displayForMode({ mode, startValue, endValue, state, nowEpoch }) {
+  const inputMatchesLiveState = startValue === (state.startDisplay || '') && endValue === (state.endDisplay || '');
+  const canUseLiveState = mode === 'live' && inputMatchesLiveState;
+  if (mode === 'live' && canUseLiveState && state.running && state.startAtEpoch) return liveDuration(state.startAtEpoch, nowEpoch);
+  if (!endValue) return '-';
+  return manualDuration(startValue, endValue);
+}
+
 function controlsAfterLiveStateCleared() {
   const state = { running: false };
   return { runningBadgeVisible: state.running, startDisabled: state.running, stopDisabled: !state.running };
@@ -90,20 +98,27 @@ function run() {
   assert.strictEqual(liveCrossMidnight.duration, '00:30:00 (30 min)', 'live stopped cross-midnight duration should use epoch difference');
   assert(!JSON.stringify(liveCrossMidnight.persistedRow).includes('24:15'), 'live stopped persistence should not contain 24+ hour display values');
   assert.strictEqual(manualDuration('09:00', '09:05'), '5 min (0:05)', 'manual calculation should remain the source of truth when users edit inputs');
+  const runningState = { running: true, startAtEpoch: 100000, endAtEpoch: null, startDisplay: '09:00', endDisplay: '' };
+  assert.strictEqual(displayForMode({ mode: 'record', startValue: '09:00', endValue: '', state: runningState, nowEpoch: 100000 + 90000 }), '-', 'Record mode should keep missing-end manual display instead of live running duration');
+  assert.strictEqual(displayForMode({ mode: 'live', startValue: '09:00', endValue: '', state: runningState, nowEpoch: 100000 + 90000 }), '00:01:30 (1 min)', 'returning to Live mode should show Date.now-based running duration');
 
   assert(timecalcHtml.includes('id="time-mode-record"'), 'Record mode toggle should exist');
   assert(timecalcHtml.includes('id="time-mode-live"'), 'Live mode toggle should exist');
   assert(timecalcHtml.includes('id="time-live-notice"'), 'Live mode safety notice should exist');
   assert(mainJs.includes("perfusiontools.timecalc.liveTimers.v1"), 'versioned localStorage key should be used');
   assert(mainJs.includes('Date.now() - state.startAtEpoch'), 'running duration should be based on Date.now and startAtEpoch');
+  assert(mainJs.includes("const isLiveModeActive = timeLiveMode === 'live'"), 'updateTimeRow should explicitly gate live display on Live mode');
+  assert(mainJs.includes('if (isLiveModeActive && canUseLiveState && state.running && state.startAtEpoch)'), 'running timer branch should only render in Live mode');
   assert(mainJs.includes('const chartingMinutes = Math.floor(safeMs / 60000)'), 'live charting summary should floor elapsed minutes');
   const updateTimeRowSource = mainJs.slice(mainJs.indexOf('function updateTimeRow'), mainJs.indexOf('function clearTimeLiveRow'));
   assert(!updateTimeRowSource.includes('endInput.value = formatMinutesToHHMM(adjustedEnd)'), 'manual cross-midnight calculation should not rewrite end input to 24+ hour display');
   const snapshotSource = mainJs.slice(mainJs.indexOf('function getTimeRowsSnapshot'), mainJs.indexOf('function hasTimeCaseData'));
   assert(!/startDisplay:|endDisplay:/.test(snapshotSource), 'localStorage case payload should not persist display strings that could contain 24+ hour values');
+  const intervalSource = mainJs.slice(mainJs.indexOf('function initTimeLiveInterval'), mainJs.indexOf('function autoFormatTimeInput'));
+  assert(intervalSource.includes("timeLiveMode === 'live' && getTimeRowState(i).running"), 'interval tick should only update running rows in Live mode');
   const liveFormatterSource = mainJs.slice(mainJs.indexOf('function formatDurationFromMs'), mainJs.indexOf('function saveTimeLiveState'));
   assert(!/Math\.(round|ceil)/.test(liveFormatterSource), 'live duration formatting should not round or ceil elapsed minutes');
-  assert(mainJs.includes("const canUseLiveState = timeLiveMode === 'live' && inputMatchesLiveState"), 'Record mode and manual edits should fall back to manual calculation instead of live state');
+  assert(mainJs.includes('const canUseLiveState = isLiveModeActive && inputMatchesLiveState'), 'Record mode and manual edits should fall back to manual calculation instead of live state');
   assert(mainJs.includes('startAtEpoch: now'), 'Start should store startAtEpoch');
   assert(mainJs.includes('state.endAtEpoch = now'), 'Stop should store endAtEpoch');
   assert(mainJs.includes('delete timeLiveTimers[idx]'), 'Reset/manual override should clear row live state');
