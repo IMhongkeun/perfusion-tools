@@ -62,6 +62,10 @@ function rowSummary({ label, startInput, endInput, state }) {
   return `${label}: ${startDisplay}–${endDisplay} (${formatSummaryDuration(summaryDurationMinutes({ startInput: startDisplay, endInput: endDisplay, state }))})`;
 }
 
+function renderSummaryStatus(currentStatus, message = '') {
+  return message;
+}
+
 function run() {
   const repoRoot = path.join(__dirname, '..');
   const mainJs = fs.readFileSync(path.join(repoRoot, 'main.js'), 'utf8');
@@ -96,10 +100,29 @@ function run() {
   assert.strictEqual(midnightSummary, 'Event 3: 23:45–00:15 (29 min / 0:29)', 'cross-midnight stopped live summary should use floored epoch duration');
   assert(!midnightSummary.includes('24:15'), 'cross-midnight summary should not display 24+ hour values');
 
+  let status = renderSummaryStatus('', 'Summary copied');
+  assert.strictEqual(status, 'Summary copied', 'copy success should show Summary copied');
+  status = renderSummaryStatus(status);
+  assert.strictEqual(status, '', 'ordinary row/time refresh should clear copied status');
+  status = renderSummaryStatus('', 'Summary copied');
+  status = renderSummaryStatus(status);
+  assert.strictEqual(status, '', 'cardioplegia doseLog refresh should clear copied status');
+  status = renderSummaryStatus('', 'Summary copied');
+  status = renderSummaryStatus(status);
+  assert.strictEqual(status, '', 'Refresh summary should clear copied status');
+  status = renderSummaryStatus(status, 'Summary copied');
+  assert.strictEqual(status, 'Summary copied', 'copying again after a summary change should show copied status again');
+  status = renderSummaryStatus('', 'Copy failed. Select and copy manually.');
+  assert.strictEqual(status, 'Copy failed. Select and copy manually.', 'copy failure should show failure message at failure time');
+  status = renderSummaryStatus(status);
+  assert.strictEqual(status, '', 'ordinary refresh should clear copy failure message');
+
   assert(mainJs.includes('function getSummaryDurationMinutes'), 'summary duration source helper should exist');
   assert(mainJs.includes('Math.floor(Math.max(0, state.endAtEpoch - state.startAtEpoch) / 60000)'), 'stopped live summary should floor epoch duration minutes');
   assert(mainJs.includes('startValue === formatEpochToHHMM(state.startAtEpoch)'), 'stopped live summary should require matching start input');
   assert(mainJs.includes('endValue === formatEpochToHHMM(state.endAtEpoch)'), 'stopped live summary should require matching end input');
+  assert(mainJs.includes("function renderTimeCaseSummary(message = '')"), 'ordinary summary render should default to clearing status');
+  assert(mainJs.includes('if (status) status.textContent = message'), 'summary render should always update status text');
   assert(!/localStorage\.setItem\([^)]*summary/i.test(mainJs), 'summary text should not be persisted to localStorage');
   assert(packageJson.includes('tests/timecalc-summary.test.js'), 'test script should include summary regression test');
 

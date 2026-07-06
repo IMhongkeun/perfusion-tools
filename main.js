@@ -3137,11 +3137,11 @@ function buildTimeCaseSummaryText() {
   return lines.join('\n');
 }
 
-function renderTimeCaseSummary(message = null) {
+function renderTimeCaseSummary(message = '') {
   const preview = document.getElementById('time-summary-preview');
   const status = document.getElementById('time-summary-status');
   if (preview) preview.value = buildTimeCaseSummaryText();
-  if (status && message != null) status.textContent = message;
+  if (status) status.textContent = message;
 }
 
 function fallbackCopyTimeCaseSummary(summaryText) {
