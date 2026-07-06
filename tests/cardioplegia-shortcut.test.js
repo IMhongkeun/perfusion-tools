@@ -30,6 +30,11 @@ function completeDose(state, nowEpoch) {
   };
 }
 
+function formatClock(epochMs) {
+  const date = new Date(epochMs);
+  return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+}
+
 function shouldShowShortcut({ mode, rows, dismissed }) {
   return mode === 'live' && !dismissed && rows.some(row => row.running && (row.eventType === 'x-clamp' || isCrossClampLabel(row.label)));
 }
@@ -63,6 +68,9 @@ function run() {
   assert.strictEqual(state.lastCompletedAtEpoch, 100000, 'shortcut complete should save completedAtEpoch');
   assert.strictEqual(state.nextDueAtEpoch, 100000 + 20 * 60000, 'shortcut complete should calculate nextDueAtEpoch from interval');
   assert.deepStrictEqual(state.doseLog, [100000], 'shortcut complete should append doseLog');
+  const confirmationText = `Cardioplegia completed at ${formatClock(state.lastCompletedAtEpoch)} · Next due ${formatClock(state.nextDueAtEpoch)}`;
+  assert(/Cardioplegia completed at \d{2}:\d{2} · Next due \d{2}:\d{2}/.test(confirmationText), 'shortcut confirmation should use 24-hour HH:MM text');
+  assert(!/(오전|오후|AM|PM)/i.test(confirmationText), 'shortcut confirmation should not include localized AM/PM text');
 
   assert(mainJs.includes('function isCrossClampLabel'), 'main code should include x-clamp row label detection');
   assert(mainJs.includes('function getRunningCrossClampRow'), 'main code should search for a running x-clamp row');
@@ -73,9 +81,17 @@ function run() {
   assert(mainJs.includes("if (getTimeRowEventType(i) === 'x-clamp' || isCrossClampLabel(label ? label.value : '')) cardioplegiaShortcutDismissed = false"), 'x-clamp Start should re-enable shortcut visibility via event type or label');
   assert(mainJs.includes("completeCardioplegiaDose('shortcut')"), 'shortcut button should reuse shared complete handler');
   assert(mainJs.includes('showCardioplegiaShortcutConfirmation(completedAtEpoch, nextDueAtEpoch)'), 'shortcut completion should show inline confirmation');
+  assert(mainJs.includes('highlightCardioplegiaReminder();'), 'shortcut completion should scroll/focus the reminder card after recording the dose');
+  assert(mainJs.includes('temporarilyDisableCardioplegiaShortcutComplete();'), 'shortcut completion should briefly disable the complete button to reduce repeat taps');
+  assert(mainJs.includes("Cardioplegia timer started · Next due ${formatCardioplegiaClock(nextDueAtEpoch)}"), 'shortcut title should update after completion');
   assert(mainJs.includes("Cardioplegia completed at ${formatCardioplegiaClock(completedAtEpoch)} · Next due ${formatCardioplegiaClock(nextDueAtEpoch)}"), 'inline confirmation should include completion and next due times');
-  assert(mainJs.includes("root.scrollIntoView({ behavior: 'smooth', block: 'center' })"), 'View reminder should smooth-scroll to reminder card');
+  assert(mainJs.includes("function getPreferredScrollBehavior"), 'scroll helper should respect reduced motion settings');
+  assert(mainJs.includes("prefers-reduced-motion: reduce"), 'scroll helper should check prefers-reduced-motion');
+  assert(mainJs.includes("root.scrollIntoView({ behavior: getPreferredScrollBehavior(), block: 'center' })"), 'View reminder and shortcut completion should scroll to reminder card');
+  assert(mainJs.includes("root.focus({ preventScroll: true })"), 'reminder card should receive focus without extra scrolling');
   assert(mainJs.includes("root.classList.add('ring-2', 'ring-accent-400'"), 'View reminder should briefly highlight the reminder card');
+  const startHandlerSource = mainJs.slice(mainJs.indexOf("liveStart.addEventListener('click'"), mainJs.indexOf("liveStop.addEventListener('click'"));
+  assert(!startHandlerSource.includes('highlightCardioplegiaReminder();'), 'x-clamp Start alone should not auto-scroll to the reminder card');
   assert(mainJs.includes('cardioplegiaShortcutDismissed = false'), 'New case / x-clamp start should reset shortcut dismissal state');
   assert(mainJs.includes('renderCardioplegiaShortcut();'), 'New case and live updates should refresh shortcut visibility');
   assert(packageJson.includes('tests/cardioplegia-shortcut.test.js'), 'test script should include shortcut regression test');
