@@ -1,0 +1,109 @@
+'use strict';
+
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
+
+function parseTimeToMinutes(str) {
+  if (!str) return null;
+  const cleaned = str.trim();
+  const match = /^(\d{1,2}):([0-5]\d)$/.exec(cleaned);
+  if (!match) return null;
+  const h = Number(match[1]);
+  const m = Number(match[2]);
+  if (h > 23) return null;
+  return h * 60 + m;
+}
+
+function formatMinutesToHHMM(totalMins) {
+  const h = Math.floor(totalMins / 60);
+  const m = Math.max(totalMins % 60, 0);
+  return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+}
+
+function formatEpochToHHMM(epochMs) {
+  if (!epochMs) return '';
+  const date = new Date(epochMs);
+  return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+}
+
+function formatSummaryDuration(totalMinutes) {
+  const safeMinutes = Math.max(0, totalMinutes || 0);
+  const hours = Math.floor(safeMinutes / 60);
+  const minutes = safeMinutes % 60;
+  return `${safeMinutes} min / ${hours}:${minutes.toString().padStart(2, '0')}`;
+}
+
+function summaryDurationMinutes({ startInput, endInput, state }) {
+  const startMin = parseTimeToMinutes(startInput);
+  const endMin = parseTimeToMinutes(endInput);
+  const stoppedLiveStateMatchesInputs = Boolean(
+    state &&
+    state.startAtEpoch &&
+    state.endAtEpoch &&
+    !state.running &&
+    startInput === formatEpochToHHMM(state.startAtEpoch) &&
+    endInput === formatEpochToHHMM(state.endAtEpoch)
+  );
+  if (stoppedLiveStateMatchesInputs) return Math.floor(Math.max(0, state.endAtEpoch - state.startAtEpoch) / 60000);
+
+  let adjustedEnd = endMin;
+  if (endMin < startMin && endMin < 24 * 60 && startMin < 24 * 60) adjustedEnd = endMin + 24 * 60;
+  let diff = adjustedEnd - startMin;
+  if (diff < 0) diff += 24 * 60;
+  return diff;
+}
+
+function rowSummary({ label, startInput, endInput, state }) {
+  const startMin = parseTimeToMinutes(startInput);
+  const endMin = parseTimeToMinutes(endInput);
+  const startDisplay = formatMinutesToHHMM(startMin);
+  const endDisplay = formatMinutesToHHMM(endMin);
+  return `${label}: ${startDisplay}–${endDisplay} (${formatSummaryDuration(summaryDurationMinutes({ startInput: startDisplay, endInput: endDisplay, state }))})`;
+}
+
+function run() {
+  const repoRoot = path.join(__dirname, '..');
+  const mainJs = fs.readFileSync(path.join(repoRoot, 'main.js'), 'utf8');
+  const timecalcHtml = fs.readFileSync(path.join(repoRoot, 'timecalc', 'index.html'), 'utf8');
+  const packageJson = fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8');
+
+  assert(timecalcHtml.includes('id="time-case-summary"'), 'Case summary card should exist');
+  assert(timecalcHtml.includes('id="time-summary-copy"'), 'Copy summary button should exist');
+  assert(timecalcHtml.includes('Review and copy completed time events. Do not include patient identifiers.'), 'summary privacy helper should exist');
+
+  const stoppedLiveState = {
+    startAtEpoch: Date.UTC(2026, 0, 1, 9, 12, 59),
+    endAtEpoch: Date.UTC(2026, 0, 1, 12, 4, 0),
+    running: false
+  };
+  const stoppedLiveSummary = rowSummary({ label: 'CPB / Pump time', startInput: '09:12', endInput: '12:04', state: stoppedLiveState });
+  assert.strictEqual(stoppedLiveSummary, 'CPB / Pump time: 09:12–12:04 (171 min / 2:51)', 'stopped live row summary should use floored epoch duration');
+  assert(!stoppedLiveSummary.includes('172 min / 2:52'), 'stopped live row summary should not recalculate from HH:MM inputs');
+
+  const manualSummary = rowSummary({ label: 'CPB / Pump time', startInput: '09:12', endInput: '12:04', state: null });
+  assert.strictEqual(manualSummary, 'CPB / Pump time: 09:12–12:04 (172 min / 2:52)', 'manual row summary should continue using HH:MM duration');
+
+  const overriddenSummary = rowSummary({ label: 'CPB / Pump time', startInput: '09:13', endInput: '12:04', state: stoppedLiveState });
+  assert.strictEqual(overriddenSummary, 'CPB / Pump time: 09:13–12:04 (171 min / 2:51)', 'manual override should fall back to HH:MM calculation when inputs no longer match epoch display');
+
+  const midnightState = {
+    startAtEpoch: Date.UTC(2026, 0, 1, 23, 45, 30),
+    endAtEpoch: Date.UTC(2026, 0, 2, 0, 15, 0),
+    running: false
+  };
+  const midnightSummary = rowSummary({ label: 'Event 3', startInput: '23:45', endInput: '00:15', state: midnightState });
+  assert.strictEqual(midnightSummary, 'Event 3: 23:45–00:15 (29 min / 0:29)', 'cross-midnight stopped live summary should use floored epoch duration');
+  assert(!midnightSummary.includes('24:15'), 'cross-midnight summary should not display 24+ hour values');
+
+  assert(mainJs.includes('function getSummaryDurationMinutes'), 'summary duration source helper should exist');
+  assert(mainJs.includes('Math.floor(Math.max(0, state.endAtEpoch - state.startAtEpoch) / 60000)'), 'stopped live summary should floor epoch duration minutes');
+  assert(mainJs.includes('startValue === formatEpochToHHMM(state.startAtEpoch)'), 'stopped live summary should require matching start input');
+  assert(mainJs.includes('endValue === formatEpochToHHMM(state.endAtEpoch)'), 'stopped live summary should require matching end input');
+  assert(!/localStorage\.setItem\([^)]*summary/i.test(mainJs), 'summary text should not be persisted to localStorage');
+  assert(packageJson.includes('tests/timecalc-summary.test.js'), 'test script should include summary regression test');
+
+  console.log('All timecalc summary tests passed.');
+}
+
+run();
