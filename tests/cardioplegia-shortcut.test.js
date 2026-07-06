@@ -31,7 +31,7 @@ function completeDose(state, nowEpoch) {
 }
 
 function shouldShowShortcut({ mode, rows, dismissed }) {
-  return mode === 'live' && !dismissed && rows.some(row => row.running && isCrossClampLabel(row.label));
+  return mode === 'live' && !dismissed && rows.some(row => row.running && (row.eventType === 'x-clamp' || isCrossClampLabel(row.label)));
 }
 
 function run() {
@@ -46,6 +46,7 @@ function run() {
   assert(timecalcHtml.includes('id="cardioplegia-shortcut-view"'), 'shortcut View reminder button should exist');
   assert(timecalcHtml.includes('id="cardioplegia-shortcut-dismiss"'), 'shortcut should be dismissible');
   assert(timecalcHtml.includes('Optional reminder. Verify against pump timer and charting record.'), 'shortcut safety copy should be compact');
+  assert(timecalcHtml.includes('id="time-label-2"') && timecalcHtml.includes('data-time-event-type="x-clamp"'), 'Row 2 should expose stable x-clamp event type for shortcut logic');
 
   assert.strictEqual(isCrossClampLabel('Aortic cross-clamp'), true, 'Aortic cross-clamp label should be recognized');
   assert.strictEqual(isCrossClampLabel('x-clamp'), true, 'x-clamp label should be recognized');
@@ -53,6 +54,7 @@ function run() {
   assert.strictEqual(isCrossClampLabel('CPB start'), false, 'general CPB row should not trigger shortcut');
   assert.strictEqual(isCrossClampLabel('Cooling'), false, 'general cooling row should not trigger shortcut');
   assert.strictEqual(shouldShowShortcut({ mode: 'live', dismissed: false, rows: [{ label: 'Aortic cross-clamp', running: true }] }), true, 'x-clamp Start should show shortcut');
+  assert.strictEqual(shouldShowShortcut({ mode: 'live', dismissed: false, rows: [{ label: 'Clamp changed by user', eventType: 'x-clamp', running: true }] }), true, 'Row 2 stable event type should keep shortcut working after label edits');
   assert.strictEqual(shouldShowShortcut({ mode: 'live', dismissed: false, rows: [{ label: 'CPB start', running: true }] }), false, 'non-x-clamp Start should not show shortcut');
   assert.strictEqual(shouldShowShortcut({ mode: 'record', dismissed: false, rows: [{ label: 'Aortic cross-clamp', running: true }] }), false, 'Record mode should not show shortcut');
   assert.strictEqual(shouldShowShortcut({ mode: 'live', dismissed: true, rows: [{ label: 'Aortic cross-clamp', running: true }] }), false, 'dismissed shortcut should stay hidden');
@@ -64,9 +66,11 @@ function run() {
 
   assert(mainJs.includes('function isCrossClampLabel'), 'main code should include x-clamp row label detection');
   assert(mainJs.includes('function getRunningCrossClampRow'), 'main code should search for a running x-clamp row');
+  assert(mainJs.includes('function getTimeRowEventType'), 'main code should read stable row event type');
+  assert(mainJs.includes("eventType === 'x-clamp' || isCrossClampLabel(label)"), 'shortcut should prefer stable x-clamp event type before label matching');
   assert(mainJs.includes('function renderCardioplegiaShortcut'), 'main code should render shortcut visibility');
   assert(mainJs.includes("timeLiveMode === 'live' && Boolean(crossClampRow) && !cardioplegiaShortcutDismissed"), 'shortcut should only show in Live mode for running x-clamp rows');
-  assert(mainJs.includes("if (isCrossClampLabel(label ? label.value : '')) cardioplegiaShortcutDismissed = false"), 'x-clamp Start should re-enable shortcut visibility');
+  assert(mainJs.includes("if (getTimeRowEventType(i) === 'x-clamp' || isCrossClampLabel(label ? label.value : '')) cardioplegiaShortcutDismissed = false"), 'x-clamp Start should re-enable shortcut visibility via event type or label');
   assert(mainJs.includes("completeCardioplegiaDose('shortcut')"), 'shortcut button should reuse shared complete handler');
   assert(mainJs.includes('showCardioplegiaShortcutConfirmation(completedAtEpoch, nextDueAtEpoch)'), 'shortcut completion should show inline confirmation');
   assert(mainJs.includes("Cardioplegia completed at ${formatCardioplegiaClock(completedAtEpoch)} · Next due ${formatCardioplegiaClock(nextDueAtEpoch)}"), 'inline confirmation should include completion and next due times');

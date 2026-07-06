@@ -2799,6 +2799,25 @@ function getTimeRowState(idx) {
   return timeLiveTimers[idx];
 }
 
+function getDefaultTimeLabel(idx) {
+  if (idx === 1) return 'CPB / Pump time';
+  if (idx === 2) return 'Aortic cross-clamp';
+  return '';
+}
+
+function getTimeRowEventType(idx) {
+  const labelInput = document.getElementById(`time-label-${idx}`);
+  const rowEl = document.querySelectorAll('#time-rows .time-row')[idx - 1];
+  return labelInput?.dataset.timeEventType || rowEl?.dataset.timeEventType || '';
+}
+
+function resetTimeRowLabelsToDefaults() {
+  for (let i = 1; i <= 5; i++) {
+    const labelInput = document.getElementById(`time-label-${i}`);
+    if (labelInput) labelInput.value = getDefaultTimeLabel(i);
+  }
+}
+
 function formatDurationFromMs(elapsedMs) {
   const safeMs = Math.max(0, elapsedMs || 0);
   const totalSeconds = Math.floor(safeMs / 1000);
@@ -2942,7 +2961,7 @@ function applyTimeCaseData(caseData) {
     const endInput = document.getElementById(`time-end-${i}`);
     const startDisplay = formatEpochToHHMM(row?.startAtEpoch);
     const endDisplay = formatEpochToHHMM(row?.endAtEpoch);
-    if (labelInput) labelInput.value = '';
+    if (labelInput) labelInput.value = getDefaultTimeLabel(i);
     if (startInput) startInput.value = startDisplay;
     if (endInput) endInput.value = endDisplay;
     if (row) {
@@ -3013,7 +3032,7 @@ function clearTimecalcCaseData(options = {}) {
     const startInput = document.getElementById(`time-start-${i}`);
     const endInput = document.getElementById(`time-end-${i}`);
     const resultEl = document.getElementById(`time-result-${i}`);
-    if (labelInput) labelInput.value = '';
+    if (labelInput) labelInput.value = getDefaultTimeLabel(i);
     if (startInput) {
       startInput.value = '';
       setTimeError(startInput, false);
@@ -3295,7 +3314,8 @@ function getRunningCrossClampRow() {
     const state = getTimeRowState(i);
     const labelInput = document.getElementById(`time-label-${i}`);
     const label = labelInput ? labelInput.value : state.label;
-    if (state.running && isCrossClampLabel(label)) return { idx: i, label };
+    const eventType = getTimeRowEventType(i);
+    if (state.running && (eventType === 'x-clamp' || isCrossClampLabel(label))) return { idx: i, label, eventType };
   }
   return null;
 }
@@ -3623,7 +3643,7 @@ function initTimeCalculator() {
         s.value = startDisplay;
         e.value = '';
         timeLiveTimers[i] = { id: String(i), label: label ? label.value : '', startAtEpoch: now, endAtEpoch: null, running: true, startDisplay, endDisplay: '' };
-        if (isCrossClampLabel(label ? label.value : '')) cardioplegiaShortcutDismissed = false;
+        if (getTimeRowEventType(i) === 'x-clamp' || isCrossClampLabel(label ? label.value : '')) cardioplegiaShortcutDismissed = false;
         setTimeError(s, false);
         setTimeError(e, false);
         updateTimeRow(i);

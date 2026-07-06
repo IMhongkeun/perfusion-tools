@@ -61,6 +61,13 @@ function run() {
   const packageJson = fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8');
 
   assert(timecalcHtml.includes('id="time-new-case"'), 'New case / Clear all button should exist');
+  assert(timecalcHtml.includes('id="time-label-1"') && timecalcHtml.includes('value="CPB / Pump time"'), 'Row 1 should default to CPB / Pump time');
+  assert(timecalcHtml.includes('id="time-label-2"') && timecalcHtml.includes('value="Aortic cross-clamp"'), 'Row 2 should default to Aortic cross-clamp');
+  assert(timecalcHtml.includes('id="time-label-2"') && timecalcHtml.includes('data-time-event-type="x-clamp"'), 'Row 2 should have stable x-clamp event type');
+  [3, 4, 5].forEach(idx => {
+    assert(timecalcHtml.includes(`id="time-label-${idx}"`) && timecalcHtml.includes('placeholder="Optional event"'), `Row ${idx} should remain optional free text`);
+    assert(!timecalcHtml.includes(`id="time-label-${idx}" list=`), `Row ${idx} should not add a datalist or suggestion dropdown`);
+  });
   assert(timecalcHtml.includes('id="time-case-actions"'), 'New case / Clear all should live in a separate action row');
   assert(timecalcHtml.includes('border-t border-slate-200/80'), 'privacy/local storage notice should be visually separated with a subtle divider');
   assert(timecalcHtml.includes('New case / Clear all'), 'clear-all button label should be visible');
@@ -102,6 +109,10 @@ function run() {
   assert(mainJs.includes('function saveTimePreferencesState()'), 'preference persistence should be split from case persistence');
   assert(mainJs.includes('function saveTimeCaseData()'), 'case persistence should be split from preference persistence');
   assert(mainJs.includes('function clearTimecalcCaseData'), 'clear-all case lifecycle function should exist');
+  assert(mainJs.includes('function getDefaultTimeLabel'), 'main code should centralize default row labels');
+  assert(mainJs.includes("if (idx === 1) return 'CPB / Pump time'"), 'New case should be able to restore Row 1 default label');
+  assert(mainJs.includes("if (idx === 2) return 'Aortic cross-clamp'"), 'New case should be able to restore Row 2 default label');
+  assert(mainJs.includes('labelInput.value = getDefaultTimeLabel(i)'), 'restore/clear paths should reset labels to defaults without persisting custom labels');
   assert(mainJs.includes("actionsEl.classList.add('hidden')"), 'previous case prompt should hide the standalone New case action row');
   assert(mainJs.includes("actionsEl.classList.remove('hidden')"), 'hiding the previous case prompt should restore the standalone New case action row');
   assert(mainJs.includes('localStorage.removeItem(TIME_CASE_STORAGE_KEY)'), 'new case should remove current case storage');
