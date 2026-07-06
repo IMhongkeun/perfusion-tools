@@ -2963,7 +2963,35 @@ function buildTimeRowHtml(row, index) {
     </div>`;
 }
 
-function renderTimeRows() {
+function captureTimeRowDomValues() {
+  const values = {};
+  getOrderedTimeRows().forEach(row => {
+    const labelInput = document.getElementById(`time-label-${row.id}`);
+    const startInput = document.getElementById(`time-start-${row.id}`);
+    const endInput = document.getElementById(`time-end-${row.id}`);
+    if (!labelInput && !startInput && !endInput) return;
+    values[row.id] = {
+      label: labelInput?.value || '',
+      start: startInput?.value || '',
+      end: endInput?.value || ''
+    };
+  });
+  return values;
+}
+
+function restoreTimeRowDomValues(values = {}) {
+  Object.entries(values).forEach(([rowId, rowValues]) => {
+    if (!getTimeRowById(rowId)) return;
+    const labelInput = document.getElementById(`time-label-${rowId}`);
+    const startInput = document.getElementById(`time-start-${rowId}`);
+    const endInput = document.getElementById(`time-end-${rowId}`);
+    if (labelInput) labelInput.value = rowValues.label || '';
+    if (startInput) startInput.value = rowValues.start || '';
+    if (endInput) endInput.value = rowValues.end || '';
+  });
+}
+
+function renderTimeRows(preservedValues = null) {
   const rowsEl = document.getElementById('time-rows');
   if (!rowsEl) return;
   rowsEl.innerHTML = timeRows.map(buildTimeRowHtml).join('');
@@ -2978,6 +3006,9 @@ function renderTimeRows() {
       state.endDisplay = endInput?.value || '';
     }
     bindTimeRowEvents(row.id);
+  });
+  if (preservedValues) restoreTimeRowDomValues(preservedValues);
+  timeRows.forEach(row => {
     updateTimeRow(row.id);
     updateTimeLiveControls(row.id);
   });
@@ -2998,9 +3029,10 @@ function addTimeEventRow() {
     updateAddTimeRowUi();
     return null;
   }
+  const preservedValues = captureTimeRowDomValues();
   const row = { id: createCustomTimeRowId(), eventType: 'custom' };
   timeRows.push(row);
-  renderTimeRows();
+  renderTimeRows(preservedValues);
   saveTimeLiveState();
   renderTimeCaseSummary();
   return row;
@@ -3013,9 +3045,11 @@ function removeTimeEventRow(rowId) {
   if (row.eventType !== 'custom') return false;
   const state = timeLiveTimers[rowId];
   if (state?.running && !window.confirm('Remove this running event timer?')) return false;
+  const preservedValues = captureTimeRowDomValues();
+  delete preservedValues[rowId];
   delete timeLiveTimers[rowId];
   timeRows.splice(rowIndex, 1);
-  renderTimeRows();
+  renderTimeRows(preservedValues);
   saveTimeLiveState();
   renderCardioplegiaShortcut();
   renderTimeCaseSummary();

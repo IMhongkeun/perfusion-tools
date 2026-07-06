@@ -24,6 +24,15 @@ function removeRow(rows, timers, rowId, confirmed = true) {
   return { rows: rows.filter(row => row.id !== rowId), timers: nextTimers, removed: true };
 }
 
+function renderWithPreservedValues(rows, currentValues, removedRowId = null) {
+  const nextValues = {};
+  rows.forEach(row => {
+    if (row.id === removedRowId) return;
+    nextValues[row.id] = currentValues[row.id] || { label: '', start: '', end: '' };
+  });
+  return nextValues;
+}
+
 function buildSnapshot(rows, timers) {
   return rows.map((row, index) => ({
     id: row.id,
@@ -68,6 +77,21 @@ function run() {
   assert.strictEqual(rows.length, 10, 'row count should reach max 10');
   assert.strictEqual(addRow(rows, 'row-custom-overflow').length, 10, 'Add event should be blocked at max 10');
 
+  const currentValues = {
+    'row-cpb': { label: 'CPB / Pump time', start: '09:12', end: '12:04' },
+    'row-xclamp': { label: 'Edited clamp label', start: '09:35', end: '11:22' },
+    'row-custom-default': { label: 'ACP time', start: '09:58', end: '10:31' }
+  };
+  const valuesAfterAdd = renderWithPreservedValues(DEFAULT_ROWS.concat({ id: 'row-custom-a', eventType: 'custom' }), currentValues);
+  assert.deepStrictEqual(valuesAfterAdd['row-cpb'], currentValues['row-cpb'], 'Add event should preserve Row 1 manual start/end values');
+  assert.deepStrictEqual(valuesAfterAdd['row-xclamp'], currentValues['row-xclamp'], 'Add event should preserve Row 2 x-clamp values and custom label');
+  assert.deepStrictEqual(valuesAfterAdd['row-custom-default'], currentValues['row-custom-default'], 'Add event should preserve default custom row label and times');
+  assert.deepStrictEqual(valuesAfterAdd['row-custom-a'], { label: '', start: '', end: '' }, 'newly added row should start empty');
+  const valuesAfterRemove = renderWithPreservedValues(DEFAULT_ROWS, valuesAfterAdd, 'row-custom-a');
+  assert.deepStrictEqual(valuesAfterRemove['row-cpb'], currentValues['row-cpb'], 'Remove row should preserve unaffected Row 1 manual values');
+  assert.deepStrictEqual(valuesAfterRemove['row-custom-default'], currentValues['row-custom-default'], 'Remove row should preserve unaffected custom label/time values');
+  assert(!valuesAfterRemove['row-custom-a'], 'removed row values should not be restored');
+
   const timers = {
     'row-cpb': { running: true, startAtEpoch: 1000 },
     'row-custom-a': { running: false, startAtEpoch: 2000, endAtEpoch: 3000 },
@@ -91,7 +115,9 @@ function run() {
 
   assert(mainJs.includes('timeRows = getDefaultTimeRows()'), 'New case should reset row structure to default 3 rows');
   assert(mainJs.includes('normalizeStoredTimeRows(caseData.rows)'), 'Continue should restore stored dynamic row structure');
-  assert(mainJs.includes('renderTimeRows();'), 'row structure changes should rerender dynamic rows');
+  assert(mainJs.includes('function captureTimeRowDomValues'), 'main code should capture DOM input values before dynamic row rerender');
+  assert(mainJs.includes('function restoreTimeRowDomValues'), 'main code should restore DOM input values by stable row id after rerender');
+  assert(mainJs.includes('renderTimeRows(preservedValues)'), 'Add/Remove row should rerender with preserved values');
   assert(mainJs.includes("if (getTimeRowEventType(rowId) === 'x-clamp') cardioplegiaShortcutDismissed = false"), 'only stable x-clamp row start should re-enable shortcut');
   assert(!mainJs.includes("eventType === 'x-clamp' || isCrossClampLabel(label)"), 'custom row labels should not trigger the x-clamp shortcut');
   assert(packageJson.includes('tests/timecalc-dynamic-rows.test.js'), 'test script should include dynamic row regression test');
