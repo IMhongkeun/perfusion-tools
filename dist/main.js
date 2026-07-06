@@ -2840,17 +2840,82 @@ function createCustomTimeRowId() {
   return `row-custom-${Date.now().toString(36)}-${timeCustomRowCounter.toString(36)}`;
 }
 
+function getDefaultTimeRowForOrder(order) {
+  if (order === 0) return { id: 'row-cpb', eventType: 'cpb' };
+  if (order === 1) return { id: 'row-xclamp', eventType: 'x-clamp' };
+  if (order === 2) return { id: 'row-custom-default', eventType: 'custom' };
+  return { id: `row-custom-legacy-${order + 1}`, eventType: 'custom' };
+}
+
+function normalizeStoredTimeRowEntry(row, order, preserveStoredId = true) {
+  const defaultRow = getDefaultTimeRowForOrder(order);
+  const eventType = row?.eventType === 'cpb' || row?.eventType === 'x-clamp' ? row.eventType : defaultRow.eventType;
+  const id = preserveStoredId && typeof row?.id === 'string' && row.id ? row.id : defaultRow.id;
+  return {
+    id,
+    order,
+    eventType,
+    startAtEpoch: Number.isFinite(row?.startAtEpoch) ? row.startAtEpoch : null,
+    endAtEpoch: Number.isFinite(row?.endAtEpoch) ? row.endAtEpoch : null,
+    running: Boolean(row?.running),
+    lastUpdatedAtEpoch: Number.isFinite(row?.lastUpdatedAtEpoch) ? row.lastUpdatedAtEpoch : null
+  };
+}
+
 function normalizeStoredTimeRows(rows) {
-  if (!Array.isArray(rows)) return null;
+  const sourceRows = [];
+  if (Array.isArray(rows)) {
+    rows.forEach((row, index) => {
+      if (!row || typeof row !== 'object') return;
+      const order = Number.isFinite(row.order) ? row.order : index;
+      sourceRows.push(normalizeStoredTimeRowEntry(row, order, true));
+    });
+  } else if (rows && typeof rows === 'object') {
+    const entries = Object.entries(rows);
+    const hasZeroKey = entries.some(([key]) => Number(key) === 0);
+    entries.forEach(([key, row], entryIndex) => {
+      if (!row || typeof row !== 'object') return;
+      const numericKey = Number(key);
+      const order = Number.isFinite(row.order)
+        ? row.order
+        : (Number.isFinite(numericKey) ? numericKey - (hasZeroKey ? 0 : 1) : entryIndex);
+      if (order < 0) return;
+      sourceRows.push(normalizeStoredTimeRowEntry(row, order, false));
+    });
+  } else {
+    return [];
+  }
+
   const seen = new Set();
   const normalized = [];
-  rows.forEach((row, index) => {
-    if (!row || typeof row.id !== 'string' || seen.has(row.id)) return;
-    const eventType = row.eventType === 'cpb' || row.eventType === 'x-clamp' ? row.eventType : 'custom';
-    normalized.push({ id: row.id, eventType, order: Number.isFinite(row.order) ? row.order : index });
-    seen.add(row.id);
-  });
-  return normalized.sort((a, b) => a.order - b.order).slice(0, TIME_MAX_ROWS).map(({ id, eventType }) => ({ id, eventType }));
+  sourceRows
+    .sort((a, b) => a.order - b.order)
+    .forEach(row => {
+      if (!row.id || seen.has(row.id)) return;
+      normalized.push(row);
+      seen.add(row.id);
+    });
+  return normalized.slice(0, TIME_MAX_ROWS);
+}
+
+function ensureMinimumTimeRows(rows) {
+  const normalized = Array.isArray(rows) ? rows.slice(0, TIME_MAX_ROWS) : [];
+  for (let order = 0; order < TIME_MIN_ROWS; order++) {
+    const defaultRow = getDefaultTimeRowForOrder(order);
+    if (normalized.some(row => row.id === defaultRow.id)) continue;
+    normalized.push({ ...defaultRow, order, startAtEpoch: null, endAtEpoch: null, running: false, lastUpdatedAtEpoch: null });
+  }
+  return normalized
+    .slice(0, TIME_MAX_ROWS)
+    .sort((a, b) => a.order - b.order)
+    .map((row, index) => ({ ...row, order: index }));
+}
+
+function getRowsForRender(rows) {
+  return ensureMinimumTimeRows(rows).map(row => ({
+    id: row.id,
+    eventType: row.eventType || 'custom'
+  }));
 }
 
 function buildTimeRowHtml(row, index) {
@@ -3099,12 +3164,14 @@ function getTimeRowsSnapshot() {
 }
 
 function hasNonDefaultTimeRows(rows) {
-  if (!Array.isArray(rows) || rows.length !== TIME_DEFAULT_ROWS.length) return true;
-  return rows.some((row, index) => row.id !== TIME_DEFAULT_ROWS[index].id || row.eventType !== TIME_DEFAULT_ROWS[index].eventType);
+  const normalized = ensureMinimumTimeRows(normalizeStoredTimeRows(rows));
+  if (normalized.length !== TIME_DEFAULT_ROWS.length) return true;
+  return normalized.some((row, index) => row.id !== TIME_DEFAULT_ROWS[index].id || row.eventType !== TIME_DEFAULT_ROWS[index].eventType);
 }
 
 function hasTimeCaseRows(rows) {
-  return Array.isArray(rows) && rows.some(row => row.startAtEpoch || row.endAtEpoch || row.running || hasNonDefaultTimeRows(rows));
+  const normalized = normalizeStoredTimeRows(rows);
+  return normalized.some(row => row.startAtEpoch || row.endAtEpoch || row.running) || hasNonDefaultTimeRows(normalized);
 }
 
 function hasTimeCaseData(caseData) {
@@ -3189,26 +3256,13 @@ function saveTimeLiveState() {
   saveTimeCaseData();
 }
 
-function normalizeLegacyTimeRows(rows, saved) {
-  const entries = Object.entries(rows || {});
-  if (!entries.length) return getDefaultTimeRows();
-  const highestIndex = Math.min(TIME_MAX_ROWS, Math.max(TIME_MIN_ROWS, ...entries.map(([idx]) => Number(idx) || 0)));
-  return Array.from({ length: highestIndex }, (_, index) => {
-    if (index === 0) return { id: 'row-cpb', eventType: 'cpb' };
-    if (index === 1) return { id: 'row-xclamp', eventType: 'x-clamp' };
-    if (index === 2) return { id: 'row-custom-default', eventType: 'custom' };
-    return { id: `row-custom-legacy-${index + 1}`, eventType: 'custom' };
-  });
-}
-
 function applyTimeCaseData(caseData) {
   if (!caseData) return;
   timeCaseStartedAtEpoch = caseData.caseStartedAtEpoch || Date.now();
   timeLiveTimers = {};
-  const restoredRows = normalizeStoredTimeRows(caseData.rows) || normalizeLegacyTimeRows(caseData.rows, caseData);
-  timeRows = restoredRows.length >= TIME_MIN_ROWS ? restoredRows : getDefaultTimeRows();
-  caseData.rows?.forEach?.(row => {
-    if (!row || !row.id) return;
+  const normalizedRows = ensureMinimumTimeRows(normalizeStoredTimeRows(caseData.rows));
+  timeRows = getRowsForRender(normalizedRows);
+  normalizedRows.forEach(row => {
     if (row.startAtEpoch || row.endAtEpoch || row.running) {
       timeLiveTimers[row.id] = {
         id: row.id,
@@ -3220,21 +3274,6 @@ function applyTimeCaseData(caseData) {
       };
     }
   });
-  if (!Array.isArray(caseData.rows) && caseData.rows) {
-    Object.entries(caseData.rows).forEach(([idx, row]) => {
-      if (!row || (!row.startAtEpoch && !row.endAtEpoch && !row.running)) return;
-      const mappedRow = timeRows[(Number(idx) || 1) - 1];
-      if (!mappedRow) return;
-      timeLiveTimers[mappedRow.id] = {
-        id: mappedRow.id,
-        startAtEpoch: row.startAtEpoch || null,
-        endAtEpoch: row.endAtEpoch || null,
-        running: Boolean(row.running),
-        startDisplay: formatEpochToHHMM(row.startAtEpoch),
-        endDisplay: formatEpochToHHMM(row.endAtEpoch)
-      };
-    });
-  }
   if (caseData.cardioplegia) {
     cardioplegiaReminderState.lastCompletedAtEpoch = caseData.cardioplegia.lastCompletedAtEpoch || null;
     cardioplegiaReminderState.nextDueAtEpoch = caseData.cardioplegia.nextDueAtEpoch || null;
@@ -3250,38 +3289,11 @@ function readStoredTimeCaseData() {
     const raw = localStorage.getItem(TIME_CASE_STORAGE_KEY) || localStorage.getItem(TIME_LIVE_STORAGE_KEY);
     if (!raw) return null;
     const saved = JSON.parse(raw);
-    if (Array.isArray(saved.rows)) {
-      return {
-        caseStartedAtEpoch: saved.caseStartedAtEpoch || saved.lastUpdatedAtEpoch || Date.now(),
-        lastUpdatedAtEpoch: saved.lastUpdatedAtEpoch || Date.now(),
-        rows: saved.rows.map((row, index) => ({
-          id: String(row.id),
-          order: Number.isFinite(row.order) ? row.order : index,
-          eventType: row.eventType === 'cpb' || row.eventType === 'x-clamp' ? row.eventType : 'custom',
-          startAtEpoch: row.startAtEpoch || null,
-          endAtEpoch: row.endAtEpoch || null,
-          running: Boolean(row.running),
-          lastUpdatedAtEpoch: row.lastUpdatedAtEpoch || saved.lastUpdatedAtEpoch || null
-        })).filter(row => row.id),
-        cardioplegia: saved.cardioplegia || { intervalMinutes: null, lastCompletedAtEpoch: null, nextDueAtEpoch: null, doseLog: [], lastUpdatedAtEpoch: null }
-      };
-    }
     if (saved.rows) {
-      const rows = {};
-      Object.entries(saved.rows).forEach(([idx, row]) => {
-        if (!row || (!row.startAtEpoch && !row.endAtEpoch && !row.running)) return;
-        rows[idx] = {
-          id: String(idx),
-          startAtEpoch: row.startAtEpoch || null,
-          endAtEpoch: row.endAtEpoch || null,
-          running: Boolean(row.running),
-          lastUpdatedAtEpoch: row.lastUpdatedAtEpoch || saved.lastUpdatedAtEpoch || null
-        };
-      });
       return {
         caseStartedAtEpoch: saved.caseStartedAtEpoch || saved.lastUpdatedAtEpoch || Date.now(),
         lastUpdatedAtEpoch: saved.lastUpdatedAtEpoch || Date.now(),
-        rows,
+        rows: normalizeStoredTimeRows(saved.rows),
         cardioplegia: saved.cardioplegia || { intervalMinutes: null, lastCompletedAtEpoch: null, nextDueAtEpoch: null, doseLog: [], lastUpdatedAtEpoch: null }
       };
     }
