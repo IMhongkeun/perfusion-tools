@@ -2811,6 +2811,12 @@ function formatDurationFromMs(elapsedMs) {
   return `${exactTime} (${chartingSummary})`;
 }
 
+function formatEpochToHHMM(epochMs) {
+  if (!epochMs) return '';
+  const date = new Date(epochMs);
+  return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+}
+
 function getDefaultCardioplegiaReminderState() {
   return {
     reminderEnabled: true,
@@ -2827,24 +2833,20 @@ function getTimeRowsSnapshot() {
   const rows = {};
   for (let i = 1; i <= 5; i++) {
     const state = getTimeRowState(i);
-    const labelInput = document.getElementById(`time-label-${i}`);
-    const startInput = document.getElementById(`time-start-${i}`);
-    const endInput = document.getElementById(`time-end-${i}`);
+    if (!state.startAtEpoch && !state.endAtEpoch && !state.running) continue;
     rows[i] = {
       id: String(i),
-      label: labelInput ? labelInput.value : state.label || '',
       startAtEpoch: state.startAtEpoch || null,
       endAtEpoch: state.endAtEpoch || null,
       running: Boolean(state.running),
-      startDisplay: startInput ? startInput.value : state.startDisplay || '',
-      endDisplay: endInput ? endInput.value : state.endDisplay || ''
+      lastUpdatedAtEpoch: Date.now()
     };
   }
   return rows;
 }
 
 function hasTimeCaseRows(rows) {
-  return Object.values(rows || {}).some(row => row.label || row.startDisplay || row.endDisplay || row.startAtEpoch || row.endAtEpoch || row.running);
+  return Object.values(rows || {}).some(row => row.startAtEpoch || row.endAtEpoch || row.running);
 }
 
 function hasTimeCaseData(caseData) {
@@ -2865,9 +2867,11 @@ function buildTimeCaseData() {
     lastUpdatedAtEpoch: Date.now(),
     rows,
     cardioplegia: {
+      intervalMinutes: getCardioplegiaIntervalMinutes(),
       lastCompletedAtEpoch: cardioplegiaReminderState.lastCompletedAtEpoch || null,
       nextDueAtEpoch: cardioplegiaReminderState.nextDueAtEpoch || null,
-      doseLog: Array.isArray(cardioplegiaReminderState.doseLog) ? cardioplegiaReminderState.doseLog : []
+      doseLog: Array.isArray(cardioplegiaReminderState.doseLog) ? cardioplegiaReminderState.doseLog : [],
+      lastUpdatedAtEpoch: Date.now()
     }
   };
 }
@@ -2930,15 +2934,20 @@ function saveTimeLiveState() {
 function applyTimeCaseData(caseData) {
   if (!caseData) return;
   timeCaseStartedAtEpoch = caseData.caseStartedAtEpoch || Date.now();
-  timeLiveTimers = caseData.rows || {};
+  timeLiveTimers = {};
   for (let i = 1; i <= 5; i++) {
-    const row = timeLiveTimers[i];
+    const row = caseData.rows?.[i];
     const labelInput = document.getElementById(`time-label-${i}`);
     const startInput = document.getElementById(`time-start-${i}`);
     const endInput = document.getElementById(`time-end-${i}`);
-    if (labelInput) labelInput.value = row?.label || '';
-    if (startInput) startInput.value = row?.startDisplay || '';
-    if (endInput) endInput.value = row?.endDisplay || '';
+    const startDisplay = formatEpochToHHMM(row?.startAtEpoch);
+    const endDisplay = formatEpochToHHMM(row?.endAtEpoch);
+    if (labelInput) labelInput.value = '';
+    if (startInput) startInput.value = startDisplay;
+    if (endInput) endInput.value = endDisplay;
+    if (row) {
+      timeLiveTimers[i] = { id: String(i), label: '', startAtEpoch: row.startAtEpoch || null, endAtEpoch: row.endAtEpoch || null, running: Boolean(row.running), startDisplay, endDisplay };
+    }
   }
   if (caseData.cardioplegia) {
     cardioplegiaReminderState.lastCompletedAtEpoch = caseData.cardioplegia.lastCompletedAtEpoch || null;
@@ -2955,11 +2964,22 @@ function readStoredTimeCaseData() {
     if (!raw) return null;
     const saved = JSON.parse(raw);
     if (saved.rows) {
+      const rows = {};
+      Object.entries(saved.rows).forEach(([idx, row]) => {
+        if (!row || (!row.startAtEpoch && !row.endAtEpoch && !row.running)) return;
+        rows[idx] = {
+          id: String(idx),
+          startAtEpoch: row.startAtEpoch || null,
+          endAtEpoch: row.endAtEpoch || null,
+          running: Boolean(row.running),
+          lastUpdatedAtEpoch: row.lastUpdatedAtEpoch || saved.lastUpdatedAtEpoch || null
+        };
+      });
       return {
         caseStartedAtEpoch: saved.caseStartedAtEpoch || saved.lastUpdatedAtEpoch || Date.now(),
         lastUpdatedAtEpoch: saved.lastUpdatedAtEpoch || Date.now(),
-        rows: saved.rows,
-        cardioplegia: saved.cardioplegia || { lastCompletedAtEpoch: null, nextDueAtEpoch: null, doseLog: [] }
+        rows,
+        cardioplegia: saved.cardioplegia || { intervalMinutes: null, lastCompletedAtEpoch: null, nextDueAtEpoch: null, doseLog: [], lastUpdatedAtEpoch: null }
       };
     }
     return null;

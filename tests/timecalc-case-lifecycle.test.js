@@ -7,7 +7,7 @@ const path = require('path');
 const STALE_MS = 18 * 60 * 60 * 1000;
 
 function hasCaseRows(rows) {
-  return Object.values(rows || {}).some(row => row.label || row.startDisplay || row.endDisplay || row.startAtEpoch || row.endAtEpoch || row.running);
+  return Object.values(rows || {}).some(row => row.startAtEpoch || row.endAtEpoch || row.running);
 }
 
 function hasCaseData(caseData) {
@@ -32,6 +32,28 @@ function isStale(caseData, nowMs) {
   return nowMs - (caseData.lastUpdatedAtEpoch || 0) > STALE_MS;
 }
 
+
+function buildMinimalCaseRows(rows) {
+  const sanitized = {};
+  Object.entries(rows || {}).forEach(([idx, row]) => {
+    if (!row.startAtEpoch && !row.endAtEpoch && !row.running) return;
+    sanitized[idx] = {
+      id: String(idx),
+      startAtEpoch: row.startAtEpoch || null,
+      endAtEpoch: row.endAtEpoch || null,
+      running: Boolean(row.running),
+      lastUpdatedAtEpoch: row.lastUpdatedAtEpoch || null
+    };
+  });
+  return sanitized;
+}
+
+function formatEpochToHHMM(epochMs) {
+  if (!epochMs) return '';
+  const date = new Date(epochMs);
+  return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+}
+
 function run() {
   const repoRoot = path.join(__dirname, '..');
   const mainJs = fs.readFileSync(path.join(repoRoot, 'main.js'), 'utf8');
@@ -49,10 +71,15 @@ function run() {
   const caseData = {
     caseStartedAtEpoch: 1000,
     lastUpdatedAtEpoch: 2000,
-    rows: { 1: { label: 'CPB', startDisplay: '08:00', endDisplay: '', startAtEpoch: 1000, endAtEpoch: null, running: true } },
+    rows: { 1: { label: 'Patient Jane Doe CPB', startDisplay: '08:00', endDisplay: '', startAtEpoch: 1000, endAtEpoch: null, running: true }, 2: { label: 'Manual note', startDisplay: '09:00', endDisplay: '09:05', startAtEpoch: null, endAtEpoch: null, running: false } },
     cardioplegia: { lastCompletedAtEpoch: 5000, nextDueAtEpoch: 5000 + 30 * 60000, doseLog: [5000] }
   };
   assert(hasCaseData(caseData), 'stored rows and cardioplegia log should count as case data');
+  const minimalRows = buildMinimalCaseRows(caseData.rows);
+  assert.deepStrictEqual(minimalRows, { 1: { id: '1', startAtEpoch: 1000, endAtEpoch: null, running: true, lastUpdatedAtEpoch: null } }, 'case storage should keep only epoch-based live timer fields');
+  assert(!JSON.stringify(minimalRows).includes('Patient Jane Doe'), 'case storage should not include user-entered labels or PHI');
+  assert(!JSON.stringify(minimalRows).includes('08:00'), 'case storage should not include raw startDisplay/manual input values');
+  assert.strictEqual(formatEpochToHHMM(Date.UTC(2026, 0, 1, 8, 5)), '08:05', 'restored display should be regenerated from epoch as HH:MM');
   const cleared = clearCaseData({ preferences, caseData, legacyLiveTimers: caseData, legacyCardioplegiaReminder: caseData.cardioplegia });
   assert.strictEqual(cleared.caseData, null, 'New case should clear case data');
   assert.deepStrictEqual(cleared.preferences, preferences, 'New case should keep interval/mode preferences');
@@ -67,6 +94,9 @@ function run() {
   assert(mainJs.includes('const TIME_CASE_STALE_MS = 18 * 60 * 60 * 1000'), 'stale case threshold should be 18 hours');
   assert(mainJs.includes('caseStartedAtEpoch'), 'case data should include caseStartedAtEpoch');
   assert(mainJs.includes('lastUpdatedAtEpoch: Date.now()'), 'case data should include lastUpdatedAtEpoch');
+  const snapshotSource = mainJs.slice(mainJs.indexOf('function getTimeRowsSnapshot'), mainJs.indexOf('function hasTimeCaseData'));
+  assert(!/labelInput|startInput|endInput|startDisplay:|endDisplay:|label:/.test(snapshotSource), 'case snapshot should not persist labels or raw input display values');
+  assert(mainJs.includes('function formatEpochToHHMM'), 'restore path should regenerate HH:MM display from epoch values');
   assert(mainJs.includes('function saveTimePreferencesState()'), 'preference persistence should be split from case persistence');
   assert(mainJs.includes('function saveTimeCaseData()'), 'case persistence should be split from preference persistence');
   assert(mainJs.includes('function clearTimecalcCaseData'), 'clear-all case lifecycle function should exist');
@@ -78,6 +108,10 @@ function run() {
   assert(mainJs.includes("Previous case data is old. Continue previous timers or start a new case?"), 'stale prompt should call out old case data');
   assert(mainJs.includes('pendingTimeCaseIsStale = Date.now() - (caseData.lastUpdatedAtEpoch || 0) > TIME_CASE_STALE_MS'), 'stale detection should use lastUpdatedAtEpoch');
   assert(packageJson.includes('tests/timecalc-case-lifecycle.test.js'), 'test script should include case lifecycle regression test');
+  const homeHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
+  assert(timecalcHtml.includes('Do not enter patient identifiers. Live timer data is stored only in this browser'), 'timecalc Live mode notice should warn against patient identifiers and explain local browser storage');
+  assert(homeHtml.includes('Most calculator inputs are not saved. Timecalc Live mode stores timer state locally in this browser'), 'privacy copy should explain Timecalc Live mode local persistence exception');
+  assert(homeHtml.includes('Use New case / Clear all to remove stored case data.'), 'privacy copy should explain clear path');
 
   console.log('All timecalc case lifecycle tests passed.');
 }
