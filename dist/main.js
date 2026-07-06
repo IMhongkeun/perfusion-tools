@@ -2836,6 +2836,80 @@ function formatEpochToHHMM(epochMs) {
   return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
 }
 
+function formatSummaryDuration(totalMinutes) {
+  const safeMinutes = Math.max(0, totalMinutes || 0);
+  const hours = Math.floor(safeMinutes / 60);
+  const minutes = safeMinutes % 60;
+  return `${safeMinutes} min / ${hours}:${minutes.toString().padStart(2, '0')}`;
+}
+
+function getCompletedTimeRowSummary(idx) {
+  const labelInput = document.getElementById(`time-label-${idx}`);
+  const startInput = document.getElementById(`time-start-${idx}`);
+  const endInput = document.getElementById(`time-end-${idx}`);
+  if (!startInput || !endInput) return null;
+
+  const startMin = parseTimeToMinutes(startInput.value);
+  const endMin = parseTimeToMinutes(endInput.value);
+  if (startMin == null || endMin == null) return null;
+
+  const label = (labelInput?.value || '').trim() || `Event ${idx}`;
+  const startDisplay = formatMinutesToHHMM(startMin);
+  const endDisplay = formatMinutesToHHMM(endMin);
+  let adjustedEnd = endMin;
+  if (endMin < startMin) adjustedEnd = endMin + 24 * 60;
+  const durationMinutes = adjustedEnd - startMin;
+  return `${label}: ${startDisplay}–${endDisplay} (${formatSummaryDuration(durationMinutes)})`;
+}
+
+function buildTimeCaseSummaryText() {
+  const lines = ['Perfusion time summary'];
+  for (let i = 1; i <= 5; i++) {
+    const rowSummary = getCompletedTimeRowSummary(i);
+    if (rowSummary) lines.push(rowSummary);
+  }
+
+  const doseLog = Array.isArray(cardioplegiaReminderState.doseLog) ? cardioplegiaReminderState.doseLog : [];
+  const doseText = doseLog.length ? doseLog.map(formatCardioplegiaClock).join(', ') : '—';
+  lines.push(`Cardioplegia complete: ${doseText}`);
+  const intervalMinutes = getCardioplegiaIntervalMinutes();
+  if (intervalMinutes) lines.push(`Cardioplegia interval setting: ${intervalMinutes} min`);
+  return lines.join('\n');
+}
+
+function renderTimeCaseSummary(message = null) {
+  const preview = document.getElementById('time-summary-preview');
+  const status = document.getElementById('time-summary-status');
+  if (preview) preview.value = buildTimeCaseSummaryText();
+  if (status && message != null) status.textContent = message;
+}
+
+function fallbackCopyTimeCaseSummary(summaryText) {
+  const preview = document.getElementById('time-summary-preview');
+  if (!preview) return false;
+  preview.value = summaryText;
+  preview.focus();
+  preview.select();
+  try {
+    return document.execCommand && document.execCommand('copy');
+  } catch (err) {
+    return false;
+  }
+}
+
+async function copyTimeCaseSummary() {
+  const summaryText = buildTimeCaseSummaryText();
+  renderTimeCaseSummary('');
+  try {
+    if (!navigator.clipboard?.writeText) throw new Error('Clipboard API unavailable');
+    await navigator.clipboard.writeText(summaryText);
+    renderTimeCaseSummary('Summary copied');
+  } catch (err) {
+    const fallbackSucceeded = fallbackCopyTimeCaseSummary(summaryText);
+    renderTimeCaseSummary(fallbackSucceeded ? 'Summary copied' : 'Copy failed. Select and copy manually.');
+  }
+}
+
 function getDefaultCardioplegiaReminderState() {
   return {
     reminderEnabled: true,
@@ -3062,6 +3136,7 @@ function clearTimecalcCaseData(options = {}) {
   for (let i = 1; i <= 5; i++) updateTimeLiveControls(i);
   renderCardioplegiaReminder();
   renderCardioplegiaShortcut();
+  renderTimeCaseSummary();
   if (options.keepPreferences !== false) saveTimePreferencesState();
 }
 
@@ -3107,6 +3182,7 @@ function updateTimeRow(idx) {
     resultEl.textContent = formatDurationFromMs(Date.now() - state.startAtEpoch);
     resultEl.classList.add('font-semibold', 'text-accent-700', 'dark:text-accent-300');
     updateTimeLiveControls(idx);
+    renderTimeCaseSummary();
     return;
   }
   resultEl.classList.remove('font-semibold', 'text-accent-700', 'dark:text-accent-300');
@@ -3114,6 +3190,7 @@ function updateTimeRow(idx) {
   if (canUseLiveState && state.startAtEpoch && state.endAtEpoch) {
     resultEl.textContent = formatDurationFromMs(state.endAtEpoch - state.startAtEpoch);
     updateTimeLiveControls(idx);
+    renderTimeCaseSummary();
     return;
   }
 
@@ -3133,6 +3210,7 @@ function updateTimeRow(idx) {
 
   if (startMin == null || endMin == null) {
     resultEl.textContent = '-';
+    renderTimeCaseSummary();
     return;
   }
 
@@ -3146,6 +3224,7 @@ function updateTimeRow(idx) {
 
   resultEl.textContent = formatDuration(diff);
   updateTimeLiveControls(idx);
+  renderTimeCaseSummary();
 }
 
 function clearTimeLiveRow(idx) {
@@ -3153,6 +3232,7 @@ function clearTimeLiveRow(idx) {
   updateTimeRow(idx);
   updateTimeLiveControls(idx);
   saveTimeLiveState();
+  renderTimeCaseSummary();
 }
 
 function handleManualTimeEdit(idx, inputEl) {
@@ -3383,6 +3463,7 @@ function completeCardioplegiaDose(source = 'card') {
   saveCardioplegiaReminderState();
   renderCardioplegiaReminder();
   renderCardioplegiaShortcut();
+  renderTimeCaseSummary();
   if (source === 'shortcut') {
     showCardioplegiaShortcutConfirmation(completedAtEpoch, nextDueAtEpoch);
     temporarilyDisableCardioplegiaShortcutComplete();
@@ -3528,6 +3609,7 @@ function initCardioplegiaReminder() {
       }
       saveCardioplegiaReminderState();
       renderCardioplegiaReminder();
+      renderTimeCaseSummary();
     });
   }
 
@@ -3539,6 +3621,7 @@ function initCardioplegiaReminder() {
       restoreCardioplegiaFromLastLogEntry();
       saveCardioplegiaReminderState();
       renderCardioplegiaReminder();
+      renderTimeCaseSummary();
     });
   }
 
@@ -3557,6 +3640,7 @@ function initCardioplegiaReminder() {
       cardioplegiaReminderState.doseLog = [];
       saveCardioplegiaReminderState();
       renderCardioplegiaReminder();
+      renderTimeCaseSummary();
     });
   }
 
@@ -3592,6 +3676,8 @@ function initTimeCalculator() {
   if (recordModeBtn) recordModeBtn.addEventListener('click', () => setTimeLiveMode('record'));
   if (liveModeBtn) liveModeBtn.addEventListener('click', () => setTimeLiveMode('live'));
   const newCaseBtn = document.getElementById('time-new-case');
+  const summaryCopyBtn = document.getElementById('time-summary-copy');
+  const summaryRefreshBtn = document.getElementById('time-summary-refresh');
   const continueCaseBtn = document.getElementById('time-case-continue');
   const startNewCaseBtn = document.getElementById('time-case-start-new');
   if (newCaseBtn) {
@@ -3610,6 +3696,8 @@ function initTimeCalculator() {
     });
   }
   if (startNewCaseBtn) startNewCaseBtn.addEventListener('click', () => clearTimecalcCaseData({ keepPreferences: true }));
+  if (summaryCopyBtn) summaryCopyBtn.addEventListener('click', copyTimeCaseSummary);
+  if (summaryRefreshBtn) summaryRefreshBtn.addEventListener('click', () => renderTimeCaseSummary());
 
   for (let i = 1; i <= 5; i++) {
     const s = document.getElementById(`time-start-${i}`);
@@ -3627,6 +3715,7 @@ function initTimeCalculator() {
       label.addEventListener('input', () => {
         saveTimeLiveState();
         renderCardioplegiaShortcut();
+        renderTimeCaseSummary();
       });
     }
     if (s) {
@@ -3645,6 +3734,7 @@ function initTimeCalculator() {
         updateTimeRow(i);
         updateTimeLiveControls(i);
         renderCardioplegiaShortcut();
+        renderTimeCaseSummary();
         saveTimeLiveState();
       });
     }
@@ -3656,6 +3746,7 @@ function initTimeCalculator() {
         updateTimeRow(i);
         updateTimeLiveControls(i);
         renderCardioplegiaShortcut();
+        renderTimeCaseSummary();
         saveTimeLiveState();
       });
     }
@@ -3672,6 +3763,7 @@ function initTimeCalculator() {
         updateTimeRow(i);
         saveTimeLiveState();
         renderCardioplegiaShortcut();
+        renderTimeCaseSummary();
       });
     }
     if (e && liveStop) {
@@ -3687,6 +3779,7 @@ function initTimeCalculator() {
         updateTimeRow(i);
         saveTimeLiveState();
         renderCardioplegiaShortcut();
+        renderTimeCaseSummary();
       });
     }
     if (s && e && liveReset) {
@@ -3697,6 +3790,7 @@ function initTimeCalculator() {
         if (resultEl) resultEl.textContent = '-';
         clearTimeLiveRow(i);
         renderCardioplegiaShortcut();
+        renderTimeCaseSummary();
       });
     }
     updateTimeRow(i);
@@ -3704,6 +3798,7 @@ function initTimeCalculator() {
   initCardioplegiaReminder();
   setTimeLiveMode(timeLiveMode);
   initTimeLiveInterval();
+  renderTimeCaseSummary();
 }
 
 // -----------------------------
