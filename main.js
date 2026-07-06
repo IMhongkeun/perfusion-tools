@@ -2777,9 +2777,15 @@ function clearPrimingBuilderItems() {
 }
 
 const TIME_LIVE_STORAGE_KEY = 'perfusiontools.timecalc.liveTimers.v1';
+const TIME_CASE_STORAGE_KEY = 'perfusiontools.timecalc.caseData.v2';
+const TIME_PREFERENCES_STORAGE_KEY = 'perfusiontools.timecalc.preferences.v2';
+const TIME_CASE_STALE_MS = 18 * 60 * 60 * 1000;
 let timeLiveMode = 'record';
 let timeLiveTimers = {};
 let timeLiveTickId = null;
+let timeCaseStartedAtEpoch = null;
+let pendingTimeCaseData = null;
+let pendingTimeCaseIsStale = false;
 
 function setTimeError(inputEl, hasError) {
   if (!inputEl) return;
@@ -2805,51 +2811,222 @@ function formatDurationFromMs(elapsedMs) {
   return `${exactTime} (${chartingSummary})`;
 }
 
-function saveTimeLiveState() {
-  try {
-    const rows = {};
-    for (let i = 1; i <= 5; i++) {
-      const state = getTimeRowState(i);
-      const labelInput = document.getElementById(`time-label-${i}`);
-      const startInput = document.getElementById(`time-start-${i}`);
-      const endInput = document.getElementById(`time-end-${i}`);
-      rows[i] = {
-        id: String(i),
-        label: labelInput ? labelInput.value : state.label || '',
-        startAtEpoch: state.startAtEpoch || null,
-        endAtEpoch: state.endAtEpoch || null,
-        running: Boolean(state.running),
-        startDisplay: startInput ? startInput.value : state.startDisplay || '',
-        endDisplay: endInput ? endInput.value : state.endDisplay || ''
-      };
+function getDefaultCardioplegiaReminderState() {
+  return {
+    reminderEnabled: true,
+    selectedPreset: 'blood-20',
+    intervalMinutes: 20,
+    customIntervalMinutes: '',
+    lastCompletedAtEpoch: null,
+    nextDueAtEpoch: null,
+    doseLog: []
+  };
+}
+
+function getTimeRowsSnapshot() {
+  const rows = {};
+  for (let i = 1; i <= 5; i++) {
+    const state = getTimeRowState(i);
+    const labelInput = document.getElementById(`time-label-${i}`);
+    const startInput = document.getElementById(`time-start-${i}`);
+    const endInput = document.getElementById(`time-end-${i}`);
+    rows[i] = {
+      id: String(i),
+      label: labelInput ? labelInput.value : state.label || '',
+      startAtEpoch: state.startAtEpoch || null,
+      endAtEpoch: state.endAtEpoch || null,
+      running: Boolean(state.running),
+      startDisplay: startInput ? startInput.value : state.startDisplay || '',
+      endDisplay: endInput ? endInput.value : state.endDisplay || ''
+    };
+  }
+  return rows;
+}
+
+function hasTimeCaseRows(rows) {
+  return Object.values(rows || {}).some(row => row.label || row.startDisplay || row.endDisplay || row.startAtEpoch || row.endAtEpoch || row.running);
+}
+
+function hasTimeCaseData(caseData) {
+  return Boolean(
+    caseData && (
+      hasTimeCaseRows(caseData.rows) ||
+      caseData.cardioplegia?.lastCompletedAtEpoch ||
+      caseData.cardioplegia?.nextDueAtEpoch ||
+      (Array.isArray(caseData.cardioplegia?.doseLog) && caseData.cardioplegia.doseLog.length > 0)
+    )
+  );
+}
+
+function buildTimeCaseData() {
+  const rows = getTimeRowsSnapshot();
+  return {
+    caseStartedAtEpoch: timeCaseStartedAtEpoch || Date.now(),
+    lastUpdatedAtEpoch: Date.now(),
+    rows,
+    cardioplegia: {
+      lastCompletedAtEpoch: cardioplegiaReminderState.lastCompletedAtEpoch || null,
+      nextDueAtEpoch: cardioplegiaReminderState.nextDueAtEpoch || null,
+      doseLog: Array.isArray(cardioplegiaReminderState.doseLog) ? cardioplegiaReminderState.doseLog : []
     }
-    localStorage.setItem(TIME_LIVE_STORAGE_KEY, JSON.stringify({ mode: timeLiveMode, rows }));
+  };
+}
+
+function saveTimePreferencesState() {
+  try {
+    localStorage.setItem(TIME_PREFERENCES_STORAGE_KEY, JSON.stringify({
+      mode: timeLiveMode,
+      reminderEnabled: cardioplegiaReminderState.reminderEnabled !== false,
+      selectedPreset: cardioplegiaReminderState.selectedPreset || 'blood-20',
+      intervalMinutes: validateCardioplegiaInterval(cardioplegiaReminderState.intervalMinutes) || 20,
+      customIntervalMinutes: cardioplegiaReminderState.customIntervalMinutes || ''
+    }));
+  } catch (err) {
+    // Preferences are optional; the calculator remains usable without storage.
+  }
+}
+
+function loadTimePreferencesState() {
+  try {
+    const raw = localStorage.getItem(TIME_PREFERENCES_STORAGE_KEY);
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+    timeLiveMode = saved.mode === 'live' ? 'live' : 'record';
+    cardioplegiaReminderState = {
+      ...cardioplegiaReminderState,
+      reminderEnabled: saved.reminderEnabled !== false,
+      selectedPreset: saved.selectedPreset || cardioplegiaReminderState.selectedPreset,
+      intervalMinutes: validateCardioplegiaInterval(saved.intervalMinutes) || cardioplegiaReminderState.intervalMinutes,
+      customIntervalMinutes: saved.customIntervalMinutes || ''
+    };
+  } catch (err) {
+    timeLiveMode = 'record';
+  }
+}
+
+function saveTimeCaseData() {
+  try {
+    const caseData = buildTimeCaseData();
+    if (hasTimeCaseData(caseData)) {
+      timeCaseStartedAtEpoch = caseData.caseStartedAtEpoch;
+      localStorage.setItem(TIME_CASE_STORAGE_KEY, JSON.stringify(caseData));
+    } else {
+      timeCaseStartedAtEpoch = null;
+      localStorage.removeItem(TIME_CASE_STORAGE_KEY);
+    }
+    localStorage.removeItem(TIME_LIVE_STORAGE_KEY);
+    localStorage.removeItem(CARDIOPLEGIA_REMINDER_STORAGE_KEY);
   } catch (err) {
     // localStorage can be unavailable in privacy-restricted contexts; manual calculations still work.
   }
 }
 
-function loadTimeLiveState() {
-  try {
-    const raw = localStorage.getItem(TIME_LIVE_STORAGE_KEY);
-    if (!raw) return;
-    const saved = JSON.parse(raw);
-    timeLiveMode = saved.mode === 'live' ? 'live' : 'record';
-    timeLiveTimers = saved.rows || {};
-    for (let i = 1; i <= 5; i++) {
-      const row = timeLiveTimers[i];
-      if (!row) continue;
-      const labelInput = document.getElementById(`time-label-${i}`);
-      const startInput = document.getElementById(`time-start-${i}`);
-      const endInput = document.getElementById(`time-end-${i}`);
-      if (labelInput) labelInput.value = row.label || '';
-      if (startInput) startInput.value = row.startDisplay || '';
-      if (endInput) endInput.value = row.endDisplay || '';
-    }
-  } catch (err) {
-    timeLiveMode = 'record';
-    timeLiveTimers = {};
+function saveTimeLiveState() {
+  saveTimePreferencesState();
+  if (pendingTimeCaseData) return;
+  saveTimeCaseData();
+}
+
+function applyTimeCaseData(caseData) {
+  if (!caseData) return;
+  timeCaseStartedAtEpoch = caseData.caseStartedAtEpoch || Date.now();
+  timeLiveTimers = caseData.rows || {};
+  for (let i = 1; i <= 5; i++) {
+    const row = timeLiveTimers[i];
+    const labelInput = document.getElementById(`time-label-${i}`);
+    const startInput = document.getElementById(`time-start-${i}`);
+    const endInput = document.getElementById(`time-end-${i}`);
+    if (labelInput) labelInput.value = row?.label || '';
+    if (startInput) startInput.value = row?.startDisplay || '';
+    if (endInput) endInput.value = row?.endDisplay || '';
   }
+  if (caseData.cardioplegia) {
+    cardioplegiaReminderState.lastCompletedAtEpoch = caseData.cardioplegia.lastCompletedAtEpoch || null;
+    cardioplegiaReminderState.nextDueAtEpoch = caseData.cardioplegia.nextDueAtEpoch || null;
+    cardioplegiaReminderState.doseLog = Array.isArray(caseData.cardioplegia.doseLog) ? caseData.cardioplegia.doseLog.filter(Number.isFinite) : [];
+  }
+  for (let i = 1; i <= 5; i++) updateTimeRow(i);
+  renderCardioplegiaReminder();
+}
+
+function readStoredTimeCaseData() {
+  try {
+    const raw = localStorage.getItem(TIME_CASE_STORAGE_KEY) || localStorage.getItem(TIME_LIVE_STORAGE_KEY);
+    if (!raw) return null;
+    const saved = JSON.parse(raw);
+    if (saved.rows) {
+      return {
+        caseStartedAtEpoch: saved.caseStartedAtEpoch || saved.lastUpdatedAtEpoch || Date.now(),
+        lastUpdatedAtEpoch: saved.lastUpdatedAtEpoch || Date.now(),
+        rows: saved.rows,
+        cardioplegia: saved.cardioplegia || { lastCompletedAtEpoch: null, nextDueAtEpoch: null, doseLog: [] }
+      };
+    }
+    return null;
+  } catch (err) {
+    return null;
+  }
+}
+
+function showTimeCasePrompt(caseData, isStale) {
+  const promptEl = document.getElementById('time-case-prompt');
+  const messageEl = document.getElementById('time-case-prompt-message');
+  if (!promptEl || !messageEl) return;
+  promptEl.classList.remove('hidden');
+  messageEl.textContent = isStale
+    ? 'Previous case data is old. Continue previous timers or start a new case?'
+    : 'Previous case data found. Continue previous timers or start a new case?';
+}
+
+function hideTimeCasePrompt() {
+  const promptEl = document.getElementById('time-case-prompt');
+  if (promptEl) promptEl.classList.add('hidden');
+}
+
+function clearTimecalcCaseData(options = {}) {
+  for (let i = 1; i <= 5; i++) {
+    const labelInput = document.getElementById(`time-label-${i}`);
+    const startInput = document.getElementById(`time-start-${i}`);
+    const endInput = document.getElementById(`time-end-${i}`);
+    const resultEl = document.getElementById(`time-result-${i}`);
+    if (labelInput) labelInput.value = '';
+    if (startInput) {
+      startInput.value = '';
+      setTimeError(startInput, false);
+    }
+    if (endInput) {
+      endInput.value = '';
+      setTimeError(endInput, false);
+    }
+    if (resultEl) resultEl.textContent = '-';
+  }
+  timeLiveTimers = {};
+  timeCaseStartedAtEpoch = null;
+  pendingTimeCaseData = null;
+  pendingTimeCaseIsStale = false;
+  cardioplegiaReminderState.lastCompletedAtEpoch = null;
+  cardioplegiaReminderState.nextDueAtEpoch = null;
+  cardioplegiaReminderState.doseLog = [];
+  try {
+    localStorage.removeItem(TIME_CASE_STORAGE_KEY);
+    localStorage.removeItem(TIME_LIVE_STORAGE_KEY);
+    localStorage.removeItem(CARDIOPLEGIA_REMINDER_STORAGE_KEY);
+  } catch (err) {
+    // Case clear should still reset the in-memory UI when storage is unavailable.
+  }
+  hideTimeCasePrompt();
+  for (let i = 1; i <= 5; i++) updateTimeLiveControls(i);
+  renderCardioplegiaReminder();
+  if (options.keepPreferences !== false) saveTimePreferencesState();
+}
+
+function loadTimeLiveState() {
+  loadTimePreferencesState();
+  const caseData = readStoredTimeCaseData();
+  if (!hasTimeCaseData(caseData)) return;
+  pendingTimeCaseData = caseData;
+  pendingTimeCaseIsStale = Date.now() - (caseData.lastUpdatedAtEpoch || 0) > TIME_CASE_STALE_MS;
+  showTimeCasePrompt(caseData, pendingTimeCaseIsStale);
 }
 
 function updateTimeLiveControls(idx) {
@@ -2967,7 +3144,8 @@ function setTimeLiveMode(nextMode) {
     updateTimeRow(i);
     updateTimeLiveControls(i);
   }
-  saveTimeLiveState();
+  if (pendingTimeCaseData) saveTimePreferencesState();
+  else saveTimeLiveState();
 }
 
 function createTimeLiveControls(idx, rowEl) {
@@ -3070,30 +3248,11 @@ function getCardioplegiaIntervalMinutes() {
 }
 
 function saveCardioplegiaReminderState() {
-  try {
-    localStorage.setItem(CARDIOPLEGIA_REMINDER_STORAGE_KEY, JSON.stringify(cardioplegiaReminderState));
-  } catch (err) {
-    // Reminder display remains usable even when localStorage is unavailable.
-  }
+  saveTimeLiveState();
 }
 
 function loadCardioplegiaReminderState() {
-  try {
-    const raw = localStorage.getItem(CARDIOPLEGIA_REMINDER_STORAGE_KEY);
-    if (!raw) return;
-    const saved = JSON.parse(raw);
-    cardioplegiaReminderState = {
-      reminderEnabled: saved.reminderEnabled !== false,
-      selectedPreset: saved.selectedPreset || 'blood-20',
-      intervalMinutes: validateCardioplegiaInterval(saved.intervalMinutes) || 20,
-      customIntervalMinutes: saved.customIntervalMinutes || '',
-      lastCompletedAtEpoch: Number.isFinite(saved.lastCompletedAtEpoch) ? saved.lastCompletedAtEpoch : null,
-      nextDueAtEpoch: Number.isFinite(saved.nextDueAtEpoch) ? saved.nextDueAtEpoch : null,
-      doseLog: Array.isArray(saved.doseLog) ? saved.doseLog.filter(Number.isFinite) : []
-    };
-  } catch (err) {
-    cardioplegiaReminderState = { reminderEnabled: true, selectedPreset: 'blood-20', intervalMinutes: 20, customIntervalMinutes: '', lastCompletedAtEpoch: null, nextDueAtEpoch: null, doseLog: [] };
-  }
+  loadTimePreferencesState();
 }
 
 function updateCardioplegiaPresetUi() {
@@ -3286,6 +3445,25 @@ function initTimeCalculator() {
   const liveModeBtn = document.getElementById('time-mode-live');
   if (recordModeBtn) recordModeBtn.addEventListener('click', () => setTimeLiveMode('record'));
   if (liveModeBtn) liveModeBtn.addEventListener('click', () => setTimeLiveMode('live'));
+  const newCaseBtn = document.getElementById('time-new-case');
+  const continueCaseBtn = document.getElementById('time-case-continue');
+  const startNewCaseBtn = document.getElementById('time-case-start-new');
+  if (newCaseBtn) {
+    newCaseBtn.addEventListener('click', () => {
+      if (!window.confirm('Clear all Time Calculator case data and start a new case? Interval preferences will be kept.')) return;
+      clearTimecalcCaseData({ keepPreferences: true });
+    });
+  }
+  if (continueCaseBtn) {
+    continueCaseBtn.addEventListener('click', () => {
+      applyTimeCaseData(pendingTimeCaseData);
+      pendingTimeCaseData = null;
+      pendingTimeCaseIsStale = false;
+      hideTimeCasePrompt();
+      saveTimeCaseData();
+    });
+  }
+  if (startNewCaseBtn) startNewCaseBtn.addEventListener('click', () => clearTimecalcCaseData({ keepPreferences: true }));
 
   for (let i = 1; i <= 5; i++) {
     const s = document.getElementById(`time-start-${i}`);
