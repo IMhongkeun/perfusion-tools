@@ -4,18 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>DO₂i Calculator for Goal-Directed Perfusion | Perfusion Tools</title>
-  <meta name="description" content="Estimate DO₂i, CaO₂, and required pump flow for goal-directed perfusion during CPB using BSA, hemoglobin, SaO₂, PaO₂, and target DO₂i." />
+  <title>Goal-Directed Perfusion DO2i Calculator | CPB Oxygen Delivery</title>
+  <meta name="description" content="Calculate indexed oxygen delivery during cardiopulmonary bypass using flow index, hemoglobin, SaO2, and PaO2. Includes DO2i formula notes and clinical limitations." />
   <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
   <link rel="canonical" href="https://perfusiontools.com/gdp/" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="DO₂i Calculator for Goal-Directed Perfusion | Perfusion Tools" />
-  <meta property="og:description" content="Estimate DO₂i, CaO₂, and required pump flow for goal-directed perfusion during CPB using BSA, hemoglobin, SaO₂, PaO₂, and target DO₂i." />
+  <meta property="og:title" content="Goal-Directed Perfusion DO2i Calculator | CPB Oxygen Delivery" />
+  <meta property="og:description" content="Calculate indexed oxygen delivery during cardiopulmonary bypass using flow index, hemoglobin, SaO2, and PaO2. Includes DO2i formula notes and clinical limitations." />
   <meta property="og:url" content="https://perfusiontools.com/gdp/" />
-  <meta name="twitter:title" content="DO₂i Calculator for Goal-Directed Perfusion | Perfusion Tools" />
-  <meta name="twitter:description" content="Estimate DO₂i, CaO₂, and required pump flow for goal-directed perfusion during CPB using BSA, hemoglobin, SaO₂, PaO₂, and target DO₂i." />
+  <meta name="twitter:title" content="Goal-Directed Perfusion DO2i Calculator | CPB Oxygen Delivery" />
+  <meta name="twitter:description" content="Calculate indexed oxygen delivery during cardiopulmonary bypass using flow index, hemoglobin, SaO2, and PaO2. Includes DO2i formula notes and clinical limitations." />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -302,16 +302,16 @@
   <script>
     const routeMeta = {
       '/': {
-        title: 'DO₂i Calculator for Goal-Directed Perfusion | Perfusion Tools',
-        h1: 'DO₂i Calculator for Goal-Directed Perfusion in CPB',
-        description: 'Estimate DO₂i, CaO₂, and required pump flow for goal-directed perfusion during CPB using BSA, hemoglobin, SaO₂, PaO₂, and target DO₂i.',
+        title: 'Goal-Directed Perfusion DO2i Calculator | CPB Oxygen Delivery',
+        h1: 'Goal-Directed Perfusion DO2i Calculator',
+        description: 'Calculate indexed oxygen delivery during cardiopulmonary bypass using flow index, hemoglobin, SaO2, and PaO2. Includes DO2i formula notes and clinical limitations.',
         canonicalPath: '/gdp/'
       },
       '/gdp': {
-        title: 'DO₂i Calculator for Goal-Directed Perfusion | Perfusion Tools',
-        h1: 'DO₂i Calculator for Goal-Directed Perfusion in CPB',
-        description: 'Estimate DO₂i, CaO₂, and required pump flow for goal-directed perfusion during CPB using BSA, hemoglobin, SaO₂, PaO₂, and target DO₂i.',
-        headingDescription: 'Estimate oxygen delivery index, arterial oxygen content, and required pump flow during cardiopulmonary bypass using BSA, hemoglobin, SaO₂, PaO₂, and a selected DO₂i target.',
+        title: 'Goal-Directed Perfusion DO2i Calculator | CPB Oxygen Delivery',
+        h1: 'Goal-Directed Perfusion DO2i Calculator',
+        description: 'Calculate indexed oxygen delivery during cardiopulmonary bypass using flow index, hemoglobin, SaO2, and PaO2. Includes DO2i formula notes and clinical limitations.',
+        headingDescription: 'Calculate indexed oxygen delivery during CPB using flow index, hemoglobin, arterial oxygen saturation (SaO2), and PaO2 in a goal-directed perfusion context.',
         canonicalPath: '/gdp/'
       }
     };
@@ -351,7 +351,7 @@
     window.applyRouteMeta = applyRouteMeta;
     window.addEventListener('load', () => applyRouteMeta('/gdp'));
   </script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/gdp#webpage","url":"https://perfusiontools.com/gdp/","name":"DO₂i Calculator for Goal-Directed Perfusion in CPB","description":"Estimate DO₂i, CaO₂, and required pump flow for goal-directed perfusion during CPB using BSA, hemoglobin, SaO₂, PaO₂, and target DO₂i.","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalCondition","name":"Intraoperative oxygen delivery management during cardiopulmonary bypass"},"dateModified":"2026-04-28"},{"@type":"WebApplication","@id":"https://perfusiontools.com/gdp#app","name":"DO₂i Calculator for Goal-Directed Perfusion","url":"https://perfusiontools.com/gdp/","applicationCategory":"MedicalApplication","operatingSystem":"Any","isPartOf":{"@id":"https://perfusiontools.com/gdp#webpage"},"publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"FAQPage","@id":"https://perfusiontools.com/gdp#faq","mainEntity":[{"@type":"Question","name":"What is DO₂i in cardiopulmonary bypass?","acceptedAnswer":{"@type":"Answer","text":"DO₂i is indexed oxygen delivery: the estimated oxygen delivered per minute per square meter of BSA during CPB."}},{"@type":"Question","name":"What DO₂i target is commonly used in goal-directed perfusion?","acceptedAnswer":{"@type":"Answer","text":"Common adult targets often fall near 260-300 mL/min/m², but target selection should follow institutional protocol and patient context."}},{"@type":"Question","name":"How is required pump flow calculated?","acceptedAnswer":{"@type":"Answer","text":"Required pump flow is estimated as (Target DO₂i × BSA) ÷ (CaO₂ × 10)."}},{"@type":"Question","name":"Can I increase DO₂i without increasing pump flow?","acceptedAnswer":{"@type":"Answer","text":"Yes. Changes in hemoglobin concentration, saturation, and oxygenator performance can increase estimated DO₂i without changing pump flow."}},{"@type":"Question","name":"Is this calculator for ECMO too?","acceptedAnswer":{"@type":"Answer","text":"The formula can describe indexed oxygen delivery conceptually, but this page is primarily designed for CPB and ECMO interpretation needs additional context such as native cardiac output, recirculation, differential oxygenation, and circuit configuration."}}]},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/gdp#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"GDP Calculator","item":"https://perfusiontools.com/gdp/"}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/gdp#webpage","url":"https://perfusiontools.com/gdp/","name":"Goal-Directed Perfusion DO2i Calculator","description":"Calculate indexed oxygen delivery during cardiopulmonary bypass using flow index, hemoglobin, SaO2, and PaO2. Includes DO2i formula notes and clinical limitations.","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalCondition","name":"Intraoperative oxygen delivery management during cardiopulmonary bypass"},"dateModified":"2026-07-08"},{"@type":"WebApplication","@id":"https://perfusiontools.com/gdp#app","name":"Goal-Directed Perfusion DO2i Calculator","url":"https://perfusiontools.com/gdp/","applicationCategory":"MedicalApplication","operatingSystem":"Any","isPartOf":{"@id":"https://perfusiontools.com/gdp#webpage"},"publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"FAQPage","@id":"https://perfusiontools.com/gdp#faq","mainEntity":[{"@type":"Question","name":"What is DO2i during CPB?","acceptedAnswer":{"@type":"Answer","text":"Indexed oxygen delivery, or DO2i, estimates oxygen delivery normalized to body surface area during cardiopulmonary bypass. It combines pump flow index and arterial oxygen content."}},{"@type":"Question","name":"How is DO2i calculated?","acceptedAnswer":{"@type":"Answer","text":"DO2i is commonly estimated as flow index multiplied by arterial oxygen content and a unit conversion factor. Arterial oxygen content depends mainly on hemoglobin and arterial oxygen saturation, with a smaller contribution from dissolved oxygen."}},{"@type":"Question","name":"Why does hemoglobin affect oxygen delivery more than PaO2?","acceptedAnswer":{"@type":"Answer","text":"Most arterial oxygen content is carried by hemoglobin. Dissolved oxygen from PaO2 contributes much less under usual CPB conditions, so changes in hemoglobin and saturation usually have a larger effect on calculated DO2i."}},{"@type":"Question","name":"Does this calculator define a transfusion threshold?","acceptedAnswer":{"@type":"Answer","text":"No. This calculator estimates oxygen delivery and does not define a transfusion threshold. Transfusion decisions should consider patient factors, institutional protocols, venous saturation, lactate, perfusion pressure, temperature, hemodilution, and the overall clinical context."}},{"@type":"Question","name":"Can this replace blood gas monitoring during CPB?","acceptedAnswer":{"@type":"Answer","text":"No. The result is an estimate based on entered values and should be interpreted alongside measured blood gas values, venous saturation, lactate trends, pump flow, pressure, temperature, and the surgical situation."}}]},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/gdp#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"Goal-Directed Perfusion DO2i Calculator","item":"https://perfusiontools.com/gdp/"}]}]}</script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
@@ -396,8 +396,8 @@
     <main class="p-4 md:p-8 max-w-3xl mx-auto w-full space-y-8">
       <section class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
         <div class="p-6 space-y-3">
-          <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">DO₂i Calculator for Goal-Directed Perfusion in CPB</h1>
-          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Estimate oxygen delivery index, arterial oxygen content, and required pump flow during cardiopulmonary bypass using BSA, hemoglobin, SaO₂, PaO₂, and a selected DO₂i target.</p>
+          <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Goal-Directed Perfusion DO2i Calculator</h1>
+          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Calculate indexed oxygen delivery during CPB using flow index, hemoglobin, arterial oxygen saturation (SaO2), and PaO2 in a goal-directed perfusion context.</p>
         </div>
       </section>
 
@@ -418,8 +418,14 @@
           </div>
 
           <div class="p-6 space-y-6">
-            <div class="text-sm text-slate-600 dark:text-slate-300 rounded-xl bg-slate-50 dark:bg-primary-800/40 border border-slate-200 dark:border-primary-700 p-4">
-              Goal-Directed Perfusion uses indexed oxygen delivery to guide flow strategy during CPB/ECMO. This tool estimates CaO₂, required flow at the selected DO₂i target, and current adequacy status from your live inputs.
+            <div class="text-sm text-slate-600 dark:text-slate-300 rounded-xl bg-slate-50 dark:bg-primary-800/40 border border-slate-200 dark:border-primary-700 p-4 space-y-3">
+              <p>Calculate indexed oxygen delivery (DO2i) during cardiopulmonary bypass / CPB using flow index, hemoglobin, arterial oxygen saturation (SaO2), and PaO2 in a goal-directed perfusion context.</p>
+              <div class="flex flex-wrap gap-1.5" aria-label="DO2i calculator features">
+                <span class="rounded-full border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/50 px-2.5 py-1 text-[11px] font-semibold text-slate-600 dark:text-slate-300">DO2i</span>
+                <span class="rounded-full border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/50 px-2.5 py-1 text-[11px] font-semibold text-slate-600 dark:text-slate-300">CPB oxygen delivery</span>
+                <span class="rounded-full border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/50 px-2.5 py-1 text-[11px] font-semibold text-slate-600 dark:text-slate-300">Flow index</span>
+                <span class="rounded-full border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/50 px-2.5 py-1 text-[11px] font-semibold text-slate-600 dark:text-slate-300">Hemoglobin &amp; SaO2</span>
+              </div>
             </div>
 
             <div class="bg-slate-50 dark:bg-primary-800/50 border border-slate-100 dark:border-primary-700/50 rounded-xl p-4 space-y-3">
@@ -636,7 +642,8 @@
               <div class="calculator-lower-panel">
                 <section class="space-y-1">
                   <h4 class="text-xs font-semibold text-primary-900 dark:text-white">Model assumptions</h4>
-                  <p>This calculator estimates oxygen delivery index from arterial oxygen content and indexed pump flow. It assumes steady-state oxygen content and does not model oxygen extraction, hemodilution kinetics, blood loss, transfusion timing, microcirculatory flow, or rapid changes in metabolic demand.</p>
+                  <p>This calculator estimates indexed oxygen delivery using entered values. The formula is based on flow index and arterial oxygen content, with hemoglobin and SaO2 usually dominating calculated CaO2 and dissolved oxygen from PaO2 contributing a smaller component under usual CPB conditions.</p>
+                  <p>The output is a planning and interpretation aid, not a stand-alone target or transfusion trigger. Clinical interpretation should include measured blood gas values, venous oxygen saturation, lactate trends, pump flow, perfusion pressure, temperature, hemodilution, and the surgical context.</p>
                   <p>The corrected flow is a temperature-adjusted reference flow based on Q10-estimated VO₂ reduction, with Q10 fixed at 2.2. This reference estimate does not replace bedside assessment or make the temperature-adjusted value a prescribed pump flow.</p>
                 </section>
                 <section class="space-y-1">
@@ -689,28 +696,24 @@
               <h2 id="gdp-faq-heading" class="calculator-lower-title">Goal-directed perfusion FAQ</h2>
               <div class="calculator-lower-panel calculator-faq-list">
                 <div class="calculator-faq-item">
-                  <p class="calculator-faq-question">What is DO₂i in cardiopulmonary bypass?</p>
-                  <p class="calculator-faq-answer">DO₂i is indexed oxygen delivery: the estimated oxygen delivered per minute per square meter of BSA during CPB.</p>
+                  <p class="calculator-faq-question">What is DO2i during CPB?</p>
+                  <p class="calculator-faq-answer">Indexed oxygen delivery, or DO2i, estimates oxygen delivery normalized to body surface area during cardiopulmonary bypass. It combines pump flow index and arterial oxygen content.</p>
                 </div>
                 <div class="calculator-faq-item">
-                  <p class="calculator-faq-question">What DO₂i target is commonly used in goal-directed perfusion?</p>
-                  <p class="calculator-faq-answer">Common adult targets often fall near 260-300 mL/min/m², but target selection should follow institutional protocol and patient context.</p>
+                  <p class="calculator-faq-question">How is DO2i calculated?</p>
+                  <p class="calculator-faq-answer">DO2i is commonly estimated as flow index multiplied by arterial oxygen content and a unit conversion factor. Arterial oxygen content depends mainly on hemoglobin and arterial oxygen saturation, with a smaller contribution from dissolved oxygen.</p>
                 </div>
                 <div class="calculator-faq-item">
-                  <p class="calculator-faq-question">How is required pump flow calculated?</p>
-                  <p class="calculator-faq-answer">Required pump flow is estimated as (Target DO₂i × BSA) ÷ (CaO₂ × 10).</p>
+                  <p class="calculator-faq-question">Why does hemoglobin affect oxygen delivery more than PaO2?</p>
+                  <p class="calculator-faq-answer">Most arterial oxygen content is carried by hemoglobin. Dissolved oxygen from PaO2 contributes much less under usual CPB conditions, so changes in hemoglobin and saturation usually have a larger effect on calculated DO2i.</p>
                 </div>
                 <div class="calculator-faq-item">
-                  <p class="calculator-faq-question">Can I increase DO₂i without increasing pump flow?</p>
-                  <p class="calculator-faq-answer">Yes. Changes in hemoglobin concentration, saturation, and oxygenator performance can increase estimated DO₂i without changing pump flow.</p>
+                  <p class="calculator-faq-question">Does this calculator define a transfusion threshold?</p>
+                  <p class="calculator-faq-answer">No. This calculator estimates oxygen delivery and does not define a transfusion threshold. Transfusion decisions should consider patient factors, institutional protocols, venous saturation, lactate, perfusion pressure, temperature, hemodilution, and the overall clinical context.</p>
                 </div>
                 <div class="calculator-faq-item">
-                  <p class="calculator-faq-question">Can I reduce pump flow based only on the temperature-corrected VO₂ estimate?</p>
-                  <p class="calculator-faq-answer">No. The temperature-corrected value is a reference estimate based on expected VO₂ reduction during hypothermia, not a direct pump-flow prescription. Oxygen consumption does not fall uniformly in every patient, and adequacy of perfusion should still be assessed with multiple bedside indicators, including SvO₂ or ScvO₂, lactate trend, NIRS, arterial pressure, venous drainage, cannula limitations, hemoglobin, acid-base status, urine output, and institutional protocol. Use the corrected value as contextual information rather than a standalone target.</p>
-                </div>
-                <div class="calculator-faq-item">
-                  <p class="calculator-faq-question">Is this calculator for ECMO too?</p>
-                  <p class="calculator-faq-answer">The formula can describe indexed oxygen delivery conceptually, but this page is primarily designed for CPB and ECMO interpretation needs additional context such as native cardiac output, recirculation, differential oxygenation, and circuit configuration.</p>
+                  <p class="calculator-faq-question">Can this replace blood gas monitoring during CPB?</p>
+                  <p class="calculator-faq-answer">No. The result is an estimate based on entered values and should be interpreted alongside measured blood gas values, venous saturation, lactate trends, pump flow, pressure, temperature, and the surgical situation.</p>
                 </div>
               </div>
             </section>
