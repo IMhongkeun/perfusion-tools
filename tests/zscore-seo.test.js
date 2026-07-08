@@ -25,6 +25,9 @@ function run() {
   assert(html.includes('The built-in height/weight BSA calculator uses the formula selected in the BSA method selector.'), 'FAQ should describe BSA method selector behavior');
   assert(html.includes('The selected Z-score reference model does not automatically determine the BSA formula.'), 'FAQ should clarify model selection does not determine BSA formula');
   assert(html.includes('Why can different pediatric echo Z-score calculators give different results?'), 'FAQ should include calculator difference question');
+  assert(html.includes('Can this calculator be used for adult patients?'), 'FAQ should include adult-use warning question');
+  assert(html.includes('should not be used to interpret adult cardiac measurements'), 'adult-use FAQ should warn against adult interpretation');
+  assert(html.includes('even when the calculated BSA falls within the model’s numeric input range'), 'limitations copy should warn adults are out of scope even if BSA is numerically in range');
   assert(!html.includes('Boston / BCH</span>'), 'Boston/BCH should not be listed as a supported model badge');
 
   const faqLd = getJsonLdBlocks(html).find((block) => block['@type'] === 'FAQPage');
@@ -37,6 +40,10 @@ function run() {
   assert(bsaFaq.acceptedAnswer.text.includes('formula selected in the BSA method selector'), 'FAQPage JSON-LD should describe BSA selector behavior');
   assert(bsaFaq.acceptedAnswer.text.includes('does not automatically determine the BSA formula'), 'FAQPage JSON-LD should clarify model selection does not determine BSA formula');
   assert(faqQuestions.includes('Why can different pediatric echo Z-score calculators give different results?'), 'FAQPage JSON-LD should include calculator difference question');
+  assert(faqQuestions.includes('Can this calculator be used for adult patients?'), 'FAQPage JSON-LD should include adult-use warning question');
+  const adultFaq = faqLd.mainEntity.find((entry) => entry.name === 'Can this calculator be used for adult patients?');
+  assert(adultFaq.acceptedAnswer.text.includes('should not be used to interpret adult cardiac measurements'), 'FAQPage JSON-LD should warn against adult interpretation');
+  assert(adultFaq.acceptedAnswer.text.includes('Even if an adult patient’s BSA falls within the accepted numeric range'), 'FAQPage JSON-LD should warn adult interpretation is invalid even if BSA is in range');
 
   console.log('All z-score SEO tests passed.');
 }
