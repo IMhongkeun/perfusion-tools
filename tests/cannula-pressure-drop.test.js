@@ -30,6 +30,18 @@ assert(
   'Searchable model combobox should preserve existing select-driven filtering for model and category/type controls.'
 );
 const pressureDropPageHtml = fs.readFileSync(path.join(__dirname, '..', 'cannula-pressure-drop', 'index.html'), 'utf8');
+
+const uniqueSorted = values => [...new Set(values.filter(Boolean))].sort();
+const pressureDropSummaryHtml = pressureDropPageHtml.slice(
+  pressureDropPageHtml.indexOf('id="available-cannula-pressure-drop-datasets"'),
+  pressureDropPageHtml.indexOf('<h2 class="calculator-lower-title">Methodology</h2>')
+);
+const pressureDropManufacturers = uniqueSorted(pressureDropData.map(entry => entry.manufacturer));
+const pressureDropCategories = uniqueSorted(pressureDropData.map(entry => entry.category));
+const pressureDropFrenchSizes = pressureDropData.flatMap(entry => (
+  [...String(entry.size || '').matchAll(/(\d+)\s*Fr/g)].map(match => Number(match[1]))
+));
+const pressureDropSizeRange = `${Math.min(...pressureDropFrenchSizes)}–${Math.max(...pressureDropFrenchSizes)} Fr`;
 assert(
   pressureDropPageHtml.includes('.pressure-drop-combobox-panel') &&
   pressureDropPageHtml.includes('width: calc(100vw - 32px) !important;') &&
@@ -38,8 +50,8 @@ assert(
   'Pressure-drop combobox CSS should prevent horizontal overflow and truncate long selected/option labels.'
 );
 assert(
-  pressureDropPageHtml.includes('<title>Cannula Pressure Drop Reference &amp; Calculator | Perfusion Tools</title>') &&
-  pressureDropPageHtml.includes('<meta name="description" content="Manufacturer-based cannula pressure drop reference for CPB and ECMO perfusion planning, with pressure-flow curves to support arterial and venous cannula selection." />') &&
+  pressureDropPageHtml.includes('<title>Cannula Pressure Drop Calculator | CPB &amp; Perfusion Flow Resistance</title>') &&
+  pressureDropPageHtml.includes('Estimate cannula pressure drop from manufacturer pressure-flow data for perfusion cannulas') &&
   pressureDropPageHtml.includes('<link rel="canonical" href="https://perfusiontools.com/cannula-pressure-drop/" />'),
   'Cannula pressure-drop page should expose unique title, description, and exact canonical URL metadata.'
 );
@@ -51,7 +63,14 @@ assert(
   'Cannula pressure-drop page should add a separate tabbed Compare sizes view while keeping the single lookup markup present.'
 );
 assert(
-  pressureDropPageHtml.includes('manufacturer-published pressure-flow data') &&
+  pressureDropPageHtml.includes('manufacturer pressure-flow curve data') &&
+  pressureDropPageHtml.includes('flow resistance') &&
+  pressureDropPageHtml.includes('model-specific limitations') &&
+  pressureDropPageHtml.includes('Pressure-flow curves') &&
+  pressureDropPageHtml.includes('Manufacturer data') &&
+  pressureDropPageHtml.includes('Linear interpolation') &&
+  pressureDropPageHtml.includes('Arterial &amp; venous cannulas') &&
+  pressureDropPageHtml.includes('available manufacturer pressure-flow curves or tables') &&
   pressureDropPageHtml.includes('linear interpolation between adjacent source points') &&
   pressureDropPageHtml.includes('Compare sizes view applies one shared target flow'),
   'Cannula pressure-drop methodology should explain manufacturer source data, linear interpolation, and shared-flow Compare sizes behavior.'
@@ -59,20 +78,21 @@ assert(
 assert(
   pressureDropPageHtml.includes('blood viscosity, hematocrit, temperature, cannula position') &&
   pressureDropPageHtml.includes('connector size, tubing configuration') &&
-  pressureDropPageHtml.includes('not extrapolated unless explicitly supported by the source') &&
+  pressureDropPageHtml.includes('should not be extrapolated') &&
   pressureDropPageHtml.includes('limited to the currently included manufacturer datasets'),
   'Cannula pressure-drop limitations should describe clinical factors, source-range limits, and dataset coverage limits.'
 );
 assert(
   pressureDropPageHtml.includes('What is cannula pressure drop?') &&
-  pressureDropPageHtml.includes('Can I compare cannula sizes at the same flow?') &&
-  pressureDropPageHtml.includes('Can this tool choose the best cannula for CPB or ECMO?'),
+  pressureDropPageHtml.includes('How is pressure drop estimated on this page?') &&
+  pressureDropPageHtml.includes('Can this calculator be used outside the listed flow range?') &&
+  pressureDropPageHtml.includes('Does this replace manufacturer instructions or clinical judgment?') &&
+  pressureDropPageHtml.includes('Why can measured circuit pressure differ from the chart value?'),
   'Cannula pressure-drop page should include compact FAQ/AEO content for key user questions.'
 );
 assert(
   pressureDropPageHtml.includes('Getinge / Maquet HLS cannula entries are commonly interpreted in an ECMO context') &&
-  pressureDropPageHtml.includes('intended ECMO configuration') &&
-  pressureDropPageHtml.includes('Are HLS cannulas used for ECMO?'),
+  pressureDropPageHtml.includes('intended ECMO configuration'),
   'Cannula pressure-drop lower content should describe HLS cannula interpretation in an ECMO context without making a product recommendation.'
 );
 assert(
@@ -104,7 +124,6 @@ assert(
   pressureDropPageHtml.includes('VAVD precautions') &&
   pressureDropPageHtml.includes('Monitor reservoir pressure when VAVD is used') &&
   pressureDropPageHtml.includes('avoid excessive negative pressure') &&
-  pressureDropPageHtml.includes('How should VAVD pressure be monitored?') &&
   pressureDropPageHtml.includes('How should venous pressure-drop data be used?'),
   'Cannula pressure-drop page should include VAVD precautions and matching FAQ content.'
 );
@@ -113,6 +132,33 @@ assert(
   pressureDropPageHtml.includes('href="/unit-converter/"') &&
   pressureDropPageHtml.includes('href="/bsa/"'),
   'Cannula pressure-drop related tools should link to Quick Reference, Unit Converter, and BSA Calculator.'
+);
+
+
+assert(
+  pressureDropPageHtml.includes('id="available-cannula-pressure-drop-datasets"') &&
+  pressureDropSummaryHtml.includes(`${pressureDropData.length} datasets`) &&
+  pressureDropSummaryHtml.includes(pressureDropManufacturers.join(', ')) &&
+  pressureDropCategories.every(category => pressureDropSummaryHtml.includes(category)) &&
+  pressureDropSummaryHtml.includes(pressureDropSizeRange) &&
+  pressureDropManufacturers.every(manufacturer => pressureDropSummaryHtml.includes(`<strong>${manufacturer}</strong>`)) &&
+  pressureDropSummaryHtml.includes('Model availability includes') &&
+  pressureDropSummaryHtml.includes('representative size range') &&
+  !/<table|pressureDrop|\"flow\"|data points/i.test(pressureDropSummaryHtml),
+  'Cannula pressure-drop page should include an indexable dataset summary synchronized with manufacturer, category, model, and size availability.'
+);
+assert(
+  pressureDropPageHtml.includes('"@type":"FAQPage"') &&
+  pressureDropPageHtml.includes('"name":"What is cannula pressure drop?"') &&
+  pressureDropPageHtml.includes('"name":"How is pressure drop estimated on this page?"') &&
+  pressureDropPageHtml.includes('"name":"Can this calculator be used outside the listed flow range?"') &&
+  pressureDropPageHtml.includes('"name":"Does this replace manufacturer instructions or clinical judgment?"') &&
+  pressureDropPageHtml.includes('"name":"Why can measured circuit pressure differ from the chart value?"'),
+  'Cannula pressure-drop FAQPage JSON-LD should match the visible FAQ questions.'
+);
+assert(
+  !/selects? the best cannula|defines? a universal safe pressure threshold|reliable estimate outside|does replace manufacturer instructions/i.test(pressureDropPageHtml),
+  'Cannula pressure-drop copy should not claim to select the best cannula, define a universal safe pressure threshold, extrapolate reliably, or replace manufacturer instructions.'
 );
 
 const medtronicCatalogUrl = 'https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf';
