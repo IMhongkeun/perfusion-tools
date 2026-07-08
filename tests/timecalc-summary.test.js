@@ -100,6 +100,8 @@ function run() {
 
   assert(timecalcHtml.includes('id="time-case-summary"'), 'Case summary card should exist');
   assert(timecalcHtml.includes('id="time-summary-copy"'), 'Copy summary button should exist');
+  assert(!timecalcHtml.includes('id="time-summary-refresh"'), 'Refresh summary button should no longer exist');
+  assert(!timecalcHtml.includes('Refresh summary'), 'Refresh summary label should no longer appear');
   assert(timecalcHtml.includes('Review and copy completed time events. Do not include patient identifiers.'), 'summary privacy helper should exist');
 
   const stoppedLiveState = {
@@ -133,9 +135,6 @@ function run() {
   status = renderSummaryStatus('', 'Summary copied');
   status = renderSummaryStatus(status);
   assert.strictEqual(status, '', 'cardioplegia doseLog refresh should clear copied status');
-  status = renderSummaryStatus('', 'Summary copied');
-  status = renderSummaryStatus(status);
-  assert.strictEqual(status, '', 'Refresh summary should clear copied status');
   status = renderSummaryStatus(status, 'Summary copied');
   assert.strictEqual(status, 'Summary copied', 'copying again after a summary change should show copied status again');
   status = renderSummaryStatus('', 'Copy failed. Select and copy manually.');
@@ -169,6 +168,7 @@ function run() {
   assert(mainJs.includes('endValue === formatEpochToHHMM(state.endAtEpoch)'), 'stopped live summary should require matching end input');
   assert(mainJs.includes("function renderTimeCaseSummary(message = '')"), 'ordinary summary render should default to clearing status');
   assert(mainJs.includes('if (status) status.textContent = message'), 'summary render should always update status text');
+  assert(!mainJs.includes("getElementById('time-summary-refresh')"), 'Refresh summary button listener should be removed');
   assert(mainJs.includes('function getCardioplegiaSummaryIntervalMinutes'), 'summary interval helper should exist');
   assert(mainJs.includes("cardioplegiaReminderState.selectedPreset === 'custom'"), 'summary interval should branch on custom preset');
   const undoHandlerSource = mainJs.slice(mainJs.indexOf('if (undoBtn)'), mainJs.indexOf('if (resetBtn)'));

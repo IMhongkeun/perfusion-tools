@@ -4015,7 +4015,6 @@ function initTimeCalculator() {
   const newCaseBtn = document.getElementById('time-new-case');
   const addRowBtn = document.getElementById('time-add-row');
   const summaryCopyBtn = document.getElementById('time-summary-copy');
-  const summaryRefreshBtn = document.getElementById('time-summary-refresh');
   const continueCaseBtn = document.getElementById('time-case-continue');
   const startNewCaseBtn = document.getElementById('time-case-start-new');
 
@@ -4023,7 +4022,6 @@ function initTimeCalculator() {
   if (liveModeBtn) liveModeBtn.addEventListener('click', () => setTimeLiveMode('live'));
   if (addRowBtn) addRowBtn.addEventListener('click', addTimeEventRow);
   if (summaryCopyBtn) summaryCopyBtn.addEventListener('click', copyTimeCaseSummary);
-  if (summaryRefreshBtn) summaryRefreshBtn.addEventListener('click', () => renderTimeCaseSummary());
   if (newCaseBtn) {
     newCaseBtn.addEventListener('click', () => {
       if (!window.confirm('Clear all Time Calculator case data and start a new case? Interval preferences will be kept.')) return;
