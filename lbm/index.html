@@ -4,18 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Lean Body Mass Calculator for Perfusion Dosing</title>
-  <meta name="description" content="Estimate lean body mass using Janmahasatian and Devine methods to inform weight-based perfusion medication and support calculations." />
+  <title>Lean Body Mass Calculator | LBM &amp; Dosing Weight Estimate</title>
+  <meta name="description" content="Estimate lean body mass from height, weight, and sex using supported adult body-composition formulas. Includes formula notes, dosing-weight context, and clinical limitations." />
   <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
   <link rel="canonical" href="https://perfusiontools.com/lbm/" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Lean Body Mass (LBM) Calculator for Perfusion | Perfusion Tools" />
-  <meta property="og:description" content="Calculate LBM and compare actual vs lean BSA-indexed flow guidance for perfusion planning." />
+  <meta property="og:title" content="Lean Body Mass Calculator | LBM &amp; Dosing Weight Estimate" />
+  <meta property="og:description" content="Estimate lean body mass from height, weight, and sex using supported adult body-composition formulas. Includes formula notes, dosing-weight context, and clinical limitations." />
   <meta property="og:url" content="https://perfusiontools.com/lbm/" />
-  <meta name="twitter:title" content="Lean Body Mass (LBM) Calculator for Perfusion | Perfusion Tools" />
-  <meta name="twitter:description" content="Calculate LBM and compare actual vs lean BSA-indexed flow guidance for perfusion planning." />
+  <meta name="twitter:title" content="Lean Body Mass Calculator | LBM &amp; Dosing Weight Estimate" />
+  <meta name="twitter:description" content="Estimate lean body mass from height, weight, and sex using supported adult body-composition formulas. Includes formula notes, dosing-weight context, and clinical limitations." />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -287,16 +287,17 @@
   <script>
     const routeMeta = {
       '/': {
-        title: 'Lean Body Mass (LBM) Calculator for Perfusion | Perfusion Tools',
-        h1: 'Lean Body Mass Calculator for Perfusion Planning',
-        description: 'Lean Body Mass calculator for perfusion planning with Boer and Hume formulas. Compare actual vs lean BSA flow targets across CI ranges for CPB workflow support.',
+        title: 'Lean Body Mass Calculator | LBM & Dosing Weight Estimate',
+        h1: 'Lean Body Mass Calculator',
+        description: 'Estimate lean body mass from height, weight, and sex using supported adult body-composition formulas. Includes formula notes, dosing-weight context, and clinical limitations.',
+        headingDescription: 'Estimate lean body mass (LBM) using height, weight, sex, and the selected supported formula. Use results for dosing-weight context and body-composition estimation, not as a direct medication order.',
         canonicalPath: '/lbm/'
       },
       '/lbm': {
-        title: 'Lean Body Mass (LBM) Calculator for Perfusion | Perfusion Tools',
-        h1: 'Lean Body Mass Calculator for Perfusion Planning',
-        description: 'Lean Body Mass calculator for perfusion planning with Boer and Hume formulas. Compare actual vs lean BSA flow targets across CI ranges for CPB workflow support.',
-        headingDescription: 'Calculate LBM and compare indexed flow requirements using actual BSA versus lean BSA in CPB workflows.',
+        title: 'Lean Body Mass Calculator | LBM & Dosing Weight Estimate',
+        h1: 'Lean Body Mass Calculator',
+        description: 'Estimate lean body mass from height, weight, and sex using supported adult body-composition formulas. Includes formula notes, dosing-weight context, and clinical limitations.',
+        headingDescription: 'Estimate lean body mass (LBM) using height, weight, sex, and the selected supported formula. Use results for dosing-weight context and body-composition estimation, not as a direct medication order.',
         canonicalPath: '/lbm/'
       }
     };
@@ -336,7 +337,7 @@
     window.applyRouteMeta = applyRouteMeta;
     window.addEventListener('load', () => applyRouteMeta('/lbm'));
   </script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/lbm#webpage","url":"https://perfusiontools.com/lbm/","name":"Lean Body Mass Calculator – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalEntity","name":"Lean body mass for perfusion dosing and indexed calculations"},"dateModified":"2026-04-10"},{"@type":"WebApplication","@id":"https://perfusiontools.com/lbm#app","name":"Lean Body Mass Calculator for Perfusion","url":"https://perfusiontools.com/lbm/","applicationCategory":"MedicalApplication","operatingSystem":"Any","isPartOf":{"@id":"https://perfusiontools.com/lbm#webpage"},"publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/lbm#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"Lean Body Mass Calculator","item":"https://perfusiontools.com/lbm/"}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/lbm#webpage","url":"https://perfusiontools.com/lbm/","name":"Lean Body Mass Calculator | LBM & Dosing Weight Estimate","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalEntity","name":"Lean body mass for dosing-weight context and indexed calculations"},"dateModified":"2026-07-08"},{"@type":"WebApplication","@id":"https://perfusiontools.com/lbm#app","name":"Lean Body Mass Calculator","url":"https://perfusiontools.com/lbm/","applicationCategory":"MedicalApplication","operatingSystem":"Any","isPartOf":{"@id":"https://perfusiontools.com/lbm#webpage"},"publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"FAQPage","@id":"https://perfusiontools.com/lbm#faq","mainEntity":[{"@type":"Question","name":"What is lean body mass?","acceptedAnswer":{"@type":"Answer","text":"Lean body mass estimates body weight excluding most fat mass. It includes muscle, organs, bone, water, and other non-fat tissues."}},{"@type":"Question","name":"How is LBM calculated?","acceptedAnswer":{"@type":"Answer","text":"LBM is calculated from height, weight, sex, and the selected supported formula. This page supports Boer and Hume adult equations. Different formulas may produce different values, especially at very low or very high body weight."}},{"@type":"Question","name":"Is lean body mass the same as ideal body weight?","acceptedAnswer":{"@type":"Answer","text":"No. Lean body mass and ideal body weight are different estimates. Ideal body weight is usually height-based, while lean body mass attempts to estimate non-fat body mass using height, weight, sex, and formula-specific assumptions."}},{"@type":"Question","name":"Can this be used for medication dosing?","acceptedAnswer":{"@type":"Answer","text":"This calculator can support dosing-weight estimation, but it does not define a medication dose by itself. Drug dosing should follow the relevant drug label, institutional protocol, renal/hepatic function, indication, and clinical judgment."}},{"@type":"Question","name":"What are the limitations of LBM formulas?","acceptedAnswer":{"@type":"Answer","text":"LBM formulas are population-based estimates and may be less accurate in children, pregnancy, edema, ascites, amputation, extreme obesity, cachexia, or unusual body composition. This calculator is intended for adult estimation; pediatric use is not validated here."}}]},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/lbm#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"Lean Body Mass Calculator","item":"https://perfusiontools.com/lbm/"}]}]}</script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
@@ -381,8 +382,8 @@
     <main class="p-4 md:p-8 max-w-3xl mx-auto w-full space-y-8">
       <section class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
         <div class="p-6 space-y-3">
-          <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Lean Body Mass Calculator for Perfusion Planning</h1>
-          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Calculate LBM and compare indexed flow requirements using actual BSA versus lean BSA in CPB workflows.</p>
+          <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Lean Body Mass Calculator</h1>
+          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Estimate lean body mass (LBM) using height, weight, sex, and the selected supported formula. Use results for dosing-weight context and body-composition estimation, not as a direct medication order.</p>
         </div>
       </section>
 
@@ -390,12 +391,18 @@
         <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
           <div class="p-6 border-b border-slate-100 dark:border-primary-800 bg-slate-50/50 dark:bg-primary-800/30">
             <h2 class="text-xl font-bold text-primary-900 dark:text-white flex items-center gap-2">Lean Body Mass <span class="px-2 py-0.5 rounded text-xs font-bold bg-accent-500/10 text-accent-600 dark:text-accent-400">LBM</span></h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Fat-free body mass calculator</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Adult lean body mass and dosing-weight context calculator</p>
           </div>
 
           <div class="p-6 grid sm:grid-cols-2 gap-6">
             <div class="sm:col-span-2 text-sm text-slate-600 dark:text-slate-300 rounded-xl bg-slate-50 dark:bg-primary-800/40 border border-slate-200 dark:border-primary-700 p-4">
-              Enter height, weight, sex, and formula choice to compare actual BSA-based flow with lean BSA-based flow.
+              Estimate lean body mass (LBM) using height, weight, sex, and the selected supported formula. Use results as a body-composition estimate with dosing-weight context and formula limitations, not a direct medication order.
+              <div class="mt-3 flex flex-wrap gap-2 text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+                <span class="rounded-full bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-700 px-2.5 py-1">Lean body mass</span>
+                <span class="rounded-full bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-700 px-2.5 py-1">Adult estimate</span>
+                <span class="rounded-full bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-700 px-2.5 py-1">Dosing-weight context</span>
+                <span class="rounded-full bg-white dark:bg-primary-900 border border-slate-200 dark:border-primary-700 px-2.5 py-1">Formula limitations</span>
+              </div>
             </div>
 
             <div class="space-y-1">
@@ -445,7 +452,7 @@
             <div class="bg-slate-50 dark:bg-primary-800/30 border border-slate-200 dark:border-primary-700 rounded-2xl p-4">
               <h3 class="text-sm font-semibold text-primary-900 dark:text-slate-100">Quick summary</h3>
               <p class="mt-2 text-sm text-slate-700 dark:text-slate-300">
-                Lean body mass (LBM) estimates fat-free body mass and can help contextualize perfusion targets in obesity or extreme body habitus. This calculator compares actual BSA-based flow with lean BSA-based flow to support CPB flow discussions.
+                Lean body mass (LBM) estimates body weight excluding most fat mass. It includes muscle, organs, bone, water, and other non-fat tissues. This adult calculator uses height, weight, sex, and the selected Boer or Hume formula to provide a body-composition estimate for dosing-weight context and CPB flow discussions.
               </p>
             </div>
 
@@ -454,7 +461,7 @@
               <div class="grid md:grid-cols-3 gap-3">
                 <div class="bg-white dark:bg-primary-900 rounded-xl border border-slate-200 dark:border-primary-800 p-3">
                   <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400">Primary use</div>
-                  <p class="mt-1 text-sm text-slate-700 dark:text-slate-300">Compare actual BSA vs lean BSA flow guidance.</p>
+                  <p class="mt-1 text-sm text-slate-700 dark:text-slate-300">Estimate lean body mass for dosing-weight context and actual vs lean BSA comparison.</p>
                 </div>
                 <div class="bg-white dark:bg-primary-900 rounded-xl border border-slate-200 dark:border-primary-800 p-3">
                   <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400">Formula set</div>
@@ -462,7 +469,7 @@
                 </div>
                 <div class="bg-white dark:bg-primary-900 rounded-xl border border-slate-200 dark:border-primary-800 p-3">
                   <div class="text-[11px] uppercase tracking-wide font-semibold text-slate-500 dark:text-slate-400">Caution</div>
-                  <p class="mt-1 text-sm text-slate-700 dark:text-slate-300">Lean BSA is a reference value, not a replacement for bedside perfusion assessment.</p>
+                  <p class="mt-1 text-sm text-slate-700 dark:text-slate-300">LBM is an estimate, not a standalone medication dose or clinical order.</p>
                 </div>
               </div>
             </div>
@@ -512,27 +519,29 @@
             </div>
 
             <section class="calculator-lower-section">
-              <h2 class="calculator-lower-title">Lean body mass method & limitations</h2>
+              <h2 class="calculator-lower-title">Lean body mass methodology, FAQ & limitations</h2>
               <div class="calculator-lower-panel">
-                <div>
-                  <p><strong>What is lean body mass?</strong></p>
-                  <p>LBM means body mass excluding adipose tissue.</p>
-                </div>
-                <div>
-                  <p><strong>Which LBM formulas are used?</strong></p>
-                  <p>Adult estimation formulas are available using Boer and Hume equations.</p>
-                </div>
-                <div>
-                  <p><strong>How is lean BSA flow calculated?</strong></p>
-                  <p>Actual BSA and lean BSA are both calculated with the selected BSA formula, then flow comparison is calculated as CI × BSA.</p>
-                </div>
-                <div>
-                  <p><strong>How should the result be interpreted?</strong></p>
-                  <p>Lean BSA flow is a comparison reference, not a standalone prescription.</p>
-                </div>
-                <div>
-                  <p><strong>Limitations</strong></p>
-                  <p>Adult estimation formulas only; not a pediatric reference model; not a substitute for bedside perfusion monitoring; local protocol should take precedence.</p>
+                <div class="calculator-faq-list">
+                  <div class="calculator-faq-item">
+                    <p class="calculator-faq-question">What is lean body mass?</p>
+                    <p class="calculator-faq-answer">Lean body mass estimates body weight excluding most fat mass. It includes muscle, organs, bone, water, and other non-fat tissues.</p>
+                  </div>
+                  <div class="calculator-faq-item">
+                    <p class="calculator-faq-question">How is LBM calculated?</p>
+                    <p class="calculator-faq-answer">LBM is calculated from height, weight, sex, and the selected supported formula. This page supports Boer and Hume adult equations. Different formulas may produce different values, especially at very low or very high body weight.</p>
+                  </div>
+                  <div class="calculator-faq-item">
+                    <p class="calculator-faq-question">Is lean body mass the same as ideal body weight?</p>
+                    <p class="calculator-faq-answer">No. Lean body mass and ideal body weight are different estimates. Ideal body weight is usually height-based, while lean body mass attempts to estimate non-fat body mass using height, weight, sex, and formula-specific assumptions.</p>
+                  </div>
+                  <div class="calculator-faq-item">
+                    <p class="calculator-faq-question">Can this be used for medication dosing?</p>
+                    <p class="calculator-faq-answer">This calculator can support dosing-weight estimation, but it does not define a medication dose by itself. Drug dosing should follow the relevant drug label, institutional protocol, renal/hepatic function, indication, and clinical judgment.</p>
+                  </div>
+                  <div class="calculator-faq-item">
+                    <p class="calculator-faq-question">What are the limitations of LBM formulas?</p>
+                    <p class="calculator-faq-answer">LBM formulas are population-based estimates and may be less accurate in children, pregnancy, edema, ascites, amputation, extreme obesity, cachexia, or unusual body composition. This calculator is intended for adult estimation; pediatric use is not validated here.</p>
+                  </div>
                 </div>
               </div>
             </section>
@@ -575,14 +584,14 @@
                     </div>
                   </div>
                 </div>
-                <p class="text-sm text-slate-700 dark:text-slate-300">Both formulas are estimates and can differ by sex, height, and weight.</p>
+                <p class="text-sm text-slate-700 dark:text-slate-300">Both formulas are estimates and can differ by sex, height, and weight. LBM is not directly measured body composition, and results should not be used as a stand-alone medication dose or clinical order.</p>
               </div>
 
               <div class="space-y-2">
                 <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Pediatric use: limited interpretation</h4>
                 <div class="text-sm text-slate-700 dark:text-slate-300 space-y-2">
-                  <p>LBM is meaningful as a body-composition concept in children, but this calculator is intended mainly for adult obesity or extreme body-habitus interpretation. Pediatric body composition changes with growth, and adult equations such as Boer and Hume are not pediatric reference models.</p>
-                  <p>For pediatric CPB, follow institutional pediatric perfusion protocols and interpret flow with temperature, DO₂/SvO₂, lactate, NIRS, pressure, urine output, and overall clinical context. Lean-BSA flow should not be used as a standalone pediatric pump-flow target.</p>
+                  <p>This calculator is intended for adult lean body mass estimation. Pediatric body composition changes with growth, and adult equations such as Boer and Hume are not pediatric reference models.</p>
+                  <p>For children, pregnancy, edema, ascites, amputation, cachexia, extreme obesity, or unusual body composition, formula accuracy may be reduced. Follow institutional protocols and interpret results with temperature, DO₂/SvO₂, lactate, NIRS, pressure, urine output, renal/hepatic function, indication, and overall clinical context.</p>
                 </div>
               </div>
 
