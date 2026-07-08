@@ -30,6 +30,18 @@ assert(
   'Searchable model combobox should preserve existing select-driven filtering for model and category/type controls.'
 );
 const pressureDropPageHtml = fs.readFileSync(path.join(__dirname, '..', 'cannula-pressure-drop', 'index.html'), 'utf8');
+
+const uniqueSorted = values => [...new Set(values.filter(Boolean))].sort();
+const pressureDropSummaryHtml = pressureDropPageHtml.slice(
+  pressureDropPageHtml.indexOf('id="available-cannula-pressure-drop-datasets"'),
+  pressureDropPageHtml.indexOf('<h2 class="calculator-lower-title">Methodology</h2>')
+);
+const pressureDropManufacturers = uniqueSorted(pressureDropData.map(entry => entry.manufacturer));
+const pressureDropCategories = uniqueSorted(pressureDropData.map(entry => entry.category));
+const pressureDropFrenchSizes = pressureDropData.flatMap(entry => (
+  [...String(entry.size || '').matchAll(/(\d+)\s*Fr/g)].map(match => Number(match[1]))
+));
+const pressureDropSizeRange = `${Math.min(...pressureDropFrenchSizes)}–${Math.max(...pressureDropFrenchSizes)} Fr`;
 assert(
   pressureDropPageHtml.includes('.pressure-drop-combobox-panel') &&
   pressureDropPageHtml.includes('width: calc(100vw - 32px) !important;') &&
@@ -38,8 +50,8 @@ assert(
   'Pressure-drop combobox CSS should prevent horizontal overflow and truncate long selected/option labels.'
 );
 assert(
-  pressureDropPageHtml.includes('<title>Cannula Pressure Drop Calculator | CPB &amp; ECMO Flow Resistance</title>') &&
-  pressureDropPageHtml.includes('Estimate cannula pressure drop from manufacturer pressure-flow data for CPB and ECMO perfusion cannulas') &&
+  pressureDropPageHtml.includes('<title>Cannula Pressure Drop Calculator | CPB &amp; Perfusion Flow Resistance</title>') &&
+  pressureDropPageHtml.includes('Estimate cannula pressure drop from manufacturer pressure-flow data for perfusion cannulas') &&
   pressureDropPageHtml.includes('<link rel="canonical" href="https://perfusiontools.com/cannula-pressure-drop/" />'),
   'Cannula pressure-drop page should expose unique title, description, and exact canonical URL metadata.'
 );
@@ -125,10 +137,15 @@ assert(
 
 assert(
   pressureDropPageHtml.includes('id="available-cannula-pressure-drop-datasets"') &&
-  pressureDropPageHtml.includes('172 datasets from Getinge / Maquet, LivaNova, Medtronic') &&
-  pressureDropPageHtml.includes('Model availability includes') &&
-  pressureDropPageHtml.includes('representative size range'),
-  'Cannula pressure-drop page should include an indexable dataset summary with manufacturer, category, model, and size availability.'
+  pressureDropSummaryHtml.includes(`${pressureDropData.length} datasets`) &&
+  pressureDropSummaryHtml.includes(pressureDropManufacturers.join(', ')) &&
+  pressureDropCategories.every(category => pressureDropSummaryHtml.includes(category)) &&
+  pressureDropSummaryHtml.includes(pressureDropSizeRange) &&
+  pressureDropManufacturers.every(manufacturer => pressureDropSummaryHtml.includes(`<strong>${manufacturer}</strong>`)) &&
+  pressureDropSummaryHtml.includes('Model availability includes') &&
+  pressureDropSummaryHtml.includes('representative size range') &&
+  !/<table|pressureDrop|\"flow\"|data points/i.test(pressureDropSummaryHtml),
+  'Cannula pressure-drop page should include an indexable dataset summary synchronized with manufacturer, category, model, and size availability.'
 );
 assert(
   pressureDropPageHtml.includes('"@type":"FAQPage"') &&
