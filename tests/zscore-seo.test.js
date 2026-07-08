@@ -15,11 +15,15 @@ function run() {
   assert(html.includes('Pediatric Echocardiography Z-Score Calculator'), 'visible H1 should use Pediatric Echocardiography Z-Score Calculator');
   assert(html.includes('PHN / Lopez 2017'), 'top copy should mention PHN / Lopez 2017');
   assert(html.includes('Detroit / Pettersen 2008'), 'top copy should mention Detroit / Pettersen 2008');
-  assert(html.includes('Mosteller BSA'), 'supported model badges should mention Mosteller BSA');
+  assert(html.includes('Selectable BSA method'), 'supported method badges should use neutral selectable BSA wording');
+  assert(!html.includes('PHN / Lopez 2017 uses Mosteller BSA'), 'page should not claim PHN / Lopez has a fixed Mosteller BSA behavior');
+  assert(!html.includes('The selected model determines the BSA method used for interpretation'), 'page should not claim selected Z-score model determines BSA method');
   assert(html.includes('Pediatric echo reference'), 'supported model badges should mention pediatric echo reference');
   assert(html.includes('Is this the same as the Boston or BCH Z-score calculator?'), 'FAQ should include Boston/BCH comparison question');
   assert(html.includes('Boston / BCH Z-score models are not currently implemented here'), 'Boston/BCH FAQ should be phrased as a limitation, not support');
   assert(html.includes('Which BSA formula is used?'), 'FAQ should include BSA formula question');
+  assert(html.includes('The built-in height/weight BSA calculator uses the formula selected in the BSA method selector.'), 'FAQ should describe BSA method selector behavior');
+  assert(html.includes('The selected Z-score reference model does not automatically determine the BSA formula.'), 'FAQ should clarify model selection does not determine BSA formula');
   assert(html.includes('Why can different pediatric echo Z-score calculators give different results?'), 'FAQ should include calculator difference question');
   assert(!html.includes('Boston / BCH</span>'), 'Boston/BCH should not be listed as a supported model badge');
 
@@ -29,6 +33,9 @@ function run() {
   assert(faqQuestions.includes('What Z-score models are available?'), 'FAQPage JSON-LD should include supported models question');
   assert(faqQuestions.includes('Is this the same as the Boston or BCH Z-score calculator?'), 'FAQPage JSON-LD should include Boston/BCH limitation question');
   assert(faqQuestions.includes('Which BSA formula is used?'), 'FAQPage JSON-LD should include BSA formula question');
+  const bsaFaq = faqLd.mainEntity.find((entry) => entry.name === 'Which BSA formula is used?');
+  assert(bsaFaq.acceptedAnswer.text.includes('formula selected in the BSA method selector'), 'FAQPage JSON-LD should describe BSA selector behavior');
+  assert(bsaFaq.acceptedAnswer.text.includes('does not automatically determine the BSA formula'), 'FAQPage JSON-LD should clarify model selection does not determine BSA formula');
   assert(faqQuestions.includes('Why can different pediatric echo Z-score calculators give different results?'), 'FAQPage JSON-LD should include calculator difference question');
 
   console.log('All z-score SEO tests passed.');
