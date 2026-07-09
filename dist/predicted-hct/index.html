@@ -47,6 +47,20 @@
     :root {
       --header-height: 60px;
       --bottom-nav-height: 64px;
+      --result-summary-bg: #0f172a;
+      --result-summary-text: #f8fafc;
+      --result-summary-muted: #cbd5e1;
+      --result-summary-border: #1e293b;
+      --result-summary-divider: rgba(148, 163, 184, 0.28);
+      --result-summary-badge-bg: rgba(15, 23, 42, 0.35);
+    }
+    .dark {
+      --result-summary-bg: rgba(2, 6, 23, 0.68);
+      --result-summary-text: #f8fafc;
+      --result-summary-muted: #cbd5e1;
+      --result-summary-border: rgba(148, 163, 184, 0.18);
+      --result-summary-divider: rgba(148, 163, 184, 0.2);
+      --result-summary-badge-bg: rgba(15, 23, 42, 0.5);
     }
 
     body {
@@ -82,6 +96,48 @@
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
     .dark ::-webkit-scrollbar-thumb { background: #334155; }
 
+
+
+    .onpump-result-summary {
+      background: var(--result-summary-bg);
+      color: var(--result-summary-text);
+      border: 1px solid var(--result-summary-border);
+      border-radius: 0.75rem;
+      padding: 1rem;
+    }
+    .onpump-result-summary__row {
+      padding: 0.75rem 0;
+    }
+    .onpump-result-summary__row:first-child { padding-top: 0; }
+    .onpump-result-summary__row:last-child { padding-bottom: 0; }
+    .onpump-result-summary__row + .onpump-result-summary__row {
+      border-top: 1px solid var(--result-summary-divider);
+    }
+    .onpump-result-summary__label {
+      color: var(--result-summary-text);
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    .onpump-result-summary__primary {
+      color: var(--result-summary-text);
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+    .onpump-result-summary__secondary {
+      color: var(--result-summary-muted);
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+    .onpump-result-summary__badge {
+      background: var(--result-summary-badge-bg);
+      border: 1px solid var(--result-summary-divider);
+      border-radius: 9999px;
+      color: var(--result-summary-muted);
+      font-size: 0.625rem;
+      font-weight: 600;
+      padding: 0.125rem 0.5rem;
+    }
 
     /* Shared expanded lower-section pattern for methodology, FAQ, references, and related tools */
     .calculator-lower-section {
@@ -482,68 +538,124 @@
                 <input id="onpump_ebv_coef" type="number" inputmode="numeric" step="1" placeholder="70" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
               </div>
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Prime volume (mL)</label>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Initial prime volume (mL)</label>
                 <input id="onpump_prime" type="number" inputmode="numeric" step="1" placeholder="1200" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
               </div>
               <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Current Hct on CPB (%)</label>
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Net I/O change from CPB base</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div class="space-y-1">
+                    <label for="onpump_net_io_direction" class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Net I/O direction</label>
+                    <select id="onpump_net_io_direction" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white cursor-pointer">
+                      <option value="added">Added (+)</option>
+                      <option value="removed">Removed (−)</option>
+                    </select>
+                  </div>
+                  <div class="space-y-1">
+                    <label for="onpump_net_io_amount" class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Net I/O amount (mL)</label>
+                    <input id="onpump_net_io_amount" type="number" inputmode="numeric" min="0" step="1" value="0" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
+                  </div>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">Select Added for net volume gain or Removed for prior HF/UF and other net volume loss.</p>
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Current on-pump Hct (%)</label>
                 <input id="current_hct" type="number" inputmode="decimal" step="0.1" placeholder="24" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
               </div>
-              <div class="sm:col-span-2 rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-900/40 p-3">
-                <p class="text-[11px] font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300 mb-2">Auto-calculated baseline</p>
+              <div class="sm:col-span-2 rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-900/40 p-3 space-y-3">
+                <p class="text-[11px] font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300">Baseline CPB volume</p>
                 <div class="grid sm:grid-cols-2 gap-2 text-xs text-slate-700 dark:text-slate-300">
-                  <div>EBV: <span id="onpump_ebv_auto" class="font-mono">0 mL</span></div>
-                  <div>Estimated CPB volume: <span id="onpump_estimated_auto" class="font-mono">0 mL</span></div>
+                  <div>Patient blood volume: <span id="onpump_ebv_auto" class="font-mono">0 mL</span></div>
+                  <div>Base CPB volume: <span id="onpump_base_cpb_volume" class="font-mono">0 mL</span></div>
+                  <div>Current total volume: <span id="onpump_estimated_auto" class="font-mono">0 mL</span></div>
+                  <div>Current RBC volume: <span id="onpump_current_rbc_summary" class="font-mono">0 mL</span></div>
                 </div>
-              </div>
-              <div class="sm:col-span-2 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/70 dark:bg-primary-900/30 p-3 space-y-2">
-                <p class="text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">Optional manual override</p>
-                <label class="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300">
-                  <input id="use_manual_current_volume" type="checkbox" class="rounded border-slate-300 text-accent-500 focus:ring-accent-500" />
-                  <span>Use manual current volume instead</span>
-                </label>
-                <div id="manual-current-volume-wrap" class="hidden space-y-1">
-                  <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Manual current volume (mL)</label>
-                  <input id="manual_current_volume" type="number" inputmode="numeric" step="1" placeholder="0" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400">Use this only if you want to replace the EBV + prime estimate with your own current CPB volume estimate.</p>
-                  <p id="manual-override-active-note" class="hidden text-[11px] text-amber-600 dark:text-amber-300 font-medium">Override active: calculations now use the manual current volume.</p>
-                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">Current Hct is treated as already reflecting prior dilution, transfusion, and UF/HF effects. Enter only the net volume change from the initial CPB base to estimate current total volume.</p>
               </div>
               <div class="sm:col-span-2 rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-4">
                 <div>
-                  <p class="text-xs font-bold text-primary-900 dark:text-accent-400 uppercase tracking-wide">ON-PUMP VOLUME &amp; HCT ADJUSTMENTS</p>
+                  <p class="text-sm font-bold text-primary-900 dark:text-accent-400">Volume adjustments</p>
                   <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Estimate Hct changes from fluid addition, RBC transfusion, and ultrafiltration.</p>
                 </div>
                 <div class="grid lg:grid-cols-2 gap-4">
                   <div class="rounded-xl border border-slate-200 dark:border-primary-700 border-t-2 border-t-accent-500 bg-white dark:bg-primary-900/30 p-4 space-y-4">
-                    <div class="text-xs font-bold text-accent-600 dark:text-accent-400 uppercase tracking-wide">Additions</div>
+                    <div class="text-sm font-semibold text-primary-900 dark:text-white">Additions</div>
                     <div class="space-y-1">
                       <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Crystalloid / colloid added (mL)</label>
                       <input id="onpump_fluids" type="number" inputmode="numeric" step="1" placeholder="0" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
                     </div>
-                    <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-900/40 p-5 space-y-4">
-                      <div class="text-xs font-bold text-red-700 dark:text-red-400 uppercase tracking-wide">RBC Addition</div>
+                    <div class="border-t border-slate-200 dark:border-primary-700 pt-4 space-y-3">
+                      <div class="text-sm font-semibold text-primary-900 dark:text-white">RBC addition</div>
                       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
                         <div class="space-y-1.5">
                           <label class="block text-xs font-semibold leading-tight text-slate-500 dark:text-slate-400 tracking-wide">Units</label>
-                          <input id="onpump_rbc_units" type="number" inputmode="numeric" step="1" placeholder="0" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
+                          <input id="onpump_rbc_units" type="number" inputmode="numeric" step="1" placeholder="0" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
                         </div>
                         <div class="space-y-1.5">
                           <label class="block text-xs font-semibold leading-tight text-slate-500 dark:text-slate-400 tracking-wide">Vol/unit (mL)</label>
-                          <input id="onpump_rbc_unit_vol" type="number" inputmode="numeric" step="1" value="300" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
+                          <input id="onpump_rbc_unit_vol" type="number" inputmode="numeric" step="1" value="300" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
                         </div>
                         <div class="space-y-1.5">
                           <label class="block text-xs font-semibold leading-tight text-slate-500 dark:text-slate-400 tracking-wide">Hct (%)</label>
-                          <input id="onpump_rbc_hct" type="number" inputmode="numeric" step="1" value="60" class="w-full bg-white dark:bg-primary-800 border border-red-200 dark:border-red-900/30 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:text-white" />
+                          <input id="onpump_rbc_hct" type="number" inputmode="numeric" step="1" value="60" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-accent-500 outline-none dark:text-white" />
                         </div>
                       </div>
                     </div>
                   </div>
                   <div class="rounded-xl border border-slate-200 dark:border-primary-700 border-t-2 border-t-amber-500 bg-white dark:bg-primary-900/30 p-4 space-y-4">
-                    <div class="text-xs font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wide">Removals</div>
+                    <div class="text-sm font-semibold text-primary-900 dark:text-white">Removals</div>
                     <div class="space-y-1">
                       <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Ultrafiltration / hemofiltration removed (mL)</label>
                       <input id="onpump_removed" type="number" inputmode="numeric" step="1" placeholder="0" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-amber-500 outline-none transition-all dark:text-white" />
+                    </div>
+                  </div>
+                </div>
+                <div id="onpump-extra-results" class="hidden onpump-result-summary">
+                  <p class="onpump-result-summary__label">Planned adjustment result</p>
+                  <p id="onpump_result_message" class="hidden mt-2 text-sm font-semibold text-amber-200"></p>
+                  <div id="onpump_result_values" class="mt-2 flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
+                    <p class="onpump-result-summary__secondary">Hct <span id="current_hct_result" class="font-semibold text-slate-100">0.0%</span> → <span id="pred_hct_result" class="text-xl font-bold text-white">0.0%</span> <span id="hct_change" class="ml-1 font-bold text-accent-300">(+0.0 pt)</span></p>
+                    <p class="onpump-result-summary__secondary">Volume <span id="current_volume_result" class="text-slate-100">0 mL</span> → <span id="final_volume_result" class="font-semibold text-slate-100">0 mL</span></p>
+                  </div>
+                </div>
+                <div class="border-t border-slate-200 dark:border-primary-700 pt-4 space-y-3">
+                  <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <p class="text-sm font-bold text-primary-900 dark:text-accent-400">Target Hct helper</p>
+                      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Alternative scenarios to reach the target Hct from the current on-pump state. These scenarios are alternatives, not additive doses.</p>
+                    </div>
+                    <div class="sm:w-56 space-y-1">
+                      <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Target Hct (%)</label>
+                      <input id="target_hct" type="number" inputmode="decimal" step="0.1" placeholder="27" class="w-full bg-white dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
+                    </div>
+                  </div>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400">RBC product assumptions are taken from the RBC addition fields above.</p>
+                  <div id="target-hct-message" class="text-sm text-slate-600 dark:text-slate-300">Enter a target Hct to compare adjustment scenarios.</div>
+                  <div id="target-dilution-card" class="hidden onpump-result-summary"></div>
+                  <div id="target-hct-cards" class="hidden onpump-result-summary">
+                    <div class="onpump-result-summary__row sm:flex sm:items-start sm:justify-between sm:gap-4">
+                      <div>
+                        <p class="onpump-result-summary__label">RBC only</p>
+                        <div id="target_rbc_only_secondary" class="onpump-result-summary__secondary mt-0.5"></div>
+                      </div>
+                      <div id="target_rbc_only" class="mt-2 sm:mt-0 sm:text-right"></div>
+                    </div>
+                    <div class="onpump-result-summary__row sm:flex sm:items-start sm:justify-between sm:gap-4">
+                      <div>
+                        <div class="flex flex-wrap items-center gap-2">
+                          <p class="onpump-result-summary__label">RBC + neutral HF/UF</p>
+                          <span class="onpump-result-summary__badge">volume-neutral</span>
+                        </div>
+                        <div id="target_rbc_neutral_secondary" class="onpump-result-summary__secondary mt-0.5"></div>
+                      </div>
+                      <div id="target_rbc_neutral" class="mt-2 sm:mt-0 sm:text-right"></div>
+                    </div>
+                    <div class="onpump-result-summary__row sm:flex sm:items-start sm:justify-between sm:gap-4">
+                      <div>
+                        <p class="onpump-result-summary__label">HF/UF only</p>
+                        <div id="target_hfuf_only_secondary" class="onpump-result-summary__secondary mt-0.5"></div>
+                      </div>
+                      <div id="target_hfuf_only" class="mt-2 sm:mt-0 sm:text-right"></div>
                     </div>
                   </div>
                 </div>
@@ -551,7 +663,7 @@
             </div>
           </div>
 
-          <div class="bg-primary-900 dark:bg-black/20 p-6 text-white grid grid-cols-3 gap-4 divide-x divide-primary-800 dark:divide-white/10 text-center">
+          <div id="hct-primary-results" class="bg-primary-900 dark:bg-black/20 p-6 text-white grid grid-cols-3 gap-4 divide-x divide-primary-800 dark:divide-white/10 text-center">
             <div>
               <div id="hct-left-label" class="text-[10px] uppercase tracking-wider text-slate-400 mb-1">EBV</div>
               <div id="ebv" class="text-lg font-mono font-medium">0</div>
@@ -567,14 +679,7 @@
               <div id="pred_hct" class="text-2xl font-bold text-white">0%</div>
             </div>
           </div>
-          <div id="onpump-extra-results" class="hidden px-6 py-5 bg-primary-950 dark:bg-primary-950 text-slate-100 border-t border-primary-800">
-            <div class="rounded-lg bg-primary-900/60 border border-primary-700 p-3">
-              <p class="text-[11px] uppercase tracking-wide text-slate-300">Predicted post-adjustment result</p>
-              <p class="mt-1 text-sm text-slate-100">Current Hct: <span id="current_hct_result" class="font-semibold">0.0%</span> → Predicted Hct: <span id="pred_hct_result" class="text-xl font-bold text-white">0.0%</span></p>
-              <p class="mt-1 text-sm text-accent-300 font-semibold">Change: <span id="hct_change" class="font-bold">0.0</span> percentage points</p>
-            </div>
 
-          </div>
 
           <div class="bg-slate-50 dark:bg-primary-800/30 border-t border-slate-100 dark:border-primary-700/50 p-6 space-y-4">
             <section class="calculator-lower-section">
@@ -625,19 +730,19 @@
                 <div>
                   <h3 class="text-sm font-semibold text-primary-900 dark:text-white">On-pump adjustment model</h3>
                   <div class="mt-2 rounded-lg bg-slate-50 dark:bg-primary-950/50 border border-slate-200 dark:border-primary-800 p-3 text-xs leading-relaxed font-mono text-primary-900 dark:text-slate-100 space-y-1 overflow-x-auto">
-                    <p>Baseline CPB volume = EBV + Prime volume</p>
-                    <p>If manual override is active: Baseline CPB volume = Manual current volume</p>
-                    <p>Current RBC volume = Baseline CPB volume × Current Hct / 100</p>
+                    <p>Base CPB volume = Patient blood volume + Initial prime volume</p>
+                    <p>Current total volume = Base CPB volume + Net I/O change from CPB base</p>
+                    <p>Current RBC volume = Current total volume × Current Hct / 100</p>
                     <p>RBC product volume = RBC units × Volume per unit</p>
                     <p>RBC volume added = RBC product volume × Unit Hct / 100</p>
-                    <p>Final estimated volume = Baseline CPB volume + Crystalloid/colloid added + RBC product volume − UF removed</p>
+                    <p>Final estimated volume = Current total volume + Crystalloid/colloid added + RBC product volume − HF/UF removed</p>
                     <p>Predicted post-adjustment Hct (%) = [(Current RBC volume + RBC volume added) / Final estimated volume] × 100</p>
                   </div>
                   <p class="mt-2">In this simplified model, ultrafiltration or hemofiltration decreases total volume but does not remove red cell volume. RBC transfusion increases both total volume and red cell volume. Crystalloid or colloid addition increases total volume without adding red cell volume.</p>
                 </div>
                 <div>
-                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Manual volume override</h3>
-                  <p class="mt-1">Use manual current volume only when the estimated EBV + prime volume does not reflect the actual current patient-circuit volume. This may be useful when reservoir volume, RAP, venous drainage, cardioplegia return, cell saver return, or other volume shifts make the default estimate inaccurate.</p>
+                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Target Hct helper</h3>
+                  <p class="mt-1">The target helper compares alternative ways to reach a target hematocrit from the current on-pump state: RBC only, RBC with matching HF/UF removal, or HF/UF only. RBC unit conversion uses the Vol/unit (mL) and RBC Hct (%) entered in the RBC Addition fields.</p>
                 </div>
                 <div>
                   <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Limitations</h3>
