@@ -1530,7 +1530,7 @@ function computeTargetHctScenarios({ currentTotalVolume, currentRbcVolume, curre
   const T = (targetHct || 0) / 100;
   const P = (rbcProductHctPercent || 0) / 100;
   const U = rbcVolPerUnit || 0;
-  const result = { message: '', dilution: null, rbcOnly: null, rbcNeutral: null, hfUfOnly: null };
+  const result = { message: '', noAdjustment: null, dilution: null, rbcOnly: null, rbcNeutral: null, hfUfOnly: null };
   const withUnits = (requiredRbcMl) => ({ requiredRbcMl, requiredUnits: U > 0 ? requiredRbcMl / U : null });
 
   if (!(targetHct > 0)) {
@@ -1545,10 +1545,16 @@ function computeTargetHctScenarios({ currentTotalVolume, currentRbcVolume, curre
     result.message = 'Current Hct must be greater than 0.';
     return result;
   }
-  if (targetHct <= currentHct) {
-    result.message = 'Target is at or below current Hct.';
+  const hctTolerance = 0.05;
+  const targetMatchesCurrent = Math.abs(targetHct - currentHct) < hctTolerance;
+  if (targetMatchesCurrent) {
+    result.noAdjustment = { currentHct, targetHct, finalVolume: V };
+    return result;
+  }
+  if (targetHct < currentHct) {
+    result.message = 'Target Hct is below the current Hct.';
     const crystalloidToAdd = R / T - V;
-    if (targetHct < currentHct && crystalloidToAdd > 0) {
+    if (crystalloidToAdd > 0) {
       result.dilution = { crystalloidToAdd, finalVolume: V + crystalloidToAdd, expectedHct: (R / (V + crystalloidToAdd)) * 100 };
     }
     return result;
@@ -2396,10 +2402,45 @@ function resetGDP() {
 // -----------------------------
 // Predicted Hct Interaction
 // -----------------------------
+function parseSignedNetIoValue(value) {
+  const trimmedValue = String(value || '').trim();
+  if (trimmedValue === '' || trimmedValue === '-') return null;
+  if (!/^-?(?:\d+\.?\d*|\.\d+)$/.test(trimmedValue)) return null;
+  const parsedValue = Number(trimmedValue);
+  return Number.isFinite(parsedValue) ? parsedValue : null;
+}
+
+function sanitizeSignedNetIoInput(input) {
+  if (!input) return;
+  const nextValue = input.value.trim();
+  const allowsTypingState = nextValue === '' || nextValue === '-';
+  const isSignedNumeric = /^-?(?:\d+\.?\d*|\.\d+)$/.test(nextValue);
+  if (allowsTypingState || isSignedNumeric) {
+    input.dataset.lastValidValue = nextValue;
+    input.value = nextValue;
+    return;
+  }
+  input.value = input.dataset.lastValidValue || '';
+}
+
+function toggleOnPumpNetIoSign() {
+  const input = el('onpump_net_io_change');
+  if (!input) return;
+  sanitizeSignedNetIoInput(input);
+  const currentValue = input.value.trim();
+  const numericValue = parseSignedNetIoValue(currentValue);
+  if (!numericValue) {
+    input.value = numericValue === 0 ? '0' : currentValue;
+  } else {
+    input.value = numericValue > 0 ? `-${currentValue}` : currentValue.replace(/^-/, '');
+  }
+  input.dataset.lastValidValue = input.value;
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  input.focus();
+}
+
 function getOnPumpNetIoChange() {
-  const netIoDirection = el('onpump_net_io_direction')?.value === 'removed' ? 'removed' : 'added';
-  const netIoAmount = Math.abs(num('onpump_net_io_amount') || 0);
-  return netIoAmount === 0 ? 0 : (netIoDirection === 'removed' ? -netIoAmount : netIoAmount);
+  return parseSignedNetIoValue(el('onpump_net_io_change')?.value) || 0;
 }
 
 function updateHct() {
@@ -2544,10 +2585,19 @@ function updateTargetHctHelper(onPumpResult) {
   });
 
   messageEl.textContent = result.message;
-  const showDilution = !!result.dilution;
+  const showStateCard = !!(result.noAdjustment || result.dilution);
   if (dilutionCardEl) {
-    dilutionCardEl.classList.toggle('hidden', !showDilution);
-    if (showDilution) {
+    dilutionCardEl.classList.toggle('hidden', !showStateCard);
+    if (result.noAdjustment) {
+      dilutionCardEl.innerHTML = [
+        '<div class="sm:flex sm:items-start sm:justify-between sm:gap-4">',
+        '<div><p class="onpump-result-summary__label">No adjustment needed</p>',
+        '<p class="onpump-result-summary__primary mt-1">Current Hct already matches the target Hct.</p>',
+        '<p class="onpump-result-summary__secondary mt-1">No RBC addition or HF/UF removal is required.</p></div>',
+        `<div class="onpump-result-summary__secondary mt-2 sm:mt-0 sm:text-right"><p>Hct ${formatTargetHct(result.noAdjustment.currentHct)}% → ${formatTargetHct(result.noAdjustment.targetHct)}%</p><p>Volume unchanged</p></div>`,
+        '</div>'
+      ].join('');
+    } else if (result.dilution) {
       dilutionCardEl.innerHTML = [
         '<div class="sm:flex sm:items-start sm:justify-between sm:gap-4">',
         '<div><p class="onpump-result-summary__label">Dilution option</p>',
@@ -7732,11 +7782,22 @@ window.addEventListener('DOMContentLoaded', () => {
       const x = el(id);
       if (x) x.addEventListener('input', updateHct);
     });
-    ['hct_mode', 'onpump_weight', 'onpump_ebv_coef', 'onpump_prime', 'onpump_net_io_direction', 'onpump_net_io_amount', 'current_hct', 'onpump_fluids', 'onpump_rbc_units', 'onpump_rbc_unit_vol', 'onpump_rbc_hct', 'onpump_removed', 'target_hct', 'onpump_pttype'].forEach(id => {
+    ['hct_mode', 'onpump_weight', 'onpump_ebv_coef', 'onpump_prime', 'current_hct', 'onpump_fluids', 'onpump_rbc_units', 'onpump_rbc_unit_vol', 'onpump_rbc_hct', 'onpump_removed', 'target_hct', 'onpump_pttype'].forEach(id => {
       const x = el(id);
       if (x) x.addEventListener('input', updateHct);
       if (x) x.addEventListener('change', updateHct);
     });
+    const netIoInput = el('onpump_net_io_change');
+    if (netIoInput) {
+      netIoInput.dataset.lastValidValue = netIoInput.value || '0';
+      netIoInput.addEventListener('input', () => {
+        sanitizeSignedNetIoInput(netIoInput);
+        updateHct();
+      });
+      netIoInput.addEventListener('change', updateHct);
+    }
+    const netIoSignToggle = el('onpump_net_io_sign_toggle');
+    if (netIoSignToggle) netIoSignToggle.addEventListener('click', toggleOnPumpNetIoSign);
     const modeButtons = Array.from(document.querySelectorAll('[data-hct-mode]'));
     modeButtons.forEach((btn) => {
       btn.addEventListener('click', () => setHctMode(btn.dataset.hctMode));

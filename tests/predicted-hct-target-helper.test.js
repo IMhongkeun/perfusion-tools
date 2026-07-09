@@ -8,9 +8,23 @@ function nearlyEqual(actual, expected, tolerance = 0.15) {
   return Math.abs(actual - expected) <= tolerance;
 }
 
-function computeNetIoChange(direction, amount) {
-  const netIoAmount = Math.abs(amount || 0);
-  return netIoAmount === 0 ? 0 : (direction === 'removed' ? -netIoAmount : netIoAmount);
+function parseSignedNetIoValue(value) {
+  const trimmedValue = String(value || '').trim();
+  if (trimmedValue === '' || trimmedValue === '-') return null;
+  if (!/^-?(?:\d+\.?\d*|\.\d+)$/.test(trimmedValue)) return null;
+  const parsedValue = Number(trimmedValue);
+  return Number.isFinite(parsedValue) ? parsedValue : null;
+}
+
+function computeNetIoChange(value) {
+  return parseSignedNetIoValue(value) || 0;
+}
+
+function toggleNetIoSign(value) {
+  const currentValue = String(value || '').trim();
+  const numericValue = parseSignedNetIoValue(currentValue);
+  if (!numericValue) return numericValue === 0 ? '0' : currentValue;
+  return numericValue > 0 ? `-${currentValue}` : currentValue.replace(/^-/, '');
 }
 
 function computeOnPumpHctAdjustment({ weightKg, ebvCoefValue, primeVolume, netIoChange = 0, currentHct, addedCrystalloid = 0, rbcUnits = 0, rbcUnitVol = 300, rbcUnitHct = 60, ultrafiltrationRemoved = 0 }) {
@@ -42,7 +56,7 @@ function computeTargetHctScenarios({ currentTotalVolume, currentRbcVolume, curre
   const T = (targetHct || 0) / 100;
   const P = (rbcProductHctPercent || 0) / 100;
   const U = rbcVolPerUnit || 0;
-  const result = { message: '', dilution: null, rbcOnly: null, rbcNeutral: null, hfUfOnly: null };
+  const result = { message: '', noAdjustment: null, dilution: null, rbcOnly: null, rbcNeutral: null, hfUfOnly: null };
   const withUnits = (requiredRbcMl) => ({ requiredRbcMl, requiredUnits: U > 0 ? requiredRbcMl / U : null });
 
   if (!(targetHct > 0)) {
@@ -50,10 +64,16 @@ function computeTargetHctScenarios({ currentTotalVolume, currentRbcVolume, curre
     return result;
   }
   if (!Number.isFinite(V) || !(V > 0) || !(currentHct > 0) || !(R > 0)) return result;
-  if (targetHct <= currentHct) {
-    result.message = 'Target is at or below current Hct.';
+  const hctTolerance = 0.05;
+  const targetMatchesCurrent = Math.abs(targetHct - currentHct) < hctTolerance;
+  if (targetMatchesCurrent) {
+    result.noAdjustment = { currentHct, targetHct, finalVolume: V };
+    return result;
+  }
+  if (targetHct < currentHct) {
+    result.message = 'Target Hct is below the current Hct.';
     const crystalloidToAdd = R / T - V;
-    if (targetHct < currentHct && crystalloidToAdd > 0) {
+    if (crystalloidToAdd > 0) {
       result.dilution = { crystalloidToAdd, finalVolume: V + crystalloidToAdd, expectedHct: (R / (V + crystalloidToAdd)) * 100 };
     }
     return result;
@@ -86,15 +106,32 @@ function computeTargetHctScenarios({ currentTotalVolume, currentRbcVolume, curre
 
 function run() {
 
-  assert.strictEqual(computeNetIoChange('added', 500), 500);
-  assert.strictEqual(computeNetIoChange('removed', 500), -500);
-  assert.strictEqual(computeNetIoChange('removed', 0), 0);
+  const positiveNetIoChange = computeNetIoChange('500');
+  assert.strictEqual(positiveNetIoChange, 500);
+  assert.strictEqual(computeNetIoChange('-500'), -500);
+  assert.strictEqual(computeNetIoChange('0'), 0);
+  assert.strictEqual(computeNetIoChange(''), 0);
+  assert.strictEqual(parseSignedNetIoValue('-'), null);
+  assert.strictEqual(computeNetIoChange('-'), 0);
+  assert.strictEqual(toggleNetIoSign('500'), '-500');
+  assert.strictEqual(toggleNetIoSign('-500'), '500');
+  assert.strictEqual(toggleNetIoSign('0'), '0');
 
-  const priorRemovalNetIoChange = computeNetIoChange('removed', 500);
+  const priorRemovalNetIoChange = computeNetIoChange('-500');
   assert.strictEqual(priorRemovalNetIoChange, -500);
 
-  const impossiblePriorRemovalNetIoChange = computeNetIoChange('removed', 7000);
+  const impossiblePriorRemovalNetIoChange = computeNetIoChange('-7000');
   assert.strictEqual(impossiblePriorRemovalNetIoChange, -7000);
+
+  const positiveNetIo = computeOnPumpHctAdjustment({
+    weightKg: 70,
+    ebvCoefValue: 70,
+    primeVolume: 1200,
+    netIoChange: positiveNetIoChange,
+    currentHct: 25
+  });
+  assert.strictEqual(positiveNetIo.baseCpbVolume, 6100);
+  assert.strictEqual(positiveNetIo.currentTotalVolume, 6600);
 
   const onPump = computeOnPumpHctAdjustment({
     weightKg: 70,
@@ -126,6 +163,17 @@ function run() {
   assert.strictEqual(invalidCurrent.predictedHct, null);
   assert.strictEqual(invalidCurrent.invalidCurrentVolume, true);
   assert(invalidCurrent.validationMessage.includes('Current total volume must be greater than 0'));
+  const invalidTargetScenarios = computeTargetHctScenarios({
+    currentTotalVolume: invalidCurrent.currentTotalVolume,
+    currentRbcVolume: invalidCurrent.currentRbcVolume,
+    currentHct: 25,
+    targetHct: 27,
+    rbcVolPerUnit: 300,
+    rbcProductHctPercent: 60
+  });
+  assert.strictEqual(invalidTargetScenarios.rbcOnly, null);
+  assert.strictEqual(invalidTargetScenarios.rbcNeutral, null);
+  assert.strictEqual(invalidTargetScenarios.hfUfOnly, null);
 
   const nonFiniteCurrent = computeOnPumpHctAdjustment({
     weightKg: Infinity,
@@ -183,6 +231,49 @@ function run() {
   assert(nearlyEqual(result.hfUfOnly.requiredRemovalMl, 374.1), `HF/UF only removal expected 374.1, got ${result.hfUfOnly.requiredRemovalMl}`);
   assert(nearlyEqual(result.hfUfOnly.expectedHct, 27, 0.05), `HF/UF only Hct expected 27%, got ${result.hfUfOnly.expectedHct}`);
 
+  const exactMatch = computeTargetHctScenarios({
+    currentTotalVolume: 5050,
+    currentRbcVolume: 1262.5,
+    currentHct: 25,
+    targetHct: 25,
+    rbcVolPerUnit: 300,
+    rbcProductHctPercent: 60
+  });
+  assert(exactMatch.noAdjustment, 'Exact Hct match should return no-adjustment state');
+  assert.strictEqual(exactMatch.rbcOnly, null);
+  assert.strictEqual(exactMatch.rbcNeutral, null);
+  assert.strictEqual(exactMatch.hfUfOnly, null);
+  assert.strictEqual(exactMatch.dilution, null);
+
+  const displayPrecisionMatch = computeTargetHctScenarios({
+    currentTotalVolume: 5050,
+    currentRbcVolume: 1264.52,
+    currentHct: 25.04,
+    targetHct: 25,
+    rbcVolPerUnit: 300,
+    rbcProductHctPercent: 60
+  });
+  assert(displayPrecisionMatch.noAdjustment, 'Hct values within one-decimal display precision should return no-adjustment state');
+  assert.strictEqual(displayPrecisionMatch.rbcOnly, null);
+  assert.strictEqual(displayPrecisionMatch.rbcNeutral, null);
+  assert.strictEqual(displayPrecisionMatch.hfUfOnly, null);
+
+  const belowCurrent = computeTargetHctScenarios({
+    currentTotalVolume: 5050,
+    currentRbcVolume: 1262.5,
+    currentHct: 25,
+    targetHct: 24,
+    rbcVolPerUnit: 300,
+    rbcProductHctPercent: 60
+  });
+  assert.strictEqual(belowCurrent.noAdjustment, null);
+  assert.strictEqual(belowCurrent.message, 'Target Hct is below the current Hct.');
+  assert.strictEqual(belowCurrent.rbcOnly, null);
+  assert.strictEqual(belowCurrent.rbcNeutral, null);
+  assert.strictEqual(belowCurrent.hfUfOnly, null);
+  assert(belowCurrent.dilution, 'Below-current Hct should show dilution guidance when calculable');
+  assert(belowCurrent.dilution.crystalloidToAdd > 0, 'Dilution amount should be positive');
+
   const customProduct = computeTargetHctScenarios({ currentTotalVolume: 5050, currentRbcVolume: 1262.5, currentHct: 25, targetHct: 27, rbcVolPerUnit: 250, rbcProductHctPercent: 50 });
   assert(nearlyEqual(customProduct.rbcOnly.requiredRbcMl, 439.1), `Custom RBC Hct should change required mL, got ${customProduct.rbcOnly.requiredRbcMl}`);
   assert(nearlyEqual(customProduct.rbcOnly.requiredUnits, 1.8, 0.05), `Custom Vol/unit should change units, got ${customProduct.rbcOnly.requiredUnits}`);
@@ -199,10 +290,18 @@ function run() {
   const html = fs.readFileSync(path.join(__dirname, '..', 'predicted-hct', 'index.html'), 'utf8');
   assert(html.includes('Alternative scenarios to reach the target Hct from the current on-pump state. These scenarios are alternatives, not additive doses.'));
   assert(html.includes('RBC product assumptions are taken from the RBC addition fields above.'));
-  assert(html.includes('id="onpump_net_io_direction"'), 'Net I/O direction control should exist');
-  assert(html.includes('id="onpump_net_io_amount"'), 'Net I/O amount control should exist');
-  assert(html.includes('min="0"'), 'Net I/O amount should disallow negative entry');
-  assert(html.includes('Select Added for net volume gain or Removed for prior HF/UF and other net volume loss.'));
+  assert(!html.includes('id="onpump_net_io_direction"'), 'Net I/O direction control should be removed');
+  assert(!html.includes('id="onpump_net_io_amount"'), 'Unsigned Net I/O amount control should be removed');
+  assert(html.includes('id="onpump_net_io_change"'), 'Signed Net I/O input should exist');
+  assert(html.includes('Net I/O change from CPB base (mL)'), 'Signed Net I/O label should include units');
+  assert(html.includes('id="onpump_net_io_change" type="text"'), 'Signed Net I/O should use a text input to preserve temporary minus entry');
+  assert(html.includes('placeholder="e.g., 500 or -500"'), 'Signed Net I/O input should show positive and negative examples');
+  assert(html.includes('id="onpump_net_io_sign_toggle"'), 'Signed Net I/O should include a compact sign toggle');
+  assert(html.includes('aria-label="Toggle Net I/O sign"'), 'Sign toggle should have an accessible name');
+  assert(!html.includes('id="onpump_net_io_change" type="number" inputmode="numeric"'), 'Signed Net I/O input should not use numeric inputmode');
+  assert(!html.includes('Added (+)'), 'Added direction option should be removed');
+  assert(!html.includes('Removed (−)'), 'Removed direction option should be removed');
+  assert(html.includes('Positive = net addition · Negative = prior HF/UF or other net removal.'));
   assert(html.includes('id="onpump-extra-results"'), 'On-pump summary container should exist');
   const plannedSummaryIndex = html.indexOf('Planned adjustment result');
   const targetHelperIndex = html.indexOf('Target Hct helper');
@@ -213,7 +312,10 @@ function run() {
   assert(html.includes('id="final_volume_result"'), 'Planned summary should include final volume');
   assert(html.includes('id="onpump_result_message"'), 'Planned summary should include a validation message target');
   assert(html.includes('id="target_rbc_only_secondary"'), 'Target helper should render compact row secondary text');
-  assert(html.includes('<div class="border-t border-slate-200 dark:border-primary-700 pt-4 space-y-3">'), 'Target helper should be a sibling divider section, not a nested card');
+  assert(html.includes('id="target-hct-helper-section"'), 'Target helper should render as a separate outer section');
+  assert(html.indexOf('id="target-hct-helper-section"') > html.indexOf('id="onpump-extra-results"'), 'Target helper outer section should appear after planned adjustment result');
+  const volumeAdjustmentsCloseIndex = html.indexOf('id="target-hct-helper-section"') - html.slice(0, html.indexOf('id="target-hct-helper-section"')).split('</div>').pop().length;
+  assert(volumeAdjustmentsCloseIndex > plannedSummaryIndex, 'Volume adjustments container should close before Target Hct helper section starts');
   assert(html.includes('id="target-hct-cards" class="hidden onpump-result-summary"'), 'Target scenario rows should use shared dark result-summary styling');
   assert(html.includes('--result-summary-bg'), 'Result summary should use semantic CSS variables');
   assert(html.includes('.onpump-result-summary__row + .onpump-result-summary__row'), 'Target result rows should use subtle internal dividers');
@@ -225,9 +327,18 @@ function run() {
   assert(mainJs.includes('Add RBC ${formatTargetVolume(scenario.requiredRbcMl)} mL'), 'RBC scenarios should spell out Add RBC');
   assert(mainJs.includes('Remove HF/UF ${formatTargetVolume(scenario.requiredHfUfMl)} mL'), 'Neutral scenario should spell out Remove HF/UF');
   assert(mainJs.includes('Remove HF/UF ${formatTargetVolume(scenario.requiredRemovalMl)} mL'), 'HF/UF-only scenario should spell out Remove HF/UF');
+  assert(mainJs.includes('No adjustment needed'), 'Equal-target state should render a no-adjustment title');
+  assert(mainJs.includes('Current Hct already matches the target Hct.'), 'Equal-target state should render a clear normal result message');
+  assert(mainJs.includes('No RBC addition or HF/UF removal is required.'), 'Equal-target state should explain no interventions are required');
+  assert(mainJs.includes('Volume unchanged'), 'Equal-target state should summarize unchanged volume');
+  assert(mainJs.includes('Target Hct is below the current Hct.'), 'Below-target state should use a separate message');
   assert(mainJs.includes('Enter a valid current total volume to compare target Hct scenarios.'), 'Target helper should guard invalid current volume');
   assert(mainJs.includes('onpump-result-summary__primary'), 'Rendered target values should use shared result-summary text styling');
-  assert(mainJs.includes('function getOnPumpNetIoChange()'), 'Runtime should derive signed net I/O from direction and amount');
+  assert(mainJs.includes('function parseSignedNetIoValue(value)'), 'Runtime should parse signed Net I/O text safely');
+  assert(mainJs.includes("trimmedValue === '' || trimmedValue === '-'"), 'Runtime should preserve temporary minus typing state');
+  assert(mainJs.includes('function toggleOnPumpNetIoSign()'), 'Runtime should provide a sign toggle handler');
+  assert(mainJs.includes("return parseSignedNetIoValue(el('onpump_net_io_change')?.value) || 0;"), 'Runtime should read the signed Net I/O value directly');
+  assert(!mainJs.includes('onpump_net_io_direction'), 'Runtime should not use a Net I/O direction selector');
 
   console.log('All predicted Hct target helper tests passed.');
 }
