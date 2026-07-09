@@ -1530,7 +1530,7 @@ function computeTargetHctScenarios({ currentTotalVolume, currentRbcVolume, curre
   const T = (targetHct || 0) / 100;
   const P = (rbcProductHctPercent || 0) / 100;
   const U = rbcVolPerUnit || 0;
-  const result = { message: '', dilution: null, rbcOnly: null, rbcNeutral: null, hfUfOnly: null };
+  const result = { message: '', noAdjustment: null, dilution: null, rbcOnly: null, rbcNeutral: null, hfUfOnly: null };
   const withUnits = (requiredRbcMl) => ({ requiredRbcMl, requiredUnits: U > 0 ? requiredRbcMl / U : null });
 
   if (!(targetHct > 0)) {
@@ -1545,10 +1545,16 @@ function computeTargetHctScenarios({ currentTotalVolume, currentRbcVolume, curre
     result.message = 'Current Hct must be greater than 0.';
     return result;
   }
-  if (targetHct <= currentHct) {
-    result.message = 'Target is at or below current Hct.';
+  const hctTolerance = 0.05;
+  const targetMatchesCurrent = Math.abs(targetHct - currentHct) < hctTolerance;
+  if (targetMatchesCurrent) {
+    result.noAdjustment = { currentHct, targetHct, finalVolume: V };
+    return result;
+  }
+  if (targetHct < currentHct) {
+    result.message = 'Target Hct is below the current Hct.';
     const crystalloidToAdd = R / T - V;
-    if (targetHct < currentHct && crystalloidToAdd > 0) {
+    if (crystalloidToAdd > 0) {
       result.dilution = { crystalloidToAdd, finalVolume: V + crystalloidToAdd, expectedHct: (R / (V + crystalloidToAdd)) * 100 };
     }
     return result;
@@ -2542,10 +2548,19 @@ function updateTargetHctHelper(onPumpResult) {
   });
 
   messageEl.textContent = result.message;
-  const showDilution = !!result.dilution;
+  const showStateCard = !!(result.noAdjustment || result.dilution);
   if (dilutionCardEl) {
-    dilutionCardEl.classList.toggle('hidden', !showDilution);
-    if (showDilution) {
+    dilutionCardEl.classList.toggle('hidden', !showStateCard);
+    if (result.noAdjustment) {
+      dilutionCardEl.innerHTML = [
+        '<div class="sm:flex sm:items-start sm:justify-between sm:gap-4">',
+        '<div><p class="onpump-result-summary__label">No adjustment needed</p>',
+        '<p class="onpump-result-summary__primary mt-1">Current Hct already matches the target Hct.</p>',
+        '<p class="onpump-result-summary__secondary mt-1">No RBC addition or HF/UF removal is required.</p></div>',
+        `<div class="onpump-result-summary__secondary mt-2 sm:mt-0 sm:text-right"><p>Hct ${formatTargetHct(result.noAdjustment.currentHct)}% → ${formatTargetHct(result.noAdjustment.targetHct)}%</p><p>Volume unchanged</p></div>`,
+        '</div>'
+      ].join('');
+    } else if (result.dilution) {
       dilutionCardEl.innerHTML = [
         '<div class="sm:flex sm:items-start sm:justify-between sm:gap-4">',
         '<div><p class="onpump-result-summary__label">Dilution option</p>',

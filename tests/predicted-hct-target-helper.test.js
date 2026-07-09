@@ -42,7 +42,7 @@ function computeTargetHctScenarios({ currentTotalVolume, currentRbcVolume, curre
   const T = (targetHct || 0) / 100;
   const P = (rbcProductHctPercent || 0) / 100;
   const U = rbcVolPerUnit || 0;
-  const result = { message: '', dilution: null, rbcOnly: null, rbcNeutral: null, hfUfOnly: null };
+  const result = { message: '', noAdjustment: null, dilution: null, rbcOnly: null, rbcNeutral: null, hfUfOnly: null };
   const withUnits = (requiredRbcMl) => ({ requiredRbcMl, requiredUnits: U > 0 ? requiredRbcMl / U : null });
 
   if (!(targetHct > 0)) {
@@ -50,10 +50,16 @@ function computeTargetHctScenarios({ currentTotalVolume, currentRbcVolume, curre
     return result;
   }
   if (!Number.isFinite(V) || !(V > 0) || !(currentHct > 0) || !(R > 0)) return result;
-  if (targetHct <= currentHct) {
-    result.message = 'Target is at or below current Hct.';
+  const hctTolerance = 0.05;
+  const targetMatchesCurrent = Math.abs(targetHct - currentHct) < hctTolerance;
+  if (targetMatchesCurrent) {
+    result.noAdjustment = { currentHct, targetHct, finalVolume: V };
+    return result;
+  }
+  if (targetHct < currentHct) {
+    result.message = 'Target Hct is below the current Hct.';
     const crystalloidToAdd = R / T - V;
-    if (targetHct < currentHct && crystalloidToAdd > 0) {
+    if (crystalloidToAdd > 0) {
       result.dilution = { crystalloidToAdd, finalVolume: V + crystalloidToAdd, expectedHct: (R / (V + crystalloidToAdd)) * 100 };
     }
     return result;
@@ -206,6 +212,49 @@ function run() {
   assert(nearlyEqual(result.hfUfOnly.requiredRemovalMl, 374.1), `HF/UF only removal expected 374.1, got ${result.hfUfOnly.requiredRemovalMl}`);
   assert(nearlyEqual(result.hfUfOnly.expectedHct, 27, 0.05), `HF/UF only Hct expected 27%, got ${result.hfUfOnly.expectedHct}`);
 
+  const exactMatch = computeTargetHctScenarios({
+    currentTotalVolume: 5050,
+    currentRbcVolume: 1262.5,
+    currentHct: 25,
+    targetHct: 25,
+    rbcVolPerUnit: 300,
+    rbcProductHctPercent: 60
+  });
+  assert(exactMatch.noAdjustment, 'Exact Hct match should return no-adjustment state');
+  assert.strictEqual(exactMatch.rbcOnly, null);
+  assert.strictEqual(exactMatch.rbcNeutral, null);
+  assert.strictEqual(exactMatch.hfUfOnly, null);
+  assert.strictEqual(exactMatch.dilution, null);
+
+  const displayPrecisionMatch = computeTargetHctScenarios({
+    currentTotalVolume: 5050,
+    currentRbcVolume: 1264.52,
+    currentHct: 25.04,
+    targetHct: 25,
+    rbcVolPerUnit: 300,
+    rbcProductHctPercent: 60
+  });
+  assert(displayPrecisionMatch.noAdjustment, 'Hct values within one-decimal display precision should return no-adjustment state');
+  assert.strictEqual(displayPrecisionMatch.rbcOnly, null);
+  assert.strictEqual(displayPrecisionMatch.rbcNeutral, null);
+  assert.strictEqual(displayPrecisionMatch.hfUfOnly, null);
+
+  const belowCurrent = computeTargetHctScenarios({
+    currentTotalVolume: 5050,
+    currentRbcVolume: 1262.5,
+    currentHct: 25,
+    targetHct: 24,
+    rbcVolPerUnit: 300,
+    rbcProductHctPercent: 60
+  });
+  assert.strictEqual(belowCurrent.noAdjustment, null);
+  assert.strictEqual(belowCurrent.message, 'Target Hct is below the current Hct.');
+  assert.strictEqual(belowCurrent.rbcOnly, null);
+  assert.strictEqual(belowCurrent.rbcNeutral, null);
+  assert.strictEqual(belowCurrent.hfUfOnly, null);
+  assert(belowCurrent.dilution, 'Below-current Hct should show dilution guidance when calculable');
+  assert(belowCurrent.dilution.crystalloidToAdd > 0, 'Dilution amount should be positive');
+
   const customProduct = computeTargetHctScenarios({ currentTotalVolume: 5050, currentRbcVolume: 1262.5, currentHct: 25, targetHct: 27, rbcVolPerUnit: 250, rbcProductHctPercent: 50 });
   assert(nearlyEqual(customProduct.rbcOnly.requiredRbcMl, 439.1), `Custom RBC Hct should change required mL, got ${customProduct.rbcOnly.requiredRbcMl}`);
   assert(nearlyEqual(customProduct.rbcOnly.requiredUnits, 1.8, 0.05), `Custom Vol/unit should change units, got ${customProduct.rbcOnly.requiredUnits}`);
@@ -255,6 +304,11 @@ function run() {
   assert(mainJs.includes('Add RBC ${formatTargetVolume(scenario.requiredRbcMl)} mL'), 'RBC scenarios should spell out Add RBC');
   assert(mainJs.includes('Remove HF/UF ${formatTargetVolume(scenario.requiredHfUfMl)} mL'), 'Neutral scenario should spell out Remove HF/UF');
   assert(mainJs.includes('Remove HF/UF ${formatTargetVolume(scenario.requiredRemovalMl)} mL'), 'HF/UF-only scenario should spell out Remove HF/UF');
+  assert(mainJs.includes('No adjustment needed'), 'Equal-target state should render a no-adjustment title');
+  assert(mainJs.includes('Current Hct already matches the target Hct.'), 'Equal-target state should render a clear normal result message');
+  assert(mainJs.includes('No RBC addition or HF/UF removal is required.'), 'Equal-target state should explain no interventions are required');
+  assert(mainJs.includes('Volume unchanged'), 'Equal-target state should summarize unchanged volume');
+  assert(mainJs.includes('Target Hct is below the current Hct.'), 'Below-target state should use a separate message');
   assert(mainJs.includes('Enter a valid current total volume to compare target Hct scenarios.'), 'Target helper should guard invalid current volume');
   assert(mainJs.includes('onpump-result-summary__primary'), 'Rendered target values should use shared result-summary text styling');
   assert(mainJs.includes("return num('onpump_net_io_change');"), 'Runtime should read the signed Net I/O value directly');
