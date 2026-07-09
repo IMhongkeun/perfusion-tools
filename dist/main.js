@@ -2397,9 +2397,7 @@ function resetGDP() {
 // Predicted Hct Interaction
 // -----------------------------
 function getOnPumpNetIoChange() {
-  const netIoDirection = el('onpump_net_io_direction')?.value === 'removed' ? 'removed' : 'added';
-  const netIoAmount = Math.abs(num('onpump_net_io_amount') || 0);
-  return netIoAmount === 0 ? 0 : (netIoDirection === 'removed' ? -netIoAmount : netIoAmount);
+  return num('onpump_net_io_change');
 }
 
 function updateHct() {
@@ -7732,7 +7730,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const x = el(id);
       if (x) x.addEventListener('input', updateHct);
     });
-    ['hct_mode', 'onpump_weight', 'onpump_ebv_coef', 'onpump_prime', 'onpump_net_io_direction', 'onpump_net_io_amount', 'current_hct', 'onpump_fluids', 'onpump_rbc_units', 'onpump_rbc_unit_vol', 'onpump_rbc_hct', 'onpump_removed', 'target_hct', 'onpump_pttype'].forEach(id => {
+    ['hct_mode', 'onpump_weight', 'onpump_ebv_coef', 'onpump_prime', 'onpump_net_io_change', 'current_hct', 'onpump_fluids', 'onpump_rbc_units', 'onpump_rbc_unit_vol', 'onpump_rbc_hct', 'onpump_removed', 'target_hct', 'onpump_pttype'].forEach(id => {
       const x = el(id);
       if (x) x.addEventListener('input', updateHct);
       if (x) x.addEventListener('change', updateHct);
