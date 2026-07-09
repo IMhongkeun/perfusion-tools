@@ -543,8 +543,11 @@
               </div>
               <div class="space-y-1">
                 <label for="onpump_net_io_change" class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Net I/O change from CPB base (mL)</label>
-                <input id="onpump_net_io_change" type="number" inputmode="decimal" step="1" value="0" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
-                <p class="text-[11px] text-slate-500 dark:text-slate-400">Enter a positive value for net addition and a negative value for prior HF/UF or other net removal.</p>
+                <div class="relative">
+                  <input id="onpump_net_io_change" type="text" inputmode="decimal" autocomplete="off" placeholder="e.g., 500 or -500" value="0" class="w-full bg-slate-50 dark:bg-primary-800 border border-slate-200 dark:border-primary-700 rounded-xl px-4 py-2.5 pr-14 focus:ring-2 focus:ring-accent-500 outline-none transition-all dark:text-white" />
+                  <button id="onpump_net_io_sign_toggle" type="button" aria-label="Toggle Net I/O sign" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 px-2.5 py-1 text-sm font-bold text-primary-900 dark:text-accent-300 hover:border-accent-500/50 focus:outline-none focus:ring-2 focus:ring-accent-500">±</button>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">Positive = net addition · Negative = prior HF/UF or other net removal.</p>
               </div>
               <div class="space-y-1">
                 <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Current on-pump Hct (%)</label>

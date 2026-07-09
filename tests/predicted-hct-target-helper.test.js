@@ -8,9 +8,23 @@ function nearlyEqual(actual, expected, tolerance = 0.15) {
   return Math.abs(actual - expected) <= tolerance;
 }
 
+function parseSignedNetIoValue(value) {
+  const trimmedValue = String(value || '').trim();
+  if (trimmedValue === '' || trimmedValue === '-') return null;
+  if (!/^-?(?:\d+\.?\d*|\.\d+)$/.test(trimmedValue)) return null;
+  const parsedValue = Number(trimmedValue);
+  return Number.isFinite(parsedValue) ? parsedValue : null;
+}
+
 function computeNetIoChange(value) {
-  const netIoChange = parseFloat(value);
-  return Number.isFinite(netIoChange) ? netIoChange : 0;
+  return parseSignedNetIoValue(value) || 0;
+}
+
+function toggleNetIoSign(value) {
+  const currentValue = String(value || '').trim();
+  const numericValue = parseSignedNetIoValue(currentValue);
+  if (!numericValue) return numericValue === 0 ? '0' : currentValue;
+  return numericValue > 0 ? `-${currentValue}` : currentValue.replace(/^-/, '');
 }
 
 function computeOnPumpHctAdjustment({ weightKg, ebvCoefValue, primeVolume, netIoChange = 0, currentHct, addedCrystalloid = 0, rbcUnits = 0, rbcUnitVol = 300, rbcUnitHct = 60, ultrafiltrationRemoved = 0 }) {
@@ -97,6 +111,11 @@ function run() {
   assert.strictEqual(computeNetIoChange('-500'), -500);
   assert.strictEqual(computeNetIoChange('0'), 0);
   assert.strictEqual(computeNetIoChange(''), 0);
+  assert.strictEqual(parseSignedNetIoValue('-'), null);
+  assert.strictEqual(computeNetIoChange('-'), 0);
+  assert.strictEqual(toggleNetIoSign('500'), '-500');
+  assert.strictEqual(toggleNetIoSign('-500'), '500');
+  assert.strictEqual(toggleNetIoSign('0'), '0');
 
   const priorRemovalNetIoChange = computeNetIoChange('-500');
   assert.strictEqual(priorRemovalNetIoChange, -500);
@@ -275,10 +294,14 @@ function run() {
   assert(!html.includes('id="onpump_net_io_amount"'), 'Unsigned Net I/O amount control should be removed');
   assert(html.includes('id="onpump_net_io_change"'), 'Signed Net I/O input should exist');
   assert(html.includes('Net I/O change from CPB base (mL)'), 'Signed Net I/O label should include units');
+  assert(html.includes('id="onpump_net_io_change" type="text"'), 'Signed Net I/O should use a text input to preserve temporary minus entry');
+  assert(html.includes('placeholder="e.g., 500 or -500"'), 'Signed Net I/O input should show positive and negative examples');
+  assert(html.includes('id="onpump_net_io_sign_toggle"'), 'Signed Net I/O should include a compact sign toggle');
+  assert(html.includes('aria-label="Toggle Net I/O sign"'), 'Sign toggle should have an accessible name');
   assert(!html.includes('id="onpump_net_io_change" type="number" inputmode="numeric"'), 'Signed Net I/O input should not use numeric inputmode');
   assert(!html.includes('Added (+)'), 'Added direction option should be removed');
   assert(!html.includes('Removed (−)'), 'Removed direction option should be removed');
-  assert(html.includes('Enter a positive value for net addition and a negative value for prior HF/UF or other net removal.'));
+  assert(html.includes('Positive = net addition · Negative = prior HF/UF or other net removal.'));
   assert(html.includes('id="onpump-extra-results"'), 'On-pump summary container should exist');
   const plannedSummaryIndex = html.indexOf('Planned adjustment result');
   const targetHelperIndex = html.indexOf('Target Hct helper');
@@ -311,7 +334,10 @@ function run() {
   assert(mainJs.includes('Target Hct is below the current Hct.'), 'Below-target state should use a separate message');
   assert(mainJs.includes('Enter a valid current total volume to compare target Hct scenarios.'), 'Target helper should guard invalid current volume');
   assert(mainJs.includes('onpump-result-summary__primary'), 'Rendered target values should use shared result-summary text styling');
-  assert(mainJs.includes("return num('onpump_net_io_change');"), 'Runtime should read the signed Net I/O value directly');
+  assert(mainJs.includes('function parseSignedNetIoValue(value)'), 'Runtime should parse signed Net I/O text safely');
+  assert(mainJs.includes("trimmedValue === '' || trimmedValue === '-'"), 'Runtime should preserve temporary minus typing state');
+  assert(mainJs.includes('function toggleOnPumpNetIoSign()'), 'Runtime should provide a sign toggle handler');
+  assert(mainJs.includes("return parseSignedNetIoValue(el('onpump_net_io_change')?.value) || 0;"), 'Runtime should read the signed Net I/O value directly');
   assert(!mainJs.includes('onpump_net_io_direction'), 'Runtime should not use a Net I/O direction selector');
 
   console.log('All predicted Hct target helper tests passed.');

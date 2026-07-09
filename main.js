@@ -2402,8 +2402,45 @@ function resetGDP() {
 // -----------------------------
 // Predicted Hct Interaction
 // -----------------------------
+function parseSignedNetIoValue(value) {
+  const trimmedValue = String(value || '').trim();
+  if (trimmedValue === '' || trimmedValue === '-') return null;
+  if (!/^-?(?:\d+\.?\d*|\.\d+)$/.test(trimmedValue)) return null;
+  const parsedValue = Number(trimmedValue);
+  return Number.isFinite(parsedValue) ? parsedValue : null;
+}
+
+function sanitizeSignedNetIoInput(input) {
+  if (!input) return;
+  const nextValue = input.value.trim();
+  const allowsTypingState = nextValue === '' || nextValue === '-';
+  const isSignedNumeric = /^-?(?:\d+\.?\d*|\.\d+)$/.test(nextValue);
+  if (allowsTypingState || isSignedNumeric) {
+    input.dataset.lastValidValue = nextValue;
+    input.value = nextValue;
+    return;
+  }
+  input.value = input.dataset.lastValidValue || '';
+}
+
+function toggleOnPumpNetIoSign() {
+  const input = el('onpump_net_io_change');
+  if (!input) return;
+  sanitizeSignedNetIoInput(input);
+  const currentValue = input.value.trim();
+  const numericValue = parseSignedNetIoValue(currentValue);
+  if (!numericValue) {
+    input.value = numericValue === 0 ? '0' : currentValue;
+  } else {
+    input.value = numericValue > 0 ? `-${currentValue}` : currentValue.replace(/^-/, '');
+  }
+  input.dataset.lastValidValue = input.value;
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  input.focus();
+}
+
 function getOnPumpNetIoChange() {
-  return num('onpump_net_io_change');
+  return parseSignedNetIoValue(el('onpump_net_io_change')?.value) || 0;
 }
 
 function updateHct() {
@@ -7745,11 +7782,22 @@ window.addEventListener('DOMContentLoaded', () => {
       const x = el(id);
       if (x) x.addEventListener('input', updateHct);
     });
-    ['hct_mode', 'onpump_weight', 'onpump_ebv_coef', 'onpump_prime', 'onpump_net_io_change', 'current_hct', 'onpump_fluids', 'onpump_rbc_units', 'onpump_rbc_unit_vol', 'onpump_rbc_hct', 'onpump_removed', 'target_hct', 'onpump_pttype'].forEach(id => {
+    ['hct_mode', 'onpump_weight', 'onpump_ebv_coef', 'onpump_prime', 'current_hct', 'onpump_fluids', 'onpump_rbc_units', 'onpump_rbc_unit_vol', 'onpump_rbc_hct', 'onpump_removed', 'target_hct', 'onpump_pttype'].forEach(id => {
       const x = el(id);
       if (x) x.addEventListener('input', updateHct);
       if (x) x.addEventListener('change', updateHct);
     });
+    const netIoInput = el('onpump_net_io_change');
+    if (netIoInput) {
+      netIoInput.dataset.lastValidValue = netIoInput.value || '0';
+      netIoInput.addEventListener('input', () => {
+        sanitizeSignedNetIoInput(netIoInput);
+        updateHct();
+      });
+      netIoInput.addEventListener('change', updateHct);
+    }
+    const netIoSignToggle = el('onpump_net_io_sign_toggle');
+    if (netIoSignToggle) netIoSignToggle.addEventListener('click', toggleOnPumpNetIoSign);
     const modeButtons = Array.from(document.querySelectorAll('[data-hct-mode]'));
     modeButtons.forEach((btn) => {
       btn.addEventListener('click', () => setHctMode(btn.dataset.hctMode));
