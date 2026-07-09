@@ -1516,7 +1516,7 @@ function computeTargetHctScenarios({ currentTotalVolume, currentRbcVolume, curre
   const withUnits = (requiredRbcMl) => ({ requiredRbcMl, requiredUnits: U > 0 ? requiredRbcMl / U : null });
 
   if (!(targetHct > 0)) {
-    result.message = 'Enter a Target Hct to compare RBC and HF/UF strategies.';
+    result.message = 'Enter a target Hct to compare adjustment scenarios.';
     return result;
   }
   if (!(V > 0)) {
@@ -2450,65 +2450,87 @@ function updateHct() {
   setText('pred_hct', r.hct ? r.hct.toFixed(1) + '%' : '0%');
 }
 
-function formatTargetLine(label, value, suffix = ' mL') {
-  if (value === null || value === undefined || !Number.isFinite(value)) return `<p>${label}: <span class="font-semibold">Invalid</span></p>`;
-  return `<p>${label}: <span class="font-semibold">${value.toFixed(1)}${suffix}</span></p>`;
+function formatTargetVolume(value) {
+  if (value === null || value === undefined || !Number.isFinite(value)) return '—';
+  return Math.round(value).toLocaleString();
 }
 
-function renderTargetScenario(elementId, scenario, rows) {
+function formatTargetUnits(value) {
+  if (value === null || value === undefined || !Number.isFinite(value)) return '—';
+  return value.toFixed(1);
+}
+
+function formatTargetHct(value) {
+  if (value === null || value === undefined || !Number.isFinite(value)) return '—';
+  return value.toFixed(1);
+}
+
+function renderTargetScenario(elementId, scenario, { mainAction, secondaryAction, footer }) {
   const node = el(elementId);
   if (!node) return;
   if (!scenario) {
-    node.innerHTML = '<p class="font-semibold">Not applicable</p>';
+    node.innerHTML = '<p class="text-sm font-semibold text-slate-600 dark:text-slate-300">Not applicable</p>';
     return;
   }
   if (scenario.notApplicable) {
-    node.innerHTML = `<p class="font-semibold">${scenario.notApplicable}</p>`;
+    node.innerHTML = '<p class="text-sm font-semibold text-slate-600 dark:text-slate-300">Not applicable: target Hct must be lower than RBC product Hct.</p>';
     return;
   }
-  node.innerHTML = rows.map(([label, value, suffix]) => formatTargetLine(label, value, suffix)).join('');
+  node.innerHTML = [
+    `<p class="text-xl font-bold text-primary-900 dark:text-white">${mainAction(scenario)}</p>`,
+    `<p class="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-200">${secondaryAction(scenario)}</p>`,
+    `<p class="mt-3 text-xs text-slate-500 dark:text-slate-400">${footer(scenario)}</p>`
+  ].join('');
 }
 
 function updateTargetHctHelper(onPumpResult) {
   const messageEl = el('target-hct-message');
   const cardsEl = el('target-hct-cards');
+  const dilutionCardEl = el('target-dilution-card');
   if (!messageEl || !cardsEl) return;
 
+  const targetHct = num('target_hct');
   const result = computeTargetHctScenarios({
     currentTotalVolume: onPumpResult.currentTotalVolume,
     currentRbcVolume: onPumpResult.currentRbcVolume,
     currentHct: num('current_hct'),
-    targetHct: num('target_hct'),
+    targetHct,
     rbcVolPerUnit: num('onpump_rbc_unit_vol'),
     rbcProductHctPercent: num('onpump_rbc_hct')
   });
 
   messageEl.textContent = result.message;
-  if (result.dilution) {
-    messageEl.textContent += ` Dilution estimate: add ${result.dilution.crystalloidToAdd.toFixed(1)} mL crystalloid/colloid for expected Hct ${result.dilution.expectedHct.toFixed(1)}%.`;
+  const showDilution = !!result.dilution;
+  if (dilutionCardEl) {
+    dilutionCardEl.classList.toggle('hidden', !showDilution);
+    if (showDilution) {
+      dilutionCardEl.innerHTML = [
+        '<p class="text-xs font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300">Dilution option</p>',
+        `<p class="mt-2 text-xl font-bold text-primary-900 dark:text-white">Add ${formatTargetVolume(result.dilution.crystalloidToAdd)} mL crystalloid/colloid</p>`,
+        `<p class="mt-3 text-xs text-slate-500 dark:text-slate-400">Final ${formatTargetVolume(result.dilution.finalVolume)} mL · Hct ${formatTargetHct(targetHct)}%</p>`
+      ].join('');
+    }
   }
+
   const showCards = !!(result.rbcOnly || result.rbcNeutral || result.hfUfOnly);
   cardsEl.classList.toggle('hidden', !showCards);
   if (!showCards) return;
 
-  renderTargetScenario('target_rbc_only', result.rbcOnly, [
-    ['Required RBC', result.rbcOnly?.requiredRbcMl, ' mL'],
-    ['Approx units', result.rbcOnly?.requiredUnits, ' units'],
-    ['Final volume', result.rbcOnly?.finalVolume, ' mL'],
-    ['Expected Hct', result.rbcOnly?.expectedHct, '%']
-  ]);
-  renderTargetScenario('target_rbc_neutral', result.rbcNeutral, [
-    ['Required RBC', result.rbcNeutral?.requiredRbcMl, ' mL'],
-    ['Required HF/UF removal', result.rbcNeutral?.requiredHfUfMl, ' mL'],
-    ['Approx units', result.rbcNeutral?.requiredUnits, ' units'],
-    ['Final volume', result.rbcNeutral?.finalVolume, ' mL'],
-    ['Expected Hct', result.rbcNeutral?.expectedHct, '%']
-  ]);
-  renderTargetScenario('target_hfuf_only', result.hfUfOnly, [
-    ['Required HF/UF removal', result.hfUfOnly?.requiredRemovalMl, ' mL'],
-    ['Final volume', result.hfUfOnly?.finalVolume, ' mL'],
-    ['Expected Hct', result.hfUfOnly?.expectedHct, '%']
-  ]);
+  renderTargetScenario('target_rbc_only', result.rbcOnly, {
+    mainAction: (scenario) => `+${formatTargetVolume(scenario.requiredRbcMl)} mL RBC`,
+    secondaryAction: (scenario) => `≈ ${formatTargetUnits(scenario.requiredUnits)} units`,
+    footer: (scenario) => `Final ${formatTargetVolume(scenario.finalVolume)} mL · Hct ${formatTargetHct(scenario.expectedHct)}%`
+  });
+  renderTargetScenario('target_rbc_neutral', result.rbcNeutral, {
+    mainAction: (scenario) => `+${formatTargetVolume(scenario.requiredRbcMl)} mL RBC`,
+    secondaryAction: (scenario) => `−${formatTargetVolume(scenario.requiredHfUfMl)} mL HF/UF · ≈ ${formatTargetUnits(scenario.requiredUnits)} units`,
+    footer: (scenario) => `Final ${formatTargetVolume(scenario.finalVolume)} mL · Hct ${formatTargetHct(scenario.expectedHct)}%`
+  });
+  renderTargetScenario('target_hfuf_only', result.hfUfOnly, {
+    mainAction: (scenario) => `−${formatTargetVolume(scenario.requiredRemovalMl)} mL HF/UF`,
+    secondaryAction: () => 'No RBC added',
+    footer: (scenario) => `Final ${formatTargetVolume(scenario.finalVolume)} mL · Hct ${formatTargetHct(scenario.expectedHct)}%`
+  });
 }
 
 function setHctMode(mode) {
