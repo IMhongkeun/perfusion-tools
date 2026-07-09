@@ -13,11 +13,20 @@ function computeOnPumpHctAdjustment({ weightKg, ebvCoefValue, primeVolume, netIo
   const baseCpbVolume = ebv + primeVolume;
   const currentTotalVolume = baseCpbVolume + netIoChange;
   const totalRbcProductVolume = rbcUnits * rbcUnitVol;
-  const currentRbcVolume = currentTotalVolume * (currentHct / 100);
   const addedRbcVolume = totalRbcProductVolume * (rbcUnitHct / 100);
   const finalTotalVolume = currentTotalVolume + addedCrystalloid + totalRbcProductVolume - ultrafiltrationRemoved;
+  const invalidCurrentVolume = currentTotalVolume <= 0;
+  const invalidFinalVolume = !invalidCurrentVolume && finalTotalVolume <= 0;
+  const validationMessage = invalidCurrentVolume
+    ? 'Current total volume must be greater than 0. Check the net I/O change from CPB base.'
+    : invalidFinalVolume
+      ? 'Final volume must be greater than 0. Check planned additions and removals.'
+      : '';
+  if (invalidCurrentVolume) return { ebv, baseCpbVolume, currentTotalVolume, currentRbcVolume: null, addedRbcVolume, finalTotalVolume, predictedHct: null, invalidCurrentVolume, invalidFinalVolume, validationMessage };
+  const currentRbcVolume = currentTotalVolume * (currentHct / 100);
+  if (invalidFinalVolume) return { ebv, baseCpbVolume, currentTotalVolume, currentRbcVolume, addedRbcVolume, finalTotalVolume, predictedHct: null, invalidCurrentVolume, invalidFinalVolume, validationMessage };
   const predictedHct = ((currentRbcVolume + addedRbcVolume) / finalTotalVolume) * 100;
-  return { ebv, baseCpbVolume, currentTotalVolume, currentRbcVolume, addedRbcVolume, finalTotalVolume, predictedHct };
+  return { ebv, baseCpbVolume, currentTotalVolume, currentRbcVolume, addedRbcVolume, finalTotalVolume, predictedHct, invalidCurrentVolume, invalidFinalVolume, validationMessage };
 }
 
 function computeTargetHctScenarios({ currentTotalVolume, currentRbcVolume, currentHct, targetHct, rbcVolPerUnit, rbcProductHctPercent }) {
@@ -86,6 +95,46 @@ function run() {
   assert.strictEqual(onPump.finalTotalVolume, 5250);
   assert(nearlyEqual(onPump.predictedHct, 27.48, 0.01), `Planned on-pump Hct expected 27.48%, got ${onPump.predictedHct}`);
 
+  const invalidCurrent = computeOnPumpHctAdjustment({
+    weightKg: 70,
+    ebvCoefValue: 70,
+    primeVolume: 1200,
+    netIoChange: -7000,
+    currentHct: 25,
+    addedCrystalloid: 2000
+  });
+  assert.strictEqual(invalidCurrent.currentTotalVolume, -900);
+  assert.strictEqual(invalidCurrent.currentRbcVolume, null);
+  assert.strictEqual(invalidCurrent.predictedHct, null);
+  assert.strictEqual(invalidCurrent.invalidCurrentVolume, true);
+  assert(invalidCurrent.validationMessage.includes('Current total volume must be greater than 0'));
+
+  const validNegativeNetIo = computeOnPumpHctAdjustment({
+    weightKg: 70,
+    ebvCoefValue: 70,
+    primeVolume: 1200,
+    netIoChange: -500,
+    currentHct: 25
+  });
+  assert.strictEqual(validNegativeNetIo.currentTotalVolume, 5600);
+  assert.strictEqual(validNegativeNetIo.currentRbcVolume, 1400);
+  assert.strictEqual(validNegativeNetIo.invalidCurrentVolume, false);
+  assert.strictEqual(validNegativeNetIo.validationMessage, '');
+
+  const invalidFinal = computeOnPumpHctAdjustment({
+    weightKg: 10,
+    ebvCoefValue: 100,
+    primeVolume: 0,
+    netIoChange: 0,
+    currentHct: 25,
+    ultrafiltrationRemoved: 1200
+  });
+  assert.strictEqual(invalidFinal.currentTotalVolume, 1000);
+  assert.strictEqual(invalidFinal.finalTotalVolume, -200);
+  assert.strictEqual(invalidFinal.predictedHct, null);
+  assert.strictEqual(invalidFinal.invalidFinalVolume, true);
+  assert(invalidFinal.validationMessage.includes('Final volume must be greater than 0'));
+
   const result = computeTargetHctScenarios({
     currentTotalVolume: 5050,
     currentRbcVolume: 1262.5,
@@ -129,6 +178,7 @@ function run() {
   assert(plannedSummaryIndex < targetHelperIndex, 'Planned adjustment result should appear before Target Hct helper');
   assert(html.includes('id="current_volume_result"'), 'Planned summary should include current volume');
   assert(html.includes('id="final_volume_result"'), 'Planned summary should include final volume');
+  assert(html.includes('id="onpump_result_message"'), 'Planned summary should include a validation message target');
   assert(html.includes('id="target_rbc_only_secondary"'), 'Target helper should render compact row secondary text');
   assert(html.includes('<div class="border-t border-slate-200 dark:border-primary-700 pt-4 space-y-3">'), 'Target helper should be a sibling divider section, not a nested card');
   assert(html.includes('divide-y divide-slate-200 dark:divide-primary-700 border-t border-slate-200 dark:border-primary-700'), 'Target rows should use subtle dividers');
@@ -140,6 +190,7 @@ function run() {
   assert(mainJs.includes('Add RBC ${formatTargetVolume(scenario.requiredRbcMl)} mL'), 'RBC scenarios should spell out Add RBC');
   assert(mainJs.includes('Remove HF/UF ${formatTargetVolume(scenario.requiredHfUfMl)} mL'), 'Neutral scenario should spell out Remove HF/UF');
   assert(mainJs.includes('Remove HF/UF ${formatTargetVolume(scenario.requiredRemovalMl)} mL'), 'HF/UF-only scenario should spell out Remove HF/UF');
+  assert(mainJs.includes('Enter a valid current total volume to compare target Hct scenarios.'), 'Target helper should guard invalid current volume');
 
   console.log('All predicted Hct target helper tests passed.');
 }

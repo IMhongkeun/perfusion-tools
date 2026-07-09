@@ -1496,14 +1496,30 @@ function computeOnPumpHctAdjustment({ patientType, weightKg, ebvCoefValue, prime
   const baseCpbVolume = ebv + (primeVolume || 0);
   const currentTotalVolume = baseCpbVolume + (netIoChange || 0);
   const totalRbcProductVolume = (rbcUnits || 0) * (rbcUnitVol || 0);
-  // Current Hct is assumed to already include prior dilution, transfusion, and HF/UF effects.
-  const currentRbcVolume = (currentTotalVolume || 0) * ((currentHct || 0) / 100);
   const addedRbcVolume = totalRbcProductVolume * ((rbcUnitHct || 0) / 100);
+  const finalTotalVolume = currentTotalVolume + (addedCrystalloid || 0) + totalRbcProductVolume - (ultrafiltrationRemoved || 0);
+  const invalidCurrentVolume = currentTotalVolume <= 0;
+  const invalidFinalVolume = !invalidCurrentVolume && finalTotalVolume <= 0;
+  const validationMessage = invalidCurrentVolume
+    ? 'Current total volume must be greater than 0. Check the net I/O change from CPB base.'
+    : invalidFinalVolume
+      ? 'Final volume must be greater than 0. Check planned additions and removals.'
+      : '';
+
+  if (invalidCurrentVolume) {
+    return { ebv, baseCpbVolume, currentTotalVolume, currentRbcVolume: null, addedRbcVolume, finalTotalVolume, predictedHct: null, hctChange: null, invalidCurrentVolume, invalidFinalVolume, validationMessage };
+  }
+
+  // Current Hct is assumed to already include prior dilution, transfusion, and HF/UF effects.
+  const currentRbcVolume = currentTotalVolume * ((currentHct || 0) / 100);
+  if (invalidFinalVolume) {
+    return { ebv, baseCpbVolume, currentTotalVolume, currentRbcVolume, addedRbcVolume, finalTotalVolume, predictedHct: null, hctChange: null, invalidCurrentVolume, invalidFinalVolume, validationMessage };
+  }
+
   // Planned HF/UF removal is modeled as RBC-free fluid removal.
-  const finalTotalVolume = (currentTotalVolume || 0) + (addedCrystalloid || 0) + totalRbcProductVolume - (ultrafiltrationRemoved || 0);
-  const predictedHct = finalTotalVolume > 0 ? ((currentRbcVolume + addedRbcVolume) / finalTotalVolume) * 100 : 0;
+  const predictedHct = ((currentRbcVolume + addedRbcVolume) / finalTotalVolume) * 100;
   const hctChange = predictedHct - (currentHct || 0);
-  return { ebv, baseCpbVolume, currentTotalVolume, currentRbcVolume, addedRbcVolume, finalTotalVolume, predictedHct, hctChange };
+  return { ebv, baseCpbVolume, currentTotalVolume, currentRbcVolume, addedRbcVolume, finalTotalVolume, predictedHct, hctChange, invalidCurrentVolume, invalidFinalVolume, validationMessage };
 }
 
 function computeTargetHctScenarios({ currentTotalVolume, currentRbcVolume, currentHct, targetHct, rbcVolPerUnit, rbcProductHctPercent }) {
@@ -2416,19 +2432,26 @@ function updateHct() {
     setText('ebv', r.currentTotalVolume ? r.currentTotalVolume.toFixed(0) : '0');
     setText('total_vol', r.finalTotalVolume ? r.finalTotalVolume.toFixed(0) : '0');
     setText('pred_hct', r.predictedHct ? r.predictedHct.toFixed(1) + '%' : '0%');
-    setText('current_rbc_vol', `${r.currentRbcVolume.toFixed(0)} mL`);
+    setText('current_rbc_vol', r.currentRbcVolume === null ? '—' : `${r.currentRbcVolume.toFixed(0)} mL`);
     setText('added_rbc_vol', `${r.addedRbcVolume.toFixed(0)} mL`);
     setText('onpump_ebv', `${r.ebv.toFixed(0)} mL`);
     setText('onpump_estimated_volume', `${r.currentTotalVolume.toFixed(0)} mL`);
     setText('onpump_ebv_auto', `${r.ebv.toFixed(0)} mL`);
     setText('onpump_base_cpb_volume', `${r.baseCpbVolume.toFixed(0)} mL`);
     setText('onpump_estimated_auto', `${r.currentTotalVolume.toFixed(0)} mL`);
-    setText('onpump_current_rbc_summary', `${r.currentRbcVolume.toFixed(0)} mL`);
-    setText('current_hct_result', `${(num('current_hct') || 0).toFixed(1)}%`);
-    setText('pred_hct_result', `${r.predictedHct.toFixed(1)}%`);
-    setText('hct_change', `(${r.hctChange >= 0 ? '+' : ''}${r.hctChange.toFixed(1)} pt)`);
-    setText('current_volume_result', `${formatTargetVolume(r.currentTotalVolume)} mL`);
-    setText('final_volume_result', `${formatTargetVolume(r.finalTotalVolume)} mL`);
+    setText('onpump_current_rbc_summary', r.currentRbcVolume === null ? '—' : `${r.currentRbcVolume.toFixed(0)} mL`);
+    const resultMessageEl = el('onpump_result_message');
+    const resultValuesEl = el('onpump_result_values');
+    if (resultMessageEl) {
+      resultMessageEl.textContent = r.validationMessage || '';
+      resultMessageEl.classList.toggle('hidden', !r.validationMessage);
+    }
+    if (resultValuesEl) resultValuesEl.classList.toggle('hidden', !!r.validationMessage);
+    setText('current_hct_result', r.validationMessage ? '—' : `${(num('current_hct') || 0).toFixed(1)}%`);
+    setText('pred_hct_result', r.predictedHct === null ? '—' : `${r.predictedHct.toFixed(1)}%`);
+    setText('hct_change', r.hctChange === null ? '' : `(${r.hctChange >= 0 ? '+' : ''}${r.hctChange.toFixed(1)} pt)`);
+    setText('current_volume_result', r.validationMessage ? '—' : `${formatTargetVolume(r.currentTotalVolume)} mL`);
+    setText('final_volume_result', r.validationMessage ? '—' : `${formatTargetVolume(r.finalTotalVolume)} mL`);
     updateTargetHctHelper(r);
     return;
   }
@@ -2496,6 +2519,13 @@ function updateTargetHctHelper(onPumpResult) {
   if (!messageEl || !cardsEl) return;
 
   const targetHct = num('target_hct');
+  if (onPumpResult.invalidCurrentVolume) {
+    messageEl.textContent = 'Enter a valid current total volume to compare target Hct scenarios.';
+    if (dilutionCardEl) dilutionCardEl.classList.add('hidden');
+    cardsEl.classList.add('hidden');
+    return;
+  }
+
   const result = computeTargetHctScenarios({
     currentTotalVolume: onPumpResult.currentTotalVolume,
     currentRbcVolume: onPumpResult.currentRbcVolume,
