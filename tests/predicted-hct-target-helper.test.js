@@ -130,10 +130,16 @@ function run() {
   assert(html.includes('id="current_volume_result"'), 'Planned summary should include current volume');
   assert(html.includes('id="final_volume_result"'), 'Planned summary should include final volume');
   assert(html.includes('id="target_rbc_only_secondary"'), 'Target helper should render compact row secondary text');
-  assert(html.includes('divide-y divide-slate-200 dark:divide-primary-700'), 'Target rows should use subtle dividers');
+  assert(html.includes('<div class="border-t border-slate-200 dark:border-primary-700 pt-4 space-y-3">'), 'Target helper should be a sibling divider section, not a nested card');
+  assert(html.includes('divide-y divide-slate-200 dark:divide-primary-700 border-t border-slate-200 dark:border-primary-700'), 'Target rows should use subtle dividers');
   assert(!html.includes('bg-red-50/70'), 'Target rows should not use warning-style red backgrounds');
   assert(!html.includes('bg-purple-50/70'), 'Target rows should not use unrelated purple backgrounds');
   assert(!html.includes('border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-900/40 p-5 space-y-4'), 'RBC addition should not be a nested card');
+
+  const mainJs = fs.readFileSync(path.join(__dirname, '..', 'main.js'), 'utf8');
+  assert(mainJs.includes('Add RBC ${formatTargetVolume(scenario.requiredRbcMl)} mL'), 'RBC scenarios should spell out Add RBC');
+  assert(mainJs.includes('Remove HF/UF ${formatTargetVolume(scenario.requiredHfUfMl)} mL'), 'Neutral scenario should spell out Remove HF/UF');
+  assert(mainJs.includes('Remove HF/UF ${formatTargetVolume(scenario.requiredRemovalMl)} mL'), 'HF/UF-only scenario should spell out Remove HF/UF');
 
   console.log('All predicted Hct target helper tests passed.');
 }

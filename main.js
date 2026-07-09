@@ -2483,7 +2483,7 @@ function renderTargetScenario(elementId, scenario, { mainAction, secondaryAction
     if (secondaryNode) secondaryNode.textContent = 'Target Hct must be lower than RBC product Hct.';
     return;
   }
-  node.innerHTML = `<p class="text-lg font-bold text-primary-900 dark:text-white">${mainAction(scenario)}</p>`;
+  node.innerHTML = `<p class="text-base font-bold text-primary-900 dark:text-white">${mainAction(scenario)}</p>`;
   if (secondaryNode) {
     secondaryNode.innerHTML = `${secondaryAction(scenario)}<span class="hidden sm:inline"> · ${footer(scenario)}</span>`;
   }
@@ -2511,10 +2511,10 @@ function updateTargetHctHelper(onPumpResult) {
     dilutionCardEl.classList.toggle('hidden', !showDilution);
     if (showDilution) {
       dilutionCardEl.innerHTML = [
-        '<div class="sm:flex sm:items-center sm:justify-between sm:gap-4">',
+        '<div class="sm:flex sm:items-start sm:justify-between sm:gap-4">',
         '<div><p class="text-sm font-semibold text-primary-900 dark:text-white">Dilution option</p>',
         `<p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Final ${formatTargetVolume(result.dilution.finalVolume)} mL · Hct ${formatTargetHct(targetHct)}%</p></div>`,
-        `<p class="mt-2 text-lg font-bold text-primary-900 dark:text-white sm:mt-0 sm:text-right">Add ${formatTargetVolume(result.dilution.crystalloidToAdd)} mL crystalloid/colloid</p>`,
+        `<p class="mt-2 text-base font-bold text-primary-900 dark:text-white sm:mt-0 sm:text-right">Add crystalloid/colloid ${formatTargetVolume(result.dilution.crystalloidToAdd)} mL</p>`,
         '</div>'
       ].join('');
     }
@@ -2525,17 +2525,17 @@ function updateTargetHctHelper(onPumpResult) {
   if (!showCards) return;
 
   renderTargetScenario('target_rbc_only', result.rbcOnly, {
-    mainAction: (scenario) => `+${formatTargetVolume(scenario.requiredRbcMl)} mL RBC`,
+    mainAction: (scenario) => `Add RBC ${formatTargetVolume(scenario.requiredRbcMl)} mL`,
     secondaryAction: (scenario) => `≈ ${formatTargetUnits(scenario.requiredUnits)} units`,
     footer: (scenario) => `Final ${formatTargetVolume(scenario.finalVolume)} mL · Hct ${formatTargetHct(scenario.expectedHct)}%`
   });
   renderTargetScenario('target_rbc_neutral', result.rbcNeutral, {
-    mainAction: (scenario) => `+${formatTargetVolume(scenario.requiredRbcMl)} / −${formatTargetVolume(scenario.requiredHfUfMl)} mL`,
+    mainAction: (scenario) => `Add RBC ${formatTargetVolume(scenario.requiredRbcMl)} mL · Remove HF/UF ${formatTargetVolume(scenario.requiredHfUfMl)} mL`,
     secondaryAction: (scenario) => `≈ ${formatTargetUnits(scenario.requiredUnits)} units`,
     footer: (scenario) => `Final ${formatTargetVolume(scenario.finalVolume)} mL · Hct ${formatTargetHct(scenario.expectedHct)}%`
   });
   renderTargetScenario('target_hfuf_only', result.hfUfOnly, {
-    mainAction: (scenario) => `−${formatTargetVolume(scenario.requiredRemovalMl)} mL HF/UF`,
+    mainAction: (scenario) => `Remove HF/UF ${formatTargetVolume(scenario.requiredRemovalMl)} mL`,
     secondaryAction: () => 'No RBC added',
     footer: (scenario) => `Final ${formatTargetVolume(scenario.finalVolume)} mL · Hct ${formatTargetHct(scenario.expectedHct)}%`
   });
