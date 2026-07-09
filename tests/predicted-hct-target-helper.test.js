@@ -120,10 +120,15 @@ function run() {
 
   const html = fs.readFileSync(path.join(__dirname, '..', 'predicted-hct', 'index.html'), 'utf8');
   assert(html.includes('Alternative scenarios to reach the target Hct from the current on-pump state. These scenarios are alternatives, not additive doses.'));
-  assert(html.includes('RBC product assumptions are taken from the RBC ADDITION fields above.'));
-  assert(html.includes('bg-slate-50 dark:bg-primary-900/40 p-4'), 'Target cards should use subtle on-pump card styling');
-  assert(!html.includes('bg-red-50/70'), 'Target cards should not use warning-style red backgrounds');
-  assert(!html.includes('bg-purple-50/70'), 'Target cards should not use unrelated purple backgrounds');
+  assert(html.includes('RBC product assumptions are taken from the RBC addition fields above.'));
+  assert(html.includes('id="onpump-extra-results"'), 'On-pump summary container should exist');
+  assert(html.includes('id="current_volume_result"'), 'Planned summary should include current volume');
+  assert(html.includes('id="final_volume_result"'), 'Planned summary should include final volume');
+  assert(html.includes('id="target_rbc_only_secondary"'), 'Target helper should render compact row secondary text');
+  assert(html.includes('divide-y divide-slate-200 dark:divide-primary-700'), 'Target rows should use subtle dividers');
+  assert(!html.includes('bg-red-50/70'), 'Target rows should not use warning-style red backgrounds');
+  assert(!html.includes('bg-purple-50/70'), 'Target rows should not use unrelated purple backgrounds');
+  assert(!html.includes('border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-900/40 p-5 space-y-4'), 'RBC addition should not be a nested card');
 
   console.log('All predicted Hct target helper tests passed.');
 }

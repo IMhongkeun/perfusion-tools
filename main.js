@@ -2385,10 +2385,12 @@ function updateHct() {
   const onPumpModeEl = el('hct-onpump-mode');
   const leftLabelEl = el('hct-left-label');
   const onPumpExtraResultsEl = el('onpump-extra-results');
+  const primaryResultsEl = el('hct-primary-results');
   const rightLabelEl = el('hct-right-label');
   if (preModeEl) preModeEl.classList.toggle('hidden', isOnPumpMode);
   if (onPumpModeEl) onPumpModeEl.classList.toggle('hidden', !isOnPumpMode);
   if (onPumpExtraResultsEl) onPumpExtraResultsEl.classList.toggle('hidden', !isOnPumpMode);
+  if (primaryResultsEl) primaryResultsEl.classList.toggle('hidden', isOnPumpMode);
   const modeHelpEl = el('hct-mode-help');
   if (modeHelpEl) {
     modeHelpEl.textContent = isOnPumpMode
@@ -2424,7 +2426,9 @@ function updateHct() {
     setText('onpump_current_rbc_summary', `${r.currentRbcVolume.toFixed(0)} mL`);
     setText('current_hct_result', `${(num('current_hct') || 0).toFixed(1)}%`);
     setText('pred_hct_result', `${r.predictedHct.toFixed(1)}%`);
-    setText('hct_change', `${r.hctChange >= 0 ? '+' : ''}${r.hctChange.toFixed(1)}`);
+    setText('hct_change', `(${r.hctChange >= 0 ? '+' : ''}${r.hctChange.toFixed(1)} pt)`);
+    setText('current_volume_result', `${formatTargetVolume(r.currentTotalVolume)} mL`);
+    setText('final_volume_result', `${formatTargetVolume(r.finalTotalVolume)} mL`);
     updateTargetHctHelper(r);
     return;
   }
@@ -2467,20 +2471,22 @@ function formatTargetHct(value) {
 
 function renderTargetScenario(elementId, scenario, { mainAction, secondaryAction, footer }) {
   const node = el(elementId);
+  const secondaryNode = el(`${elementId}_secondary`);
   if (!node) return;
   if (!scenario) {
     node.innerHTML = '<p class="text-sm font-semibold text-slate-600 dark:text-slate-300">Not applicable</p>';
+    if (secondaryNode) secondaryNode.textContent = '';
     return;
   }
   if (scenario.notApplicable) {
-    node.innerHTML = '<p class="text-sm font-semibold text-slate-600 dark:text-slate-300">Not applicable: target Hct must be lower than RBC product Hct.</p>';
+    node.innerHTML = '<p class="text-sm font-semibold text-slate-600 dark:text-slate-300">Not applicable</p>';
+    if (secondaryNode) secondaryNode.textContent = 'Target Hct must be lower than RBC product Hct.';
     return;
   }
-  node.innerHTML = [
-    `<p class="text-xl font-bold text-primary-900 dark:text-white">${mainAction(scenario)}</p>`,
-    `<p class="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-200">${secondaryAction(scenario)}</p>`,
-    `<p class="mt-3 text-xs text-slate-500 dark:text-slate-400">${footer(scenario)}</p>`
-  ].join('');
+  node.innerHTML = `<p class="text-lg font-bold text-primary-900 dark:text-white">${mainAction(scenario)}</p>`;
+  if (secondaryNode) {
+    secondaryNode.innerHTML = `${secondaryAction(scenario)}<span class="hidden sm:inline"> · ${footer(scenario)}</span>`;
+  }
 }
 
 function updateTargetHctHelper(onPumpResult) {
@@ -2505,9 +2511,11 @@ function updateTargetHctHelper(onPumpResult) {
     dilutionCardEl.classList.toggle('hidden', !showDilution);
     if (showDilution) {
       dilutionCardEl.innerHTML = [
-        '<p class="text-xs font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300">Dilution option</p>',
-        `<p class="mt-2 text-xl font-bold text-primary-900 dark:text-white">Add ${formatTargetVolume(result.dilution.crystalloidToAdd)} mL crystalloid/colloid</p>`,
-        `<p class="mt-3 text-xs text-slate-500 dark:text-slate-400">Final ${formatTargetVolume(result.dilution.finalVolume)} mL · Hct ${formatTargetHct(targetHct)}%</p>`
+        '<div class="sm:flex sm:items-center sm:justify-between sm:gap-4">',
+        '<div><p class="text-sm font-semibold text-primary-900 dark:text-white">Dilution option</p>',
+        `<p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Final ${formatTargetVolume(result.dilution.finalVolume)} mL · Hct ${formatTargetHct(targetHct)}%</p></div>`,
+        `<p class="mt-2 text-lg font-bold text-primary-900 dark:text-white sm:mt-0 sm:text-right">Add ${formatTargetVolume(result.dilution.crystalloidToAdd)} mL crystalloid/colloid</p>`,
+        '</div>'
       ].join('');
     }
   }
@@ -2522,8 +2530,8 @@ function updateTargetHctHelper(onPumpResult) {
     footer: (scenario) => `Final ${formatTargetVolume(scenario.finalVolume)} mL · Hct ${formatTargetHct(scenario.expectedHct)}%`
   });
   renderTargetScenario('target_rbc_neutral', result.rbcNeutral, {
-    mainAction: (scenario) => `+${formatTargetVolume(scenario.requiredRbcMl)} mL RBC`,
-    secondaryAction: (scenario) => `−${formatTargetVolume(scenario.requiredHfUfMl)} mL HF/UF · ≈ ${formatTargetUnits(scenario.requiredUnits)} units`,
+    mainAction: (scenario) => `+${formatTargetVolume(scenario.requiredRbcMl)} / −${formatTargetVolume(scenario.requiredHfUfMl)} mL`,
+    secondaryAction: (scenario) => `≈ ${formatTargetUnits(scenario.requiredUnits)} units`,
     footer: (scenario) => `Final ${formatTargetVolume(scenario.finalVolume)} mL · Hct ${formatTargetHct(scenario.expectedHct)}%`
   });
   renderTargetScenario('target_hfuf_only', result.hfUfOnly, {
