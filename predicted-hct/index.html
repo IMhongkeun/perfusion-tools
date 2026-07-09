@@ -542,6 +542,13 @@
                     </div>
                   </div>
                 </div>
+                <div id="onpump-extra-results" class="hidden rounded-xl border border-slate-200 dark:border-primary-700 bg-primary-900 dark:bg-black/20 p-4 text-slate-100">
+                  <p class="text-sm font-semibold text-slate-200">Planned adjustment result</p>
+                  <div class="mt-2 flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
+                    <p class="text-sm text-slate-300">Hct <span id="current_hct_result" class="font-semibold text-slate-200">0.0%</span> → <span id="pred_hct_result" class="text-xl font-bold text-white">0.0%</span> <span id="hct_change" class="ml-1 font-bold text-accent-300">(+0.0 pt)</span></p>
+                    <p class="text-sm text-slate-400">Volume <span id="current_volume_result" class="text-slate-300">0 mL</span> → <span id="final_volume_result" class="font-semibold text-slate-200">0 mL</span></p>
+                  </div>
+                </div>
                 <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/30 p-4 space-y-4">
                   <div>
                     <p class="text-sm font-bold text-primary-900 dark:text-accent-400">Target Hct helper</p>
@@ -601,12 +608,7 @@
               <div id="pred_hct" class="text-2xl font-bold text-white">0%</div>
             </div>
           </div>
-          <div id="onpump-extra-results" class="hidden px-6 py-5 bg-primary-900 dark:bg-black/20 text-slate-100 border-t border-primary-800">
-            <div class="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
-              <p class="text-sm text-slate-300">Hct <span id="current_hct_result" class="font-semibold text-slate-200">0.0%</span> → <span id="pred_hct_result" class="text-xl font-bold text-white">0.0%</span> <span id="hct_change" class="ml-1 font-bold text-accent-300">(+0.0 pt)</span></p>
-              <p class="text-sm text-slate-400">Volume <span id="current_volume_result" class="text-slate-300">0 mL</span> → <span id="final_volume_result" class="font-semibold text-slate-200">0 mL</span></p>
-            </div>
-          </div>
+
 
           <div class="bg-slate-50 dark:bg-primary-800/30 border-t border-slate-100 dark:border-primary-700/50 p-6 space-y-4">
             <section class="calculator-lower-section">

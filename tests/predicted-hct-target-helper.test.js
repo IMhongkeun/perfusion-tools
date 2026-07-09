@@ -122,6 +122,11 @@ function run() {
   assert(html.includes('Alternative scenarios to reach the target Hct from the current on-pump state. These scenarios are alternatives, not additive doses.'));
   assert(html.includes('RBC product assumptions are taken from the RBC addition fields above.'));
   assert(html.includes('id="onpump-extra-results"'), 'On-pump summary container should exist');
+  const plannedSummaryIndex = html.indexOf('Planned adjustment result');
+  const targetHelperIndex = html.indexOf('Target Hct helper');
+  assert(plannedSummaryIndex > -1, 'Planned adjustment result label should exist');
+  assert(targetHelperIndex > -1, 'Target Hct helper label should exist');
+  assert(plannedSummaryIndex < targetHelperIndex, 'Planned adjustment result should appear before Target Hct helper');
   assert(html.includes('id="current_volume_result"'), 'Planned summary should include current volume');
   assert(html.includes('id="final_volume_result"'), 'Planned summary should include final volume');
   assert(html.includes('id="target_rbc_only_secondary"'), 'Target helper should render compact row secondary text');
