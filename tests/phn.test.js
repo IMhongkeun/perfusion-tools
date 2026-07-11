@@ -7,6 +7,42 @@ function nearlyEqual(a, b, tolerance = 1e-9) {
   return Math.abs(a - b) <= tolerance;
 }
 
+const PETTERSEN_TABLE_2 = {
+  RVDD: { b0: -0.317, b1: 1.850, b2: -1.274, b3: 0.335, mse: 0.058 },
+  IVSD: { b0: -1.242, b1: 1.272, b2: -0.762, b3: 0.208, mse: 0.046 },
+  IVSS: { b0: -1.048, b1: 1.751, b2: -1.177, b3: 0.318, mse: 0.034 },
+  LVIDD: { b0: 0.105, b1: 2.859, b2: -2.119, b3: 0.552, mse: 0.010 },
+  LVIDS: { b0: -0.371, b1: 2.833, b2: -2.081, b3: 0.538, mse: 0.016 },
+  LVPWD: { b0: -1.586, b1: 1.849, b2: -1.188, b3: 0.313, mse: 0.037 },
+  LVPWS: { b0: -0.947, b1: 1.907, b2: -1.259, b3: 0.330, mse: 0.023 },
+  AOV_ANN: { b0: -0.874, b1: 2.708, b2: -1.841, b3: 0.452, mse: 0.010 },
+  SOV: { b0: -0.500, b1: 2.537, b2: -1.707, b3: 0.420, mse: 0.012 },
+  STJ: { b0: -0.759, b1: 2.643, b2: -1.797, b3: 0.442, mse: 0.018 },
+  TRANSVERSE_ARCH: { b0: -0.790, b1: 3.020, b2: -2.484, b3: 0.712, mse: 0.023 },
+  AORTIC_ISTHMUS: { b0: -1.072, b1: 2.539, b2: -1.627, b3: 0.368, mse: 0.027 },
+  DISTAL_ARCH: { b0: -0.976, b1: 2.469, b2: -1.746, b3: 0.445, mse: 0.026 },
+  AORTA_DIAPHRAGM: { b0: -0.922, b1: 2.100, b2: -1.411, b3: 0.371, mse: 0.018 },
+  PV_ANN: { b0: -0.761, b1: 2.774, b2: -1.808, b3: 0.436, mse: 0.023 },
+  MPA: { b0: -0.707, b1: 2.746, b2: -1.807, b3: 0.424, mse: 0.024 },
+  RPA: { b0: -1.360, b1: 3.394, b2: -2.508, b3: 0.660, mse: 0.027 },
+  LPA: { b0: -1.348, b1: 2.884, b2: -1.954, b3: 0.466, mse: 0.028 },
+  MV_ANN: { b0: -0.271, b1: 2.446, b2: -1.700, b3: 0.425, mse: 0.022 },
+  TV_ANN: { b0: -0.164, b1: 2.341, b2: -1.596, b3: 0.387, mse: 0.036 },
+  LA: { b0: -0.208, b1: 2.164, b2: -1.597, b3: 0.429, mse: 0.020 }
+};
+
+function referencePettersenMeanLn(bsa, coeff) {
+  return coeff.b0 + coeff.b1 * bsa + coeff.b2 * Math.pow(bsa, 2) + coeff.b3 * Math.pow(bsa, 3);
+}
+
+function referencePettersenTargetMm(bsa, targetZ, coeff) {
+  return Math.exp(referencePettersenMeanLn(bsa, coeff) + targetZ * Math.sqrt(coeff.mse)) * 10;
+}
+
+function referencePettersenZScore(measuredMm, bsa, coeff) {
+  return (Math.log(measuredMm / 10) - referencePettersenMeanLn(bsa, coeff)) / Math.sqrt(coeff.mse);
+}
+
 function run() {
   // 1) Inverse formula checks for snapshots
   const bsaSnapshots = [0.5, 1.0, 1.5, 2.0];
@@ -105,21 +141,28 @@ function run() {
   assert(nearlyEqual(phn.calculateModelMeasuredZScore('detroitPettersen2008', 'IVSD', 4, 1.4), -2.48, 0.01));
   assert.throws(() => phn.calculateModelMeasuredZScore('phnLopez', 'IVSD', 4, 1.4));
 
-  // 13) Model range notes and Detroit BSA warning rules are model-specific and non-blocking
+  // 13) Model range notes and Detroit BSA guard rules are model-specific and blocking only for Detroit.
   assert(phn.selectedModelRangeNote.phnLopez.includes('healthy, non-obese pediatric subjects up to 18 years'));
-  assert(phn.selectedModelRangeNote.detroitPettersen2008.includes('BSA up to approximately 2.0 m²'));
+  assert(phn.selectedModelRangeNote.detroitPettersen2008.includes('BSA ≤2.0 m²'));
+  assert.strictEqual(phn.isDetroitPettersenOutOfRange('detroitPettersen2008', 2.0), false);
+  assert.strictEqual(phn.isDetroitPettersenOutOfRange('detroitPettersen2008', 2.0001), true);
+  assert.strictEqual(phn.isDetroitPettersenOutOfRange('phnLopez', 2.5), false);
   assert.strictEqual(phn.shouldShowDetroitBsaWarning('detroitPettersen2008', 2.0), false);
-  assert.strictEqual(phn.shouldShowDetroitBsaWarning('detroitPettersen2008', 2.01), true);
+  assert.strictEqual(phn.shouldShowDetroitBsaWarning('detroitPettersen2008', 2.0001), true);
   assert.strictEqual(phn.shouldShowDetroitBsaWarning('phnLopez', 2.5), false);
   const detroitModelWarnings = phn.getModelBsaWarnings('detroitPettersen2008', 2.1);
-  assert(detroitModelWarnings.some((text) => text.includes('Detroit / Pettersen 2008 calculator range')));
+  assert(detroitModelWarnings.some((text) => text.includes('not calculated above BSA 2.0 m²')));
   assert(!detroitModelWarnings.some((text) => text.includes('PHN')));
   assert.deepStrictEqual(phn.getModelBsaWarnings('detroitPettersen2008', 2.0), []);
   const phnModelWarnings = phn.getModelBsaWarnings('phnLopez', 2.1);
   assert(phnModelWarnings.some((text) => text.includes('PHN / Lopez was developed')));
   assert(!phnModelWarnings.some((text) => text.includes('Detroit')));
   assert.deepStrictEqual(phn.getModelBsaWarnings('', 2.1), []);
-  assert(Number.isFinite(phn.calculateModelExpectedSizes('detroitPettersen2008', 'IVSD', 2.1, 0).z0Mm));
+  assert(Number.isFinite(phn.calculateModelExpectedSizes('detroitPettersen2008', 'IVSD', 2.0, 0).z0Mm));
+  assert.throws(() => phn.calculateModelExpectedSizes('detroitPettersen2008', 'IVSD', 2.0001, 0), /not calculated above BSA 2.0/);
+  assert.throws(() => phn.calculateModelExpectedSizes('detroitPettersen2008', 'IVSD', 2.5, 0), /not calculated above BSA 2.0/);
+  assert.throws(() => phn.calculateModelMeasuredZScore('detroitPettersen2008', 'IVSD', 4, 2.0001), /not calculated above BSA 2.0/);
+  assert(Number.isFinite(phn.calculateModelExpectedSizes('phnLopez', 'MPA', 2.5, 0).z0Mm));
 
   // 14) Model switching preserves anatomically equivalent mapped structures when keys differ
   assert.strictEqual(phn.getEquivalentStructureKey('ANN', 'detroitPettersen2008'), 'AOV_ANN');
@@ -130,6 +173,50 @@ function run() {
   const mappedAnnStructure = phn.zScoreModels.detroitPettersen2008.structures.find((item) => item.key === mappedAnnKey);
   assert.strictEqual(mappedAnnStructure.label, 'Aortic valve annulus');
   assert(Number.isFinite(phn.calculateModelExpectedSizes('detroitPettersen2008', mappedAnnKey, 1.0, 0).z0Mm));
+
+
+
+  // 15) Pettersen Table 2 coefficient parity, including signs.
+  assert.deepStrictEqual(Object.keys(PETTERSEN_TABLE_2), phn.PEDIATRIC_STRUCTURE_ORDER);
+  phn.PEDIATRIC_STRUCTURE_ORDER.forEach((key) => {
+    const actual = phn.PETTERSEN_STRUCTURES[key];
+    const expected = PETTERSEN_TABLE_2[key];
+    ['b0', 'b1', 'b2', 'b3', 'mse'].forEach((field) => {
+      assert.strictEqual(actual[field], expected[field], `${key} ${field} should match Pettersen Table 2`);
+    });
+  });
+
+  // 16) Pettersen canonical example from the paper: IVSd, BSA 1.4, observed 4 mm.
+  const canonicalMeanLn = phn.calculatePettersenMeanLn(1.4, phn.PETTERSEN_STRUCTURES.IVSD);
+  const canonicalZ = phn.calculatePettersenZScore(4, 1.4, phn.PETTERSEN_STRUCTURES.IVSD);
+  assert(nearlyEqual(canonicalMeanLn, -0.383968, 1e-12));
+  assert(nearlyEqual(canonicalZ, -2.4819675350413433, 1e-12));
+  assert.strictEqual(canonicalZ.toFixed(2), '-2.48');
+
+  // 17) Pettersen roundtrip invariants from an independent reference function.
+  phn.PEDIATRIC_STRUCTURE_ORDER.forEach((key) => {
+    [0.2, 1.0, 2.0].forEach((bsa) => {
+      const coeff = PETTERSEN_TABLE_2[key];
+      const zNeg2Mm = referencePettersenTargetMm(bsa, -2, coeff);
+      const z0Mm = referencePettersenTargetMm(bsa, 0, coeff);
+      const zPos2Mm = referencePettersenTargetMm(bsa, 2, coeff);
+      assert(Number.isFinite(zNeg2Mm) && zNeg2Mm > 0, `${key} z=-2 expected size should be positive finite`);
+      assert(Number.isFinite(z0Mm) && z0Mm > 0, `${key} z=0 expected size should be positive finite`);
+      assert(Number.isFinite(zPos2Mm) && zPos2Mm > 0, `${key} z=+2 expected size should be positive finite`);
+      assert(zNeg2Mm < z0Mm && z0Mm < zPos2Mm, `${key} expected sizes should be ordered at BSA ${bsa}`);
+      [-2, -1, 0, 1, 2].forEach((targetZ) => {
+        const targetMm = referencePettersenTargetMm(bsa, targetZ, coeff);
+        assert(nearlyEqual(referencePettersenZScore(targetMm, bsa, coeff), targetZ, 1e-12), `${key} should roundtrip z=${targetZ} at BSA ${bsa}`);
+      });
+    });
+  });
+
+  // 18) Pettersen low-level formula remains available for audited math, but selected model guards extrapolation.
+  assert(Number.isFinite(phn.calculatePettersenTargetMm(2.0001, 0, phn.PETTERSEN_STRUCTURES.IVSD)));
+  assert.throws(() => phn.calculateModelExpectedSizes('detroitPettersen2008', 'IVSD', 0, 0));
+  assert.throws(() => phn.calculateModelExpectedSizes('detroitPettersen2008', 'IVSD', -1, 0));
+  assert.throws(() => phn.calculateModelExpectedSizes('detroitPettersen2008', 'IVSD', NaN, 0));
+  assert.throws(() => phn.calculateModelExpectedSizes('detroitPettersen2008', 'IVSD', Infinity, 0));
 
   console.log('PHN snapshots (mm):');
   console.log(JSON.stringify(snapshots, null, 2));

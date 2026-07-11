@@ -28,6 +28,11 @@ function run() {
   assert(html.includes('Can this calculator be used for adult patients?'), 'FAQ should include adult-use warning question');
   assert(html.includes('should not be used to interpret adult cardiac measurements'), 'adult-use FAQ should warn against adult interpretation');
   assert(html.includes('even when the calculated BSA falls within the model’s numeric input range'), 'limitations copy should warn adults are out of scope even if BSA is numerically in range');
+  assert(html.includes('Detroit / Pettersen results are calculated for BSA ≤2.0 m²'), 'visible methodology should use the Detroit BSA ≤2.0 m² boundary');
+  assert(html.includes('BSA &gt;2.0 m²'), 'visible FAQ should use the Detroit BSA >2.0 m² boundary');
+  assert(html.includes('Detroit / Pettersen results are not calculated above BSA 2.0 m².'), 'visible warning should explain Detroit extrapolation is blocked');
+  assert(!html.includes('BSA &lt; 2.0 m²'), 'page should not use the old strict BSA <2.0 m² Detroit boundary');
+  assert(!html.includes('BSA < 2.0 m²'), 'JSON-LD should not use the old strict BSA <2.0 m² Detroit boundary');
   assert(!html.includes('Boston / BCH</span>'), 'Boston/BCH should not be listed as a supported model badge');
 
   const faqLd = getJsonLdBlocks(html).find((block) => block['@type'] === 'FAQPage');
@@ -41,6 +46,10 @@ function run() {
   assert(bsaFaq.acceptedAnswer.text.includes('does not automatically determine the BSA formula'), 'FAQPage JSON-LD should clarify model selection does not determine BSA formula');
   assert(faqQuestions.includes('Why can different pediatric echo Z-score calculators give different results?'), 'FAQPage JSON-LD should include calculator difference question');
   assert(faqQuestions.includes('Can this calculator be used for adult patients?'), 'FAQPage JSON-LD should include adult-use warning question');
+  const ageFaq = faqLd.mainEntity.find((entry) => entry.name === 'What age range is appropriate for this calculator?');
+  assert(ageFaq.acceptedAnswer.text.includes('BSA ≤2.0 m²'), 'FAQPage JSON-LD should use the Detroit BSA ≤2.0 m² boundary');
+  assert(ageFaq.acceptedAnswer.text.includes('BSA >2.0 m²'), 'FAQPage JSON-LD should explain Detroit results are not calculated above the boundary');
+
   const adultFaq = faqLd.mainEntity.find((entry) => entry.name === 'Can this calculator be used for adult patients?');
   assert(adultFaq.acceptedAnswer.text.includes('should not be used to interpret adult cardiac measurements'), 'FAQPage JSON-LD should warn against adult interpretation');
   assert(adultFaq.acceptedAnswer.text.includes('Even if an adult patient’s BSA falls within the accepted numeric range'), 'FAQPage JSON-LD should warn adult interpretation is invalid even if BSA is in range');
