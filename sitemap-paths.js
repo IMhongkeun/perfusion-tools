@@ -10,8 +10,7 @@ const sitemapPaths = [
   '/timecalc/',
   '/unit-converter/',
   '/quick-reference/',
-  '/cannula-pressure-drop/',
-  '/info/'
+  '/cannula-pressure-drop/'
 ];
 
 module.exports = sitemapPaths;
