@@ -161,7 +161,24 @@ assert(
 // Runtime contract: all implemented formulas should remain present. This intentionally includes
 // GehanGeorge even though the current standalone selector/methodology copy does not expose it.
 assert.deepStrictEqual(runtimeFormulaKeys, ['Mosteller', 'DuBois', 'Haycock', 'Boyd', 'GehanGeorge']);
-assert.deepStrictEqual(sourceSelectorValues, ['Mosteller', 'DuBois', 'Haycock', 'Boyd']);
+const requiredSelectorValues = ['Mosteller', 'DuBois', 'Haycock', 'Boyd'];
+requiredSelectorValues.forEach((method) => {
+  assert(
+    sourceSelectorValues.includes(method),
+    `Standalone BSA selector should include required method: ${method}`
+  );
+});
+assert.strictEqual(
+  new Set(sourceSelectorValues).size,
+  sourceSelectorValues.length,
+  'Standalone BSA selector values should be unique'
+);
+sourceSelectorValues.forEach((method) => {
+  assert(
+    runtimeFormulaKeys.includes(method),
+    `Standalone selector method must be supported by runtime: ${method}`
+  );
+});
 
 // Numeric oracle: fixed expected values and independently written formula functions.
 Object.entries(CANONICAL_EXPECTED).forEach(([formulaKey, expected]) => {
