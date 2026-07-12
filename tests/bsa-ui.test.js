@@ -103,7 +103,22 @@ function getRuntimeFormulaKeys(runtime) {
   return Object.keys(runtime.BSA);
 }
 
-function simulateStandaloneBsaState({ heightValue, weightValue, method = 'Mosteller', inputUnit = 'metric', previousLeanFlowVisible = false }) {
+const EMPTY_STANDALONE_BSA_STATE = Object.freeze({
+  bsa: 0,
+  primaryResultText: '0.00',
+  resultDisplayText: '—',
+  bmiText: 'BMI: —',
+  flowListState: 'empty-message',
+  methodLabel: 'Mosteller',
+  obesityBadgeVisible: false,
+  obesityBadgeText: 'Obese BMI —',
+  obesityNoteText: 'Obesity Adjustment: —',
+  leanFlowVisible: false,
+  leanBsaText: '—',
+  leanWeightText: '—'
+});
+
+function simulateStandaloneBsaState({ heightValue, weightValue, method = 'Mosteller', inputUnit = 'metric', previousState = EMPTY_STANDALONE_BSA_STATE }) {
   const metricInput = inputUnit === 'imperial'
     ? {
         heightCm: heightValue * CM_PER_INCH_REFERENCE,
@@ -114,19 +129,12 @@ function simulateStandaloneBsaState({ heightValue, weightValue, method = 'Mostel
   const w = metricInput.weightKg;
   const bsa = runtime.computeBSA(h, w, method);
   const hasDisplayableBsa = Boolean(bsa);
-  const heightMeters = h > 0 ? h / 100 : 0;
-  const bmi = h > 0 && w > 0 ? w / (heightMeters * heightMeters) : 0;
-  const flowListState = Number.isFinite(bsa) && bsa > 0 ? 'rows' : 'empty-message';
-  const obesityBadgeVisible = bmi >= 30;
-  const leanFlowVisible = bmi >= 30 ? true : false;
-
-  return {
+  const nextState = {
+    ...previousState,
     metricInput,
     bsa,
     primaryResultText: hasDisplayableBsa ? bsa.toFixed(2) : '0.00',
     resultDisplayText: hasDisplayableBsa ? `${bsa.toFixed(2)} m²` : '—',
-    bmiText: bmi ? `BMI: ${bmi.toFixed(1)} kg/m²` : 'BMI: —',
-    flowListState,
     methodLabel: {
       Mosteller: 'Mosteller',
       DuBois: 'Du Bois',
@@ -134,10 +142,46 @@ function simulateStandaloneBsaState({ heightValue, weightValue, method = 'Mostel
       GehanGeorge: 'Gehan-George',
       Boyd: 'Boyd'
     }[method] || method,
-    obesityBadgeVisible,
-    leanFlowVisible,
-    previousLeanFlowVisible
+    previousLeanFlowVisible: previousState.leanFlowVisible,
+    previousObesityBadgeVisible: previousState.obesityBadgeVisible,
+    previousFlowListState: previousState.flowListState,
+    previousResultDisplayText: previousState.resultDisplayText,
+    previousBmiText: previousState.bmiText
   };
+
+  if (h > 0 && w > 0) {
+    const heightMeters = h / 100;
+    const bmi = w / (heightMeters * heightMeters);
+    const isObese = bmi >= 30;
+    nextState.bmiText = `BMI: ${bmi.toFixed(1)} kg/m²`;
+    nextState.flowListState = Number.isFinite(bsa) && bsa > 0 ? 'rows' : 'empty-message';
+    nextState.obesityBadgeVisible = isObese;
+    nextState.obesityBadgeText = isObese ? `Obese BMI ${bmi.toFixed(1)}` : 'Obese BMI —';
+    nextState.obesityNoteText = isObese ? 'Obesity Adjustment: Lean flow recommended' : 'Obesity Adjustment: Not indicated';
+    nextState.leanFlowVisible = isObese;
+    if (isObese) {
+      const targetBmiWeightKg = 25 * Math.pow(heightMeters, 2);
+      const leanBsa = runtime.computeBSA(h, targetBmiWeightKg, method);
+      nextState.leanBsaText = `${leanBsa.toFixed(2)} m²`;
+      nextState.leanWeightText = `${targetBmiWeightKg.toFixed(1)} kg`;
+    } else {
+      nextState.leanBsaText = '—';
+      nextState.leanWeightText = '—';
+    }
+    return nextState;
+  }
+
+  // Mirrors updateStandaloneBsa() invalid-input clear contract: prior visible lean-flow
+  // state is explicitly hidden and stale BSA/BMI/lean-flow text is reset.
+  nextState.bmiText = 'BMI: —';
+  nextState.flowListState = 'empty-message';
+  nextState.obesityBadgeVisible = false;
+  nextState.obesityBadgeText = 'Obese BMI —';
+  nextState.obesityNoteText = 'Obesity Adjustment: —';
+  nextState.leanFlowVisible = false;
+  nextState.leanBsaText = '—';
+  nextState.leanWeightText = '—';
+  return nextState;
 }
 
 const runtime = loadBsaRuntime(mainJs);
@@ -261,7 +305,9 @@ assert(mainJs.includes("weightInput.placeholder = isMetric ? '70' : '154.3'"), '
   { label: 'NaN height', heightValue: NaN, weightValue: 70 },
   { label: 'NaN weight', heightValue: 170, weightValue: NaN }
 ].forEach((scenario) => {
-  const state = simulateStandaloneBsaState({ ...scenario, previousLeanFlowVisible: true });
+  const obesePriorState = simulateStandaloneBsaState({ heightValue: 170, weightValue: 100, method: 'Mosteller' });
+  assert.strictEqual(obesePriorState.leanFlowVisible, true, `${scenario.label} prior obese state should start with visible lean-flow card.`);
+  const state = simulateStandaloneBsaState({ ...scenario, previousState: obesePriorState });
   assert(!Number.isFinite(state.bsa) || state.bsa === 0, `${scenario.label} should not produce a positive finite BSA.`);
   assert.strictEqual(state.primaryResultText, '0.00', `${scenario.label} should clear the primary BSA text.`);
   assert.strictEqual(state.resultDisplayText, '—', `${scenario.label} should clear the formatted BSA display.`);
@@ -270,7 +316,60 @@ assert(mainJs.includes("weightInput.placeholder = isMetric ? '70' : '154.3'"), '
   assert.strictEqual(state.obesityBadgeVisible, false, `${scenario.label} should not leave obesity badge visible.`);
   assert.strictEqual(state.leanFlowVisible, false, `${scenario.label} should not leave lean-flow warning/card visible.`);
   assert(!/NaN|Infinity/.test(`${state.primaryResultText} ${state.resultDisplayText} ${state.bmiText}`), `${scenario.label} should not display NaN or Infinity.`);
+  assert.strictEqual(state.previousLeanFlowVisible, true, `${scenario.label} transition should carry the prior visible lean-flow state.`);
+  assert.notStrictEqual(state.leanBsaText, obesePriorState.leanBsaText, `${scenario.label} should clear stale lean BSA text from the prior obese state.`);
+  assert.notStrictEqual(state.leanWeightText, obesePriorState.leanWeightText, `${scenario.label} should clear stale lean weight text from the prior obese state.`);
 });
+
+
+const obeseValidState = simulateStandaloneBsaState({ heightValue: 170, weightValue: 100, method: 'Mosteller' });
+assert.strictEqual(obeseValidState.leanFlowVisible, true, 'Obese valid patient should show the lean-flow card.');
+assert.strictEqual(obeseValidState.obesityBadgeVisible, true, 'Obese valid patient should show the obesity badge.');
+assert.notStrictEqual(obeseValidState.resultDisplayText, '—', 'Obese valid patient should show a formatted BSA result.');
+assert.notStrictEqual(obeseValidState.bmiText, 'BMI: —', 'Obese valid patient should show BMI.');
+assert.strictEqual(obeseValidState.flowListState, 'rows', 'Obese valid patient should show flow rows.');
+assert.notStrictEqual(obeseValidState.leanBsaText, '—', 'Obese valid patient should show lean BSA text.');
+
+const invalidAfterObeseState = simulateStandaloneBsaState({ heightValue: 0, weightValue: 100, method: 'Mosteller', previousState: obeseValidState });
+assert.strictEqual(invalidAfterObeseState.previousLeanFlowVisible, true, 'Invalid transition should start from a prior visible lean-flow card.');
+assert.strictEqual(invalidAfterObeseState.leanFlowVisible, false, 'Invalid transition should explicitly hide the prior lean-flow card.');
+assert.strictEqual(invalidAfterObeseState.obesityBadgeVisible, false, 'Invalid transition should hide the obesity badge.');
+assert.strictEqual(invalidAfterObeseState.resultDisplayText, '—', 'Invalid transition should clear formatted BSA output.');
+assert.strictEqual(invalidAfterObeseState.bmiText, 'BMI: —', 'Invalid transition should clear BMI output.');
+assert.strictEqual(invalidAfterObeseState.flowListState, 'empty-message', 'Invalid transition should clear flow rows.');
+assert.strictEqual(invalidAfterObeseState.leanBsaText, '—', 'Invalid transition should clear prior lean BSA text.');
+assert.strictEqual(invalidAfterObeseState.leanWeightText, '—', 'Invalid transition should clear prior lean weight text.');
+assert.notStrictEqual(invalidAfterObeseState.previousResultDisplayText, invalidAfterObeseState.resultDisplayText, 'Invalid transition should replace prior BSA output.');
+assert.notStrictEqual(invalidAfterObeseState.previousBmiText, invalidAfterObeseState.bmiText, 'Invalid transition should replace prior BMI output.');
+
+const nonObeseAfterInvalidState = simulateStandaloneBsaState({ heightValue: 170, weightValue: 70, method: 'Mosteller', previousState: invalidAfterObeseState });
+assert.strictEqual(nonObeseAfterInvalidState.leanFlowVisible, false, 'Valid non-obese transition should keep lean-flow hidden.');
+assert.strictEqual(nonObeseAfterInvalidState.obesityBadgeVisible, false, 'Valid non-obese transition should keep obesity badge hidden.');
+assert.strictEqual(nonObeseAfterInvalidState.resultDisplayText, `${CANONICAL_EXPECTED.Mosteller.toFixed(2)} m²`, 'Valid non-obese transition should restore BSA output.');
+assert.strictEqual(nonObeseAfterInvalidState.bmiText, 'BMI: 24.2 kg/m²', 'Valid non-obese transition should restore BMI output.');
+assert.strictEqual(nonObeseAfterInvalidState.flowListState, 'rows', 'Valid non-obese transition should restore flow rows.');
+
+const obeseAgainState = simulateStandaloneBsaState({ heightValue: 170, weightValue: 100, method: 'Mosteller', previousState: nonObeseAfterInvalidState });
+assert.strictEqual(obeseAgainState.leanFlowVisible, true, 'Returning to an obese valid patient should show lean-flow card again.');
+assert.strictEqual(obeseAgainState.obesityBadgeVisible, true, 'Returning to an obese valid patient should show obesity badge again.');
+assert.strictEqual(obeseAgainState.flowListState, 'rows', 'Returning to an obese valid patient should keep flow rows visible.');
+
+const updateStandaloneBsaSource = mainJs.slice(mainJs.indexOf('function updateStandaloneBsa()'), mainJs.indexOf('function setBsaUnit'));
+const standaloneInvalidBranchStart = updateStandaloneBsaSource.indexOf("} else {\n      bmiDisplay.textContent = 'BMI: —';");
+assert(standaloneInvalidBranchStart >= 0, 'updateStandaloneBsa invalid branch should be locatable for static stale-state contract checks.');
+const standaloneInvalidBranch = updateStandaloneBsaSource.slice(standaloneInvalidBranchStart, updateStandaloneBsaSource.indexOf('if (formulaCompareEl)', standaloneInvalidBranchStart));
+assert(standaloneInvalidBranch.includes("bmiDisplay.textContent = 'BMI: —';"), 'updateStandaloneBsa invalid branch should clear BMI text.');
+assert(standaloneInvalidBranch.includes("if (obesityNote) obesityNote.textContent = 'Obesity Adjustment: —';"), 'updateStandaloneBsa invalid branch should reset obesity note.');
+assert(standaloneInvalidBranch.includes("obesityBadge.classList.add('hidden');"), 'updateStandaloneBsa invalid branch should hide obesity badge.');
+assert(standaloneInvalidBranch.includes("obesityBadge.textContent = 'Obese BMI —';"), 'updateStandaloneBsa invalid branch should reset obesity badge text.');
+assert(standaloneInvalidBranch.includes("if (leanFlowCard) leanFlowCard.classList.add('hidden');"), 'updateStandaloneBsa invalid branch should hide lean-flow card.');
+assert(standaloneInvalidBranch.includes("if (leanBsaEl) leanBsaEl.textContent = '—';"), 'updateStandaloneBsa invalid branch should clear lean BSA text.');
+assert(standaloneInvalidBranch.includes("if (leanWeightEl) leanWeightEl.textContent = '—';"), 'updateStandaloneBsa invalid branch should clear lean weight text.');
+assert(updateStandaloneBsaSource.includes("resultEl.textContent = v ? v.toFixed(2) : '0.00';"), 'updateStandaloneBsa should clear primary BSA output when computeBSA returns 0.');
+assert(updateStandaloneBsaSource.includes("resultDisplay.textContent = v ? `${v.toFixed(2)} m²` : '—';"), 'updateStandaloneBsa should clear formatted BSA output when computeBSA returns 0.');
+assert(updateStandaloneBsaSource.includes('updateBsaFlowList(v, w);'), 'updateStandaloneBsa should always delegate flow-list refresh after invalid input.');
+const updateBsaFlowListSource = mainJs.slice(mainJs.indexOf('function updateBsaFlowList'), mainJs.indexOf('function updateStandaloneBsa'));
+assert(updateBsaFlowListSource.includes(`list.innerHTML = '<p class="text-xs text-slate-500 dark:text-slate-400">Enter height and weight to populate the flow table.</p>';`), 'updateBsaFlowList invalid branch should replace stale flow rows with the empty message.');
 
 const decimalState = simulateStandaloneBsaState({ heightValue: 170.5, weightValue: 70.25, method: 'Mosteller' });
 assert(Number.isFinite(decimalState.bsa) && decimalState.bsa > 0, 'Decimal height/weight should produce a finite positive BSA.');
