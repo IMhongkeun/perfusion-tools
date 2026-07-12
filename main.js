@@ -6599,6 +6599,8 @@ const phnCoeffSource = (typeof window !== 'undefined' && window.PHN_COEFFICIENTS
   : require('../data/phnCoefficients.js');
 
 const CM_TO_MM = 10;
+const DETROIT_MAX_BSA = 2.0;
+const DETROIT_BSA_RANGE_MESSAGE = 'Detroit / Pettersen results are not calculated above BSA 2.0 m². The published curves and commonly used implementation are limited to this range, and extrapolation may produce implausible values.';
 
 function validatePositiveNumber(value, fieldName) {
   if (value == null || value === '') throw new Error(`${fieldName} is required.`);
@@ -6728,13 +6730,17 @@ const zScoreModels = buildZScoreModels();
 
 const selectedModelRangeNote = {
   phnLopez: 'PHN / Lopez: Developed from healthy, non-obese pediatric subjects up to 18 years. Use caution when applying to patients outside typical pediatric body size ranges.',
-  detroitPettersen2008: 'Detroit / Pettersen 2008: Developed from patients aged 1 day to 18 years. Recommended calculator range: BSA up to approximately 2.0 m². Use caution above this range.'
+  detroitPettersen2008: 'Detroit / Pettersen 2008: Developed from patients aged 1 day to 18 years. Results are calculated only for BSA ≤2.0 m²; BSA >2.0 m² is shown as out of range to avoid extrapolation.'
 };
 
 const MODEL_CONSISTENCY_NOTE = 'Z-scores and expected sizes may differ between models. Use the same model consistently for serial follow-up.';
 
+function isDetroitPettersenOutOfRange(modelKey, bsa) {
+  return modelKey === 'detroitPettersen2008' && Number(bsa) > DETROIT_MAX_BSA;
+}
+
 function shouldShowDetroitBsaWarning(modelKey, bsa) {
-  return modelKey === 'detroitPettersen2008' && Number(bsa) > 2.0;
+  return isDetroitPettersenOutOfRange(modelKey, bsa);
 }
 
 function getEquivalentStructureKey(currentKey, targetModelKey) {
@@ -6760,6 +6766,7 @@ function getEquivalentStructureKey(currentKey, targetModelKey) {
 }
 
 function calculateModelTargetMm(modelKey, structureKey, bsa, targetZ) {
+  if (isDetroitPettersenOutOfRange(modelKey, bsa)) throw new RangeError(DETROIT_BSA_RANGE_MESSAGE);
   const model = zScoreModels[modelKey];
   if (!model) throw new Error('Select a supported reference model.');
   const structure = model.structures.find((item) => item.key === structureKey);
@@ -6779,6 +6786,7 @@ function calculateModelExpectedSizes(modelKey, structureKey, bsa, targetZ) {
 }
 
 function calculateModelMeasuredZScore(modelKey, structureKey, measuredMm, bsa) {
+  if (isDetroitPettersenOutOfRange(modelKey, bsa)) throw new RangeError(DETROIT_BSA_RANGE_MESSAGE);
   const measured = validatePositiveNumber(measuredMm, 'Measured value');
   const model = zScoreModels[modelKey];
   if (!model) throw new Error('Select a supported reference model.');
@@ -6811,9 +6819,7 @@ function getModelBsaWarnings(modelKey, bsa) {
   if (!modelKey) return [];
   const val = validatePositiveNumber(bsa, 'BSA');
   if (modelKey === 'detroitPettersen2008') {
-    return val > 2.0
-      ? ['BSA is above the usual Detroit / Pettersen 2008 calculator range. Interpret results with caution.']
-      : [];
+    return val > DETROIT_MAX_BSA ? [DETROIT_BSA_RANGE_MESSAGE] : [];
   }
   if (modelKey === 'phnLopez') {
     const limits = phnCoeffSource.PHN_BSA_LIMITS;
@@ -6848,6 +6854,9 @@ const api = {
   zScoreModels,
   selectedModelRangeNote,
   MODEL_CONSISTENCY_NOTE,
+  DETROIT_MAX_BSA,
+  DETROIT_BSA_RANGE_MESSAGE,
+  isDetroitPettersenOutOfRange,
   shouldShowDetroitBsaWarning,
   getEquivalentStructureKey,
   calculateHaycockBSA,
@@ -7083,6 +7092,14 @@ function getPhnSelectedModel() {
   return models[selectedModel] ? { key: selectedModel, model: models[selectedModel] } : null;
 }
 
+function formatPhnOutOfRangeText() {
+  return 'Out of range';
+}
+
+function setPhnExpectedOutputs(text) {
+  ['phn-expected-neg2', 'phn-expected-zero', 'phn-expected-pos2', 'phn-expected-target'].forEach((id) => setPhnText(id, text));
+}
+
 function formatPhnSizeMm(valueMm) {
   if (!Number.isFinite(valueMm)) return '—';
   return `${window.PhnCalculator.clampToDisplayMm(valueMm).toFixed(1)} mm`;
@@ -7104,6 +7121,7 @@ function updatePhnBsaRangeWarning(modelKey, bsaValue) {
   const warning = el('phn-model-bsa-warning');
   if (!warning || !window.PhnCalculator) return;
   const showWarning = window.PhnCalculator.shouldShowDetroitBsaWarning(modelKey, bsaValue);
+  warning.textContent = window.PhnCalculator.DETROIT_BSA_RANGE_MESSAGE || 'Detroit / Pettersen results are not calculated above BSA 2.0 m².';
   warning.classList.toggle('hidden', !showWarning);
 }
 
@@ -7148,7 +7166,8 @@ function updatePhnMeasuredStructureOptions() {
 }
 
 function clearSelectedModelOutputs() {
-  ['phn-result-model', 'phn-result-structure', 'phn-result-bsa', 'phn-expected-neg2', 'phn-expected-zero', 'phn-expected-pos2', 'phn-expected-target'].forEach((id) => setPhnText(id, '—'));
+  ['phn-result-model', 'phn-result-structure', 'phn-result-bsa'].forEach((id) => setPhnText(id, '—'));
+  setPhnExpectedOutputs('—');
   setPhnText('phn-target-z-label', '0.0');
   updatePhnBsaRangeWarning(phnZScoreState.selectedModel, null);
   const measuredOutput = el('phn-measured-z');
@@ -7189,13 +7208,22 @@ function updatePhnModelComparison() {
   setPhnText('phn-target-z-label', Number.isFinite(state.targetZ) ? state.targetZ.toFixed(1) : '—');
 
   if (!(state.bsa > 0) || !structure) {
-    ['phn-expected-neg2', 'phn-expected-zero', 'phn-expected-pos2', 'phn-expected-target'].forEach((id) => setPhnText(id, '—'));
+    setPhnExpectedOutputs('—');
     setPhnText('phn-measured-help', 'Enter BSA and a measured value to calculate Z-score.');
     return;
   }
 
   if (!Number.isFinite(state.targetZ)) {
     setPhnError('Target Z-score must be a number.');
+    return;
+  }
+
+  if (window.PhnCalculator.isDetroitPettersenOutOfRange(state.selectedModel, state.bsa)) {
+    setPhnExpectedOutputs(formatPhnOutOfRangeText());
+    const measuredOutput = el('phn-measured-z');
+    if (measuredOutput) measuredOutput.innerHTML = 'Calculated Z-score: <span class="result-number">—</span>';
+    setPhnText('phn-measured-help', window.PhnCalculator.DETROIT_BSA_RANGE_MESSAGE);
+    setPhnError('');
     return;
   }
 
