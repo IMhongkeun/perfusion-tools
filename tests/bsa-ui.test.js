@@ -238,16 +238,24 @@ const decimalState = simulateStandaloneBsaState({ heightValue: 170.5, weightValu
 assert(Number.isFinite(decimalState.bsa) && decimalState.bsa > 0, 'Decimal height/weight should produce a finite positive BSA.');
 assert.strictEqual(decimalState.primaryResultText, independentMosteller(170.5, 70.25).toFixed(2), 'Decimal input should follow current display rounding.');
 
-// Do not freeze current unsafe Infinity/string behavior as expected output. Keep this as a finding signal.
-const unsafeInputs = [
-  { label: 'Infinity height', value: runtime.computeBSA(Infinity, 70, 'Mosteller') },
-  { label: 'Infinity weight', value: runtime.computeBSA(170, Infinity, 'Mosteller') },
-  { label: 'string height', value: runtime.computeBSA('abc', 70, 'Mosteller') },
-  { label: 'string weight', value: runtime.computeBSA(170, 'abc', 'Mosteller') }
-].filter(item => !Number.isFinite(item.value) && item.value !== 0);
-if (unsafeInputs.length) {
-  console.warn(`BSA validation finding (not frozen as expected): ${unsafeInputs.map(item => item.label).join(', ')} currently produce non-finite computeBSA values.`);
-}
+[
+  ['Infinity height', Infinity, 70],
+  ['Infinity weight', 170, Infinity],
+  ['negative Infinity height', -Infinity, 70],
+  ['negative Infinity weight', 170, -Infinity],
+  ['NaN height', NaN, 70],
+  ['NaN weight', 170, NaN],
+  ['numeric string height', '170', 70],
+  ['numeric string weight', 170, '70'],
+  ['non-numeric string height', 'abc', 70],
+  ['non-numeric string weight', 170, 'abc'],
+  ['zero height', 0, 70],
+  ['zero weight', 170, 0],
+  ['negative height', -170, 70],
+  ['negative weight', 170, -70]
+].forEach(([label, heightValue, weightValue]) => {
+  assert.strictEqual(runtime.computeBSA(heightValue, weightValue, 'Mosteller'), 0, `${label} should return 0 from pure computeBSA.`);
+});
 
 // Formula state transition, simulated from the current pure formula and display policy.
 const transitionMosteller = simulateStandaloneBsaState({ heightValue: 170, weightValue: 70, method: 'Mosteller' });
