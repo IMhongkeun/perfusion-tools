@@ -212,10 +212,31 @@ const independentlyConvertedWeightKg = CANONICAL_IMPERIAL_PATIENT.weightLb * KG_
 assertNearlyEqual(independentlyConvertedHeightCm, CANONICAL_PATIENT.heightCm, 'Imperial height should convert back to 170 cm');
 assertNearlyEqual(independentlyConvertedWeightKg, CANONICAL_PATIENT.weightKg, 'Imperial weight should convert back to 70 kg', 1e-11);
 
+const runtimeConvertedImperial = runtime.toMetricBsaInputs(
+  CANONICAL_IMPERIAL_PATIENT.heightIn,
+  CANONICAL_IMPERIAL_PATIENT.weightLb,
+  runtime.BSA_UNIT.imperial
+);
+assert(Number.isFinite(runtimeConvertedImperial.heightCm) && runtimeConvertedImperial.heightCm > 0, 'Runtime imperial height conversion should produce a positive finite heightCm.');
+assert(Number.isFinite(runtimeConvertedImperial.weightKg) && runtimeConvertedImperial.weightKg > 0, 'Runtime imperial weight conversion should produce a positive finite weightKg.');
+assertNearlyEqual(runtimeConvertedImperial.heightCm, independentlyConvertedHeightCm, 'Runtime imperial height conversion should match independent cm oracle');
+assertNearlyEqual(runtimeConvertedImperial.weightKg, independentlyConvertedWeightKg, 'Runtime imperial weight conversion should match independent kg oracle', 1e-11);
+
+const runtimeMetricPassthrough = runtime.toMetricBsaInputs(
+  CANONICAL_PATIENT.heightCm,
+  CANONICAL_PATIENT.weightKg,
+  runtime.BSA_UNIT.metric
+);
+assert.strictEqual(runtimeMetricPassthrough.heightCm, CANONICAL_PATIENT.heightCm, 'Runtime metric height should pass through unchanged.');
+assert.strictEqual(runtimeMetricPassthrough.weightKg, CANONICAL_PATIENT.weightKg, 'Runtime metric weight should pass through unchanged.');
+
 Object.keys(CANONICAL_EXPECTED).forEach((formulaKey) => {
-  const metricValue = runtime.computeBSA(CANONICAL_PATIENT.heightCm, CANONICAL_PATIENT.weightKg, formulaKey);
-  const imperialValue = runtime.computeBSA(independentlyConvertedHeightCm, independentlyConvertedWeightKg, formulaKey);
-  assertNearlyEqual(imperialValue, metricValue, `${formulaKey} metric and independently converted imperial inputs should match`, 1e-11);
+  const directMetricValue = runtime.computeBSA(CANONICAL_PATIENT.heightCm, CANONICAL_PATIENT.weightKg, formulaKey);
+  const runtimeMetricValue = runtime.computeBSA(runtimeMetricPassthrough.heightCm, runtimeMetricPassthrough.weightKg, formulaKey);
+  const runtimeImperialValue = runtime.computeBSA(runtimeConvertedImperial.heightCm, runtimeConvertedImperial.weightKg, formulaKey);
+  assertNearlyEqual(runtimeMetricValue, directMetricValue, `${formulaKey} runtime metric conversion path should match direct metric result`);
+  assertNearlyEqual(runtimeImperialValue, directMetricValue, `${formulaKey} runtime imperial conversion path should match direct metric result`, 1e-11);
+  assertNearlyEqual(runtimeImperialValue, CANONICAL_EXPECTED[formulaKey], `${formulaKey} runtime imperial conversion path should match canonical BSA`, 1e-11);
 });
 
 assert.strictEqual(runtime.CM_PER_INCH, CM_PER_INCH_REFERENCE, 'Runtime inch-to-cm conversion constant should remain 2.54.');
