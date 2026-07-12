@@ -260,7 +260,7 @@ const BSA = {
 };
 
 function computeBSA(h, w, method) {
-  if (!h || !w || h <= 0 || w <= 0) return 0;
+  if (typeof h !== 'number' || typeof w !== 'number' || !Number.isFinite(h) || !Number.isFinite(w) || h <= 0 || w <= 0) return 0;
   const fn = BSA[method] || BSA.Mosteller;
   return fn(h, w);
 }
