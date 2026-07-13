@@ -84,7 +84,7 @@ function loadRuntime() {
   const hctCore = sliceBetween('const PATIENT_TYPE_COEFS = {', '// -----------------------------\n// Heparin management');
   const domHelpers = sliceBetween('// -----------------------------\n// DOM Helpers', '// -----------------------------\n// GDP Interaction');
   const hctInteraction = sliceBetween('// -----------------------------\n// Predicted Hct Interaction', '// -----------------------------\n// LBM Interaction');
-  vm.runInContext(`${hctCore}\n${domHelpers}\n${hctInteraction}\nthis.__exports = { calculatePreCpbHct, computePredictedHct, computeOnPumpHctAdjustment, computeTargetHctScenarios, parseSignedNetIoValue, updateHct, elements };`, context);
+  vm.runInContext(`${hctCore}\n${domHelpers}\n${hctInteraction}\nthis.__exports = { calculatePreCpbHct, computePredictedHct, computeOnPumpHctAdjustment, computeTargetHctScenarios, parseSignedNetIoValue, updateHct, setHctMode, applyDefaultEbvCoef, elements };`, context);
   return context.__exports;
 }
 
@@ -334,6 +334,86 @@ function runOnPumpEbvCoefficientContractTests(exports) {
   nearlyEqual(omittedUnknown.ebv, 4900);
 }
 
+
+function runFreshInitializationTests(exports) {
+  setValues(exports, {
+    hct_mode: 'pre',
+    pttype: 'adult_m',
+    ebv_coef: '',
+    wt_hct: 70,
+    pre_hct: 40,
+    prime: 1200,
+    rbc_units: 0,
+    rbc_unit_vol: '',
+    rbc_hct: '',
+    target_hct: ''
+  });
+
+  // Production initialization calls setHctMode(), which calls updateHct(). A blank
+  // optional EBV coefficient must already use the selected patient type fallback.
+  exports.setHctMode(exports.elements.hct_mode.value || 'pre');
+  assert.strictEqual(exports.elements.ebv.innerHTML, '4900');
+  assert.strictEqual(exports.elements.total_vol.innerHTML, '6100');
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '32.1%');
+  assert(!exports.elements['hct-mode-help'].textContent.includes('EBV coefficient'), 'Fresh initialization should not leave an EBV coefficient validation error');
+  assertNoInvalidTokens(exports);
+
+  // Regression for the old ordering: if a default is applied after setHctMode(), the
+  // already-rendered result must not be a stale validation error.
+  exports.applyDefaultEbvCoef(exports.elements.pttype.value);
+  assert.strictEqual(exports.elements.ebv.innerHTML, '4900');
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '32.1%');
+  assertNoInvalidTokens(exports);
+
+  setValues(exports, { ebv_coef: 0 });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '—');
+  assert(exports.elements['hct-mode-help'].textContent.includes('EBV coefficient'));
+  assertNoInvalidTokens(exports);
+
+  setValues(exports, { ebv_coef: '' });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.ebv.innerHTML, '4900');
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '32.1%');
+
+  setValues(exports, { pttype: 'child', ebv_coef: '' });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.ebv.innerHTML, '5250');
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '32.6%');
+
+  setValues(exports, { ebv_coef: 60 });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.ebv.innerHTML, '4200');
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '31.1%');
+
+  setValues(exports, { pttype: 'adult_f' });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.ebv.innerHTML, '4200');
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '31.1%');
+
+  setValues(exports, {
+    hct_mode: 'onpump',
+    onpump_pttype: 'adult_m',
+    onpump_weight: 70,
+    onpump_ebv_coef: '',
+    onpump_prime: 1100,
+    onpump_net_io_change: 500,
+    current_hct: 30,
+    onpump_fluids: 500,
+    onpump_rbc_units: 0,
+    onpump_rbc_unit_vol: 300,
+    onpump_rbc_hct: 60,
+    onpump_removed: 0,
+    target_hct: 35
+  });
+  exports.setHctMode('onpump');
+  assert.strictEqual(exports.elements.onpump_ebv.innerHTML, '4900 mL');
+  assert.strictEqual(exports.elements.current_volume_result.innerHTML, '6,500 mL');
+  assert.strictEqual(exports.elements.pred_hct_result.innerHTML, '27.9%');
+  assert(!exports.elements.onpump_result_message.textContent.includes('EBV coefficient'), 'On-pump fresh initialization should not leave an EBV coefficient validation error');
+  assertNoInvalidTokens(exports);
+}
+
 function runBoundaryTests(exports) {
   for (const bad of [NaN, Infinity, -Infinity, '70', undefined]) assertInvalidPre(exports, { weightKg: bad }, 'Weight');
   assertInvalidPre(exports, { weightKg: -1 }, 'Weight');
@@ -513,6 +593,7 @@ function run() {
   runNumericOracleTests(exports);
   runPreCpbEbvCoefficientContractTests(exports);
   runOnPumpEbvCoefficientContractTests(exports);
+  runFreshInitializationTests(exports);
   runBoundaryTests(exports);
   runStateTransitionTests(exports);
   runParityTests();

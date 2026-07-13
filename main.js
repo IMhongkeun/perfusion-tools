@@ -8024,24 +8024,9 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     });
     setHctMode(el('hct_mode')?.value || 'pre');
-    const onPumpPttypeSelect = el('onpump_pttype');
-    if (onPumpPttypeSelect) {
-      onPumpPttypeSelect.addEventListener('change', () => {
-        const onPumpCoefInput = el('onpump_ebv_coef');
-        if (onPumpCoefInput) onPumpCoefInput.value = ebvCoef(onPumpPttypeSelect.value);
-        updateHct();
-      });
-      const onPumpCoefInput = el('onpump_ebv_coef');
-      if (onPumpCoefInput && !onPumpCoefInput.value) onPumpCoefInput.value = ebvCoef(onPumpPttypeSelect.value);
-    }
-
     const pttypeSelect = el('pttype');
     if (pttypeSelect) {
-      pttypeSelect.addEventListener('change', () => {
-        applyDefaultEbvCoef(pttypeSelect.value);
-        updateHct();
-      });
-      applyDefaultEbvCoef(pttypeSelect.value);
+      pttypeSelect.addEventListener('change', updateHct);
     }
   }
 
