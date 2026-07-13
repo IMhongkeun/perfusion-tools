@@ -4475,12 +4475,15 @@ function initTimeCalculator() {
 // Contact actions
 // -----------------------------
 function setupContactActions() {
-  const email = 'perfusiontools@gmail.com';
+  const email = 'admin@perfusiontools.com';
   const copyBtn = el('contact-copy');
   const toast = el('contact-toast');
   const emailText = el('contact-email');
 
-  if (emailText) emailText.textContent = email;
+  if (emailText) {
+    emailText.textContent = email;
+    emailText.setAttribute('href', `mailto:${email}`);
+  }
 
   const showToast = (message) => {
     if (!toast) return;
