@@ -274,6 +274,34 @@ function assertInvalidCoefficientResult(result) {
   assert(!serialized.includes('Infinity'), 'Invalid coefficient result should not contain Infinity');
 }
 
+function runPreCpbEbvCoefficientContractTests(exports) {
+  const patientTypes = [
+    { patientType: 'adult_m', expectedCoef: 70 },
+    { patientType: 'adult_f', expectedCoef: 65 },
+    { patientType: 'child', expectedCoef: 75 },
+    { patientType: 'infant', expectedCoef: 80 },
+    { patientType: 'neonate', expectedCoef: 90 }
+  ];
+  patientTypes.forEach(({ patientType, expectedCoef }) => {
+    const result = exports.calculatePreCpbHct({ patientType, weightKg: 70, preCpbHct: 40, primeVolumeMl: 1200, additionalCrystalloidMl: 0, ultrafiltrationRemovedMl: 0, rbcUnits: 0, rbcVolumePerUnitMl: 0, rbcUnitHct: 0 });
+    nearlyEqual(result.ebvMl, 70 * expectedCoef);
+    nearlyEqual(result.patientRbcMl, 70 * expectedCoef * 0.4);
+    nearlyEqual(result.transfusedRbcVolumeMl, 0);
+    nearlyEqual(result.transfusedRbcCellVolumeMl, 0);
+  });
+
+  const explicit70 = exports.calculatePreCpbHct({ patientType: 'adult_f', ebvCoef: 70, weightKg: 70, preCpbHct: 40, primeVolumeMl: 1200, additionalCrystalloidMl: 0, ultrafiltrationRemovedMl: 0, rbcUnits: 0, rbcVolumePerUnitMl: 0, rbcUnitHct: 0 });
+  nearlyEqual(explicit70.ebvMl, 4900);
+  const explicit60 = exports.calculatePreCpbHct({ patientType: 'adult_m', ebvCoef: 60, weightKg: 70, preCpbHct: 40, primeVolumeMl: 1200, additionalCrystalloidMl: 0, ultrafiltrationRemovedMl: 0, rbcUnits: 0, rbcVolumePerUnitMl: 0, rbcUnitHct: 0 });
+  nearlyEqual(explicit60.ebvMl, 4200);
+  assert(Math.abs(explicit60.resultHctPercent - explicit70.resultHctPercent) > 0.01, 'Custom Pre-CPB coefficient should not fall back to 70');
+  [0, -1, NaN, Infinity, -Infinity, '70', null].forEach((ebvCoef) => {
+    const result = exports.calculatePreCpbHct({ patientType: 'adult_m', ebvCoef, weightKg: 70, preCpbHct: 40, primeVolumeMl: 1200, additionalCrystalloidMl: 0, ultrafiltrationRemovedMl: 0, rbcUnits: 0, rbcVolumePerUnitMl: 0, rbcUnitHct: 0 });
+    assert.strictEqual(result.resultHctPercent, null);
+    assert(result.validationMessage.includes('EBV coefficient'), result.validationMessage);
+  });
+}
+
 function runOnPumpEbvCoefficientContractTests(exports) {
   const canonical = exports.computeOnPumpHctAdjustment({ patientType: 'adult_m', weightKg: 70, ebvCoefValue: 70, primeVolume: 1100, netIoChange: 500, currentHct: 30, addedCrystalloid: 500, rbcUnits: 0, rbcUnitVol: 300, rbcUnitHct: 60, ultrafiltrationRemoved: 0 });
   nearlyEqual(canonical.ebv, 4900);
@@ -344,11 +372,33 @@ function runBoundaryTests(exports) {
 }
 
 function runStateTransitionTests(exports) {
-  setValues(exports, { hct_mode: 'pre', wt_hct: 70, pre_hct: 40, prime: 1200, rbc_units: 0, rbc_unit_vol: '', rbc_hct: '', ebv_coef: 70 });
+  setValues(exports, { hct_mode: 'pre', pttype: 'adult_m', wt_hct: 70, pre_hct: 40, prime: 1200, rbc_units: 0, rbc_unit_vol: '', rbc_hct: '', ebv_coef: '' });
   exports.updateHct();
+  assert.strictEqual(exports.elements.ebv.innerHTML, '4900');
   assert.strictEqual(exports.elements.pred_hct.innerHTML, '32.1%');
   assert.strictEqual(exports.elements.total_vol.innerHTML, '6100');
-  setValues(exports, { rbc_units: 1, rbc_unit_vol: 300, rbc_hct: 60 });
+  setValues(exports, { ebv_coef: 0 });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '—');
+  assert(exports.elements['hct-mode-help'].textContent.includes('EBV coefficient'));
+  assertNoInvalidTokens(exports);
+  setValues(exports, { ebv_coef: '' });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.ebv.innerHTML, '4900');
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '32.1%');
+  setValues(exports, { ebv_coef: 60 });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.ebv.innerHTML, '4200');
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '31.1%');
+  setValues(exports, { pttype: 'child', ebv_coef: '' });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.ebv.innerHTML, '5250');
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '32.6%');
+  setValues(exports, { pttype: 'adult_f', ebv_coef: 60 });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.ebv.innerHTML, '4200');
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '31.1%');
+  setValues(exports, { pttype: 'adult_m', ebv_coef: '', rbc_units: 1, rbc_unit_vol: 300, rbc_hct: 60 });
   exports.updateHct();
   assert.strictEqual(exports.elements.pred_hct.innerHTML, '33.4%');
   assert.strictEqual(exports.elements.total_vol.innerHTML, '6400');
@@ -357,7 +407,7 @@ function runStateTransitionTests(exports) {
   assert.strictEqual(exports.elements.pred_hct.innerHTML, '—');
   assert(exports.elements['hct-mode-help'].textContent.includes('RBC product Hct'));
   assertNoInvalidTokens(exports);
-  setValues(exports, { rbc_units: 0, rbc_unit_vol: '', rbc_hct: '' });
+  setValues(exports, { rbc_units: 0, rbc_unit_vol: '', rbc_hct: '', ebv_coef: '' });
   exports.updateHct();
   assert.strictEqual(exports.elements.pred_hct.innerHTML, '32.1%');
   assert.strictEqual(exports.elements.total_vol.innerHTML, '6100');
@@ -461,6 +511,7 @@ function runParityTests() {
 function run() {
   const exports = loadRuntime();
   runNumericOracleTests(exports);
+  runPreCpbEbvCoefficientContractTests(exports);
   runOnPumpEbvCoefficientContractTests(exports);
   runBoundaryTests(exports);
   runStateTransitionTests(exports);

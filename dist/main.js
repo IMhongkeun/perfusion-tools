@@ -1517,9 +1517,11 @@ function firstValidationMessage(validations) {
   return validations.find(Boolean) || '';
 }
 
-function calculatePreCpbHct({ ebvCoef, weightKg, preCpbHct, primeVolumeMl, additionalCrystalloidMl = 0, ultrafiltrationRemovedMl = 0, rbcUnits = 0, rbcVolumePerUnitMl = 300, rbcUnitHct = 60 }) {
+function calculatePreCpbHct({ patientType, ebvCoef: ebvCoefValue, weightKg, preCpbHct, primeVolumeMl, additionalCrystalloidMl = 0, ultrafiltrationRemovedMl = 0, rbcUnits = 0, rbcVolumePerUnitMl = 300, rbcUnitHct = 60 }) {
+  const hasExplicitEbvCoef = ebvCoefValue !== undefined;
+  const safeEbvCoef = hasExplicitEbvCoef ? ebvCoefValue : ebvCoef(patientType);
   const validationMessage = firstValidationMessage([
-    validatePositiveNumber(ebvCoef, 'EBV coefficient'),
+    validatePositiveNumber(safeEbvCoef, 'EBV coefficient'),
     validatePositiveNumber(weightKg, 'Weight'),
     validateHctPercent(preCpbHct, 'Pre-CPB Hct'),
     validateNonNegativeNumber(primeVolumeMl, 'Prime volume'),
@@ -1542,7 +1544,7 @@ function calculatePreCpbHct({ ebvCoef, weightKg, preCpbHct, primeVolumeMl, addit
     });
   }
 
-  const ebvMl = ebvCoef * weightKg;
+  const ebvMl = safeEbvCoef * weightKg;
   const patientRbcMl = ebvMl * (preCpbHct / 100);
   const hasRbcPrime = rbcUnits > 0;
   const transfusedRbcVolumeMl = hasRbcPrime ? rbcUnits * rbcVolumePerUnitMl : 0;
@@ -1569,8 +1571,7 @@ function calculatePreCpbHct({ ebvCoef, weightKg, preCpbHct, primeVolumeMl, addit
 }
 
 function computePredictedHct({ pttype, weight, pre, prime, fluids = 0, removed = 0, rbcUnits = 0, rbcUnitVol = 300, rbcHct = 60, ebvCoefValue }) {
-  const coef = isFiniteNumber(ebvCoefValue) ? ebvCoefValue : ebvCoef(pttype);
-  const r = calculatePreCpbHct({ ebvCoef: coef, weightKg: weight, preCpbHct: pre, primeVolumeMl: prime, additionalCrystalloidMl: fluids, ultrafiltrationRemovedMl: removed, rbcUnits, rbcVolumePerUnitMl: rbcUnitVol, rbcUnitHct: rbcHct });
+  const r = calculatePreCpbHct({ patientType: pttype, ebvCoef: ebvCoefValue, weightKg: weight, preCpbHct: pre, primeVolumeMl: prime, additionalCrystalloidMl: fluids, ultrafiltrationRemovedMl: removed, rbcUnits, rbcVolumePerUnitMl: rbcUnitVol, rbcUnitHct: rbcHct });
   return { ebv: r.ebvMl, totalVol: r.totalVolumeMl, hct: r.resultHctPercent, validationMessage: r.validationMessage, invalidInput: r.invalidInput, invalidFinalVolume: r.invalidFinalVolume };
 }
 
@@ -2686,7 +2687,7 @@ function updateHct() {
     rbcUnits: num('rbc_units'),
     rbcUnitVol: num('rbc_unit_vol'),
     rbcHct: num('rbc_hct'),
-    ebvCoefValue: num('ebv_coef')
+    ebvCoefValue: readOptionalNumericInputValue('ebv_coef')
   };
   const r = computePredictedHct(payload);
   if (leftLabelEl) leftLabelEl.textContent = 'EBV';
