@@ -1526,8 +1526,8 @@ function calculatePreCpbHct({ ebvCoef, weightKg, preCpbHct, primeVolumeMl, addit
     validateNonNegativeNumber(additionalCrystalloidMl, 'Additional crystalloid volume'),
     validateNonNegativeNumber(ultrafiltrationRemovedMl, 'UF/HF removal volume'),
     validateNonNegativeNumber(rbcUnits, 'RBC units'),
-    validatePositiveNumber(rbcVolumePerUnitMl, 'RBC unit volume'),
-    validateHctPercent(rbcUnitHct, 'RBC product Hct')
+    rbcUnits > 0 ? validatePositiveNumber(rbcVolumePerUnitMl, 'RBC unit volume') : '',
+    rbcUnits > 0 ? validateHctPercent(rbcUnitHct, 'RBC product Hct') : ''
   ]);
 
   if (validationMessage) {
@@ -1544,8 +1544,9 @@ function calculatePreCpbHct({ ebvCoef, weightKg, preCpbHct, primeVolumeMl, addit
 
   const ebvMl = ebvCoef * weightKg;
   const patientRbcMl = ebvMl * (preCpbHct / 100);
-  const transfusedRbcVolumeMl = rbcUnits * rbcVolumePerUnitMl;
-  const transfusedRbcCellVolumeMl = transfusedRbcVolumeMl * (rbcUnitHct / 100);
+  const hasRbcPrime = rbcUnits > 0;
+  const transfusedRbcVolumeMl = hasRbcPrime ? rbcUnits * rbcVolumePerUnitMl : 0;
+  const transfusedRbcCellVolumeMl = hasRbcPrime ? transfusedRbcVolumeMl * (rbcUnitHct / 100) : 0;
   const totalVolumeMl = ebvMl + primeVolumeMl + additionalCrystalloidMl + transfusedRbcVolumeMl - ultrafiltrationRemovedMl;
   const finalRbcVolumeMl = patientRbcMl + transfusedRbcCellVolumeMl;
 

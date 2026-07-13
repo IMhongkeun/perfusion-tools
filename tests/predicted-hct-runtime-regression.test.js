@@ -170,6 +170,22 @@ function runNumericOracleTests(exports) {
   nearlyEqual(actual1.totalVolumeMl, 6100);
   nearlyEqual(actual1.resultHctPercent, 32.131147540983605);
 
+  [
+    { rbcVolumePerUnitMl: 0, rbcUnitHct: 0 },
+    { rbcVolumePerUnitMl: NaN, rbcUnitHct: NaN },
+    { rbcVolumePerUnitMl: -1, rbcUnitHct: 101 }
+  ].forEach((productFields) => {
+    const noRbc = exports.calculatePreCpbHct({ ebvCoef: 70, weightKg: 70, preCpbHct: 40, primeVolumeMl: 1200, additionalCrystalloidMl: 0, ultrafiltrationRemovedMl: 0, rbcUnits: 0, ...productFields });
+    nearlyEqual(noRbc.transfusedRbcVolumeMl, 0);
+    nearlyEqual(noRbc.transfusedRbcCellVolumeMl, 0);
+    nearlyEqual(noRbc.finalRbcVolumeMl, case1.patientRedCellVolumeMl);
+    nearlyEqual(noRbc.totalVolumeMl, case1.finalTotalVolumeMl);
+    nearlyEqual(noRbc.resultHctPercent, case1.predictedHct);
+    const serialized = JSON.stringify(noRbc);
+    assert(!serialized.includes('NaN'), 'No-RBC result should not contain NaN');
+    assert(!serialized.includes('Infinity'), 'No-RBC result should not contain Infinity');
+  });
+
   const case2 = referencePreCpb({ weightKg: 70, ebvCoef: 70, preHct: 40, primeMl: 1200, rbcProductMl: 300, rbcProductHct: 60 });
   const actual2 = exports.calculatePreCpbHct({ ebvCoef: 70, weightKg: 70, preCpbHct: 40, primeVolumeMl: 1200, additionalCrystalloidMl: 0, ultrafiltrationRemovedMl: 0, rbcUnits: 1, rbcVolumePerUnitMl: 300, rbcUnitHct: 60 });
   nearlyEqual(actual2.transfusedRbcCellVolumeMl, case2.productRedCellVolumeMl);
@@ -298,11 +314,18 @@ function runBoundaryTests(exports) {
   assertInvalidPre(exports, { preCpbHct: 0 }, 'Pre-CPB Hct');
   nearlyEqual(exports.calculatePreCpbHct({ ebvCoef: 70, weightKg: 70, preCpbHct: 100, primeVolumeMl: 1200, additionalCrystalloidMl: 0, ultrafiltrationRemovedMl: 0, rbcUnits: 0, rbcVolumePerUnitMl: 300, rbcUnitHct: 60 }).resultHctPercent, 80.32786885245902);
   assertInvalidPre(exports, { preCpbHct: 101 }, 'Pre-CPB Hct');
-  assertInvalidPre(exports, { rbcUnitHct: -1 }, 'RBC product Hct');
-  assertInvalidPre(exports, { rbcUnitHct: 0 }, 'RBC product Hct');
-  assertInvalidPre(exports, { rbcUnitHct: 101 }, 'RBC product Hct');
+  assertInvalidPre(exports, { rbcUnits: 1, rbcUnitHct: -1 }, 'RBC product Hct');
+  assertInvalidPre(exports, { rbcUnits: 1, rbcUnitHct: 0 }, 'RBC product Hct');
+  assertInvalidPre(exports, { rbcUnits: 1, rbcUnitHct: 101 }, 'RBC product Hct');
   assertInvalidPre(exports, { primeVolumeMl: -1 }, 'Prime volume');
   assertInvalidPre(exports, { rbcUnits: -1 }, 'RBC units');
+  assertInvalidPre(exports, { rbcUnits: '1' }, 'RBC units');
+  assertInvalidPre(exports, { rbcUnits: 1, rbcVolumePerUnitMl: 0 }, 'RBC unit volume');
+  assertInvalidPre(exports, { rbcUnits: 1, rbcVolumePerUnitMl: -1 }, 'RBC unit volume');
+  assertInvalidPre(exports, { rbcUnits: 1, rbcVolumePerUnitMl: NaN }, 'RBC unit volume');
+  assertInvalidPre(exports, { rbcUnits: 1, rbcVolumePerUnitMl: Infinity }, 'RBC unit volume');
+  assertInvalidPre(exports, { rbcUnits: 1, rbcUnitHct: NaN }, 'RBC product Hct');
+  assertInvalidPre(exports, { rbcUnits: 1, rbcUnitHct: Infinity }, 'RBC product Hct');
   nearlyEqual(exports.calculatePreCpbHct({ ebvCoef: 70, weightKg: 70, preCpbHct: 40, primeVolumeMl: 1200, additionalCrystalloidMl: 0, ultrafiltrationRemovedMl: 0, rbcUnits: 1, rbcVolumePerUnitMl: 300, rbcUnitHct: 100 }).transfusedRbcCellVolumeMl, 300);
 
   for (const bad of [NaN, Infinity, -Infinity, '70', undefined]) assertInvalidOnPump(exports, { weightKg: bad }, 'Weight');
@@ -321,9 +344,23 @@ function runBoundaryTests(exports) {
 }
 
 function runStateTransitionTests(exports) {
-  setValues(exports, { hct_mode: 'pre', wt_hct: 70, pre_hct: 40, prime: 1200, rbc_units: 0, rbc_unit_vol: 300, rbc_hct: 60, ebv_coef: 70 });
+  setValues(exports, { hct_mode: 'pre', wt_hct: 70, pre_hct: 40, prime: 1200, rbc_units: 0, rbc_unit_vol: '', rbc_hct: '', ebv_coef: 70 });
   exports.updateHct();
   assert.strictEqual(exports.elements.pred_hct.innerHTML, '32.1%');
+  assert.strictEqual(exports.elements.total_vol.innerHTML, '6100');
+  setValues(exports, { rbc_units: 1, rbc_unit_vol: 300, rbc_hct: 60 });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '33.4%');
+  assert.strictEqual(exports.elements.total_vol.innerHTML, '6400');
+  setValues(exports, { rbc_hct: 0 });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '—');
+  assert(exports.elements['hct-mode-help'].textContent.includes('RBC product Hct'));
+  assertNoInvalidTokens(exports);
+  setValues(exports, { rbc_units: 0, rbc_unit_vol: '', rbc_hct: '' });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '32.1%');
+  assert.strictEqual(exports.elements.total_vol.innerHTML, '6100');
   setValues(exports, { wt_hct: -1 });
   exports.updateHct();
   assert.strictEqual(exports.elements.pred_hct.innerHTML, '—');
