@@ -1574,7 +1574,8 @@ function computePredictedHct({ pttype, weight, pre, prime, fluids = 0, removed =
 }
 
 function computeOnPumpHctAdjustment({ patientType, weightKg, ebvCoefValue, primeVolume, netIoChange = 0, currentHct, addedCrystalloid = 0, rbcUnits = 0, rbcUnitVol = 300, rbcUnitHct = 60, ultrafiltrationRemoved = 0 }) {
-  const safeEbvCoef = isFiniteNumber(ebvCoefValue) && ebvCoefValue > 0 ? ebvCoefValue : ebvCoef(patientType);
+  const hasExplicitEbvCoef = ebvCoefValue !== undefined;
+  const safeEbvCoef = hasExplicitEbvCoef ? ebvCoefValue : ebvCoef(patientType);
   const validationMessage = firstValidationMessage([
     validatePositiveNumber(weightKg, 'Weight'),
     validatePositiveNumber(safeEbvCoef, 'EBV coefficient'),
@@ -2563,6 +2564,15 @@ function getOnPumpNetIoChange() {
   return parseSignedNetIoValue(el('onpump_net_io_change')?.value) || 0;
 }
 
+function readOptionalNumericInputValue(id) {
+  const node = el(id);
+  if (!node) return undefined;
+  const rawValue = String(node.value ?? '').trim();
+  if (rawValue === '') return undefined;
+  const parsedValue = Number(rawValue);
+  return Number.isFinite(parsedValue) ? parsedValue : NaN;
+}
+
 
 function clearTargetHctOutputs(message = 'Enter a target Hct to compare adjustment scenarios.') {
   const messageEl = el('target-hct-message');
@@ -2622,8 +2632,9 @@ function updateHct() {
 
   if (isOnPumpMode) {
     const r = computeOnPumpHctAdjustment({
+      patientType: el('onpump_pttype')?.value,
       weightKg: num('onpump_weight'),
-      ebvCoefValue: num('onpump_ebv_coef'),
+      ebvCoefValue: readOptionalNumericInputValue('onpump_ebv_coef'),
       primeVolume: num('onpump_prime'),
       currentHct: num('current_hct'),
       netIoChange: getOnPumpNetIoChange(),

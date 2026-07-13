@@ -48,7 +48,7 @@ function createElement(id, value = '') {
 const elementIds = [
   'hct_mode', 'hct-pre-mode', 'hct-onpump-mode', 'hct-left-label', 'hct-right-label', 'onpump-extra-results', 'hct-primary-results', 'hct-mode-help',
   'pttype', 'ebv_coef', 'wt_hct', 'pre_hct', 'prime', 'rbc_units', 'rbc_unit_vol', 'rbc_hct',
-  'onpump_weight', 'onpump_ebv_coef', 'onpump_prime', 'current_hct', 'onpump_net_io_change', 'onpump_fluids', 'onpump_rbc_units', 'onpump_rbc_unit_vol', 'onpump_rbc_hct', 'onpump_removed',
+  'onpump_pttype', 'onpump_weight', 'onpump_ebv_coef', 'onpump_prime', 'current_hct', 'onpump_net_io_change', 'onpump_fluids', 'onpump_rbc_units', 'onpump_rbc_unit_vol', 'onpump_rbc_hct', 'onpump_removed',
   'ebv', 'total_vol', 'pred_hct', 'current_rbc_vol', 'added_rbc_vol', 'onpump_ebv', 'onpump_estimated_volume', 'onpump_ebv_auto', 'onpump_base_cpb_volume', 'onpump_estimated_auto', 'onpump_current_rbc_summary',
   'onpump_result_message', 'onpump_result_values', 'current_hct_result', 'pred_hct_result', 'hct_change', 'current_volume_result', 'final_volume_result',
   'target_hct', 'target-hct-message', 'target-hct-cards', 'target-dilution-card', 'target_rbc_only', 'target_rbc_only_secondary', 'target_rbc_neutral', 'target_rbc_neutral_secondary', 'target_hfuf_only', 'target_hfuf_only_secondary'
@@ -63,6 +63,7 @@ function loadRuntime() {
   elements.rbc_units.value = '0';
   elements.rbc_unit_vol.value = '300';
   elements.rbc_hct.value = '60';
+  elements.onpump_pttype.value = 'adult_m';
   elements.onpump_ebv_coef.value = '70';
   elements.onpump_prime.value = '1100';
   elements.onpump_net_io_change.value = '500';
@@ -245,6 +246,50 @@ function assertInvalidOnPump(exports, args, messagePart) {
   assert(result.validationMessage.includes(messagePart), result.validationMessage);
 }
 
+function assertInvalidCoefficientResult(result) {
+  assert.strictEqual(result.predictedHct, null);
+  assert.strictEqual(result.ebv, null);
+  assert.strictEqual(result.baseCpbVolume, null);
+  assert.strictEqual(result.currentTotalVolume, null);
+  assert.strictEqual(result.finalTotalVolume, null);
+  assert(result.validationMessage.includes('EBV coefficient'), result.validationMessage);
+  const serialized = JSON.stringify(result);
+  assert(!serialized.includes('NaN'), 'Invalid coefficient result should not contain NaN');
+  assert(!serialized.includes('Infinity'), 'Invalid coefficient result should not contain Infinity');
+}
+
+function runOnPumpEbvCoefficientContractTests(exports) {
+  const canonical = exports.computeOnPumpHctAdjustment({ patientType: 'adult_m', weightKg: 70, ebvCoefValue: 70, primeVolume: 1100, netIoChange: 500, currentHct: 30, addedCrystalloid: 500, rbcUnits: 0, rbcUnitVol: 300, rbcUnitHct: 60, ultrafiltrationRemoved: 0 });
+  nearlyEqual(canonical.ebv, 4900);
+  nearlyEqual(canonical.baseCpbVolume, 6000);
+  nearlyEqual(canonical.currentTotalVolume, 6500);
+  nearlyEqual(canonical.finalTotalVolume, 7000);
+  nearlyEqual(canonical.predictedHct, 27.857142857142858);
+
+  const customCoef = exports.computeOnPumpHctAdjustment({ patientType: 'adult_m', weightKg: 70, ebvCoefValue: 60, primeVolume: 1100, netIoChange: 500, currentHct: 30, addedCrystalloid: 500, rbcUnits: 0, rbcUnitVol: 300, rbcUnitHct: 60, ultrafiltrationRemoved: 0 });
+  nearlyEqual(customCoef.ebv, 4200);
+  nearlyEqual(customCoef.baseCpbVolume, 5300);
+  nearlyEqual(customCoef.currentTotalVolume, 5800);
+  nearlyEqual(customCoef.finalTotalVolume, 6300);
+  assert(Math.abs(customCoef.predictedHct - canonical.predictedHct) > 0.01, 'Custom coefficient should not silently fall back to 70');
+
+  [0, -1, NaN, Infinity, -Infinity, '70', 'abc', null].forEach((ebvCoefValue) => assertInvalidCoefficientResult(exports.computeOnPumpHctAdjustment({ patientType: 'adult_m', weightKg: 70, ebvCoefValue, primeVolume: 1100, netIoChange: 500, currentHct: 30, addedCrystalloid: 500, rbcUnits: 0, rbcUnitVol: 300, rbcUnitHct: 60, ultrafiltrationRemoved: 0 })));
+
+  const omittedAdultM = exports.computeOnPumpHctAdjustment({ patientType: 'adult_m', weightKg: 70, primeVolume: 1100, netIoChange: 500, currentHct: 30, addedCrystalloid: 500, rbcUnits: 0, rbcUnitVol: 300, rbcUnitHct: 60, ultrafiltrationRemoved: 0 });
+  nearlyEqual(omittedAdultM.ebv, 4900);
+  nearlyEqual(omittedAdultM.predictedHct, canonical.predictedHct);
+  const omittedAdultF = exports.computeOnPumpHctAdjustment({ patientType: 'adult_f', weightKg: 70, primeVolume: 1100, netIoChange: 500, currentHct: 30, addedCrystalloid: 500, rbcUnits: 0, rbcUnitVol: 300, rbcUnitHct: 60, ultrafiltrationRemoved: 0 });
+  nearlyEqual(omittedAdultF.ebv, 4550);
+  const omittedChild = exports.computeOnPumpHctAdjustment({ patientType: 'child', weightKg: 70, primeVolume: 1100, netIoChange: 500, currentHct: 30, addedCrystalloid: 500, rbcUnits: 0, rbcUnitVol: 300, rbcUnitHct: 60, ultrafiltrationRemoved: 0 });
+  nearlyEqual(omittedChild.ebv, 5250);
+  const omittedInfant = exports.computeOnPumpHctAdjustment({ patientType: 'infant', weightKg: 70, primeVolume: 1100, netIoChange: 500, currentHct: 30, addedCrystalloid: 500, rbcUnits: 0, rbcUnitVol: 300, rbcUnitHct: 60, ultrafiltrationRemoved: 0 });
+  nearlyEqual(omittedInfant.ebv, 5600);
+  const omittedNeonate = exports.computeOnPumpHctAdjustment({ patientType: 'neonate', weightKg: 70, primeVolume: 1100, netIoChange: 500, currentHct: 30, addedCrystalloid: 500, rbcUnits: 0, rbcUnitVol: 300, rbcUnitHct: 60, ultrafiltrationRemoved: 0 });
+  nearlyEqual(omittedNeonate.ebv, 6300);
+  const omittedUnknown = exports.computeOnPumpHctAdjustment({ patientType: 'unknown', weightKg: 70, primeVolume: 1100, netIoChange: 500, currentHct: 30, addedCrystalloid: 500, rbcUnits: 0, rbcUnitVol: 300, rbcUnitHct: 60, ultrafiltrationRemoved: 0 });
+  nearlyEqual(omittedUnknown.ebv, 4900);
+}
+
 function runBoundaryTests(exports) {
   for (const bad of [NaN, Infinity, -Infinity, '70', undefined]) assertInvalidPre(exports, { weightKg: bad }, 'Weight');
   assertInvalidPre(exports, { weightKg: -1 }, 'Weight');
@@ -303,6 +348,36 @@ function runStateTransitionTests(exports) {
   assert(!exports.elements['target-hct-cards'].classList.contains('hidden'), 'Target scenario cards should be visible for target 35');
   assert(exports.elements.target_rbc_only.innerHTML.includes('Add RBC 1,300 mL'));
   assert(exports.elements.target_hfuf_only.innerHTML.includes('Remove HF/UF 929 mL'));
+  setValues(exports, { onpump_ebv_coef: 0 });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.ebv.innerHTML, '—');
+  assert.strictEqual(exports.elements.total_vol.innerHTML, '—');
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '—');
+  assert.strictEqual(exports.elements.pred_hct_result.innerHTML, '—');
+  assert(exports.elements.onpump_result_message.textContent.includes('EBV coefficient'));
+  assertTargetScenariosCleared(exports, 'EBV coefficient', ['1,300', '929', 'Add RBC', 'Remove HF/UF']);
+  assertNoInvalidTokens(exports);
+  setValues(exports, { onpump_ebv_coef: 70 });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.pred_hct_result.innerHTML, '30.0%');
+  assert(exports.elements.target_rbc_only.innerHTML.includes('Add RBC 1,300 mL'));
+  setValues(exports, { onpump_ebv_coef: -1 });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '—');
+  assertTargetScenariosCleared(exports, 'EBV coefficient', ['1,300', '929', 'Add RBC', 'Remove HF/UF']);
+  setValues(exports, { onpump_ebv_coef: 70 });
+  exports.updateHct();
+  setValues(exports, { onpump_ebv_coef: '' });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.onpump_ebv.innerHTML, '4900 mL');
+  assert.strictEqual(exports.elements.pred_hct_result.innerHTML, '30.0%');
+  setValues(exports, { onpump_ebv_coef: 60 });
+  exports.updateHct();
+  assert.strictEqual(exports.elements.onpump_ebv.innerHTML, '4200 mL');
+  assert.strictEqual(exports.elements.onpump_base_cpb_volume.innerHTML, '5300 mL');
+  assert.notStrictEqual(exports.elements.current_volume_result.innerHTML, '6,500 mL');
+  setValues(exports, { onpump_ebv_coef: 70 });
+  exports.updateHct();
   setValues(exports, { target_hct: 101 });
   exports.updateHct();
   assertTargetScenariosCleared(exports, 'no more than 100%', ['1,300', '929', 'Add RBC', 'Remove HF/UF']);
@@ -349,6 +424,7 @@ function runParityTests() {
 function run() {
   const exports = loadRuntime();
   runNumericOracleTests(exports);
+  runOnPumpEbvCoefficientContractTests(exports);
   runBoundaryTests(exports);
   runStateTransitionTests(exports);
   runParityTests();
