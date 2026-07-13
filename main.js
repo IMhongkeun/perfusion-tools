@@ -1642,8 +1642,19 @@ function computeTargetHctScenarios({ currentTotalVolume, currentRbcVolume, curre
   const result = { message: '', noAdjustment: null, dilution: null, rbcOnly: null, rbcNeutral: null, hfUfOnly: null };
   const withUnits = (requiredRbcMl) => ({ requiredRbcMl, requiredUnits: U > 0 ? requiredRbcMl / U : null });
 
-  if (!(targetHct > 0)) {
+  if (targetHct === 0) {
     result.message = 'Enter a target Hct to compare adjustment scenarios.';
+    result.invalidTargetHct = true;
+    return result;
+  }
+  if (!isFiniteNumber(targetHct)) {
+    result.message = 'Target Hct must be a finite number.';
+    result.invalidTargetHct = true;
+    return result;
+  }
+  if (!(targetHct > 0 && targetHct <= 100)) {
+    result.message = 'Target Hct must be greater than 0 and no more than 100%.';
+    result.invalidTargetHct = true;
     return result;
   }
   if (!Number.isFinite(V) || !(V > 0)) {
@@ -2567,7 +2578,10 @@ function clearTargetHctOutputs(message = 'Enter a target Hct to compare adjustme
     const node = el(id);
     const secondaryNode = el(`${id}_secondary`);
     if (node) node.innerHTML = '';
-    if (secondaryNode) secondaryNode.textContent = '';
+    if (secondaryNode) {
+      secondaryNode.innerHTML = '';
+      secondaryNode.textContent = '';
+    }
   });
 }
 
@@ -2718,8 +2732,13 @@ function updateTargetHctHelper(onPumpResult) {
   if (!messageEl || !cardsEl) return;
 
   const targetHct = num('target_hct');
-  if (onPumpResult.invalidInput || onPumpResult.invalidCurrentVolume) {
-    clearTargetHctOutputs(onPumpResult.invalidInput ? onPumpResult.validationMessage : 'Enter a valid current total volume to compare target Hct scenarios.');
+  if (onPumpResult.invalidInput || onPumpResult.invalidCurrentVolume || onPumpResult.invalidFinalVolume) {
+    const targetMessage = onPumpResult.invalidInput
+      ? onPumpResult.validationMessage
+      : onPumpResult.invalidFinalVolume
+        ? 'Planned final volume must be greater than 0 before comparing target Hct scenarios.'
+        : 'Enter a valid current total volume to compare target Hct scenarios.';
+    clearTargetHctOutputs(targetMessage);
     return;
   }
 
@@ -2731,6 +2750,11 @@ function updateTargetHctHelper(onPumpResult) {
     rbcVolPerUnit: num('onpump_rbc_unit_vol'),
     rbcProductHctPercent: num('onpump_rbc_hct')
   });
+
+  if (result.invalidTargetHct) {
+    clearTargetHctOutputs(result.message);
+    return;
+  }
 
   messageEl.textContent = result.message;
   const showStateCard = !!(result.noAdjustment || result.dilution);

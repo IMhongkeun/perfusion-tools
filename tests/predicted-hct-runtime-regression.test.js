@@ -127,6 +127,36 @@ function assertNoInvalidTokens(exports) {
   }
 }
 
+function assertNoTargetOutputTokens(exports, forbiddenTokens = []) {
+  ['target-hct-message', 'target-dilution-card', 'target-hct-cards', 'target_rbc_only', 'target_rbc_only_secondary', 'target_rbc_neutral', 'target_rbc_neutral_secondary', 'target_hfuf_only', 'target_hfuf_only_secondary'].forEach((id) => {
+    const element = exports.elements[id];
+    const text = `${element.innerHTML} ${element.textContent}`;
+    assert(!text.includes('NaN'), `${id} displayed NaN`);
+    assert(!text.includes('Infinity'), `${id} displayed Infinity`);
+    forbiddenTokens.forEach((token) => assert(!text.includes(token), `${id} retained ${token}`));
+  });
+}
+
+function assertTargetScenariosCleared(exports, messagePart, forbiddenTokens = []) {
+  assert(exports.elements['target-hct-message'].textContent.includes(messagePart), exports.elements['target-hct-message'].textContent);
+  assert(exports.elements['target-hct-cards'].classList.contains('hidden'), 'Target scenario cards should be hidden');
+  assert(exports.elements['target-dilution-card'].classList.contains('hidden'), 'Target dilution card should be hidden');
+  ['target_rbc_only', 'target_rbc_only_secondary', 'target_rbc_neutral', 'target_rbc_neutral_secondary', 'target_hfuf_only', 'target_hfuf_only_secondary'].forEach((id) => {
+    assert.strictEqual(exports.elements[id].innerHTML, '', `${id} innerHTML should be cleared`);
+    assert.strictEqual(exports.elements[id].textContent, '', `${id} textContent should be cleared`);
+  });
+  assertNoTargetOutputTokens(exports, forbiddenTokens);
+}
+
+function assertInvalidTargetResult(result, messagePart) {
+  assert.strictEqual(result.invalidTargetHct, true);
+  assert(result.message.includes(messagePart), result.message);
+  ['dilution', 'rbcOnly', 'rbcNeutral', 'hfUfOnly', 'noAdjustment'].forEach((key) => assert.strictEqual(result[key], null, `${key} should be null`));
+  const serialized = JSON.stringify(result);
+  assert(!serialized.includes('NaN'), 'Invalid target result should not contain NaN');
+  assert(!serialized.includes('Infinity'), 'Invalid target result should not contain Infinity');
+}
+
 function setValues(exports, values) {
   for (const [id, value] of Object.entries(values)) exports.elements[id].value = String(value);
 }
@@ -172,6 +202,26 @@ function runNumericOracleTests(exports) {
   const noRbcTarget = exports.computeTargetHctScenarios({ currentTotalVolume: 6500, currentRbcVolume: 1950, currentHct: 30, targetHct: 25, rbcVolPerUnit: 300, rbcProductHctPercent: 60 });
   nearlyEqual(noRbcTarget.dilution.crystalloidToAdd, 1300);
   assert.strictEqual(noRbcTarget.rbcOnly, null);
+
+  const targetAt100 = exports.computeTargetHctScenarios({ currentTotalVolume: 6500, currentRbcVolume: 1950, currentHct: 30, targetHct: 100, rbcVolPerUnit: 300, rbcProductHctPercent: 60 });
+  assert.strictEqual(targetAt100.invalidTargetHct, undefined);
+  assert(targetAt100.hfUfOnly, 'Target Hct 100 should remain a valid boundary target');
+  nearlyEqual(targetAt100.hfUfOnly.requiredRemovalMl, 4550);
+  nearlyEqual(targetAt100.hfUfOnly.expectedHct, 100);
+
+  [
+    { targetHct: 100.0001, message: 'no more than 100%' },
+    { targetHct: 101, message: 'no more than 100%' },
+    { targetHct: 0, message: 'Enter a target Hct' },
+    { targetHct: -1, message: 'no more than 100%' },
+    { targetHct: NaN, message: 'finite number' },
+    { targetHct: Infinity, message: 'finite number' },
+    { targetHct: -Infinity, message: 'finite number' },
+    { targetHct: '35', message: 'finite number' },
+    { targetHct: undefined, message: 'finite number' }
+  ].forEach(({ targetHct, message }) => {
+    assertInvalidTargetResult(exports.computeTargetHctScenarios({ currentTotalVolume: 6500, currentRbcVolume: 1950, currentHct: 30, targetHct, rbcVolPerUnit: 300, rbcProductHctPercent: 60 }), message);
+  });
 
   const customProduct = exports.computeTargetHctScenarios({ currentTotalVolume: 5050, currentRbcVolume: 1262.5, currentHct: 25, targetHct: 27, rbcVolPerUnit: 250, rbcProductHctPercent: 50 });
   const customExpected = referenceTarget({ V: 5050, R: 1262.5, currentHct: 25, targetHct: 27, productHct: 50, unitMl: 250 });
@@ -247,19 +297,32 @@ function runStateTransitionTests(exports) {
   exports.updateHct();
   assert.strictEqual(exports.elements.pred_hct.innerHTML, '32.1%');
 
-  setValues(exports, { hct_mode: 'onpump', onpump_weight: 70, onpump_ebv_coef: 70, onpump_prime: 1100, onpump_net_io_change: 500, current_hct: 30, onpump_fluids: 0, onpump_rbc_units: 0, onpump_rbc_unit_vol: 300, onpump_rbc_hct: 60, onpump_removed: 0 });
+  setValues(exports, { hct_mode: 'onpump', onpump_weight: 70, onpump_ebv_coef: 70, onpump_prime: 1100, onpump_net_io_change: 500, current_hct: 30, onpump_fluids: 0, onpump_rbc_units: 0, onpump_rbc_unit_vol: 300, onpump_rbc_hct: 60, onpump_removed: 0, target_hct: 35 });
   exports.updateHct();
   assert.strictEqual(exports.elements.pred_hct_result.innerHTML, '30.0%');
+  assert(!exports.elements['target-hct-cards'].classList.contains('hidden'), 'Target scenario cards should be visible for target 35');
+  assert(exports.elements.target_rbc_only.innerHTML.includes('Add RBC 1,300 mL'));
+  assert(exports.elements.target_hfuf_only.innerHTML.includes('Remove HF/UF 929 mL'));
+  setValues(exports, { target_hct: 101 });
+  exports.updateHct();
+  assertTargetScenariosCleared(exports, 'no more than 100%', ['1,300', '929', 'Add RBC', 'Remove HF/UF']);
+  setValues(exports, { target_hct: 35 });
+  exports.updateHct();
+  assert(!exports.elements['target-hct-cards'].classList.contains('hidden'), 'Target scenario cards should restore for target 35');
+  assert(exports.elements.target_rbc_only.innerHTML.includes('Add RBC 1,300 mL'));
   setValues(exports, { onpump_removed: 6500 });
   exports.updateHct();
   assert.strictEqual(exports.elements.pred_hct.innerHTML, '—');
   assert.strictEqual(exports.elements.total_vol.innerHTML, '—');
   assert.strictEqual(exports.elements.pred_hct_result.innerHTML, '—');
   assert(exports.elements.onpump_result_message.textContent.includes('Final volume'));
+  assertTargetScenariosCleared(exports, 'final volume', ['1,300', '929', 'Add RBC', 'Remove HF/UF']);
   assertNoInvalidTokens(exports);
   setValues(exports, { onpump_removed: 0 });
   exports.updateHct();
   assert.strictEqual(exports.elements.pred_hct_result.innerHTML, '30.0%');
+  assert(!exports.elements['target-hct-cards'].classList.contains('hidden'), 'Target scenario cards should restore after final volume becomes valid');
+  assert(exports.elements.target_rbc_only.innerHTML.includes('Add RBC 1,300 mL'));
 
   setValues(exports, { current_hct: 101 });
   exports.updateHct();
