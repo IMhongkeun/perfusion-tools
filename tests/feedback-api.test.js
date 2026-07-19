@@ -211,12 +211,22 @@ async function run() {
       { ...eventPayload, event_type: 'opened' },
       { ...eventPayload, prompt_id: '' },
       { ...eventPayload, rating: 'bad_rating' },
+      { ...eventPayload, visitor_id: undefined },
+      { ...eventPayload, visitor_id: null },
+      { ...eventPayload, visitor_id: '' },
+      { ...eventPayload, visitor_id: 'badVisitor' },
     ]) {
       const badDb = createMockDb();
       const badResponse = await eventEndpoint.onRequestPost({ request: makeEventRequest(badPayload), env: { FEEDBACK_DB: badDb } });
       assert.strictEqual(badResponse.status, 400, 'invalid feedback event payload should be rejected');
       assert.strictEqual(badDb.state.eventInserts.length, 0, 'invalid event must not insert');
     }
+
+    const eventLimitedDb = createMockDb();
+    eventLimitedDb.state.counts.set('pt_validVisitor_12345', 120);
+    const eventLimitedResponse = await eventEndpoint.onRequestPost({ request: makeEventRequest(eventPayload), env: { FEEDBACK_DB: eventLimitedDb } });
+    assert.strictEqual(eventLimitedResponse.status, 429, 'event rate limit should be enforced by visitor_id');
+    assert.strictEqual(eventLimitedDb.state.eventInserts.length, 0, 'rate limited event must not insert');
 
     const migrationSql = fs.readFileSync(path.join(__dirname, '..', 'migrations', '0002_feedback_events.sql'), 'utf8');
     assert(migrationSql.includes('CREATE TABLE IF NOT EXISTS feedback_events'), 'feedback_events migration should create table');
@@ -225,7 +235,7 @@ async function run() {
     const mainJs = fs.readFileSync(path.join(__dirname, '..', 'main.js'), 'utf8');
     assert(mainJs.includes('visitorId = `pt_${randomPart.replace(/[^a-zA-Z0-9_-]/g, \'\')}`'), 'frontend visitor_id should use pt_ prefix and allowed characters');
     assert(mainJs.includes('Please do not include patient-identifiable information.'), 'feedback details step should warn against patient-identifiable information');
-    assert(mainJs.includes('const FEEDBACK_RESULT_ANCHORS = {'), 'frontend should define route-specific result anchor mapping');
+    assert(mainJs.includes('const FEEDBACK_RESULT_CONTEXTS = {'), 'frontend should define route-specific result context mapping');
     assert(!mainJs.includes("main.insertAdjacentHTML('beforeend'"), 'frontend should not append feedback to the end of main');
     assert(mainJs.includes('FEEDBACK_MIN_DWELL_MS = 15 * 1000'), 'frontend should require 15 seconds before showing feedback');
     assert(mainJs.includes('FEEDBACK_GLOBAL_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000'), 'frontend should enforce seven-day global cooldown');
@@ -237,6 +247,16 @@ async function run() {
     assert(mainJs.includes("logFeedbackEvent(card, 'rendered')") && mainJs.includes("logFeedbackEvent(card, 'viewed')"), 'rendered and viewed events should be distinct');
     assert(mainJs.includes("if (selectedRating === 'useful')"), 'Useful should remain one-click submission');
     assert(mainJs.includes("details.classList.remove('hidden')"), 'negative feedback should open details');
+    assert(mainJs.includes('const FEEDBACK_RESULT_CONTEXTS = {'), 'frontend should use route-specific result contexts');
+    assert(mainJs.includes('resolveFeedbackResultContext(pagePath)'), 'frontend should resolve dynamic result context at eligibility time');
+    assert(mainJs.includes('isTimeFeedbackAction') && mainJs.includes('.time-live-start') && mainJs.includes('.time-start-now') && !mainJs.includes('#time-summary-copy') , 'time calculator should treat result-producing buttons, not copy, as feedback interactions');
+    assert(mainJs.includes('resolveHctFeedbackContext') && mainJs.includes("el('hct_mode')?.value === 'onpump'") && mainJs.includes("el('onpump-extra-results')") && mainJs.includes("el('hct-primary-results')"), 'predicted Hct should resolve mode-specific anchors');
+    assert(mainJs.includes('resolveUnitConverterFeedbackContext') && mainJs.includes("activeTab === 'pressure'") && mainJs.includes("activeTab === 'cannula'") && mainJs.includes("el('unit-flow-mlmin')"), 'unit converter should resolve active tab-specific readiness targets');
+    assert(mainJs.includes('isZScoreFeedbackReady') && mainJs.includes("el('phn-expected-zero')") && mainJs.includes("el('phn-measured-z')") && !mainJs.includes("'/z-score/': '#phn-result-model'"), 'z-score readiness should use numeric outputs instead of model label');
+    assert(mainJs.includes('isLbmFeedbackReady') && mainJs.includes("el('lbm_h_cm')") && mainJs.includes("el('lbm_w_kg')") && mainJs.includes('{ positive: true }'), 'LBM readiness should require valid inputs and a positive result');
+    assert(mainJs.includes("context.insertAfter.insertAdjacentHTML('afterend'") && !mainJs.includes('getFeedbackInsertionAnchor'), 'feedback should insert after explicit context wrapper without generic class climbing');
+    assert(mainJs.includes('[data-feedback-result-anchor=\"bsa-primary\"]') && mainJs.includes('[data-feedback-result-anchor=\"lbm-primary\"]'), 'static routes should prefer explicit feedback result wrapper anchors');
+
 
 
     console.log('All feedback API tests passed.');

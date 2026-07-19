@@ -87,10 +87,10 @@ function validateFeedbackEventPayload(payload) {
   if (rating && !allowedRatings.has(rating)) return { error: 'Invalid rating.' };
 
   const visitorId = typeof payload.visitor_id === 'string' ? payload.visitor_id.trim() : '';
-  if (visitorId && !/^pt_[a-zA-Z0-9_-]{5,97}$/.test(visitorId)) return { error: 'Invalid visitor_id.' };
+  if (!/^pt_[a-zA-Z0-9_-]{5,97}$/.test(visitorId)) return { error: 'Invalid visitor_id.' };
   const language = typeof payload.language === 'string' ? payload.language.slice(0, 35) : null;
   const deviceType = ['mobile', 'tablet', 'desktop'].includes(payload.device_type) ? payload.device_type : null;
-  return { value: { visitorId: visitorId || null, promptId, pagePath, calculatorKey, eventType, rating, language, deviceType } };
+  return { value: { visitorId, promptId, pagePath, calculatorKey, eventType, rating, language, deviceType } };
 }
 
 async function ensureFeedbackEventsTable(db) {

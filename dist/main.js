@@ -7621,17 +7621,17 @@ const FEEDBACK_CALCULATOR_ROUTES = {
   '/priming-volume/': 'priming_volume',
   '/unit-converter/': 'unit_converter'
 };
-const FEEDBACK_RESULT_ANCHORS = {
-  '/bsa/': '#bsa-result-display',
-  '/gdp/': '#current-do2i',
-  '/heparin/': '#hep2-results',
-  '/predicted-hct/': '#hct-primary-results',
-  '/lbm/': '#lbm_result',
-  '/timecalc/': '#time-case-summary',
-  '/z-score/': '#phn-result-model',
-  '/cannula-pressure-drop/': '#pressure-drop-results',
-  '/priming-volume/': '#priming-builder-total',
-  '/unit-converter/': '#unit-panel-flow'
+const FEEDBACK_RESULT_CONTEXTS = {
+  '/bsa/': { insertAfter: '[data-feedback-result-anchor="bsa-primary"]', readinessTarget: '#bsa-result-display' },
+  '/gdp/': { insertAfter: '[data-feedback-result-anchor="gdp-primary"]', readinessTarget: '#current-do2i' },
+  '/heparin/': { insertAfter: '#hep2-results', readinessTarget: '#hep2-results' },
+  '/priming-volume/': { insertAfter: '[data-feedback-result-anchor="priming-primary"]', readinessTarget: '#priming-builder-total', isReady: () => isPositiveNumericResult(el('priming-builder-total')) },
+  '/cannula-pressure-drop/': { insertAfter: '#pressure-drop-results', readinessTarget: '#pressure-drop-results' },
+  '/timecalc/': { insertAfter: '#time-case-summary', readinessTarget: '#time-summary-preview', isReady: isTimeFeedbackReady },
+  '/lbm/': { insertAfter: '[data-feedback-result-anchor="lbm-primary"]', readinessTarget: '#lbm_result', isReady: isLbmFeedbackReady },
+  '/predicted-hct/': { resolve: resolveHctFeedbackContext },
+  '/unit-converter/': { resolve: resolveUnitConverterFeedbackContext },
+  '/z-score/': { insertAfter: '[data-feedback-result-anchor="z-score-primary"]', readinessTarget: '#phn-expected-zero', isReady: isZScoreFeedbackReady }
 };
 const FEEDBACK_STORAGE_KEY = 'pt_feedback_visitor_id';
 const FEEDBACK_VIEWED_KEY = 'pt_feedback_last_viewed_at_v2';
@@ -7704,21 +7704,106 @@ function canShowFeedbackPrompt(calculatorKey) {
   return true;
 }
 
-function getFeedbackResultAnchor(pagePath) {
-  const selector = FEEDBACK_RESULT_ANCHORS[pagePath];
-  return selector ? document.querySelector(selector) : null;
+function isElementVisible(node) {
+  if (!node || node.hidden || node.classList.contains('hidden') || node.getAttribute('aria-hidden') === 'true') return false;
+  const style = window.getComputedStyle ? window.getComputedStyle(node) : null;
+  return !style || (style.display !== 'none' && style.visibility !== 'hidden');
 }
 
-function getFeedbackInsertionAnchor(anchor) {
-  return anchor && (anchor.closest('.rounded-2xl, .stat-card, .protocol-card, .flow-card, section, [data-feedback-result-anchor]') || anchor);
+function getNodeText(node) {
+  return (node?.innerText || node?.textContent || '').replace(/\s+/g, ' ').trim();
 }
 
-function isFeedbackResultReady(anchor) {
-  if (!anchor || anchor.hidden || anchor.classList.contains('hidden') || anchor.getAttribute('aria-hidden') === 'true') return false;
-  const text = (anchor.innerText || anchor.textContent || '').replace(/\s+/g, ' ').trim();
+function parseFirstFeedbackNumber(node) {
+  const text = getNodeText(node);
+  if (!text || text === '—' || /NaN|Infinity|validation error|enter .* to|select .* to|out of range|not calculated/i.test(text)) return null;
+  const match = text.match(/-?\d+(?:\.\d+)?/);
+  if (!match) return null;
+  const value = Number(match[0]);
+  return Number.isFinite(value) ? value : null;
+}
+
+function isNumericResultReady(node, options = {}) {
+  if (!isElementVisible(node)) return false;
+  const value = parseFirstFeedbackNumber(node);
+  if (value === null) return false;
+  if (options.positive) return value > 0;
+  if (options.nonZero) return value !== 0;
+  return true;
+}
+
+function isPositiveNumericResult(node) {
+  return isNumericResultReady(node, { positive: true });
+}
+
+function isFeedbackResultReady(node) {
+  if (!isElementVisible(node)) return false;
+  const text = getNodeText(node);
   if (!text || text === '—' || /^[-—0.% mlkg/]*$/i.test(text)) return false;
   if (/NaN|Infinity|validation error|enter .* to|select .* to|weight required/i.test(text)) return false;
   return /\d/.test(text);
+}
+
+function isTimeFeedbackReady(context) {
+  const summary = context.readinessTarget || el('time-summary-preview');
+  if (!isElementVisible(summary)) return false;
+  const text = getNodeText(summary);
+  if (!text || /no complete timed events yet|add event|start.*stop/i.test(text)) return false;
+  return /\d{1,2}:\d{2}|\d+\s*min/i.test(text);
+}
+
+function isLbmFeedbackReady() {
+  const height = Number(el('lbm_h_cm')?.value || 0);
+  const weight = Number(el('lbm_w_kg')?.value || 0);
+  if (!Number.isFinite(height) || !Number.isFinite(weight) || height <= 0 || weight <= 0) return false;
+  return isNumericResultReady(el('lbm_result'), { positive: true });
+}
+
+function resolveHctFeedbackContext() {
+  const mode = el('hct_mode')?.value === 'onpump' ? 'onpump' : 'pre';
+  const context = mode === 'onpump'
+    ? { insertAfter: el('onpump-extra-results'), readinessTarget: el('pred_hct_result') }
+    : { insertAfter: el('hct-primary-results'), readinessTarget: el('pred_hct') };
+  context.isReady = () => isElementVisible(context.insertAfter) && isNumericResultReady(context.readinessTarget, { positive: true });
+  return context;
+}
+
+function resolveUnitConverterFeedbackContext() {
+  const activeTab = Array.from(document.querySelectorAll('[data-unit-tab]')).find((button) => button.classList.contains('bg-accent-500/15'))?.dataset.unitTab || 'flow';
+  if (activeTab === 'pressure') {
+    const panel = el('unit-panel-pressure');
+    return { insertAfter: panel, readinessTarget: el('unit-pressure-mmhg-value'), isReady: (context) => isElementVisible(panel) && isNumericResultReady(context.readinessTarget) };
+  }
+  if (activeTab === 'cannula') {
+    const panel = el('unit-panel-cannula');
+    const target = isNumericResultReady(el('cannula-output-mm'), { positive: true }) ? el('cannula-output-mm') : el('tubing-output-mm');
+    return { insertAfter: panel, readinessTarget: target, isReady: () => isElementVisible(panel) && (isNumericResultReady(el('cannula-output-mm'), { positive: true }) || isNumericResultReady(el('tubing-output-mm'), { positive: true })) };
+  }
+  const panel = el('unit-panel-flow');
+  return { insertAfter: panel, readinessTarget: el('unit-flow-mlmin'), isReady: (context) => isElementVisible(panel) && isNumericResultReady(context.readinessTarget, { positive: true }) };
+}
+
+function isZScoreFeedbackReady() {
+  if (!isElementVisible(el('phn-expected-zero'))) return false;
+  if (isElementVisible(el('phn-model-bsa-warning'))) return false;
+  return isNumericResultReady(el('phn-expected-zero'), { positive: true }) || /Calculated Z-score:\s*-?\d+(?:\.\d+)?/i.test(getNodeText(el('phn-measured-z')));
+}
+
+function resolveFeedbackResultContext(pagePath) {
+  const definition = FEEDBACK_RESULT_CONTEXTS[pagePath];
+  if (!definition) return null;
+  const context = definition.resolve ? definition.resolve() : {
+    insertAfter: document.querySelector(definition.insertAfter),
+    readinessTarget: document.querySelector(definition.readinessTarget),
+    isReady: definition.isReady
+  };
+  if (!context) return null;
+  const readyCheck = context.isReady || (() => isFeedbackResultReady(context.readinessTarget));
+  return { insertAfter: context.insertAfter, readinessTarget: context.readinessTarget, isReady: () => readyCheck(context) };
+}
+
+function isTimeFeedbackAction(target) {
+  return Boolean(target.closest('.time-start-now, .time-end-now, .time-live-start, .time-live-stop, .time-live-reset, #time-new-case, #time-case-start-new'));
 }
 
 function getFeedbackCardMarkup(calculatorKey, promptId) {
@@ -7818,19 +7903,23 @@ function initFeedbackCard() {
   const pagePath = normalizeFeedbackPath(window.location.pathname);
   const calculatorKey = FEEDBACK_CALCULATOR_ROUTES[pagePath];
   if (!calculatorKey || document.querySelector('.feedback-card')) return;
-  const anchor = getFeedbackResultAnchor(pagePath);
-  if (!anchor) { if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') console.warn(`Feedback result anchor missing for ${pagePath}`); return; }
   let userInteracted = false;
   const pageEnteredAt = Date.now();
   const evaluate = () => {
-    if (!userInteracted || document.querySelector('.feedback-card') || Date.now() - pageEnteredAt < FEEDBACK_MIN_DWELL_MS || !canShowFeedbackPrompt(calculatorKey) || !isFeedbackResultReady(anchor)) return;
-    const insertionAnchor = getFeedbackInsertionAnchor(anchor);
-    insertionAnchor.insertAdjacentHTML('afterend', getFeedbackCardMarkup(calculatorKey, getFeedbackPromptId()));
+    const context = resolveFeedbackResultContext(pagePath);
+    if (!context?.insertAfter || !context.readinessTarget) {
+      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') console.warn(`Feedback result anchor missing for ${pagePath}`);
+      return;
+    }
+    if (!userInteracted || document.querySelector('.feedback-card') || Date.now() - pageEnteredAt < FEEDBACK_MIN_DWELL_MS || !canShowFeedbackPrompt(calculatorKey) || !context.isReady()) return;
+    context.insertAfter.insertAdjacentHTML('afterend', getFeedbackCardMarkup(calculatorKey, getFeedbackPromptId()));
     bindFeedbackCard(document.querySelector('.feedback-card'));
   };
-  const calculatorRoot = anchor.closest('main') || document;
-  calculatorRoot.addEventListener('input', (event) => { if (event.isTrusted !== false && event.target.closest('input, select')) { userInteracted = true; setTimeout(evaluate, 0); } }, true);
-  calculatorRoot.addEventListener('change', (event) => { if (event.isTrusted !== false && event.target.closest('input, select')) { userInteracted = true; setTimeout(evaluate, 0); } }, true);
+  const calculatorRoot = document.querySelector('main') || document;
+  const markInteractionAndEvaluate = (delay = 0) => { userInteracted = true; setTimeout(evaluate, delay); };
+  calculatorRoot.addEventListener('input', (event) => { if (event.isTrusted !== false && event.target.closest('input, select')) markInteractionAndEvaluate(); }, true);
+  calculatorRoot.addEventListener('change', (event) => { if (event.isTrusted !== false && event.target.closest('input, select')) markInteractionAndEvaluate(); }, true);
+  calculatorRoot.addEventListener('click', (event) => { if (pagePath === '/timecalc/' && event.isTrusted !== false && isTimeFeedbackAction(event.target)) markInteractionAndEvaluate(100); }, true);
   setTimeout(evaluate, FEEDBACK_MIN_DWELL_MS);
 }
 
