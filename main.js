@@ -7619,12 +7619,29 @@ const FEEDBACK_CALCULATOR_ROUTES = {
   '/z-score/': 'z_score',
   '/cannula-pressure-drop/': 'cannula_pressure_drop',
   '/priming-volume/': 'priming_volume',
-  '/unit-converter/': 'unit_converter',
-  '/phn-echo/': 'phn_echo'
+  '/unit-converter/': 'unit_converter'
+};
+const FEEDBACK_RESULT_CONTEXTS = {
+  '/bsa/': { insertAfter: '[data-feedback-result-anchor="bsa-primary"]', readinessTarget: '#bsa-result-display' },
+  '/gdp/': { insertAfter: '[data-feedback-result-anchor="gdp-primary"]', readinessTarget: '#current-do2i' },
+  '/heparin/': { insertAfter: '#hep2-results', readinessTarget: '#hep2-results' },
+  '/priming-volume/': { insertAfter: '[data-feedback-result-anchor="priming-primary"]', readinessTarget: '#priming-builder-total', isReady: () => isPositiveNumericResult(el('priming-builder-total')) },
+  '/cannula-pressure-drop/': { insertAfter: '#pressure-drop-results', readinessTarget: '#pressure-drop-results' },
+  '/timecalc/': { insertAfter: '#time-case-summary', readinessTarget: '#time-summary-preview', isReady: isTimeFeedbackReady },
+  '/lbm/': { insertAfter: '[data-feedback-result-anchor="lbm-primary"]', readinessTarget: '#lbm_result', isReady: isLbmFeedbackReady },
+  '/predicted-hct/': { resolve: resolveHctFeedbackContext },
+  '/unit-converter/': { resolve: resolveUnitConverterFeedbackContext },
+  '/z-score/': { insertAfter: '[data-feedback-result-anchor="z-score-primary"]', readinessTarget: '#phn-expected-zero', isReady: isZScoreFeedbackReady }
 };
 const FEEDBACK_STORAGE_KEY = 'pt_feedback_visitor_id';
-const FEEDBACK_SESSION_COUNT_KEY = 'pt_feedback_session_count';
-const FEEDBACK_LAST_PROMPT_KEY = 'pt_feedback_last_prompt_at';
+const FEEDBACK_VIEWED_KEY = 'pt_feedback_last_viewed_at_v2';
+const FEEDBACK_SESSION_PROMPTED_KEY = 'pt_feedback_session_prompted_v2';
+const FEEDBACK_SUBMITTED_PREFIX = 'pt_feedback_submitted_';
+const FEEDBACK_GLOBAL_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
+const FEEDBACK_CALCULATOR_COOLDOWN_MS = 30 * 24 * 60 * 60 * 1000;
+const FEEDBACK_MIN_DWELL_MS = 15 * 1000;
+const FEEDBACK_VIEW_THRESHOLD = 0.5;
+const FEEDBACK_VIEW_DURATION_MS = 1000;
 
 function normalizeFeedbackPath(pathname) {
   const path = pathname || '/';
@@ -7641,6 +7658,10 @@ function getFeedbackVisitorId() {
   return visitorId;
 }
 
+function getFeedbackPromptId() {
+  return window.crypto && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
 function getDeviceType() {
   const width = window.innerWidth || 1024;
   if (width < 640) return 'mobile';
@@ -7648,65 +7669,179 @@ function getDeviceType() {
   return 'desktop';
 }
 
-function canShowFeedbackPrompt() {
-  const lastPromptAt = Number(localStorage.getItem(FEEDBACK_LAST_PROMPT_KEY) || 0);
-  const oneHourMs = 60 * 60 * 1000;
-  return !lastPromptAt || Date.now() - lastPromptAt > oneHourMs;
+function getStoredTimestamp(key) {
+  const value = Number(localStorage.getItem(key) || 0);
+  return Number.isFinite(value) && value > 0 ? value : 0;
 }
 
-function markFeedbackPromptShown() {
-  localStorage.setItem(FEEDBACK_LAST_PROMPT_KEY, String(Date.now()));
+function getSubmittedStorageKey(calculatorKey) {
+  return `${FEEDBACK_SUBMITTED_PREFIX}${calculatorKey}_at_v2`;
 }
 
-function getFeedbackCardMarkup(calculatorKey) {
+function hasRecentTimestamp(key, maxAgeMs) {
+  const timestamp = getStoredTimestamp(key);
+  return Boolean(timestamp && Date.now() - timestamp < maxAgeMs);
+}
+
+function markFeedbackViewed() {
+  localStorage.setItem(FEEDBACK_VIEWED_KEY, String(Date.now()));
+  sessionStorage.setItem(FEEDBACK_SESSION_PROMPTED_KEY, '1');
+}
+
+function markFeedbackDismissed() {
+  localStorage.setItem(FEEDBACK_VIEWED_KEY, String(Date.now()));
+}
+
+function markFeedbackSubmitted(calculatorKey) {
+  localStorage.setItem(getSubmittedStorageKey(calculatorKey), String(Date.now()));
+  localStorage.setItem(FEEDBACK_VIEWED_KEY, String(Date.now()));
+}
+
+function canShowFeedbackPrompt(calculatorKey) {
+  if (hasRecentTimestamp(FEEDBACK_VIEWED_KEY, FEEDBACK_GLOBAL_COOLDOWN_MS)) return false;
+  if (sessionStorage.getItem(FEEDBACK_SESSION_PROMPTED_KEY) === '1') return false;
+  if (hasRecentTimestamp(getSubmittedStorageKey(calculatorKey), FEEDBACK_CALCULATOR_COOLDOWN_MS)) return false;
+  return true;
+}
+
+function isElementVisible(node) {
+  if (!node || node.hidden || node.classList.contains('hidden') || node.getAttribute('aria-hidden') === 'true') return false;
+  const style = window.getComputedStyle ? window.getComputedStyle(node) : null;
+  return !style || (style.display !== 'none' && style.visibility !== 'hidden');
+}
+
+function getNodeText(node) {
+  return (node?.innerText || node?.textContent || '').replace(/\s+/g, ' ').trim();
+}
+
+function parseFirstFeedbackNumber(node) {
+  const text = getNodeText(node);
+  if (!text || text === '—' || /NaN|Infinity|validation error|enter .* to|select .* to|out of range|not calculated/i.test(text)) return null;
+  const match = text.match(/-?\d+(?:\.\d+)?/);
+  if (!match) return null;
+  const value = Number(match[0]);
+  return Number.isFinite(value) ? value : null;
+}
+
+function isNumericResultReady(node, options = {}) {
+  if (!isElementVisible(node)) return false;
+  const value = parseFirstFeedbackNumber(node);
+  if (value === null) return false;
+  if (options.positive) return value > 0;
+  if (options.nonZero) return value !== 0;
+  return true;
+}
+
+function isPositiveNumericResult(node) {
+  return isNumericResultReady(node, { positive: true });
+}
+
+function isFeedbackResultReady(node) {
+  if (!isElementVisible(node)) return false;
+  const text = getNodeText(node);
+  if (!text || text === '—' || /^[-—0.% mlkg/]*$/i.test(text)) return false;
+  if (/NaN|Infinity|validation error|enter .* to|select .* to|weight required/i.test(text)) return false;
+  return /\d/.test(text);
+}
+
+function isTimeFeedbackReady(context) {
+  const summary = context.readinessTarget || el('time-summary-preview');
+  if (!isElementVisible(summary)) return false;
+  const text = getNodeText(summary);
+  if (!text || /no complete timed events yet|add event|start.*stop/i.test(text)) return false;
+  return /\d{1,2}:\d{2}|\d+\s*min/i.test(text);
+}
+
+function isLbmFeedbackReady() {
+  const height = Number(el('lbm_h_cm')?.value || 0);
+  const weight = Number(el('lbm_w_kg')?.value || 0);
+  if (!Number.isFinite(height) || !Number.isFinite(weight) || height <= 0 || weight <= 0) return false;
+  return isNumericResultReady(el('lbm_result'), { positive: true });
+}
+
+function resolveHctFeedbackContext() {
+  const mode = el('hct_mode')?.value === 'onpump' ? 'onpump' : 'pre';
+  const context = mode === 'onpump'
+    ? { insertAfter: el('onpump-extra-results'), readinessTarget: el('pred_hct_result') }
+    : { insertAfter: el('hct-primary-results'), readinessTarget: el('pred_hct') };
+  context.isReady = () => isElementVisible(context.insertAfter) && isNumericResultReady(context.readinessTarget, { positive: true });
+  return context;
+}
+
+function resolveUnitConverterFeedbackContext() {
+  const activeTab = Array.from(document.querySelectorAll('[data-unit-tab]')).find((button) => button.classList.contains('bg-accent-500/15'))?.dataset.unitTab || 'flow';
+  if (activeTab === 'pressure') {
+    const panel = el('unit-panel-pressure');
+    return { insertAfter: panel, readinessTarget: el('unit-pressure-mmhg-value'), isReady: (context) => isElementVisible(panel) && isNumericResultReady(context.readinessTarget) };
+  }
+  if (activeTab === 'cannula') {
+    const panel = el('unit-panel-cannula');
+    const target = isNumericResultReady(el('cannula-output-mm'), { positive: true }) ? el('cannula-output-mm') : el('tubing-output-mm');
+    return { insertAfter: panel, readinessTarget: target, isReady: () => isElementVisible(panel) && (isNumericResultReady(el('cannula-output-mm'), { positive: true }) || isNumericResultReady(el('tubing-output-mm'), { positive: true })) };
+  }
+  const panel = el('unit-panel-flow');
+  return { insertAfter: panel, readinessTarget: el('unit-flow-mlmin'), isReady: (context) => isElementVisible(panel) && isNumericResultReady(context.readinessTarget, { positive: true }) };
+}
+
+function isZScoreFeedbackReady() {
+  if (!isElementVisible(el('phn-expected-zero'))) return false;
+  if (isElementVisible(el('phn-model-bsa-warning'))) return false;
+  return isNumericResultReady(el('phn-expected-zero'), { positive: true }) || /Calculated Z-score:\s*-?\d+(?:\.\d+)?/i.test(getNodeText(el('phn-measured-z')));
+}
+
+function resolveFeedbackResultContext(pagePath) {
+  const definition = FEEDBACK_RESULT_CONTEXTS[pagePath];
+  if (!definition) return null;
+  const context = definition.resolve ? definition.resolve() : {
+    insertAfter: document.querySelector(definition.insertAfter),
+    readinessTarget: document.querySelector(definition.readinessTarget),
+    isReady: definition.isReady
+  };
+  if (!context) return null;
+  const readyCheck = context.isReady || (() => isFeedbackResultReady(context.readinessTarget));
+  return { insertAfter: context.insertAfter, readinessTarget: context.readinessTarget, isReady: () => readyCheck(context) };
+}
+
+function isTimeFeedbackAction(target) {
+  return Boolean(target.closest('.time-start-now, .time-end-now, .time-live-start, .time-live-stop, .time-live-reset, #time-new-case, #time-case-start-new'));
+}
+
+function getFeedbackCardMarkup(calculatorKey, promptId) {
   return `
-    <section class="feedback-card mt-8 rounded-2xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/80 shadow-card p-4 sm:p-5" data-calculator-key="${calculatorKey}" aria-live="polite">
-      <div data-feedback-step="rating">
-        <h2 class="text-base font-semibold text-primary-900 dark:text-white">Was this calculator helpful?</h2>
-        <div class="mt-3 flex flex-col gap-2 sm:flex-row">
-          <button type="button" data-feedback-rating="useful" class="rounded-xl bg-accent-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Useful</button>
-          <button type="button" data-feedback-rating="needs_improvement" class="rounded-xl border border-slate-300 dark:border-primary-700 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:border-accent-500/60 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Needs improvement</button>
-          <button type="button" data-feedback-rating="not_useful" class="rounded-xl border border-slate-300 dark:border-primary-700 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:border-accent-500/60 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Not useful</button>
-        </div>
+    <section class="feedback-card mt-3 rounded-xl border border-slate-200 dark:border-primary-700 bg-white/80 dark:bg-primary-900/70 px-3 py-2 text-sm" data-calculator-key="${calculatorKey}" data-feedback-prompt-id="${promptId}" aria-live="polite">
+      <div data-feedback-step="rating" class="flex flex-wrap items-center gap-2">
+        <span class="mr-1 font-medium text-slate-700 dark:text-slate-200">Was this result helpful?</span>
+        <button type="button" data-feedback-rating="useful" class="rounded-lg bg-accent-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Useful</button>
+        <button type="button" data-feedback-rating="needs_improvement" class="rounded-lg border border-slate-300 dark:border-primary-700 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:border-accent-500/60 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Needs improvement</button>
+        <button type="button" data-feedback-rating="not_useful" class="rounded-lg border border-slate-300 dark:border-primary-700 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:border-accent-500/60 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Not useful</button>
+        <button type="button" data-feedback-dismiss class="ml-auto rounded-md px-2 py-1 text-slate-500 hover:bg-slate-100 hover:text-slate-800 focus:outline-none focus:ring-2 focus:ring-accent-500/50 dark:text-slate-400 dark:hover:bg-primary-800 dark:hover:text-white" aria-label="Dismiss feedback prompt">×</button>
       </div>
-      <form data-feedback-step="details" class="hidden space-y-3">
-        <h2 class="text-base font-semibold text-primary-900 dark:text-white">Could you briefly tell us what could be improved?</h2>
-        <textarea data-feedback-message rows="3" maxlength="1000" class="w-full rounded-xl border border-slate-300 dark:border-primary-700 bg-white dark:bg-primary-950 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-accent-500/50" placeholder="Optional comment"></textarea>
+      <form data-feedback-step="details" class="mt-3 hidden space-y-2 border-t border-slate-200 pt-3 dark:border-primary-700">
+        <textarea data-feedback-message rows="2" maxlength="1000" class="w-full rounded-lg border border-slate-300 dark:border-primary-700 bg-white dark:bg-primary-950 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-accent-500/50" placeholder="Optional comment"></textarea>
         <p class="text-xs leading-relaxed text-slate-500 dark:text-slate-400">Please do not include patient-identifiable information. Feedback is stored with anonymous browser metadata to help improve this tool.</p>
-        <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
-          <input data-feedback-calculation-issue type="checkbox" class="mt-1 h-4 w-4 rounded border-slate-300 text-accent-600 focus:ring-accent-500" />
-          <span>This may be a calculation issue</span>
-        </label>
-        <button type="submit" class="rounded-xl bg-accent-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Submit feedback</button>
+        <label class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300"><input data-feedback-calculation-issue type="checkbox" class="mt-1 h-4 w-4 rounded border-slate-300 text-accent-600 focus:ring-accent-500" /><span>This may be a calculation issue</span></label>
+        <button type="submit" class="rounded-lg bg-accent-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">Submit feedback</button>
       </form>
-      <p data-feedback-message-status class="mt-3 hidden text-sm font-medium text-accent-600 dark:text-accent-400"></p>
+      <p data-feedback-message-status class="mt-2 hidden text-sm font-medium text-accent-600 dark:text-accent-400"></p>
     </section>`;
 }
 
 function buildFeedbackPayload(card, rating, options = {}) {
-  const isCalculationIssue = Boolean(options.isCalculationIssue);
-  return {
-    visitor_id: getFeedbackVisitorId(),
-    page_path: normalizeFeedbackPath(window.location.pathname),
-    calculator_key: card.dataset.calculatorKey,
-    rating,
-    category: isCalculationIssue ? 'calculation_issue' : 'general_feedback',
-    message: options.message || '',
-    language: navigator.language || '',
-    device_type: getDeviceType()
-  };
+  return { visitor_id: getFeedbackVisitorId(), page_path: normalizeFeedbackPath(window.location.pathname), calculator_key: card.dataset.calculatorKey, rating, category: options.isCalculationIssue ? 'calculation_issue' : 'general_feedback', message: options.message || '', language: navigator.language || '', device_type: getDeviceType() };
+}
+
+function buildFeedbackEventPayload(card, eventType, rating = '') {
+  return { visitor_id: getFeedbackVisitorId(), prompt_id: card.dataset.feedbackPromptId, page_path: normalizeFeedbackPath(window.location.pathname), calculator_key: card.dataset.calculatorKey, event_type: eventType, rating: rating || undefined, language: navigator.language || '', device_type: getDeviceType() };
+}
+
+function logFeedbackEvent(card, eventType, rating = '') {
+  const payload = buildFeedbackEventPayload(card, eventType, rating);
+  fetch('/api/feedback/event', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) }).catch(() => null);
 }
 
 async function submitFeedback(card, payload) {
-  const sessionCount = Number(sessionStorage.getItem(FEEDBACK_SESSION_COUNT_KEY) || 0);
-  if (sessionCount >= 5) throw new Error('Please try again later.');
-  const response = await fetch('/api/feedback', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
+  const response = await fetch('/api/feedback', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
   if (!response.ok) throw new Error('Unable to submit feedback right now.');
-  sessionStorage.setItem(FEEDBACK_SESSION_COUNT_KEY, String(sessionCount + 1));
   return response.json();
 }
 
@@ -7718,51 +7853,74 @@ function setFeedbackStatus(card, text, isError = false) {
   status.classList.add(isError ? 'text-red-600' : 'text-accent-600', isError ? 'dark:text-red-400' : 'dark:text-accent-400');
 }
 
-function initFeedbackCard() {
-  const pagePath = normalizeFeedbackPath(window.location.pathname);
-  const calculatorKey = FEEDBACK_CALCULATOR_ROUTES[pagePath];
-  if (!calculatorKey || document.querySelector('.feedback-card') || !canShowFeedbackPrompt()) return;
-  const main = document.querySelector('main');
-  if (!main) return;
-  main.insertAdjacentHTML('beforeend', `<div class="max-w-3xl mx-auto px-4">${getFeedbackCardMarkup(calculatorKey)}</div>`);
-  markFeedbackPromptShown();
-  const card = document.querySelector('.feedback-card');
+function watchFeedbackViewed(card) {
+  let viewed = false;
+  let timer = null;
+  if (!('IntersectionObserver' in window)) return;
+  const observer = new IntersectionObserver((entries) => {
+    const entry = entries[0];
+    if (entry && entry.isIntersecting && entry.intersectionRatio >= FEEDBACK_VIEW_THRESHOLD) {
+      if (!timer) timer = setTimeout(() => { viewed = true; markFeedbackViewed(); logFeedbackEvent(card, 'viewed'); observer.disconnect(); }, FEEDBACK_VIEW_DURATION_MS);
+    } else if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  }, { threshold: [FEEDBACK_VIEW_THRESHOLD] });
+  observer.observe(card);
+  card.addEventListener('feedback:removed', () => { if (timer) clearTimeout(timer); if (!viewed) observer.disconnect(); }, { once: true });
+}
+
+function bindFeedbackCard(card) {
   const details = card.querySelector('[data-feedback-step="details"]');
   const ratingStep = card.querySelector('[data-feedback-step="rating"]');
+  const openedDetails = new Set();
   let selectedRating = '';
+  logFeedbackEvent(card, 'rendered');
+  watchFeedbackViewed(card);
 
+  card.querySelector('[data-feedback-dismiss]')?.addEventListener('click', () => { logFeedbackEvent(card, 'dismissed'); markFeedbackDismissed(); card.dispatchEvent(new CustomEvent('feedback:removed')); card.remove(); });
   card.querySelectorAll('[data-feedback-rating]').forEach(button => {
     button.addEventListener('click', async () => {
       selectedRating = button.dataset.feedbackRating;
+      logFeedbackEvent(card, 'rating_clicked', selectedRating);
       if (selectedRating === 'useful') {
-        try {
-          await submitFeedback(card, buildFeedbackPayload(card, selectedRating));
-          ratingStep.classList.add('hidden');
-          setFeedbackStatus(card, 'Thank you for your feedback.');
-        } catch (error) {
-          setFeedbackStatus(card, error.message, true);
-        }
+        try { await submitFeedback(card, buildFeedbackPayload(card, selectedRating)); markFeedbackSubmitted(card.dataset.calculatorKey); logFeedbackEvent(card, 'submitted', selectedRating); ratingStep.classList.add('hidden'); setFeedbackStatus(card, 'Thank you for your feedback.'); } catch (error) { setFeedbackStatus(card, error.message, true); }
         return;
       }
-      ratingStep.classList.add('hidden');
       details.classList.remove('hidden');
-      const textarea = card.querySelector('[data-feedback-message]');
-      if (textarea) textarea.focus();
+      if (!openedDetails.has(selectedRating)) { openedDetails.add(selectedRating); logFeedbackEvent(card, 'details_opened', selectedRating); }
     });
   });
-
   details.addEventListener('submit', async (event) => {
     event.preventDefault();
     const message = card.querySelector('[data-feedback-message]').value.trim();
     const isCalculationIssue = card.querySelector('[data-feedback-calculation-issue]').checked;
-    try {
-      await submitFeedback(card, buildFeedbackPayload(card, selectedRating, { message, isCalculationIssue }));
-      details.classList.add('hidden');
-      setFeedbackStatus(card, 'Feedback submitted. Thank you for helping improve PerfusionTools.');
-    } catch (error) {
-      setFeedbackStatus(card, error.message, true);
-    }
+    try { await submitFeedback(card, buildFeedbackPayload(card, selectedRating, { message, isCalculationIssue })); markFeedbackSubmitted(card.dataset.calculatorKey); logFeedbackEvent(card, 'submitted', selectedRating); details.classList.add('hidden'); ratingStep.classList.add('hidden'); setFeedbackStatus(card, 'Feedback submitted. Thank you for helping improve PerfusionTools.'); } catch (error) { setFeedbackStatus(card, error.message, true); }
   });
+}
+
+function initFeedbackCard() {
+  const pagePath = normalizeFeedbackPath(window.location.pathname);
+  const calculatorKey = FEEDBACK_CALCULATOR_ROUTES[pagePath];
+  if (!calculatorKey || document.querySelector('.feedback-card')) return;
+  let userInteracted = false;
+  const pageEnteredAt = Date.now();
+  const evaluate = () => {
+    const context = resolveFeedbackResultContext(pagePath);
+    if (!context?.insertAfter || !context.readinessTarget) {
+      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') console.warn(`Feedback result anchor missing for ${pagePath}`);
+      return;
+    }
+    if (!userInteracted || document.querySelector('.feedback-card') || Date.now() - pageEnteredAt < FEEDBACK_MIN_DWELL_MS || !canShowFeedbackPrompt(calculatorKey) || !context.isReady()) return;
+    context.insertAfter.insertAdjacentHTML('afterend', getFeedbackCardMarkup(calculatorKey, getFeedbackPromptId()));
+    bindFeedbackCard(document.querySelector('.feedback-card'));
+  };
+  const calculatorRoot = document.querySelector('main') || document;
+  const markInteractionAndEvaluate = (delay = 0) => { userInteracted = true; setTimeout(evaluate, delay); };
+  calculatorRoot.addEventListener('input', (event) => { if (event.isTrusted !== false && event.target.closest('input, select')) markInteractionAndEvaluate(); }, true);
+  calculatorRoot.addEventListener('change', (event) => { if (event.isTrusted !== false && event.target.closest('input, select')) markInteractionAndEvaluate(); }, true);
+  calculatorRoot.addEventListener('click', (event) => { if (pagePath === '/timecalc/' && event.isTrusted !== false && isTimeFeedbackAction(event.target)) markInteractionAndEvaluate(100); }, true);
+  setTimeout(evaluate, FEEDBACK_MIN_DWELL_MS);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
