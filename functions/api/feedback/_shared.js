@@ -1,6 +1,7 @@
 const allowedRatings = new Set(['useful', 'needs_improvement', 'not_useful']);
 const allowedCategories = new Set(['general_feedback', 'calculation_issue']);
 const allowedStatuses = new Set(['open', 'reviewing', 'fixed', 'closed']);
+const allowedFeedbackEventTypes = new Set(['rendered', 'viewed', 'rating_clicked', 'details_opened', 'submitted', 'dismissed']);
 const calculatorPaths = new Map([
   ['/bsa/', 'bsa'],
   ['/gdp/', 'gdp'],
@@ -29,7 +30,7 @@ function getDb(env) {
 function normalizePath(value) {
   if (typeof value !== 'string') return '';
   try {
-    const path = value.startsWith('http') ? new URL(value).pathname : value;
+    const path = value.startsWith('http') ? new URL(value).pathname : value.split(/[?#]/)[0];
     if (!path.startsWith('/') || path.includes('..') || path.length > 120) return '';
     return path.length > 1 && !path.endsWith('/') ? `${path}/` : path;
   } catch {
@@ -65,6 +66,48 @@ function validateFeedbackPayload(payload) {
   const priority = category === 'calculation_issue' ? 'urgent' : 'normal';
 
   return { value: { rating, pagePath, calculatorKey, category, message: message || null, email: email || null, visitorId, language, deviceType, priority } };
+}
+
+function validateFeedbackEventPayload(payload) {
+  if (!payload || typeof payload !== 'object') return { error: 'Invalid payload.' };
+  const promptId = typeof payload.prompt_id === 'string' ? payload.prompt_id.trim() : '';
+  if (!/^[a-zA-Z0-9_-]{8,80}$/.test(promptId)) return { error: 'Invalid prompt_id.' };
+
+  const pagePath = normalizePath(payload.page_path);
+  if (!pagePath || !calculatorPaths.has(pagePath)) return { error: 'Invalid page_path.' };
+
+  const expectedKey = calculatorPaths.get(pagePath);
+  const calculatorKey = typeof payload.calculator_key === 'string' ? payload.calculator_key.trim() : expectedKey;
+  if (calculatorKey !== expectedKey) return { error: 'Invalid calculator_key.' };
+
+  const eventType = typeof payload.event_type === 'string' ? payload.event_type : '';
+  if (!allowedFeedbackEventTypes.has(eventType)) return { error: 'Invalid event_type.' };
+
+  const rating = typeof payload.rating === 'string' && payload.rating ? payload.rating : null;
+  if (rating && !allowedRatings.has(rating)) return { error: 'Invalid rating.' };
+
+  const visitorId = typeof payload.visitor_id === 'string' ? payload.visitor_id.trim() : '';
+  if (visitorId && !/^pt_[a-zA-Z0-9_-]{5,97}$/.test(visitorId)) return { error: 'Invalid visitor_id.' };
+  const language = typeof payload.language === 'string' ? payload.language.slice(0, 35) : null;
+  const deviceType = ['mobile', 'tablet', 'desktop'].includes(payload.device_type) ? payload.device_type : null;
+  return { value: { visitorId: visitorId || null, promptId, pagePath, calculatorKey, eventType, rating, language, deviceType } };
+}
+
+async function ensureFeedbackEventsTable(db) {
+  await db.prepare(`CREATE TABLE IF NOT EXISTS feedback_events (
+    id TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL,
+    visitor_id TEXT,
+    prompt_id TEXT NOT NULL,
+    page_path TEXT NOT NULL,
+    calculator_key TEXT,
+    event_type TEXT NOT NULL,
+    rating TEXT,
+    language TEXT,
+    device_type TEXT,
+    app_version TEXT,
+    commit_sha TEXT
+  )`).run();
 }
 
 async function ensureFeedbackTable(db) {
@@ -104,4 +147,4 @@ function unauthorized() {
   return json({ error: 'Unauthorized.' }, { status: 401, headers: { 'www-authenticate': 'Basic realm="PerfusionTools Feedback"' } });
 }
 
-export { allowedStatuses, getDb, json, validateFeedbackPayload, ensureFeedbackTable, requireAdmin, unauthorized };
+export { allowedStatuses, allowedFeedbackEventTypes, getDb, json, validateFeedbackPayload, validateFeedbackEventPayload, ensureFeedbackTable, ensureFeedbackEventsTable, requireAdmin, unauthorized };

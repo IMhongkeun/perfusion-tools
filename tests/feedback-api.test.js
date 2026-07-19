@@ -11,6 +11,7 @@ function createMockDb() {
     inserts: [],
     counts: new Map(),
     updates: [],
+    eventInserts: [],
   };
 
   return {
@@ -26,7 +27,8 @@ function createMockDb() {
               return null;
             },
             async run() {
-              if (sql.includes('INSERT INTO feedback')) state.inserts.push(params);
+              if (sql.includes('INSERT INTO feedback_events')) state.eventInserts.push(params);
+              else if (sql.includes('INSERT INTO feedback')) state.inserts.push(params);
               if (sql.includes('UPDATE feedback')) state.updates.push(params);
               return { success: true };
             },
@@ -52,6 +54,17 @@ async function loadFeedbackEndpoint() {
     fs.copyFileSync(path.join(__dirname, '..', 'functions', 'api', 'feedback', file), path.join(apiDir, file));
   });
   return import(pathToFileURL(path.join(apiDir, 'index.js')).href);
+}
+
+async function loadFeedbackEventEndpoint() {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'feedback-event-api-'));
+  const apiDir = path.join(tmpDir, 'feedback');
+  const eventDir = path.join(apiDir, 'event');
+  fs.mkdirSync(eventDir, { recursive: true });
+  fs.writeFileSync(path.join(tmpDir, 'package.json'), '{"type":"module"}');
+  fs.copyFileSync(path.join(__dirname, '..', 'functions', 'api', 'feedback', '_shared.js'), path.join(apiDir, '_shared.js'));
+  fs.copyFileSync(path.join(__dirname, '..', 'functions', 'api', 'feedback', 'event', 'index.js'), path.join(eventDir, 'index.js'));
+  return import(pathToFileURL(path.join(eventDir, 'index.js')).href);
 }
 
 async function loadAdminMiddleware() {
@@ -98,6 +111,10 @@ async function assertMiddlewareRejected(middleware, authorization, env, label) {
   assert.strictEqual(response.status, 401, label);
 }
 
+function makeEventRequest(payload, url = 'https://perfusiontools.com/api/feedback/event?bad=1#hash') {
+  return new Request(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
+}
+
 function makeRequest(payload) {
   return new Request('https://perfusiontools.com/api/feedback', {
     method: 'POST',
@@ -126,6 +143,7 @@ function basePayload(overrides = {}) {
 
 async function run() {
   const endpoint = await loadFeedbackEndpoint();
+  const eventEndpoint = await loadFeedbackEventEndpoint();
   const middleware = await loadAdminMiddleware();
   const adminDb = createMockDb();
   await assertAdminAccepted(endpoint, basicAuth('admin', 'secret'), { FEEDBACK_DB: adminDb, FEEDBACK_ADMIN_USER: 'admin', FEEDBACK_ADMIN_PASSWORD: 'secret' }, 'Basic Auth should work when only Basic credentials are configured');
@@ -179,9 +197,47 @@ async function run() {
     assert.strictEqual(limitedDb.state.inserts.length, 0, 'rate limited feedback must not insert');
     assert.strictEqual(webhookCalls.length, 1, 'rate limited feedback must not trigger extra webhook');
 
+
+    const eventDb = createMockDb();
+    const eventPayload = { visitor_id: 'pt_validVisitor_12345', prompt_id: 'prompt_12345678', page_path: '/bsa/?x=1#hash', calculator_key: 'bsa', event_type: 'viewed', rating: 'useful', language: 'en-US', device_type: 'desktop', patient_weight: 70, result: '1.8' };
+    const eventResponse = await eventEndpoint.onRequestPost({ request: makeEventRequest(eventPayload), env: { FEEDBACK_DB: eventDb } });
+    assert.strictEqual(eventResponse.status, 200, 'allowed feedback event should be stored');
+    assert.strictEqual(eventDb.state.eventInserts.length, 1, 'feedback event should insert into separate table');
+    assert.strictEqual(eventDb.state.eventInserts[0][4], '/bsa/', 'event page_path should strip query and hash');
+    assert.strictEqual(eventDb.state.eventInserts[0].includes(70), false, 'event payload must not store calculator inputs');
+    assert.strictEqual(eventDb.state.eventInserts[0].includes('1.8'), false, 'event payload must not store calculator results');
+
+    for (const badPayload of [
+      { ...eventPayload, event_type: 'opened' },
+      { ...eventPayload, prompt_id: '' },
+      { ...eventPayload, rating: 'bad_rating' },
+    ]) {
+      const badDb = createMockDb();
+      const badResponse = await eventEndpoint.onRequestPost({ request: makeEventRequest(badPayload), env: { FEEDBACK_DB: badDb } });
+      assert.strictEqual(badResponse.status, 400, 'invalid feedback event payload should be rejected');
+      assert.strictEqual(badDb.state.eventInserts.length, 0, 'invalid event must not insert');
+    }
+
+    const migrationSql = fs.readFileSync(path.join(__dirname, '..', 'migrations', '0002_feedback_events.sql'), 'utf8');
+    assert(migrationSql.includes('CREATE TABLE IF NOT EXISTS feedback_events'), 'feedback_events migration should create table');
+    assert(migrationSql.includes('idx_feedback_events_prompt_id'), 'feedback_events migration should index prompt_id');
+
     const mainJs = fs.readFileSync(path.join(__dirname, '..', 'main.js'), 'utf8');
     assert(mainJs.includes('visitorId = `pt_${randomPart.replace(/[^a-zA-Z0-9_-]/g, \'\')}`'), 'frontend visitor_id should use pt_ prefix and allowed characters');
     assert(mainJs.includes('Please do not include patient-identifiable information.'), 'feedback details step should warn against patient-identifiable information');
+    assert(mainJs.includes('const FEEDBACK_RESULT_ANCHORS = {'), 'frontend should define route-specific result anchor mapping');
+    assert(!mainJs.includes("main.insertAdjacentHTML('beforeend'"), 'frontend should not append feedback to the end of main');
+    assert(mainJs.includes('FEEDBACK_MIN_DWELL_MS = 15 * 1000'), 'frontend should require 15 seconds before showing feedback');
+    assert(mainJs.includes('FEEDBACK_GLOBAL_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000'), 'frontend should enforce seven-day global cooldown');
+    assert(mainJs.includes('FEEDBACK_CALCULATOR_COOLDOWN_MS = 30 * 24 * 60 * 60 * 1000'), 'frontend should enforce thirty-day calculator submission cooldown');
+    assert(mainJs.includes('pt_feedback_last_viewed_at_v2'), 'frontend should use versioned viewed storage key');
+    assert(mainJs.includes('pt_feedback_session_prompted_v2'), 'frontend should use versioned session storage key');
+    assert(mainJs.includes('aria-label="Dismiss feedback prompt"'), 'dismiss button should have an accessible label');
+    assert(mainJs.includes('IntersectionObserver') && mainJs.includes('FEEDBACK_VIEW_THRESHOLD = 0.5') && mainJs.includes('FEEDBACK_VIEW_DURATION_MS = 1000'), 'viewed event should require 50% intersection for 1 second');
+    assert(mainJs.includes("logFeedbackEvent(card, 'rendered')") && mainJs.includes("logFeedbackEvent(card, 'viewed')"), 'rendered and viewed events should be distinct');
+    assert(mainJs.includes("if (selectedRating === 'useful')"), 'Useful should remain one-click submission');
+    assert(mainJs.includes("details.classList.remove('hidden')"), 'negative feedback should open details');
+
 
     console.log('All feedback API tests passed.');
   } finally {
