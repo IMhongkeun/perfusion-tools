@@ -1487,27 +1487,27 @@ function isFiniteNumber(value) {
   return typeof value === 'number' && Number.isFinite(value);
 }
 
-function validateFiniteNumber(value, label) {
+function validateHctFiniteNumber(value, label) {
   if (!isFiniteNumber(value)) return `${label} must be a finite number.`;
   return '';
 }
 
-function validatePositiveNumber(value, label) {
-  const finiteMessage = validateFiniteNumber(value, label);
+function validateHctPositiveNumber(value, label) {
+  const finiteMessage = validateHctFiniteNumber(value, label);
   if (finiteMessage) return finiteMessage;
   if (!(value > 0)) return `${label} must be greater than 0.`;
   return '';
 }
 
-function validateNonNegativeNumber(value, label) {
-  const finiteMessage = validateFiniteNumber(value, label);
+function validateHctNonNegativeNumber(value, label) {
+  const finiteMessage = validateHctFiniteNumber(value, label);
   if (finiteMessage) return finiteMessage;
   if (value < 0) return `${label} cannot be negative.`;
   return '';
 }
 
 function validateHctPercent(value, label) {
-  const finiteMessage = validateFiniteNumber(value, label);
+  const finiteMessage = validateHctFiniteNumber(value, label);
   if (finiteMessage) return finiteMessage;
   if (!(value > 0 && value <= 100)) return `${label} must be greater than 0 and no more than 100%.`;
   return '';
@@ -1521,14 +1521,14 @@ function calculatePreCpbHct({ patientType, ebvCoef: ebvCoefValue, weightKg, preC
   const hasExplicitEbvCoef = ebvCoefValue !== undefined;
   const safeEbvCoef = hasExplicitEbvCoef ? ebvCoefValue : ebvCoef(patientType);
   const validationMessage = firstValidationMessage([
-    validatePositiveNumber(safeEbvCoef, 'EBV coefficient'),
-    validatePositiveNumber(weightKg, 'Weight'),
+    validateHctPositiveNumber(safeEbvCoef, 'EBV coefficient'),
+    validateHctPositiveNumber(weightKg, 'Weight'),
     validateHctPercent(preCpbHct, 'Pre-CPB Hct'),
-    validateNonNegativeNumber(primeVolumeMl, 'Prime volume'),
-    validateNonNegativeNumber(additionalCrystalloidMl, 'Additional crystalloid volume'),
-    validateNonNegativeNumber(ultrafiltrationRemovedMl, 'UF/HF removal volume'),
-    validateNonNegativeNumber(rbcUnits, 'RBC units'),
-    rbcUnits > 0 ? validatePositiveNumber(rbcVolumePerUnitMl, 'RBC unit volume') : '',
+    validateHctNonNegativeNumber(primeVolumeMl, 'Prime volume'),
+    validateHctNonNegativeNumber(additionalCrystalloidMl, 'Additional crystalloid volume'),
+    validateHctNonNegativeNumber(ultrafiltrationRemovedMl, 'UF/HF removal volume'),
+    validateHctNonNegativeNumber(rbcUnits, 'RBC units'),
+    rbcUnits > 0 ? validateHctPositiveNumber(rbcVolumePerUnitMl, 'RBC unit volume') : '',
     rbcUnits > 0 ? validateHctPercent(rbcUnitHct, 'RBC product Hct') : ''
   ]);
 
@@ -1579,16 +1579,16 @@ function computeOnPumpHctAdjustment({ patientType, weightKg, ebvCoefValue, prime
   const hasExplicitEbvCoef = ebvCoefValue !== undefined;
   const safeEbvCoef = hasExplicitEbvCoef ? ebvCoefValue : ebvCoef(patientType);
   const validationMessage = firstValidationMessage([
-    validatePositiveNumber(weightKg, 'Weight'),
-    validatePositiveNumber(safeEbvCoef, 'EBV coefficient'),
-    validateNonNegativeNumber(primeVolume, 'Initial prime volume'),
-    validateFiniteNumber(netIoChange, 'Net I/O change'),
+    validateHctPositiveNumber(weightKg, 'Weight'),
+    validateHctPositiveNumber(safeEbvCoef, 'EBV coefficient'),
+    validateHctNonNegativeNumber(primeVolume, 'Initial prime volume'),
+    validateHctFiniteNumber(netIoChange, 'Net I/O change'),
     validateHctPercent(currentHct, 'Current Hct'),
-    validateNonNegativeNumber(addedCrystalloid, 'Crystalloid/colloid addition'),
-    validateNonNegativeNumber(rbcUnits, 'RBC units'),
-    validatePositiveNumber(rbcUnitVol, 'RBC unit volume'),
+    validateHctNonNegativeNumber(addedCrystalloid, 'Crystalloid/colloid addition'),
+    validateHctNonNegativeNumber(rbcUnits, 'RBC units'),
+    validateHctPositiveNumber(rbcUnitVol, 'RBC unit volume'),
     validateHctPercent(rbcUnitHct, 'RBC product Hct'),
-    validateNonNegativeNumber(ultrafiltrationRemoved, 'UF/HF removal volume')
+    validateHctNonNegativeNumber(ultrafiltrationRemoved, 'UF/HF removal volume')
   ]);
 
   if (validationMessage) {
@@ -6790,7 +6790,7 @@ const CM_TO_MM = 10;
 const DETROIT_MAX_BSA = 2.0;
 const DETROIT_BSA_RANGE_MESSAGE = 'Detroit / Pettersen results are not calculated above BSA 2.0 m². The published curves and commonly used implementation are limited to this range, and extrapolation may produce implausible values.';
 
-function validatePositiveNumber(value, fieldName) {
+function validateZScorePositiveNumber(value, fieldName) {
   if (value == null || value === '') throw new Error(`${fieldName} is required.`);
   const parsed = Number(value);
   if (!Number.isFinite(parsed) || parsed <= 0) throw new Error(`${fieldName} must be a positive number.`);
@@ -6810,13 +6810,13 @@ function formatMm(valueMm) {
 }
 
 function calculateHaycockBSA(heightCm, weightKg) {
-  const h = validatePositiveNumber(heightCm, 'Height');
-  const w = validatePositiveNumber(weightKg, 'Weight');
+  const h = validateZScorePositiveNumber(heightCm, 'Height');
+  const w = validateZScorePositiveNumber(weightKg, 'Weight');
   return 0.024265 * Math.pow(h, 0.3964) * Math.pow(w, 0.5378);
 }
 
 function calculateInverseRange(bsa, coeff) {
-  const bsaValue = validatePositiveNumber(bsa, 'BSA');
+  const bsaValue = validateZScorePositiveNumber(bsa, 'BSA');
   const bsaPowAlpha = Math.pow(bsaValue, coeff.alpha);
 
   // PHN indexed inverse formula (cm): raw_cm(z) = (mean + z*sd) * (BSA^alpha)
@@ -6836,15 +6836,15 @@ function calculateInverseRange(bsa, coeff) {
 }
 
 function calculateForwardZScore(measuredCm, bsa, coeff) {
-  const measured = validatePositiveNumber(measuredCm, 'Measured value');
-  const bsaValue = validatePositiveNumber(bsa, 'BSA');
+  const measured = validateZScorePositiveNumber(measuredCm, 'Measured value');
+  const bsaValue = validateZScorePositiveNumber(bsa, 'BSA');
   const bsaPowAlpha = Math.pow(bsaValue, coeff.alpha);
   // PHN forward z-score formula: z = ((measured_cm / BSA^alpha) - mean) / sd
   return ((measured / bsaPowAlpha) - coeff.mean) / coeff.sd;
 }
 
 function calculatePhnTargetMm(bsa, targetZ, coeff) {
-  const bsaValue = validatePositiveNumber(bsa, 'BSA');
+  const bsaValue = validateZScorePositiveNumber(bsa, 'BSA');
   const zValue = Number(targetZ);
   if (!Number.isFinite(zValue)) throw new Error('Target Z-score must be a number.');
   const bsaPowAlpha = Math.pow(bsaValue, coeff.alpha);
@@ -6853,7 +6853,7 @@ function calculatePhnTargetMm(bsa, targetZ, coeff) {
 }
 
 function calculatePettersenMeanLn(bsa, coeff) {
-  const bsaValue = validatePositiveNumber(bsa, 'BSA');
+  const bsaValue = validateZScorePositiveNumber(bsa, 'BSA');
   ['b0', 'b1', 'b2', 'b3', 'mse'].forEach((key) => {
     if (!Number.isFinite(coeff[key])) throw new Error('Coefficient missing');
   });
@@ -6861,7 +6861,7 @@ function calculatePettersenMeanLn(bsa, coeff) {
 }
 
 function calculatePettersenZScore(measuredMm, bsa, coeff) {
-  const measured = validatePositiveNumber(measuredMm, 'Measured value');
+  const measured = validateZScorePositiveNumber(measuredMm, 'Measured value');
   const meanLn = calculatePettersenMeanLn(bsa, coeff);
   // Detroit/Pettersen 2008 uses ln(measurement in cm) and sqrt(MSE) as the denominator.
   return (Math.log(measured / CM_TO_MM) - meanLn) / Math.sqrt(coeff.mse);
@@ -6975,7 +6975,7 @@ function calculateModelExpectedSizes(modelKey, structureKey, bsa, targetZ) {
 
 function calculateModelMeasuredZScore(modelKey, structureKey, measuredMm, bsa) {
   if (isDetroitPettersenOutOfRange(modelKey, bsa)) throw new RangeError(DETROIT_BSA_RANGE_MESSAGE);
-  const measured = validatePositiveNumber(measuredMm, 'Measured value');
+  const measured = validateZScorePositiveNumber(measuredMm, 'Measured value');
   const model = zScoreModels[modelKey];
   if (!model) throw new Error('Select a supported reference model.');
   const structure = model.structures.find((item) => item.key === structureKey);
@@ -6986,12 +6986,12 @@ function calculateModelMeasuredZScore(modelKey, structureKey, measuredMm, bsa) {
 }
 
 function calculateRegressionReferenceCm(bsa, regressionCoeff) {
-  const bsaValue = validatePositiveNumber(bsa, 'BSA');
+  const bsaValue = validateZScorePositiveNumber(bsa, 'BSA');
   return regressionCoeff.intercept + regressionCoeff.slope * Math.pow(bsaValue, regressionCoeff.alpha);
 }
 
 function getBsaWarnings(bsa) {
-  const val = validatePositiveNumber(bsa, 'BSA');
+  const val = validateZScorePositiveNumber(bsa, 'BSA');
   const limits = phnCoeffSource.PHN_BSA_LIMITS;
   const warnings = [];
   if (val < limits.min || val > limits.max) {
@@ -7005,7 +7005,7 @@ function getBsaWarnings(bsa) {
 
 function getModelBsaWarnings(modelKey, bsa) {
   if (!modelKey) return [];
-  const val = validatePositiveNumber(bsa, 'BSA');
+  const val = validateZScorePositiveNumber(bsa, 'BSA');
   if (modelKey === 'detroitPettersen2008') {
     return val > DETROIT_MAX_BSA ? [DETROIT_BSA_RANGE_MESSAGE] : [];
   }
