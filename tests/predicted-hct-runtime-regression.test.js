@@ -84,8 +84,20 @@ function loadRuntime() {
   const hctCore = sliceBetween('const PATIENT_TYPE_COEFS = {', '// -----------------------------\n// Heparin management');
   const domHelpers = sliceBetween('// -----------------------------\n// DOM Helpers', '// -----------------------------\n// GDP Interaction');
   const hctInteraction = sliceBetween('// -----------------------------\n// Predicted Hct Interaction', '// -----------------------------\n// LBM Interaction');
-  vm.runInContext(`${hctCore}\n${domHelpers}\n${hctInteraction}\nthis.__exports = { calculatePreCpbHct, computePredictedHct, computeOnPumpHctAdjustment, computeTargetHctScenarios, parseSignedNetIoValue, updateHct, setHctMode, applyDefaultEbvCoef, elements };`, context);
+  // Include the later Z-score validator in the same global VM context. The previous
+  // isolated Hct slice missed the browser override caused by its duplicate name.
+  const zScoreValidator = sliceBetween('function validateZScorePositiveNumber', 'function cmToMm');
+  vm.runInContext(`${hctCore}\n${domHelpers}\n${hctInteraction}\n${zScoreValidator}\nthis.__exports = { calculatePreCpbHct, computePredictedHct, computeOnPumpHctAdjustment, computeTargetHctScenarios, parseSignedNetIoValue, updateHct, setHctMode, applyDefaultEbvCoef, elements };`, context);
   return context.__exports;
+}
+
+function runGlobalValidatorCollisionTests() {
+  const topLevelFunctions = [...mainJs.matchAll(/^function\s+([A-Za-z_$][\w$]*)\s*\(/gm)].map((match) => match[1]);
+  const duplicateFunctions = topLevelFunctions.filter((name, index) => topLevelFunctions.indexOf(name) !== index);
+  assert(!topLevelFunctions.includes('validatePositiveNumber'), 'generic validatePositiveNumber should not remain in the global scope');
+  assert(topLevelFunctions.includes('validateHctPositiveNumber'), 'Predicted Hct should use a calculator-specific positive-number validator');
+  assert(topLevelFunctions.includes('validateZScorePositiveNumber'), 'Z-score should use a distinct calculator-specific positive-number validator');
+  assert(!duplicateFunctions.includes('validatePositiveNumber'), 'validatePositiveNumber must not have duplicate top-level declarations');
 }
 
 function nearlyEqual(actual, expected, tolerance = 1e-9) {
@@ -414,6 +426,34 @@ function runFreshInitializationTests(exports) {
   assertNoInvalidTokens(exports);
 }
 
+function runBrowserCollisionAcceptanceTests(exports) {
+  setValues(exports, {
+    hct_mode: 'pre', pttype: 'adult_m', ebv_coef: 70, wt_hct: 70,
+    pre_hct: 40, prime: 1200, rbc_units: 0, rbc_unit_vol: 300, rbc_hct: 60
+  });
+  exports.setHctMode('pre');
+  assert.strictEqual(exports.elements.ebv.innerHTML, '4900');
+  assert.strictEqual(exports.elements.total_vol.innerHTML, '6100');
+  assert.strictEqual(exports.elements.pred_hct.innerHTML, '32.1%');
+  assert.strictEqual(exports.elements['hct-mode-help'].textContent, 'Estimate dilutional hematocrit at CPB initiation.');
+  assert.notStrictEqual(exports.elements['hct-mode-help'].textContent, '70');
+
+  setValues(exports, {
+    hct_mode: 'onpump', onpump_pttype: 'adult_m', onpump_ebv_coef: 70,
+    onpump_weight: 70, onpump_prime: 1200, onpump_net_io_change: 0,
+    current_hct: 25, onpump_fluids: 0, onpump_rbc_units: 0,
+    onpump_rbc_unit_vol: 300, onpump_rbc_hct: 60, onpump_removed: 0,
+    target_hct: ''
+  });
+  exports.setHctMode('onpump');
+  assert.strictEqual(exports.elements.onpump_ebv.innerHTML, '4900 mL');
+  assert.strictEqual(exports.elements.onpump_base_cpb_volume.innerHTML, '6100 mL');
+  assert.strictEqual(exports.elements.onpump_estimated_volume.innerHTML, '6100 mL');
+  assert.strictEqual(exports.elements.pred_hct_result.innerHTML, '25.0%');
+  assert(!exports.elements.onpump_result_message.textContent.includes('70'));
+  assert(!exports.elements['hct-mode-help'].textContent.includes('70'));
+}
+
 function runBoundaryTests(exports) {
   for (const bad of [NaN, Infinity, -Infinity, '70', undefined]) assertInvalidPre(exports, { weightKg: bad }, 'Weight');
   assertInvalidPre(exports, { weightKg: -1 }, 'Weight');
@@ -589,11 +629,13 @@ function runParityTests() {
 }
 
 function run() {
+  runGlobalValidatorCollisionTests();
   const exports = loadRuntime();
   runNumericOracleTests(exports);
   runPreCpbEbvCoefficientContractTests(exports);
   runOnPumpEbvCoefficientContractTests(exports);
   runFreshInitializationTests(exports);
+  runBrowserCollisionAcceptanceTests(exports);
   runBoundaryTests(exports);
   runStateTransitionTests(exports);
   runParityTests();
