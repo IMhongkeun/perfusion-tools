@@ -351,7 +351,7 @@
     window.applyRouteMeta = applyRouteMeta;
     window.addEventListener('load', () => applyRouteMeta('/gdp'));
   </script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/gdp#webpage","url":"https://perfusiontools.com/gdp/","name":"Goal-Directed Perfusion DO2i Calculator","description":"Calculate indexed oxygen delivery during cardiopulmonary bypass using flow index, hemoglobin, SaO2, and PaO2. Includes DO2i formula notes and clinical limitations.","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalCondition","name":"Intraoperative oxygen delivery management during cardiopulmonary bypass"},"dateModified":"2026-07-26"},{"@type":"WebApplication","@id":"https://perfusiontools.com/gdp#app","name":"Goal-Directed Perfusion DO2i Calculator","url":"https://perfusiontools.com/gdp/","applicationCategory":"MedicalApplication","operatingSystem":"Any","isPartOf":{"@id":"https://perfusiontools.com/gdp#webpage"},"publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"FAQPage","@id":"https://perfusiontools.com/gdp#faq","mainEntity":[{"@type":"Question","name":"What is DO2i during CPB?","acceptedAnswer":{"@type":"Answer","text":"Indexed oxygen delivery, or DO2i, estimates oxygen delivery normalized to body surface area during cardiopulmonary bypass. It combines pump flow index and arterial oxygen content."}},{"@type":"Question","name":"How is DO2i calculated?","acceptedAnswer":{"@type":"Answer","text":"First calculate flow index as pump flow divided by BSA. Then calculate arterial oxygen content: CaO₂ = (1.34 × Hb × SaO₂) + (0.003 × PaO₂), with SaO₂ converted from percent to a fraction. Finally, DO₂i = flow index × CaO₂ × 10. The ×10 factor converts the flow and oxygen-content units to mL/min/m²."}},{"@type":"Question","name":"Why does hemoglobin affect oxygen delivery more than PaO2?","acceptedAnswer":{"@type":"Answer","text":"Most arterial oxygen content is carried by hemoglobin. Dissolved oxygen from PaO2 contributes much less under usual CPB conditions, so changes in hemoglobin and saturation usually have a larger effect on calculated DO2i."}},{"@type":"Question","name":"Does this calculator define a transfusion threshold?","acceptedAnswer":{"@type":"Answer","text":"No. This calculator estimates oxygen delivery and does not define a transfusion threshold. Transfusion decisions should consider patient factors, institutional protocols, venous saturation, lactate, perfusion pressure, temperature, hemodilution, and the overall clinical context."}},{"@type":"Question","name":"Can this replace blood gas monitoring during CPB?","acceptedAnswer":{"@type":"Answer","text":"No. The result is an estimate based on entered values and should be interpreted alongside measured blood gas values, venous saturation, lactate trends, pump flow, pressure, temperature, and the surgical situation."}}]},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/gdp#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"Goal-Directed Perfusion DO2i Calculator","item":"https://perfusiontools.com/gdp/"}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/gdp#webpage","url":"https://perfusiontools.com/gdp/","name":"Goal-Directed Perfusion DO2i Calculator","description":"Calculate indexed oxygen delivery during cardiopulmonary bypass using flow index, hemoglobin, SaO2, and PaO2. Includes DO2i formula notes and clinical limitations.","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalCondition","name":"Intraoperative oxygen delivery management during cardiopulmonary bypass"},"dateModified":"2026-07-26"},{"@type":"WebApplication","@id":"https://perfusiontools.com/gdp#app","name":"Goal-Directed Perfusion DO2i Calculator","url":"https://perfusiontools.com/gdp/","applicationCategory":"MedicalApplication","operatingSystem":"Any","isPartOf":{"@id":"https://perfusiontools.com/gdp#webpage"},"publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"FAQPage","@id":"https://perfusiontools.com/gdp#faq","mainEntity":[{"@type":"Question","name":"What is DO2i during CPB?","acceptedAnswer":{"@type":"Answer","text":"Indexed oxygen delivery, or DO2i, estimates oxygen delivery normalized to body surface area during cardiopulmonary bypass. It combines pump flow index and arterial oxygen content."}},{"@type":"Question","name":"How is DO2i calculated?","acceptedAnswer":{"@type":"Answer","text":"First calculate flow index as pump flow divided by BSA. Then calculate arterial oxygen content: CaO₂ = (1.34 × Hb × SaO₂) + (0.0031 × PaO₂), with SaO₂ converted from percent to a fraction. Finally, DO₂i = flow index × CaO₂ × 10. The ×10 factor converts the flow and oxygen-content units to mL/min/m²."}},{"@type":"Question","name":"Why does hemoglobin affect oxygen delivery more than PaO2?","acceptedAnswer":{"@type":"Answer","text":"Most arterial oxygen content is carried by hemoglobin. Dissolved oxygen from PaO2 contributes much less under usual CPB conditions, so changes in hemoglobin and saturation usually have a larger effect on calculated DO2i."}},{"@type":"Question","name":"Does this calculator define a transfusion threshold?","acceptedAnswer":{"@type":"Answer","text":"No. This calculator estimates oxygen delivery and does not define a transfusion threshold. Transfusion decisions should consider patient factors, institutional protocols, venous saturation, lactate, perfusion pressure, temperature, hemodilution, and the overall clinical context."}},{"@type":"Question","name":"Can this replace blood gas monitoring during CPB?","acceptedAnswer":{"@type":"Answer","text":"No. The result is an estimate based on entered values and should be interpreted alongside measured blood gas values, venous saturation, lactate trends, pump flow, pressure, temperature, and the surgical situation."}}]},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/gdp#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"Goal-Directed Perfusion DO2i Calculator","item":"https://perfusiontools.com/gdp/"}]}]}</script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
@@ -618,7 +618,7 @@
             <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/35 p-4 space-y-3">
               <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Formula used</h3>
               <div class="grid gap-2 text-xs text-slate-700 dark:text-slate-300">
-                <p><span class="font-semibold">CaO₂</span> = (1.34 × Hb × SaO₂) + (0.003 × PaO₂)</p>
+                <p><span class="font-semibold">CaO₂</span> = (1.34 × Hb × SaO₂) + (0.0031 × PaO₂)</p>
                 <p><span class="font-semibold">DO₂i</span> = (Pump flow ÷ BSA) × CaO₂ × 10</p>
                 <p><span class="font-semibold">Required pump flow</span> = (Target DO₂i × BSA) ÷ (CaO₂ × 10)</p>
                 <p><span class="font-semibold">VO₂ fraction</span> = 2.2<sup>((Temperature °C − 37) ÷ 10)</sup></p>
@@ -657,7 +657,7 @@
             <section class="calculator-lower-section">
               <h2 class="calculator-lower-title">Worked example: calculating DO₂i during CPB</h2>
               <div class="calculator-lower-panel space-y-3">
-                <p>For a patient with a BSA of 1.80 m², pump flow of 4.50 L/min, hemoglobin of 8.0 g/dL, SaO₂ of 100%, and PaO₂ of 200 mmHg, the calculated flow index is 2.50 L/min/m² and the estimated DO₂i is approximately 283 mL/min/m².</p>
+                <p>For a patient with a BSA of 1.80 m², pump flow of 4.50 L/min, hemoglobin of 8.0 g/dL, SaO₂ of 100%, and PaO₂ of 200 mmHg, the calculated flow index is 2.50 L/min/m² and the estimated DO₂i is approximately 284 mL/min/m².</p>
                 <div class="space-y-2">
                   <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Step 1 — Flow index</h3>
                   <div class="calculator-formula-block overflow-x-auto">
@@ -673,17 +673,17 @@
                 <div class="space-y-2">
                   <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Step 3 — Arterial oxygen content</h3>
                   <div class="calculator-formula-block overflow-x-auto">
-                    <p>CaO₂ = (1.34 × Hb × SaO₂) + (0.003 × PaO₂)</p>
-                    <p>CaO₂ = (1.34 × 8.0 × 1.00) + (0.003 × 200)</p>
-                    <p>CaO₂ = 10.72 + 0.60 = 11.32 mL O₂/dL</p>
+                    <p>CaO₂ = (1.34 × Hb × SaO₂) + (0.0031 × PaO₂)</p>
+                    <p>CaO₂ = (1.34 × 8.0 × 1.00) + (0.0031 × 200)</p>
+                    <p>CaO₂ = 10.72 + 0.62 = 11.34 mL O₂/dL</p>
                   </div>
                 </div>
                 <div class="space-y-2">
                   <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Step 4 — Indexed oxygen delivery</h3>
                   <div class="calculator-formula-block overflow-x-auto">
                     <p>DO₂i = Flow index × CaO₂ × 10</p>
-                    <p>DO₂i = 2.50 × 11.32 × 10</p>
-                    <p>DO₂i = 283 mL/min/m²</p>
+                    <p>DO₂i = 2.50 × 11.34 × 10</p>
+                    <p>DO₂i = 283.5 mL/min/m², displayed as 284 mL/min/m²</p>
                   </div>
                 </div>
                 <p>This example demonstrates the calculation only. A calculated DO₂i should be interpreted with measured blood gas values, venous oxygen saturation, lactate trends, perfusion pressure, temperature, pump-flow limitations, and the overall clinical context.</p>
@@ -738,7 +738,7 @@
                 </div>
                 <div class="calculator-faq-item">
                   <p class="calculator-faq-question">How is DO2i calculated?</p>
-                  <p class="calculator-faq-answer">First calculate flow index as pump flow divided by BSA. Then calculate arterial oxygen content: CaO₂ = (1.34 × Hb × SaO₂) + (0.003 × PaO₂), with SaO₂ converted from percent to a fraction. Finally, DO₂i = flow index × CaO₂ × 10. The ×10 factor converts the flow and oxygen-content units to mL/min/m².</p>
+                  <p class="calculator-faq-answer">First calculate flow index as pump flow divided by BSA. Then calculate arterial oxygen content: CaO₂ = (1.34 × Hb × SaO₂) + (0.0031 × PaO₂), with SaO₂ converted from percent to a fraction. Finally, DO₂i = flow index × CaO₂ × 10. The ×10 factor converts the flow and oxygen-content units to mL/min/m².</p>
                 </div>
                 <div class="calculator-faq-item">
                   <p class="calculator-faq-question">Why does hemoglobin affect oxygen delivery more than PaO2?</p>
