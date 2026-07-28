@@ -238,6 +238,66 @@ function attachTopNavOverflowArrow(nav, buttonId) {
   setTimeout(updateButtonVisibility, 50);
 }
 
+// Keep the horizontally scrolled mobile calculator menu in the same place when
+// standard anchor navigation loads another calculator page in the current tab.
+const MOBILE_CALCULATOR_NAV_SCROLL_KEY = 'perfusiontools.mobileCalculatorNav.scrollLeft';
+
+function readMobileCalculatorNavScroll() {
+  try {
+    const storedValue = window.sessionStorage.getItem(MOBILE_CALCULATOR_NAV_SCROLL_KEY);
+    if (storedValue === null || storedValue.trim() === '') return null;
+    const scrollPosition = Number(storedValue);
+    return Number.isFinite(scrollPosition) ? Math.max(0, scrollPosition) : null;
+  } catch (_error) {
+    return null;
+  }
+}
+
+function saveMobileCalculatorNavScroll(nav) {
+  if (!nav || nav.scrollWidth <= nav.clientWidth || !Number.isFinite(nav.scrollLeft)) return;
+  try {
+    window.sessionStorage.setItem(MOBILE_CALCULATOR_NAV_SCROLL_KEY, String(Math.max(0, nav.scrollLeft)));
+  } catch (_error) {
+    // Storage can be unavailable in privacy modes; normal anchor navigation continues.
+  }
+}
+
+function revealActiveMobileCalculatorNavItem(nav) {
+  const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+  const activeLink = Array.from(nav.querySelectorAll('a[href]')).find((link) => {
+    const linkPath = new URL(link.href, window.location.origin).pathname.replace(/\/$/, '') || '/';
+    return linkPath === currentPath;
+  });
+  if (!activeLink) return;
+
+  const visibleStart = nav.scrollLeft;
+  const visibleEnd = visibleStart + nav.clientWidth;
+  const linkStart = activeLink.offsetLeft;
+  const linkEnd = linkStart + activeLink.offsetWidth;
+  if (linkStart < visibleStart) nav.scrollLeft = linkStart;
+  else if (linkEnd > visibleEnd) nav.scrollLeft = linkEnd - nav.clientWidth;
+}
+
+function initMobileCalculatorNav() {
+  const nav = document.querySelector('[data-mobile-calculator-nav]');
+  if (!nav) return;
+
+  nav.querySelectorAll('a[href]').forEach((link) => {
+    link.addEventListener('click', () => saveMobileCalculatorNavScroll(nav));
+  });
+
+  requestAnimationFrame(() => {
+    if (nav.scrollWidth <= nav.clientWidth) return;
+    const storedPosition = readMobileCalculatorNavScroll();
+    if (storedPosition !== null) {
+      const maxScroll = Math.max(0, nav.scrollWidth - nav.clientWidth);
+      nav.scrollLeft = Math.min(storedPosition, maxScroll);
+      return;
+    }
+    revealActiveMobileCalculatorNavItem(nav);
+  });
+}
+
 const BSA = {
   Mosteller(h, w) {
     return Math.sqrt((h * w) / 3600);
@@ -8045,6 +8105,7 @@ window.addEventListener('DOMContentLoaded', () => {
   resetScrollToTop();
   setTimeout(resetScrollToTop, 10);
   initStandaloneTopNav();
+  initMobileCalculatorNav();
   const primaryTopNav = el('nav-home') ? el('nav-home').closest('nav') : null;
   if (primaryTopNav) {
     primaryTopNav.classList.add('overflow-x-auto', 'whitespace-nowrap', 'max-w-[68%]', 'pr-1');
