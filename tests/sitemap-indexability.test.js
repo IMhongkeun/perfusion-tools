@@ -9,6 +9,8 @@ const distSitemap = fs.readFileSync(path.join(repoRoot, 'dist', 'sitemap.xml'), 
 const redirects = fs.readFileSync(path.join(repoRoot, '_redirects'), 'utf8');
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 const distIndexHtml = fs.readFileSync(path.join(repoRoot, 'dist', 'index.html'), 'utf8');
+const bsaHtml = fs.readFileSync(path.join(repoRoot, 'bsa', 'index.html'), 'utf8');
+const distBsaHtml = fs.readFileSync(path.join(repoRoot, 'dist', 'bsa', 'index.html'), 'utf8');
 
 const expectedIndexablePaths = [
   '/',
@@ -30,6 +32,25 @@ function extractLocs(xml) {
   assert(xml.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'), 'Sitemap should include the sitemap urlset namespace.');
   assert(xml.trim().endsWith('</urlset>'), 'Sitemap should close the urlset element.');
   return Array.from(xml.matchAll(/<loc>([^<]+)<\/loc>/g)).map(match => match[1]);
+}
+
+function getLastmodForLoc(xml, loc) {
+  const urlBlocks = Array.from(xml.matchAll(/<url>([\s\S]*?)<\/url>/g))
+    .map((match) => match[1]);
+  const block = urlBlocks.find((entry) => entry.includes(`<loc>${loc}</loc>`));
+  assert(block, `Sitemap entry should exist for ${loc}.`);
+
+  const lastmodMatch = block.match(/<lastmod>([^<]+)<\/lastmod>/);
+  assert(lastmodMatch, `Sitemap entry for ${loc} should include lastmod.`);
+  return lastmodMatch[1];
+}
+
+function getJsonLdNodes(html) {
+  return Array.from(
+    html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)
+  )
+    .map((match) => JSON.parse(match[1]))
+    .flatMap((block) => block['@graph'] || [block]);
 }
 
 
@@ -65,6 +86,22 @@ assertSitemapUrls(rootSitemap, 'Root');
 assertSitemapUrls(distSitemap, 'Dist');
 assert.strictEqual(rootSitemap, distSitemap, 'Root and dist sitemap.xml should stay synchronized.');
 assert.strictEqual(indexHtml, distIndexHtml, 'Root and dist index.html should stay synchronized.');
+
+const bsaUrl = 'https://perfusiontools.com/bsa/';
+const rootBsaLastmod = getLastmodForLoc(rootSitemap, bsaUrl);
+const distBsaLastmod = getLastmodForLoc(distSitemap, bsaUrl);
+assert.strictEqual(rootBsaLastmod, '2026-07-26');
+assert.strictEqual(distBsaLastmod, '2026-07-26');
+assert.strictEqual(rootBsaLastmod, distBsaLastmod);
+assert.strictEqual(bsaHtml, distBsaHtml, 'Source and dist BSA HTML should remain synchronized.');
+
+const bsaNodes = getJsonLdNodes(bsaHtml);
+const bsaMedicalPage = bsaNodes.find((node) => node['@type'] === 'MedicalWebPage');
+assert(bsaMedicalPage, 'BSA MedicalWebPage structured data should exist.');
+assert.strictEqual(bsaMedicalPage.url, bsaUrl);
+assert.strictEqual(bsaMedicalPage.dateModified, '2026-07-26');
+assert.strictEqual(bsaMedicalPage.dateModified, rootBsaLastmod);
+
 assert(redirects.includes('/info/      /             200'), '/info/ home rewrite rule should remain unchanged.');
 assert(redirects.includes('/privacy/   /             200'), '/privacy/ rewrite should remain unchanged.');
 assert(redirects.includes('/terms/     /             200'), '/terms/ rewrite should remain unchanged.');
