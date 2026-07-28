@@ -1,6 +1,6 @@
 {
-  "schemaVersion": "1.0.0",
-  "updatedAt": "2026-06-11",
+  "schemaVersion": "1.1.0",
+  "updatedAt": "2026-07-28",
   "items": [
     {
       "manufacturer": "LivaNova",
@@ -15161,6 +15161,231 @@
         }
       ],
       "notes": "Bio-Medicus NextGen femoral arterial cannula. 25 Fr (8.3 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-125; cannula kit order code 96530-125."
+    },
+    {
+      "manufacturer": "Getinge / Maquet",
+      "model": "Avalon Elite Bi-Caval Dual-Lumen Catheter",
+      "category": "jugular venous",
+      "size": "13 Fr",
+      "outerDiameterMm": 4.3,
+      "insertableLength": "11 cm (4.3 in)",
+      "connectorSize": "1/4 in",
+      "cannulaOrderCodeLabel": "Product code",
+      "cannulaOrderCode": "10013-CE",
+      "sapCode": "70107.3603",
+      "cannulaType": "Bi-caval dual-lumen ECMO cannula",
+      "testMedium": "H2O at ambient temperature",
+      "dataStatus": "digitized-curve",
+      "sourceLabel": "Avalon Elite manufacturer flow-characteristics graph",
+      "sourceUrl": "",
+      "digitizationNote": "Values were digitized from the manufacturer H2O-at-ambient-temperature flow-characteristics graph. Infusion and drainage lumens are shown separately; no extrapolation or fitted curve is used.",
+      "referenceFlowRangeLabel": "Series-specific",
+      "metadata": {
+        "outerDiameter": "4.3 mm",
+        "insertableLength": "11 cm (4.3 in)",
+        "connectorSize": "1/4 in",
+        "productCode": "10013-CE",
+        "sapCode": "70107.3603"
+      },
+      "pressureSeries": [
+        {
+          "id": "infusion",
+          "label": "Infusion",
+          "semanticType": "infusion",
+          "lineStyle": "solid",
+          "points": [
+            {
+              "flow": 0.8325358851674641,
+              "pressureDrop": 249.43977591036406
+            },
+            {
+              "flow": 0.7870813397129187,
+              "pressureDrop": 225.91036414565818
+            },
+            {
+              "flow": 0.7464114832535884,
+              "pressureDrop": 206.86274509803914
+            },
+            {
+              "flow": 0.7105263157894736,
+              "pressureDrop": 188.93557422969178
+            },
+            {
+              "flow": 0.6818181818181819,
+              "pressureDrop": 174.3697478991596
+            },
+            {
+              "flow": 0.6507177033492821,
+              "pressureDrop": 160.92436974789908
+            },
+            {
+              "flow": 0.6267942583732057,
+              "pressureDrop": 150.8403361344537
+            },
+            {
+              "flow": 0.5980861244019139,
+              "pressureDrop": 137.95518207282907
+            },
+            {
+              "flow": 0.5669856459330144,
+              "pressureDrop": 125.07002801120441
+            },
+            {
+              "flow": 0.5334928229665071,
+              "pressureDrop": 111.06442577030808
+            },
+            {
+              "flow": 0.5,
+              "pressureDrop": 98.73949579831927
+            },
+            {
+              "flow": 0.46172248803827753,
+              "pressureDrop": 85.85434173669461
+            },
+            {
+              "flow": 0.43540669856459324,
+              "pressureDrop": 75.21008403361338
+            },
+            {
+              "flow": 0.3971291866028708,
+              "pressureDrop": 61.7647058823529
+            },
+            {
+              "flow": 0.3564593301435406,
+              "pressureDrop": 49.99999999999994
+            },
+            {
+              "flow": 0.270334928229665,
+              "pressureDrop": 24.789915966386502
+            },
+            {
+              "flow": 0.3133971291866029,
+              "pressureDrop": 38.23529411764699
+            },
+            {
+              "flow": 0.2200956937799043,
+              "pressureDrop": 15.826330532212864
+            },
+            {
+              "flow": 0.17464114832535882,
+              "pressureDrop": 7.9831932773109315
+            },
+            {
+              "flow": 0.12679425837320568,
+              "pressureDrop": 2.941176470588175
+            },
+            {
+              "flow": 0,
+              "pressureDrop": 0.7002801120447657
+            },
+            {
+              "flow": 0.062200956937799035,
+              "pressureDrop": 1.2605042016806465
+            }
+          ]
+        },
+        {
+          "id": "drainage",
+          "label": "Drainage",
+          "semanticType": "drainage",
+          "lineStyle": "dashed",
+          "points": [
+            {
+              "flow": 1.2464114832535884,
+              "pressureDrop": -148.31932773109241
+            },
+            {
+              "flow": 1.1961722488038276,
+              "pressureDrop": -135.9943977591036
+            },
+            {
+              "flow": 1.1507177033492821,
+              "pressureDrop": -125.35014005602244
+            },
+            {
+              "flow": 1.1076555023923444,
+              "pressureDrop": -115.82633053221286
+            },
+            {
+              "flow": 1.0669856459330145,
+              "pressureDrop": -108.54341736694681
+            },
+            {
+              "flow": 1.0239234449760763,
+              "pressureDrop": -99.57983193277312
+            },
+            {
+              "flow": 0.978468899521531,
+              "pressureDrop": -91.73669467787113
+            },
+            {
+              "flow": 0.923444976076555,
+              "pressureDrop": -83.33333333333331
+            },
+            {
+              "flow": 0.8684210526315791,
+              "pressureDrop": -74.92997198879556
+            },
+            {
+              "flow": 0.8038277511961721,
+              "pressureDrop": -64.84593837535016
+            },
+            {
+              "flow": 0.7464114832535884,
+              "pressureDrop": -58.12324929971993
+            },
+            {
+              "flow": 0.6961722488038278,
+              "pressureDrop": -50.84033613445382
+            },
+            {
+              "flow": 0.6387559808612441,
+              "pressureDrop": -42.99719887955183
+            },
+            {
+              "flow": 0.569377990430622,
+              "pressureDrop": -36.2745098039216
+            },
+            {
+              "flow": 0.5,
+              "pressureDrop": -28.991596638655494
+            },
+            {
+              "flow": 0.44976076555023925,
+              "pressureDrop": -23.38935574229697
+            },
+            {
+              "flow": 0.37559808612440193,
+              "pressureDrop": -17.226890756302566
+            },
+            {
+              "flow": 0.3110047846889952,
+              "pressureDrop": -12.745098039215748
+            },
+            {
+              "flow": 0.25119617224880386,
+              "pressureDrop": -9.383753501400577
+            },
+            {
+              "flow": 0.18421052631578944,
+              "pressureDrop": -6.0224089635854625
+            },
+            {
+              "flow": 0.10287081339712917,
+              "pressureDrop": -2.6610644257703484
+            },
+            {
+              "flow": 0.0023923444976076402,
+              "pressureDrop": -0.420168067226939
+            },
+            {
+              "flow": 0.05023923444976075,
+              "pressureDrop": -0.420168067226939
+            }
+          ]
+        }
+      ],
+      "notes": "Dual lumen · Infusion + Drainage. The drainage lumen drains venous blood from the SVC and IVC; the infusion lumen returns oxygenated blood toward the right atrium. Negative drainage values represent the drainage-side pressure direction shown in the manufacturer flow-characteristics graph."
     }
   ]
 }

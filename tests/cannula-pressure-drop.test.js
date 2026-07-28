@@ -716,3 +716,42 @@ function run() {
 }
 
 run();
+
+// Avalon Elite 13 Fr dual-lumen regression coverage.
+const avalonEntries = pressureDropData.filter(entry => entry.model === 'Avalon Elite Bi-Caval Dual-Lumen Catheter' && entry.size === '13 Fr');
+assert.strictEqual(avalonEntries.length, 1, 'Avalon Elite 13 Fr must be registered as one selectable product.');
+const avalon = avalonEntries[0];
+assert.strictEqual(avalon.manufacturer, 'Getinge / Maquet');
+assert.strictEqual(avalon.pressureSeries.length, 2, 'Avalon must contain two named series within one product.');
+const infusion = avalon.pressureSeries.find(series => series.id === 'infusion');
+const drainage = avalon.pressureSeries.find(series => series.id === 'drainage');
+assert(infusion && drainage, 'Infusion and drainage series must both be present.');
+assert.strictEqual(infusion.points.length, 22, 'Infusion must retain all 22 headerless source rows.');
+assert.strictEqual(drainage.points.length, 23, 'Drainage must retain all 23 headerless source rows.');
+const normalizedInfusion = getValidPressureDropPoints(infusion.points);
+const normalizedDrainage = getValidPressureDropPoints(drainage.points);
+assert(normalizedInfusion.every((point, index) => index === 0 || point.flow > normalizedInfusion[index - 1].flow), 'Infusion flows must normalize to unique ascending values.');
+assert(normalizedDrainage.every((point, index) => index === 0 || point.flow > normalizedDrainage[index - 1].flow), 'Drainage flows must normalize to unique ascending values.');
+assert(normalizedInfusion.every(point => point.pressureDrop > 0), 'Infusion signs must remain positive.');
+assert(normalizedDrainage.every(point => point.pressureDrop < 0), 'Drainage signs must remain negative.');
+assert(!infusion.points.some(point => point.flow === 0 && point.pressureDrop === 0), 'No fabricated infusion (0, 0) point is permitted.');
+assert(!drainage.points.some(point => point.flow === 0 && point.pressureDrop === 0), 'No fabricated drainage (0, 0) point is permitted.');
+assert.strictEqual(interpolatePressureDrop(infusion.points, 0.5).value, 98.73949579831927);
+assert.strictEqual(interpolatePressureDrop(drainage.points, 0.5).value, -28.991596638655494);
+assert(Math.abs(interpolatePressureDrop(infusion.points, 0.75).value - 208.54341736694676) < 1e-10);
+assert(Math.abs(interpolatePressureDrop(drainage.points, 0.75).value - (-58.543417366946834)) < 1e-10);
+const infusionAtPointNine = interpolatePressureDrop(infusion.points, 0.9);
+const drainageAtPointNine = interpolatePressureDrop(drainage.points, 0.9);
+assert.strictEqual(infusionAtPointNine.state, 'out_of_range');
+assert.strictEqual(infusionAtPointNine.value, null);
+assert.strictEqual(drainageAtPointNine.state, 'interpolated');
+assert(Math.abs(drainageAtPointNine.value - (-79.7527706734868)) < 1e-10);
+[infusion, drainage].forEach(series => {
+  const result = interpolatePressureDrop(series.points, 1.3);
+  assert.strictEqual(result.state, 'out_of_range');
+  assert.strictEqual(result.value, null);
+});
+assert(mainJs.includes('function normalizePressureDropEntry') && mainJs.includes("label: 'Pressure drop'"), 'Legacy records must normalize to one pressure series.');
+assert(mainJs.includes('drawPressureDropSeriesChart(svg, series') && mainJs.includes('data-zero-pressure-line="true"'), 'Dual-series chart and zero-reference line must be implemented.');
+assert(mainJs.includes("item.lineStyle === 'dashed'") && mainJs.includes("{ curveMode: 'linear' }"), 'Series must use line style as well as labels and retain linear rendering.');
+assert(mainJs.includes('selectedComparisonKeys.length < 4'), 'Avalon remains one entry under the existing four-product selection limit.');
