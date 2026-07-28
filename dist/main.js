@@ -5869,7 +5869,15 @@ function getPressureDropResultStateText(result) {
   if (result?.state === 'exact') return 'Exact manufacturer source point.';
   if (result?.state === 'interpolated') return 'Adjacent-point linear interpolation.';
   if (result?.state === 'out_of_range') return 'Out of source range. No extrapolation.';
+  if (result?.state === 'no_points') return 'No source curve data available for this series.';
   return 'Enter a valid target flow. No calculation performed.';
+}
+
+function getPressureDropResultValueText(result) {
+  if (result?.state === 'exact' || result?.state === 'interpolated') return `${formatSignedPressureDrop(result.value)} mmHg`;
+  if (result?.state === 'out_of_range') return 'Out of source range';
+  if (result?.state === 'no_points') return 'No source data';
+  return 'Enter flow';
 }
 
 function createPressureDropEstimateCard(entry, flowInputValue, flowValue, interpolationResults, onFlowInput) {
@@ -5886,9 +5894,7 @@ function createPressureDropEstimateCard(entry, flowInputValue, flowValue, interp
     const result = interpolationResults[index] || { state: 'invalid', value: null };
     const row = document.createElement('div');
     row.className = 'rounded-lg bg-white/70 dark:bg-primary-900/50 p-2';
-    const valueText = result.state === 'exact' || result.state === 'interpolated'
-      ? `${formatSignedPressureDrop(result.value)} mmHg`
-      : (result.state === 'out_of_range' ? 'Out of range' : 'Enter flow');
+    const valueText = getPressureDropResultValueText(result);
     row.innerHTML = `<p class="text-xs font-semibold text-slate-600 dark:text-slate-300">${item.label}${item.semanticType === 'infusion' ? ' ΔP' : (item.semanticType === 'drainage' ? ' pressure' : '')}</p><p class="text-xl font-bold text-primary-900 dark:text-white" aria-label="${item.label}: ${valueText}. ${getPressureDropResultStateText(result)}">${valueText}</p><p class="text-xs font-medium text-slate-600 dark:text-slate-300">${getPressureDropResultStateText(result)}</p><p class="text-xs text-slate-500 dark:text-slate-400">${result.state === 'out_of_range' ? `Available range: ${formatPressureDropFlowValue(result.minFlow)}–${formatPressureDropFlowValue(result.maxFlow)} L/min.` : `Range: ${getPressureDropRangeText(getValidPressureDropPoints(item.points), '')}`}</p>`;
     results.appendChild(row);
   });
@@ -6055,9 +6061,7 @@ function getPressureDropComparisonResult(entry, flowValue) {
   const seriesResults = getPressureDropSeries(entry).map(series => {
     const validPoints = getValidPressureDropPoints(series.points);
     const interpolationResult = interpolatePressureDrop(series.points, flowValue);
-    let valueText = 'Enter flow';
-    if (interpolationResult.state === 'out_of_range') valueText = 'Out of source range';
-    else if (interpolationResult.state === 'exact' || interpolationResult.state === 'interpolated') valueText = `${formatSignedPressureDrop(interpolationResult.value)} mmHg`;
+    const valueText = getPressureDropResultValueText(interpolationResult);
     return {
       series,
       interpolationResult,

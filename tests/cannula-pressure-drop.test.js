@@ -1315,12 +1315,39 @@ const stateFormatterSource = mainJs.slice(
   mainJs.indexOf('function getPressureDropResultStateText'),
   mainJs.indexOf('\nfunction createPressureDropEstimateCard')
 );
-const formatResultState = vm.runInNewContext(`${stateFormatterSource}; getPressureDropResultStateText`);
+const stateRuntime = vm.runInNewContext(`${stateFormatterSource}; ({ getPressureDropResultStateText, getPressureDropResultValueText })`, {
+  formatSignedPressureDrop: value => `${value > 0 ? '+' : ''}${value.toFixed(1)}`
+});
+const formatResultState = stateRuntime.getPressureDropResultStateText;
 assert.strictEqual(formatResultState({ state: 'exact' }), 'Exact manufacturer source point.');
 assert.strictEqual(formatResultState({ state: 'interpolated' }), 'Adjacent-point linear interpolation.');
 assert.strictEqual(formatResultState({ state: 'invalid' }), 'Enter a valid target flow. No calculation performed.');
 assert.strictEqual(formatResultState({ state: 'out_of_range' }), 'Out of source range. No extrapolation.');
+assert.strictEqual(formatResultState({ state: 'no_points' }), 'No source curve data available for this series.');
+assert.notStrictEqual(formatResultState({ state: 'no_points' }), formatResultState({ state: 'invalid' }), 'Missing series data must not be described as invalid target-flow input.');
+assert.strictEqual(stateRuntime.getPressureDropResultValueText({ state: 'no_points' }), 'No source data');
+assert.strictEqual(stateRuntime.getPressureDropResultValueText({ state: 'invalid' }), 'Enter flow');
 assert(!formatResultState({ state: 'invalid' }).match(/exact|interpolat/i), 'Cleared/invalid input must never claim a calculation.');
+
+const syntheticPartialSeries = [
+  { id: 'infusion', label: 'Infusion', lineStyle: 'solid', points: [{ flow: 1, pressureDrop: 10 }, { flow: 2, pressureDrop: 20 }] },
+  { id: 'drainage', label: 'Drainage', lineStyle: 'dashed', points: [] }
+];
+const syntheticPartialResults = syntheticPartialSeries.map(series => interpolatePressureDrop(series.points, 1.5));
+assert.strictEqual(syntheticPartialResults[0].state, 'interpolated');
+assert.strictEqual(syntheticPartialResults[0].value, 15);
+assert.strictEqual(syntheticPartialResults[1].state, 'no_points');
+const syntheticPartialStatus = syntheticPartialSeries.map((series, index) => `${series.label}: ${formatResultState(syntheticPartialResults[index])}`);
+assert.deepStrictEqual(syntheticPartialStatus, [
+  'Infusion: Adjacent-point linear interpolation.',
+  'Drainage: No source curve data available for this series.'
+]);
+assert(!syntheticPartialStatus.join(' ').includes('Enter a valid target flow'), 'A partial product with a valid target flow must not be labeled as invalid input.');
+assert(!renderedSvg.innerHTML.includes('data-series-id="empty"') && !renderedSvg.innerHTML.includes('Empty leading series; Target flow'), 'An empty series must emit no target marker or tooltip target.');
+assert(renderedSvg.innerHTML.includes('data-series-id="drainage"'), 'The later populated series must retain its marker association after no_points handling.');
+const chartAccessibleStatus = syntheticPartialSeries.map((series, index) => `${series.label}: ${formatResultState(syntheticPartialResults[index])}`).join(', ');
+assert(chartAccessibleStatus.includes('Drainage: No source curve data available for this series.'), 'Chart accessibility text must preserve the empty series identity and missing-data state.');
+assert(chartAccessibleStatus.includes('Infusion: Adjacent-point linear interpolation.'), 'Chart accessibility text must continue describing the valid series independently.');
 
 const formatTestFlow = flow => Number.isInteger(flow) ? flow.toFixed(1) : flow.toFixed(2).replace(/0$/, '');
 const getTestRange = points => `${formatTestFlow(points[0].flow)}–${formatTestFlow(points.at(-1).flow)} L/min`;
@@ -1339,6 +1366,8 @@ const legacyEntry = pressureDropData.find(entry => !entry.pressureSeries && Arra
 assert(legacyEntry, 'A legacy single-series fixture must remain available.');
 assert.strictEqual(getTestRange(getValidPressureDropPoints(legacyEntry.points)), `${formatTestFlow(legacyEntry.points[0].flow)}–${formatTestFlow(legacyEntry.points.at(-1).flow)} L/min`, 'Legacy single-series numeric range behavior must remain unchanged.');
 assert(mainJs.includes("lumenRows.className = 'mt-2 grid gap-2'") && mainJs.includes('result.seriesResults.forEach(item =>'), 'Mobile comparison must render explicit per-lumen elements rather than a newline in one paragraph.');
+assert(mainJs.includes('const valueText = getPressureDropResultValueText(interpolationResult);'), 'Desktop and mobile comparison rows must use the shared no_points-aware value formatter.');
+assert(mainJs.includes('const valueText = getPressureDropResultValueText(result);'), 'Primary multi-series rows must use the shared no_points-aware value formatter.');
 assert(mainJs.includes("text.textContent = 'Show raw digitized points'") && mainJs.includes("input.type = 'checkbox'") && mainJs.includes('input.checked = checked'), 'The raw-point control must be a labeled, checked-state checkbox.');
 assert(mainJs.includes('let showRawPressureDropPoints = false;'), 'Raw markers must default to hidden once per page initialization.');
 assert.strictEqual((mainJs.match(/showRawPressureDropPoints = false/g) || []).length, 1, 'Rerender paths must not reset the page-level raw-marker state.');
