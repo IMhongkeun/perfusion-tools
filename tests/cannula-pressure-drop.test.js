@@ -1284,11 +1284,25 @@ chartRuntime.drawPressureDropSeriesChart(renderedSvg, [
   ] }
 ], 1.5, [{ state: 'no_points', value: NaN }, { state: 'interpolated', value: -15 }], { curveMode: 'linear' });
 assert(renderedSvg.innerHTML.includes('23 Fr — Drainage; Target flow: 1.50 L/min; Signed pressure: -15.0 mmHg'), 'Rendered target tooltip must include target flow, lumen identity, signed pressure, and units.');
+assert(!renderedSvg.innerHTML.includes('data-raw-pressure-point="true"'), 'Raw source markers must not be rendered by default.');
+assert(renderedSvg.innerHTML.includes('<path '), 'Straight source-point line segments must remain rendered while raw markers are hidden.');
 assert(renderedSvg.innerHTML.includes('data-series-id="drainage"'), 'An empty leading series must not shift the populated series marker/estimate association.');
 assert(renderedSvg.innerHTML.includes('stroke-dasharray="7 4"'), 'The populated drainage series must retain its dashed line style after empty-series filtering.');
 assert(!renderedSvg.innerHTML.includes('Empty leading series; Target flow'), 'The empty leading series must not receive the later series estimate.');
 assert(renderedSvg.innerHTML.includes('Flow [L/min]') && renderedSvg.innerHTML.includes('Pressure drop [mmHg]'), 'The rendered chart must contain bracketed axis units.');
 assert.strictEqual(new Set(Array.from(chartRuntime.productColors)).size, 4, 'Product indexes 0–3 must map to distinct colors.');
+
+const visibleRawPointsSvg = { dataset: {}, innerHTML: '' };
+const visibleSeries = [
+  { id: 'infusion', label: 'Infusion', displayLabel: '23 Fr — Infusion', lineStyle: 'solid', colorIndex: 0, points: [{ flow: 1, pressureDrop: 10 }, { flow: 2, pressureDrop: 20 }] },
+  { id: 'drainage', label: 'Drainage', displayLabel: '23 Fr — Drainage', lineStyle: 'dashed', colorIndex: 0, points: [{ flow: 1, pressureDrop: -10 }, { flow: 2, pressureDrop: -20 }] }
+];
+chartRuntime.drawPressureDropSeriesChart(visibleRawPointsSvg, visibleSeries, 1.5, [{ value: 15 }, { value: -15 }], { curveMode: 'linear', showRawPoints: true });
+assert.strictEqual((visibleRawPointsSvg.innerHTML.match(/data-raw-pressure-point="true"/g) || []).length, 4, 'Enabling the control must render every raw point across all series.');
+assert(visibleRawPointsSvg.innerHTML.includes('23 Fr — Infusion; Flow: 1.00 L/min; Signed pressure: +10.0 mmHg'), 'Visible raw points must retain their rendered tooltip.');
+assert(visibleRawPointsSvg.innerHTML.includes('23 Fr — Drainage; Flow: 1.00 L/min; Signed pressure: -10.0 mmHg'), 'Both Avalon lumens must expose raw-point tooltips when enabled.');
+assert.strictEqual((visibleRawPointsSvg.innerHTML.match(/data-series-id=/g) || []).length, 2, 'Target markers must remain rendered when raw points are enabled.');
+assert(visibleRawPointsSvg.innerHTML.includes('data-raw-pressure-point="true"') && visibleRawPointsSvg.innerHTML.includes(' r="2"') && visibleRawPointsSvg.innerHTML.includes(' r="4"'), 'Raw markers must remain smaller than target-flow markers.');
 
 [2, 4, 6, 8].forEach(entryCount => {
   const layout = chartRuntime.getPressureDropLegendLayout(entryCount);
@@ -1325,6 +1339,11 @@ const legacyEntry = pressureDropData.find(entry => !entry.pressureSeries && Arra
 assert(legacyEntry, 'A legacy single-series fixture must remain available.');
 assert.strictEqual(getTestRange(getValidPressureDropPoints(legacyEntry.points)), `${formatTestFlow(legacyEntry.points[0].flow)}–${formatTestFlow(legacyEntry.points.at(-1).flow)} L/min`, 'Legacy single-series numeric range behavior must remain unchanged.');
 assert(mainJs.includes("lumenRows.className = 'mt-2 grid gap-2'") && mainJs.includes('result.seriesResults.forEach(item =>'), 'Mobile comparison must render explicit per-lumen elements rather than a newline in one paragraph.');
+assert(mainJs.includes("text.textContent = 'Show raw digitized points'") && mainJs.includes("input.type = 'checkbox'") && mainJs.includes('input.checked = checked'), 'The raw-point control must be a labeled, checked-state checkbox.');
+assert(mainJs.includes('let showRawPressureDropPoints = false;'), 'Raw markers must default to hidden once per page initialization.');
+assert.strictEqual((mainJs.match(/showRawPressureDropPoints = false/g) || []).length, 1, 'Rerender paths must not reset the page-level raw-marker state.');
+assert(mainJs.includes('checked => { showRawPressureDropPoints = checked; render(); }') && mainJs.includes('checked => { showRawPressureDropPoints = checked; renderCompare(); }'), 'Single and comparison toggles must update the same page-level state across rerenders.');
+assert(mainJs.includes("{ curveMode: 'linear', showRawPoints }") && !mainJs.includes("curveMode: 'smooth'"), 'Both chart paths must preserve straight-line rendering while forwarding raw-marker visibility.');
 
 const staticSummaryFiles = ['index.html', 'dist/index.html', 'cannula-pressure-drop/index.html', 'dist/cannula-pressure-drop/index.html'];
 const getingeCount = pressureDropData.filter(entry => entry.manufacturer === 'Getinge / Maquet').length;
