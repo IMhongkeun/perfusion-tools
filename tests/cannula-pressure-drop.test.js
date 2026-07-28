@@ -3,6 +3,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const vm = require('vm');
 
 const mainJs = fs.readFileSync(path.join(__dirname, '..', 'main.js'), 'utf8');
 const pressureDropData = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'cannula-pressure-drop.json'), 'utf8')).items;
@@ -716,3 +717,270 @@ function run() {
 }
 
 run();
+
+// Avalon Elite 13 Fr dual-lumen regression coverage.
+const avalonEntries = pressureDropData.filter(entry => entry.model === 'Avalon Elite Bi-Caval Dual-Lumen Catheter' && entry.size === '13 Fr');
+assert.strictEqual(avalonEntries.length, 1, 'Avalon Elite 13 Fr must be registered as one selectable product.');
+const avalon = avalonEntries[0];
+assert.strictEqual(avalon.manufacturer, 'Getinge / Maquet');
+assert.strictEqual(avalon.pressureSeries.length, 2, 'Avalon must contain two named series within one product.');
+const infusion = avalon.pressureSeries.find(series => series.id === 'infusion');
+const drainage = avalon.pressureSeries.find(series => series.id === 'drainage');
+assert(infusion && drainage, 'Infusion and drainage series must both be present.');
+assert.strictEqual(infusion.points.length, 22, 'Infusion must retain all 22 headerless source rows.');
+assert.strictEqual(drainage.points.length, 23, 'Drainage must retain all 23 headerless source rows.');
+const normalizedInfusion = getValidPressureDropPoints(infusion.points);
+const normalizedDrainage = getValidPressureDropPoints(drainage.points);
+assert(normalizedInfusion.every((point, index) => index === 0 || point.flow > normalizedInfusion[index - 1].flow), 'Infusion flows must normalize to unique ascending values.');
+assert(normalizedDrainage.every((point, index) => index === 0 || point.flow > normalizedDrainage[index - 1].flow), 'Drainage flows must normalize to unique ascending values.');
+assert(normalizedInfusion.every(point => point.pressureDrop > 0), 'Infusion signs must remain positive.');
+assert(normalizedDrainage.every(point => point.pressureDrop < 0), 'Drainage signs must remain negative.');
+assert(!infusion.points.some(point => point.flow === 0 && point.pressureDrop === 0), 'No fabricated infusion (0, 0) point is permitted.');
+assert(!drainage.points.some(point => point.flow === 0 && point.pressureDrop === 0), 'No fabricated drainage (0, 0) point is permitted.');
+assert.strictEqual(interpolatePressureDrop(infusion.points, 0.5).value, 98.73949579831927);
+assert.strictEqual(interpolatePressureDrop(drainage.points, 0.5).value, -28.991596638655494);
+assert(Math.abs(interpolatePressureDrop(infusion.points, 0.75).value - 208.54341736694676) < 1e-10);
+assert(Math.abs(interpolatePressureDrop(drainage.points, 0.75).value - (-58.543417366946834)) < 1e-10);
+const infusionAtPointNine = interpolatePressureDrop(infusion.points, 0.9);
+const drainageAtPointNine = interpolatePressureDrop(drainage.points, 0.9);
+assert.strictEqual(infusionAtPointNine.state, 'out_of_range');
+assert.strictEqual(infusionAtPointNine.value, null);
+assert.strictEqual(drainageAtPointNine.state, 'interpolated');
+assert(Math.abs(drainageAtPointNine.value - (-79.7527706734868)) < 1e-10);
+[infusion, drainage].forEach(series => {
+  const result = interpolatePressureDrop(series.points, 1.3);
+  assert.strictEqual(result.state, 'out_of_range');
+  assert.strictEqual(result.value, null);
+});
+assert(mainJs.includes('function normalizePressureDropEntry') && mainJs.includes("label: 'Pressure drop'"), 'Legacy records must normalize to one pressure series.');
+assert(mainJs.includes('drawPressureDropSeriesChart(svg, series') && mainJs.includes('data-zero-pressure-line="true"'), 'Dual-series chart and zero-reference line must be implemented.');
+assert(mainJs.includes("item.lineStyle === 'dashed'") && mainJs.includes("{ curveMode: 'linear' }"), 'Series must use line style as well as labels and retain linear rendering.');
+assert(mainJs.includes('selectedComparisonKeys.length < 4'), 'Avalon remains one entry under the existing four-product selection limit.');
+
+// Avalon Elite 16 Fr reuses the same dual-lumen product model as 13 Fr.
+const avalon16Entries = pressureDropData.filter(entry => entry.model === avalon.model && entry.size === '16 Fr');
+assert.strictEqual(avalon16Entries.length, 1, 'Avalon Elite 16 Fr must be one selectable product-size record.');
+const avalon16 = avalon16Entries[0];
+assert.strictEqual(avalon16.manufacturer, avalon.manufacturer);
+assert.strictEqual(avalon16.model, avalon.model);
+assert.strictEqual(avalon16.category, avalon.category);
+assert.strictEqual(avalon16.outerDiameterMm, 5.3);
+assert.strictEqual(avalon16.insertableLength, '14 cm (5.5 in)');
+assert.strictEqual(avalon16.connectorSize, '1/4 in');
+assert.strictEqual(avalon16.cannulaOrderCode, '10016-CE');
+assert.strictEqual(avalon16.sapCode, '70107.3604');
+assert.strictEqual(avalon16.orderUnit, '1/Carton');
+assert.strictEqual(avalon16.metadata.orderUnit, '1/Carton');
+assert.strictEqual(avalon16.pressureSeries.length, 2);
+const infusion16 = avalon16.pressureSeries.find(series => series.id === 'infusion');
+const drainage16 = avalon16.pressureSeries.find(series => series.id === 'drainage');
+assert(infusion16 && drainage16, 'Avalon Elite 16 Fr must contain Infusion and Drainage series.');
+assert.strictEqual(infusion16.label, 'Infusion');
+assert.strictEqual(infusion16.lineStyle, 'solid');
+assert.strictEqual(drainage16.label, 'Drainage');
+assert.strictEqual(drainage16.lineStyle, 'dashed');
+assert.strictEqual(infusion16.points.length, 25, 'Infusion must retain all 25 headerless source rows.');
+assert.strictEqual(drainage16.points.length, 29, 'Drainage must retain all 29 headerless source rows.');
+const normalizedInfusion16 = getValidPressureDropPoints(infusion16.points);
+const normalizedDrainage16 = getValidPressureDropPoints(drainage16.points);
+assert.deepStrictEqual([normalizedInfusion16[0].flow, normalizedInfusion16.at(-1).flow], [0.016746411483253565, 1.200956937799043]);
+assert.deepStrictEqual([normalizedDrainage16[0].flow, normalizedDrainage16.at(-1).flow], [0.13875598086124397, 2.0502392344497604]);
+assert(normalizedInfusion16.every((point, index) => index === 0 || point.flow > normalizedInfusion16[index - 1].flow));
+assert(normalizedDrainage16.every((point, index) => index === 0 || point.flow > normalizedDrainage16[index - 1].flow));
+assert(infusion16.points.some(point => point.flow === 1.200956937799043 && point.pressureDrop === 243.27731092436966), 'The first supplied infusion row must be retained.');
+assert(drainage16.points.some(point => point.flow === 2.0502392344497604 && point.pressureDrop === -148.31932773109241), 'The first supplied drainage row must be retained.');
+assert(infusion16.points.every(point => point.pressureDrop > 0));
+assert(drainage16.points.every(point => point.pressureDrop < 0));
+assert(![...infusion16.points, ...drainage16.points].some(point => point.flow === 0 && point.pressureDrop === 0));
+const assertEstimate = (series, flow, expected, expectedState = 'interpolated') => {
+  const result = interpolatePressureDrop(series.points, flow);
+  assert.strictEqual(result.state, expectedState);
+  assert(Math.abs(result.value - expected) < 1e-10, `${series.label} at ${flow} L/min should equal ${expected}, received ${result.value}.`);
+};
+assertEstimate(infusion16, 0.5, 37.11484593837531, 'exact');
+assertEstimate(drainage16, 0.5, -10.408163265306193);
+assertEstimate(infusion16, 0.75, 96.43962848297211);
+assertEstimate(drainage16, 0.75, -22.433111175504727);
+assertEstimate(infusion16, 1.0, 174.0731586752347);
+assertEstimate(drainage16, 1.0, -39.07563025210089, 'exact');
+assert.strictEqual(interpolatePressureDrop(infusion16.points, 1.3).state, 'out_of_range');
+assert.strictEqual(interpolatePressureDrop(infusion16.points, 1.3).value, null);
+assertEstimate(drainage16, 1.3, -62.86561136082345);
+assert.strictEqual(interpolatePressureDrop(infusion16.points, 1.5).state, 'out_of_range');
+assertEstimate(drainage16, 1.5, -81.0924369747899, 'exact');
+[infusion16, drainage16].forEach(series => {
+  const result = interpolatePressureDrop(series.points, 2.1);
+  assert.strictEqual(result.state, 'out_of_range');
+  assert.strictEqual(result.value, null);
+});
+assert.strictEqual(pressureDropData.filter(entry => entry.model === avalon.model && ['13 Fr', '16 Fr'].includes(entry.size)).length, 2, 'Avalon selector family must retain one 13 Fr and one 16 Fr product record.');
+assert(mainJs.includes('function createPressureDropComparisonChart') && mainJs.includes('colorIndex: productIndex'), 'Multi-size comparison must assign one color per selected product.');
+assert(mainJs.includes('displayLabel: `${entry.size || entry.model} — ${series.label}`'), 'Multi-size chart legend labels must distinguish size and lumen.');
+assert(mainJs.includes('selectedComparisonKeys.length < 4'), 'Two Avalon sizes count as two products under the unchanged four-product limit.');
+
+// Avalon Elite 19 Fr data and exact-duplicate import behavior.
+const avalon19Entries = pressureDropData.filter(entry => entry.model === avalon.model && entry.size === '19 Fr');
+assert.strictEqual(avalon19Entries.length, 1, 'Avalon Elite 19 Fr must be one selectable product-size record.');
+const avalon19 = avalon19Entries[0];
+assert.strictEqual(avalon19.manufacturer, avalon.manufacturer);
+assert.strictEqual(avalon19.model, avalon.model);
+assert.strictEqual(avalon19.category, avalon.category);
+assert.strictEqual(avalon19.outerDiameterMm, 6.4);
+assert.strictEqual(avalon19.insertableLength, '21 cm (8.3 in)');
+assert.strictEqual(avalon19.connectorSize, '1/4 in');
+assert.strictEqual(avalon19.cannulaOrderCode, '10019-CE');
+assert.strictEqual(avalon19.sapCode, '70107.3605');
+assert.strictEqual(avalon19.orderUnit, '1/Carton');
+assert.deepStrictEqual(avalon19.metadata, {
+  outerDiameter: '6.4 mm',
+  insertableLength: '21 cm (8.3 in)',
+  connectorSize: '1/4 in',
+  productCode: '10019-CE',
+  sapCode: '70107.3605',
+  orderUnit: '1/Carton'
+});
+assert.strictEqual(avalon19.pressureSeries.length, 2);
+const infusion19 = avalon19.pressureSeries.find(series => series.id === 'infusion');
+const drainage19 = avalon19.pressureSeries.find(series => series.id === 'drainage');
+assert(infusion19 && drainage19, 'Avalon Elite 19 Fr must contain Infusion and Drainage series.');
+assert.strictEqual(infusion19.label, 'Infusion');
+assert.strictEqual(infusion19.lineStyle, 'solid');
+assert.strictEqual(drainage19.label, 'Drainage');
+assert.strictEqual(drainage19.lineStyle, 'dashed');
+assert.strictEqual(infusion19.sourceRowCount, 33);
+assert.strictEqual(infusion19.exactDuplicateRowsRemoved, 2);
+assert.strictEqual(infusion19.points.length, 31);
+assert.strictEqual(drainage19.sourceRowCount, 30);
+assert.strictEqual(drainage19.points.length, 30);
+const normalizedInfusion19 = getValidPressureDropPoints(infusion19.points);
+const normalizedDrainage19 = getValidPressureDropPoints(drainage19.points);
+assert.deepStrictEqual([normalizedInfusion19[0].flow, normalizedInfusion19.at(-1).flow], [0.11961722488038273, 2.0861244019138754]);
+assert.deepStrictEqual([normalizedDrainage19[0].flow, normalizedDrainage19.at(-1).flow], [0.1291866028708134, 2.4976076555023923]);
+[normalizedInfusion19, normalizedDrainage19].forEach(points => {
+  assert(points.every((point, index) => index === 0 || point.flow > points[index - 1].flow), 'Normalized flows must be unique and ascending.');
+});
+assert(infusion19.points.some(point => point.flow === 2.0861244019138754 && point.pressureDrop === 249.99999999999991));
+assert(drainage19.points.some(point => point.flow === 2.4976076555023923 && point.pressureDrop === -113.02521008403363));
+assert.strictEqual(infusion19.points.filter(point => point.flow === 1.3636363636363633 && point.pressureDrop === 114.42577030812319).length, 1);
+assert.strictEqual(infusion19.points.filter(point => point.flow === 1.5023923444976077 && point.pressureDrop === 137.95518207282907).length, 1);
+assert(infusion19.points.every(point => point.pressureDrop > 0));
+assert(drainage19.points.every(point => point.pressureDrop < 0));
+assert(![...infusion19.points, ...drainage19.points].some(point => point.flow === 0 && point.pressureDrop === 0));
+assertEstimate(infusion19, 0.5, 10.112044817927172);
+assertEstimate(drainage19, 0.5, -6.582633053221343, 'exact');
+assertEstimate(infusion19, 0.75, 31.08076563958913);
+assertEstimate(drainage19, 0.75, -12.211551287181576);
+assertEstimate(infusion19, 1.0, 60.340136054421725);
+assertEstimate(drainage19, 1.0, -20.214752567693754);
+assertEstimate(infusion19, 1.5, 137.5395319418089);
+assertEstimate(drainage19, 1.5, -43.55742296918771, 'exact');
+assertEstimate(infusion19, 2.0, 232.07282913165258, 'exact');
+assertEstimate(drainage19, 2.0, -73.62278244631188);
+assert.strictEqual(interpolatePressureDrop(infusion19.points, 2.2).state, 'out_of_range');
+assert.strictEqual(interpolatePressureDrop(infusion19.points, 2.2).value, null);
+assertEstimate(drainage19, 2.2, -88.03361344537816);
+[infusion19, drainage19].forEach(series => {
+  const result = interpolatePressureDrop(series.points, 2.5);
+  assert.strictEqual(result.state, 'out_of_range');
+  assert.strictEqual(result.value, null);
+});
+const normalizeSeriesSource = mainJs.slice(
+  mainJs.indexOf('function normalizePressureDropSeries'),
+  mainJs.indexOf('function normalizePressureDropEntry')
+);
+const normalizePressureDropSeriesRuntime = vm.runInNewContext(`${normalizeSeriesSource}; normalizePressureDropSeries`);
+const identicalDuplicates = normalizePressureDropSeriesRuntime({ points: [
+  { flow: 1, pressureDrop: 10 },
+  { flow: 1, pressureDrop: 10 }
+] });
+assert.strictEqual(identicalDuplicates.points.length, 1, 'Exact duplicate pairs must normalize to one point.');
+assert.throws(
+  () => normalizePressureDropSeriesRuntime({ points: [{ flow: 1, pressureDrop: 10 }, { flow: 1, pressureDrop: 11 }] }),
+  /conflicting pressures/,
+  'Conflicting pressures at one flow must fail validation.'
+);
+const avalonFamilyEntries = pressureDropData.filter(entry => entry.model === avalon.model && ['13 Fr', '16 Fr', '19 Fr'].includes(entry.size));
+assert.deepStrictEqual(avalonFamilyEntries.map(entry => entry.size).sort(), ['13 Fr', '16 Fr', '19 Fr']);
+assert.strictEqual(avalonFamilyEntries.length, 3, 'Three Avalon sizes must consume three product slots, not six lumen slots.');
+assert.strictEqual(avalonFamilyEntries.flatMap(entry => entry.pressureSeries).length, 6, 'Three Avalon products must generate six series traces.');
+assert.strictEqual(new Set(avalonFamilyEntries.flatMap(entry => entry.pressureSeries.map(series => `${entry.size} — ${series.label}`))).size, 6, 'Size-and-lumen chart labels must be unique.');
+
+// Avalon Elite 20 Fr preserves source-signed drainage values, including the positive near-zero point.
+const avalon20Entries = pressureDropData.filter(entry => entry.model === avalon.model && entry.size === '20 Fr');
+assert.strictEqual(avalon20Entries.length, 1, 'Avalon Elite 20 Fr must be one selectable product-size record.');
+const avalon20 = avalon20Entries[0];
+assert.strictEqual(avalon20.manufacturer, avalon.manufacturer);
+assert.strictEqual(avalon20.model, avalon.model);
+assert.strictEqual(avalon20.category, avalon.category);
+assert.strictEqual(avalon20.outerDiameterMm, 6.7);
+assert.strictEqual(avalon20.insertableLength, '31 cm (12.2 in)');
+assert.strictEqual(avalon20.connectorSize, '3/8 in');
+assert.strictEqual(avalon20.cannulaOrderCode, '10020-CE');
+assert.strictEqual(avalon20.sapCode, '70107.3606');
+assert.strictEqual(avalon20.orderUnit, '1/Carton');
+assert.deepStrictEqual(avalon20.metadata, {
+  outerDiameter: '6.7 mm',
+  insertableLength: '31 cm (12.2 in)',
+  connectorSize: '3/8 in',
+  productCode: '10020-CE',
+  sapCode: '70107.3606',
+  orderUnit: '1/Carton'
+});
+assert.strictEqual(avalon20.pressureSeries.length, 2);
+const infusion20 = avalon20.pressureSeries.find(series => series.id === 'infusion');
+const drainage20 = avalon20.pressureSeries.find(series => series.id === 'drainage');
+assert(infusion20 && drainage20, 'Avalon Elite 20 Fr must contain Infusion and Drainage series.');
+assert.strictEqual(infusion20.label, 'Infusion');
+assert.strictEqual(infusion20.lineStyle, 'solid');
+assert.strictEqual(drainage20.label, 'Drainage');
+assert.strictEqual(drainage20.lineStyle, 'dashed');
+assert.strictEqual(infusion20.points.length, 26);
+assert.strictEqual(drainage20.points.length, 23);
+const normalizedInfusion20 = getValidPressureDropPoints(infusion20.points);
+const normalizedDrainage20 = getValidPressureDropPoints(drainage20.points);
+assert.deepStrictEqual([normalizedInfusion20[0].flow, normalizedInfusion20.at(-1).flow], [0.033333333333333326, 1.9]);
+assert.deepStrictEqual([normalizedDrainage20[0].flow, normalizedDrainage20.at(-1).flow], [0.05555555555555558, 2.638888888888889]);
+[normalizedInfusion20, normalizedDrainage20].forEach(points => {
+  assert(points.every((point, index) => index === 0 || point.flow > points[index - 1].flow), '20 Fr flows must normalize to unique ascending values.');
+});
+assert(infusion20.points.some(point => point.flow === 1.9 && point.pressureDrop === 250), 'The first supplied Infusion row must be retained.');
+assert(drainage20.points.some(point => point.flow === 2.638888888888889 && point.pressureDrop === -147.30094466936572), 'The first supplied Drainage row must be retained.');
+const positiveDrainagePoint = drainage20.points.find(point => point.flow === 0.05555555555555558);
+assert.deepStrictEqual(positiveDrainagePoint, { flow: 0.05555555555555558, pressureDrop: 0.06747638326589822 });
+assert(infusion20.points.every(point => point.pressureDrop > 0));
+assert(drainage20.points.some(point => point.pressureDrop > 0));
+assert(drainage20.points.some(point => point.pressureDrop < 0));
+assert(![...infusion20.points, ...drainage20.points].some(point => point.flow === 0 && point.pressureDrop === 0));
+assertEstimate(infusion20, 0.05555555555555558, 1.2550607287449569);
+assertEstimate(drainage20, 0.05555555555555558, 0.06747638326589822, 'exact');
+assertEstimate(infusion20, 0.5, 14.786324786324796);
+assertEstimate(drainage20, 0.5, -9.10931174089069, 'exact');
+assertEstimate(infusion20, 0.75, 39.11381016644177);
+assertEstimate(drainage20, 0.75, -16.904183535762456);
+assertEstimate(infusion20, 1.0, 73.25043377674957);
+assertEstimate(drainage20, 1.0, -27.70280401859344);
+assertEstimate(infusion20, 1.5, 161.4709851551957, 'exact');
+assertEstimate(drainage20, 1.5, -56.34278002699057);
+assertEstimate(infusion20, 1.9, 250, 'exact');
+assertEstimate(drainage20, 1.9, -82.60073260073257);
+assertEstimate(infusion20, 0.05, 1.2280701754386145);
+assert.strictEqual(interpolatePressureDrop(drainage20.points, 0.05).state, 'out_of_range');
+assert.strictEqual(interpolatePressureDrop(drainage20.points, 0.05).value, null);
+assert.strictEqual(interpolatePressureDrop(infusion20.points, 2.0).state, 'out_of_range');
+assert.strictEqual(interpolatePressureDrop(infusion20.points, 2.0).value, null);
+assertEstimate(drainage20, 2.0, -90.40485829959513);
+assert.strictEqual(interpolatePressureDrop(infusion20.points, 2.5).state, 'out_of_range');
+assertEstimate(drainage20, 2.5, -133.1848852901485);
+[infusion20, drainage20].forEach(series => {
+  const result = interpolatePressureDrop(series.points, 2.7);
+  assert.strictEqual(result.state, 'out_of_range');
+  assert.strictEqual(result.value, null);
+});
+assert(!mainJs.includes('Math.abs(point.pressureDrop)'), 'Normalization and charting must not coerce signed source pressures.');
+assert(mainJs.includes("result.value > 0 ? '+' : ''"), 'Positive signed pressure results must display an explicit plus sign.');
+assert(mainJs.includes('Math.floor(index / 2) * 10'), 'Comparison chart legends must allocate a distinct row for every pair of traces.');
+const allAvalonEntries = pressureDropData.filter(entry => entry.model === avalon.model);
+assert.deepStrictEqual(allAvalonEntries.map(entry => entry.size).sort(), ['13 Fr', '16 Fr', '19 Fr', '20 Fr']);
+assert.strictEqual(allAvalonEntries.length, 4, 'Four Avalon sizes must consume four product slots, not eight lumen slots.');
+assert.strictEqual(allAvalonEntries.flatMap(entry => entry.pressureSeries).length, 8, 'Four Avalon products must generate eight traces.');
+assert.strictEqual(new Set(allAvalonEntries.flatMap(entry => entry.pressureSeries.map(series => `${entry.size} — ${series.label}`))).size, 8, 'All size-and-lumen labels must remain unique.');
