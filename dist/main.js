@@ -5926,13 +5926,14 @@ function createPressureDropRawPointsToggle(checked, onChange, id) {
 function createPressureDropChartPanel(entry, flowValue, interpolationResults, showRawPoints, onRawPointsChange) {
   const panel = document.createElement('article'); panel.className = 'self-start h-fit rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-3';
   const series = getPressureDropSeries(entry);
+  const chartSeries = series.map(item => ({ ...item, colorIndex: 0 }));
   const header = document.createElement('div'); header.innerHTML = `<h3 class="text-sm font-semibold text-primary-900 dark:text-white">Pressure-flow curve</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Digitized manufacturer points are connected with straight line segments.</p>`;
   header.appendChild(createPressureDropRawPointsToggle(showRawPoints, onRawPointsChange, 'pressure-drop-show-raw-points'));
   const svgWrap = document.createElement('div'); svgWrap.className = 'flex w-full items-center justify-center overflow-hidden rounded-lg bg-slate-50/60 dark:bg-primary-900/40 px-1 py-1 sm:px-2';
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('viewBox', '0 0 420 200'); svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', `${entry.manufacturer} ${entry.model} ${entry.size || ''} pressure-flow curves. ${series.map((item, index) => `${item.label}: ${getPressureDropResultStateText(interpolationResults[index])}`).join(' ')}`); svg.classList.add('block', 'w-full', 'h-auto', 'text-slate-500', 'dark:text-slate-300');
   const estimates = interpolationResults;
   if (series.length === 1) drawPressureDropChart(svg, entry.points, Number.isFinite(estimates[0]?.value) ? flowValue : NaN, estimates[0]?.value, { curveMode: 'linear', showRawPoints });
-  else drawPressureDropSeriesChart(svg, series, flowValue, estimates, { curveMode: 'linear', showRawPoints });
+  else drawPressureDropSeriesChart(svg, chartSeries, flowValue, estimates, { curveMode: 'linear', showRawPoints });
   svgWrap.appendChild(svg); panel.append(header, svgWrap); return panel;
 }
 

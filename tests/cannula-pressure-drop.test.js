@@ -743,7 +743,7 @@ assert(Math.abs(drainageAtPointNine.value - (-79.7527706734868)) < 1e-10);
   assert.strictEqual(result.value, null);
 });
 assert(mainJs.includes('function normalizePressureDropEntry') && mainJs.includes("label: 'Pressure drop'"), 'Legacy records must normalize to one pressure series.');
-assert(mainJs.includes('drawPressureDropSeriesChart(svg, series') && mainJs.includes('data-zero-pressure-line="true"'), 'Dual-series chart and zero-reference line must be implemented.');
+assert(mainJs.includes('drawPressureDropSeriesChart(svg, chartSeries') && mainJs.includes('data-zero-pressure-line="true"'), 'Dual-series chart and zero-reference line must be implemented.');
 assert(mainJs.includes("item.lineStyle === 'dashed'") && mainJs.includes("{ curveMode: 'linear' }"), 'Series must use line style as well as labels and retain linear rendering.');
 assert(mainJs.includes('selectedComparisonKeys.length < 4'), 'Avalon remains one entry under the existing four-product selection limit.');
 
@@ -1261,6 +1261,7 @@ const chartRendererSource = mainJs.slice(
 );
 const chartRuntime = vm.runInNewContext(`${chartRendererSource}; ({
   drawPressureDropSeriesChart,
+  drawPressureDropChart,
   getPressureDropLegendLayout,
   productColors: PRESSURE_DROP_PRODUCT_COLORS
 })`, {
@@ -1303,6 +1304,27 @@ assert(visibleRawPointsSvg.innerHTML.includes('23 Fr — Infusion; Flow: 1.00 L/
 assert(visibleRawPointsSvg.innerHTML.includes('23 Fr — Drainage; Flow: 1.00 L/min; Signed pressure: -10.0 mmHg'), 'Both Avalon lumens must expose raw-point tooltips when enabled.');
 assert.strictEqual((visibleRawPointsSvg.innerHTML.match(/data-series-id=/g) || []).length, 2, 'Target markers must remain rendered when raw points are enabled.');
 assert(visibleRawPointsSvg.innerHTML.includes('data-raw-pressure-point="true"') && visibleRawPointsSvg.innerHTML.includes(' r="2"') && visibleRawPointsSvg.innerHTML.includes(' r="4"'), 'Raw markers must remain smaller than target-flow markers.');
+const firstProductColor = chartRuntime.productColors[0];
+assert.strictEqual((visibleRawPointsSvg.innerHTML.match(new RegExp(`<path[^>]+stroke="${firstProductColor}"`, 'g')) || []).length, 2, 'Single-product Infusion and Drainage paths must share product color 0.');
+assert.strictEqual((visibleRawPointsSvg.innerHTML.match(new RegExp(`data-series-id="(?:infusion|drainage)"[^>]+fill="${firstProductColor}"`, 'g')) || []).length, 2, 'Both single-product target markers must share product color 0.');
+assert.strictEqual((visibleRawPointsSvg.innerHTML.match(new RegExp(`data-raw-pressure-point="true"[^>]+stroke="${firstProductColor}"`, 'g')) || []).length, 4, 'Both single-product raw-marker groups must share product color 0.');
+assert(visibleRawPointsSvg.innerHTML.includes('23 Fr — Infusion') && visibleRawPointsSvg.innerHTML.includes('23 Fr — Drainage'), 'The legend and accessible series labels must retain both lumen identities.');
+assert(visibleRawPointsSvg.innerHTML.includes('23 Fr — Drainage pressure series"><path') && visibleRawPointsSvg.innerHTML.includes('stroke-dasharray="7 4"'), 'Drainage must retain its dashed style while Infusion remains solid.');
+
+const legacySvg = { dataset: {}, innerHTML: '' };
+chartRuntime.drawPressureDropChart(legacySvg, [{ flow: 1, pressureDrop: 10 }, { flow: 2, pressureDrop: 20 }], 1.5, 15, { curveMode: 'linear' });
+assert(legacySvg.innerHTML.includes(`<path d="M`) && legacySvg.innerHTML.includes(`stroke="${firstProductColor}"`), 'Legacy single-series charts must retain the first product color.');
+
+const comparedSeries = Array.from({ length: 4 }, (_, productIndex) => ([
+  { id: `p${productIndex}-infusion`, label: `P${productIndex} Infusion`, colorIndex: productIndex, lineStyle: 'solid', points: [{ flow: 1, pressureDrop: 10 }, { flow: 2, pressureDrop: 20 }] },
+  { id: `p${productIndex}-drainage`, label: `P${productIndex} Drainage`, colorIndex: productIndex, lineStyle: 'dashed', points: [{ flow: 1, pressureDrop: -10 }, { flow: 2, pressureDrop: -20 }] }
+])).flat();
+const comparisonColorSvg = { dataset: {}, innerHTML: '' };
+chartRuntime.drawPressureDropSeriesChart(comparisonColorSvg, comparedSeries, 1.5, comparedSeries.map((_, index) => ({ value: index % 2 ? -15 : 15 })), { curveMode: 'linear' });
+chartRuntime.productColors.forEach(color => {
+  assert.strictEqual((comparisonColorSvg.innerHTML.match(new RegExp(`<path[^>]+stroke="${color}"`, 'g')) || []).length, 2, `Each comparison product color ${color} must be shared by exactly two lumen paths.`);
+});
+assert.strictEqual(new Set(Array.from(chartRuntime.productColors)).size, 4, 'The four compared product colors must remain distinct.');
 
 [2, 4, 6, 8].forEach(entryCount => {
   const layout = chartRuntime.getPressureDropLegendLayout(entryCount);
@@ -1368,6 +1390,7 @@ assert.strictEqual(getTestRange(getValidPressureDropPoints(legacyEntry.points)),
 assert(mainJs.includes("lumenRows.className = 'mt-2 grid gap-2'") && mainJs.includes('result.seriesResults.forEach(item =>'), 'Mobile comparison must render explicit per-lumen elements rather than a newline in one paragraph.');
 assert(mainJs.includes('const valueText = getPressureDropResultValueText(interpolationResult);'), 'Desktop and mobile comparison rows must use the shared no_points-aware value formatter.');
 assert(mainJs.includes('const valueText = getPressureDropResultValueText(result);'), 'Primary multi-series rows must use the shared no_points-aware value formatter.');
+assert(mainJs.includes('const chartSeries = series.map(item => ({ ...item, colorIndex: 0 }));'), 'The selected-product caller must explicitly assign one shared product color to every lumen.');
 assert(mainJs.includes("text.textContent = 'Show raw digitized points'") && mainJs.includes("input.type = 'checkbox'") && mainJs.includes('input.checked = checked'), 'The raw-point control must be a labeled, checked-state checkbox.');
 assert(mainJs.includes('let showRawPressureDropPoints = false;'), 'Raw markers must default to hidden once per page initialization.');
 assert.strictEqual((mainJs.match(/showRawPressureDropPoints = false/g) || []).length, 1, 'Rerender paths must not reset the page-level raw-marker state.');
