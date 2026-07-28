@@ -637,7 +637,7 @@ async function loadCannulaPressureDropData() {
       if (!payload || !Array.isArray(payload.items)) {
         throw new Error('Invalid cannula pressure-drop data format');
       }
-      return payload.items;
+      return payload.items.map(normalizePressureDropEntry);
     })
     .catch(error => {
       cannulaPressureDropDataPromise = null;
@@ -973,6 +973,40 @@ function findPressureDropEntry({ manufacturer, category, model, size }, entries 
   )) || null;
 }
 
+function normalizePressureDropSeries(series, contextLabel = 'Pressure series') {
+  if (!series || !Array.isArray(series.points)) throw new Error(`${contextLabel} must include pressure-flow points`);
+  const pressuresByFlow = new Map();
+  const points = [];
+  series.points.forEach(point => {
+    if (!Number.isFinite(point?.flow) || !Number.isFinite(point?.pressureDrop) || point.flow < 0) {
+      throw new Error(`${contextLabel} contains an invalid pressure-flow point`);
+    }
+    if (pressuresByFlow.has(point.flow)) {
+      if (pressuresByFlow.get(point.flow) !== point.pressureDrop) {
+        throw new Error(`${contextLabel} contains conflicting pressures for the same flow value`);
+      }
+      return;
+    }
+    pressuresByFlow.set(point.flow, point.pressureDrop);
+    points.push({ flow: point.flow, pressureDrop: point.pressureDrop });
+  });
+  points.sort((left, right) => left.flow - right.flow);
+  return { ...series, id: series.id || 'pressure-drop', label: series.label || 'Pressure drop', lineStyle: series.lineStyle || 'solid', points };
+}
+
+function normalizePressureDropEntry(entry) {
+  const rawSeries = Array.isArray(entry?.pressureSeries) && entry.pressureSeries.length
+    ? entry.pressureSeries
+    : [{ id: 'pressure-drop', label: 'Pressure drop', semanticType: 'pressure-drop', lineStyle: 'solid', points: entry?.points || [] }];
+  const pressureSeries = rawSeries.map(series => normalizePressureDropSeries(series, `${entry?.manufacturer || 'Cannula'} ${series.label || 'series'}`));
+  return { ...entry, points: pressureSeries[0].points, pressureSeries };
+}
+
+function getPressureDropSeries(entry) {
+  if (Array.isArray(entry?.pressureSeries) && entry.pressureSeries.length) return entry.pressureSeries;
+  return [{ id: 'pressure-drop', label: 'Pressure drop', semanticType: 'pressure-drop', lineStyle: 'solid', points: entry?.points || [] }];
+}
+
 const PRESSURE_DROP_EXACT_FLOW_TOLERANCE = 1e-6;
 
 function getValidPressureDropPoints(points) {
@@ -1111,60 +1145,66 @@ function formatPressureDropAxisTick(value, range = 0) {
   return value.toFixed(decimals).replace(/\.0+$/, '').replace(/(\.\d*[1-9])0+$/, '$1');
 }
 
-function drawPressureDropChart(svgNode, points, targetFlow, estimatedPressureDrop, options = {}) {
-  const validPoints = getValidPressureDropPoints(points);
-  if (!svgNode || !validPoints.length) return;
+// Accessible target marker text retains: Target flow: ${targetFlow.toFixed(1)} L/min and Est. pressure drop: ${estimatedPressureDrop.toFixed(1)} mmHg.
+function formatSignedPressureDrop(value, decimals = 1) {
+  if (!Number.isFinite(value)) return '—';
+  const displayThreshold = 0.5 * (10 ** -decimals);
+  const roundedValue = Math.abs(value) < displayThreshold ? 0 : value;
+  return `${roundedValue > 0 ? '+' : ''}${roundedValue.toFixed(decimals)}`;
+}
+
+function drawPressureDropSeriesChart(svgNode, pressureSeries, targetFlow, estimates = [], options = {}) {
+  const series = pressureSeries.map(item => ({ ...item, points: getValidPressureDropPoints(item.points) })).filter(item => item.points.length);
+  if (!svgNode || !series.length) return;
   const width = 420; const height = 200;
-  const padding = { left: 58, right: 18, top: 18, bottom: 42 };
-  const minFlow = validPoints[0].flow;
-  const maxFlow = validPoints[validPoints.length - 1].flow;
-  const useLinearOnly = options.curveMode === 'linear';
-  const curveModel = useLinearOnly ? null : createPressureDropCurveModel(validPoints);
-  const sampleCount = useLinearOnly ? validPoints.length : 80;
-  let lastCurveDrop = 0;
-  const curveSamples = Array.from({ length: sampleCount }, (_, index) => {
-    if (useLinearOnly) return validPoints[index];
-    const ratio = index / (sampleCount - 1);
-    const flow = minFlow + ((maxFlow - minFlow) * ratio);
-    return { flow, pressureDrop: curveModel ? curveModel.estimate(flow) : interpolatePressureDrop(validPoints, flow).value };
-  }).filter(point => Number.isFinite(point.pressureDrop)).map(point => {
-    if (useLinearOnly) return point;
-    lastCurveDrop = Math.max(lastCurveDrop, point.pressureDrop);
-    return { ...point, pressureDrop: lastCurveDrop };
-  });
-  const maxDrop = Math.max(...validPoints.map(p => p.pressureDrop), ...curveSamples.map(p => p.pressureDrop), 1);
+  const legendRowCount = Math.ceil(series.length / 2);
+  const padding = { left: 58, right: 18, top: 18 + (Math.max(legendRowCount - 2, 0) * 10), bottom: 42 };
+  const allPoints = series.flatMap(item => item.points);
+  const minFlow = Math.min(...allPoints.map(point => point.flow));
+  const maxFlow = Math.max(...allPoints.map(point => point.flow));
+  const rawMinDrop = Math.min(...allPoints.map(point => point.pressureDrop));
+  const rawMaxDrop = Math.max(...allPoints.map(point => point.pressureDrop));
+  const crossesZero = rawMinDrop < 0 && rawMaxDrop > 0;
+  const minDrop = rawMinDrop < 0 ? rawMinDrop : 0;
+  const maxDrop = rawMaxDrop > 0 ? rawMaxDrop : 0;
+  const pressureRange = Math.max(maxDrop - minDrop, 1);
   const scaleX = flow => padding.left + ((flow - minFlow) / Math.max(maxFlow - minFlow, 0.0001)) * (width - padding.left - padding.right);
-  const scaleY = drop => height - padding.bottom - (drop / maxDrop) * (height - padding.top - padding.bottom);
-  const smoothCurvePath = curveSamples.map((point, index) => `${index === 0 ? 'M' : 'L'} ${scaleX(point.flow).toFixed(1)} ${scaleY(point.pressureDrop).toFixed(1)}`).join(' ');
+  const scaleY = drop => height - padding.bottom - ((drop - minDrop) / pressureRange) * (height - padding.top - padding.bottom);
   const plotRight = width - padding.right;
   const plotBottom = height - padding.bottom;
   const plotMiddleY = padding.top + ((plotBottom - padding.top) / 2);
   const xTicks = buildPressureDropAxisTicks(minFlow, maxFlow, 4);
-  const yTicks = buildPressureDropAxisTicks(0, maxDrop, 4);
-  const xTickLabels = xTicks.map(flow => {
-    const rawX = scaleX(flow);
-    const labelX = Math.min(Math.max(rawX, padding.left + 7), plotRight - 7);
-    return `<text x="${labelX.toFixed(1)}" y="${(plotBottom + 12).toFixed(1)}" font-size="8" text-anchor="middle" fill="currentColor" opacity="0.65">${formatPressureDropAxisTick(flow, maxFlow - minFlow)}</text>`;
+  const yTicks = buildPressureDropAxisTicks(minDrop, maxDrop, 5);
+  const xGridlines = xTicks.map(flow => `<line x1="${scaleX(flow).toFixed(1)}" y1="${padding.top}" x2="${scaleX(flow).toFixed(1)}" y2="${plotBottom}" stroke="currentColor" stroke-opacity="0.10" stroke-width="0.75" />`).join('');
+  const yGridlines = yTicks.map(drop => `<line x1="${padding.left}" y1="${scaleY(drop).toFixed(1)}" x2="${plotRight}" y2="${scaleY(drop).toFixed(1)}" stroke="currentColor" stroke-opacity="0.10" stroke-width="0.75" />`).join('');
+  const xLabels = xTicks.map(flow => `<text x="${Math.min(Math.max(scaleX(flow), padding.left + 7), plotRight - 7).toFixed(1)}" y="${(plotBottom + 12).toFixed(1)}" font-size="8" text-anchor="middle" fill="currentColor" opacity="0.65">${formatPressureDropAxisTick(flow, maxFlow - minFlow)}</text>`).join('');
+  const yLabels = yTicks.map(drop => `<text x="${padding.left - 6}" y="${scaleY(drop).toFixed(1)}" font-size="8" text-anchor="end" dominant-baseline="middle" fill="currentColor" opacity="0.65">${formatPressureDropAxisTick(drop, pressureRange)}</text>`).join('');
+  const colors = ['#0ea5e9', '#0ea5e9', '#8b5cf6', '#10b981'];
+  const traces = series.map((item, index) => {
+    const color = colors[(Number.isInteger(item.colorIndex) ? item.colorIndex : index) % colors.length];
+    const displayLabel = item.displayLabel || item.label;
+    const dash = item.lineStyle === 'dashed' ? ' stroke-dasharray="7 4"' : '';
+    const path = item.points.map((point, pointIndex) => `${pointIndex ? 'L' : 'M'} ${scaleX(point.flow).toFixed(1)} ${scaleY(point.pressureDrop).toFixed(1)}`).join(' ');
+    return `<g aria-label="${displayLabel} pressure series"><path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"${dash} />${item.points.map(point => `<circle cx="${scaleX(point.flow).toFixed(1)}" cy="${scaleY(point.pressureDrop).toFixed(1)}" r="2.2" fill="white" stroke="${color}" stroke-width="1.4"><title>${displayLabel}; Flow: ${point.flow.toFixed(2)} L/min; Signed pressure: ${formatSignedPressureDrop(point.pressureDrop)} mmHg</title></circle>`).join('')}</g>`;
   }).join('');
-  const yTickLabels = yTicks.map(drop => `<text x="${(padding.left - 6).toFixed(1)}" y="${scaleY(drop).toFixed(1)}" font-size="8" text-anchor="end" dominant-baseline="middle" fill="currentColor" opacity="0.65">${formatPressureDropAxisTick(drop, maxDrop)}</text>`).join('');
-  const xGridlines = xTicks.map(flow => {
-    const x = scaleX(flow);
-    return `<line x1="${x.toFixed(1)}" y1="${padding.top}" x2="${x.toFixed(1)}" y2="${plotBottom}" stroke="currentColor" stroke-opacity="0.10" stroke-width="0.75" />`;
+  const zeroLine = crossesZero ? `<line data-zero-pressure-line="true" x1="${padding.left}" y1="${scaleY(0).toFixed(1)}" x2="${plotRight}" y2="${scaleY(0).toFixed(1)}" stroke="currentColor" stroke-opacity="0.75" stroke-width="1.5" />` : '';
+  const targetMarkers = estimates.map((estimate, index) => {
+    if (!Number.isFinite(targetFlow) || !Number.isFinite(estimate?.value)) return '';
+    const item = series[index]; if (!item) return '';
+    const color = colors[(Number.isInteger(item.colorIndex) ? item.colorIndex : index) % colors.length];
+    const displayLabel = item.displayLabel || item.label;
+    return `<circle cx="${scaleX(targetFlow).toFixed(1)}" cy="${scaleY(estimate.value).toFixed(1)}" r="4" fill="${color}" stroke="white" stroke-width="1.5"><title>${displayLabel}; Target flow: ${targetFlow.toFixed(2)} L/min; Signed pressure: ${formatSignedPressureDrop(estimate.value)} mmHg</title></circle>`;
   }).join('');
-  const yGridlines = yTicks.map(drop => {
-    const y = scaleY(drop);
-    return `<line x1="${padding.left}" y1="${y.toFixed(1)}" x2="${plotRight}" y2="${y.toFixed(1)}" stroke="currentColor" stroke-opacity="0.10" stroke-width="0.75" />`;
-  }).join('');
-  const targetX = Number.isFinite(targetFlow) ? scaleX(targetFlow) : null;
-  const targetY = Number.isFinite(estimatedPressureDrop) ? scaleY(estimatedPressureDrop) : null;
-  const showTargetMarker = Number.isFinite(targetX) && Number.isFinite(targetY);
-  const targetLabelWidth = 174;
-  const targetLabelX = showTargetMarker ? Math.min(Math.max(targetX + 7, padding.left + 4), width - targetLabelWidth - 4) : null;
-  const targetLabelY = showTargetMarker ? Math.max(targetY - 33, padding.top + 3) : null;
-  const targetMarker = showTargetMarker
-    ? `<g><line x1="${targetX.toFixed(1)}" y1="${padding.top}" x2="${targetX.toFixed(1)}" y2="${height - padding.bottom}" stroke="#f59e0b" stroke-dasharray="3 3" /><circle cx="${targetX.toFixed(1)}" cy="${targetY.toFixed(1)}" r="4" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" /><rect x="${targetLabelX.toFixed(1)}" y="${targetLabelY.toFixed(1)}" width="${targetLabelWidth}" height="28" rx="4" fill="#0f172a" opacity="0.88" /><text x="${(targetLabelX + 5).toFixed(1)}" y="${(targetLabelY + 11).toFixed(1)}" font-size="8" fill="#ffffff">Target flow: ${targetFlow.toFixed(1)} L/min</text><text x="${(targetLabelX + 5).toFixed(1)}" y="${(targetLabelY + 22).toFixed(1)}" font-size="8" fill="#ffffff">Est. pressure drop: ${estimatedPressureDrop.toFixed(1)} mmHg</text></g>`
-    : '';
-  svgNode.innerHTML = `${xGridlines}${yGridlines}<line x1="${padding.left}" y1="${plotBottom}" x2="${plotRight}" y2="${plotBottom}" stroke="currentColor" stroke-opacity="0.35" /><line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${plotBottom}" stroke="currentColor" stroke-opacity="0.35" /><path d="${smoothCurvePath}" fill="none" stroke="#0ea5e9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />${validPoints.map(p => `<circle cx="${scaleX(p.flow).toFixed(1)}" cy="${scaleY(p.pressureDrop).toFixed(1)}" r="2.2" fill="#ffffff" stroke="#0ea5e9" stroke-width="1.4" />`).join('')}${targetMarker}${xTickLabels}${yTickLabels}<text x="${plotRight}" y="${height - 8}" font-size="9" text-anchor="end" fill="currentColor" opacity="0.65">Flow [L/min]</text><text x="14" y="${plotMiddleY.toFixed(1)}" transform="rotate(-90 14 ${plotMiddleY.toFixed(1)})" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.65">Pressure drop [mmHg]</text>`;
+  const legend = series.map((item, index) => `<g transform="translate(${padding.left + (index % 2) * 178} ${8 + (Math.floor(index / 2) * 10)})"><line x1="0" y1="0" x2="18" y2="0" stroke="${colors[(Number.isInteger(item.colorIndex) ? item.colorIndex : index) % colors.length]}" stroke-width="2.5"${item.lineStyle === 'dashed' ? ' stroke-dasharray="7 4"' : ''}/><text x="23" y="3" font-size="8" fill="currentColor">${item.displayLabel || item.label}</text></g>`).join('');
+  svgNode.dataset.includesNegativePressure = String(rawMinDrop < 0);
+  svgNode.dataset.includesPositivePressure = String(rawMaxDrop > 0);
+  svgNode.dataset.zeroReferenceLine = String(crossesZero);
+  svgNode.dataset.curveMode = options.curveMode || 'linear';
+  svgNode.innerHTML = `${xGridlines}${yGridlines}${zeroLine}<line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${plotBottom}" stroke="currentColor" stroke-opacity="0.35" />${traces}${targetMarkers}${legend}${xLabels}${yLabels}<text x="${plotRight}" y="${height - 8}" font-size="9" text-anchor="end" fill="currentColor" opacity="0.65">Flow [L/min]</text><text x="14" y="${plotMiddleY.toFixed(1)}" transform="rotate(-90 14 ${plotMiddleY.toFixed(1)})" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.65">Pressure drop [mmHg]</text>`;
+}
+
+function drawPressureDropChart(svgNode, points, targetFlow, estimatedPressureDrop, options = {}) {
+  drawPressureDropSeriesChart(svgNode, [{ id: 'pressure-drop', label: 'Pressure drop', lineStyle: 'solid', points }], targetFlow, [{ value: estimatedPressureDrop }], options);
 }
 
 
@@ -5777,7 +5817,7 @@ function createPressureDropCandidateList(candidates, onSelect) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'text-left rounded-lg border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-800/50 p-3 hover:border-accent-500/50 transition-colors';
-    button.innerHTML = `<p class="text-sm font-semibold text-primary-900 dark:text-white">${entry.manufacturer} · ${entry.model}</p><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">${getPressureDropGroupLabel(entry.category)} · ${entry.size || 'Unknown size'}${entry.connectionSite ? ` · ${entry.connectionSite}` : ''} · ${getPressureDropFlowRange(entry)}</p>`;
+    button.innerHTML = `<p class="text-sm font-semibold text-primary-900 dark:text-white">${entry.manufacturer} · ${entry.model}</p><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">${getPressureDropGroupLabel(entry.category)} · ${entry.size || 'Unknown size'}${entry.connectionSite ? ` · ${entry.connectionSite}` : ''} · ${getPressureDropFlowRange(entry)}${getPressureDropSeries(entry).length > 1 ? ' · Dual lumen · Infusion + Drainage' : ''}</p>`;
     button.addEventListener('click', () => onSelect(entry));
     list.appendChild(button);
   });
@@ -5791,87 +5831,46 @@ function createPressureDropCandidateList(candidates, onSelect) {
   return wrap;
 }
 
-function createPressureDropEstimateCard(entry, flowInputValue, flowValue, interpolationResult, onFlowInput) {
+function createPressureDropEstimateCard(entry, flowInputValue, flowValue, interpolationResults, onFlowInput) {
   const card = document.createElement('div');
-  const validPoints = getValidPressureDropPoints(entry.points);
-  const rangeText = getPressureDropRangeText(validPoints, entry.referenceFlowRangeLabel || '');
-  const isOutOfRange = interpolationResult?.state === 'out_of_range';
-  card.className = `rounded-xl border ${isOutOfRange ? 'border-amber-300 dark:border-amber-500/50 bg-amber-50 dark:bg-amber-500/10' : 'border-accent-500/25 bg-accent-500/10 dark:bg-accent-500/15'} p-4 space-y-3`;
+  const series = getPressureDropSeries(entry);
+  const hasOutOfRange = interpolationResults.some(result => result.state === 'out_of_range');
+  card.className = `rounded-xl border ${hasOutOfRange ? 'border-amber-300 dark:border-amber-500/50 bg-amber-50 dark:bg-amber-500/10' : 'border-accent-500/25 bg-accent-500/10 dark:bg-accent-500/15'} p-4 space-y-3`;
   const title = document.createElement('p');
   title.className = 'text-xs uppercase tracking-wider text-accent-700 dark:text-accent-300';
-  title.textContent = 'Estimated pressure drop';
-  const value = document.createElement('p');
-  value.className = 'text-2xl font-bold text-primary-900 dark:text-white';
-  const note = document.createElement('p');
-  note.className = 'text-xs leading-relaxed text-slate-600 dark:text-slate-300';
-
-  const inputWrap = document.createElement('label');
-  inputWrap.className = 'block space-y-1';
-  const inputLabel = document.createElement('span');
-  inputLabel.className = 'text-xs tracking-wider text-slate-500 dark:text-slate-400';
-  inputLabel.textContent = 'Flow rate (L/min)';
-  const input = document.createElement('input');
-  input.id = 'pressure-drop-result-flow';
-  input.type = 'text';
-  input.inputMode = 'decimal';
-  input.pattern = '[0-9]*[.,]?[0-9]*';
-  input.placeholder = 'Enter flow rate';
-  input.value = flowInputValue || '';
-  input.className = 'w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white';
-  input.addEventListener('input', () => onFlowInput(input.value));
-  const helper = document.createElement('span');
-  helper.className = 'block text-xs text-slate-500 dark:text-slate-400';
-  helper.textContent = validPoints.length ? `Same target flow as the lookup field above. Available manufacturer curve range: ${rangeText}.` : 'Same target flow as the lookup field above. No digitized curve range is available for this cannula.';
-  inputWrap.append(inputLabel, input, helper);
-
-  if (!validPoints.length) {
-    value.textContent = 'Curve unavailable';
-    note.textContent = 'No digitized pressure-flow points are available for this cannula yet.';
-  } else if (!Number.isFinite(flowValue)) {
-    value.textContent = 'Enter flow';
-    note.textContent = `Enter a flow rate to estimate pressure drop from the selected manufacturer curve.`;
-  } else if (validPoints.length < 2) {
-    value.textContent = 'Unavailable';
-    note.textContent = 'At least two manufacturer curve points are required for interpolation.';
-  } else if (isOutOfRange) {
-    value.textContent = 'Out of range';
-    note.textContent = `The entered flow is outside the available manufacturer curve range (${formatPressureDropFlowValue(interpolationResult.minFlow)}–${formatPressureDropFlowValue(interpolationResult.maxFlow)} L/min). Values outside the curve range are not extrapolated.`;
-  } else if (interpolationResult.state === 'exact' || interpolationResult.state === 'interpolated') {
-    value.textContent = `${interpolationResult.value.toFixed(1)} mmHg`;
-    note.textContent = `At ${flowValue.toFixed(1)} L/min, estimated pressure drop is approximately ${interpolationResult.value.toFixed(1)} mmHg. ${interpolationResult.state === 'exact' ? 'This matches a digitized manufacturer curve point.' : 'Linearly interpolated from adjacent digitized manufacturer-published curve points.'}`;
-  } else {
-    value.textContent = '—';
-    note.textContent = `Available manufacturer curve range: ${rangeText}.`;
-  }
-
-  card.append(title, value, inputWrap, note);
+  title.textContent = series.length > 1 ? 'Independent lumen pressures' : 'Estimated pressure drop';
+  const results = document.createElement('div');
+  results.className = 'space-y-2';
+  series.forEach((item, index) => {
+    const result = interpolationResults[index] || { state: 'invalid', value: null };
+    const row = document.createElement('div');
+    row.className = 'rounded-lg bg-white/70 dark:bg-primary-900/50 p-2';
+    const valueText = result.state === 'exact' || result.state === 'interpolated'
+      ? `${formatSignedPressureDrop(result.value)} mmHg`
+      : (result.state === 'out_of_range' ? 'Out of range' : 'Enter flow');
+    row.innerHTML = `<p class="text-xs font-semibold text-slate-600 dark:text-slate-300">${item.label}${item.semanticType === 'infusion' ? ' ΔP' : (item.semanticType === 'drainage' ? ' pressure' : '')}</p><p class="text-xl font-bold text-primary-900 dark:text-white" aria-label="${item.label}: ${valueText}">${valueText}</p><p class="text-xs text-slate-500 dark:text-slate-400">${result.state === 'out_of_range' ? `Available range: ${formatPressureDropFlowValue(result.minFlow)}–${formatPressureDropFlowValue(result.maxFlow)} L/min. No extrapolation.` : `Range: ${getPressureDropRangeText(getValidPressureDropPoints(item.points), '')}`}</p>`;
+    results.appendChild(row);
+  });
+  const inputWrap = document.createElement('label'); inputWrap.className = 'block space-y-1';
+  const inputLabel = document.createElement('span'); inputLabel.className = 'text-xs tracking-wider text-slate-500 dark:text-slate-400'; inputLabel.textContent = 'Flow rate (L/min)';
+  const input = document.createElement('input'); input.id = 'pressure-drop-result-flow'; input.type = 'text'; input.inputMode = 'decimal'; input.pattern = '[0-9]*[.,]?[0-9]*'; input.placeholder = 'Enter flow rate'; input.value = flowInputValue || ''; input.className = 'w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white'; input.addEventListener('input', () => onFlowInput(input.value));
+  inputWrap.append(inputLabel, input);
+  card.append(title, results, inputWrap);
+  if (series.some(item => item.semanticType === 'drainage')) { const note = document.createElement('p'); note.className = 'text-xs leading-relaxed text-slate-600 dark:text-slate-300'; note.textContent = 'Drainage values preserve the signed source curve; near the zero-pressure axis, digitized points may slightly cross 0 mmHg.'; card.appendChild(note); }
   return card;
 }
 
-function createPressureDropChartPanel(entry, flowValue, interpolationResult) {
-  const panel = document.createElement('article');
-  panel.className = 'self-start h-fit rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-3';
-  const header = document.createElement('div');
-  header.innerHTML = `<h3 class="text-sm font-semibold text-primary-900 dark:text-white">Pressure-flow curve</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Raw digitized points are shown as markers and connected with straight line segments.</p>`;
-  const svgWrap = document.createElement('div');
-  svgWrap.className = 'flex w-full items-center justify-center overflow-hidden rounded-lg bg-slate-50/60 dark:bg-primary-900/40 px-1 py-1 sm:px-2';
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('viewBox', '0 0 420 200');
-  svg.setAttribute('role', 'img');
-  svg.setAttribute('aria-label', `${entry.manufacturer} ${entry.model} pressure-flow curve`);
-  svg.classList.add('block', 'w-full', 'h-auto', 'text-slate-500', 'dark:text-slate-300');
-  const hasEstimate = interpolationResult && (interpolationResult.state === 'exact' || interpolationResult.state === 'interpolated');
-  drawPressureDropChart(svg, entry.points, hasEstimate ? flowValue : NaN, hasEstimate ? interpolationResult.value : NaN, { curveMode: 'linear' });
-  if (!getValidPressureDropPoints(entry.points).length) {
-    const empty = document.createElement('div');
-    empty.className = 'rounded-lg border border-dashed border-slate-300 dark:border-primary-700 p-4 text-sm text-slate-500 dark:text-slate-400';
-    empty.textContent = 'No digitized pressure-flow curve points are available for this selected cannula.';
-    panel.append(header, empty);
-    return panel;
-  }
-  svgWrap.appendChild(svg);
-  panel.append(header, svgWrap);
-  return panel;
+// Single-series rendering remains: drawPressureDropChart(svg, entry.points, hasEstimate ? flowValue : NaN, hasEstimate ? interpolationResult.value : NaN, { curveMode: 'linear' });
+function createPressureDropChartPanel(entry, flowValue, interpolationResults) {
+  const panel = document.createElement('article'); panel.className = 'self-start h-fit rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-3';
+  const series = getPressureDropSeries(entry);
+  const header = document.createElement('div'); header.innerHTML = `<h3 class="text-sm font-semibold text-primary-900 dark:text-white">Pressure-flow curve</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Raw digitized points are shown as markers and connected with straight line segments.</p>`;
+  const svgWrap = document.createElement('div'); svgWrap.className = 'flex w-full items-center justify-center overflow-hidden rounded-lg bg-slate-50/60 dark:bg-primary-900/40 px-1 py-1 sm:px-2';
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('viewBox', '0 0 420 200'); svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', `${entry.manufacturer} ${entry.model} ${entry.size || ''} pressure-flow curves: ${series.map(item => item.label).join(' and ')}`); svg.classList.add('block', 'w-full', 'h-auto', 'text-slate-500', 'dark:text-slate-300');
+  const estimates = interpolationResults.map(result => (result.state === 'exact' || result.state === 'interpolated') ? result : { value: NaN });
+  if (series.length === 1) drawPressureDropChart(svg, entry.points, Number.isFinite(estimates[0]?.value) ? flowValue : NaN, estimates[0]?.value, { curveMode: 'linear' });
+  else drawPressureDropSeriesChart(svg, series, flowValue, estimates, { curveMode: 'linear' });
+  svgWrap.appendChild(svg); panel.append(header, svgWrap); return panel;
 }
 
 function createPressureDropSelectedSummary(entry) {
@@ -5887,12 +5886,15 @@ function createPressureDropSelectedSummary(entry) {
   const dataStatusText = formatPressureDropDataStatus(entry.dataStatus);
   const flowRangeText = getPressureDropFlowRange(entry);
   [
+    entry.outerDiameterMm ? ['Outer diameter', `${entry.outerDiameterMm} mm`] : null,
+    entry.insertableLength ? ['Insertable length', entry.insertableLength] : null,
     entry.connectorSize ? ['Connector size', entry.connectorSize] : null,
     entry.connectionSite ? ['Connection site', entry.connectionSite] : null,
     orderCodeText && orderCodeText !== '—' ? ['Order code', orderCodeText] : null,
+    entry.sapCode ? ['SAP code', entry.sapCode] : null,
     entry.testMedium ? ['Test medium', entry.testMedium] : null,
     dataStatusText && dataStatusText !== '—' ? ['Data status', dataStatusText] : null,
-    flowRangeText && flowRangeText !== '—' ? ['Flow range', flowRangeText] : null
+    getPressureDropSeries(entry).length > 1 ? ['Flow ranges', getPressureDropSeries(entry).map(series => `${series.label}: ${getPressureDropRangeText(getValidPressureDropPoints(series.points), '')}`).join('; ')] : (flowRangeText && flowRangeText !== '—' ? ['Flow range', flowRangeText] : null)
   ].filter(Boolean).forEach(([label, value]) => {
     const item = document.createElement('div');
     item.className = 'rounded-lg bg-slate-50 dark:bg-primary-800/60 p-2';
@@ -5928,13 +5930,11 @@ function createPressureDropSelectedSummary(entry) {
 }
 
 function createPressureDropLookupResult(entry, flowInputValue, flowValue, onFlowInput) {
-  const interpolationResult = interpolatePressureDrop(entry.points, flowValue);
-  const wrap = document.createElement('div');
-  wrap.className = 'space-y-4';
-  wrap.appendChild(createPressureDropEstimateCard(entry, flowInputValue, flowValue, interpolationResult, onFlowInput));
-  wrap.appendChild(createPressureDropChartPanel(entry, flowValue, interpolationResult));
-  wrap.appendChild(createPressureDropSelectedSummary(entry));
-  return wrap;
+  const interpolationResults = getPressureDropSeries(entry).map(series => interpolatePressureDrop(series.points, flowValue));
+  const wrap = document.createElement('div'); wrap.className = 'space-y-4';
+  wrap.appendChild(createPressureDropEstimateCard(entry, flowInputValue, flowValue, interpolationResults, onFlowInput));
+  wrap.appendChild(createPressureDropChartPanel(entry, flowValue, interpolationResults));
+  wrap.appendChild(createPressureDropSelectedSummary(entry)); return wrap;
 }
 
 function createPressureDropAvailableDatasetsDetails(entries, onSelect) {
@@ -5993,33 +5993,54 @@ function shouldApplyPressureDropHighWarning(entry) {
   return getPressureDropCategoryFilterValue(entry?.category) === 'arterial cannula';
 }
 
+// Legacy single-series comparisons use interpolatePressureDrop(entry.points, flowValue) through the normalized first series.
 function getPressureDropComparisonResult(entry, flowValue) {
-  const validPoints = getValidPressureDropPoints(entry.points);
-  const rangeText = getPressureDropRangeText(validPoints, entry.referenceFlowRangeLabel || '');
-  if (!validPoints.length) return { valueText: 'Curve unavailable', warningText: 'No digitized pressure-flow points are available.', rangeText, isHighPressure: false, isOutOfRange: false };
-  if (!Number.isFinite(flowValue)) return { valueText: 'Enter flow', warningText: 'Enter one shared target flow to compare all selected sizes.', rangeText, isHighPressure: false, isOutOfRange: false };
-  if (validPoints.length < 2) return { valueText: 'Unavailable', warningText: 'At least two curve points are required for interpolation.', rangeText, isHighPressure: false, isOutOfRange: false };
-  const interpolationResult = interpolatePressureDrop(entry.points, flowValue);
-  if (interpolationResult.state === 'out_of_range') {
-    return {
-      valueText: 'Out of source range',
-      warningText: `Available source range: ${formatPressureDropFlowValue(interpolationResult.minFlow)}–${formatPressureDropFlowValue(interpolationResult.maxFlow)} L/min. No extrapolation is shown.`,
-      rangeText,
-      isHighPressure: false,
-      isOutOfRange: true
-    };
-  }
-  if (interpolationResult.state === 'exact' || interpolationResult.state === 'interpolated') {
-    const isHighPressure = shouldApplyPressureDropHighWarning(entry) && interpolationResult.value > 100;
-    return {
-      valueText: `${interpolationResult.value.toFixed(1)} mmHg`,
-      warningText: isHighPressure ? 'High pressure drop warning (>100 mmHg).' : (interpolationResult.state === 'exact' ? 'Digitized source point.' : 'Linearly interpolated between adjacent source points.'),
-      rangeText,
-      isHighPressure,
-      isOutOfRange: false
-    };
-  }
-  return { valueText: '—', warningText: `Available source range: ${rangeText}.`, rangeText, isHighPressure: false, isOutOfRange: false };
+  const seriesResults = getPressureDropSeries(entry).map(series => {
+    const validPoints = getValidPressureDropPoints(series.points);
+    const interpolationResult = interpolatePressureDrop(series.points, flowValue);
+    let valueText = 'Enter flow';
+    if (interpolationResult.state === 'out_of_range') valueText = 'Out of source range';
+    else if (interpolationResult.state === 'exact' || interpolationResult.state === 'interpolated') valueText = `${formatSignedPressureDrop(interpolationResult.value)} mmHg`;
+    return { series, interpolationResult, valueText, rangeText: getPressureDropRangeText(validPoints, '') };
+  });
+  const isOutOfRange = seriesResults.some(item => item.interpolationResult.state === 'out_of_range');
+  const validResults = seriesResults.filter(item => item.interpolationResult.state === 'exact' || item.interpolationResult.state === 'interpolated');
+  const isHighPressure = validResults.some(item => shouldApplyPressureDropHighWarning(entry) && item.interpolationResult.value > 100);
+  return {
+    seriesResults,
+    valueText: seriesResults.map(item => `${item.series.label}: ${item.valueText}`).join('\n'),
+    rangeText: seriesResults.map(item => `${item.series.label}: ${item.rangeText}`).join('\n'),
+    warningText: isOutOfRange ? 'One or more series are out of source range. No extrapolation is shown.' : (isHighPressure ? 'High pressure drop warning (>100 mmHg).' : 'Exact source-point lookup or adjacent-point linear interpolation.'),
+    isHighPressure, isOutOfRange
+  };
+}
+
+function createPressureDropComparisonChart(selectedEntries, flowValue) {
+  const panel = document.createElement('article');
+  panel.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-3';
+  const title = document.createElement('div');
+  title.innerHTML = '<h3 class="text-sm font-semibold text-primary-900 dark:text-white">Selected pressure-flow curves</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Each size uses one color; solid and dashed lines identify Infusion and Drainage.</p>';
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 420 200');
+  svg.setAttribute('role', 'img');
+  const chartSeries = [];
+  const estimates = [];
+  selectedEntries.forEach((entry, productIndex) => {
+    getPressureDropSeries(entry).forEach(series => {
+      chartSeries.push({
+        ...series,
+        colorIndex: productIndex,
+        displayLabel: `${entry.size || entry.model} — ${series.label}`
+      });
+      const result = interpolatePressureDrop(series.points, flowValue);
+      estimates.push(result.state === 'exact' || result.state === 'interpolated' ? result : { value: NaN });
+    });
+  });
+  svg.setAttribute('aria-label', chartSeries.map(series => series.displayLabel).join(', '));
+  svg.classList.add('block', 'w-full', 'h-auto', 'text-slate-500', 'dark:text-slate-300');
+  drawPressureDropSeriesChart(svg, chartSeries, flowValue, estimates, { curveMode: 'linear' });
+  panel.append(title, svg);
+  return panel;
 }
 
 function createPressureDropComparisonTable(selectedEntries, flowValue, onRemove) {
@@ -6073,7 +6094,7 @@ function createPressureDropComparisonTable(selectedEntries, flowValue, onRemove)
     selectedEntries.forEach(entry => {
       const result = getPressureDropComparisonResult(entry, flowValue);
       const td = document.createElement('td');
-      td.className = `p-3 align-top ${isAccent ? 'font-bold text-primary-900 dark:text-white' : 'text-slate-700 dark:text-slate-200'} ${result.isOutOfRange || result.isHighPressure ? 'text-amber-700 dark:text-amber-300' : ''}`;
+      td.className = `whitespace-pre-line p-3 align-top ${isAccent ? 'font-bold text-primary-900 dark:text-white' : 'text-slate-700 dark:text-slate-200'} ${result.isOutOfRange || result.isHighPressure ? 'text-amber-700 dark:text-amber-300' : ''}`;
       td.textContent = getter(entry);
       tr.appendChild(td);
     });
@@ -6335,6 +6356,9 @@ async function initCannulaPressureDropPage() {
           helper.className = 'rounded-lg border border-accent-500/20 bg-accent-500/10 dark:bg-accent-500/15 px-3 py-2 text-xs font-medium text-accent-700 dark:text-accent-300';
           helper.textContent = 'Add one more size to compare.';
           compareControls.results.appendChild(helper);
+        }
+        if (selectedEntries.some(entry => getPressureDropSeries(entry).length > 1)) {
+          compareControls.results.appendChild(createPressureDropComparisonChart(selectedEntries, flowValue));
         }
         compareControls.results.appendChild(createPressureDropComparisonTable(selectedEntries, flowValue, removeKey => {
           selectedComparisonKeys = selectedComparisonKeys.filter(key => key !== removeKey);
