@@ -1146,6 +1146,13 @@ function formatPressureDropAxisTick(value, range = 0) {
 }
 
 // Accessible target marker text retains: Target flow: ${targetFlow.toFixed(1)} L/min and Est. pressure drop: ${estimatedPressureDrop.toFixed(1)} mmHg.
+function formatSignedPressureDrop(value, decimals = 1) {
+  if (!Number.isFinite(value)) return '—';
+  const displayThreshold = 0.5 * (10 ** -decimals);
+  const roundedValue = Math.abs(value) < displayThreshold ? 0 : value;
+  return `${roundedValue > 0 ? '+' : ''}${roundedValue.toFixed(decimals)}`;
+}
+
 function drawPressureDropSeriesChart(svgNode, pressureSeries, targetFlow, estimates = [], options = {}) {
   const series = pressureSeries.map(item => ({ ...item, points: getValidPressureDropPoints(item.points) })).filter(item => item.points.length);
   if (!svgNode || !series.length) return;
@@ -1178,7 +1185,7 @@ function drawPressureDropSeriesChart(svgNode, pressureSeries, targetFlow, estima
     const displayLabel = item.displayLabel || item.label;
     const dash = item.lineStyle === 'dashed' ? ' stroke-dasharray="7 4"' : '';
     const path = item.points.map((point, pointIndex) => `${pointIndex ? 'L' : 'M'} ${scaleX(point.flow).toFixed(1)} ${scaleY(point.pressureDrop).toFixed(1)}`).join(' ');
-    return `<g aria-label="${displayLabel} pressure series"><path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"${dash} />${item.points.map(point => `<circle cx="${scaleX(point.flow).toFixed(1)}" cy="${scaleY(point.pressureDrop).toFixed(1)}" r="2.2" fill="white" stroke="${color}" stroke-width="1.4"><title>${displayLabel}; Flow: ${point.flow.toFixed(2)} L/min; Signed pressure: ${point.pressureDrop > 0 ? '+' : ''}${point.pressureDrop.toFixed(1)} mmHg</title></circle>`).join('')}</g>`;
+    return `<g aria-label="${displayLabel} pressure series"><path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"${dash} />${item.points.map(point => `<circle cx="${scaleX(point.flow).toFixed(1)}" cy="${scaleY(point.pressureDrop).toFixed(1)}" r="2.2" fill="white" stroke="${color}" stroke-width="1.4"><title>${displayLabel}; Flow: ${point.flow.toFixed(2)} L/min; Signed pressure: ${formatSignedPressureDrop(point.pressureDrop)} mmHg</title></circle>`).join('')}</g>`;
   }).join('');
   const zeroLine = crossesZero ? `<line data-zero-pressure-line="true" x1="${padding.left}" y1="${scaleY(0).toFixed(1)}" x2="${plotRight}" y2="${scaleY(0).toFixed(1)}" stroke="currentColor" stroke-opacity="0.75" stroke-width="1.5" />` : '';
   const targetMarkers = estimates.map((estimate, index) => {
@@ -1186,7 +1193,7 @@ function drawPressureDropSeriesChart(svgNode, pressureSeries, targetFlow, estima
     const item = series[index]; if (!item) return '';
     const color = colors[(Number.isInteger(item.colorIndex) ? item.colorIndex : index) % colors.length];
     const displayLabel = item.displayLabel || item.label;
-    return `<circle cx="${scaleX(targetFlow).toFixed(1)}" cy="${scaleY(estimate.value).toFixed(1)}" r="4" fill="${color}" stroke="white" stroke-width="1.5"><title>${displayLabel}; Target flow: ${targetFlow.toFixed(2)} L/min; Signed pressure: ${estimate.value > 0 ? '+' : ''}${estimate.value.toFixed(1)} mmHg</title></circle>`;
+    return `<circle cx="${scaleX(targetFlow).toFixed(1)}" cy="${scaleY(estimate.value).toFixed(1)}" r="4" fill="${color}" stroke="white" stroke-width="1.5"><title>${displayLabel}; Target flow: ${targetFlow.toFixed(2)} L/min; Signed pressure: ${formatSignedPressureDrop(estimate.value)} mmHg</title></circle>`;
   }).join('');
   const legend = series.map((item, index) => `<g transform="translate(${padding.left + (index % 2) * 178} ${8 + (Math.floor(index / 2) * 10)})"><line x1="0" y1="0" x2="18" y2="0" stroke="${colors[(Number.isInteger(item.colorIndex) ? item.colorIndex : index) % colors.length]}" stroke-width="2.5"${item.lineStyle === 'dashed' ? ' stroke-dasharray="7 4"' : ''}/><text x="23" y="3" font-size="8" fill="currentColor">${item.displayLabel || item.label}</text></g>`).join('');
   svgNode.dataset.includesNegativePressure = String(rawMinDrop < 0);
@@ -5839,7 +5846,7 @@ function createPressureDropEstimateCard(entry, flowInputValue, flowValue, interp
     const row = document.createElement('div');
     row.className = 'rounded-lg bg-white/70 dark:bg-primary-900/50 p-2';
     const valueText = result.state === 'exact' || result.state === 'interpolated'
-      ? `${result.value > 0 ? '+' : ''}${result.value.toFixed(1)} mmHg`
+      ? `${formatSignedPressureDrop(result.value)} mmHg`
       : (result.state === 'out_of_range' ? 'Out of range' : 'Enter flow');
     row.innerHTML = `<p class="text-xs font-semibold text-slate-600 dark:text-slate-300">${item.label}${item.semanticType === 'infusion' ? ' ΔP' : (item.semanticType === 'drainage' ? ' pressure' : '')}</p><p class="text-xl font-bold text-primary-900 dark:text-white" aria-label="${item.label}: ${valueText}">${valueText}</p><p class="text-xs text-slate-500 dark:text-slate-400">${result.state === 'out_of_range' ? `Available range: ${formatPressureDropFlowValue(result.minFlow)}–${formatPressureDropFlowValue(result.maxFlow)} L/min. No extrapolation.` : `Range: ${getPressureDropRangeText(getValidPressureDropPoints(item.points), '')}`}</p>`;
     results.appendChild(row);
@@ -5993,7 +6000,7 @@ function getPressureDropComparisonResult(entry, flowValue) {
     const interpolationResult = interpolatePressureDrop(series.points, flowValue);
     let valueText = 'Enter flow';
     if (interpolationResult.state === 'out_of_range') valueText = 'Out of source range';
-    else if (interpolationResult.state === 'exact' || interpolationResult.state === 'interpolated') valueText = `${interpolationResult.value > 0 ? '+' : ''}${interpolationResult.value.toFixed(1)} mmHg`;
+    else if (interpolationResult.state === 'exact' || interpolationResult.state === 'interpolated') valueText = `${formatSignedPressureDrop(interpolationResult.value)} mmHg`;
     return { series, interpolationResult, valueText, rangeText: getPressureDropRangeText(validPoints, '') };
   });
   const isOutOfRange = seriesResults.some(item => item.interpolationResult.state === 'out_of_range');
