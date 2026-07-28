@@ -1166,19 +1166,21 @@ function drawPressureDropSeriesChart(svgNode, pressureSeries, targetFlow, estima
   const yLabels = yTicks.map(drop => `<text x="${padding.left - 6}" y="${scaleY(drop).toFixed(1)}" font-size="8" text-anchor="end" dominant-baseline="middle" fill="currentColor" opacity="0.65">${formatPressureDropAxisTick(drop, pressureRange)}</text>`).join('');
   const colors = ['#0ea5e9', '#0ea5e9', '#8b5cf6', '#10b981'];
   const traces = series.map((item, index) => {
-    const color = colors[index % colors.length];
+    const color = colors[(Number.isInteger(item.colorIndex) ? item.colorIndex : index) % colors.length];
+    const displayLabel = item.displayLabel || item.label;
     const dash = item.lineStyle === 'dashed' ? ' stroke-dasharray="7 4"' : '';
     const path = item.points.map((point, pointIndex) => `${pointIndex ? 'L' : 'M'} ${scaleX(point.flow).toFixed(1)} ${scaleY(point.pressureDrop).toFixed(1)}`).join(' ');
-    return `<g aria-label="${item.label} pressure series"><path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"${dash} />${item.points.map(point => `<circle cx="${scaleX(point.flow).toFixed(1)}" cy="${scaleY(point.pressureDrop).toFixed(1)}" r="2.2" fill="white" stroke="${color}" stroke-width="1.4"><title>${item.label}; Flow: ${point.flow.toFixed(2)} L/min; Signed pressure: ${point.pressureDrop > 0 ? '+' : ''}${point.pressureDrop.toFixed(1)} mmHg</title></circle>`).join('')}</g>`;
+    return `<g aria-label="${displayLabel} pressure series"><path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"${dash} />${item.points.map(point => `<circle cx="${scaleX(point.flow).toFixed(1)}" cy="${scaleY(point.pressureDrop).toFixed(1)}" r="2.2" fill="white" stroke="${color}" stroke-width="1.4"><title>${displayLabel}; Flow: ${point.flow.toFixed(2)} L/min; Signed pressure: ${point.pressureDrop > 0 ? '+' : ''}${point.pressureDrop.toFixed(1)} mmHg</title></circle>`).join('')}</g>`;
   }).join('');
   const zeroLine = crossesZero ? `<line data-zero-pressure-line="true" x1="${padding.left}" y1="${scaleY(0).toFixed(1)}" x2="${plotRight}" y2="${scaleY(0).toFixed(1)}" stroke="currentColor" stroke-opacity="0.75" stroke-width="1.5" />` : '';
   const targetMarkers = estimates.map((estimate, index) => {
     if (!Number.isFinite(targetFlow) || !Number.isFinite(estimate?.value)) return '';
     const item = series[index]; if (!item) return '';
-    const color = colors[index % colors.length];
-    return `<circle cx="${scaleX(targetFlow).toFixed(1)}" cy="${scaleY(estimate.value).toFixed(1)}" r="4" fill="${color}" stroke="white" stroke-width="1.5"><title>${item.label}; Target flow: ${targetFlow.toFixed(2)} L/min; Signed pressure: ${estimate.value > 0 ? '+' : ''}${estimate.value.toFixed(1)} mmHg</title></circle>`;
+    const color = colors[(Number.isInteger(item.colorIndex) ? item.colorIndex : index) % colors.length];
+    const displayLabel = item.displayLabel || item.label;
+    return `<circle cx="${scaleX(targetFlow).toFixed(1)}" cy="${scaleY(estimate.value).toFixed(1)}" r="4" fill="${color}" stroke="white" stroke-width="1.5"><title>${displayLabel}; Target flow: ${targetFlow.toFixed(2)} L/min; Signed pressure: ${estimate.value > 0 ? '+' : ''}${estimate.value.toFixed(1)} mmHg</title></circle>`;
   }).join('');
-  const legend = series.map((item, index) => `<g transform="translate(${padding.left + index * 112} 10)"><line x1="0" y1="0" x2="18" y2="0" stroke="${colors[index % colors.length]}" stroke-width="2.5"${item.lineStyle === 'dashed' ? ' stroke-dasharray="7 4"' : ''}/><text x="23" y="3" font-size="8" fill="currentColor">${item.label}</text></g>`).join('');
+  const legend = series.map((item, index) => `<g transform="translate(${padding.left + (index % 2) * 178} ${index < 2 ? 8 : 18})"><line x1="0" y1="0" x2="18" y2="0" stroke="${colors[(Number.isInteger(item.colorIndex) ? item.colorIndex : index) % colors.length]}" stroke-width="2.5"${item.lineStyle === 'dashed' ? ' stroke-dasharray="7 4"' : ''}/><text x="23" y="3" font-size="8" fill="currentColor">${item.displayLabel || item.label}</text></g>`).join('');
   svgNode.dataset.includesNegativePressure = String(rawMinDrop < 0);
   svgNode.dataset.includesPositivePressure = String(rawMaxDrop > 0);
   svgNode.dataset.zeroReferenceLine = String(crossesZero);
@@ -5998,6 +6000,34 @@ function getPressureDropComparisonResult(entry, flowValue) {
   };
 }
 
+function createPressureDropComparisonChart(selectedEntries, flowValue) {
+  const panel = document.createElement('article');
+  panel.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-3';
+  const title = document.createElement('div');
+  title.innerHTML = '<h3 class="text-sm font-semibold text-primary-900 dark:text-white">Selected pressure-flow curves</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Each size uses one color; solid and dashed lines identify Infusion and Drainage.</p>';
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 420 200');
+  svg.setAttribute('role', 'img');
+  const chartSeries = [];
+  const estimates = [];
+  selectedEntries.forEach((entry, productIndex) => {
+    getPressureDropSeries(entry).forEach(series => {
+      chartSeries.push({
+        ...series,
+        colorIndex: productIndex,
+        displayLabel: `${entry.size || entry.model} — ${series.label}`
+      });
+      const result = interpolatePressureDrop(series.points, flowValue);
+      estimates.push(result.state === 'exact' || result.state === 'interpolated' ? result : { value: NaN });
+    });
+  });
+  svg.setAttribute('aria-label', chartSeries.map(series => series.displayLabel).join(', '));
+  svg.classList.add('block', 'w-full', 'h-auto', 'text-slate-500', 'dark:text-slate-300');
+  drawPressureDropSeriesChart(svg, chartSeries, flowValue, estimates, { curveMode: 'linear' });
+  panel.append(title, svg);
+  return panel;
+}
+
 function createPressureDropComparisonTable(selectedEntries, flowValue, onRemove) {
   const wrap = document.createElement('div');
   wrap.className = 'hidden md:block overflow-x-auto rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30';
@@ -6311,6 +6341,9 @@ async function initCannulaPressureDropPage() {
           helper.className = 'rounded-lg border border-accent-500/20 bg-accent-500/10 dark:bg-accent-500/15 px-3 py-2 text-xs font-medium text-accent-700 dark:text-accent-300';
           helper.textContent = 'Add one more size to compare.';
           compareControls.results.appendChild(helper);
+        }
+        if (selectedEntries.some(entry => getPressureDropSeries(entry).length > 1)) {
+          compareControls.results.appendChild(createPressureDropComparisonChart(selectedEntries, flowValue));
         }
         compareControls.results.appendChild(createPressureDropComparisonTable(selectedEntries, flowValue, removeKey => {
           selectedComparisonKeys = selectedComparisonKeys.filter(key => key !== removeKey);
