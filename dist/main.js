@@ -975,15 +975,22 @@ function findPressureDropEntry({ manufacturer, category, model, size }, entries 
 
 function normalizePressureDropSeries(series, contextLabel = 'Pressure series') {
   if (!series || !Array.isArray(series.points)) throw new Error(`${contextLabel} must include pressure-flow points`);
-  const seenFlows = new Set();
-  const points = series.points.map(point => {
+  const pressuresByFlow = new Map();
+  const points = [];
+  series.points.forEach(point => {
     if (!Number.isFinite(point?.flow) || !Number.isFinite(point?.pressureDrop) || point.flow < 0) {
       throw new Error(`${contextLabel} contains an invalid pressure-flow point`);
     }
-    if (seenFlows.has(point.flow)) throw new Error(`${contextLabel} contains a duplicate flow value`);
-    seenFlows.add(point.flow);
-    return { flow: point.flow, pressureDrop: point.pressureDrop };
-  }).sort((left, right) => left.flow - right.flow);
+    if (pressuresByFlow.has(point.flow)) {
+      if (pressuresByFlow.get(point.flow) !== point.pressureDrop) {
+        throw new Error(`${contextLabel} contains conflicting pressures for the same flow value`);
+      }
+      return;
+    }
+    pressuresByFlow.set(point.flow, point.pressureDrop);
+    points.push({ flow: point.flow, pressureDrop: point.pressureDrop });
+  });
+  points.sort((left, right) => left.flow - right.flow);
   return { ...series, id: series.id || 'pressure-drop', label: series.label || 'Pressure drop', lineStyle: series.lineStyle || 'solid', points };
 }
 
