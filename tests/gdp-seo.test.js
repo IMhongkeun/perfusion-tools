@@ -42,6 +42,11 @@ assert.strictEqual((html.match(/h1: 'Goal-Directed Perfusion DO2i Calculator'/g)
 assert(html.includes(`headingDescription: '${headingDescription}'`), 'routeMeta heading description should remain exact.');
 assert.strictEqual((html.match(/canonicalPath: '\/gdp\/'/g) || []).length, 2, 'Both routeMeta canonical paths should remain exact.');
 assert(html.includes('flow index') && html.includes('hemoglobin') && html.includes('SaO2') && html.includes('PaO2'), 'Top copy should preserve calculation inputs.');
+assert(html.includes('>Calculate DO₂i &amp; Required Flow</h2>'), 'Calculator card should use a concise, action-oriented heading.');
+assert(!html.includes('aria-label="DO2i calculator features"'), 'Repeated calculator intro and keyword chips should be removed from visible markup.');
+assert(!html.includes('GDP / DO₂i Calculator</h2>'), 'Calculator card should not repeat the full calculator title.');
+assert(html.includes('>CaO<sub>2</sub></div>'), 'Arterial oxygen content result label should preserve the lowercase a with semantic subscript markup.');
+assert(!html.includes('uppercase tracking-wider text-slate-300">CaO'), 'CaO2 result styling should not visually capitalize the arterial lowercase a.');
 
 const workedExample = html.match(/<h2 class="calculator-lower-title">Worked example: calculating DO₂i during CPB<\/h2>([\s\S]*?)<\/section>/);
 assert(workedExample, 'Worked DO₂i example heading should exist.');
