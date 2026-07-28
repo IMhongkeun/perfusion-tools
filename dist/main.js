@@ -1150,7 +1150,8 @@ function drawPressureDropSeriesChart(svgNode, pressureSeries, targetFlow, estima
   const series = pressureSeries.map(item => ({ ...item, points: getValidPressureDropPoints(item.points) })).filter(item => item.points.length);
   if (!svgNode || !series.length) return;
   const width = 420; const height = 200;
-  const padding = { left: 58, right: 18, top: 18, bottom: 42 };
+  const legendRowCount = Math.ceil(series.length / 2);
+  const padding = { left: 58, right: 18, top: 18 + (Math.max(legendRowCount - 2, 0) * 10), bottom: 42 };
   const allPoints = series.flatMap(item => item.points);
   const minFlow = Math.min(...allPoints.map(point => point.flow));
   const maxFlow = Math.max(...allPoints.map(point => point.flow));
@@ -1187,7 +1188,7 @@ function drawPressureDropSeriesChart(svgNode, pressureSeries, targetFlow, estima
     const displayLabel = item.displayLabel || item.label;
     return `<circle cx="${scaleX(targetFlow).toFixed(1)}" cy="${scaleY(estimate.value).toFixed(1)}" r="4" fill="${color}" stroke="white" stroke-width="1.5"><title>${displayLabel}; Target flow: ${targetFlow.toFixed(2)} L/min; Signed pressure: ${estimate.value > 0 ? '+' : ''}${estimate.value.toFixed(1)} mmHg</title></circle>`;
   }).join('');
-  const legend = series.map((item, index) => `<g transform="translate(${padding.left + (index % 2) * 178} ${index < 2 ? 8 : 18})"><line x1="0" y1="0" x2="18" y2="0" stroke="${colors[(Number.isInteger(item.colorIndex) ? item.colorIndex : index) % colors.length]}" stroke-width="2.5"${item.lineStyle === 'dashed' ? ' stroke-dasharray="7 4"' : ''}/><text x="23" y="3" font-size="8" fill="currentColor">${item.displayLabel || item.label}</text></g>`).join('');
+  const legend = series.map((item, index) => `<g transform="translate(${padding.left + (index % 2) * 178} ${8 + (Math.floor(index / 2) * 10)})"><line x1="0" y1="0" x2="18" y2="0" stroke="${colors[(Number.isInteger(item.colorIndex) ? item.colorIndex : index) % colors.length]}" stroke-width="2.5"${item.lineStyle === 'dashed' ? ' stroke-dasharray="7 4"' : ''}/><text x="23" y="3" font-size="8" fill="currentColor">${item.displayLabel || item.label}</text></g>`).join('');
   svgNode.dataset.includesNegativePressure = String(rawMinDrop < 0);
   svgNode.dataset.includesPositivePressure = String(rawMaxDrop > 0);
   svgNode.dataset.zeroReferenceLine = String(crossesZero);
@@ -5848,7 +5849,7 @@ function createPressureDropEstimateCard(entry, flowInputValue, flowValue, interp
   const input = document.createElement('input'); input.id = 'pressure-drop-result-flow'; input.type = 'text'; input.inputMode = 'decimal'; input.pattern = '[0-9]*[.,]?[0-9]*'; input.placeholder = 'Enter flow rate'; input.value = flowInputValue || ''; input.className = 'w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white'; input.addEventListener('input', () => onFlowInput(input.value));
   inputWrap.append(inputLabel, input);
   card.append(title, results, inputWrap);
-  if (series.some(item => item.semanticType === 'drainage')) { const note = document.createElement('p'); note.className = 'text-xs leading-relaxed text-slate-600 dark:text-slate-300'; note.textContent = 'Negative drainage values represent the drainage-side pressure direction shown in the manufacturer flow-characteristics graph.'; card.appendChild(note); }
+  if (series.some(item => item.semanticType === 'drainage')) { const note = document.createElement('p'); note.className = 'text-xs leading-relaxed text-slate-600 dark:text-slate-300'; note.textContent = 'Drainage values preserve the signed source curve; near the zero-pressure axis, digitized points may slightly cross 0 mmHg.'; card.appendChild(note); }
   return card;
 }
 
