@@ -336,7 +336,7 @@
     window.applyRouteMeta = applyRouteMeta;
     window.addEventListener('load', () => applyRouteMeta('/bsa'));
   </script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/bsa#webpage","url":"https://perfusiontools.com/bsa/","name":"BSA Calculator – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalEntity","name":"Body surface area for perfusion flow indexing"},"dateModified":"2026-07-26"},{"@type":"WebApplication","@id":"https://perfusiontools.com/bsa#app","name":"BSA Calculator","url":"https://perfusiontools.com/bsa/","applicationCategory":"MedicalApplication","operatingSystem":"Any","isPartOf":{"@id":"https://perfusiontools.com/bsa#webpage"},"publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"FAQPage","@id":"https://perfusiontools.com/bsa#faq","mainEntity":[{"@type":"Question","name":"What is BSA used for during cardiopulmonary bypass?","acceptedAnswer":{"@type":"Answer","text":"Body surface area is used to index pump flow and other physiologic references to patient size. During CPB, a selected cardiac index can be multiplied by BSA to estimate a reference pump flow, but the result still requires clinical interpretation."}},{"@type":"Question","name":"How is BSA calculated with the Mosteller formula?","acceptedAnswer":{"@type":"Answer","text":"The Mosteller formula is BSA (m²) = √[(height in cm × weight in kg) ÷ 3600]. For a height of 170 cm and weight of 70 kg, the unrounded result is approximately 1.8181 m² and the calculator displays 1.82 m²."}},{"@type":"Question","name":"How do you calculate CPB pump flow from BSA and cardiac index?","acceptedAnswer":{"@type":"Answer","text":"Pump flow (L/min) = BSA (m²) × cardiac index (L/min/m²). This calculator uses the unrounded internal BSA for the flow table and displays pump flow to two decimal places."}},{"@type":"Question","name":"Does BSA alone determine adequate CPB flow?","acceptedAnswer":{"@type":"Answer","text":"No. BSA-indexed flow is a starting reference, not a complete adequacy measure. Interpretation should also consider temperature, hemoglobin or hematocrit, venous oxygen saturation, lactate, arterial pressure, oxygen delivery, patient condition, and institutional protocol."}}]},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/bsa#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"BSA Calculator","item":"https://perfusiontools.com/bsa/"}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/bsa#webpage","url":"https://perfusiontools.com/bsa/","name":"BSA Calculator – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalEntity","name":"Body surface area for perfusion flow indexing"},"dateModified":"2026-07-26"},{"@type":"WebApplication","@id":"https://perfusiontools.com/bsa#app","name":"BSA Calculator","url":"https://perfusiontools.com/bsa/","applicationCategory":"MedicalApplication","operatingSystem":"Any","isPartOf":{"@id":"https://perfusiontools.com/bsa#webpage"},"publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"FAQPage","@id":"https://perfusiontools.com/bsa#faq","mainEntity":[{"@type":"Question","name":"What is BSA used for during cardiopulmonary bypass?","acceptedAnswer":{"@type":"Answer","text":"Body surface area is used to index pump flow and other physiologic references to patient size. During CPB, a selected cardiac index can be multiplied by BSA to estimate a reference pump flow, but the result still requires clinical interpretation."}},{"@type":"Question","name":"How is BSA calculated with the Mosteller formula?","acceptedAnswer":{"@type":"Answer","text":"The Mosteller formula is BSA (m²) = √[(height in cm × weight in kg) ÷ 3600]. For a height of 170 cm and weight of 70 kg, the unrounded result is approximately 1.8181 m² and the calculator displays 1.82 m²."}},{"@type":"Question","name":"How do you calculate CPB pump flow from BSA and cardiac index?","acceptedAnswer":{"@type":"Answer","text":"Pump flow (L/min) = BSA (m²) × cardiac index (L/min/m²). This calculator uses the unrounded internal BSA for the flow table and displays pump flow to two decimal places."}},{"@type":"Question","name":"Does BSA alone determine adequate CPB flow?","acceptedAnswer":{"@type":"Answer","text":"No. BSA-indexed flow is a starting reference, not a complete adequacy measure. Interpretation should also consider temperature, hemoglobin or hematocrit, venous oxygen saturation, lactate, arterial pressure, oxygen delivery, patient condition, and institutional protocol."}},{"@type":"Question","name":"Why does this BSA calculator include a male/female selection?","acceptedAnswer":{"@type":"Answer","text":"Sex is not an input to the BSA formulas and changing it does not change BSA, BMI, or the flow table. The selection is retained only so height, weight, and sex can be transferred to the Heparin Calculator, where sex is used in ideal-body-weight and adjusted-body-weight estimates."}},{"@type":"Question","name":"Should a patient with obesity automatically receive the full TBW-based BSA flow?","acceptedAnswer":{"@type":"Answer","text":"Not automatically, and flow should not be reduced by a fixed rule either. Total-body-weight BSA increases as adipose mass increases, but adipose tissue has substantially lower resting oxygen use per kilogram than highly metabolic organs and lean tissue. A TBW-based target can therefore overstate metabolic flow demand in some patients with obesity. Use the TBW table as a starting reference, compare the obesity-adjusted lean-flow table when shown, and individualize flow using temperature, indexed oxygen delivery, hemoglobin or hematocrit, SvO₂, lactate, arterial pressure, and institutional protocol."}},{"@type":"Question","name":"How do body fat, blood volume, and metabolic demand relate?","acceptedAnswer":{"@type":"Answer","text":"This calculator's mL/kg/min column is a flow conversion and does not calculate blood volume. Absolute blood volume generally rises with body size, but adipose tissue is less vascular than lean tissue, so blood volume does not increase in direct proportion to every kilogram of total body weight and blood volume per kilogram is often lower in obesity. Adipose tissue still requires perfusion and obesity can alter cardiopulmonary physiology, but added fat contributes less to resting oxygen demand than the same mass of lean, organ-rich tissue. For CPB, neither total weight nor a lean-size estimate should be used alone to judge adequate perfusion."}}]},{"@type":"BreadcrumbList","@id":"https://perfusiontools.com/bsa#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfusiontools.com/"},{"@type":"ListItem","position":2,"name":"BSA Calculator","item":"https://perfusiontools.com/bsa/"}]}]}</script>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
 
@@ -485,10 +485,6 @@
                     Body surface area (BSA) is used to normalize CPB flow and perfusion references to patient size. This calculator estimates BSA and provides indexed flow guidance for clinical context.
                   </p>
                 </section>
-                <section class="space-y-2">
-                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Practical note</h3>
-                  <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Use BSA-indexed flow as a starting point and interpret it with temperature, SvO₂, lactate, and local protocol.</p>
-                </section>
                 <div class="rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/50 p-4">
                   <div class="flex items-center justify-between mb-2">
                     <h3 class="text-xs font-bold text-primary-900 dark:text-slate-100 uppercase tracking-wider">Formula Comparison</h3>
@@ -530,6 +526,10 @@
                   </div>
                 </div>
               </div>
+              <section class="space-y-2 lg:col-span-2">
+                <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Practical note</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Use BSA-indexed flow as a starting point and interpret it with temperature, SvO₂, lactate, and local protocol.</p>
+              </section>
             </div>
 
             <section class="calculator-lower-section">
@@ -687,8 +687,56 @@
                 </ul>
               </div>
 
-              <div class="space-y-2">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Selected references</h4>
+
+            </section>
+            <section class="calculator-lower-section">
+              <h2 class="calculator-lower-title">BSA and CPB flow FAQ</h2>
+              <div class="calculator-lower-panel">
+                <div class="calculator-faq-list">
+                  <div class="calculator-faq-item">
+                    <p class="calculator-faq-question">What is BSA used for during cardiopulmonary bypass?</p>
+                    <p class="calculator-faq-answer">Body surface area is used to index pump flow and other physiologic references to patient size. During CPB, a selected cardiac index can be multiplied by BSA to estimate a reference pump flow, but the result still requires clinical interpretation.</p>
+                  </div>
+                  <div class="calculator-faq-item">
+                    <p class="calculator-faq-question">How is BSA calculated with the Mosteller formula?</p>
+                    <p class="calculator-faq-answer">The Mosteller formula is BSA (m²) = √[(height in cm × weight in kg) ÷ 3600]. For a height of 170 cm and weight of 70 kg, the unrounded result is approximately 1.8181 m² and the calculator displays 1.82 m².</p>
+                  </div>
+                  <div class="calculator-faq-item">
+                    <p class="calculator-faq-question">How do you calculate CPB pump flow from BSA and cardiac index?</p>
+                    <p class="calculator-faq-answer">Pump flow (L/min) = BSA (m²) × cardiac index (L/min/m²). This calculator uses the unrounded internal BSA for the flow table and displays pump flow to two decimal places.</p>
+                  </div>
+                  <div class="calculator-faq-item">
+                    <p class="calculator-faq-question">Does BSA alone determine adequate CPB flow?</p>
+                    <p class="calculator-faq-answer">No. BSA-indexed flow is a starting reference, not a complete adequacy measure. Interpretation should also consider temperature, hemoglobin or hematocrit, venous oxygen saturation, lactate, arterial pressure, oxygen delivery, patient condition, and institutional protocol.</p>
+                  </div>
+                  <div class="calculator-faq-item">
+                    <p class="calculator-faq-question">Why does this BSA calculator include a male/female selection?</p>
+                    <p class="calculator-faq-answer">Sex is not an input to the BSA formulas and changing it does not change BSA, BMI, or the flow table. The selection is retained only so height, weight, and sex can be transferred to the Heparin Calculator, where sex is used in ideal-body-weight and adjusted-body-weight estimates.</p>
+                  </div>
+                  <div class="calculator-faq-item">
+                    <p class="calculator-faq-question">Should a patient with obesity automatically receive the full TBW-based BSA flow?</p>
+                    <p class="calculator-faq-answer">Not automatically, and flow should not be reduced by a fixed rule either. Total-body-weight BSA increases as adipose mass increases, but adipose tissue has substantially lower resting oxygen use per kilogram than highly metabolic organs and lean tissue. A TBW-based target can therefore overstate metabolic flow demand in some patients with obesity. Use the TBW table as a starting reference, compare the obesity-adjusted lean-flow table when shown, and individualize flow using temperature, indexed oxygen delivery, hemoglobin or hematocrit, SvO₂, lactate, arterial pressure, and institutional protocol.</p>
+                  </div>
+                  <div class="calculator-faq-item">
+                    <p class="calculator-faq-question">How do body fat, blood volume, and metabolic demand relate?</p>
+                    <p class="calculator-faq-answer">This calculator's mL/kg/min column is a flow conversion and does not calculate blood volume. Absolute blood volume generally rises with body size, but adipose tissue is less vascular than lean tissue, so blood volume does not increase in direct proportion to every kilogram of total body weight and blood volume per kilogram is often lower in obesity. Adipose tissue still requires perfusion and obesity can alter cardiopulmonary physiology, but added fat contributes less to resting oxygen demand than the same mass of lean, organ-rich tissue. For CPB, neither total weight nor a lean-size estimate should be used alone to judge adequate perfusion.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <div class="pt-2">
+              <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-3">
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Related tools</h3>
+                <div class="flex flex-wrap gap-2">
+                  <a href="/gdp/" class="text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-primary-700 text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-500 transition-colors">GDP Calculator</a>
+                  <a href="/predicted-hct/" class="text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-primary-700 text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-500 transition-colors">Predicted Hematocrit</a>
+                </div>
+              </div>
+            </div>
+            <section class="calculator-lower-section" aria-labelledby="bsa-references-heading">
+              <h2 id="bsa-references-heading" class="calculator-lower-title">Selected references</h2>
+              <div class="calculator-lower-panel">
+                <div class="space-y-2">
                 <p class="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">Formula references</p>
                 <ul class="list-disc pl-5 text-sm text-slate-700 dark:text-slate-300 space-y-2">
                   <li>
@@ -721,40 +769,20 @@
                     </div>
                   </li>
                 </ul>
+                <p class="pt-2 text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">Body composition and blood-volume references</p>
+                <ul class="list-disc pl-5 text-sm text-slate-700 dark:text-slate-300 space-y-2">
+                  <li>
+                    <span>Gallagher D, et al. Organ-tissue mass measurement allows modeling of REE and metabolically active tissue mass. Am J Physiol. 1998;275:E249–E258.</span>
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/9688626/" target="_blank" rel="noopener noreferrer" class="ml-1 inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
+                  </li>
+                  <li>
+                    <span>Lemmens HJM, Bernstein DP, Brodsky JB. Estimating blood volume in obese and morbidly obese patients. Obes Surg. 2006;16:773–776.</span>
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/16756741/" target="_blank" rel="noopener noreferrer" class="ml-1 inline-flex items-center rounded-full border border-slate-300 dark:border-primary-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 hover:border-accent-500/40 hover:text-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/50">PubMed</a>
+                  </li>
+                </ul>
+              </div>
               </div>
             </section>
-            <section class="calculator-lower-section">
-              <h2 class="calculator-lower-title">BSA and CPB flow FAQ</h2>
-              <div class="calculator-lower-panel">
-                <div class="calculator-faq-list">
-                  <div class="calculator-faq-item">
-                    <p class="calculator-faq-question">What is BSA used for during cardiopulmonary bypass?</p>
-                    <p class="calculator-faq-answer">Body surface area is used to index pump flow and other physiologic references to patient size. During CPB, a selected cardiac index can be multiplied by BSA to estimate a reference pump flow, but the result still requires clinical interpretation.</p>
-                  </div>
-                  <div class="calculator-faq-item">
-                    <p class="calculator-faq-question">How is BSA calculated with the Mosteller formula?</p>
-                    <p class="calculator-faq-answer">The Mosteller formula is BSA (m²) = √[(height in cm × weight in kg) ÷ 3600]. For a height of 170 cm and weight of 70 kg, the unrounded result is approximately 1.8181 m² and the calculator displays 1.82 m².</p>
-                  </div>
-                  <div class="calculator-faq-item">
-                    <p class="calculator-faq-question">How do you calculate CPB pump flow from BSA and cardiac index?</p>
-                    <p class="calculator-faq-answer">Pump flow (L/min) = BSA (m²) × cardiac index (L/min/m²). This calculator uses the unrounded internal BSA for the flow table and displays pump flow to two decimal places.</p>
-                  </div>
-                  <div class="calculator-faq-item">
-                    <p class="calculator-faq-question">Does BSA alone determine adequate CPB flow?</p>
-                    <p class="calculator-faq-answer">No. BSA-indexed flow is a starting reference, not a complete adequacy measure. Interpretation should also consider temperature, hemoglobin or hematocrit, venous oxygen saturation, lactate, arterial pressure, oxygen delivery, patient condition, and institutional protocol.</p>
-                  </div>
-                </div>
-              </div>
-            </section>
-            <div class="pt-2">
-              <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-3">
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Related tools</h3>
-                <div class="flex flex-wrap gap-2">
-                  <a href="/gdp/" class="text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-primary-700 text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-500 transition-colors">GDP Calculator</a>
-                  <a href="/predicted-hct/" class="text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-primary-700 text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-500 transition-colors">Predicted Hematocrit</a>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>

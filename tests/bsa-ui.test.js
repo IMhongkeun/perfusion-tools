@@ -208,6 +208,23 @@ assert(!bsaHtml.includes('Formula set'), 'BSA Key info should not duplicate the 
 assert(!bsaHtml.includes('Mosteller default; Du Bois, Haycock, Boyd available'), 'BSA Key info should not duplicate available formula copy.');
 assert(!bsaHtml.includes('>Key info</h3>'), 'The redundant BSA Key info section should be removed.');
 assert(bsaHtml.includes('<div class="flex flex-wrap items-end gap-3">'), 'Unit and sex controls should share one responsive row.');
+const flowLayoutIndex = bsaHtml.indexOf('id="bsa-flow-layout"');
+const leanFlowIndex = bsaHtml.indexOf('id="bsa-lean-flow-card"');
+const practicalNoteIndex = bsaHtml.indexOf('>Practical note</h3>');
+const faqIndex = bsaHtml.indexOf('>BSA and CPB flow FAQ</h2>');
+const relatedToolsIndex = bsaHtml.indexOf('>Related tools</h3>');
+const referencesIndex = bsaHtml.indexOf('id="bsa-references-heading"');
+assert(flowLayoutIndex < leanFlowIndex && leanFlowIndex < practicalNoteIndex, 'Practical note should follow both total- and lean-body flow tables.');
+assert(practicalNoteIndex < faqIndex, 'Practical note should remain ahead of the extended FAQ.');
+assert(faqIndex < relatedToolsIndex && relatedToolsIndex < referencesIndex, 'Selected references should be a separate final section.');
+[
+  'Why does this BSA calculator include a male/female selection?',
+  'Should a patient with obesity automatically receive the full TBW-based BSA flow?',
+  'How do body fat, blood volume, and metabolic demand relate?'
+].forEach(question => assert(bsaHtml.includes(question), `BSA FAQ should include: ${question}`));
+assert(bsaHtml.includes("does not calculate blood volume"), 'FAQ should distinguish the weight-indexed flow conversion from blood volume.');
+assert(bsaHtml.includes('pubmed.ncbi.nlm.nih.gov/9688626'), 'FAQ evidence should include the body-composition metabolism reference.');
+assert(bsaHtml.includes('pubmed.ncbi.nlm.nih.gov/16756741'), 'FAQ evidence should include the obesity blood-volume reference.');
 
 // Existing UI regression: the flow list should be tall enough for the CI table.
 assert(

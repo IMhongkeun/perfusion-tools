@@ -77,16 +77,20 @@ const expectedQuestions = [
   'What is BSA used for during cardiopulmonary bypass?',
   'How is BSA calculated with the Mosteller formula?',
   'How do you calculate CPB pump flow from BSA and cardiac index?',
-  'Does BSA alone determine adequate CPB flow?'
+  'Does BSA alone determine adequate CPB flow?',
+  'Why does this BSA calculator include a male/female selection?',
+  'Should a patient with obesity automatically receive the full TBW-based BSA flow?',
+  'How do body fat, blood volume, and metabolic demand relate?'
 ];
 const faqSection = html.match(/<h2 class="calculator-lower-title">BSA and CPB flow FAQ<\/h2>([\s\S]*?)<\/section>/);
 assert(faqSection, 'Visible BSA FAQ should exist.');
 const visibleQuestions = Array.from(faqSection[1].matchAll(/<p class="calculator-faq-question">([\s\S]*?)<\/p>/g)).map((match) => normalizeText(match[1]));
 const visibleAnswers = Array.from(faqSection[1].matchAll(/<p class="calculator-faq-answer">([\s\S]*?)<\/p>/g)).map((match) => normalizeText(match[1]));
 assert.deepStrictEqual(visibleQuestions, expectedQuestions);
-assert.strictEqual(visibleAnswers.length, 4);
+assert.strictEqual(visibleAnswers.length, expectedQuestions.length);
 assert(html.indexOf('Extended clinical notes & evidence') < html.indexOf('BSA and CPB flow FAQ'));
 assert(html.indexOf('BSA and CPB flow FAQ') < html.indexOf('Related tools'));
+assert(html.indexOf('Related tools') < html.indexOf('id="bsa-references-heading"'), 'Selected references should be the final content section.');
 
 const nodes = getJsonLdNodes(html);
 const faqNodes = nodes.filter((node) => node['@type'] === 'FAQPage');
