@@ -143,6 +143,131 @@ function updateMetaForRoute(path) {
   }
 }
 
+const RECENT_CALCULATORS_STORAGE_KEY = 'perfusiontools_recent_calculators';
+const MAX_RECENT_CALCULATORS = 3;
+
+// Shared source of truth for the home directory and recent-route validation.
+const CALCULATOR_REGISTRY = [
+  { path: '/gdp/', category: 'flow', icon: 'O₂', title: { en: 'DO₂i / GDP Calculator', ko: 'DO₂i / GDP 계산기' }, description: { en: 'Indexed oxygen delivery and required pump-flow targets.', ko: '산소전달지수와 필요한 펌프 유량 목표를 계산합니다.' } },
+  { path: '/bsa/', category: 'flow', icon: 'BSA', title: { en: 'BSA Calculator', ko: 'BSA 계산기' }, description: { en: 'Body surface area for indexed perfusion planning.', ko: '관류 계획의 지표화에 필요한 체표면적을 계산합니다.' } },
+  { path: '/lbm/', category: 'flow', icon: 'LBM', title: { en: 'Lean Body Mass Calculator', ko: '제지방량 계산기' }, description: { en: 'Lean body mass and dosing-weight references.', ko: '제지방량과 투여 체중 참고값을 계산합니다.' } },
+  { path: '/predicted-hct/', category: 'blood', icon: 'Hct', title: { en: 'Predicted Hematocrit', ko: '예측 Hct 계산기' }, description: { en: 'Post-prime dilutional Hct for CPB planning.', ko: 'CPB 계획을 위한 프라임 후 희석 Hct를 예측합니다.' } },
+  { path: '/priming-volume/', category: 'blood', icon: 'mL', title: { en: 'Priming Volume Calculator', ko: '프라이밍 용적 계산기' }, description: { en: 'Tubing prime volume from inner diameter and length.', ko: '튜브 내경과 길이로 프라임 용적을 계산합니다.' } },
+  { path: '/heparin/', category: 'anticoagulation', icon: 'ACT', title: { en: 'Heparin Calculator', ko: '헤파린 계산기' }, description: { en: 'Adult CPB heparin and protamine planning support.', ko: '성인 CPB 헤파린 및 프로타민 계획을 지원합니다.' } },
+  { path: '/cannula-pressure-drop/', category: 'circuit', icon: 'ΔP', title: { en: 'Cannula Pressure Drop', ko: '캐뉼라 압력 강하' }, description: { en: 'Browse 179 manufacturer pressure-flow datasets for cannula selection.', ko: '캐뉼라 선택을 위한 제조사 압력-유량 곡선입니다.' } },
+  { path: '/quick-reference/', category: 'circuit', icon: 'CPB', title: { en: 'Quick Reference', ko: '빠른 참고 자료' }, description: { en: 'Concise CPB and ECMO clinical reference tables.', ko: '간결한 CPB 및 ECMO 임상 참고표입니다.' } },
+  { path: '/timecalc/', category: 'time', icon: 'min', title: { en: 'Time Calculator', ko: '시간 계산기' }, description: { en: 'Elapsed bypass, cross-clamp, and case intervals.', ko: '체외순환, 대동맥 차단 및 수술 경과 시간을 계산합니다.' } },
+  { path: '/unit-converter/', category: 'time', icon: '↔', title: { en: 'Unit Converter', ko: '단위 변환기' }, description: { en: 'Common perfusion pressure, flow, and blood-gas units.', ko: '관류 압력, 유량 및 혈액가스 단위를 변환합니다.' } },
+  { path: '/z-score/', category: 'pediatric', icon: 'Z', title: { en: 'Pediatric Echo Z-score', ko: '소아 심초음파 Z-score' }, description: { en: 'Published pediatric cardiac-dimension references.', ko: '발표된 소아 심장 치수 참고값을 계산합니다.' } }
+];
+
+const HOME_TRANSLATIONS = {
+  en: { recent: 'Recently used', clear: 'Clear recent', all: 'All calculators', categories: { flow: 'Flow & Oxygenation', blood: 'Blood, Hemodilution & Volume', anticoagulation: 'Anticoagulation', circuit: 'Cannula, Circuit & ECMO', time: 'Time & Conversion', pediatric: 'Pediatric' } },
+  ko: { recent: '최근 사용', clear: '최근 기록 지우기', all: '모든 계산기', categories: { flow: '유량 및 산소화', blood: '혈액, 혈액희석 및 용적', anticoagulation: '항응고', circuit: '캐뉼라, 회로 및 ECMO', time: '시간 및 단위 변환', pediatric: '소아' } }
+};
+
+function normalizeCalculatorPath(path) {
+  if (typeof path !== 'string' || !/^\/[a-z0-9-]+\/?$/.test(path)) return null;
+  return `${path.replace(/\/$/, '')}/`;
+}
+
+function getCalculatorByRoute(path) {
+  const normalized = normalizeCalculatorPath(path);
+  return normalized ? CALCULATOR_REGISTRY.find(calculator => calculator.path === normalized) || null : null;
+}
+
+function readRecentCalculatorRoutes(storage) {
+  try {
+    const storageArea = storage || window.localStorage;
+    const parsed = JSON.parse(storageArea.getItem(RECENT_CALCULATORS_STORAGE_KEY) || '[]');
+    if (!Array.isArray(parsed)) return [];
+    return [...new Set(parsed.map(normalizeCalculatorPath).filter(path => getCalculatorByRoute(path)))].slice(0, MAX_RECENT_CALCULATORS);
+  } catch (_) {
+    return [];
+  }
+}
+
+function saveVisitedCalculator(path, storage) {
+  const calculator = getCalculatorByRoute(path);
+  if (!calculator) return [];
+  const recent = [calculator.path, ...readRecentCalculatorRoutes(storage).filter(route => route !== calculator.path)].slice(0, MAX_RECENT_CALCULATORS);
+  try { (storage || window.localStorage).setItem(RECENT_CALCULATORS_STORAGE_KEY, JSON.stringify(recent)); } catch (_) { return []; }
+  return recent;
+}
+
+function clearRecentCalculatorRoutes(storage) {
+  try { (storage || window.localStorage).removeItem(RECENT_CALCULATORS_STORAGE_KEY); } catch (_) { /* Normal navigation remains available. */ }
+  renderRecentCalculators([]);
+}
+
+function getHomeLanguage() {
+  return (document.documentElement.lang || navigator.language || 'en').toLowerCase().startsWith('ko') ? 'ko' : 'en';
+}
+
+function createCalculatorRow(calculator, language) {
+  const link = document.createElement('a');
+  link.href = calculator.path;
+  link.dataset.route = '';
+  link.className = 'calculator-directory-row';
+  link.setAttribute('role', 'listitem');
+  link.innerHTML = `<span class="calculator-directory-icon rounded-lg bg-slate-100 dark:bg-primary-800 text-accent-600 dark:text-accent-400 inline-flex items-center justify-center text-xs font-bold" aria-hidden="true">${calculator.icon}</span><span class="calculator-directory-copy"><span class="block text-sm font-semibold text-primary-900 dark:text-white">${calculator.title[language]}</span><span class="calculator-directory-description block text-xs leading-5 text-slate-600 dark:text-slate-300">${calculator.description[language]}</span></span><span class="calculator-directory-chevron text-accent-500" aria-hidden="true">›</span>`;
+  return link;
+}
+
+function renderCalculatorDirectory() {
+  const container = document.getElementById('calculator-category-list');
+  if (!container) return;
+  const language = getHomeLanguage();
+  const translations = HOME_TRANSLATIONS[language];
+  const allHeading = document.getElementById('all-calculators-heading');
+  if (allHeading) allHeading.textContent = translations.all;
+  container.replaceChildren();
+  Object.entries(translations.categories).forEach(([category, label]) => {
+    const calculators = CALCULATOR_REGISTRY.filter(item => item.category === category);
+    if (!calculators.length) return;
+    const section = document.createElement('section');
+    const heading = document.createElement('h3');
+    heading.className = 'mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400';
+    heading.textContent = label;
+    const list = document.createElement('div');
+    list.className = 'calculator-category-grid grid gap-2';
+    list.setAttribute('role', 'list');
+    calculators.forEach(calculator => list.appendChild(createCalculatorRow(calculator, language)));
+    section.append(heading, list);
+    container.appendChild(section);
+  });
+}
+
+function renderRecentCalculators(routes = readRecentCalculatorRoutes()) {
+  const section = document.getElementById('recent-calculators');
+  const list = document.getElementById('recent-calculator-list');
+  if (!section || !list) return;
+  const calculators = routes.map(getCalculatorByRoute).filter(Boolean).slice(0, MAX_RECENT_CALCULATORS);
+  section.classList.toggle('hidden', calculators.length === 0);
+  list.replaceChildren();
+  if (!calculators.length) return;
+  const language = getHomeLanguage();
+  document.getElementById('recent-calculators-heading').textContent = HOME_TRANSLATIONS[language].recent;
+  const clearButton = document.getElementById('clear-recent-calculators');
+  clearButton.textContent = HOME_TRANSLATIONS[language].clear;
+  clearButton.setAttribute('aria-label', HOME_TRANSLATIONS[language].clear);
+  calculators.forEach(calculator => list.appendChild(createCalculatorRow(calculator, language)));
+}
+
+function initCalculatorDiscovery() {
+  renderCalculatorDirectory();
+  const calculator = getCalculatorByRoute(window.location.pathname);
+  if (calculator) saveVisitedCalculator(calculator.path);
+  renderRecentCalculators();
+  const clearButton = document.getElementById('clear-recent-calculators');
+  if (clearButton) clearButton.addEventListener('click', () => clearRecentCalculatorRoutes());
+}
+
+if (typeof window !== 'undefined') {
+  window.PerfusionToolsCalculatorRegistry = CALCULATOR_REGISTRY;
+  window.PerfusionToolsRecentCalculators = { readRecentCalculatorRoutes, saveVisitedCalculator, clearRecentCalculatorRoutes, renderRecentCalculators };
+}
+
 const TOP_NAV_ITEMS = [
   { path: '/', label: 'Home' },
   { path: '/bsa/', label: 'BSA' },
@@ -8159,6 +8284,7 @@ window.addEventListener('DOMContentLoaded', () => {
   setTimeout(resetScrollToTop, 10);
   initStandaloneTopNav();
   initMobileCalculatorNav();
+  initCalculatorDiscovery();
   const primaryTopNav = el('nav-home') ? el('nav-home').closest('nav') : null;
   if (primaryTopNav) {
     primaryTopNav.classList.add('overflow-x-auto', 'whitespace-nowrap', 'max-w-[68%]', 'pr-1');
