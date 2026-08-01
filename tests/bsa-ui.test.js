@@ -202,6 +202,8 @@ assert(/id="bsa-sex-info-button"[^>]*aria-label="Why is sex required\?"/.test(bs
 assert(/id="bsa-sex-info-button"[^>]*aria-expanded="false"[^>]*aria-controls="bsa-sex-info"/.test(bsaHtml), 'Sex information button should expose its initial state and controlled content.');
 assert(bsaHtml.includes('Used for Heparin Calculator IBW/ABW estimates only. It does not affect BSA.'), 'Sex information should explain its Heparin-only purpose.');
 assert(/id="bsa-sex-info"[^>]*class="[^"]*hidden/.test(bsaHtml), 'Sex information should start hidden.');
+assert(!bsaHtml.includes('tracking-wide">Sex</span>'), 'Sex control should not repeat a visible Sex label.');
+assert(/aria-label="Patient sex selection"[\s\S]*?id="bsa-sex-male"[\s\S]*?id="bsa-sex-female"[\s\S]*?id="bsa-sex-info-button"/.test(bsaHtml), 'Sex information button should sit at the right side of the selection box.');
 assert(!bsaHtml.includes('Formula set'), 'BSA Key info should not duplicate the formula set label.');
 assert(!bsaHtml.includes('Mosteller default; Du Bois, Haycock, Boyd available'), 'BSA Key info should not duplicate available formula copy.');
 assert(!bsaHtml.includes('>Key info</h3>'), 'The redundant BSA Key info section should be removed.');
