@@ -204,7 +204,8 @@ assert(bsaHtml.includes('Used for Heparin Calculator IBW/ABW estimates only. It 
 assert(/id="bsa-sex-info"[^>]*class="[^"]*hidden/.test(bsaHtml), 'Sex information should start hidden.');
 assert(!bsaHtml.includes('Formula set'), 'BSA Key info should not duplicate the formula set label.');
 assert(!bsaHtml.includes('Mosteller default; Du Bois, Haycock, Boyd available'), 'BSA Key info should not duplicate available formula copy.');
-assert(bsaHtml.includes('<dl class="grid md:grid-cols-2 gap-2 text-sm">'), 'The remaining Key info items should use a complete two-column layout.');
+assert(!bsaHtml.includes('>Key info</h3>'), 'The redundant BSA Key info section should be removed.');
+assert(bsaHtml.includes('<div class="flex flex-wrap items-end gap-3">'), 'Unit and sex controls should share one responsive row.');
 
 // Existing UI regression: the flow list should be tall enough for the CI table.
 assert(

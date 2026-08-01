@@ -432,19 +432,21 @@
 
             <div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-6">
               <div class="space-y-4 lg:col-span-2">
-                <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/50 p-2 inline-flex gap-2" role="group" aria-label="BSA unit selection">
-                  <button id="bsa-unit-metric" type="button" class="min-h-11 px-4 py-2 text-xs font-semibold rounded-lg bg-primary-900 text-white dark:bg-primary-700">Metric (cm/kg)</button>
-                  <button id="bsa-unit-imperial" type="button" class="min-h-11 px-4 py-2 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Imperial (in/lb)</button>
-                </div>
-                <div class="space-y-1">
-                  <div id="bsa-sex-info-container" class="relative flex items-center gap-1.5 w-fit">
-                    <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Sex</span>
-                    <button id="bsa-sex-info-button" type="button" aria-label="Why is sex required?" aria-expanded="false" aria-controls="bsa-sex-info" class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-slate-300 dark:border-primary-600 text-[11px] font-semibold text-slate-500 dark:text-slate-300 hover:border-accent-500 hover:text-accent-600 dark:hover:text-accent-400 focus:outline-none focus:ring-2 focus:ring-accent-500">i</button>
-                    <div id="bsa-sex-info" role="tooltip" class="hidden absolute left-0 top-full z-20 mt-2 w-64 max-w-[calc(100vw-3rem)] rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs leading-relaxed text-slate-600 dark:text-slate-200 shadow-lg">Used for Heparin Calculator IBW/ABW estimates only. It does not affect BSA.</div>
+                <div class="flex flex-wrap items-end gap-3">
+                  <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/50 p-2 inline-flex gap-2" role="group" aria-label="BSA unit selection">
+                    <button id="bsa-unit-metric" type="button" class="min-h-11 px-4 py-2 text-xs font-semibold rounded-lg bg-primary-900 text-white dark:bg-primary-700">Metric (cm/kg)</button>
+                    <button id="bsa-unit-imperial" type="button" class="min-h-11 px-4 py-2 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Imperial (in/lb)</button>
                   </div>
-                  <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/50 p-2 inline-flex gap-2" role="group" aria-label="Patient sex selection">
-                    <button id="bsa-sex-male" type="button" class="min-h-11 px-4 py-2 text-xs font-semibold rounded-lg bg-primary-900 text-white dark:bg-primary-700">Male</button>
-                    <button id="bsa-sex-female" type="button" class="min-h-11 px-4 py-2 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Female</button>
+                  <div class="space-y-1">
+                    <div id="bsa-sex-info-container" class="relative flex items-center gap-1.5 w-fit">
+                      <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide">Sex</span>
+                      <button id="bsa-sex-info-button" type="button" aria-label="Why is sex required?" aria-expanded="false" aria-controls="bsa-sex-info" class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-slate-300 dark:border-primary-600 text-[11px] font-semibold text-slate-500 dark:text-slate-300 hover:border-accent-500 hover:text-accent-600 dark:hover:text-accent-400 focus:outline-none focus:ring-2 focus:ring-accent-500">i</button>
+                      <div id="bsa-sex-info" role="tooltip" class="hidden absolute left-0 top-full z-20 mt-2 w-64 max-w-[calc(100vw-3rem)] rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs leading-relaxed text-slate-600 dark:text-slate-200 shadow-lg">Used for Heparin Calculator IBW/ABW estimates only. It does not affect BSA.</div>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/50 p-2 inline-flex gap-2" role="group" aria-label="Patient sex selection">
+                      <button id="bsa-sex-male" type="button" class="min-h-11 px-4 py-2 text-xs font-semibold rounded-lg bg-primary-900 text-white dark:bg-primary-700">Male</button>
+                      <button id="bsa-sex-female" type="button" class="min-h-11 px-4 py-2 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800">Female</button>
+                    </div>
                   </div>
                 </div>
                 <div class="grid sm:grid-cols-2 gap-4">
@@ -487,19 +489,6 @@
                   <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                     Body surface area (BSA) is used to normalize CPB flow and perfusion references to patient size. This calculator estimates BSA and provides indexed flow guidance for clinical context.
                   </p>
-                </section>
-                <section class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900/40 p-4">
-                  <h3 class="text-sm font-semibold text-primary-900 dark:text-white mb-3">Key info</h3>
-                  <dl class="grid md:grid-cols-2 gap-2 text-sm">
-                    <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800/50 px-3 py-2">
-                      <dt class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Primary use</dt>
-                      <dd class="text-slate-700 dark:text-slate-200 font-medium">Indexed CPB flow guidance</dd>
-                    </div>
-                    <div class="rounded-lg border border-amber-300/70 dark:border-amber-700 bg-amber-50/70 dark:bg-amber-900/20 px-3 py-2">
-                      <dt class="text-xs uppercase tracking-wide text-amber-700 dark:text-amber-300">Caution</dt>
-                      <dd class="text-amber-800 dark:text-amber-200 font-medium">TBW-based BSA may overestimate indexed targets in obesity</dd>
-                    </div>
-                  </dl>
                 </section>
                 <section class="space-y-2">
                   <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Practical note</h3>
