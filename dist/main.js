@@ -145,6 +145,7 @@ function updateMetaForRoute(path) {
 
 const RECENT_CALCULATORS_STORAGE_KEY = 'perfusiontools_recent_calculators';
 const MAX_RECENT_CALCULATORS = 3;
+let calculatorDiscoveryPageshowInitialized = false;
 
 // Shared source of truth for the home directory and recent-route validation.
 const CALCULATOR_REGISTRY = [
@@ -204,9 +205,16 @@ function saveVisitedCalculator(path, storage) {
   return recent;
 }
 
+function focusAllCalculatorsHeading() {
+  const heading = document.getElementById('all-calculators-heading');
+  if (!heading || !heading.isConnected || heading.closest('[hidden], .hidden')) return;
+  try { heading.focus({ preventScroll: true }); } catch (_) { heading.focus(); }
+}
+
 function clearRecentCalculatorRoutes(storage) {
   try { (storage || window.localStorage).removeItem(RECENT_CALCULATORS_STORAGE_KEY); } catch (_) { /* Normal navigation remains available. */ }
   renderRecentCalculators([]);
+  focusAllCalculatorsHeading();
 }
 
 function createCalculatorRow(calculator) {
@@ -214,9 +222,14 @@ function createCalculatorRow(calculator) {
   link.href = calculator.path;
   link.dataset.route = '';
   link.className = 'calculator-directory-row';
-  link.setAttribute('role', 'listitem');
   link.innerHTML = `<span class="calculator-directory-icon rounded-lg bg-slate-100 dark:bg-primary-800 text-accent-600 dark:text-accent-400 inline-flex items-center justify-center text-xs font-bold" aria-hidden="true">${calculator.icon}</span><span class="calculator-directory-copy"><span class="block text-sm font-semibold text-primary-900 dark:text-white">${calculator.title}</span><span class="calculator-directory-description block text-xs leading-5 text-slate-600 dark:text-slate-300">${calculator.description}</span></span><span class="calculator-directory-chevron text-accent-500" aria-hidden="true">›</span>`;
   return link;
+}
+
+function createCalculatorListItem(calculator) {
+  const item = document.createElement('li');
+  item.appendChild(createCalculatorRow(calculator));
+  return item;
 }
 
 function renderCalculatorDirectory() {
@@ -232,10 +245,12 @@ function renderCalculatorDirectory() {
     const heading = document.createElement('h3');
     heading.className = 'mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400';
     heading.textContent = label;
-    const list = document.createElement('div');
+    const list = document.createElement('ul');
     list.className = 'calculator-category-grid grid gap-2';
-    list.setAttribute('role', 'list');
-    calculators.forEach(calculator => list.appendChild(createCalculatorRow(calculator)));
+    const headingId = `calculator-category-${category}`;
+    heading.id = headingId;
+    list.setAttribute('aria-labelledby', headingId);
+    calculators.forEach(calculator => list.appendChild(createCalculatorListItem(calculator)));
     section.append(heading, list);
     container.appendChild(section);
   });
@@ -253,16 +268,36 @@ function renderRecentCalculators(routes = readRecentCalculatorRoutes()) {
   const clearButton = document.getElementById('clear-recent-calculators');
   clearButton.textContent = HOME_COPY.clear;
   clearButton.setAttribute('aria-label', HOME_COPY.clear);
-  calculators.forEach(calculator => list.appendChild(createCalculatorRow(calculator)));
+  calculators.forEach(calculator => list.appendChild(createCalculatorListItem(calculator)));
+}
+
+function isHomeCalculatorDirectoryContext() {
+  const path = window.normalizeRoute ? window.normalizeRoute(window.location.pathname || '/') : (window.location.pathname || '/');
+  return (path === '/' || path === '/index.html') && Boolean(document.getElementById('calculator-category-list'));
+}
+
+function refreshRecentCalculatorsOnPageshow() {
+  if (!isHomeCalculatorDirectoryContext()) return;
+  try { renderRecentCalculators(); } catch (_) { /* A cached home page remains usable if enhancement fails. */ }
+}
+
+function initCalculatorDiscoveryPageshow() {
+  if (calculatorDiscoveryPageshowInitialized || !isHomeCalculatorDirectoryContext()) return;
+  window.addEventListener('pageshow', refreshRecentCalculatorsOnPageshow);
+  calculatorDiscoveryPageshowInitialized = true;
 }
 
 function initCalculatorDiscovery() {
+  initCalculatorDiscoveryPageshow();
   renderCalculatorDirectory();
   const calculator = getCalculatorByRoute(window.location.pathname);
   if (calculator) saveVisitedCalculator(calculator.path);
   renderRecentCalculators();
   const clearButton = document.getElementById('clear-recent-calculators');
-  if (clearButton) clearButton.addEventListener('click', () => clearRecentCalculatorRoutes());
+  if (clearButton && clearButton.dataset.recentClearInitialized !== 'true') {
+    clearButton.addEventListener('click', () => clearRecentCalculatorRoutes());
+    clearButton.dataset.recentClearInitialized = 'true';
+  }
 }
 
 if (typeof window !== 'undefined') {
