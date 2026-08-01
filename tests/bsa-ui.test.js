@@ -216,7 +216,7 @@ const relatedToolsIndex = bsaHtml.indexOf('>Related tools</h3>');
 const referencesIndex = bsaHtml.indexOf('id="bsa-references-heading"');
 assert(flowLayoutIndex < leanFlowIndex && leanFlowIndex < practicalNoteIndex, 'Practical note should follow both total- and lean-body flow tables.');
 assert(practicalNoteIndex < faqIndex, 'Practical note should remain ahead of the extended FAQ.');
-assert(faqIndex < relatedToolsIndex && relatedToolsIndex < referencesIndex, 'Selected references should be a separate final section.');
+assert(faqIndex < referencesIndex && referencesIndex < relatedToolsIndex, 'Selected references should be a separate section immediately above Related tools.');
 [
   'Why does this BSA calculator include a male/female selection?',
   'Should a patient with obesity automatically receive the full TBW-based BSA flow?',

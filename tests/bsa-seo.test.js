@@ -90,7 +90,7 @@ assert.deepStrictEqual(visibleQuestions, expectedQuestions);
 assert.strictEqual(visibleAnswers.length, expectedQuestions.length);
 assert(html.indexOf('Extended clinical notes & evidence') < html.indexOf('BSA and CPB flow FAQ'));
 assert(html.indexOf('BSA and CPB flow FAQ') < html.indexOf('Related tools'));
-assert(html.indexOf('Related tools') < html.indexOf('id="bsa-references-heading"'), 'Selected references should be the final content section.');
+assert(html.indexOf('id="bsa-references-heading"') < html.indexOf('Related tools'), 'Selected references should appear immediately above Related tools.');
 
 const nodes = getJsonLdNodes(html);
 const faqNodes = nodes.filter((node) => node['@type'] === 'FAQPage');
