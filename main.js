@@ -529,7 +529,7 @@ const BSA = {
   Haycock(h, w) {
     return 0.024265 * Math.pow(h, 0.3964) * Math.pow(w, 0.5378);
   },
-  // Boyd formula uses weight in grams with an exponent adjustment for high BMI accuracy
+  // Boyd: BSA = 0.0003207 × H(cm)^0.3 × W(g)^(0.7285 − 0.0188 × log10(W(g))).
   Boyd(h, w) {
     const wGrams = (w || 0) * 1000;
     const exponent = 0.7285 - (0.0188 * Math.log10(Math.max(wGrams, 1)));

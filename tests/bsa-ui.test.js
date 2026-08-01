@@ -233,6 +233,8 @@ assert(faqIndex < referencesIndex && referencesIndex < relatedToolsIndex, 'Selec
 assert(bsaHtml.includes("does not calculate blood volume"), 'FAQ should distinguish the weight-indexed flow conversion from blood volume.');
 assert(bsaHtml.includes('pubmed.ncbi.nlm.nih.gov/9688626'), 'FAQ evidence should include the body-composition metabolism reference.');
 assert(bsaHtml.includes('pubmed.ncbi.nlm.nih.gov/16756741'), 'FAQ evidence should include the obesity blood-volume reference.');
+assert(bsaHtml.includes('Determination of pump flow rate during cardiopulmonary bypass in obese patients avoiding hemodilution'), 'References should include direct clinical evidence for BMI 25 CPB flow comparison.');
+assert(bsaHtml.includes('Should blood flow during cardiopulmonary bypass be individualized more than to body surface area?'), 'References should include individualized CPB flow evidence.');
 
 // Existing UI regression: the flow list should be tall enough for the CI table.
 assert(
@@ -288,6 +290,8 @@ assertNearlyEqual(runtime.computeBSA(170, 70, 'Mosteller'), mostellerCanonical, 
 assert.strictEqual(runtime.computeBSA.length, 3, 'BSA should accept only height, weight, and formula inputs.');
 assert.notStrictEqual((170 * 70) / 3600, mostellerCanonical, 'Mosteller canonical should specifically require sqrt, not a linear division result.');
 assert.notStrictEqual(Math.sqrt((170 * 70) / 360), mostellerCanonical, 'Mosteller canonical should specifically require denominator 3600.');
+assertNearlyEqual(runtime.computeBSA(165, 63, 'Boyd'), 1.716448363495499, 'Boyd should convert 63 kg to grams and reproduce the 165 cm reference result.');
+assert(mainJs.includes('const wGrams = (w || 0) * 1000;'), 'Boyd runtime should explicitly convert kilograms to grams.');
 
 // Metric/imperial equivalence uses independent conversion constants, not runtime constants.
 const independentlyConvertedHeightCm = CANONICAL_IMPERIAL_PATIENT.heightIn * CM_PER_INCH_REFERENCE;
@@ -488,13 +492,14 @@ assert(mainJs.includes('function computeDevineIbw(heightCm, sex)'), 'Standalone 
 assert(mainJs.includes('const abwStandard = ibw + 0.4 * excess;'), 'Standalone Heparin calculator should retain adjusted-body-weight logic.');
 const relatedToolsSection = bsaHtml.slice(bsaHtml.indexOf('>Related tools</h3>'));
 assert(relatedToolsSection.includes('href="/heparin/"') && relatedToolsSection.includes('>Heparin Calculator</a>'), 'Normal related-tools navigation to the standalone Heparin calculator should remain available.');
+assert(relatedToolsSection.includes('href="/lbm/"') && relatedToolsSection.includes('>Lean Body Mass Calculator</a>'), 'Obesity context should offer normal navigation to the standalone LBM calculator.');
 
 // Methodology/static copy consistency checks for formulas that are currently exposed by the standalone selector.
 [
   ['Mosteller', ['BSA = √((H × W) / 3600)']],
   ['DuBois', ['0.007184', '0.725', '0.425']],
   ['Haycock', ['0.024265', '0.3964', '0.5378']],
-  ['Boyd', ['0.0003207', '0.3', '0.7285', '0.0188', 'logW']]
+  ['Boyd', ['0.0003207', 'H(cm)', 'W(g)', '0.7285', '0.0188', 'log<sub>10</sub>(W(g))', 'weight converted to grams']]
 ].forEach(([label, formulaFragments]) => {
   assert(bsaHtml.includes(label === 'DuBois' ? 'Du Bois' : label), `Methodology should mention ${label}.`);
   formulaFragments.forEach((fragment) => {
