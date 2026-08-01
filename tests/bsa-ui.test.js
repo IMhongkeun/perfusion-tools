@@ -241,6 +241,8 @@ assert(bsaHtml.includes('Evidence: Santambrogio et al. 2009'), 'The obesity FAQ 
 assert(bsaHtml.includes("this page's CI 1.0–3.0 flow table is adult CPB guidance"), 'FAQ should explicitly exclude pediatric and neonatal use of the adult flow table.');
 assert(bsaHtml.includes('pre-illness or dry-weight reference'), 'FAQ should address edema and fluid-overload weight selection cautiously.');
 assert(bsaHtml.includes('Cardiac output is total blood flow in liters per minute.'), 'FAQ should distinguish cardiac output from cardiac index.');
+const faqGdpLinks = Array.from(bsaHtml.matchAll(/class="calculator-faq-answer"[^>]*>[\s\S]*?<a href="\/gdp\/"[^>]*>(?:indexed )?oxygen delivery<\/a>/g));
+assert.strictEqual(faqGdpLinks.length, 2, 'Both oxygen-delivery FAQ contexts should link to the DO₂i/GDP Calculator.');
 
 // Existing UI regression: the flow list should be tall enough for the CI table.
 assert(

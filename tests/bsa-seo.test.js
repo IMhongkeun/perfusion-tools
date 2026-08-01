@@ -11,7 +11,7 @@ const heparinHtml = read('heparin', 'index.html');
 const mainJs = read('main.js');
 
 function normalizeText(value) {
-  return value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  return value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').replace(/\s+([,.;:])/g, '$1').trim();
 }
 
 function getJsonLdNodes(source) {
