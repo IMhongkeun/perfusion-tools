@@ -79,7 +79,10 @@ const expectedQuestions = [
   'How do you calculate CPB pump flow from BSA and cardiac index?',
   'Does BSA alone determine adequate CPB flow?',
   'Should a patient with obesity automatically receive the full TBW-based BSA flow?',
-  'How do body fat, blood volume, and metabolic demand relate?'
+  'How do body fat, blood volume, and metabolic demand relate?',
+  'Can this flow table be used for pediatric or neonatal CPB?',
+  'Which weight should be used when edema or fluid overload is present?',
+  'What is the difference between cardiac output and cardiac index?'
 ];
 const faqSection = html.match(/<h2 class="calculator-lower-title">BSA and CPB flow FAQ<\/h2>([\s\S]*?)<\/section>/);
 assert(faqSection, 'Visible BSA FAQ should exist.');

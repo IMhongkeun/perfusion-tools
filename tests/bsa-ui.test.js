@@ -230,11 +230,17 @@ assert(faqIndex < referencesIndex && referencesIndex < relatedToolsIndex, 'Selec
   'Should a patient with obesity automatically receive the full TBW-based BSA flow?',
   'How do body fat, blood volume, and metabolic demand relate?'
 ].forEach(question => assert(bsaHtml.includes(question), `BSA FAQ should include: ${question}`));
-assert(bsaHtml.includes("does not calculate blood volume"), 'FAQ should distinguish the weight-indexed flow conversion from blood volume.');
+assert(bsaHtml.includes('flow conversion, not a blood-volume calculation'), 'FAQ should distinguish the weight-indexed flow conversion from blood volume.');
 assert(bsaHtml.includes('pubmed.ncbi.nlm.nih.gov/9688626'), 'FAQ evidence should include the body-composition metabolism reference.');
 assert(bsaHtml.includes('pubmed.ncbi.nlm.nih.gov/16756741'), 'FAQ evidence should include the obesity blood-volume reference.');
 assert(bsaHtml.includes('Determination of pump flow rate during cardiopulmonary bypass in obese patients avoiding hemodilution'), 'References should include direct clinical evidence for BMI 25 CPB flow comparison.');
 assert(bsaHtml.includes('Should blood flow during cardiopulmonary bypass be individualized more than to body surface area?'), 'References should include individualized CPB flow evidence.');
+assert(bsaHtml.includes('Is body surface area still the best way to determine pump flow rate during cardiopulmonary bypass?'), 'References should include evidence comparing BSA with other pump-flow predictors.');
+assert(bsaHtml.includes('Evidence: Alston et al. 2006'), 'The BSA adequacy FAQ should link directly to its evidence.');
+assert(bsaHtml.includes('Evidence: Santambrogio et al. 2009'), 'The obesity FAQ should link directly to its evidence.');
+assert(bsaHtml.includes("this page's CI 1.0–3.0 flow table is adult CPB guidance"), 'FAQ should explicitly exclude pediatric and neonatal use of the adult flow table.');
+assert(bsaHtml.includes('pre-illness or dry-weight reference'), 'FAQ should address edema and fluid-overload weight selection cautiously.');
+assert(bsaHtml.includes('Cardiac output is total blood flow in liters per minute.'), 'FAQ should distinguish cardiac output from cardiac index.');
 
 // Existing UI regression: the flow list should be tall enough for the CI table.
 assert(
