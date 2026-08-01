@@ -220,12 +220,11 @@ assert(bsaHtml.includes('Comparison reference only; not an automatic flow target
 assert(bsaHtml.includes('TBW-based BSA may overestimate indexed pump-flow targets in obesity.'), 'Conditional obesity-related CPB flow guidance should remain.');
 const flowLayoutIndex = bsaHtml.indexOf('id="bsa-flow-layout"');
 const bmi25FlowIndex = bsaHtml.indexOf('id="bsa-bmi25-flow-card"');
-const practicalNoteIndex = bsaHtml.indexOf('>Practical note</h3>');
 const faqIndex = bsaHtml.indexOf('>BSA and CPB flow FAQ</h2>');
 const relatedToolsIndex = bsaHtml.indexOf('>Related tools</h3>');
 const referencesIndex = bsaHtml.indexOf('id="bsa-references-heading"');
-assert(flowLayoutIndex < bmi25FlowIndex && bmi25FlowIndex < practicalNoteIndex, 'Practical note should follow both total-body and BMI 25 reference flow tables.');
-assert(practicalNoteIndex < faqIndex, 'Practical note should remain ahead of the extended FAQ.');
+assert(!bsaHtml.includes('>Practical note</h3>'), 'The duplicated practical note should remain removed.');
+assert(flowLayoutIndex < bmi25FlowIndex && bmi25FlowIndex < faqIndex, 'Both flow tables should remain ahead of the extended FAQ.');
 assert(faqIndex < referencesIndex && referencesIndex < relatedToolsIndex, 'Selected references should remain immediately above Related tools.');
 [
   'Should a patient with obesity automatically receive the full TBW-based BSA flow?',
