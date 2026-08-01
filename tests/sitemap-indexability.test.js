@@ -90,8 +90,8 @@ assert.strictEqual(indexHtml, distIndexHtml, 'Root and dist index.html should st
 const bsaUrl = 'https://perfusiontools.com/bsa/';
 const rootBsaLastmod = getLastmodForLoc(rootSitemap, bsaUrl);
 const distBsaLastmod = getLastmodForLoc(distSitemap, bsaUrl);
-assert.strictEqual(rootBsaLastmod, '2026-07-26');
-assert.strictEqual(distBsaLastmod, '2026-07-26');
+assert.strictEqual(rootBsaLastmod, '2026-08-01');
+assert.strictEqual(distBsaLastmod, '2026-08-01');
 assert.strictEqual(rootBsaLastmod, distBsaLastmod);
 assert.strictEqual(bsaHtml, distBsaHtml, 'Source and dist BSA HTML should remain synchronized.');
 
@@ -99,7 +99,7 @@ const bsaNodes = getJsonLdNodes(bsaHtml);
 const bsaMedicalPage = bsaNodes.find((node) => node['@type'] === 'MedicalWebPage');
 assert(bsaMedicalPage, 'BSA MedicalWebPage structured data should exist.');
 assert.strictEqual(bsaMedicalPage.url, bsaUrl);
-assert.strictEqual(bsaMedicalPage.dateModified, '2026-07-26');
+assert.strictEqual(bsaMedicalPage.dateModified, '2026-08-01');
 assert.strictEqual(bsaMedicalPage.dateModified, rootBsaLastmod);
 
 assert(redirects.includes('/info/      /             200'), '/info/ home rewrite rule should remain unchanged.');

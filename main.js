@@ -554,8 +554,6 @@ const BSA_UNIT = {
 const CM_PER_INCH = 2.54;
 const KG_PER_LB = 0.45359237;
 let bsaInputUnit = BSA_UNIT.metric;
-let bsaPatientSex = 'male';
-let bsaLeanSelectedCi = 2.4;
 const bsaFlowNumericClass = "bsa-flow-number text-xs font-semibold [font-variant-numeric:tabular-nums_lining-nums] [font-feature-settings:'tnum'_1,'lnum'_1]";
 
 function toMetricBsaInputs(heightValue, weightValue, inputUnit) {
@@ -608,79 +606,23 @@ function updateBsaUnitUi() {
   if (weightInput) weightInput.placeholder = isMetric ? '70' : '154.3';
 }
 
-function updateBsaSexUi() {
-  const maleBtn = el('bsa-sex-male');
-  const femaleBtn = el('bsa-sex-female');
-  const isMale = bsaPatientSex === 'male';
+function renderBmi25ReferenceFlowList(bmi25ReferenceBsa) {
+  const bmi25FlowList = el('bsa-bmi25-flow-list');
+  if (!bmi25FlowList) return;
 
-  if (maleBtn) {
-    maleBtn.className = isMale
-      ? 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-primary-900 text-white dark:bg-primary-700'
-      : 'px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800';
-  }
-
-  if (femaleBtn) {
-    femaleBtn.className = isMale
-      ? 'px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800'
-      : 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-primary-900 text-white dark:bg-primary-700';
-  }
-}
-
-function initBsaSexInfo() {
-  const container = el('bsa-sex-info-container');
-  const button = el('bsa-sex-info-button');
-  const info = el('bsa-sex-info');
-  if (!container || !button || !info) return;
-
-  const setOpen = (isOpen) => {
-    info.classList.toggle('hidden', !isOpen);
-    button.setAttribute('aria-expanded', String(isOpen));
-  };
-
-  button.addEventListener('click', () => {
-    setOpen(button.getAttribute('aria-expanded') !== 'true');
-  });
-
-  document.addEventListener('click', (event) => {
-    if (!container.contains(event.target)) setOpen(false);
-  });
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && button.getAttribute('aria-expanded') === 'true') {
-      setOpen(false);
-      button.focus();
-    }
-  });
-}
-
-function renderLeanFlowList(leanBsa) {
-  const leanFlowList = el('bsa-lean-flow-list');
-  const quickWrap = el('bsa-lean-ci-quick');
-  if (!leanFlowList) return;
-
-  leanFlowList.innerHTML = '';
-  if (!(leanBsa > 0)) return;
+  bmi25FlowList.innerHTML = '';
+  if (!(bmi25ReferenceBsa > 0)) return;
 
   for (let ciTenths = 10; ciTenths <= 30; ciTenths += 2) {
     const ci = ciTenths / 10;
-    const flow = ci * leanBsa;
+    const flow = ci * bmi25ReferenceBsa;
     const row = document.createElement('div');
-    const isSelected = Math.abs(ci - bsaLeanSelectedCi) < 0.05;
     const isCi24 = Math.abs(ci - 2.4) < 0.05;
-    row.className = `grid grid-cols-[1fr_auto] items-center py-1.5 px-2 text-sm border-b border-blue-100 dark:border-blue-900/60 last:border-0 gap-3 ${isSelected ? 'bg-blue-200/70 dark:bg-blue-700/40' : (isCi24 ? 'bg-blue-100/70 dark:bg-blue-800/30' : '')}`;
+    row.className = `grid grid-cols-[1fr_auto] items-center py-1.5 px-2 text-sm border-b border-blue-100 dark:border-blue-900/60 last:border-0 gap-3 ${isCi24 ? 'bg-blue-100/70 dark:bg-blue-800/30' : ''}`;
     row.innerHTML = `<span class="${bsaFlowNumericClass} text-blue-800 dark:text-blue-200">CI ${ci.toFixed(1)}</span><span class="${bsaFlowNumericClass} text-right text-blue-900 dark:text-blue-100">${flow.toFixed(2)} L/min</span>`;
-    leanFlowList.appendChild(row);
+    bmi25FlowList.appendChild(row);
   }
 
-  if (quickWrap) {
-    quickWrap.querySelectorAll('button[data-ci]').forEach((btn) => {
-      const ci = Number(btn.dataset.ci);
-      const isActive = Math.abs(ci - bsaLeanSelectedCi) < 0.05;
-      btn.className = isActive
-        ? 'px-2 py-1 text-xs rounded-md border border-blue-500 bg-blue-600 text-white font-semibold'
-        : 'px-2 py-1 text-xs rounded-md border border-blue-300 dark:border-blue-700 text-blue-800 dark:text-blue-200 hover:bg-blue-100 dark:hover:bg-blue-800/40';
-    });
-  }
 }
 
 function updateBsaFlowList(bsaVal, weightKg) {
@@ -731,14 +673,10 @@ function updateStandaloneBsa() {
   const method = el('bsa-method-standalone') ? el('bsa-method-standalone').value : 'Mosteller';
   const formulaCompareEl = el('bsa-formula-compare');
   const bmiDisplay = el('bsa-bmi-display');
-  const obesityNote = el('bsa-obesity-note');
   const obesityBadge = el('bsa-obesity-badge');
-  const obesityMessage = el('bsa-obesity-message');
-  const leanFlowCard = el('bsa-lean-flow-card');
-  const tbwFlowCard = el('bsa-tbw-flow-card');
-  const leanBsaEl = el('bsa-lean-bsa');
-  const leanWeightEl = el('bsa-lean-weight');
-  const heparinAlert = el('bsa-heparin-alert');
+  const bmi25FlowCard = el('bsa-bmi25-flow-card');
+  const bmi25ReferenceBsaEl = el('bsa-bmi25-reference-bsa');
+  const bmi25ReferenceWeightEl = el('bsa-bmi25-reference-weight');
 
   const metricInput = toMetricBsaInputs(hRaw, wRaw, bsaInputUnit);
   const h = metricInput.heightCm;
@@ -761,43 +699,36 @@ function updateStandaloneBsa() {
       const heightMeters = h / 100;
       const bmi = w / (heightMeters * heightMeters);
       bmiDisplay.textContent = `BMI: ${bmi.toFixed(1)} kg/m²`;
-      if (obesityNote) obesityNote.textContent = bmi >= 30 ? 'Obesity Adjustment: Lean flow recommended' : 'Obesity Adjustment: Not indicated';
 
       if (obesityBadge) {
         obesityBadge.classList.toggle('hidden', bmi < 30);
         obesityBadge.textContent = bmi >= 30 ? `Obese BMI ${bmi.toFixed(1)}` : 'Obese BMI —';
       }
-      if (obesityMessage) obesityMessage.textContent = 'TBW BSA may overestimate metabolic demand';
 
-      if (leanFlowCard && tbwFlowCard) {
+      if (bmi25FlowCard) {
         const isObese = bmi >= 30;
-        leanFlowCard.classList.toggle('hidden', !isObese);
+        bmi25FlowCard.classList.toggle('hidden', !isObese);
         if (isObese) {
-          const targetBmiWeightKg = 25 * Math.pow(heightMeters, 2);
-          const leanBsa = computeBSA(h, targetBmiWeightKg, method);
-          if (leanBsaEl) leanBsaEl.textContent = `${leanBsa.toFixed(2)} m²`;
-          if (leanWeightEl) leanWeightEl.textContent = `${targetBmiWeightKg.toFixed(1)} kg`;
-          renderLeanFlowList(leanBsa);
+          const bmi25ReferenceWeightKg = 25 * Math.pow(heightMeters, 2);
+          const bmi25ReferenceBsa = computeBSA(h, bmi25ReferenceWeightKg, method);
+          if (bmi25ReferenceBsaEl) bmi25ReferenceBsaEl.textContent = `${bmi25ReferenceBsa.toFixed(2)} m²`;
+          if (bmi25ReferenceWeightEl) bmi25ReferenceWeightEl.textContent = `${bmi25ReferenceWeightKg.toFixed(1)} kg`;
+          renderBmi25ReferenceFlowList(bmi25ReferenceBsa);
 
-          if (heparinAlert) heparinAlert.classList.toggle('hidden', bmi < 35);
         } else {
-          if (leanBsaEl) leanBsaEl.textContent = '—';
-          if (leanWeightEl) leanWeightEl.textContent = '—';
-          if (heparinAlert) heparinAlert.classList.add('hidden');
+          if (bmi25ReferenceBsaEl) bmi25ReferenceBsaEl.textContent = '—';
+          if (bmi25ReferenceWeightEl) bmi25ReferenceWeightEl.textContent = '—';
         }
       }
     } else {
       bmiDisplay.textContent = 'BMI: —';
-      if (obesityNote) obesityNote.textContent = 'Obesity Adjustment: —';
       if (obesityBadge) {
         obesityBadge.classList.add('hidden');
         obesityBadge.textContent = 'Obese BMI —';
       }
-      if (obesityMessage) obesityMessage.textContent = 'TBW BSA may overestimate metabolic demand';
-      if (leanFlowCard) leanFlowCard.classList.add('hidden');
-      if (leanBsaEl) leanBsaEl.textContent = '—';
-      if (leanWeightEl) leanWeightEl.textContent = '—';
-      if (heparinAlert) heparinAlert.classList.add('hidden');
+      if (bmi25FlowCard) bmi25FlowCard.classList.add('hidden');
+      if (bmi25ReferenceBsaEl) bmi25ReferenceBsaEl.textContent = '—';
+      if (bmi25ReferenceWeightEl) bmi25ReferenceWeightEl.textContent = '—';
     }
   }
 
@@ -856,55 +787,6 @@ function setBsaUnit(nextUnit) {
   bsaInputUnit = nextUnit;
   updateBsaUnitUi();
   updateStandaloneBsa();
-}
-
-function openHeparinFromBsa() {
-  const metricInput = toMetricBsaInputs(num('bsa_height'), num('bsa_weight'), bsaInputUnit);
-  const heightCm = metricInput.heightCm;
-  const weightKg = metricInput.weightKg;
-  if (!(heightCm > 0) || !(weightKg > 0)) return;
-
-  const method = el('bsa-method-standalone') ? el('bsa-method-standalone').value : 'Mosteller';
-  const bmi = weightKg / Math.pow(heightCm / 100, 2);
-  const targetBmiWeightKg = 25 * Math.pow(heightCm / 100, 2);
-  const leanBsa = computeBSA(heightCm, targetBmiWeightKg, method);
-  const bsaValue = computeBSA(heightCm, weightKg, method);
-
-  const payload = {
-    source: 'bsa',
-    heightCm,
-    weightKg,
-    sex: bsaPatientSex,
-    bmi,
-    bsa: bsaValue,
-    leanBsa,
-    leanWeightKg: targetBmiWeightKg,
-    timestamp: Date.now()
-  };
-
-  localStorage.setItem('patientDataFromBSA', JSON.stringify(payload));
-  window.location.href = '/heparin';
-}
-
-function preloadHeparinFromBsa() {
-  const raw = localStorage.getItem('patientDataFromBSA');
-  if (!raw) return;
-
-  try {
-    const data = JSON.parse(raw);
-    const heightInput = el('hep2-height');
-    const weightInput = el('hep2-weight');
-    const sexInput = el('hep2-sex');
-    if (!heightInput || !weightInput || !sexInput) return;
-
-    if (data.heightCm > 0) heightInput.value = Number(data.heightCm).toFixed(1);
-    if (data.weightKg > 0) weightInput.value = Number(data.weightKg).toFixed(1);
-    if (data.sex === 'male' || data.sex === 'female') sexInput.value = data.sex;
-
-    localStorage.removeItem('patientDataFromBSA');
-  } catch (error) {
-    // ignore invalid cached payloads
-  }
 }
 
 function calcCaO2(hb, sao2pct, pao2) {
@@ -8555,25 +8437,8 @@ window.addEventListener('DOMContentLoaded', () => {
     if (metricBtn) metricBtn.addEventListener('click', () => setBsaUnit(BSA_UNIT.metric));
     const imperialBtn = el('bsa-unit-imperial');
     if (imperialBtn) imperialBtn.addEventListener('click', () => setBsaUnit(BSA_UNIT.imperial));
-    const maleBtn = el('bsa-sex-male');
-    if (maleBtn) maleBtn.addEventListener('click', () => { bsaPatientSex = 'male'; updateBsaSexUi(); updateStandaloneBsa(); });
-    const femaleBtn = el('bsa-sex-female');
-    if (femaleBtn) femaleBtn.addEventListener('click', () => { bsaPatientSex = 'female'; updateBsaSexUi(); updateStandaloneBsa(); });
-    initBsaSexInfo();
-    const leanQuick = el('bsa-lean-ci-quick');
-    if (leanQuick) {
-      leanQuick.querySelectorAll('button[data-ci]').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          bsaLeanSelectedCi = Number(btn.dataset.ci) || 2.4;
-          updateStandaloneBsa();
-        });
-      });
-    }
-    const openHeparinBtn = el('bsa-open-heparin');
-    if (openHeparinBtn) openHeparinBtn.addEventListener('click', openHeparinFromBsa);
 
     updateBsaUnitUi();
-    updateBsaSexUi();
     updateStandaloneBsa();
   }
 
@@ -8750,7 +8615,6 @@ window.addEventListener('DOMContentLoaded', () => {
     initTimeCalculator();
   }
   if (hasHeparinCalculator) {
-    preloadHeparinFromBsa();
     initHeparinManagement();
   }
 

@@ -78,7 +78,6 @@ const expectedQuestions = [
   'How is BSA calculated with the Mosteller formula?',
   'How do you calculate CPB pump flow from BSA and cardiac index?',
   'Does BSA alone determine adequate CPB flow?',
-  'Why does this BSA calculator include a male/female selection?',
   'Should a patient with obesity automatically receive the full TBW-based BSA flow?',
   'How do body fat, blood volume, and metabolic demand relate?'
 ];
@@ -97,10 +96,11 @@ const faqNodes = nodes.filter((node) => node['@type'] === 'FAQPage');
 assert.strictEqual(faqNodes.length, 1, 'Exactly one FAQPage should exist.');
 assert.deepStrictEqual(faqNodes[0].mainEntity.map((item) => item.name), expectedQuestions);
 assert.deepStrictEqual(faqNodes[0].mainEntity.map((item) => normalizeText(item.acceptedAnswer.text)), visibleAnswers);
+assert(!visibleAnswers.some((answer) => /Heparin|\bIBW\b|\bABW\b|transferred data/i.test(answer)), 'BSA FAQ should not retain the removed Heparin handoff.');
 const medicalPage = nodes.find((node) => node['@type'] === 'MedicalWebPage');
 const webApp = nodes.find((node) => node['@type'] === 'WebApplication');
 const breadcrumb = nodes.find((node) => node['@type'] === 'BreadcrumbList');
-assert.strictEqual(medicalPage.dateModified, '2026-07-26');
+assert.strictEqual(medicalPage.dateModified, '2026-08-01');
 assert.strictEqual(medicalPage.url, 'https://perfusiontools.com/bsa/');
 assert.strictEqual(webApp.name, 'BSA Calculator');
 assert.strictEqual(webApp.url, 'https://perfusiontools.com/bsa/');
