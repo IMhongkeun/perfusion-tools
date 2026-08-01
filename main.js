@@ -2604,6 +2604,30 @@ function setText(id, text) {
   if (n) n.innerHTML = text;
 }
 
+function hasRequiredElements(ids) {
+  return ids.every((id) => !!el(id));
+}
+
+function hasGdpCalculatorDom() {
+  return hasRequiredElements([
+    'view-do2i',
+    'h_cm',
+    'w_kg',
+    'bsa-method',
+    'bsa',
+    'flow',
+    'hb',
+    'sao2',
+    'pao2',
+    'gdp-warning',
+    'cao2-result',
+    'required-flow',
+    'current-do2i',
+    'gdp-status-text',
+    'gdp-status-detail'
+  ]);
+}
+
 // -----------------------------
 // GDP Interaction
 // -----------------------------
@@ -2688,9 +2712,15 @@ function setText(id, text) {
   }
 
 function updateBSA() {
+  const heightInput = el('h_cm');
+  const weightInput = el('w_kg');
+  const methodInput = el('bsa-method');
+  const bsaOutput = el('bsa');
+  if (!heightInput || !weightInput || !methodInput || !bsaOutput) return;
+
   const autoFields = ['h_cm', 'w_kg', 'bsa-method'];
   if (bsaManualOverride && !autoFields.includes(lastChangedId)) {
-    setText('bsa-hint', el('bsa').value ? 'manual' : 'auto-calc');
+    setText('bsa-hint', bsaOutput.value ? 'manual' : 'auto-calc');
     return;
   }
 
@@ -2698,11 +2728,12 @@ function updateBSA() {
     bsaManualOverride = false;
   }
 
-  const h = num('h_cm'), w = num('w_kg');
-  const method = el('bsa-method').value;
+  const h = parseFloat(heightInput.value) || 0;
+  const w = parseFloat(weightInput.value) || 0;
+  const method = methodInput.value;
   const v = computeBSA(h, w, method);
   const out = v ? v.toFixed(2) : '';
-  el('bsa').value = out;
+  bsaOutput.value = out;
   setText('bsa-hint', out ? 'calculated' : 'auto-calc');
 }
 
@@ -2757,6 +2788,8 @@ function updateGdpTemperatureDisplay(temperatureC, vo2Fraction) {
 }
 
 function updateGDP() {
+  if (!hasGdpCalculatorDom()) return;
+
   updateBSA();
 
   const inputs = getGdpInputs();
@@ -8344,15 +8377,15 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   const hasElement = (id) => !!el(id);
-  const hasGdpCalculator = hasElement('view-do2i');
-  const hasStandaloneBsaCalculator = hasElement('view-bsa');
-  const hasPhnEchoCalculator = hasElement('view-phn-echo');
-  const hasHctCalculator = hasElement('view-hct');
-  const hasLbmCalculator = hasElement('view-lbm');
-  const hasPrimingCalculator = hasElement('view-priming-volume');
-  const hasUnitConverter = hasElement('view-unit-converter');
-  const hasHeparinCalculator = hasElement('view-heparin');
-  const hasTimeCalculator = hasElement('view-timecalc');
+  const hasGdpCalculator = hasGdpCalculatorDom();
+  const hasStandaloneBsaCalculator = hasRequiredElements(['view-bsa', 'bsa_height', 'bsa_weight', 'bsa-method-standalone', 'bsa-result']);
+  const hasPhnEchoCalculator = hasRequiredElements(['view-phn-echo', 'phn-bsa-input', 'phn-model-select', 'phn-structure-select']);
+  const hasHctCalculator = hasRequiredElements(['view-hct', 'hct_mode', 'pttype', 'wt_hct', 'pre_hct', 'prime']);
+  const hasLbmCalculator = hasRequiredElements(['view-lbm', 'lbm_h_cm', 'lbm_w_kg', 'lbm_sex', 'lbm_formula']);
+  const hasPrimingCalculator = hasRequiredElements(['view-priming-volume', 'priming-id', 'priming-length', 'priming-volume']);
+  const hasUnitConverter = hasRequiredElements(['view-unit-converter', 'unit-flow-lmin', 'unit-flow-mlmin', 'unit-pressure-value']);
+  const hasHeparinCalculator = hasRequiredElements(['view-heparin', 'hep2-height', 'hep2-weight', 'hep2-sex']);
+  const hasTimeCalculator = hasRequiredElements(['view-timecalc', 'time-mode-record', 'time-mode-live', 'time-rows']);
   const hasCannulaPressureDropPage = hasElement('cannula-pressure-drop-page');
 
   document.querySelectorAll('a[data-route]').forEach(link => {
