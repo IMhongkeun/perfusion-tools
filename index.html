@@ -72,7 +72,7 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap');
     :root {
       --header-height: 60px;
-      --bottom-nav-height: 64px;
+      --bottom-nav-height: calc(64px + env(safe-area-inset-bottom));
     }
 
     body {
@@ -224,6 +224,28 @@
     }
     .animate-pulse-flow {
       animation: pulse-flow 3s infinite ease-in-out;
+    }
+
+    .calculator-directory-row {
+      min-height: 4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      background: #fff;
+    }
+    .calculator-directory-row:hover { border-color: rgba(6, 182, 212, 0.55); }
+    .calculator-directory-row:focus-visible { outline: 2px solid #06b6d4; outline-offset: 2px; }
+    .dark .calculator-directory-row { border-color: #1e293b; background: #0f172a; }
+    .calculator-directory-icon { width: 2.5rem; height: 2.5rem; flex: 0 0 2.5rem; }
+    .calculator-directory-copy { min-width: 0; flex: 1; }
+    .calculator-directory-description { overflow-wrap: anywhere; }
+    .calculator-directory-chevron { flex: 0 0 auto; }
+    @media (min-width: 768px) {
+      .calculator-category-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
     }
 
     /* Accessibility: High contrast focus states for better keyboard navigation */
@@ -507,7 +529,7 @@
   </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"WebSite","@id":"https://perfusiontools.com/#website","url":"https://perfusiontools.com","name":"Perfusion Tools","publisher":{"@id":"https://perfusiontools.com/#organization"}},{"@type":"ItemList","@id":"https://perfusiontools.com/#itemlist","url":"https://perfusiontools.com/","name":"Perfusion Tools calculators","itemListElement":[{"@type":"ListItem","position":1,"url":"https://perfusiontools.com/gdp/","name":"GDP Calculator"},{"@type":"ListItem","position":2,"url":"https://perfusiontools.com/bsa/","name":"BSA Calculator"},{"@type":"ListItem","position":3,"url":"https://perfusiontools.com/heparin/","name":"Heparin Management"},{"@type":"ListItem","position":4,"url":"https://perfusiontools.com/predicted-hct/","name":"Predicted Hematocrit"},{"@type":"ListItem","position":5,"url":"https://perfusiontools.com/z-score/","name":"Pediatric Echo Z-score"},{"@type":"ListItem","position":6,"url":"https://perfusiontools.com/quick-reference/","name":"Quick Reference"},{"@type":"ListItem","position":7,"url":"https://perfusiontools.com/lbm/","name":"Lean Body Mass Calculator"},{"@type":"ListItem","position":8,"url":"https://perfusiontools.com/priming-volume/","name":"Priming Volume Calculator"},{"@type":"ListItem","position":9,"url":"https://perfusiontools.com/unit-converter/","name":"Unit Converter"},{"@type":"ListItem","position":10,"url":"https://perfusiontools.com/timecalc/","name":"Time Calculator"}]}]}</script>
 </head>
-<body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
+<body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 min-h-screen min-h-[100dvh] flex flex-col">
 
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
     <div class="max-w-7xl mx-auto px-4 h-[var(--header-height)] flex items-center justify-between">
@@ -554,7 +576,7 @@
 
   <div class="pt-[var(--header-height)] max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr] gap-0 flex-1">
     
-    <aside id="desktop-sidebar" class="hidden md:block border-r border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/50 sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] p-4 overflow-y-auto">
+    <aside id="desktop-sidebar" class="hidden md:block border-r border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/50 sticky top-[var(--header-height)] self-start max-h-[calc(100dvh-var(--header-height))] p-4 overflow-y-auto">
       <div class="space-y-1">
         <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-3">Calculators</div>
         <a href="/" data-route id="side-home" class="sidebar-link block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:text-primary-900 dark:hover:text-accent-400 transition-all">
@@ -610,109 +632,30 @@
         </div>
       </section>
 
-      <section id="view-home" class="hidden animate-in fade-in duration-300">
-        <div class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
-          <div class="p-6 space-y-4">
-            <div class="space-y-2">
-              <p class="text-[11px] uppercase tracking-wider text-accent-500 font-semibold">Start here</p>
-              <p class="text-sm text-slate-600 dark:text-slate-300">Choose a calculator below. Each tool opens on its own dedicated page with the full workflow, formulas, methodology, and clinical notes.</p>
-            </div>
+      <section id="view-home" class="hidden animate-in fade-in duration-300" aria-labelledby="all-calculators-heading">
+        <div class="space-y-6">
+          <div class="px-1 space-y-1">
+            <p class="text-[11px] uppercase tracking-wider text-accent-500 font-semibold">Start here</p>
+            <p class="text-sm text-slate-600 dark:text-slate-300">Choose a tool for fast CPB and ECMO calculation support.</p>
+          </div>
 
-            <div class="grid md:grid-cols-2 gap-3">
-              <a href="/bsa/" data-route class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
-                <div>
-                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
-                  <div class="text-base font-semibold text-primary-900 dark:text-white">BSA Calculator</div>
-                  <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Estimate body surface area with common formulas for CPB flow indexing and perfusion planning.</p>
-                </div>
-                <span class="text-accent-500">→</span>
-              </a>
-              <a href="/lbm/" data-route class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
-                <div>
-                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
-                  <div class="text-base font-semibold text-primary-900 dark:text-white">Lean Body Mass Calculator</div>
-                  <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Calculate LBM and lean-indexed body-size references used in selected perfusion and dosing workflows.</p>
-                </div>
-                <span class="text-accent-500">→</span>
-              </a>
-              <a href="/gdp/" data-route class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
-                <div>
-                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
-                  <div class="text-base font-semibold text-primary-900 dark:text-white">DO2i / GDP Calculator</div>
-                  <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Calculate indexed oxygen delivery and required flow targets for goal-directed perfusion protocols.</p>
-                </div>
-                <span class="text-accent-500">→</span>
-              </a>
-              <a href="/heparin/" data-route class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
-                <div>
-                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
-                  <div class="text-base font-semibold text-primary-900 dark:text-white">Heparin Calculator</div>
-                  <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Review heparin bolus dosing support for adult CPB with resistance-aware adjustments.</p>
-                </div>
-                <span class="text-accent-500">→</span>
-              </a>
-              <a href="/predicted-hct/" data-route class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
-                <div>
-                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
-                  <div class="text-base font-semibold text-primary-900 dark:text-white">Predicted Hematocrit Calculator</div>
-                  <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Estimate post-prime dilutional hematocrit to support transfusion and hemodilution planning.</p>
-                </div>
-                <span class="text-accent-500">→</span>
-              </a>
-              <a href="/z-score/" data-route class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
-                <div>
-                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
-                  <div class="text-base font-semibold text-primary-900 dark:text-white">Z-score Calculator</div>
-                  <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Calculate pediatric echocardiography Z-scores for selected cardiac dimensions using published references.</p>
-                </div>
-                <span class="text-accent-500">→</span>
-              </a>
-              <a href="/priming-volume/" data-route class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
-                <div>
-                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
-                  <div class="text-base font-semibold text-primary-900 dark:text-white">Priming Volume Calculator</div>
-                  <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Estimate tubing segment prime contribution using inner diameter and length inputs.</p>
-                </div>
-                <span class="text-accent-500">→</span>
-              </a>
-              <a href="/timecalc/" data-route class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
-                <div>
-                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
-                  <div class="text-base font-semibold text-primary-900 dark:text-white">Time Calculator</div>
-                  <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Calculate elapsed time, cross-clamp time, bypass time, and case intervals for operative documentation.</p>
-                </div>
-                <span class="text-accent-500">→</span>
-              </a>
-              <a href="/quick-reference/" data-route class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
-                <div>
-                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Reference</div>
-                  <div class="text-base font-semibold text-primary-900 dark:text-white">Quick Reference</div>
-                  <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Access concise CPB and ECMO reference tables for quick clinical review.</p>
-                </div>
-                <span class="text-accent-500">→</span>
-              </a>
-              <a href="/cannula-pressure-drop/" data-route class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
-                <div>
-                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Reference</div>
-                  <div class="text-base font-semibold text-primary-900 dark:text-white">Cannula Pressure Drop</div>
-                  <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Browse 179 datasets, including Getinge / Maquet (17 datasets) with Avalon Elite dual-lumen and jugular venous coverage, and estimate cannula pressure drop at a target flow.</p>
-                </div>
-                <span class="text-accent-500">→</span>
-              </a>
-              <a href="/unit-converter/" data-route class="flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 hover:border-accent-500/40 transition-colors">
-                <div>
-                  <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Calculator</div>
-                  <div class="text-base font-semibold text-primary-900 dark:text-white">Unit Converter</div>
-                  <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Convert common perfusion units for blood gas, pressure, flow, cannula sizing, and clinical documentation.</p>
-                </div>
-                <span class="text-accent-500">→</span>
-              </a>
+          <section id="recent-calculators" class="hidden" aria-labelledby="recent-calculators-heading">
+            <div class="flex items-center justify-between mb-2">
+              <h2 id="recent-calculators-heading" class="text-lg font-bold text-primary-900 dark:text-white"></h2>
+              <button id="clear-recent-calculators" type="button" class="min-h-11 px-3 text-sm font-medium text-accent-600 dark:text-accent-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"></button>
             </div>
+            <ul id="recent-calculator-list" class="grid gap-2"></ul>
+          </section>
 
-            <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4">
-              <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Privacy and safety note</h3>
-              <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Calculators run in-browser on their standalone pages. They are intended for clinical calculation support and do not replace clinician judgment, institutional protocols, or device-specific instructions.</p>
-            </div>
+          <section aria-labelledby="all-calculators-heading">
+            <h2 id="all-calculators-heading" tabindex="-1" class="text-xl font-bold text-primary-900 dark:text-white mb-3">All calculators</h2>
+            <div id="calculator-category-list" class="space-y-5"></div>
+            <noscript><p class="text-sm text-slate-600 dark:text-slate-300">JavaScript is required to display the calculator directory. Calculator pages remain available from the navigation. Cannula Pressure Drop provides 179 datasets, including Getinge / Maquet (17 datasets), Avalon Elite dual-lumen, and jugular venous coverage.</p></noscript>
+          </section>
+
+          <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900 p-4">
+            <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Privacy and safety note</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Calculators run in your browser and support, but do not replace, clinical judgment and institutional protocols. Do not enter patient identifiers.</p>
           </div>
         </div>
       </section>
@@ -830,6 +773,10 @@
           <p>The visitor_id is generated in localStorage and is used only for feedback prompt frequency control, duplicate prevention, and lightweight rate limiting. It is not a login identity and should not be treated as a reliable unique-user analytics identifier.</p>
           <p>PerfusionTools does not intentionally collect or store patient inputs, calculator inputs, calculated results, hospital names, or IP addresses through the feedback form. Please do not include patient-identifiable information in feedback comments.</p>
           <p>Most calculator inputs are not saved. Timecalc Live mode stores timer state locally in this browser so running timers can be restored after refresh. This data is not sent to a server. Use New case / Clear all to remove stored case data.</p>
+          <section aria-labelledby="recent-storage-heading" class="mt-4">
+            <h3 id="recent-storage-heading" class="font-semibold text-primary-900 dark:text-white">Local preferences and recently used calculators</h3>
+            <p>PerfusionTools may store limited, non-identifying interface preferences locally in your browser. The recently used feature stores only up to three calculator routes needed to display recent tools; that history remains in this browser and is not transmitted to the PerfusionTools server for this feature. It does not store patient inputs, calculation results, patient identifiers, or free-text clinical information. Remove it with “Clear recent” on the home page or by clearing browser site data. Do not enter patient identifiers into calculators.</p>
+          </section>
           <p>Do not enter patient identifiers in calculator labels or notes. Do not store or print screenshots that contain protected health information (PHI) on shared systems.</p>
           <p>If you have privacy concerns or wish to report a data issue, please reach out via the contact form below. We will respond promptly with remediation steps.</p>
         </div>
@@ -874,7 +821,7 @@
     </main>
   </div>
 
-  <footer class="hidden md:block mt-10 border-t border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/90 mt-auto">
+  <footer class="hidden md:block border-t border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/90 mt-auto">
     <div class="max-w-7xl mx-auto px-4 py-8 text-sm text-slate-500 dark:text-slate-400 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
       <p>© <span id="year"></span> Perfusion Tools. Educational use for healthcare professionals.</p>
       <nav class="flex gap-4">
