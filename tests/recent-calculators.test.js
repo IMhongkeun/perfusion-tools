@@ -19,16 +19,16 @@ function makeStorage(initial = {}) {
   };
 }
 
-function makeContext(storage) {
+function makeContext(storage, browserLanguage = 'en') {
   const elements = new Map();
   const document = {
     documentElement: { lang: 'en' },
     getElementById: id => elements.get(id) || null,
     createElement: () => ({ dataset: {}, setAttribute() {}, append() {}, appendChild() {} })
   };
-  const context = { document, navigator: { language: 'en' }, window: { localStorage: storage, location: { pathname: '/' } }, console };
+  const context = { document, navigator: { language: browserLanguage }, window: { localStorage: storage, location: { pathname: '/' } }, console };
   vm.createContext(context);
-  vm.runInContext(`${block}\nthis.api = { CALCULATOR_REGISTRY, HOME_TRANSLATIONS, readRecentCalculatorRoutes, saveVisitedCalculator, clearRecentCalculatorRoutes, getCalculatorByRoute };`, context);
+  vm.runInContext(`${block}\nthis.api = { CALCULATOR_REGISTRY, HOME_COPY, readRecentCalculatorRoutes, saveVisitedCalculator, clearRecentCalculatorRoutes, getCalculatorByRoute, createCalculatorRow };`, context);
   return { context, api: context.api, elements };
 }
 
@@ -69,11 +69,22 @@ const key = 'perfusiontools_recent_calculators';
   assert(!/<input[^>]+type=["']search/i.test(html), 'home has no search field');
   assert.strictEqual(new Set(api.CALCULATOR_REGISTRY.map(item => item.path)).size, api.CALCULATOR_REGISTRY.length, 'registry routes are unique');
   assert(api.CALCULATOR_REGISTRY.every(item => /^\/[a-z0-9-]+\/$/.test(item.path)), 'registry routes are canonical');
-  assert(api.HOME_TRANSLATIONS.en.recent && api.HOME_TRANSLATIONS.ko.recent && api.HOME_TRANSLATIONS.en.clear && api.HOME_TRANSLATIONS.ko.all, 'English and Korean home labels exist');
+  assert.strictEqual(api.HOME_COPY.recent, 'Recently used');
+  assert.strictEqual(api.HOME_COPY.clear, 'Clear recent');
+  assert.strictEqual(api.HOME_COPY.all, 'All calculators');
+  assert(api.CALCULATOR_REGISTRY.every(item => typeof item.title === 'string' && typeof item.description === 'string'), 'registry uses direct English fields');
   for (const item of api.CALCULATOR_REGISTRY) assert(html.includes(`href="${item.path}"`) || source.includes(`path: '${item.path}'`), `${item.path} is available`);
   assert(/recently used feature stores only up to three calculator routes/i.test(html));
   assert(/does not store patient inputs, calculation results, patient identifiers/i.test(html));
-  assert(/Clear recent/.test(html) && /최근 기록 지우기/.test(html), 'clear instructions exist in both languages');
+  assert(/Clear recent/.test(html), 'English clear instructions exist');
+  assert(!/[가-힣]/.test(block) && !/[가-힣]/.test(html), 'no Korean localization data remains for this feature');
+  assert(!block.includes('navigator.language') && !block.includes('document.documentElement.lang'), 'home discovery does not detect browser or document language');
+
+  const koreanBrowserApi = makeContext(makeStorage(), 'ko-KR').api;
+  const row = koreanBrowserApi.createCalculatorRow(koreanBrowserApi.CALCULATOR_REGISTRY[0]);
+  assert(row.innerHTML.includes('DO₂i / GDP Calculator'), 'Korean browser locale still renders the English calculator title');
+  assert(row.innerHTML.includes('Indexed oxygen delivery'), 'Korean browser locale still renders the English calculator description');
+  assert.strictEqual(koreanBrowserApi.HOME_COPY.recent, 'Recently used', 'Korean browser locale does not change recent heading copy');
 }
 
 console.log('All recent calculator tests passed.');
