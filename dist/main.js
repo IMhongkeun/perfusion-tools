@@ -276,14 +276,20 @@ function isHomeCalculatorDirectoryContext() {
   return (path === '/' || path === '/index.html') && Boolean(document.getElementById('calculator-category-list'));
 }
 
-function refreshRecentCalculatorsOnPageshow() {
+function handleCalculatorDiscoveryPageshow() {
+  const currentPath = window.normalizeRoute ? window.normalizeRoute(window.location.pathname || '/') : (window.location.pathname || '/');
+  const calculator = getCalculatorByRoute(currentPath);
+  if (calculator) {
+    saveVisitedCalculator(calculator.path);
+    return;
+  }
   if (!isHomeCalculatorDirectoryContext()) return;
-  try { renderRecentCalculators(); } catch (_) { /* A cached home page remains usable if enhancement fails. */ }
+  try { renderRecentCalculators(); } catch (_) { /* BFCache restoration must not block navigation. */ }
 }
 
 function initCalculatorDiscoveryPageshow() {
-  if (calculatorDiscoveryPageshowInitialized || !isHomeCalculatorDirectoryContext()) return;
-  window.addEventListener('pageshow', refreshRecentCalculatorsOnPageshow);
+  if (calculatorDiscoveryPageshowInitialized) return;
+  window.addEventListener('pageshow', handleCalculatorDiscoveryPageshow);
   calculatorDiscoveryPageshowInitialized = true;
 }
 

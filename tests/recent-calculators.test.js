@@ -11,11 +11,13 @@ const block = source.slice(source.indexOf("const RECENT_CALCULATORS_STORAGE_KEY"
 
 function makeStorage(initial = {}) {
   const values = new Map(Object.entries(initial));
+  let setCount = 0;
   return {
     getItem: key => values.has(key) ? values.get(key) : null,
-    setItem: (key, value) => values.set(key, value),
+    setItem: (key, value) => { setCount += 1; values.set(key, value); },
     removeItem: key => values.delete(key),
-    values
+    values,
+    getSetCount: () => setCount
   };
 }
 
@@ -45,7 +47,7 @@ class FakeElement {
   getAttribute(name) { return this.attributes.get(name) || null; }
   appendChild(child) { child.parentElement = this; this.children.push(child); return child; }
   append(...children) { children.forEach(child => this.appendChild(child)); }
-  replaceChildren(...children) { this.children = []; this.append(...children); }
+  replaceChildren(...children) { this.replaceChildrenCount = (this.replaceChildrenCount || 0) + 1; this.children = []; this.append(...children); }
   addEventListener(type, handler) { this.listeners.set(type, handler); }
   focus(options) { this.ownerDocument.activeElement = this; this.focusOptions = options; }
   closest(selector) { return selector.includes('.hidden') && this.classList.contains('hidden') ? this : null; }
@@ -88,7 +90,7 @@ function makeContext(storage, { browserLanguage = 'en', pathname = '/', includeH
   };
   const context = { document, navigator: { language: browserLanguage }, window, console };
   vm.createContext(context);
-  vm.runInContext(`${block}\nthis.api = { CALCULATOR_REGISTRY, HOME_COPY, readRecentCalculatorRoutes, saveVisitedCalculator, clearRecentCalculatorRoutes, getCalculatorByRoute, createCalculatorRow, createCalculatorListItem, renderCalculatorDirectory, renderRecentCalculators, initCalculatorDiscovery, initCalculatorDiscoveryPageshow, refreshRecentCalculatorsOnPageshow };`, context);
+  vm.runInContext(`${block}\nthis.api = { CALCULATOR_REGISTRY, HOME_COPY, readRecentCalculatorRoutes, saveVisitedCalculator, clearRecentCalculatorRoutes, getCalculatorByRoute, createCalculatorRow, createCalculatorListItem, renderCalculatorDirectory, renderRecentCalculators, initCalculatorDiscovery, initCalculatorDiscoveryPageshow, handleCalculatorDiscoveryPageshow };`, context);
   return { context, api: context.api, elements, window, windowListeners, document };
 }
 
@@ -175,7 +177,9 @@ const key = 'perfusiontools_recent_calculators';
   assert.strictEqual((harness.windowListeners.get('pageshow') || []).length, 1, 'reinitialization does not duplicate pageshow listeners');
 
   harness.api.saveVisitedCalculator('/heparin/', storage);
+  const homeSetCountBeforePageshow = storage.getSetCount();
   harness.window.dispatchEvent({ type: 'pageshow', persisted: true });
+  assert.strictEqual(storage.getSetCount(), homeSetCountBeforePageshow, 'home pageshow rerenders without saving Home');
   const recentList = harness.elements.get('recent-calculator-list');
   assert(!harness.elements.get('recent-calculators').classList.contains('hidden'), 'pageshow reveals updated recent history');
   assert.strictEqual(recentList.tagName, 'UL', 'recent routes use a semantic list');
@@ -187,11 +191,59 @@ const key = 'perfusiontools_recent_calculators';
 
 {
   const storage = makeStorage();
-  const harness = makeContext(storage, { pathname: '/heparin/', includeHome: false });
+  const harness = makeContext(storage, { pathname: '/gdp/', includeHome: false });
+  harness.api.saveVisitedCalculator('/gdp/', storage);
+  harness.api.saveVisitedCalculator('/heparin/', storage);
+  assert.deepStrictEqual(JSON.parse(storage.values.get(key)), ['/heparin/', '/gdp/'], 'B is newest before restoring A');
   harness.api.initCalculatorDiscoveryPageshow();
-  assert.strictEqual((harness.windowListeners.get('pageshow') || []).length, 0, 'standalone calculator pages do not install the home pageshow listener');
+  harness.api.initCalculatorDiscoveryPageshow();
+  assert.strictEqual((harness.windowListeners.get('pageshow') || []).length, 1, 'calculator initialization installs one pageshow listener');
+  const setCountBeforePageshow = storage.getSetCount();
   harness.window.dispatchEvent({ type: 'pageshow', persisted: true });
-  assert.strictEqual(harness.elements.size, 0, 'standalone pageshow does not create a home directory');
+  assert.deepStrictEqual(JSON.parse(storage.values.get(key)), ['/gdp/', '/heparin/'], 'restored calculator A moves ahead of B');
+  assert.strictEqual(JSON.parse(storage.values.get(key)).filter(route => route === '/gdp/').length, 1, 'restored route is not duplicated');
+  assert.strictEqual(storage.getSetCount(), setCountBeforePageshow + 1, 'one pageshow is processed once');
+  assert.strictEqual(harness.elements.size, 0, 'calculator pageshow does not create or render a home directory');
+}
+
+{
+  const storage = makeStorage();
+  const harness = makeContext(storage, { pathname: '/bsa/', includeHome: false });
+  ['/gdp/', '/bsa/', '/heparin/'].forEach(route => harness.api.saveVisitedCalculator(route, storage));
+  harness.api.initCalculatorDiscoveryPageshow();
+  harness.window.dispatchEvent({ type: 'pageshow', persisted: false });
+  const recent = JSON.parse(storage.values.get(key));
+  assert.deepStrictEqual(recent, ['/bsa/', '/heparin/', '/gdp/'], 'restored older route moves first even when persisted is false');
+  assert.strictEqual(recent.length, 3, 'calculator restoration retains the three-route limit');
+  assert.strictEqual(new Set(recent).size, 3, 'calculator restoration retains unique routes');
+}
+
+for (const pathname of ['/', '/privacy/', '/terms/', '/contact/', '/info/', '/unknown/']) {
+  const storage = makeStorage({ [key]: JSON.stringify(['/gdp/']) });
+  const harness = makeContext(storage, { pathname, includeHome: pathname === '/' });
+  harness.api.initCalculatorDiscoveryPageshow();
+  harness.window.dispatchEvent({ type: 'pageshow', persisted: true });
+  assert.deepStrictEqual(JSON.parse(storage.values.get(key)), ['/gdp/'], `${pathname} is not recorded as a calculator`);
+}
+
+{
+  const storage = makeStorage({ [key]: JSON.stringify(['/gdp/']) });
+  const harness = makeContext(storage, { pathname: '/heparin/', includeHome: true });
+  const recentList = harness.elements.get('recent-calculator-list');
+  harness.api.initCalculatorDiscoveryPageshow();
+  harness.window.dispatchEvent({ type: 'pageshow', persisted: true });
+  assert.strictEqual(recentList.replaceChildrenCount || 0, 0, 'calculator pageshow does not render the home recent list');
+}
+
+{
+  const throwingStorage = {
+    getItem() { throw new Error('denied'); },
+    setItem() { throw new Error('denied'); },
+    removeItem() { throw new Error('denied'); }
+  };
+  const harness = makeContext(throwingStorage, { pathname: '/gdp/', includeHome: false });
+  harness.api.initCalculatorDiscoveryPageshow();
+  assert.doesNotThrow(() => harness.window.dispatchEvent({ type: 'pageshow', persisted: true }), 'pageshow remains non-blocking when storage throws');
 }
 
 {
