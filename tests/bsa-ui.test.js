@@ -10,11 +10,13 @@ const mainJsPath = path.join(repoRoot, 'main.js');
 const distMainJsPath = path.join(repoRoot, 'dist', 'main.js');
 const bsaHtmlPath = path.join(repoRoot, 'bsa', 'index.html');
 const distBsaHtmlPath = path.join(repoRoot, 'dist', 'bsa', 'index.html');
+const heparinHtmlPath = path.join(repoRoot, 'heparin', 'index.html');
 
 const mainJs = fs.readFileSync(mainJsPath, 'utf8');
 const distMainJs = fs.readFileSync(distMainJsPath, 'utf8');
 const bsaHtml = fs.readFileSync(bsaHtmlPath, 'utf8');
 const distBsaHtml = fs.readFileSync(distBsaHtmlPath, 'utf8');
+const heparinHtml = fs.readFileSync(heparinHtmlPath, 'utf8');
 
 const TOLERANCE = 1e-12;
 const CANONICAL_PATIENT = Object.freeze({ heightCm: 170, weightKg: 70 });
@@ -86,7 +88,7 @@ function loadBsaRuntime(source) {
   assert(start >= 0 && end > start, 'BSA runtime block should be extractable from main.js.');
   const context = { module: { exports: {} } };
   vm.runInNewContext(
-    `${source.slice(start, end)}\nmodule.exports = { BSA, BSA_UNIT, CM_PER_INCH, KG_PER_LB, computeBSA, toMetricBsaInputs, convertBsaInputValue };`,
+    `${source.slice(start, end)}\nmodule.exports = { BSA, BSA_UNIT, CM_PER_INCH, KG_PER_LB, computeBSA, toMetricBsaInputs, convertBsaInputValue, getStandaloneBsaComparisonRows };`,
     context,
     { filename: 'main.js:bsa-runtime' }
   );
@@ -97,6 +99,13 @@ function extractStandaloneSelectorValues(html) {
   const selectMatch = html.match(/<select[^>]*id="bsa-method-standalone"[\s\S]*?<\/select>/);
   assert(selectMatch, 'BSA formula selector should exist.');
   return Array.from(selectMatch[0].matchAll(/<option\s+value="([^"]+)"/g)).map(match => match[1]);
+}
+
+function extractStandaloneSelectorOptions(html) {
+  const selectMatch = html.match(/<select[^>]*id="bsa-method-standalone"[\s\S]*?<\/select>/);
+  assert(selectMatch, 'BSA formula selector should exist.');
+  return Array.from(selectMatch[0].matchAll(/<option\s+value="([^"]+)">([^<]+)<\/option>/g))
+    .map((match) => ({ value: match[1], label: match[2].trim() }));
 }
 
 function getRuntimeFormulaKeys(runtime) {
@@ -112,10 +121,9 @@ const EMPTY_STANDALONE_BSA_STATE = Object.freeze({
   methodLabel: 'Mosteller',
   obesityBadgeVisible: false,
   obesityBadgeText: 'Obese BMI —',
-  obesityNoteText: 'Obesity Adjustment: —',
-  leanFlowVisible: false,
-  leanBsaText: '—',
-  leanWeightText: '—'
+  bmi25ReferenceVisible: false,
+  bmi25ReferenceBsaText: '—',
+  bmi25ReferenceWeightText: '—'
 });
 
 function simulateStandaloneBsaState({ heightValue, weightValue, method = 'Mosteller', inputUnit = 'metric', previousState = EMPTY_STANDALONE_BSA_STATE }) {
@@ -142,7 +150,7 @@ function simulateStandaloneBsaState({ heightValue, weightValue, method = 'Mostel
       GehanGeorge: 'Gehan-George',
       Boyd: 'Boyd'
     }[method] || method,
-    previousLeanFlowVisible: previousState.leanFlowVisible,
+    previousBmi25ReferenceVisible: previousState.bmi25ReferenceVisible,
     previousObesityBadgeVisible: previousState.obesityBadgeVisible,
     previousFlowListState: previousState.flowListState,
     previousResultDisplayText: previousState.resultDisplayText,
@@ -157,30 +165,28 @@ function simulateStandaloneBsaState({ heightValue, weightValue, method = 'Mostel
     nextState.flowListState = Number.isFinite(bsa) && bsa > 0 ? 'rows' : 'empty-message';
     nextState.obesityBadgeVisible = isObese;
     nextState.obesityBadgeText = isObese ? `Obese BMI ${bmi.toFixed(1)}` : 'Obese BMI —';
-    nextState.obesityNoteText = isObese ? 'Obesity Adjustment: Lean flow recommended' : 'Obesity Adjustment: Not indicated';
-    nextState.leanFlowVisible = isObese;
+    nextState.bmi25ReferenceVisible = isObese;
     if (isObese) {
-      const targetBmiWeightKg = 25 * Math.pow(heightMeters, 2);
-      const leanBsa = runtime.computeBSA(h, targetBmiWeightKg, method);
-      nextState.leanBsaText = `${leanBsa.toFixed(2)} m²`;
-      nextState.leanWeightText = `${targetBmiWeightKg.toFixed(1)} kg`;
+      const bmi25ReferenceWeightKg = 25 * Math.pow(heightMeters, 2);
+      const bmi25ReferenceBsa = runtime.computeBSA(h, bmi25ReferenceWeightKg, method);
+      nextState.bmi25ReferenceBsaText = `${bmi25ReferenceBsa.toFixed(2)} m²`;
+      nextState.bmi25ReferenceWeightText = `${bmi25ReferenceWeightKg.toFixed(1)} kg`;
     } else {
-      nextState.leanBsaText = '—';
-      nextState.leanWeightText = '—';
+      nextState.bmi25ReferenceBsaText = '—';
+      nextState.bmi25ReferenceWeightText = '—';
     }
     return nextState;
   }
 
-  // Mirrors updateStandaloneBsa() invalid-input clear contract: prior visible lean-flow
-  // state is explicitly hidden and stale BSA/BMI/lean-flow text is reset.
+  // Mirrors updateStandaloneBsa() invalid-input clear contract: prior visible BMI 25 reference
+  // state is explicitly hidden and stale BSA/BMI/BMI 25 reference text is reset.
   nextState.bmiText = 'BMI: —';
   nextState.flowListState = 'empty-message';
   nextState.obesityBadgeVisible = false;
   nextState.obesityBadgeText = 'Obese BMI —';
-  nextState.obesityNoteText = 'Obesity Adjustment: —';
-  nextState.leanFlowVisible = false;
-  nextState.leanBsaText = '—';
-  nextState.leanWeightText = '—';
+  nextState.bmi25ReferenceVisible = false;
+  nextState.bmi25ReferenceBsaText = '—';
+  nextState.bmi25ReferenceWeightText = '—';
   return nextState;
 }
 
@@ -189,12 +195,85 @@ const distRuntime = loadBsaRuntime(distMainJs);
 const runtimeFormulaKeys = getRuntimeFormulaKeys(runtime);
 const sourceSelectorValues = extractStandaloneSelectorValues(bsaHtml);
 const distSelectorValues = extractStandaloneSelectorValues(distBsaHtml);
+const sourceSelectorOptions = extractStandaloneSelectorOptions(bsaHtml);
 
 // Source/dist parity must protect deployed BSA code and markup from stale build artifacts.
 assert.strictEqual(distMainJs, mainJs, 'dist/main.js should exactly match source main.js.');
 assert.strictEqual(distBsaHtml, bsaHtml, 'dist/bsa/index.html should exactly match source bsa/index.html.');
 assert.deepStrictEqual(getRuntimeFormulaKeys(distRuntime), runtimeFormulaKeys, 'Source and dist BSA runtime formula keys should match.');
 assert.deepStrictEqual(distSelectorValues, sourceSelectorValues, 'Source and dist BSA formula selector values should match.');
+
+const mostellerComparisonRows = runtime.getStandaloneBsaComparisonRows(170, 70, 'Mosteller', sourceSelectorOptions);
+assert.deepStrictEqual(mostellerComparisonRows.map((row) => row.formula), sourceSelectorValues, 'Formula Comparison should derive every row from the standalone selector.');
+assert.deepStrictEqual(mostellerComparisonRows.map((row) => row.label), ['Mosteller', 'Du Bois', 'Haycock', 'Boyd']);
+assert.strictEqual(mostellerComparisonRows.filter((row) => row.selected).length, 1, 'Formula Comparison should mark exactly one selected row.');
+assert.strictEqual(mostellerComparisonRows.find((row) => row.selected).formula, 'Mosteller', 'The active default formula should remain in the comparison.');
+assert(!mostellerComparisonRows.some((row) => row.formula === 'GehanGeorge'), 'Unexposed Gehan-George should not appear in standalone comparison rows.');
+mostellerComparisonRows.forEach((row) => assertNearlyEqual(row.bsa, runtime.computeBSA(170, 70, row.formula), `${row.label} comparison value should remain correct`));
+const boydComparisonRows = runtime.getStandaloneBsaComparisonRows(170, 70, 'Boyd', sourceSelectorOptions);
+assert.strictEqual(boydComparisonRows.find((row) => row.selected).formula, 'Boyd', 'Changing the selector should move the selected indication.');
+assert(mainJs.includes('>${row.label}${row.selected ?'), 'Comparison row should render the selector label and selected state.');
+assert(mainJs.includes('>Selected</span>'), 'Selected comparison row should include a visible non-color-only badge.');
+assert(mainJs.includes('${row.bsa.toFixed(3)} m²'), 'Formula Comparison should retain three-decimal values.');
+
+// BSA stays focused on height, weight, formula, BMI, and CPB flow.
+const removedBsaHeparinFeatures = [
+  'bsa-sex-male', 'bsa-sex-female', 'bsa-sex-info-container', 'bsa-sex-info-button',
+  'bsa-sex-info', 'bsaPatientSex', 'updateBsaSexUi', 'initBsaSexInfo',
+  'bsa-heparin-alert', 'bsa-open-heparin', 'Obese Patient Heparin Alert',
+  'Open Heparin Management Calculator', 'openHeparinFromBsa',
+  'preloadHeparinFromBsa', 'Why does this BSA calculator include a male/female selection?',
+  'Used for Heparin Calculator IBW/ABW estimates only'
+];
+removedBsaHeparinFeatures.forEach((fragment) => {
+  assert(!bsaHtml.includes(fragment), `BSA HTML should not retain obsolete integration text: ${fragment}`);
+  assert(!mainJs.includes(fragment), `Shared runtime should not retain obsolete BSA integration code: ${fragment}`);
+});
+assert(!/localStorage\.setItem\(\s*['"]patientDataFromBSA['"]/.test(mainJs), 'Legacy BSA patient payload must never be written.');
+assert(!/localStorage\.getItem\(\s*['"]patientDataFromBSA['"]/.test(mainJs), 'Legacy BSA patient payload must never be read or prefilled.');
+assert(/localStorage\.removeItem\(\s*['"]patientDataFromBSA['"]\s*\)/.test(mainJs), 'Legacy BSA patient payload should be deleted.');
+const legacyCleanupSource = mainJs.slice(mainJs.indexOf('function removeLegacyBsaPatientPayload()'), mainJs.indexOf('function calcCaO2'));
+assert(/try\s*\{[\s\S]*localStorage\.removeItem/.test(legacyCleanupSource) && /catch\s*\(_\)/.test(legacyCleanupSource), 'Legacy payload cleanup should tolerate storage access failures.');
+assert.doesNotThrow(() => vm.runInNewContext(`${legacyCleanupSource}\nremoveLegacyBsaPatientPayload();`, {
+  localStorage: { removeItem() { throw new Error('storage blocked'); } }
+}), 'Blocked localStorage should not interrupt initialization.');
+assert(mainJs.includes("window.addEventListener('DOMContentLoaded', () => {\n  removeLegacyBsaPatientPayload();"), 'Legacy payload cleanup should run during shared initialization.');
+assert(!legacyCleanupSource.includes('localStorage.clear'), 'Legacy cleanup must not clear unrelated storage keys.');
+assert(!bsaHtml.includes('Formula set'), 'BSA should not duplicate the formula set label.');
+assert(!bsaHtml.includes('Mosteller default; Du Bois, Haycock, Boyd available'), 'BSA should not duplicate available formula copy.');
+assert(!bsaHtml.includes('Other formulas'), 'Formula Comparison should not imply that the selected formula is excluded.');
+assert(!bsaHtml.includes('>Key info</h3>'), 'The redundant BSA Key info section should remain removed.');
+assert(bsaHtml.includes('BMI 25 Reference Flow'), 'Obesity comparison should use accurate BMI 25 reference terminology.');
+assert(bsaHtml.includes('Comparison reference only; not an automatic flow target.'), 'BMI 25 reference should be labeled comparison-only.');
+['Lean Blood Flow', 'Lean BSA', 'Lean Weight'].forEach((fragment) => {
+  assert(!bsaHtml.includes(fragment), `BSA flow comparison should not use misleading terminology: ${fragment}`);
+});
+assert(bsaHtml.includes('TBW-based BSA may overestimate indexed pump-flow targets in obesity.'), 'Conditional obesity-related CPB flow guidance should remain.');
+const flowLayoutIndex = bsaHtml.indexOf('id="bsa-flow-layout"');
+const bmi25FlowIndex = bsaHtml.indexOf('id="bsa-bmi25-flow-card"');
+const faqIndex = bsaHtml.indexOf('>BSA and CPB flow FAQ</h2>');
+const relatedToolsIndex = bsaHtml.indexOf('>Related tools</h3>');
+const referencesIndex = bsaHtml.indexOf('id="bsa-references-heading"');
+assert(!bsaHtml.includes('>Practical note</h3>'), 'The duplicated practical note should remain removed.');
+assert(flowLayoutIndex < bmi25FlowIndex && bmi25FlowIndex < faqIndex, 'Both flow tables should remain ahead of the extended FAQ.');
+assert(faqIndex < referencesIndex && referencesIndex < relatedToolsIndex, 'Selected references should remain immediately above Related tools.');
+[
+  'Should a patient with obesity automatically receive the full TBW-based BSA flow?',
+  'How do body fat, blood volume, and metabolic demand relate?'
+].forEach(question => assert(bsaHtml.includes(question), `BSA FAQ should include: ${question}`));
+assert(bsaHtml.includes('flow conversion, not a blood-volume calculation'), 'FAQ should distinguish the weight-indexed flow conversion from blood volume.');
+assert(bsaHtml.includes('pubmed.ncbi.nlm.nih.gov/9688626'), 'FAQ evidence should include the body-composition metabolism reference.');
+assert(bsaHtml.includes('pubmed.ncbi.nlm.nih.gov/16756741'), 'FAQ evidence should include the obesity blood-volume reference.');
+assert(bsaHtml.includes('Determination of pump flow rate during cardiopulmonary bypass in obese patients avoiding hemodilution'), 'References should include direct clinical evidence for BMI 25 CPB flow comparison.');
+assert(bsaHtml.includes('Should blood flow during cardiopulmonary bypass be individualized more than to body surface area?'), 'References should include individualized CPB flow evidence.');
+assert(bsaHtml.includes('Is body surface area still the best way to determine pump flow rate during cardiopulmonary bypass?'), 'References should include evidence comparing BSA with other pump-flow predictors.');
+assert(bsaHtml.includes('Evidence: Alston et al. 2006'), 'The BSA adequacy FAQ should link directly to its evidence.');
+assert(bsaHtml.includes('Evidence: Santambrogio et al. 2009'), 'The obesity FAQ should link directly to its evidence.');
+assert(bsaHtml.includes("this page's CI 1.0–3.0 flow table is adult CPB guidance"), 'FAQ should explicitly exclude pediatric and neonatal use of the adult flow table.');
+assert(bsaHtml.includes('pre-illness or dry-weight reference'), 'FAQ should address edema and fluid-overload weight selection cautiously.');
+assert(bsaHtml.includes('Cardiac output is total blood flow in liters per minute.'), 'FAQ should distinguish cardiac output from cardiac index.');
+const faqGdpLinks = Array.from(bsaHtml.matchAll(/class="calculator-faq-answer"[^>]*>[\s\S]*?<a href="\/gdp\/"[^>]*>(?:indexed )?oxygen delivery<\/a>/g));
+assert.strictEqual(faqGdpLinks.length, 2, 'Both oxygen-delivery FAQ contexts should link to the DO₂i/GDP Calculator.');
 
 // Existing UI regression: the flow list should be tall enough for the CI table.
 assert(
@@ -247,8 +326,11 @@ assert.strictEqual(new Set(Object.values(CANONICAL_EXPECTED).map(value => value.
 const mostellerCanonical = Math.sqrt((170 * 70) / 3600);
 assert.strictEqual(mostellerCanonical, CANONICAL_EXPECTED.Mosteller);
 assertNearlyEqual(runtime.computeBSA(170, 70, 'Mosteller'), mostellerCanonical, 'Mosteller runtime should match sqrt(height × weight / 3600)');
+assert.strictEqual(runtime.computeBSA.length, 3, 'BSA should accept only height, weight, and formula inputs.');
 assert.notStrictEqual((170 * 70) / 3600, mostellerCanonical, 'Mosteller canonical should specifically require sqrt, not a linear division result.');
 assert.notStrictEqual(Math.sqrt((170 * 70) / 360), mostellerCanonical, 'Mosteller canonical should specifically require denominator 3600.');
+assertNearlyEqual(runtime.computeBSA(165, 63, 'Boyd'), 1.716448363495499, 'Boyd should convert 63 kg to grams and reproduce the 165 cm reference result.');
+assert(mainJs.includes('const wGrams = (w || 0) * 1000;'), 'Boyd runtime should explicitly convert kilograms to grams.');
 
 // Metric/imperial equivalence uses independent conversion constants, not runtime constants.
 const independentlyConvertedHeightCm = CANONICAL_IMPERIAL_PATIENT.heightIn * CM_PER_INCH_REFERENCE;
@@ -294,7 +376,7 @@ assert(mainJs.includes("weightUnit.textContent = isMetric ? 'kg' : 'lb'"), 'Unit
 assert(mainJs.includes("heightInput.placeholder = isMetric ? '170' : '66.9'"), 'Unit toggle should update height placeholder.');
 assert(mainJs.includes("weightInput.placeholder = isMetric ? '70' : '154.3'"), 'Unit toggle should update weight placeholder.');
 
-// Validation behavior: safe invalid values should not keep previous BSA/BMI/flow/lean-flow state.
+// Validation behavior: safe invalid values should not keep previous BSA/BMI/flow/BMI 25 reference state.
 [
   { label: 'empty height', heightValue: 0, weightValue: 70 },
   { label: 'empty weight', heightValue: 170, weightValue: 0 },
@@ -306,7 +388,7 @@ assert(mainJs.includes("weightInput.placeholder = isMetric ? '70' : '154.3'"), '
   { label: 'NaN weight', heightValue: 170, weightValue: NaN }
 ].forEach((scenario) => {
   const obesePriorState = simulateStandaloneBsaState({ heightValue: 170, weightValue: 100, method: 'Mosteller' });
-  assert.strictEqual(obesePriorState.leanFlowVisible, true, `${scenario.label} prior obese state should start with visible lean-flow card.`);
+  assert.strictEqual(obesePriorState.bmi25ReferenceVisible, true, `${scenario.label} prior obese state should start with visible BMI 25 reference card.`);
   const state = simulateStandaloneBsaState({ ...scenario, previousState: obesePriorState });
   assert(!Number.isFinite(state.bsa) || state.bsa === 0, `${scenario.label} should not produce a positive finite BSA.`);
   assert.strictEqual(state.primaryResultText, '0.00', `${scenario.label} should clear the primary BSA text.`);
@@ -314,43 +396,43 @@ assert(mainJs.includes("weightInput.placeholder = isMetric ? '70' : '154.3'"), '
   assert.strictEqual(state.bmiText, 'BMI: —', `${scenario.label} should clear BMI display.`);
   assert.strictEqual(state.flowListState, 'empty-message', `${scenario.label} should clear patient-specific flow rows.`);
   assert.strictEqual(state.obesityBadgeVisible, false, `${scenario.label} should not leave obesity badge visible.`);
-  assert.strictEqual(state.leanFlowVisible, false, `${scenario.label} should not leave lean-flow warning/card visible.`);
+  assert.strictEqual(state.bmi25ReferenceVisible, false, `${scenario.label} should not leave BMI 25 reference warning/card visible.`);
   assert(!/NaN|Infinity/.test(`${state.primaryResultText} ${state.resultDisplayText} ${state.bmiText}`), `${scenario.label} should not display NaN or Infinity.`);
-  assert.strictEqual(state.previousLeanFlowVisible, true, `${scenario.label} transition should carry the prior visible lean-flow state.`);
-  assert.notStrictEqual(state.leanBsaText, obesePriorState.leanBsaText, `${scenario.label} should clear stale lean BSA text from the prior obese state.`);
-  assert.notStrictEqual(state.leanWeightText, obesePriorState.leanWeightText, `${scenario.label} should clear stale lean weight text from the prior obese state.`);
+  assert.strictEqual(state.previousBmi25ReferenceVisible, true, `${scenario.label} transition should carry the prior visible BMI 25 reference state.`);
+  assert.notStrictEqual(state.bmi25ReferenceBsaText, obesePriorState.bmi25ReferenceBsaText, `${scenario.label} should clear stale BMI 25 reference BSA text from the prior obese state.`);
+  assert.notStrictEqual(state.bmi25ReferenceWeightText, obesePriorState.bmi25ReferenceWeightText, `${scenario.label} should clear stale BMI 25 reference weight text from the prior obese state.`);
 });
 
 
 const obeseValidState = simulateStandaloneBsaState({ heightValue: 170, weightValue: 100, method: 'Mosteller' });
-assert.strictEqual(obeseValidState.leanFlowVisible, true, 'Obese valid patient should show the lean-flow card.');
+assert.strictEqual(obeseValidState.bmi25ReferenceVisible, true, 'Obese valid patient should show the BMI 25 reference card.');
 assert.strictEqual(obeseValidState.obesityBadgeVisible, true, 'Obese valid patient should show the obesity badge.');
 assert.notStrictEqual(obeseValidState.resultDisplayText, '—', 'Obese valid patient should show a formatted BSA result.');
 assert.notStrictEqual(obeseValidState.bmiText, 'BMI: —', 'Obese valid patient should show BMI.');
 assert.strictEqual(obeseValidState.flowListState, 'rows', 'Obese valid patient should show flow rows.');
-assert.notStrictEqual(obeseValidState.leanBsaText, '—', 'Obese valid patient should show lean BSA text.');
+assert.notStrictEqual(obeseValidState.bmi25ReferenceBsaText, '—', 'Obese valid patient should show BMI 25 reference BSA text.');
 
 const invalidAfterObeseState = simulateStandaloneBsaState({ heightValue: 0, weightValue: 100, method: 'Mosteller', previousState: obeseValidState });
-assert.strictEqual(invalidAfterObeseState.previousLeanFlowVisible, true, 'Invalid transition should start from a prior visible lean-flow card.');
-assert.strictEqual(invalidAfterObeseState.leanFlowVisible, false, 'Invalid transition should explicitly hide the prior lean-flow card.');
+assert.strictEqual(invalidAfterObeseState.previousBmi25ReferenceVisible, true, 'Invalid transition should start from a prior visible BMI 25 reference card.');
+assert.strictEqual(invalidAfterObeseState.bmi25ReferenceVisible, false, 'Invalid transition should explicitly hide the prior BMI 25 reference card.');
 assert.strictEqual(invalidAfterObeseState.obesityBadgeVisible, false, 'Invalid transition should hide the obesity badge.');
 assert.strictEqual(invalidAfterObeseState.resultDisplayText, '—', 'Invalid transition should clear formatted BSA output.');
 assert.strictEqual(invalidAfterObeseState.bmiText, 'BMI: —', 'Invalid transition should clear BMI output.');
 assert.strictEqual(invalidAfterObeseState.flowListState, 'empty-message', 'Invalid transition should clear flow rows.');
-assert.strictEqual(invalidAfterObeseState.leanBsaText, '—', 'Invalid transition should clear prior lean BSA text.');
-assert.strictEqual(invalidAfterObeseState.leanWeightText, '—', 'Invalid transition should clear prior lean weight text.');
+assert.strictEqual(invalidAfterObeseState.bmi25ReferenceBsaText, '—', 'Invalid transition should clear prior BMI 25 reference BSA text.');
+assert.strictEqual(invalidAfterObeseState.bmi25ReferenceWeightText, '—', 'Invalid transition should clear prior BMI 25 reference weight text.');
 assert.notStrictEqual(invalidAfterObeseState.previousResultDisplayText, invalidAfterObeseState.resultDisplayText, 'Invalid transition should replace prior BSA output.');
 assert.notStrictEqual(invalidAfterObeseState.previousBmiText, invalidAfterObeseState.bmiText, 'Invalid transition should replace prior BMI output.');
 
 const nonObeseAfterInvalidState = simulateStandaloneBsaState({ heightValue: 170, weightValue: 70, method: 'Mosteller', previousState: invalidAfterObeseState });
-assert.strictEqual(nonObeseAfterInvalidState.leanFlowVisible, false, 'Valid non-obese transition should keep lean-flow hidden.');
+assert.strictEqual(nonObeseAfterInvalidState.bmi25ReferenceVisible, false, 'Valid non-obese transition should keep BMI 25 reference hidden.');
 assert.strictEqual(nonObeseAfterInvalidState.obesityBadgeVisible, false, 'Valid non-obese transition should keep obesity badge hidden.');
 assert.strictEqual(nonObeseAfterInvalidState.resultDisplayText, `${CANONICAL_EXPECTED.Mosteller.toFixed(2)} m²`, 'Valid non-obese transition should restore BSA output.');
 assert.strictEqual(nonObeseAfterInvalidState.bmiText, 'BMI: 24.2 kg/m²', 'Valid non-obese transition should restore BMI output.');
 assert.strictEqual(nonObeseAfterInvalidState.flowListState, 'rows', 'Valid non-obese transition should restore flow rows.');
 
 const obeseAgainState = simulateStandaloneBsaState({ heightValue: 170, weightValue: 100, method: 'Mosteller', previousState: nonObeseAfterInvalidState });
-assert.strictEqual(obeseAgainState.leanFlowVisible, true, 'Returning to an obese valid patient should show lean-flow card again.');
+assert.strictEqual(obeseAgainState.bmi25ReferenceVisible, true, 'Returning to an obese valid patient should show BMI 25 reference card again.');
 assert.strictEqual(obeseAgainState.obesityBadgeVisible, true, 'Returning to an obese valid patient should show obesity badge again.');
 assert.strictEqual(obeseAgainState.flowListState, 'rows', 'Returning to an obese valid patient should keep flow rows visible.');
 
@@ -359,12 +441,11 @@ const standaloneInvalidBranchStart = updateStandaloneBsaSource.indexOf("} else {
 assert(standaloneInvalidBranchStart >= 0, 'updateStandaloneBsa invalid branch should be locatable for static stale-state contract checks.');
 const standaloneInvalidBranch = updateStandaloneBsaSource.slice(standaloneInvalidBranchStart, updateStandaloneBsaSource.indexOf('if (formulaCompareEl)', standaloneInvalidBranchStart));
 assert(standaloneInvalidBranch.includes("bmiDisplay.textContent = 'BMI: —';"), 'updateStandaloneBsa invalid branch should clear BMI text.');
-assert(standaloneInvalidBranch.includes("if (obesityNote) obesityNote.textContent = 'Obesity Adjustment: —';"), 'updateStandaloneBsa invalid branch should reset obesity note.');
 assert(standaloneInvalidBranch.includes("obesityBadge.classList.add('hidden');"), 'updateStandaloneBsa invalid branch should hide obesity badge.');
 assert(standaloneInvalidBranch.includes("obesityBadge.textContent = 'Obese BMI —';"), 'updateStandaloneBsa invalid branch should reset obesity badge text.');
-assert(standaloneInvalidBranch.includes("if (leanFlowCard) leanFlowCard.classList.add('hidden');"), 'updateStandaloneBsa invalid branch should hide lean-flow card.');
-assert(standaloneInvalidBranch.includes("if (leanBsaEl) leanBsaEl.textContent = '—';"), 'updateStandaloneBsa invalid branch should clear lean BSA text.');
-assert(standaloneInvalidBranch.includes("if (leanWeightEl) leanWeightEl.textContent = '—';"), 'updateStandaloneBsa invalid branch should clear lean weight text.');
+assert(standaloneInvalidBranch.includes("if (bmi25FlowCard) bmi25FlowCard.classList.add('hidden');"), 'updateStandaloneBsa invalid branch should hide BMI 25 reference card.');
+assert(standaloneInvalidBranch.includes("if (bmi25ReferenceBsaEl) bmi25ReferenceBsaEl.textContent = '—';"), 'updateStandaloneBsa invalid branch should clear BMI 25 reference BSA text.');
+assert(standaloneInvalidBranch.includes("if (bmi25ReferenceWeightEl) bmi25ReferenceWeightEl.textContent = '—';"), 'updateStandaloneBsa invalid branch should clear BMI 25 reference weight text.');
 assert(updateStandaloneBsaSource.includes("resultEl.textContent = v ? v.toFixed(2) : '0.00';"), 'updateStandaloneBsa should clear primary BSA output when computeBSA returns 0.');
 assert(updateStandaloneBsaSource.includes("resultDisplay.textContent = v ? `${v.toFixed(2)} m²` : '—';"), 'updateStandaloneBsa should clear formatted BSA output when computeBSA returns 0.');
 assert(updateStandaloneBsaSource.includes('updateBsaFlowList(v, w);'), 'updateStandaloneBsa should always delegate flow-list refresh after invalid input.');
@@ -445,13 +526,19 @@ assert(mainJs.includes("bsaMethodStandalone.addEventListener('change', updateSta
 assert(mainJs.includes("metricBtn.addEventListener('click', () => setBsaUnit(BSA_UNIT.metric))"), 'Metric unit toggle should call setBsaUnit(metric).');
 assert(mainJs.includes("imperialBtn.addEventListener('click', () => setBsaUnit(BSA_UNIT.imperial))"), 'Imperial unit toggle should call setBsaUnit(imperial).');
 assert(mainJs.includes('updateStandaloneBsa();'), 'BSA initialization should call updateStandaloneBsa.');
+assert(heparinHtml.includes('id="hep2-height"') && heparinHtml.includes('id="hep2-weight"') && heparinHtml.includes('id="hep2-sex"'), 'Standalone Heparin calculator should retain its own patient inputs.');
+assert(mainJs.includes('function computeDevineIbw(heightCm, sex)'), 'Standalone Heparin calculator should retain Devine IBW logic.');
+assert(mainJs.includes('const abwStandard = ibw + 0.4 * excess;'), 'Standalone Heparin calculator should retain adjusted-body-weight logic.');
+const relatedToolsSection = bsaHtml.slice(bsaHtml.indexOf('>Related tools</h3>'));
+assert(relatedToolsSection.includes('href="/heparin/"') && relatedToolsSection.includes('>Heparin Calculator</a>'), 'Normal related-tools navigation to the standalone Heparin calculator should remain available.');
+assert(relatedToolsSection.includes('href="/lbm/"') && relatedToolsSection.includes('>Lean Body Mass Calculator</a>'), 'Obesity context should offer normal navigation to the standalone LBM calculator.');
 
 // Methodology/static copy consistency checks for formulas that are currently exposed by the standalone selector.
 [
   ['Mosteller', ['BSA = √((H × W) / 3600)']],
   ['DuBois', ['0.007184', '0.725', '0.425']],
   ['Haycock', ['0.024265', '0.3964', '0.5378']],
-  ['Boyd', ['0.0003207', '0.3', '0.7285', '0.0188', 'logW']]
+  ['Boyd', ['0.0003207', 'H(cm)', 'W(g)', '0.7285', '0.0188', 'log<sub>10</sub>(W(g))', 'weight converted to grams']]
 ].forEach(([label, formulaFragments]) => {
   assert(bsaHtml.includes(label === 'DuBois' ? 'Du Bois' : label), `Methodology should mention ${label}.`);
   formulaFragments.forEach((fragment) => {

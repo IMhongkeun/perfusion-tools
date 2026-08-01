@@ -11,7 +11,7 @@ const heparinHtml = read('heparin', 'index.html');
 const mainJs = read('main.js');
 
 function normalizeText(value) {
-  return value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  return value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').replace(/\s+([,.;:])/g, '$1').trim();
 }
 
 function getJsonLdNodes(source) {
@@ -77,26 +77,33 @@ const expectedQuestions = [
   'What is BSA used for during cardiopulmonary bypass?',
   'How is BSA calculated with the Mosteller formula?',
   'How do you calculate CPB pump flow from BSA and cardiac index?',
-  'Does BSA alone determine adequate CPB flow?'
+  'Does BSA alone determine adequate CPB flow?',
+  'Should a patient with obesity automatically receive the full TBW-based BSA flow?',
+  'How do body fat, blood volume, and metabolic demand relate?',
+  'Can this flow table be used for pediatric or neonatal CPB?',
+  'Which weight should be used when edema or fluid overload is present?',
+  'What is the difference between cardiac output and cardiac index?'
 ];
 const faqSection = html.match(/<h2 class="calculator-lower-title">BSA and CPB flow FAQ<\/h2>([\s\S]*?)<\/section>/);
 assert(faqSection, 'Visible BSA FAQ should exist.');
 const visibleQuestions = Array.from(faqSection[1].matchAll(/<p class="calculator-faq-question">([\s\S]*?)<\/p>/g)).map((match) => normalizeText(match[1]));
 const visibleAnswers = Array.from(faqSection[1].matchAll(/<p class="calculator-faq-answer">([\s\S]*?)<\/p>/g)).map((match) => normalizeText(match[1]));
 assert.deepStrictEqual(visibleQuestions, expectedQuestions);
-assert.strictEqual(visibleAnswers.length, 4);
+assert.strictEqual(visibleAnswers.length, expectedQuestions.length);
 assert(html.indexOf('Extended clinical notes & evidence') < html.indexOf('BSA and CPB flow FAQ'));
 assert(html.indexOf('BSA and CPB flow FAQ') < html.indexOf('Related tools'));
+assert(html.indexOf('id="bsa-references-heading"') < html.indexOf('Related tools'), 'Selected references should appear immediately above Related tools.');
 
 const nodes = getJsonLdNodes(html);
 const faqNodes = nodes.filter((node) => node['@type'] === 'FAQPage');
 assert.strictEqual(faqNodes.length, 1, 'Exactly one FAQPage should exist.');
 assert.deepStrictEqual(faqNodes[0].mainEntity.map((item) => item.name), expectedQuestions);
 assert.deepStrictEqual(faqNodes[0].mainEntity.map((item) => normalizeText(item.acceptedAnswer.text)), visibleAnswers);
+assert(!visibleAnswers.some((answer) => /Heparin|\bIBW\b|\bABW\b|transferred data/i.test(answer)), 'BSA FAQ should not retain the removed Heparin handoff.');
 const medicalPage = nodes.find((node) => node['@type'] === 'MedicalWebPage');
 const webApp = nodes.find((node) => node['@type'] === 'WebApplication');
 const breadcrumb = nodes.find((node) => node['@type'] === 'BreadcrumbList');
-assert.strictEqual(medicalPage.dateModified, '2026-07-26');
+assert.strictEqual(medicalPage.dateModified, '2026-08-01');
 assert.strictEqual(medicalPage.url, 'https://perfusiontools.com/bsa/');
 assert.strictEqual(webApp.name, 'BSA Calculator');
 assert.strictEqual(webApp.url, 'https://perfusiontools.com/bsa/');

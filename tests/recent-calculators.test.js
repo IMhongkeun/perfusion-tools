@@ -142,6 +142,11 @@ const key = 'perfusiontools_recent_calculators';
   assert(!/[가-힣]/.test(block) && !/[가-힣]/.test(html), 'no Korean localization data remains for this feature');
   assert(!block.includes('navigator.language') && !block.includes('document.documentElement.lang'), 'home discovery does not detect browser or document language');
 
+  const desktopDirectoryStyles = html.match(/@media \(min-width: 768px\) \{([\s\S]*?)\n    \}/)?.[1] || '';
+  assert(/\.calculator-category-grid\s*>\s*li\s*\{\s*display:\s*grid;\s*\}/.test(desktopDirectoryStyles), 'desktop directory list items stretch their full grid row height');
+  const cardDeclarations = html.match(/\.calculator-directory-row\s*\{([^}]*)\}/)?.[1] || '';
+  assert(!/(?:^|;)\s*height\s*:/.test(cardDeclarations), 'calculator cards do not use a fixed content height');
+
   const koreanBrowserApi = makeContext(makeStorage(), { browserLanguage: 'ko-KR' }).api;
   const row = koreanBrowserApi.createCalculatorRow(koreanBrowserApi.CALCULATOR_REGISTRY[0]);
   assert(row.innerHTML.includes('DO₂i / GDP Calculator'), 'Korean browser locale still renders the English calculator title');
