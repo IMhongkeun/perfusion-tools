@@ -579,6 +579,15 @@ function convertBsaInputValue(value, fromUnit, toUnit, type) {
   return fromUnit === BSA_UNIT.metric ? (value / KG_PER_LB) : (value * KG_PER_LB);
 }
 
+function getStandaloneBsaComparisonRows(heightCm, weightKg, selectedMethod, formulaOptions) {
+  return formulaOptions.map(({ value, label }) => ({
+    formula: value,
+    label,
+    bsa: computeBSA(heightCm, weightKg, value),
+    selected: value === selectedMethod
+  }));
+}
+
 function updateBsaUnitUi() {
   const isMetric = bsaInputUnit === BSA_UNIT.metric;
   const metricBtn = el('bsa-unit-metric');
@@ -736,14 +745,15 @@ function updateStandaloneBsa() {
     if (!v) {
       formulaCompareEl.innerHTML = '<p class="text-xs text-slate-500 dark:text-slate-400">Enter height and weight to compare formulas.</p>';
     } else {
-      const allMethods = ['Mosteller', 'DuBois', 'Haycock', 'GehanGeorge', 'Boyd'];
-      const rows = allMethods
-        .filter((formula) => formula !== method)
-        .map((formula) => ({ formula, bsa: computeBSA(h, w, formula) }));
+      const formulaOptions = Array.from(el('bsa-method-standalone').options).map((option) => ({
+        value: option.value,
+        label: option.textContent.trim()
+      }));
+      const rows = getStandaloneBsaComparisonRows(h, w, method, formulaOptions);
 
       const tableRows = rows.map((row) => `
-        <tr class="border-t border-slate-100 dark:border-primary-700/60">
-          <td class="py-1.5 pr-2 text-slate-600 dark:text-slate-300">${bsaMethodLabelMap[row.formula] || row.formula}</td>
+        <tr${row.selected ? ' aria-current="true"' : ''} class="border-t border-slate-100 dark:border-primary-700/60 ${row.selected ? 'bg-accent-50/70 dark:bg-accent-500/10' : ''}">
+          <td class="py-1.5 pr-2 text-slate-600 dark:text-slate-300 ${row.selected ? 'font-semibold' : ''}">${row.label}${row.selected ? ' <span class="ml-1 inline-flex rounded-full bg-accent-100 dark:bg-accent-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-accent-700 dark:text-accent-300">Selected</span>' : ''}</td>
           <td class="py-1.5 text-right font-semibold text-primary-900 dark:text-white">${row.bsa.toFixed(3)} m²</td>
         </tr>
       `).join('');
@@ -787,6 +797,14 @@ function setBsaUnit(nextUnit) {
   bsaInputUnit = nextUnit;
   updateBsaUnitUi();
   updateStandaloneBsa();
+}
+
+function removeLegacyBsaPatientPayload() {
+  try {
+    localStorage.removeItem('patientDataFromBSA');
+  } catch (_) {
+    // Storage cleanup failure must not block application initialization.
+  }
 }
 
 function calcCaO2(hb, sao2pct, pao2) {
@@ -8264,6 +8282,7 @@ function initFeedbackCard() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+  removeLegacyBsaPatientPayload();
   document.documentElement.style.scrollPaddingTop = '0px';
   resetScrollToTop();
   setTimeout(resetScrollToTop, 10);

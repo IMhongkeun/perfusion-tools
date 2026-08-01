@@ -88,7 +88,7 @@ function loadBsaRuntime(source) {
   assert(start >= 0 && end > start, 'BSA runtime block should be extractable from main.js.');
   const context = { module: { exports: {} } };
   vm.runInNewContext(
-    `${source.slice(start, end)}\nmodule.exports = { BSA, BSA_UNIT, CM_PER_INCH, KG_PER_LB, computeBSA, toMetricBsaInputs, convertBsaInputValue };`,
+    `${source.slice(start, end)}\nmodule.exports = { BSA, BSA_UNIT, CM_PER_INCH, KG_PER_LB, computeBSA, toMetricBsaInputs, convertBsaInputValue, getStandaloneBsaComparisonRows };`,
     context,
     { filename: 'main.js:bsa-runtime' }
   );
@@ -99,6 +99,13 @@ function extractStandaloneSelectorValues(html) {
   const selectMatch = html.match(/<select[^>]*id="bsa-method-standalone"[\s\S]*?<\/select>/);
   assert(selectMatch, 'BSA formula selector should exist.');
   return Array.from(selectMatch[0].matchAll(/<option\s+value="([^"]+)"/g)).map(match => match[1]);
+}
+
+function extractStandaloneSelectorOptions(html) {
+  const selectMatch = html.match(/<select[^>]*id="bsa-method-standalone"[\s\S]*?<\/select>/);
+  assert(selectMatch, 'BSA formula selector should exist.');
+  return Array.from(selectMatch[0].matchAll(/<option\s+value="([^"]+)">([^<]+)<\/option>/g))
+    .map((match) => ({ value: match[1], label: match[2].trim() }));
 }
 
 function getRuntimeFormulaKeys(runtime) {
@@ -188,6 +195,7 @@ const distRuntime = loadBsaRuntime(distMainJs);
 const runtimeFormulaKeys = getRuntimeFormulaKeys(runtime);
 const sourceSelectorValues = extractStandaloneSelectorValues(bsaHtml);
 const distSelectorValues = extractStandaloneSelectorValues(distBsaHtml);
+const sourceSelectorOptions = extractStandaloneSelectorOptions(bsaHtml);
 
 // Source/dist parity must protect deployed BSA code and markup from stale build artifacts.
 assert.strictEqual(distMainJs, mainJs, 'dist/main.js should exactly match source main.js.');
@@ -195,12 +203,25 @@ assert.strictEqual(distBsaHtml, bsaHtml, 'dist/bsa/index.html should exactly mat
 assert.deepStrictEqual(getRuntimeFormulaKeys(distRuntime), runtimeFormulaKeys, 'Source and dist BSA runtime formula keys should match.');
 assert.deepStrictEqual(distSelectorValues, sourceSelectorValues, 'Source and dist BSA formula selector values should match.');
 
+const mostellerComparisonRows = runtime.getStandaloneBsaComparisonRows(170, 70, 'Mosteller', sourceSelectorOptions);
+assert.deepStrictEqual(mostellerComparisonRows.map((row) => row.formula), sourceSelectorValues, 'Formula Comparison should derive every row from the standalone selector.');
+assert.deepStrictEqual(mostellerComparisonRows.map((row) => row.label), ['Mosteller', 'Du Bois', 'Haycock', 'Boyd']);
+assert.strictEqual(mostellerComparisonRows.filter((row) => row.selected).length, 1, 'Formula Comparison should mark exactly one selected row.');
+assert.strictEqual(mostellerComparisonRows.find((row) => row.selected).formula, 'Mosteller', 'The active default formula should remain in the comparison.');
+assert(!mostellerComparisonRows.some((row) => row.formula === 'GehanGeorge'), 'Unexposed Gehan-George should not appear in standalone comparison rows.');
+mostellerComparisonRows.forEach((row) => assertNearlyEqual(row.bsa, runtime.computeBSA(170, 70, row.formula), `${row.label} comparison value should remain correct`));
+const boydComparisonRows = runtime.getStandaloneBsaComparisonRows(170, 70, 'Boyd', sourceSelectorOptions);
+assert.strictEqual(boydComparisonRows.find((row) => row.selected).formula, 'Boyd', 'Changing the selector should move the selected indication.');
+assert(mainJs.includes('>${row.label}${row.selected ?'), 'Comparison row should render the selector label and selected state.');
+assert(mainJs.includes('>Selected</span>'), 'Selected comparison row should include a visible non-color-only badge.');
+assert(mainJs.includes('${row.bsa.toFixed(3)} m²'), 'Formula Comparison should retain three-decimal values.');
+
 // BSA stays focused on height, weight, formula, BMI, and CPB flow.
 const removedBsaHeparinFeatures = [
   'bsa-sex-male', 'bsa-sex-female', 'bsa-sex-info-container', 'bsa-sex-info-button',
   'bsa-sex-info', 'bsaPatientSex', 'updateBsaSexUi', 'initBsaSexInfo',
   'bsa-heparin-alert', 'bsa-open-heparin', 'Obese Patient Heparin Alert',
-  'Open Heparin Management Calculator', 'patientDataFromBSA', 'openHeparinFromBsa',
+  'Open Heparin Management Calculator', 'openHeparinFromBsa',
   'preloadHeparinFromBsa', 'Why does this BSA calculator include a male/female selection?',
   'Used for Heparin Calculator IBW/ABW estimates only'
 ];
@@ -208,6 +229,16 @@ removedBsaHeparinFeatures.forEach((fragment) => {
   assert(!bsaHtml.includes(fragment), `BSA HTML should not retain obsolete integration text: ${fragment}`);
   assert(!mainJs.includes(fragment), `Shared runtime should not retain obsolete BSA integration code: ${fragment}`);
 });
+assert(!/localStorage\.setItem\(\s*['"]patientDataFromBSA['"]/.test(mainJs), 'Legacy BSA patient payload must never be written.');
+assert(!/localStorage\.getItem\(\s*['"]patientDataFromBSA['"]/.test(mainJs), 'Legacy BSA patient payload must never be read or prefilled.');
+assert(/localStorage\.removeItem\(\s*['"]patientDataFromBSA['"]\s*\)/.test(mainJs), 'Legacy BSA patient payload should be deleted.');
+const legacyCleanupSource = mainJs.slice(mainJs.indexOf('function removeLegacyBsaPatientPayload()'), mainJs.indexOf('function calcCaO2'));
+assert(/try\s*\{[\s\S]*localStorage\.removeItem/.test(legacyCleanupSource) && /catch\s*\(_\)/.test(legacyCleanupSource), 'Legacy payload cleanup should tolerate storage access failures.');
+assert.doesNotThrow(() => vm.runInNewContext(`${legacyCleanupSource}\nremoveLegacyBsaPatientPayload();`, {
+  localStorage: { removeItem() { throw new Error('storage blocked'); } }
+}), 'Blocked localStorage should not interrupt initialization.');
+assert(mainJs.includes("window.addEventListener('DOMContentLoaded', () => {\n  removeLegacyBsaPatientPayload();"), 'Legacy payload cleanup should run during shared initialization.');
+assert(!legacyCleanupSource.includes('localStorage.clear'), 'Legacy cleanup must not clear unrelated storage keys.');
 assert(!bsaHtml.includes('Formula set'), 'BSA should not duplicate the formula set label.');
 assert(!bsaHtml.includes('Mosteller default; Du Bois, Haycock, Boyd available'), 'BSA should not duplicate available formula copy.');
 assert(!bsaHtml.includes('Other formulas'), 'Formula Comparison should not imply that the selected formula is excluded.');
