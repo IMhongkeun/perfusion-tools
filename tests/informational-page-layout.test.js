@@ -23,6 +23,13 @@ assert(bodyClasses.includes('pb-[var(--bottom-nav-height)]') && bodyClasses.incl
 const wrapperClasses = getClasses(/<div class="([^"]*pt-\[var\(--header-height\)\][^"]*)">/, 'The shared header-offset content wrapper should exist.');
 assert(wrapperClasses.includes('flex-1'), 'The content wrapper should expand to fill the page shell.');
 
+const sidebarClasses = getClasses(/<aside id="desktop-sidebar" class="([^"]+)"/, 'The desktop sidebar should exist.');
+assert(sidebarClasses.includes('sticky') && sidebarClasses.includes('top-[var(--header-height)]'), 'Desktop sidebar should retain its sticky header offset.');
+assert(sidebarClasses.includes('self-start'), 'Desktop sidebar should size independently instead of stretching the grid row.');
+assert(sidebarClasses.includes('max-h-[calc(100dvh-var(--header-height))]'), 'Desktop sidebar should use the visible viewport as its maximum height when supported.');
+assert(sidebarClasses.includes('overflow-y-auto'), 'A tall desktop navigation should remain internally scrollable.');
+assert(!sidebarClasses.includes('h-[calc(100vh-var(--header-height))]'), 'Desktop sidebar must not force short page wrappers to viewport height.');
+
 const footerClasses = getClasses(/<footer class="([^"]+)"/, 'The desktop footer should exist.');
 assert(footerClasses.includes('mt-auto'), 'The footer should consume remaining space after short content.');
 assert(!footerClasses.includes('mt-10'), 'The footer should not add an extra fixed margin below a flex-filled short page.');
