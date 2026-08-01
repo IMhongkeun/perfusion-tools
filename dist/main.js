@@ -626,6 +626,33 @@ function updateBsaSexUi() {
   }
 }
 
+function initBsaSexInfo() {
+  const container = el('bsa-sex-info-container');
+  const button = el('bsa-sex-info-button');
+  const info = el('bsa-sex-info');
+  if (!container || !button || !info) return;
+
+  const setOpen = (isOpen) => {
+    info.classList.toggle('hidden', !isOpen);
+    button.setAttribute('aria-expanded', String(isOpen));
+  };
+
+  button.addEventListener('click', () => {
+    setOpen(button.getAttribute('aria-expanded') !== 'true');
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!container.contains(event.target)) setOpen(false);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && button.getAttribute('aria-expanded') === 'true') {
+      setOpen(false);
+      button.focus();
+    }
+  });
+}
+
 function renderLeanFlowList(leanBsa) {
   const leanFlowList = el('bsa-lean-flow-list');
   const quickWrap = el('bsa-lean-ci-quick');
@@ -8532,6 +8559,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (maleBtn) maleBtn.addEventListener('click', () => { bsaPatientSex = 'male'; updateBsaSexUi(); updateStandaloneBsa(); });
     const femaleBtn = el('bsa-sex-female');
     if (femaleBtn) femaleBtn.addEventListener('click', () => { bsaPatientSex = 'female'; updateBsaSexUi(); updateStandaloneBsa(); });
+    initBsaSexInfo();
     const leanQuick = el('bsa-lean-ci-quick');
     if (leanQuick) {
       leanQuick.querySelectorAll('button[data-ci]').forEach((btn) => {

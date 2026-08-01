@@ -196,6 +196,16 @@ assert.strictEqual(distBsaHtml, bsaHtml, 'dist/bsa/index.html should exactly mat
 assert.deepStrictEqual(getRuntimeFormulaKeys(distRuntime), runtimeFormulaKeys, 'Source and dist BSA runtime formula keys should match.');
 assert.deepStrictEqual(distSelectorValues, sourceSelectorValues, 'Source and dist BSA formula selector values should match.');
 
+// The compact Sex explanation should be accessible without adding persistent helper copy.
+assert(/id="bsa-sex-info-button"[^>]*type="button"/.test(bsaHtml), 'Sex information control should be a button.');
+assert(/id="bsa-sex-info-button"[^>]*aria-label="Why is sex required\?"/.test(bsaHtml), 'Sex information button should have an informative accessible label.');
+assert(/id="bsa-sex-info-button"[^>]*aria-expanded="false"[^>]*aria-controls="bsa-sex-info"/.test(bsaHtml), 'Sex information button should expose its initial state and controlled content.');
+assert(bsaHtml.includes('Used for Heparin Calculator IBW/ABW estimates only. It does not affect BSA.'), 'Sex information should explain its Heparin-only purpose.');
+assert(/id="bsa-sex-info"[^>]*class="[^"]*hidden/.test(bsaHtml), 'Sex information should start hidden.');
+assert(!bsaHtml.includes('Formula set'), 'BSA Key info should not duplicate the formula set label.');
+assert(!bsaHtml.includes('Mosteller default; Du Bois, Haycock, Boyd available'), 'BSA Key info should not duplicate available formula copy.');
+assert(bsaHtml.includes('<dl class="grid md:grid-cols-2 gap-2 text-sm">'), 'The remaining Key info items should use a complete two-column layout.');
+
 // Existing UI regression: the flow list should be tall enough for the CI table.
 assert(
   bsaHtml.includes('id="bsa-flow-list"') && bsaHtml.includes('max-h-[22rem] min-h-[18rem] overflow-y-auto'),
@@ -247,6 +257,8 @@ assert.strictEqual(new Set(Object.values(CANONICAL_EXPECTED).map(value => value.
 const mostellerCanonical = Math.sqrt((170 * 70) / 3600);
 assert.strictEqual(mostellerCanonical, CANONICAL_EXPECTED.Mosteller);
 assertNearlyEqual(runtime.computeBSA(170, 70, 'Mosteller'), mostellerCanonical, 'Mosteller runtime should match sqrt(height × weight / 3600)');
+const bsaBySex = ['male', 'female'].map(() => runtime.computeBSA(170, 70, 'Mosteller'));
+assertNearlyEqual(bsaBySex[0], bsaBySex[1], 'Changing sex should not alter a height-and-weight-only BSA result.');
 assert.notStrictEqual((170 * 70) / 3600, mostellerCanonical, 'Mosteller canonical should specifically require sqrt, not a linear division result.');
 assert.notStrictEqual(Math.sqrt((170 * 70) / 360), mostellerCanonical, 'Mosteller canonical should specifically require denominator 3600.');
 
@@ -444,6 +456,13 @@ assert(mainJs.includes("x.addEventListener('input', updateStandaloneBsa)"), 'BSA
 assert(mainJs.includes("bsaMethodStandalone.addEventListener('change', updateStandaloneBsa)"), 'BSA formula selector should call updateStandaloneBsa on change.');
 assert(mainJs.includes("metricBtn.addEventListener('click', () => setBsaUnit(BSA_UNIT.metric))"), 'Metric unit toggle should call setBsaUnit(metric).');
 assert(mainJs.includes("imperialBtn.addEventListener('click', () => setBsaUnit(BSA_UNIT.imperial))"), 'Imperial unit toggle should call setBsaUnit(imperial).');
+assert(mainJs.includes("maleBtn.addEventListener('click', () => { bsaPatientSex = 'male'"), 'Male selection should remain wired.');
+assert(mainJs.includes("femaleBtn.addEventListener('click', () => { bsaPatientSex = 'female'"), 'Female selection should remain wired.');
+assert(mainJs.includes('sex: bsaPatientSex'), 'Selected sex should remain in the Heparin transfer payload.');
+assert(mainJs.includes("localStorage.setItem('patientDataFromBSA', JSON.stringify(payload))"), 'BSA patient data should still transfer through patientDataFromBSA.');
+assert(mainJs.includes("button.getAttribute('aria-expanded') !== 'true'"), 'Sex information button should toggle on repeated activation.');
+assert(mainJs.includes("if (!container.contains(event.target)) setOpen(false)"), 'Sex information should close on outside activation.');
+assert(mainJs.includes("if (event.key === 'Escape' && button.getAttribute('aria-expanded') === 'true')"), 'Sex information should close with Escape.');
 assert(mainJs.includes('updateStandaloneBsa();'), 'BSA initialization should call updateStandaloneBsa.');
 
 // Methodology/static copy consistency checks for formulas that are currently exposed by the standalone selector.
