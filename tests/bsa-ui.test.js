@@ -206,6 +206,7 @@ assert(!bsaHtml.includes('tracking-wide">Sex</span>'), 'Sex control should not r
 assert(/aria-label="Patient sex selection"[\s\S]*?id="bsa-sex-male"[\s\S]*?id="bsa-sex-female"[\s\S]*?id="bsa-sex-info-button"/.test(bsaHtml), 'Sex information button should sit at the right side of the selection box.');
 assert(!bsaHtml.includes('Formula set'), 'BSA Key info should not duplicate the formula set label.');
 assert(!bsaHtml.includes('Mosteller default; Du Bois, Haycock, Boyd available'), 'BSA Key info should not duplicate available formula copy.');
+assert(!bsaHtml.includes('Other formulas'), 'Formula Comparison should not imply that the selected formula is excluded.');
 assert(!bsaHtml.includes('>Key info</h3>'), 'The redundant BSA Key info section should be removed.');
 assert(bsaHtml.includes('<div class="flex flex-wrap items-end gap-3">'), 'Unit and sex controls should share one responsive row.');
 const flowLayoutIndex = bsaHtml.indexOf('id="bsa-flow-layout"');
