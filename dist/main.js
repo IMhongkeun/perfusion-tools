@@ -8281,6 +8281,15 @@ function initFeedbackCard() {
   setTimeout(evaluate, FEEDBACK_MIN_DWELL_MS);
 }
 
+function initBackToTopButton() {
+  const button = el('back-to-top');
+  if (!button) return;
+
+  button.addEventListener('click', () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  });
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   removeLegacyBsaPatientPayload();
   document.documentElement.style.scrollPaddingTop = '0px';
@@ -8288,6 +8297,7 @@ window.addEventListener('DOMContentLoaded', () => {
   setTimeout(resetScrollToTop, 10);
   initStandaloneTopNav();
   initMobileCalculatorNav();
+  initBackToTopButton();
   initCalculatorDiscovery();
   const primaryTopNav = el('nav-home') ? el('nav-home').closest('nav') : null;
   if (primaryTopNav) {
