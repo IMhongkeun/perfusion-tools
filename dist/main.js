@@ -4526,6 +4526,7 @@ function renderCardioplegiaShortcut() {
       ? `Cardioplegia timer started · Next due ${formatCardioplegiaClock(cardioplegiaReminderState.nextDueAtEpoch)}`
       : 'X-clamp running · Cardioplegia reminder';
   }
+  updateBackToTopVisibility();
 }
 
 function completeCardioplegiaDose(source = 'card') {
@@ -8281,13 +8282,58 @@ function initFeedbackCard() {
   setTimeout(evaluate, FEEDBACK_MIN_DWELL_MS);
 }
 
-function initBackToTopButton() {
+const BACK_TO_TOP_SCROLL_THRESHOLD_PX = 240;
+const MOBILE_BACK_TO_TOP_MEDIA_QUERY = '(max-width: 768px)';
+
+function isMobileViewport() {
+  return window.matchMedia ? window.matchMedia(MOBILE_BACK_TO_TOP_MEDIA_QUERY).matches : window.innerWidth <= 768;
+}
+
+function isCardioplegiaShortcutVisible() {
+  const shortcutEl = document.getElementById('cardioplegia-shortcut');
+  if (!shortcutEl || shortcutEl.classList.contains('hidden') || shortcutEl.hidden || shortcutEl.getAttribute('aria-hidden') === 'true') return false;
+  const style = window.getComputedStyle ? window.getComputedStyle(shortcutEl) : null;
+  return !style || (style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0');
+}
+
+function isMobileTimeCalculatorShortcutBlockingBackToTop() {
+  const path = window.normalizeRoute ? window.normalizeRoute(window.location.pathname || '/') : (window.location.pathname || '/');
+  return isMobileViewport() && path.includes('timecalc') && isCardioplegiaShortcutVisible();
+}
+
+function setBackToTopVisible(button, shouldShow) {
+  button.classList.toggle('opacity-0', !shouldShow);
+  button.classList.toggle('pointer-events-none', !shouldShow);
+  button.classList.toggle('translate-y-2', !shouldShow);
+  button.setAttribute('aria-hidden', shouldShow ? 'false' : 'true');
+  if (shouldShow) button.removeAttribute('tabindex');
+  else button.setAttribute('tabindex', '-1');
+}
+
+function updateBackToTopVisibility() {
   const button = el('back-to-top');
   if (!button) return;
+  const hasScrolledPastThreshold = (window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0) > BACK_TO_TOP_SCROLL_THRESHOLD_PX;
+  setBackToTopVisible(button, hasScrolledPastThreshold && !isMobileTimeCalculatorShortcutBlockingBackToTop());
+}
+
+function initBackToTopButton() {
+  const button = el('back-to-top');
+  if (!button || button.dataset.backToTopInitialized === 'true') return;
+  button.dataset.backToTopInitialized = 'true';
 
   button.addEventListener('click', () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    updateBackToTopVisibility();
   });
+  window.addEventListener('scroll', updateBackToTopVisibility, { passive: true });
+  window.addEventListener('resize', updateBackToTopVisibility);
+  const mobileQuery = window.matchMedia ? window.matchMedia(MOBILE_BACK_TO_TOP_MEDIA_QUERY) : null;
+  if (mobileQuery) {
+    if (mobileQuery.addEventListener) mobileQuery.addEventListener('change', updateBackToTopVisibility);
+    else if (mobileQuery.addListener) mobileQuery.addListener(updateBackToTopVisibility);
+  }
+  updateBackToTopVisibility();
 }
 
 window.addEventListener('DOMContentLoaded', () => {
