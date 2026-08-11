@@ -11,17 +11,31 @@ const functionSource = mainJs.slice(
   mainJs.indexOf('function transplantClockIcon')
 );
 const context = {};
-vm.runInNewContext(`${functionSource}; this.calculateElapsedMinutes = calculateElapsedMinutes; this.formatDuration = formatDuration; this.normalizeClockInput = normalizeClockInput;`, context);
+vm.runInNewContext(`${functionSource}; this.calculateElapsedMinutes = calculateElapsedMinutes; this.formatTransplantDuration = formatTransplantDuration; this.normalizeClockInput = normalizeClockInput;`, context);
+
+const recordFormatterSource = mainJs.slice(mainJs.indexOf('function formatDuration(mins)'), mainJs.indexOf('function formatMinutesToHHMM'));
+const recordContext = {};
+vm.runInNewContext(`${recordFormatterSource}; this.formatDuration = formatDuration;`, recordContext);
+assert.strictEqual(recordContext.formatDuration(65), '65 min (1:05)', 'Record duration format must not be replaced by the transplant formatter');
+
+const modeSource = mainJs.slice(mainJs.indexOf('function normalizeTimeMode'), mainJs.indexOf('function loadTimePreferencesState'));
+const modeContext = {};
+vm.runInNewContext(`${modeSource}; this.normalizeTimeMode = normalizeTimeMode;`, modeContext);
+assert.strictEqual(modeContext.normalizeTimeMode('transplant'), 'transplant');
+assert.strictEqual(modeContext.normalizeTimeMode('live'), 'live');
+assert.strictEqual(modeContext.normalizeTimeMode('unexpected'), 'record');
+assert.strictEqual(modeContext.normalizeTimeMode(null), 'record');
 
 assert.strictEqual(context.calculateElapsedMinutes('08:00', '08:45'), 45);
-assert.strictEqual(context.formatDuration(context.calculateElapsedMinutes('08:00', '08:45')), '45 min');
-assert.strictEqual(context.formatDuration(context.calculateElapsedMinutes('08:00', '09:05')), '1 hr 05 min');
+assert.strictEqual(context.formatTransplantDuration(context.calculateElapsedMinutes('08:00', '08:45')), '45 min');
+assert.strictEqual(context.formatTransplantDuration(context.calculateElapsedMinutes('08:00', '09:05')), '1 hr 05 min');
 assert.strictEqual(context.calculateElapsedMinutes('23:50', '00:20'), 30);
 assert.strictEqual(context.calculateElapsedMinutes('08:00', ''), null);
 assert.strictEqual(context.calculateElapsedMinutes('25:00', '09:00'), null);
 assert.strictEqual(context.calculateElapsedMinutes('8:00', '09:00'), null);
-assert.strictEqual(context.formatDuration(null), '—');
+assert.strictEqual(context.formatTransplantDuration(null), '—');
 assert.strictEqual(context.normalizeClockInput('0800'), '08:00');
+assert.strictEqual(context.normalizeClockInput('1345'), '13:45');
 assert.strictEqual(context.normalizeClockInput('905'), '09:05');
 assert.strictEqual(context.normalizeClockInput('2350'), '23:50');
 assert.strictEqual(context.normalizeClockInput('08:00'), '08:00');
@@ -29,12 +43,12 @@ assert.strictEqual(context.normalizeClockInput('2400'), null);
 assert.strictEqual(context.normalizeClockInput('1260'), null);
 
 
-const transplantStart = mainJs.indexOf('const transplantState');
+const transplantStart = mainJs.indexOf('function createDefaultTransplantState');
 const transplantSource = mainJs.slice(
   transplantStart,
   mainJs.indexOf("if (typeof window !== 'undefined')", transplantStart)
 );
-const summaryContext = { document: { querySelectorAll: () => [], getElementById: () => null } };
+const summaryContext = { document: { querySelectorAll: () => [], getElementById: () => null }, saveTimeLiveState: () => {} };
 vm.runInNewContext(`${transplantSource}
   transplantState.lung.donorAcc = '08:00';
   transplantState.lung.sides.left = { iceOut: '09:10', anastomosisStart: '09:20', reperfusion: '09:55' };
@@ -43,8 +57,15 @@ vm.runInNewContext(`${transplantSource}
   transplantState.lung.procedure = 'single';
   transplantState.lung.singleSide = 'left';
   this.singleSummary = buildTransplantSummary('lung');
-  transplantState.heart = { donorAcc: '08:00', iceOut: '09:20', anastomosisStart: '09:35', recipientAccRelease: '10:10' };
-  this.heartSummary = buildTransplantSummary('heart');`, summaryContext);
+  transplantState.heart = { donorAcc: '08:00', iceOut: '09:20', anastomosisStart: '09:35', recipientAccRelease: '10:10', pumpStart: '08:30', pumpEnd: '10:30' };
+  this.heartSummary = buildTransplantSummary('heart');
+  transplantState.heart.donorAcc = '24:00';
+  transplantState.heart.iceOut = '123';
+  this.invalidSummary = buildTransplantSummary('heart');
+  const restored = normalizeStoredTransplantState({ activeType: 'heart', lung: { procedure: 'single', firstSide: 'right', singleSide: 'right', donorAcc: '08:00', pumpStart: '08:10', pumpEnd: '11:00', sides: { left: {}, right: { iceOut: '09:00' } } }, heart: { donorAcc: '07:00', pumpStart: '07:30', pumpEnd: '10:30' } });
+  this.restoredSnapshot = JSON.parse(JSON.stringify(restored));
+  this.oldSnapshot = JSON.parse(JSON.stringify(normalizeStoredTransplantState(undefined)));
+  this.defaultSnapshot = JSON.parse(JSON.stringify(createDefaultTransplantState()));`, summaryContext);
 assert(summaryContext.bilateralSummary.includes('Implant order: Right first'));
 assert(summaryContext.bilateralSummary.indexOf('Right Lung · 1st') < summaryContext.bilateralSummary.indexOf('Left Lung · 2nd'));
 assert(summaryContext.singleSummary.includes('Left Lung · Single'));
@@ -52,13 +73,24 @@ assert(!summaryContext.singleSummary.includes('Right Lung'));
 assert(summaryContext.heartSummary.includes('Cold Ischemic Time: 1 hr 20 min'));
 assert(summaryContext.heartSummary.includes('Warm Ischemic Time: 50 min'));
 assert(summaryContext.heartSummary.includes('Anastomosis Time: 35 min'));
+assert(summaryContext.heartSummary.includes('Pump start: 08:30'));
+assert(summaryContext.heartSummary.includes('Pump end: 10:30'));
+assert(summaryContext.heartSummary.includes('Pump Time: 2 hr 00 min'));
+assert(!summaryContext.invalidSummary.includes('24:00'), 'invalid clock values must not be copied into a summary');
+assert(!summaryContext.invalidSummary.includes('123'), 'incomplete clock values must not be copied into a summary');
+assert(summaryContext.invalidSummary.includes('Cold Ischemic Time: —'));
+assert.strictEqual(summaryContext.restoredSnapshot.activeType, 'heart');
+assert.strictEqual(summaryContext.restoredSnapshot.lung.procedure, 'single');
+assert.strictEqual(summaryContext.restoredSnapshot.lung.singleSide, 'right');
+assert.strictEqual(summaryContext.restoredSnapshot.heart.pumpEnd, '10:30');
+assert.deepStrictEqual(summaryContext.oldSnapshot, summaryContext.defaultSnapshot, 'old cases without transplant data should restore defaults');
 
 assert(timecalcHtml.includes('id="time-mode-transplant"'), 'Transplant must be the third top-level mode');
 assert(timecalcHtml.indexOf('time-mode-record') < timecalcHtml.indexOf('time-mode-live'));
 assert(timecalcHtml.indexOf('time-mode-live') < timecalcHtml.indexOf('time-mode-transplant'));
 assert(timecalcHtml.includes('id="transplant-type-lung"'));
 assert(timecalcHtml.includes('id="transplant-type-heart"'));
-assert(mainJs.includes("sides: {\n      left:"), 'lung event state should be anatomical-side based');
+assert(/sides:\s*{\s*left:/.test(mainJs), 'lung event state should be anatomical-side based');
 assert(mainJs.includes("transplantState.activeType === 'lung' ? renderLungTransplant() : renderHeartTransplant()"));
 assert(mainJs.includes("lung.firstSide === 'left' ? ['left', 'right'] : ['right', 'left']"));
 assert(mainJs.includes("if (lung.procedure === 'single') return [lung.singleSide]"));
@@ -69,6 +101,11 @@ assert(mainJs.includes('aria-label="Copy transplant case summary"'), 'summary co
 assert(mainJs.includes('absolute right-3 top-3 inline-flex h-10 w-10'), 'summary copy icon should sit in the card corner with a usable touch target');
 assert(!mainJs.includes('>Copy summary</button>'), 'summary copy action should not render as a text button');
 assert(mainJs.includes('function buildTransplantSummary(type)'), 'summary should be generated from shared transplant state');
+assert(mainJs.includes('timeLiveMode = normalizeTimeMode(saved.mode)'), 'validated top-level mode should restore from preferences');
+assert(mainJs.includes('transplant: getTransplantStateSnapshot()'), 'transplant state should use active case persistence');
+assert(mainJs.includes('transplantState = createDefaultTransplantState();'), 'new case should reset transplant state');
+assert(mainJs.includes("const copied = Boolean(document.execCommand && document.execCommand('copy'))"), 'fallback copy must check the returned success value');
+assert(mainJs.includes("status.textContent = 'Fix invalid time fields before copying.'"), 'copy should reject invalid transplant clocks');
 assert(mainJs.includes('navigator.clipboard?.writeText'), 'summary should use the Clipboard API');
 assert(mainJs.includes("if (event.target.closest('#transplant-summary-copy')) copyTransplantSummary()"), 'summary copy button should be delegated safely');
 assert(!mainJs.includes('renderTransplantCalculator();\n    const next = document.querySelector'), 'typing should not rerender the entire transplant calculator');
