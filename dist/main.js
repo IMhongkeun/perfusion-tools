@@ -8576,9 +8576,9 @@ function isTimeFeedbackReady(context) {
 function resolveTimeFeedbackContext() {
   const isTransplantMode = timeLiveMode === 'transplant';
   const readinessTarget = el(isTransplantMode ? 'transplant-summary-preview' : 'time-summary-preview');
-  // The transplant calculator replaces its innerHTML when switching organ types.
-  // Anchor feedback after the stable mode container so an active card survives.
-  const insertAfter = el(isTransplantMode ? 'time-transplant-content' : 'time-case-summary');
+  // Both mode containers can be hidden or rerendered. Keep feedback beside their
+  // shared stable anchor so it remains visible when the user switches workflows.
+  const insertAfter = el('time-feedback-anchor');
   return { insertAfter, readinessTarget, isReady: isTimeFeedbackReady };
 }
 
