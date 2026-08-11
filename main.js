@@ -3842,18 +3842,25 @@ function getSummaryDurationMinutes(rowId, startMin, endMin, startValue, endValue
   return diff;
 }
 
-function getCompletedTimeRowSummary(row, index) {
+function getTimeRowSummary(row) {
   const labelInput = document.getElementById(`time-label-${row.id}`);
   const startInput = document.getElementById(`time-start-${row.id}`);
   const endInput = document.getElementById(`time-end-${row.id}`);
   const state = timeLiveTimers[row.id];
-  if (!startInput || !endInput || state?.running) return null;
+
+  const enteredLabel = (labelInput?.value || '').trim();
+  const defaultLabel = getDefaultTimeLabel(row);
+  const isDefaultOptionalRow = row.id === 'row-custom-default';
+  const label = enteredLabel || defaultLabel || (isDefaultOptionalRow ? 'Optional event' : '');
+  // Added custom rows join the summary as soon as the user gives them a title.
+  // The three initial rows are always listed so the summary doubles as a case worksheet.
+  if (!label) return null;
+  if (!startInput || !endInput || state?.running) return `${label}: —`;
 
   const startMin = parseTimeToMinutes(startInput.value);
   const endMin = parseTimeToMinutes(endInput.value);
-  if (startMin == null || endMin == null) return null;
+  if (startMin == null || endMin == null) return `${label}: —`;
 
-  const label = (labelInput?.value || '').trim() || `Event ${index + 1}`;
   const startDisplay = formatMinutesToHHMM(startMin);
   const endDisplay = formatMinutesToHHMM(endMin);
   const durationMinutes = getSummaryDurationMinutes(row.id, startMin, endMin, startDisplay, endDisplay);
@@ -3862,8 +3869,8 @@ function getCompletedTimeRowSummary(row, index) {
 
 function buildTimeCaseSummaryText() {
   const lines = ['Perfusion time summary'];
-  getOrderedTimeRows().forEach((row, index) => {
-    const rowSummary = getCompletedTimeRowSummary(row, index);
+  getOrderedTimeRows().forEach(row => {
+    const rowSummary = getTimeRowSummary(row);
     if (rowSummary) lines.push(rowSummary);
   });
 

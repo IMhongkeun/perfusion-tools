@@ -62,6 +62,11 @@ function rowSummary({ label, startInput, endInput, state }) {
   return `${label}: ${startDisplay}–${endDisplay} (${formatSummaryDuration(summaryDurationMinutes({ startInput: startDisplay, endInput: endDisplay, state }))})`;
 }
 
+function pendingRowSummary({ label, isDefaultOptionalRow = false }) {
+  const summaryLabel = label.trim() || (isDefaultOptionalRow ? 'Optional event' : '');
+  return summaryLabel ? `${summaryLabel}: —` : null;
+}
+
 function buildDoseLogSummary(doseLog) {
   return `Cardioplegia complete: ${doseLog.length ? doseLog.join(', ') : '—'}`;
 }
@@ -109,6 +114,12 @@ function run() {
   assert(!timecalcHtml.includes('id="time-summary-refresh"'), 'Refresh summary button should no longer exist');
   assert(!timecalcHtml.includes('Refresh summary'), 'Refresh summary label should no longer appear');
   assert(timecalcHtml.includes('Review and copy completed time events. Do not include patient identifiers.'), 'summary privacy helper should exist');
+
+  assert.strictEqual(pendingRowSummary({ label: 'CPB / Pump time' }), 'CPB / Pump time: —', 'default CPB title should be visible before times are complete');
+  assert.strictEqual(pendingRowSummary({ label: 'Aortic cross-clamp' }), 'Aortic cross-clamp: —', 'default cross-clamp title should be visible before times are complete');
+  assert.strictEqual(pendingRowSummary({ label: '', isDefaultOptionalRow: true }), 'Optional event: —', 'default optional event should be visible before times are complete');
+  assert.strictEqual(pendingRowSummary({ label: 'Rewarming' }), 'Rewarming: —', 'a titled added event should immediately join the summary');
+  assert.strictEqual(pendingRowSummary({ label: '' }), null, 'an untitled added event should not add an ambiguous summary line');
 
   const stoppedLiveState = {
     startAtEpoch: Date.UTC(2026, 0, 1, 9, 12, 59),
@@ -170,6 +181,8 @@ function run() {
   assert(invalidCustomLines.includes('Cardioplegia complete: 09:37'), 'doseLog summary should remain when custom interval is invalid');
 
   assert(mainJs.includes('function getSummaryDurationMinutes'), 'summary duration source helper should exist');
+  assert(mainJs.includes("const isDefaultOptionalRow = row.id === 'row-custom-default'"), 'the initial optional row should have a stable summary title');
+  assert(mainJs.includes("if (!startInput || !endInput || state?.running) return `${label}: —`;"), 'incomplete rows should retain their title with a pending result');
   assert(mainJs.includes('Math.floor(Math.max(0, state.endAtEpoch - state.startAtEpoch) / 60000)'), 'stopped live summary should floor epoch duration minutes');
   assert(mainJs.includes('startValue === formatEpochToHHMM(state.startAtEpoch)'), 'stopped live summary should require matching start input');
   assert(mainJs.includes('endValue === formatEpochToHHMM(state.endAtEpoch)'), 'stopped live summary should require matching end input');
