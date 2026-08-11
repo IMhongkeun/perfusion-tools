@@ -4240,21 +4240,26 @@ function handleManualTimeEdit(rowId, inputEl) {
 }
 
 function setTimeLiveMode(nextMode) {
-  timeLiveMode = nextMode === 'live' ? 'live' : 'record';
+  timeLiveMode = ['record', 'live', 'transplant'].includes(nextMode) ? nextMode : 'record';
   const recordBtn = document.getElementById('time-mode-record');
   const liveBtn = document.getElementById('time-mode-live');
+  const transplantBtn = document.getElementById('time-mode-transplant');
   const notice = document.getElementById('time-live-notice');
-  [recordBtn, liveBtn].forEach(btn => {
+  [recordBtn, liveBtn, transplantBtn].forEach(btn => {
     if (!btn) return;
-    btn.classList.remove('bg-accent-600', 'text-white');
+    btn.setAttribute('aria-pressed', 'false');
+    btn.classList.remove('bg-accent-600', 'text-white', 'shadow-sm');
     btn.classList.add('text-slate-600', 'dark:text-slate-200');
   });
-  const activeBtn = timeLiveMode === 'live' ? liveBtn : recordBtn;
+  const activeBtn = timeLiveMode === 'live' ? liveBtn : (timeLiveMode === 'transplant' ? transplantBtn : recordBtn);
   if (activeBtn) {
-    activeBtn.classList.add('bg-accent-600', 'text-white');
+    activeBtn.setAttribute('aria-pressed', 'true');
+    activeBtn.classList.add('bg-accent-600', 'text-white', 'shadow-sm');
     activeBtn.classList.remove('text-slate-600', 'dark:text-slate-200');
   }
   if (notice) notice.classList.toggle('hidden', timeLiveMode !== 'live');
+  document.getElementById('time-standard-content')?.classList.toggle('hidden', timeLiveMode === 'transplant');
+  document.getElementById('time-transplant-content')?.classList.toggle('hidden', timeLiveMode !== 'transplant');
   renderCardioplegiaReminder();
   renderCardioplegiaShortcut();
   getOrderedTimeRows().forEach(row => {
@@ -4751,6 +4756,7 @@ function initTimeCalculator() {
 
   const recordModeBtn = document.getElementById('time-mode-record');
   const liveModeBtn = document.getElementById('time-mode-live');
+  const transplantModeBtn = document.getElementById('time-mode-transplant');
   const newCaseBtn = document.getElementById('time-new-case');
   const addRowBtn = document.getElementById('time-add-row');
   const summaryCopyBtn = document.getElementById('time-summary-copy');
@@ -4759,6 +4765,7 @@ function initTimeCalculator() {
 
   if (recordModeBtn) recordModeBtn.addEventListener('click', () => setTimeLiveMode('record'));
   if (liveModeBtn) liveModeBtn.addEventListener('click', () => setTimeLiveMode('live'));
+  if (transplantModeBtn) transplantModeBtn.addEventListener('click', () => setTimeLiveMode('transplant'));
   if (addRowBtn) addRowBtn.addEventListener('click', addTimeEventRow);
   if (summaryCopyBtn) summaryCopyBtn.addEventListener('click', copyTimeCaseSummary);
   if (newCaseBtn) {
@@ -4779,9 +4786,201 @@ function initTimeCalculator() {
   if (startNewCaseBtn) startNewCaseBtn.addEventListener('click', () => clearTimecalcCaseData({ keepPreferences: true }));
 
   initCardioplegiaReminder();
+  initTransplantCalculator();
   setTimeLiveMode(timeLiveMode);
   initTimeLiveInterval();
   renderTimeCaseSummary();
+}
+
+// Transplant time management uses one value per clinical event so linked intervals
+// (for example ice out as cold end and warm start) can never diverge.
+const transplantState = {
+  activeType: 'lung',
+  lung: {
+    donorAcc: '', pumpStart: '', pumpEnd: '', procedure: 'bilateral', firstSide: 'left', singleSide: 'left',
+    sides: {
+      left: { iceOut: '', anastomosisStart: '', reperfusion: '' },
+      right: { iceOut: '', anastomosisStart: '', reperfusion: '' }
+    }
+  },
+  heart: { donorAcc: '', iceOut: '', anastomosisStart: '', recipientAccRelease: '' }
+};
+
+function parseClockMinutes(value) {
+  if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(value || '')) return null;
+  const [hours, minutes] = value.split(':').map(Number);
+  return (hours * 60) + minutes;
+}
+
+function calculateElapsedMinutes(startTime, endTime) {
+  const startMinutes = parseClockMinutes(startTime);
+  const endMinutes = parseClockMinutes(endTime);
+  if (startMinutes === null || endMinutes === null) return null;
+  // With no date, an earlier end is interpreted as exactly one midnight crossing.
+  return endMinutes >= startMinutes
+    ? endMinutes - startMinutes
+    : (endMinutes + (24 * 60)) - startMinutes;
+}
+
+function formatDuration(minutes) {
+  if (!Number.isInteger(minutes) || minutes < 0 || minutes >= 24 * 60) return '—';
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  return `${hours} hr ${String(minutes % 60).padStart(2, '0')} min`;
+}
+
+function transplantClockIcon() {
+  return '<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
+}
+
+function transplantEventInput(path, label, value, disabled = false) {
+  const invalid = value && parseClockMinutes(value) === null;
+  return `<label class="block min-w-0 text-xs font-medium text-slate-600 dark:text-slate-300">
+    <span class="mb-1.5 block break-words">${label}</span>
+    <span class="flex min-w-0 gap-2">
+      <input type="text" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="HH:mm" value="${value}" data-transplant-path="${path}" aria-invalid="${invalid ? 'true' : 'false'}" ${disabled ? 'disabled' : ''} class="min-w-0 w-full min-h-11 rounded-xl border ${invalid ? 'border-rose-400 ring-1 ring-rose-400' : 'border-slate-200 dark:border-primary-700'} bg-white dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-100 disabled:bg-slate-100 dark:disabled:bg-primary-900 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+      ${disabled ? '' : `<button type="button" data-transplant-now="${path}" class="shrink-0 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-accent-600 text-white hover:bg-accent-700 focus:ring-2 focus:ring-accent-500 focus:ring-offset-2" aria-label="Enter current time for ${label}">${transplantClockIcon()}</button>`}
+    </span>
+    ${invalid ? '<span class="mt-1 block text-[11px] text-rose-600 dark:text-rose-300">Enter a valid 24-hour time (HH:mm).</span>' : ''}
+  </label>`;
+}
+
+function transplantDurationCard(title, startLabel, start, endLabel, end) {
+  const elapsed = calculateElapsedMinutes(start, end);
+  return `<section class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white/80 dark:bg-primary-900 p-3">
+    <h4 class="text-sm font-semibold text-primary-900 dark:text-white">${title}</h4>
+    <div class="mt-3 grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3 sm:items-end">
+      <div class="min-w-0"><span class="block text-[11px] text-slate-500 dark:text-slate-400">Start · ${startLabel}</span><span class="font-mono text-sm font-semibold">${start || '—'}</span></div>
+      <div class="min-w-0"><span class="block text-[11px] text-slate-500 dark:text-slate-400">End · ${endLabel}</span><span class="font-mono text-sm font-semibold">${end || '—'}</span></div>
+      <div class="rounded-lg bg-accent-50 dark:bg-accent-950/30 px-3 py-2 sm:min-w-28"><span class="block text-[11px] font-medium text-accent-700 dark:text-accent-300">Duration</span><output class="font-semibold text-primary-900 dark:text-white">${formatDuration(elapsed)}</output></div>
+    </div>
+  </section>`;
+}
+
+function renderLungSide(side, order) {
+  const lung = transplantState.lung;
+  const values = lung.sides[side];
+  const sideName = side === 'left' ? 'Left' : 'Right';
+  return `<article class="min-w-0 rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-3">
+    <h3 class="text-base font-semibold text-primary-900 dark:text-white">${sideName} Lung <span class="text-xs text-accent-700 dark:text-accent-300">· ${order}</span></h3>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      ${transplantEventInput(`lung.sides.${side}.iceOut`, `${sideName} lung ice out`, values.iceOut)}
+      ${transplantEventInput(`lung.sides.${side}.anastomosisStart`, `${sideName} lung anastomosis start`, values.anastomosisStart)}
+      ${transplantEventInput(`lung.sides.${side}.reperfusion`, `${sideName} lung reperfusion`, values.reperfusion)}
+    </div>
+    ${transplantDurationCard('Cold Ischemic Time', 'Donor ACC', lung.donorAcc, 'Ice out', values.iceOut)}
+    ${transplantDurationCard('Warm Ischemic Time', 'Ice out', values.iceOut, 'Reperfusion', values.reperfusion)}
+    ${transplantDurationCard('Anastomosis Time', 'Anastomosis start', values.anastomosisStart, 'Reperfusion', values.reperfusion)}
+  </article>`;
+}
+
+function renderLungTransplant() {
+  const lung = transplantState.lung;
+  let sides;
+  if (lung.procedure === 'single') sides = [lung.singleSide];
+  else sides = lung.firstSide === 'left' ? ['left', 'right'] : ['right', 'left'];
+  return `<div class="space-y-5">
+    <div class="rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-4">
+      <h3 class="text-base font-semibold text-primary-900 dark:text-white">Lung transplant setup</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-xs font-medium text-slate-600 dark:text-slate-300">Transplant type<select data-transplant-setting="procedure" class="mt-1.5 min-h-11 w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3"><option value="bilateral" ${lung.procedure === 'bilateral' ? 'selected' : ''}>Bilateral</option><option value="single" ${lung.procedure === 'single' ? 'selected' : ''}>Single</option></select></label>
+        ${lung.procedure === 'bilateral' ? `<label class="text-xs font-medium text-slate-600 dark:text-slate-300">First implanted lung<select data-transplant-setting="firstSide" class="mt-1.5 min-h-11 w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3"><option value="left" ${lung.firstSide === 'left' ? 'selected' : ''}>Left first</option><option value="right" ${lung.firstSide === 'right' ? 'selected' : ''}>Right first</option></select></label>` : `<label class="text-xs font-medium text-slate-600 dark:text-slate-300">Implanted side<select data-transplant-setting="singleSide" class="mt-1.5 min-h-11 w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3"><option value="left" ${lung.singleSide === 'left' ? 'selected' : ''}>Left</option><option value="right" ${lung.singleSide === 'right' ? 'selected' : ''}>Right</option></select></label>`}
+        ${transplantEventInput('lung.donorAcc', 'Donor ACC Time', lung.donorAcc)}
+      </div>
+    </div>
+    <div class="grid grid-cols-1 ${lung.procedure === 'bilateral' ? 'lg:grid-cols-2' : ''} gap-4">${sides.map((side, index) => renderLungSide(side, lung.procedure === 'single' ? 'Single' : `${index + 1}${index === 0 ? 'st' : 'nd'}`)).join('')}</div>
+    <section class="rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-3">
+      <h3 class="text-base font-semibold text-primary-900 dark:text-white">Pump Time</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${transplantEventInput('lung.pumpStart', 'Pump start', lung.pumpStart)}${transplantEventInput('lung.pumpEnd', 'Pump end', lung.pumpEnd)}</div>
+      ${transplantDurationCard('Pump Time', 'Pump start', lung.pumpStart, 'Pump end', lung.pumpEnd)}
+    </section>
+  </div>`;
+}
+
+function renderHeartTransplant() {
+  const heart = transplantState.heart;
+  return `<div class="space-y-5">
+    <div class="rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/50 p-4">${transplantEventInput('heart.donorAcc', 'Donor ACC Time', heart.donorAcc)}</div>
+    <div class="rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-4">
+      <h3 class="text-base font-semibold text-primary-900 dark:text-white">Heart transplant events</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        ${transplantEventInput('heart.iceOut', 'Heart ice out', heart.iceOut)}
+        ${transplantEventInput('heart.anastomosisStart', 'Anastomosis start', heart.anastomosisStart)}
+        ${transplantEventInput('heart.recipientAccRelease', 'Recipient ACC release', heart.recipientAccRelease)}
+      </div>
+    </div>
+    <div class="space-y-3">
+      ${transplantDurationCard('Cold Ischemic Time', 'Donor ACC', heart.donorAcc, 'Heart ice out', heart.iceOut)}
+      ${transplantDurationCard('Warm Ischemic Time', 'Heart ice out', heart.iceOut, 'Recipient ACC release', heart.recipientAccRelease)}
+      ${transplantDurationCard('Anastomosis Time', 'Anastomosis start', heart.anastomosisStart, 'Recipient ACC release', heart.recipientAccRelease)}
+    </div>
+  </div>`;
+}
+
+function getTransplantPath(path) {
+  return path.split('.').reduce((value, key) => value?.[key], transplantState) || '';
+}
+
+function setTransplantPath(path, value) {
+  const keys = path.split('.');
+  const finalKey = keys.pop();
+  const target = keys.reduce((object, key) => object[key], transplantState);
+  target[finalKey] = value;
+}
+
+function renderTransplantCalculator() {
+  const root = document.getElementById('transplant-calculator');
+  if (!root) return;
+  root.innerHTML = transplantState.activeType === 'lung' ? renderLungTransplant() : renderHeartTransplant();
+  document.querySelectorAll('.transplant-type-btn').forEach(button => {
+    const active = button.id === `transplant-type-${transplantState.activeType}`;
+    button.setAttribute('aria-selected', String(active));
+    button.classList.toggle('bg-accent-600', active);
+    button.classList.toggle('text-white', active);
+    button.classList.toggle('text-slate-600', !active);
+    button.classList.toggle('dark:text-slate-200', !active);
+  });
+}
+
+function initTransplantCalculator() {
+  const root = document.getElementById('time-transplant-content');
+  if (!root) return;
+  document.getElementById('transplant-type-lung')?.addEventListener('click', () => { transplantState.activeType = 'lung'; renderTransplantCalculator(); });
+  document.getElementById('transplant-type-heart')?.addEventListener('click', () => { transplantState.activeType = 'heart'; renderTransplantCalculator(); });
+  document.getElementById('transplant-reset')?.addEventListener('click', () => {
+    if (!window.confirm(`Clear all ${transplantState.activeType} transplant times?`)) return;
+    if (transplantState.activeType === 'lung') Object.assign(transplantState.lung, { donorAcc: '', pumpStart: '', pumpEnd: '', sides: { left: { iceOut: '', anastomosisStart: '', reperfusion: '' }, right: { iceOut: '', anastomosisStart: '', reperfusion: '' } } });
+    else Object.assign(transplantState.heart, { donorAcc: '', iceOut: '', anastomosisStart: '', recipientAccRelease: '' });
+    renderTransplantCalculator();
+  });
+  root.addEventListener('input', event => {
+    const path = event.target.dataset?.transplantPath;
+    if (!path) return;
+    setTransplantPath(path, event.target.value);
+    renderTransplantCalculator();
+    const next = document.querySelector(`[data-transplant-path="${path}"]`);
+    if (next) { next.focus(); next.setSelectionRange(next.value.length, next.value.length); }
+  });
+  root.addEventListener('change', event => {
+    const setting = event.target.dataset?.transplantSetting;
+    if (!setting) return;
+    transplantState.lung[setting] = event.target.value;
+    renderTransplantCalculator();
+  });
+  root.addEventListener('click', event => {
+    const button = event.target.closest('[data-transplant-now]');
+    if (!button) return;
+    const now = new Date();
+    const localTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    setTransplantPath(button.dataset.transplantNow, localTime);
+    renderTransplantCalculator();
+  });
+  renderTransplantCalculator();
+}
+
+if (typeof window !== 'undefined') {
+  window.calculateElapsedMinutes = calculateElapsedMinutes;
+  window.formatDuration = formatDuration;
 }
 
 // -----------------------------
