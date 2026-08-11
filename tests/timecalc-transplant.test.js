@@ -87,6 +87,13 @@ vm.runInNewContext(`${transplantSource}
   this.heartTimeHasCaseData = hasTransplantCaseData(transplantState);
   transplantState.heart = createDefaultTransplantState().heart;
   this.clearedHeartTabHasCaseData = hasTransplantCaseData(transplantState);
+  transplantState = createDefaultTransplantState();
+  transplantState.lung.procedure = 'single';
+  transplantState.lung.singleSide = 'right';
+  this.singleRightSetupHasCaseData = hasTransplantCaseData(transplantState);
+  transplantState = createDefaultTransplantState();
+  transplantState.lung.firstSide = 'right';
+  this.rightFirstSetupHasCaseData = hasTransplantCaseData(transplantState);
   document.getElementById('transplant-summary-status').textContent = 'Summary copied.';
   updateTransplantDerivedDisplays();
   this.statusAfterSummaryEdit = document.getElementById('transplant-summary-status').textContent;`, summaryContext);
@@ -113,6 +120,8 @@ assert.strictEqual(summaryContext.singleRightHasInvalidClock, true, 'invalid Rig
 assert.strictEqual(summaryContext.emptyHeartTabHasCaseData, false, 'visiting the empty Heart tab must not create case data');
 assert.strictEqual(summaryContext.heartTimeHasCaseData, true, 'an entered Heart time must count as case data');
 assert.strictEqual(summaryContext.clearedHeartTabHasCaseData, false, 'an empty selected Heart calculator must not keep a case alive');
+assert.strictEqual(summaryContext.singleRightSetupHasCaseData, true, 'Single/Right setup must persist before the first clock entry');
+assert.strictEqual(summaryContext.rightFirstSetupHasCaseData, true, 'bilateral implant order must persist before the first clock entry');
 assert.strictEqual(summaryContext.statusAfterSummaryEdit, '', 'editing summary source data must clear stale copied status');
 
 assert(timecalcHtml.includes('id="time-mode-transplant"'), 'Transplant must be the third top-level mode');

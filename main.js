@@ -4864,6 +4864,10 @@ function getTransplantStateSnapshot() {
 function hasTransplantCaseData(state) {
   if (!state || typeof state !== 'object') return false;
   const normalized = normalizeStoredTransplantState(state);
+  const defaults = createDefaultTransplantState();
+  const hasLungSetup = normalized.lung.procedure !== defaults.lung.procedure ||
+    normalized.lung.firstSide !== defaults.lung.firstSide ||
+    normalized.lung.singleSide !== defaults.lung.singleSide;
   const lungClocks = [
     normalized.lung.donorAcc,
     normalized.lung.pumpStart,
@@ -4878,7 +4882,9 @@ function hasTransplantCaseData(state) {
     normalized.heart.pumpStart,
     normalized.heart.pumpEnd
   ];
-  return [...lungClocks, ...heartClocks].some(Boolean);
+  // activeType is only a view preference, but lung procedure and side choices
+  // are case-specific setup that must survive refresh before times are entered.
+  return hasLungSetup || [...lungClocks, ...heartClocks].some(Boolean);
 }
 
 let transplantState = createDefaultTransplantState();
