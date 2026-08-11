@@ -12,10 +12,10 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Perfusion Time Calculator for CPB Workflows | Perfusion Tools" />
-  <meta property="og:description" content="Calculate elapsed perfusion case intervals with quick start/end time entry and HH:MM summaries." />
+  <meta property="og:description" content="Calculate elapsed perfusion case intervals with quick start/end time entry and HH:mm summaries." />
   <meta property="og:url" content="https://perfusiontools.com/timecalc/" />
   <meta name="twitter:title" content="Perfusion Time Calculator for CPB Workflows | Perfusion Tools" />
-  <meta name="twitter:description" content="Calculate elapsed perfusion case intervals with quick start/end time entry and HH:MM summaries." />
+  <meta name="twitter:description" content="Calculate elapsed perfusion case intervals with quick start/end time entry and HH:mm summaries." />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -299,13 +299,13 @@
       '/': {
         title: 'Perfusion Time Calculator for CPB Workflows | Perfusion Tools',
         h1: 'Perfusion Time Calculator for CPB Workflows',
-        description: 'Perfusion time calculator for CPB workflows. Enter start and end times to calculate elapsed minutes and HH:MM durations across multiple case intervals.',
+        description: 'Perfusion time calculator for CPB workflows. Enter start and end times to calculate elapsed minutes and HH:mm durations across multiple case intervals.',
         canonicalPath: '/timecalc/'
       },
       '/timecalc': {
         title: 'Perfusion Time Calculator for CPB Workflows | Perfusion Tools',
         h1: 'Perfusion Time Calculator for CPB Workflows',
-        description: 'Perfusion time calculator for CPB workflows. Enter start and end times to calculate elapsed minutes and HH:MM durations across multiple case intervals.',
+        description: 'Perfusion time calculator for CPB workflows. Enter start and end times to calculate elapsed minutes and HH:mm durations across multiple case intervals.',
         headingDescription: 'Track case intervals with quick start/end time inputs and automatic elapsed-minute calculations.',
         canonicalPath: '/timecalc/'
       }
@@ -399,22 +399,25 @@
       <section id="view-timecalc" class="hidden animate-in fade-in duration-300">
         <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 p-6">
           <h2 class="text-xl font-semibold tracking-tight mb-2">Time Calculator</h2>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Enter 24-hour start/end times to see elapsed minutes and an H:MM readout.</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Enter 24-hour start/end times to see elapsed minutes and an HH:mm readout.</p>
           <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Tap the clock icon to insert the current time.</p>
 
           <div class="mb-4 rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
               <div class="space-y-1">
                 <div class="text-sm font-semibold text-primary-900 dark:text-white">Timer mode</div>
-                <p class="text-[11px] text-slate-500 dark:text-slate-400">Record mode keeps manual entry. Live mode adds per-row Start, Stop, Reset tracking.</p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">Record mode keeps manual entry. Live mode adds per-row Start, Stop, Reset tracking. Transplant provides organ-specific ischemic time workflows.</p>
               </div>
               <div class="inline-flex w-fit rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 p-1 text-xs font-semibold" role="group" aria-label="Time calculator mode">
-                <button id="time-mode-record" type="button" class="time-mode-btn rounded-lg px-3 py-1.5 bg-accent-600 text-white">Record</button>
-                <button id="time-mode-live" type="button" class="time-mode-btn rounded-lg px-3 py-1.5 text-slate-600 dark:text-slate-200">Live</button>
+                <button id="time-mode-record" type="button" aria-pressed="true" class="time-mode-btn rounded-lg px-3 py-1.5 bg-accent-600 text-white">Record</button>
+                <button id="time-mode-live" type="button" aria-pressed="false" class="time-mode-btn rounded-lg px-3 py-1.5 text-slate-600 dark:text-slate-200">Live</button>
+                <button id="time-mode-transplant" type="button" aria-pressed="false" class="time-mode-btn rounded-lg px-3 py-1.5 text-slate-600 dark:text-slate-200">Transplant</button>
               </div>
             </div>
             <div id="time-case-actions" class="flex justify-start sm:justify-end">
-              <button id="time-new-case" type="button" class="rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 px-3 py-2 text-xs font-semibold text-rose-700 dark:text-rose-300">New case / Clear all</button>
+              <button id="time-new-case" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 text-slate-400 dark:text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-primary-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500" aria-label="New case / Clear all" title="New case / Clear all">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v6h6M20 20v-6h-6M5.5 15a7 7 0 0011.8 2.3L20 14M4 10l2.7-3.3A7 7 0 0118.5 9" /></svg>
+              </button>
             </div>
             <div id="time-case-prompt" class="hidden rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30 px-3 py-3 space-y-3">
               <p id="time-case-prompt-message" class="text-[11px] leading-snug text-amber-800 dark:text-amber-200">Previous case data found. Continue previous timers or start a new case?</p>
@@ -426,34 +429,31 @@
             <p id="time-live-notice" class="hidden border-t border-slate-200/80 dark:border-primary-800 pt-3 text-[11px] leading-snug text-slate-500 dark:text-slate-400">Live mode is a workflow timer for documentation support. Verify all times against the heart-lung machine, anesthesia record, and institutional charting workflow. Do not enter patient identifiers. Live timer data is stored only in this browser; use New case / Clear all to remove stored case data.</p>
           </div>
 
+          <div id="time-standard-content">
           <div class="space-y-4" id="time-rows" aria-live="polite"></div>
           <div class="mt-3 flex flex-wrap items-center gap-2">
             <button id="time-add-row" type="button" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed">+ Add event</button>
             <span id="time-add-row-status" class="text-[11px] font-semibold text-slate-500 dark:text-slate-400" aria-live="polite"></span>
           </div>
 
-          <div id="cardioplegia-reminder" class="hidden mt-5 rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-3">
+          <div id="cardioplegia-reminder-home"><div id="cardioplegia-reminder" class="hidden rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-3">
             <div class="flex flex-col gap-1">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Cardioplegia reminder</h3>
                 <span id="cardioplegia-status" class="rounded-full bg-slate-100 dark:bg-primary-800 px-2 py-1 text-[11px] font-semibold text-slate-600 dark:text-slate-300">Not started</span>
               </div>
               <p class="text-[11px] leading-snug text-slate-500 dark:text-slate-400">Optional reminder from dose completion. Verify against pump timer, charting record, and local myocardial protection protocol.</p>
-              <p class="text-[11px] leading-snug text-slate-500 dark:text-slate-400">Starts from dose completion. Use as an optional workflow reminder; verify against pump timer and institutional practice.</p>
             </div>
 
             <div class="space-y-2">
               <div class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Quick presets</div>
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" role="group" aria-label="Cardioplegia interval quick presets">
-                <button type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200" data-preset="del-nido-60" data-minutes="60">Del Nido 60 min</button>
-                <button type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200" data-preset="del-nido-75" data-minutes="75">Del Nido 75 min</button>
-                <button type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200" data-preset="del-nido-90" data-minutes="90">Del Nido 90 min</button>
-                <button type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200" data-preset="blood-15" data-minutes="15">Blood 15 min</button>
-                <button type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200" data-preset="blood-20" data-minutes="20">Blood 20 min</button>
-                <button type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200" data-preset="blood-30" data-minutes="30">Blood 30 min</button>
-                <button id="cardioplegia-custom-preset" type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200 sm:col-span-2" data-preset="custom">Custom interval</button>
+                <button type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200" data-preset="interval-30" data-minutes="30">30 min</button>
+                <button type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200" data-preset="interval-60" data-minutes="60">60 min</button>
+                <button type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200" data-preset="interval-90" data-minutes="90">90 min</button>
+                <button id="cardioplegia-custom-preset" type="button" class="cardioplegia-preset rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200" data-preset="custom">Custom</button>
               </div>
-              <div class="flex flex-col sm:flex-row sm:items-end gap-2">
+              <div id="cardioplegia-custom-fields" class="hidden flex-col sm:flex-row sm:items-end gap-2">
                 <label class="flex flex-col gap-1 text-[11px] text-slate-500 dark:text-slate-400 sm:w-44">
                   Custom interval (min)
                   <input id="cardioplegia-custom-interval" type="number" min="1" max="180" step="1" inputmode="numeric" placeholder="1–180" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-100 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
@@ -479,10 +479,10 @@
               <div class="mb-1 text-[11px] font-semibold text-slate-500 dark:text-slate-400">Dose log</div>
               <div id="cardioplegia-log" class="rounded-xl border border-slate-200 dark:border-primary-800 bg-white/80 dark:bg-primary-900 px-3 py-2 text-xs text-slate-600 dark:text-slate-300">No completed doses yet.</div>
             </div>
-          </div>
+          </div></div>
 
-          <div id="time-case-summary" class="mt-5 rounded-2xl border border-slate-200 dark:border-primary-800 bg-white/80 dark:bg-primary-900/50 p-4 space-y-3">
-            <div class="flex flex-col gap-1">
+          <div id="time-case-summary" class="relative mt-5 rounded-2xl border border-slate-200 dark:border-primary-800 bg-white/80 dark:bg-primary-900/50 p-4 space-y-3">
+            <div class="flex flex-col gap-1 pr-12">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Case summary</h3>
                 <span id="time-summary-status" class="text-[11px] font-semibold text-slate-500 dark:text-slate-400" aria-live="polite"></span>
@@ -490,38 +490,37 @@
               <p class="text-[11px] leading-snug text-slate-500 dark:text-slate-400">Review and copy completed time events. Do not include patient identifiers.</p>
               <p class="text-[11px] leading-snug text-slate-500 dark:text-slate-400">Copy the summary before starting a new case if needed.</p>
             </div>
+            <button id="time-summary-copy" type="button" class="absolute right-2 top-2 inline-flex h-10 w-10 items-center justify-center rounded-lg border-0 bg-transparent text-slate-400 shadow-none hover:bg-slate-100 hover:text-slate-600 dark:text-slate-500 dark:hover:bg-primary-800 dark:hover:text-slate-200 focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 dark:focus:ring-offset-primary-900" aria-label="Copy case summary" title="Copy summary">
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7.5V6A2.5 2.5 0 0110.5 3.5H18A2.5 2.5 0 0120.5 6v7.5A2.5 2.5 0 0118 16h-1.5M6 8h7.5A2.5 2.5 0 0116 10.5V18a2.5 2.5 0 01-2.5 2.5H6A2.5 2.5 0 013.5 18v-7.5A2.5 2.5 0 016 8z" /></svg>
+            </button>
             <textarea id="time-summary-preview" readonly rows="6" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 font-mono text-xs leading-relaxed text-slate-700 dark:text-slate-100 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" aria-label="Case summary preview"></textarea>
-            <div class="flex flex-wrap gap-2">
-              <button id="time-summary-copy" type="button" class="rounded-xl bg-accent-600 px-4 py-2 text-sm font-semibold text-white hover:bg-accent-700">Copy summary</button>
-            </div>
           </div>
 
-          <div id="cardioplegia-shortcut" class="hidden fixed inset-x-3 bottom-3 z-40 rounded-2xl border border-accent-200 dark:border-accent-800 bg-white/95 dark:bg-primary-900/95 shadow-card p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:left-auto md:right-6 md:max-w-md" role="status" aria-live="polite">
-            <div class="flex items-start justify-between gap-2">
-              <div class="min-w-0">
-                <div id="cardioplegia-shortcut-title" class="text-xs font-semibold text-primary-900 dark:text-white">X-clamp running · Cardioplegia reminder</div>
-                <div class="text-[11px] leading-snug text-slate-500 dark:text-slate-400">Optional reminder. Verify against pump timer and charting record.</div>
-                <div id="cardioplegia-shortcut-confirmation" class="mt-1 hidden text-[11px] font-semibold text-accent-700 dark:text-accent-300"></div>
-              </div>
-              <button id="cardioplegia-shortcut-dismiss" type="button" class="rounded-lg px-2 py-1 text-xs font-semibold text-slate-500 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-primary-800" aria-label="Dismiss cardioplegia shortcut">×</button>
-            </div>
-            <div class="mt-2 flex flex-wrap gap-2">
-              <button id="cardioplegia-shortcut-complete" type="button" class="rounded-xl bg-accent-600 px-3 py-2 text-xs font-semibold text-white hover:bg-accent-700 disabled:opacity-50 disabled:cursor-not-allowed">Cardioplegia complete</button>
-              <button id="cardioplegia-shortcut-view" type="button" class="rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200">View reminder</button>
-            </div>
           </div>
+
+          <div id="time-transplant-content" class="hidden space-y-5" aria-live="polite">
+            <p id="time-transplant-storage-notice" class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50 px-3 py-3 text-[11px] leading-snug text-slate-500 dark:text-slate-400">Transplant case times are stored locally in this browser so they can be restored after refresh. Do not enter patient identifiers.</p>
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+              <div class="inline-flex w-fit rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 p-1 text-xs font-semibold" role="tablist" aria-label="Transplant calculator type">
+                <button id="transplant-type-lung" type="button" role="tab" aria-selected="true" class="transplant-type-btn rounded-lg px-4 py-2 bg-accent-600 text-white">Lung transplant</button>
+                <button id="transplant-type-heart" type="button" role="tab" aria-selected="false" class="transplant-type-btn rounded-lg px-4 py-2 text-slate-600 dark:text-slate-200">Heart transplant</button>
+              </div>
+            </div>
+            <div id="transplant-calculator"></div>
+          </div>
+          <div id="time-feedback-anchor" aria-hidden="true"></div>
 
           <section class="calculator-lower-section">
             <h2 class="calculator-lower-title">Time calculation notes</h2>
             <div class="calculator-lower-panel">
               <div class="space-y-1">
                 <p class="font-semibold mb-1">1. Purpose</p>
-                <p>This time calculator is designed to quickly estimate elapsed time in minutes and H:MM format between two clock times. It is intended for tasks such as documenting CPB time, cross-clamp time, cardioplegia intervals, ECMO procedure time blocks, or other peri-operative events where only start and end times are known.</p>
+                <p>This time calculator is designed to quickly estimate elapsed time in minutes and HH:mm format between two clock times. It is intended for tasks such as documenting CPB time, cross-clamp time, cardioplegia intervals, ECMO procedure time blocks, or other peri-operative events where only start and end times are known.</p>
               </div>
 
               <div class="space-y-1">
                 <p class="font-semibold mb-1">2. Input format</p>
-                <p>Times are entered in 24-hour format as HH:MM.</p>
+                <p>Times are entered in 24-hour format as HH:mm.</p>
                 <p>Valid range: 00:00–23:59.</p>
                 <p>Examples: 07:15, 13:40, 21:05.</p>
                 <p>The fields accept four digits; after four digits are typed (e.g., 1345), the value is auto-formatted to 13:45.</p>
@@ -540,7 +539,7 @@
                 <p>The result is reported as:</p>
                 <ul class="list-disc pl-4 space-y-1">
                   <li>Minutes (integer), and</li>
-                  <li>H:MM format, obtained by: <span class="font-mono text-[11px]">hours = floor(durationMinutes ÷ 60)</span> and <span class="font-mono text-[11px]">minutes = durationMinutes mod 60</span>, displayed as H:MM with a leading zero for minutes (e.g., 3:05).</li>
+                  <li>HH:mm format, obtained by: <span class="font-mono text-[11px]">hours = floor(durationMinutes ÷ 60)</span> and <span class="font-mono text-[11px]">minutes = durationMinutes mod 60</span>, with leading zeros for both values (e.g., 03:05).</li>
                 </ul>
               </div>
 

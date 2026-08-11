@@ -63,7 +63,8 @@ function run() {
   assert(!timecalcHtml.includes('id="time-label-4"'), 'fixed five-row markup should not be present');
   assert(timecalcHtml.includes('id="time-case-actions"'), 'New case / Clear all should live in a separate action row');
   assert(timecalcHtml.includes('border-t border-slate-200/80'), 'privacy/local storage notice should be visually separated with a subtle divider');
-  assert(timecalcHtml.includes('New case / Clear all'), 'clear-all button label should be visible');
+  assert(timecalcHtml.includes('aria-label="New case / Clear all"'), 'the single clear-all icon button should have an accessible label');
+  assert(!timecalcHtml.includes('id="transplant-reset"'), 'Transplant should not render a duplicate calculator clear button');
   assert(timecalcHtml.includes('id="time-case-prompt"'), 'previous case prompt should exist');
   assert(timecalcHtml.includes('Previous case data found. Continue previous timers or start a new case?'), 'previous case prompt copy should be present');
   assert(timecalcHtml.includes('id="time-case-continue"'), 'Continue action should exist');
@@ -119,7 +120,7 @@ function run() {
   assert(packageJson.includes('tests/timecalc-case-lifecycle.test.js'), 'test script should include case lifecycle regression test');
   const homeHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
   assert(timecalcHtml.includes('Do not enter patient identifiers. Live timer data is stored only in this browser'), 'timecalc Live mode notice should warn against patient identifiers and explain local browser storage');
-  assert(homeHtml.includes('Most calculator inputs are not saved. Timecalc Live mode stores timer state locally in this browser'), 'privacy copy should explain Timecalc Live mode local persistence exception');
+  assert(homeHtml.includes('Timecalc Live timer/case data and Transplant case times are stored locally in this browser'), 'privacy copy should explain Live and Transplant local persistence');
   assert(homeHtml.includes('Use New case / Clear all to remove stored case data.'), 'privacy copy should explain clear path');
 
   console.log('All timecalc case lifecycle tests passed.');

@@ -31,7 +31,7 @@ function formatSummaryDuration(totalMinutes) {
   const safeMinutes = Math.max(0, totalMinutes || 0);
   const hours = Math.floor(safeMinutes / 60);
   const minutes = safeMinutes % 60;
-  return `${safeMinutes} min / ${hours}:${minutes.toString().padStart(2, '0')}`;
+  return `${safeMinutes} min / ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 }
 
 function summaryDurationMinutes({ startInput, endInput, state }) {
@@ -62,6 +62,11 @@ function rowSummary({ label, startInput, endInput, state }) {
   return `${label}: ${startDisplay}–${endDisplay} (${formatSummaryDuration(summaryDurationMinutes({ startInput: startDisplay, endInput: endDisplay, state }))})`;
 }
 
+function pendingRowSummary({ label, isDefaultOptionalRow = false }) {
+  const summaryLabel = label.trim() || (isDefaultOptionalRow ? 'Optional event' : '');
+  return summaryLabel ? `${summaryLabel}: —` : null;
+}
+
 function buildDoseLogSummary(doseLog) {
   return `Cardioplegia complete: ${doseLog.length ? doseLog.join(', ') : '—'}`;
 }
@@ -80,11 +85,14 @@ function getCardioplegiaSummaryIntervalMinutes(state) {
   return validateCardioplegiaInterval(state.intervalMinutes);
 }
 
-function buildCardioplegiaSummaryLines(state) {
-  const doseText = state.doseLog.length ? state.doseLog.join(', ') : '—';
-  const lines = [`Cardioplegia complete: ${doseText}`];
-  const intervalMinutes = getCardioplegiaSummaryIntervalMinutes(state);
-  if (intervalMinutes) lines.push(`Cardioplegia interval setting: ${intervalMinutes} min`);
+function buildCardioplegiaSummaryLines(state, mode = 'live') {
+  const lines = [];
+  if (mode === 'live') {
+    const doseText = state.doseLog.length ? state.doseLog.join(', ') : '—';
+    lines.push(`Cardioplegia complete: ${doseText}`);
+    const intervalMinutes = getCardioplegiaSummaryIntervalMinutes(state);
+    if (intervalMinutes) lines.push(`Cardioplegia interval setting: ${intervalMinutes} min`);
+  }
   return lines;
 }
 
@@ -100,9 +108,22 @@ function run() {
 
   assert(timecalcHtml.includes('id="time-case-summary"'), 'Case summary card should exist');
   assert(timecalcHtml.includes('id="time-summary-copy"'), 'Copy summary button should exist');
+  assert(timecalcHtml.includes('aria-label="Copy case summary"'), 'Copy summary should remain accessible when rendered as an icon');
+  assert(timecalcHtml.includes('id="time-summary-copy" type="button" class="absolute right-2 top-2 inline-flex h-10 w-10'), 'Copy summary icon should be positioned inside the card corner with a usable touch target');
+  assert(timecalcHtml.includes('rounded-lg border-0 bg-transparent text-slate-400 shadow-none'), 'Copy summary icon should not render a visible button box');
+  assert(!timecalcHtml.includes('>Copy summary</button>'), 'Copy summary action should not render as a text button');
   assert(!timecalcHtml.includes('id="time-summary-refresh"'), 'Refresh summary button should no longer exist');
   assert(!timecalcHtml.includes('Refresh summary'), 'Refresh summary label should no longer appear');
   assert(timecalcHtml.includes('Review and copy completed time events. Do not include patient identifiers.'), 'summary privacy helper should exist');
+  assert(mainJs.includes('placeholder="HH:mm"'), 'Record and Live clock placeholders should match Transplant HH:mm casing');
+  assert(!mainJs.includes('placeholder="hh:mm"'), 'lowercase clock placeholders should not remain');
+  assert(timecalcHtml.includes('elapsed minutes and an HH:mm readout'), 'Time Calculator instructions should use the shared HH:mm notation');
+
+  assert.strictEqual(pendingRowSummary({ label: 'CPB / Pump time' }), 'CPB / Pump time: —', 'default CPB title should be visible before times are complete');
+  assert.strictEqual(pendingRowSummary({ label: 'Aortic cross-clamp' }), 'Aortic cross-clamp: —', 'default cross-clamp title should be visible before times are complete');
+  assert.strictEqual(pendingRowSummary({ label: '', isDefaultOptionalRow: true }), 'Optional event: —', 'default optional event should be visible before times are complete');
+  assert.strictEqual(pendingRowSummary({ label: 'Rewarming' }), 'Rewarming: —', 'a titled added event should immediately join the summary');
+  assert.strictEqual(pendingRowSummary({ label: '' }), null, 'an untitled added event should not add an ambiguous summary line');
 
   const stoppedLiveState = {
     startAtEpoch: Date.UTC(2026, 0, 1, 9, 12, 59),
@@ -110,14 +131,14 @@ function run() {
     running: false
   };
   const stoppedLiveSummary = rowSummary({ label: 'CPB / Pump time', startInput: '09:12', endInput: '12:04', state: stoppedLiveState });
-  assert.strictEqual(stoppedLiveSummary, 'CPB / Pump time: 09:12–12:04 (171 min / 2:51)', 'stopped live row summary should use floored epoch duration');
-  assert(!stoppedLiveSummary.includes('172 min / 2:52'), 'stopped live row summary should not recalculate from HH:MM inputs');
+  assert.strictEqual(stoppedLiveSummary, 'CPB / Pump time: 09:12–12:04 (171 min / 02:51)', 'stopped live row summary should use floored epoch duration');
+  assert(!stoppedLiveSummary.includes('172 min / 02:52'), 'stopped live row summary should not recalculate from HH:mm inputs');
 
   const manualSummary = rowSummary({ label: 'CPB / Pump time', startInput: '09:12', endInput: '12:04', state: null });
-  assert.strictEqual(manualSummary, 'CPB / Pump time: 09:12–12:04 (172 min / 2:52)', 'manual row summary should continue using HH:MM duration');
+  assert.strictEqual(manualSummary, 'CPB / Pump time: 09:12–12:04 (172 min / 02:52)', 'manual row summary should use the shared HH:mm duration format');
 
   const overriddenSummary = rowSummary({ label: 'CPB / Pump time', startInput: '09:13', endInput: '12:04', state: stoppedLiveState });
-  assert.strictEqual(overriddenSummary, 'CPB / Pump time: 09:13–12:04 (171 min / 2:51)', 'manual override should fall back to HH:MM calculation when inputs no longer match epoch display');
+  assert.strictEqual(overriddenSummary, 'CPB / Pump time: 09:13–12:04 (171 min / 02:51)', 'manual override should fall back to HH:mm calculation when inputs no longer match epoch display');
 
   const midnightState = {
     startAtEpoch: Date.UTC(2026, 0, 1, 23, 45, 30),
@@ -125,7 +146,7 @@ function run() {
     running: false
   };
   const midnightSummary = rowSummary({ label: 'Event 3', startInput: '23:45', endInput: '00:15', state: midnightState });
-  assert.strictEqual(midnightSummary, 'Event 3: 23:45–00:15 (29 min / 0:29)', 'cross-midnight stopped live summary should use floored epoch duration');
+  assert.strictEqual(midnightSummary, 'Event 3: 23:45–00:15 (29 min / 00:29)', 'cross-midnight stopped live summary should use floored epoch duration');
   assert(!midnightSummary.includes('24:15'), 'cross-midnight summary should not display 24+ hour values');
 
   let status = renderSummaryStatus('', 'Summary copied');
@@ -154,6 +175,8 @@ function run() {
   assert.strictEqual(renderSummaryStatus('Summary copied'), '', 'Undo refresh should clear copied status');
 
   assert(buildCardioplegiaSummaryLines({ selectedPreset: 'blood-20', intervalMinutes: 20, customIntervalMinutes: '', doseLog: [] }).includes('Cardioplegia interval setting: 20 min'), 'valid preset should be included in summary interval');
+  assert(!buildCardioplegiaSummaryLines({ selectedPreset: 'blood-20', intervalMinutes: 20, customIntervalMinutes: '', doseLog: [] }, 'record').includes('Cardioplegia interval setting'), 'Record summary should not include the Live-only cardioplegia interval setting');
+  assert(!buildCardioplegiaSummaryLines({ selectedPreset: 'blood-20', intervalMinutes: 20, customIntervalMinutes: '', doseLog: [] }, 'record').some(line => line.startsWith('Cardioplegia complete:')), 'Record summary should not include the Live-only cardioplegia completion line');
   assert(buildCardioplegiaSummaryLines({ selectedPreset: 'custom', intervalMinutes: 20, customIntervalMinutes: '75', doseLog: [] }).includes('Cardioplegia interval setting: 75 min'), 'valid custom interval should be included in summary interval');
   const emptyCustomLines = buildCardioplegiaSummaryLines({ selectedPreset: 'custom', intervalMinutes: 20, customIntervalMinutes: '', doseLog: ['09:37'] });
   assert(!emptyCustomLines.includes('Cardioplegia interval setting: 20 min'), 'empty custom interval should not show stale preset interval');
@@ -163,6 +186,8 @@ function run() {
   assert(invalidCustomLines.includes('Cardioplegia complete: 09:37'), 'doseLog summary should remain when custom interval is invalid');
 
   assert(mainJs.includes('function getSummaryDurationMinutes'), 'summary duration source helper should exist');
+  assert(mainJs.includes("const isDefaultOptionalRow = row.id === 'row-custom-default'"), 'the initial optional row should have a stable summary title');
+  assert(mainJs.includes("if (!startInput || !endInput || state?.running) return `${label}: —`;"), 'incomplete rows should retain their title with a pending result');
   assert(mainJs.includes('Math.floor(Math.max(0, state.endAtEpoch - state.startAtEpoch) / 60000)'), 'stopped live summary should floor epoch duration minutes');
   assert(mainJs.includes('startValue === formatEpochToHHMM(state.startAtEpoch)'), 'stopped live summary should require matching start input');
   assert(mainJs.includes('endValue === formatEpochToHHMM(state.endAtEpoch)'), 'stopped live summary should require matching end input');
@@ -170,6 +195,9 @@ function run() {
   assert(mainJs.includes('if (status) status.textContent = message'), 'summary render should always update status text');
   assert(!mainJs.includes("getElementById('time-summary-refresh')"), 'Refresh summary button listener should be removed');
   assert(mainJs.includes('function getCardioplegiaSummaryIntervalMinutes'), 'summary interval helper should exist');
+  assert(mainJs.includes("if (timeLiveMode === 'live') {\n    const doseLog = Array.isArray(cardioplegiaReminderState.doseLog)"), 'production summary should include all cardioplegia details only in Live mode');
+  const modeHandlerSource = mainJs.slice(mainJs.indexOf('function setTimeLiveMode'), mainJs.indexOf('function bindTimeRowEvents'));
+  assert(modeHandlerSource.includes('renderTimeCaseSummary();'), 'switching Record and Live modes should immediately refresh mode-specific summary content');
   assert(mainJs.includes("cardioplegiaReminderState.selectedPreset === 'custom'"), 'summary interval should branch on custom preset');
   const undoHandlerSource = mainJs.slice(mainJs.indexOf('if (undoBtn)'), mainJs.indexOf('if (resetBtn)'));
   assert(undoHandlerSource.includes('renderTimeCaseSummary();'), 'Undo last handler should refresh case summary preview');
