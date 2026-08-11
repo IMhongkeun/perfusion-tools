@@ -63,7 +63,8 @@ function run() {
   assert(!timecalcHtml.includes('id="time-label-4"'), 'fixed five-row markup should not be present');
   assert(timecalcHtml.includes('id="time-case-actions"'), 'New case / Clear all should live in a separate action row');
   assert(timecalcHtml.includes('border-t border-slate-200/80'), 'privacy/local storage notice should be visually separated with a subtle divider');
-  assert(timecalcHtml.includes('New case / Clear all'), 'clear-all button label should be visible');
+  assert(timecalcHtml.includes('aria-label="New case / Clear all"'), 'the single clear-all icon button should have an accessible label');
+  assert(!timecalcHtml.includes('id="transplant-reset"'), 'Transplant should not render a duplicate calculator clear button');
   assert(timecalcHtml.includes('id="time-case-prompt"'), 'previous case prompt should exist');
   assert(timecalcHtml.includes('Previous case data found. Continue previous timers or start a new case?'), 'previous case prompt copy should be present');
   assert(timecalcHtml.includes('id="time-case-continue"'), 'Continue action should exist');

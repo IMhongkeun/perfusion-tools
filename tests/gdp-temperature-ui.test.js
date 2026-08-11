@@ -34,6 +34,12 @@ assert(
 );
 
 assert(
+  gdpHtml.indexOf('selected temp</div>') < gdpHtml.indexOf('id="gdp-temp-display"') &&
+  gdpHtml.indexOf('VO₂ fraction</div>') < gdpHtml.indexOf('id="gdp-vo2-fraction"'),
+  'GDP temperature result tiles should place their titles above their values.'
+);
+
+assert(
   mainJs.includes('function calculateGdpVo2Fraction(temperatureC)') &&
   mainJs.includes('return Math.pow(GDP_Q10, (temperatureC - GDP_DEFAULT_TEMPERATURE_C) / 10);'),
   'GDP VO2 temperature correction logic should remain unchanged.'

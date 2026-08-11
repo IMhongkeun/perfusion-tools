@@ -5131,14 +5131,6 @@ function initTransplantCalculator() {
   if (!root) return;
   document.getElementById('transplant-type-lung')?.addEventListener('click', () => { transplantState.activeType = 'lung'; renderTransplantCalculator(); saveTimeLiveState(); });
   document.getElementById('transplant-type-heart')?.addEventListener('click', () => { transplantState.activeType = 'heart'; renderTransplantCalculator(); saveTimeLiveState(); });
-  document.getElementById('transplant-reset')?.addEventListener('click', () => {
-    if (!window.confirm(`Clear all ${transplantState.activeType} transplant times?`)) return;
-    const defaults = createDefaultTransplantState();
-    if (transplantState.activeType === 'lung') transplantState.lung = defaults.lung;
-    else transplantState.heart = defaults.heart;
-    renderTransplantCalculator();
-    saveTimeLiveState();
-  });
   root.addEventListener('input', event => {
     const path = event.target.dataset?.transplantPath;
     if (!path) return;
