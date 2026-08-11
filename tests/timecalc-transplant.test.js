@@ -16,7 +16,7 @@ vm.runInNewContext(`${functionSource}; this.calculateElapsedMinutes = calculateE
 const recordFormatterSource = mainJs.slice(mainJs.indexOf('function formatDuration(mins)'), mainJs.indexOf('function formatMinutesToHHMM'));
 const recordContext = {};
 vm.runInNewContext(`${recordFormatterSource}; this.formatDuration = formatDuration;`, recordContext);
-assert.strictEqual(recordContext.formatDuration(65), '65 min (1:05)', 'Record duration format must not be replaced by the transplant formatter');
+assert.strictEqual(recordContext.formatDuration(65), '65 min (01:05)', 'Record duration should use the shared HH:mm display format');
 
 const modeSource = mainJs.slice(mainJs.indexOf('function normalizeTimeMode'), mainJs.indexOf('function loadTimePreferencesState'));
 const modeContext = {};
@@ -130,6 +130,7 @@ assert(timecalcHtml.indexOf('time-mode-live') < timecalcHtml.indexOf('time-mode-
 assert(timecalcHtml.includes('id="transplant-type-lung"'));
 assert(timecalcHtml.includes('id="transplant-type-heart"'));
 assert(timecalcHtml.includes('Transplant case times are stored locally in this browser so they can be restored after refresh. Do not enter patient identifiers.'), 'Transplant should disclose local case-time persistence');
+assert(timecalcHtml.includes('id="time-transplant-storage-notice" class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50'), 'Transplant storage notice should match the Live notice card styling');
 assert(/sides:\s*{\s*left:/.test(mainJs), 'lung event state should be anatomical-side based');
 assert(mainJs.includes("transplantState.activeType === 'lung' ? renderLungTransplant() : renderHeartTransplant()"));
 assert(mainJs.includes("lung.firstSide === 'left' ? ['left', 'right'] : ['right', 'left']"));

@@ -31,7 +31,7 @@ function formatSummaryDuration(totalMinutes) {
   const safeMinutes = Math.max(0, totalMinutes || 0);
   const hours = Math.floor(safeMinutes / 60);
   const minutes = safeMinutes % 60;
-  return `${safeMinutes} min / ${hours}:${minutes.toString().padStart(2, '0')}`;
+  return `${safeMinutes} min / ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 }
 
 function summaryDurationMinutes({ startInput, endInput, state }) {
@@ -115,6 +115,9 @@ function run() {
   assert(!timecalcHtml.includes('id="time-summary-refresh"'), 'Refresh summary button should no longer exist');
   assert(!timecalcHtml.includes('Refresh summary'), 'Refresh summary label should no longer appear');
   assert(timecalcHtml.includes('Review and copy completed time events. Do not include patient identifiers.'), 'summary privacy helper should exist');
+  assert(mainJs.includes('placeholder="HH:mm"'), 'Record and Live clock placeholders should match Transplant HH:mm casing');
+  assert(!mainJs.includes('placeholder="hh:mm"'), 'lowercase clock placeholders should not remain');
+  assert(timecalcHtml.includes('elapsed minutes and an HH:mm readout'), 'Time Calculator instructions should use the shared HH:mm notation');
 
   assert.strictEqual(pendingRowSummary({ label: 'CPB / Pump time' }), 'CPB / Pump time: —', 'default CPB title should be visible before times are complete');
   assert.strictEqual(pendingRowSummary({ label: 'Aortic cross-clamp' }), 'Aortic cross-clamp: —', 'default cross-clamp title should be visible before times are complete');
@@ -128,14 +131,14 @@ function run() {
     running: false
   };
   const stoppedLiveSummary = rowSummary({ label: 'CPB / Pump time', startInput: '09:12', endInput: '12:04', state: stoppedLiveState });
-  assert.strictEqual(stoppedLiveSummary, 'CPB / Pump time: 09:12–12:04 (171 min / 2:51)', 'stopped live row summary should use floored epoch duration');
-  assert(!stoppedLiveSummary.includes('172 min / 2:52'), 'stopped live row summary should not recalculate from HH:MM inputs');
+  assert.strictEqual(stoppedLiveSummary, 'CPB / Pump time: 09:12–12:04 (171 min / 02:51)', 'stopped live row summary should use floored epoch duration');
+  assert(!stoppedLiveSummary.includes('172 min / 02:52'), 'stopped live row summary should not recalculate from HH:mm inputs');
 
   const manualSummary = rowSummary({ label: 'CPB / Pump time', startInput: '09:12', endInput: '12:04', state: null });
-  assert.strictEqual(manualSummary, 'CPB / Pump time: 09:12–12:04 (172 min / 2:52)', 'manual row summary should continue using HH:MM duration');
+  assert.strictEqual(manualSummary, 'CPB / Pump time: 09:12–12:04 (172 min / 02:52)', 'manual row summary should use the shared HH:mm duration format');
 
   const overriddenSummary = rowSummary({ label: 'CPB / Pump time', startInput: '09:13', endInput: '12:04', state: stoppedLiveState });
-  assert.strictEqual(overriddenSummary, 'CPB / Pump time: 09:13–12:04 (171 min / 2:51)', 'manual override should fall back to HH:MM calculation when inputs no longer match epoch display');
+  assert.strictEqual(overriddenSummary, 'CPB / Pump time: 09:13–12:04 (171 min / 02:51)', 'manual override should fall back to HH:mm calculation when inputs no longer match epoch display');
 
   const midnightState = {
     startAtEpoch: Date.UTC(2026, 0, 1, 23, 45, 30),
@@ -143,7 +146,7 @@ function run() {
     running: false
   };
   const midnightSummary = rowSummary({ label: 'Event 3', startInput: '23:45', endInput: '00:15', state: midnightState });
-  assert.strictEqual(midnightSummary, 'Event 3: 23:45–00:15 (29 min / 0:29)', 'cross-midnight stopped live summary should use floored epoch duration');
+  assert.strictEqual(midnightSummary, 'Event 3: 23:45–00:15 (29 min / 00:29)', 'cross-midnight stopped live summary should use floored epoch duration');
   assert(!midnightSummary.includes('24:15'), 'cross-midnight summary should not display 24+ hour values');
 
   let status = renderSummaryStatus('', 'Summary copied');

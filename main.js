@@ -77,7 +77,7 @@ function formatDuration(mins) {
   const h = Math.floor(mins / 60);
   const m = mins % 60;
   const mm = m.toString().padStart(2, '0');
-  return `${mins} min (${h}:${mm})`;
+  return `${mins} min (${h.toString().padStart(2, '0')}:${mm})`;
 }
 
 function formatMinutesToHHMM(totalMins) {
@@ -3672,7 +3672,7 @@ function buildTimeRowHtml(row, index) {
         <div class="flex flex-col gap-1">
           <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
           <div class="flex items-center gap-2">
-            <input id="time-start-${row.id}" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+            <input id="time-start-${row.id}" type="text" inputmode="numeric" placeholder="HH:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
             <button id="time-start-now-${row.id}" type="button" class="time-start-now p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500" data-row-id="${row.id}">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /></svg>
             </button>
@@ -3681,7 +3681,7 @@ function buildTimeRowHtml(row, index) {
         <div class="flex flex-col gap-1">
           <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
           <div class="flex items-center gap-2">
-            <input id="time-end-${row.id}" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+            <input id="time-end-${row.id}" type="text" inputmode="numeric" placeholder="HH:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
             <button id="time-end-now-${row.id}" type="button" class="time-end-now p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500" data-row-id="${row.id}">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /></svg>
             </button>
@@ -3733,6 +3733,9 @@ function restoreTimeRowDomValues(values = {}) {
 function renderTimeRows(preservedValues = null) {
   const rowsEl = document.getElementById('time-rows');
   if (!rowsEl) return;
+  const reminder = document.getElementById('cardioplegia-reminder');
+  const reminderHome = document.getElementById('cardioplegia-reminder-home');
+  if (reminder && reminderHome) reminderHome.appendChild(reminder);
   rowsEl.innerHTML = timeRows.map(buildTimeRowHtml).join('');
   timeRows.forEach(row => {
     const state = timeLiveTimers[row.id];
@@ -3818,7 +3821,7 @@ function formatSummaryDuration(totalMinutes) {
   const safeMinutes = Math.max(0, totalMinutes || 0);
   const hours = Math.floor(safeMinutes / 60);
   const minutes = safeMinutes % 60;
-  return `${safeMinutes} min / ${hours}:${minutes.toString().padStart(2, '0')}`;
+  return `${safeMinutes} min / ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 }
 
 function getSummaryDurationMinutes(rowId, startMin, endMin, startValue, endValue) {
@@ -4631,6 +4634,10 @@ function renderCardioplegiaReminder() {
   if (!root || !completeBtn || !lastEl || !nextEl || !remainingEl || !logEl) return;
 
   const shouldShow = timeLiveMode === 'live' && cardioplegiaReminderExpanded;
+  const crossClampRow = document.querySelector('[data-time-event-type="x-clamp"]');
+  const reminderHome = document.getElementById('cardioplegia-reminder-home');
+  if (shouldShow && crossClampRow) crossClampRow.after(root);
+  else if (reminderHome && root.parentElement !== reminderHome) reminderHome.appendChild(root);
   root.classList.toggle('hidden', !shouldShow);
   const toggleButton = document.getElementById('cardioplegia-reminder-toggle');
   if (toggleButton) {

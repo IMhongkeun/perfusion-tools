@@ -12,10 +12,10 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Perfusion Time Calculator for CPB Workflows | Perfusion Tools" />
-  <meta property="og:description" content="Calculate elapsed perfusion case intervals with quick start/end time entry and HH:MM summaries." />
+  <meta property="og:description" content="Calculate elapsed perfusion case intervals with quick start/end time entry and HH:mm summaries." />
   <meta property="og:url" content="https://perfusiontools.com/timecalc/" />
   <meta name="twitter:title" content="Perfusion Time Calculator for CPB Workflows | Perfusion Tools" />
-  <meta name="twitter:description" content="Calculate elapsed perfusion case intervals with quick start/end time entry and HH:MM summaries." />
+  <meta name="twitter:description" content="Calculate elapsed perfusion case intervals with quick start/end time entry and HH:mm summaries." />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -299,13 +299,13 @@
       '/': {
         title: 'Perfusion Time Calculator for CPB Workflows | Perfusion Tools',
         h1: 'Perfusion Time Calculator for CPB Workflows',
-        description: 'Perfusion time calculator for CPB workflows. Enter start and end times to calculate elapsed minutes and HH:MM durations across multiple case intervals.',
+        description: 'Perfusion time calculator for CPB workflows. Enter start and end times to calculate elapsed minutes and HH:mm durations across multiple case intervals.',
         canonicalPath: '/timecalc/'
       },
       '/timecalc': {
         title: 'Perfusion Time Calculator for CPB Workflows | Perfusion Tools',
         h1: 'Perfusion Time Calculator for CPB Workflows',
-        description: 'Perfusion time calculator for CPB workflows. Enter start and end times to calculate elapsed minutes and HH:MM durations across multiple case intervals.',
+        description: 'Perfusion time calculator for CPB workflows. Enter start and end times to calculate elapsed minutes and HH:mm durations across multiple case intervals.',
         headingDescription: 'Track case intervals with quick start/end time inputs and automatic elapsed-minute calculations.',
         canonicalPath: '/timecalc/'
       }
@@ -399,7 +399,7 @@
       <section id="view-timecalc" class="hidden animate-in fade-in duration-300">
         <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 p-6">
           <h2 class="text-xl font-semibold tracking-tight mb-2">Time Calculator</h2>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Enter 24-hour start/end times to see elapsed minutes and an H:MM readout.</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Enter 24-hour start/end times to see elapsed minutes and an HH:mm readout.</p>
           <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Tap the clock icon to insert the current time.</p>
 
           <div class="mb-4 rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-4">
@@ -436,7 +436,7 @@
             <span id="time-add-row-status" class="text-[11px] font-semibold text-slate-500 dark:text-slate-400" aria-live="polite"></span>
           </div>
 
-          <div id="cardioplegia-reminder" class="hidden mt-5 rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-3">
+          <div id="cardioplegia-reminder-home"><div id="cardioplegia-reminder" class="hidden rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-3">
             <div class="flex flex-col gap-1">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Cardioplegia reminder</h3>
@@ -479,7 +479,7 @@
               <div class="mb-1 text-[11px] font-semibold text-slate-500 dark:text-slate-400">Dose log</div>
               <div id="cardioplegia-log" class="rounded-xl border border-slate-200 dark:border-primary-800 bg-white/80 dark:bg-primary-900 px-3 py-2 text-xs text-slate-600 dark:text-slate-300">No completed doses yet.</div>
             </div>
-          </div>
+          </div></div>
 
           <div id="time-case-summary" class="relative mt-5 rounded-2xl border border-slate-200 dark:border-primary-800 bg-white/80 dark:bg-primary-900/50 p-4 space-y-3">
             <div class="flex flex-col gap-1 pr-12">
@@ -499,7 +499,7 @@
           </div>
 
           <div id="time-transplant-content" class="hidden space-y-5" aria-live="polite">
-            <p id="time-transplant-storage-notice" class="border-b border-slate-200/80 dark:border-primary-800 pb-3 text-[11px] leading-snug text-slate-500 dark:text-slate-400">Transplant case times are stored locally in this browser so they can be restored after refresh. Do not enter patient identifiers.</p>
+            <p id="time-transplant-storage-notice" class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50 px-3 py-3 text-[11px] leading-snug text-slate-500 dark:text-slate-400">Transplant case times are stored locally in this browser so they can be restored after refresh. Do not enter patient identifiers.</p>
             <div class="flex flex-col sm:flex-row sm:items-center gap-3">
               <div class="inline-flex w-fit rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 p-1 text-xs font-semibold" role="tablist" aria-label="Transplant calculator type">
                 <button id="transplant-type-lung" type="button" role="tab" aria-selected="true" class="transplant-type-btn rounded-lg px-4 py-2 bg-accent-600 text-white">Lung transplant</button>
@@ -514,12 +514,12 @@
             <div class="calculator-lower-panel">
               <div class="space-y-1">
                 <p class="font-semibold mb-1">1. Purpose</p>
-                <p>This time calculator is designed to quickly estimate elapsed time in minutes and H:MM format between two clock times. It is intended for tasks such as documenting CPB time, cross-clamp time, cardioplegia intervals, ECMO procedure time blocks, or other peri-operative events where only start and end times are known.</p>
+                <p>This time calculator is designed to quickly estimate elapsed time in minutes and HH:mm format between two clock times. It is intended for tasks such as documenting CPB time, cross-clamp time, cardioplegia intervals, ECMO procedure time blocks, or other peri-operative events where only start and end times are known.</p>
               </div>
 
               <div class="space-y-1">
                 <p class="font-semibold mb-1">2. Input format</p>
-                <p>Times are entered in 24-hour format as HH:MM.</p>
+                <p>Times are entered in 24-hour format as HH:mm.</p>
                 <p>Valid range: 00:00–23:59.</p>
                 <p>Examples: 07:15, 13:40, 21:05.</p>
                 <p>The fields accept four digits; after four digits are typed (e.g., 1345), the value is auto-formatted to 13:45.</p>
@@ -538,7 +538,7 @@
                 <p>The result is reported as:</p>
                 <ul class="list-disc pl-4 space-y-1">
                   <li>Minutes (integer), and</li>
-                  <li>H:MM format, obtained by: <span class="font-mono text-[11px]">hours = floor(durationMinutes ÷ 60)</span> and <span class="font-mono text-[11px]">minutes = durationMinutes mod 60</span>, displayed as H:MM with a leading zero for minutes (e.g., 3:05).</li>
+                  <li>HH:mm format, obtained by: <span class="font-mono text-[11px]">hours = floor(durationMinutes ÷ 60)</span> and <span class="font-mono text-[11px]">minutes = durationMinutes mod 60</span>, with leading zeros for both values (e.g., 03:05).</li>
                 </ul>
               </div>
 

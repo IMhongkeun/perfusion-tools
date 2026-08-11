@@ -79,6 +79,7 @@ function run() {
   assert(timecalcHtml.includes('data-preset="custom"'), 'custom interval preset should be present');
   assert.strictEqual((timecalcHtml.match(/class="cardioplegia-preset/g) || []).length, 4, 'only 30, 60, 90, and Custom presets should be shown');
   assert(timecalcHtml.includes('id="cardioplegia-custom-fields" class="hidden'), 'custom input should remain collapsed until Custom is selected');
+  assert(mainJs.includes("if (shouldShow && crossClampRow) crossClampRow.after(root)"), 'expanded reminder should render directly between the x-clamp and optional rows');
   assert.strictEqual(validateCardioplegiaInterval('1'), 1, 'custom interval lower bound should be valid');
   assert.strictEqual(validateCardioplegiaInterval('180'), 180, 'custom interval upper bound should be valid');
   assert.strictEqual(validateCardioplegiaInterval('0'), null, 'custom interval below range should be invalid');
