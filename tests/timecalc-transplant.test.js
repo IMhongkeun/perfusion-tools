@@ -65,6 +65,9 @@ assert(mainJs.includes("if (lung.procedure === 'single') return [lung.singleSide
 assert(mainJs.includes("grid-cols-[minmax(0,1fr)_2.5rem]"), 'time input and compact clock button should stay side by side');
 assert(mainJs.includes('class="grid grid-cols-1 gap-4"'), 'bilateral lungs should use full-width stacked cards');
 assert(mainJs.includes('id="transplant-summary-preview"'), 'transplant summary preview should be rendered');
+assert(mainJs.includes('aria-label="Copy transplant case summary"'), 'summary copy action should be an accessible icon button');
+assert(mainJs.includes('absolute right-3 top-3 inline-flex h-10 w-10'), 'summary copy icon should sit in the card corner with a usable touch target');
+assert(!mainJs.includes('>Copy summary</button>'), 'summary copy action should not render as a text button');
 assert(mainJs.includes('function buildTransplantSummary(type)'), 'summary should be generated from shared transplant state');
 assert(mainJs.includes('navigator.clipboard?.writeText'), 'summary should use the Clipboard API');
 assert(mainJs.includes("if (event.target.closest('#transplant-summary-copy')) copyTransplantSummary()"), 'summary copy button should be delegated safely');
