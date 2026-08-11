@@ -145,7 +145,8 @@ assert(mainJs.includes('absolute right-2 top-2 inline-flex h-10 w-10'), 'summary
 assert(mainJs.includes('rounded-lg border-0 bg-transparent text-slate-400 shadow-none'), 'summary copy icon should not render a visible button box');
 assert(!mainJs.includes('>Copy summary</button>'), 'summary copy action should not render as a text button');
 assert(mainJs.includes('function buildTransplantSummary(type)'), 'summary should be generated from shared transplant state');
-assert(mainJs.includes('timeLiveMode = normalizeTimeMode(saved.mode)'), 'validated top-level mode should restore from preferences');
+assert(mainJs.includes("function loadTimePreferencesState() {\n  // Record is the first workflow and is always the initial view on a new visit.\n  timeLiveMode = 'record';"), 'Time Calculator should always open in Record mode');
+assert(!mainJs.includes('timeLiveMode = normalizeTimeMode(saved.mode)'), 'a saved view preference should not override the initial Record mode');
 assert(mainJs.includes('transplant: getTransplantStateSnapshot()'), 'transplant state should use active case persistence');
 assert(mainJs.includes('transplantState = createDefaultTransplantState();'), 'new case should reset transplant state');
 assert(mainJs.includes("const copied = Boolean(document.execCommand && document.execCommand('copy'))"), 'fallback copy must check the returned success value');

@@ -3874,10 +3874,10 @@ function buildTimeCaseSummaryText() {
     if (rowSummary) lines.push(rowSummary);
   });
 
-  const doseLog = Array.isArray(cardioplegiaReminderState.doseLog) ? cardioplegiaReminderState.doseLog : [];
-  const doseText = doseLog.length ? doseLog.map(formatCardioplegiaClock).join(', ') : '—';
-  lines.push(`Cardioplegia complete: ${doseText}`);
   if (timeLiveMode === 'live') {
+    const doseLog = Array.isArray(cardioplegiaReminderState.doseLog) ? cardioplegiaReminderState.doseLog : [];
+    const doseText = doseLog.length ? doseLog.map(formatCardioplegiaClock).join(', ') : '—';
+    lines.push(`Cardioplegia complete: ${doseText}`);
     const intervalMinutes = getCardioplegiaSummaryIntervalMinutes();
     if (intervalMinutes) lines.push(`Cardioplegia interval setting: ${intervalMinutes} min`);
   }
@@ -4003,11 +4003,12 @@ function normalizeTimeMode(mode) {
 }
 
 function loadTimePreferencesState() {
+  // Record is the first workflow and is always the initial view on a new visit.
+  timeLiveMode = 'record';
   try {
     const raw = localStorage.getItem(TIME_PREFERENCES_STORAGE_KEY);
     if (!raw) return;
     const saved = JSON.parse(raw);
-    timeLiveMode = normalizeTimeMode(saved.mode);
     cardioplegiaReminderState = {
       ...cardioplegiaReminderState,
       reminderEnabled: saved.reminderEnabled !== false,
@@ -8414,7 +8415,7 @@ const FEEDBACK_RESULT_CONTEXTS = {
   '/heparin/': { insertAfter: '#hep2-results', readinessTarget: '#hep2-results' },
   '/priming-volume/': { insertAfter: '[data-feedback-result-anchor="priming-primary"]', readinessTarget: '#priming-builder-total', isReady: () => isPositiveNumericResult(el('priming-builder-total')) },
   '/cannula-pressure-drop/': { insertAfter: '#pressure-drop-results', readinessTarget: '#pressure-drop-results' },
-  '/timecalc/': { insertAfter: '#time-case-summary', readinessTarget: '#time-summary-preview', isReady: isTimeFeedbackReady },
+  '/timecalc/': { resolve: resolveTimeFeedbackContext },
   '/lbm/': { insertAfter: '[data-feedback-result-anchor="lbm-primary"]', readinessTarget: '#lbm_result', isReady: isLbmFeedbackReady },
   '/predicted-hct/': { resolve: resolveHctFeedbackContext },
   '/unit-converter/': { resolve: resolveUnitConverterFeedbackContext },
@@ -8534,9 +8535,16 @@ function isFeedbackResultReady(node) {
 function isTimeFeedbackReady(context) {
   const summary = context.readinessTarget || el('time-summary-preview');
   if (!isElementVisible(summary)) return false;
-  const text = getNodeText(summary);
+  const text = (summary.value || getNodeText(summary)).trim();
   if (!text || /no complete timed events yet|add event|start.*stop/i.test(text)) return false;
   return /\d{1,2}:\d{2}|\d+\s*min/i.test(text);
+}
+
+function resolveTimeFeedbackContext() {
+  const isTransplantMode = timeLiveMode === 'transplant';
+  const readinessTarget = el(isTransplantMode ? 'transplant-summary-preview' : 'time-summary-preview');
+  const insertAfter = isTransplantMode ? readinessTarget?.closest('section') : el('time-case-summary');
+  return { insertAfter, readinessTarget, isReady: isTimeFeedbackReady };
 }
 
 function isLbmFeedbackReady() {
