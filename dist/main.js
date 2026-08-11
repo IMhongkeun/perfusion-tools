@@ -4812,11 +4812,24 @@ function parseClockMinutes(value) {
   return (hours * 60) + minutes;
 }
 
+function normalizeClockInput(value) {
+  const trimmed = String(value || '').trim();
+  if (/^\d{4}$/.test(trimmed)) {
+    const formatted = `${trimmed.slice(0, 2)}:${trimmed.slice(2)}`;
+    return parseClockMinutes(formatted) === null ? null : formatted;
+  }
+  if (/^\d{3}$/.test(trimmed)) {
+    const formatted = `0${trimmed[0]}:${trimmed.slice(1)}`;
+    return parseClockMinutes(formatted) === null ? null : formatted;
+  }
+  return parseClockMinutes(trimmed) === null ? null : trimmed;
+}
+
 function calculateElapsedMinutes(startTime, endTime) {
   const startMinutes = parseClockMinutes(startTime);
   const endMinutes = parseClockMinutes(endTime);
   if (startMinutes === null || endMinutes === null) return null;
-  // With no date, an earlier end is interpreted as exactly one midnight crossing.
+  // Formula: end − start. When end is earlier, add one 24-hour midnight crossing.
   return endMinutes >= startMinutes
     ? endMinutes - startMinutes
     : (endMinutes + (24 * 60)) - startMinutes;
@@ -4830,90 +4843,103 @@ function formatDuration(minutes) {
 }
 
 function transplantClockIcon() {
-  return '<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
+  return '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
 }
 
-function transplantEventInput(path, label, value, disabled = false) {
-  const invalid = value && parseClockMinutes(value) === null;
+function transplantEventInput(path, label, value) {
+  const invalid = Boolean(value) && parseClockMinutes(value) === null;
   return `<label class="block min-w-0 text-xs font-medium text-slate-600 dark:text-slate-300">
     <span class="mb-1.5 block break-words">${label}</span>
-    <span class="flex min-w-0 gap-2">
-      <input type="text" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="HH:mm" value="${value}" data-transplant-path="${path}" aria-invalid="${invalid ? 'true' : 'false'}" ${disabled ? 'disabled' : ''} class="min-w-0 w-full min-h-11 rounded-xl border ${invalid ? 'border-rose-400 ring-1 ring-rose-400' : 'border-slate-200 dark:border-primary-700'} bg-white dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-100 disabled:bg-slate-100 dark:disabled:bg-primary-900 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-      ${disabled ? '' : `<button type="button" data-transplant-now="${path}" class="shrink-0 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-accent-600 text-white hover:bg-accent-700 focus:ring-2 focus:ring-accent-500 focus:ring-offset-2" aria-label="Enter current time for ${label}">${transplantClockIcon()}</button>`}
+    <span class="grid min-w-0 grid-cols-[minmax(0,1fr)_2.5rem] items-center gap-1.5">
+      <input type="text" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="HH:mm" value="${value}" data-transplant-path="${path}" aria-invalid="${invalid}" class="min-w-0 w-full h-10 rounded-xl border ${invalid ? 'border-rose-400 ring-1 ring-rose-400' : 'border-slate-200 dark:border-primary-700'} bg-white dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-100 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+      <button type="button" data-transplant-now="${path}" class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-600 text-white hover:bg-accent-700 focus:ring-2 focus:ring-accent-500 focus:ring-offset-2" aria-label="Enter current time for ${label}">${transplantClockIcon()}</button>
     </span>
-    ${invalid ? '<span class="mt-1 block text-[11px] text-rose-600 dark:text-rose-300">Enter a valid 24-hour time (HH:mm).</span>' : ''}
+    <span data-transplant-error="${path}" class="${invalid ? '' : 'hidden'} mt-1 block text-[11px] text-rose-600 dark:text-rose-300">Enter a valid 24-hour time (HH:mm).</span>
   </label>`;
 }
 
-function transplantDurationCard(title, startLabel, start, endLabel, end) {
-  const elapsed = calculateElapsedMinutes(start, end);
-  return `<section class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white/80 dark:bg-primary-900 p-3">
-    <h4 class="text-sm font-semibold text-primary-900 dark:text-white">${title}</h4>
-    <div class="mt-3 grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3 sm:items-end">
-      <div class="min-w-0"><span class="block text-[11px] text-slate-500 dark:text-slate-400">Start · ${startLabel}</span><span class="font-mono text-sm font-semibold">${start || '—'}</span></div>
-      <div class="min-w-0"><span class="block text-[11px] text-slate-500 dark:text-slate-400">End · ${endLabel}</span><span class="font-mono text-sm font-semibold">${end || '—'}</span></div>
-      <div class="rounded-lg bg-accent-50 dark:bg-accent-950/30 px-3 py-2 sm:min-w-28"><span class="block text-[11px] font-medium text-accent-700 dark:text-accent-300">Duration</span><output class="font-semibold text-primary-900 dark:text-white">${formatDuration(elapsed)}</output></div>
+function transplantDurationCard(title, startLabel, startPath, endLabel, endPath) {
+  const start = getTransplantPath(startPath);
+  const end = getTransplantPath(endPath);
+  return `<section class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white/80 dark:bg-primary-900 px-3 py-2.5">
+    <div class="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] gap-2 sm:items-center">
+      <div class="min-w-0"><h4 class="text-sm font-semibold text-primary-900 dark:text-white">${title}</h4><span class="text-[11px] text-slate-500 dark:text-slate-400">${startLabel} → ${endLabel}</span></div>
+      <div class="min-w-0 font-mono text-xs font-semibold text-slate-600 dark:text-slate-300"><span data-duration-start="${startPath}">${start || '—'}</span> – <span data-duration-end="${endPath}">${end || '—'}</span></div>
+      <output data-duration-result data-duration-start-path="${startPath}" data-duration-end-path="${endPath}" class="rounded-lg bg-accent-50 dark:bg-accent-950/30 px-3 py-2 font-semibold text-primary-900 dark:text-white sm:min-w-28">${formatDuration(calculateElapsedMinutes(start, end))}</output>
     </div>
   </section>`;
 }
 
 function renderLungSide(side, order) {
-  const lung = transplantState.lung;
-  const values = lung.sides[side];
+  const values = transplantState.lung.sides[side];
   const sideName = side === 'left' ? 'Left' : 'Right';
+  const prefix = `lung.sides.${side}`;
   return `<article class="min-w-0 rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-3">
     <h3 class="text-base font-semibold text-primary-900 dark:text-white">${sideName} Lung <span class="text-xs text-accent-700 dark:text-accent-300">· ${order}</span></h3>
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-      ${transplantEventInput(`lung.sides.${side}.iceOut`, `${sideName} lung ice out`, values.iceOut)}
-      ${transplantEventInput(`lung.sides.${side}.anastomosisStart`, `${sideName} lung anastomosis start`, values.anastomosisStart)}
-      ${transplantEventInput(`lung.sides.${side}.reperfusion`, `${sideName} lung reperfusion`, values.reperfusion)}
+      ${transplantEventInput(`${prefix}.iceOut`, `${sideName} lung ice out`, values.iceOut)}
+      ${transplantEventInput(`${prefix}.anastomosisStart`, `${sideName} lung anastomosis start`, values.anastomosisStart)}
+      ${transplantEventInput(`${prefix}.reperfusion`, `${sideName} lung reperfusion`, values.reperfusion)}
     </div>
-    ${transplantDurationCard('Cold Ischemic Time', 'Donor ACC', lung.donorAcc, 'Ice out', values.iceOut)}
-    ${transplantDurationCard('Warm Ischemic Time', 'Ice out', values.iceOut, 'Reperfusion', values.reperfusion)}
-    ${transplantDurationCard('Anastomosis Time', 'Anastomosis start', values.anastomosisStart, 'Reperfusion', values.reperfusion)}
+    <div class="grid grid-cols-1 gap-2">
+      ${transplantDurationCard('Cold Ischemic Time', 'Donor ACC', 'lung.donorAcc', 'Ice out', `${prefix}.iceOut`)}
+      ${transplantDurationCard('Warm Ischemic Time', 'Ice out', `${prefix}.iceOut`, 'Reperfusion', `${prefix}.reperfusion`)}
+      ${transplantDurationCard('Anastomosis Time', 'Anastomosis start', `${prefix}.anastomosisStart`, 'Reperfusion', `${prefix}.reperfusion`)}
+    </div>
   </article>`;
+}
+
+function getLungSidesInDisplayOrder() {
+  const lung = transplantState.lung;
+  if (lung.procedure === 'single') return [lung.singleSide];
+  return lung.firstSide === 'left' ? ['left', 'right'] : ['right', 'left'];
+}
+
+function renderTransplantSummary() {
+  const summary = buildTransplantSummary(transplantState.activeType);
+  return `<section class="rounded-2xl border border-slate-200 dark:border-primary-700 bg-white/80 dark:bg-primary-900/50 p-4 space-y-3">
+    <div><h3 class="text-sm font-semibold text-primary-900 dark:text-white">Transplant Case Summary</h3><p class="text-[11px] text-slate-500 dark:text-slate-400">Review and copy completed transplant times. Do not include patient identifiers.</p></div>
+    <textarea id="transplant-summary-preview" readonly rows="9" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 font-mono text-xs leading-relaxed text-slate-700 dark:text-slate-100 focus:ring-2 focus:ring-accent-500 outline-none" aria-label="Transplant case summary">${summary}</textarea>
+    <div class="flex flex-wrap items-center gap-3"><button id="transplant-summary-copy" type="button" class="min-h-10 rounded-xl bg-accent-600 px-4 py-2 text-sm font-semibold text-white hover:bg-accent-700">Copy summary</button><span id="transplant-summary-status" class="text-[11px] font-semibold text-slate-500 dark:text-slate-400" aria-live="polite"></span></div>
+  </section>`;
 }
 
 function renderLungTransplant() {
   const lung = transplantState.lung;
-  let sides;
-  if (lung.procedure === 'single') sides = [lung.singleSide];
-  else sides = lung.firstSide === 'left' ? ['left', 'right'] : ['right', 'left'];
-  return `<div class="space-y-5">
+  const sides = getLungSidesInDisplayOrder();
+  return `<div class="space-y-4">
     <div class="rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-4">
       <h3 class="text-base font-semibold text-primary-900 dark:text-white">Lung transplant setup</h3>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <label class="text-xs font-medium text-slate-600 dark:text-slate-300">Transplant type<select data-transplant-setting="procedure" class="mt-1.5 min-h-11 w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3"><option value="bilateral" ${lung.procedure === 'bilateral' ? 'selected' : ''}>Bilateral</option><option value="single" ${lung.procedure === 'single' ? 'selected' : ''}>Single</option></select></label>
-        ${lung.procedure === 'bilateral' ? `<label class="text-xs font-medium text-slate-600 dark:text-slate-300">First implanted lung<select data-transplant-setting="firstSide" class="mt-1.5 min-h-11 w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3"><option value="left" ${lung.firstSide === 'left' ? 'selected' : ''}>Left first</option><option value="right" ${lung.firstSide === 'right' ? 'selected' : ''}>Right first</option></select></label>` : `<label class="text-xs font-medium text-slate-600 dark:text-slate-300">Implanted side<select data-transplant-setting="singleSide" class="mt-1.5 min-h-11 w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3"><option value="left" ${lung.singleSide === 'left' ? 'selected' : ''}>Left</option><option value="right" ${lung.singleSide === 'right' ? 'selected' : ''}>Right</option></select></label>`}
+        <label class="text-xs font-medium text-slate-600 dark:text-slate-300">Transplant type<select data-transplant-setting="procedure" class="mt-1.5 h-10 w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3"><option value="bilateral" ${lung.procedure === 'bilateral' ? 'selected' : ''}>Bilateral</option><option value="single" ${lung.procedure === 'single' ? 'selected' : ''}>Single</option></select></label>
+        ${lung.procedure === 'bilateral' ? `<label class="text-xs font-medium text-slate-600 dark:text-slate-300">First implanted lung<select data-transplant-setting="firstSide" class="mt-1.5 h-10 w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3"><option value="left" ${lung.firstSide === 'left' ? 'selected' : ''}>Left first</option><option value="right" ${lung.firstSide === 'right' ? 'selected' : ''}>Right first</option></select></label>` : `<label class="text-xs font-medium text-slate-600 dark:text-slate-300">Implanted side<select data-transplant-setting="singleSide" class="mt-1.5 h-10 w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3"><option value="left" ${lung.singleSide === 'left' ? 'selected' : ''}>Left</option><option value="right" ${lung.singleSide === 'right' ? 'selected' : ''}>Right</option></select></label>`}
         ${transplantEventInput('lung.donorAcc', 'Donor ACC Time', lung.donorAcc)}
       </div>
     </div>
-    <div class="grid grid-cols-1 ${lung.procedure === 'bilateral' ? 'lg:grid-cols-2' : ''} gap-4">${sides.map((side, index) => renderLungSide(side, lung.procedure === 'single' ? 'Single' : `${index + 1}${index === 0 ? 'st' : 'nd'}`)).join('')}</div>
+    <div class="grid grid-cols-1 gap-4">${sides.map((side, index) => renderLungSide(side, lung.procedure === 'single' ? 'Single' : `${index + 1}${index === 0 ? 'st' : 'nd'}`)).join('')}</div>
     <section class="rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-3">
       <h3 class="text-base font-semibold text-primary-900 dark:text-white">Pump Time</h3>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${transplantEventInput('lung.pumpStart', 'Pump start', lung.pumpStart)}${transplantEventInput('lung.pumpEnd', 'Pump end', lung.pumpEnd)}</div>
-      ${transplantDurationCard('Pump Time', 'Pump start', lung.pumpStart, 'Pump end', lung.pumpEnd)}
+      ${transplantDurationCard('Pump Time', 'Pump start', 'lung.pumpStart', 'Pump end', 'lung.pumpEnd')}
     </section>
+    ${renderTransplantSummary()}
   </div>`;
 }
 
 function renderHeartTransplant() {
   const heart = transplantState.heart;
-  return `<div class="space-y-5">
+  return `<div class="space-y-4">
     <div class="rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/50 p-4">${transplantEventInput('heart.donorAcc', 'Donor ACC Time', heart.donorAcc)}</div>
     <div class="rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-4">
       <h3 class="text-base font-semibold text-primary-900 dark:text-white">Heart transplant events</h3>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        ${transplantEventInput('heart.iceOut', 'Heart ice out', heart.iceOut)}
-        ${transplantEventInput('heart.anastomosisStart', 'Anastomosis start', heart.anastomosisStart)}
-        ${transplantEventInput('heart.recipientAccRelease', 'Recipient ACC release', heart.recipientAccRelease)}
-      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">${transplantEventInput('heart.iceOut', 'Heart ice out', heart.iceOut)}${transplantEventInput('heart.anastomosisStart', 'Anastomosis start', heart.anastomosisStart)}${transplantEventInput('heart.recipientAccRelease', 'Recipient ACC release', heart.recipientAccRelease)}</div>
     </div>
-    <div class="space-y-3">
-      ${transplantDurationCard('Cold Ischemic Time', 'Donor ACC', heart.donorAcc, 'Heart ice out', heart.iceOut)}
-      ${transplantDurationCard('Warm Ischemic Time', 'Heart ice out', heart.iceOut, 'Recipient ACC release', heart.recipientAccRelease)}
-      ${transplantDurationCard('Anastomosis Time', 'Anastomosis start', heart.anastomosisStart, 'Recipient ACC release', heart.recipientAccRelease)}
+    <div class="space-y-2">
+      ${transplantDurationCard('Cold Ischemic Time', 'Donor ACC', 'heart.donorAcc', 'Heart ice out', 'heart.iceOut')}
+      ${transplantDurationCard('Warm Ischemic Time', 'Heart ice out', 'heart.iceOut', 'Recipient ACC release', 'heart.recipientAccRelease')}
+      ${transplantDurationCard('Anastomosis Time', 'Anastomosis start', 'heart.anastomosisStart', 'Recipient ACC release', 'heart.recipientAccRelease')}
     </div>
+    ${renderTransplantSummary()}
   </div>`;
 }
 
@@ -4928,6 +4954,36 @@ function setTransplantPath(path, value) {
   target[finalKey] = value;
 }
 
+function summaryDuration(start, end) {
+  return formatDuration(calculateElapsedMinutes(start, end));
+}
+
+function buildTransplantSummary(type) {
+  if (type === 'heart') {
+    const heart = transplantState.heart;
+    return ['Heart Transplant Time Summary', '', `Donor ACC Time: ${heart.donorAcc || '—'}`, `Heart ice out: ${heart.iceOut || '—'}`, `Anastomosis start: ${heart.anastomosisStart || '—'}`, `Recipient ACC release: ${heart.recipientAccRelease || '—'}`, '', `Cold Ischemic Time: ${summaryDuration(heart.donorAcc, heart.iceOut)}`, `Warm Ischemic Time: ${summaryDuration(heart.iceOut, heart.recipientAccRelease)}`, `Anastomosis Time: ${summaryDuration(heart.anastomosisStart, heart.recipientAccRelease)}`].join('\n');
+  }
+  const lung = transplantState.lung;
+  const lines = ['Lung Transplant Time Summary', `Procedure: ${lung.procedure === 'bilateral' ? 'Bilateral' : 'Single'}`];
+  lines.push(lung.procedure === 'bilateral' ? `Implant order: ${lung.firstSide === 'left' ? 'Left first' : 'Right first'}` : `Implanted side: ${lung.singleSide === 'left' ? 'Left' : 'Right'}`, '', `Donor ACC Time: ${lung.donorAcc || '—'}`);
+  getLungSidesInDisplayOrder().forEach((side, index) => {
+    const values = lung.sides[side];
+    const sideName = side === 'left' ? 'Left' : 'Right';
+    const order = lung.procedure === 'single' ? 'Single' : `${index + 1}${index === 0 ? 'st' : 'nd'}`;
+    lines.push('', `${sideName} Lung · ${order}`, `Ice out: ${values.iceOut || '—'}`, `Anastomosis start: ${values.anastomosisStart || '—'}`, `Reperfusion: ${values.reperfusion || '—'}`, `Cold Ischemic Time: ${summaryDuration(lung.donorAcc, values.iceOut)}`, `Warm Ischemic Time: ${summaryDuration(values.iceOut, values.reperfusion)}`, `Anastomosis Time: ${summaryDuration(values.anastomosisStart, values.reperfusion)}`);
+  });
+  lines.push('', `Pump start: ${lung.pumpStart || '—'}`, `Pump end: ${lung.pumpEnd || '—'}`, `Pump Time: ${summaryDuration(lung.pumpStart, lung.pumpEnd)}`);
+  return lines.join('\n');
+}
+
+function updateTransplantDerivedDisplays() {
+  document.querySelectorAll('[data-duration-start]').forEach(element => { element.textContent = getTransplantPath(element.dataset.durationStart) || '—'; });
+  document.querySelectorAll('[data-duration-end]').forEach(element => { element.textContent = getTransplantPath(element.dataset.durationEnd) || '—'; });
+  document.querySelectorAll('[data-duration-result]').forEach(element => { element.textContent = summaryDuration(getTransplantPath(element.dataset.durationStartPath), getTransplantPath(element.dataset.durationEndPath)); });
+  const preview = document.getElementById('transplant-summary-preview');
+  if (preview) preview.value = buildTransplantSummary(transplantState.activeType);
+}
+
 function renderTransplantCalculator() {
   const root = document.getElementById('transplant-calculator');
   if (!root) return;
@@ -4937,9 +4993,29 @@ function renderTransplantCalculator() {
     button.setAttribute('aria-selected', String(active));
     button.classList.toggle('bg-accent-600', active);
     button.classList.toggle('text-white', active);
+    button.classList.toggle('shadow-sm', active);
+    button.classList.toggle('font-bold', active);
     button.classList.toggle('text-slate-600', !active);
     button.classList.toggle('dark:text-slate-200', !active);
   });
+}
+
+async function copyTransplantSummary() {
+  const preview = document.getElementById('transplant-summary-preview');
+  const status = document.getElementById('transplant-summary-status');
+  if (!preview || !status) return;
+  try {
+    if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(preview.value);
+    else {
+      preview.focus();
+      preview.select();
+      document.execCommand('copy');
+      preview.setSelectionRange(0, 0);
+    }
+    status.textContent = 'Summary copied.';
+  } catch (error) {
+    status.textContent = 'Unable to copy. Select the summary and copy it manually.';
+  }
 }
 
 function initTransplantCalculator() {
@@ -4956,10 +5032,34 @@ function initTransplantCalculator() {
   root.addEventListener('input', event => {
     const path = event.target.dataset?.transplantPath;
     if (!path) return;
-    setTransplantPath(path, event.target.value);
-    renderTransplantCalculator();
-    const next = document.querySelector(`[data-transplant-path="${path}"]`);
-    if (next) { next.focus(); next.setSelectionRange(next.value.length, next.value.length); }
+    const digits = event.target.value.replace(/\D/g, '').slice(0, 4);
+    let nextValue = event.target.value;
+    if (!event.target.value.includes(':')) nextValue = digits.length === 4 ? `${digits.slice(0, 2)}:${digits.slice(2)}` : digits;
+    event.target.value = nextValue;
+    setTransplantPath(path, nextValue);
+    const invalid = Boolean(nextValue) && parseClockMinutes(nextValue) === null && digits.length >= 4;
+    event.target.setAttribute('aria-invalid', String(invalid));
+    event.target.classList.toggle('border-rose-400', invalid);
+    event.target.classList.toggle('ring-1', invalid);
+    event.target.classList.toggle('ring-rose-400', invalid);
+    document.querySelector(`[data-transplant-error="${path}"]`)?.classList.toggle('hidden', !invalid);
+    updateTransplantDerivedDisplays();
+  });
+  root.addEventListener('focusout', event => {
+    const path = event.target.dataset?.transplantPath;
+    if (!path || !event.target.value) return;
+    const normalized = normalizeClockInput(event.target.value);
+    if (normalized !== null) {
+      event.target.value = normalized;
+      setTransplantPath(path, normalized);
+      event.target.setAttribute('aria-invalid', 'false');
+      document.querySelector(`[data-transplant-error="${path}"]`)?.classList.add('hidden');
+      updateTransplantDerivedDisplays();
+    } else {
+      event.target.setAttribute('aria-invalid', 'true');
+      event.target.classList.add('border-rose-400', 'ring-1', 'ring-rose-400');
+      document.querySelector(`[data-transplant-error="${path}"]`)?.classList.remove('hidden');
+    }
   });
   root.addEventListener('change', event => {
     const setting = event.target.dataset?.transplantSetting;
@@ -4968,18 +5068,22 @@ function initTransplantCalculator() {
     renderTransplantCalculator();
   });
   root.addEventListener('click', event => {
-    const button = event.target.closest('[data-transplant-now]');
-    if (!button) return;
-    const now = new Date();
-    const localTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    setTransplantPath(button.dataset.transplantNow, localTime);
-    renderTransplantCalculator();
+    const nowButton = event.target.closest('[data-transplant-now]');
+    if (nowButton) {
+      const now = new Date();
+      setTransplantPath(nowButton.dataset.transplantNow, `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`);
+      renderTransplantCalculator();
+      return;
+    }
+    if (event.target.closest('#transplant-summary-copy')) copyTransplantSummary();
   });
   renderTransplantCalculator();
 }
 
 if (typeof window !== 'undefined') {
   window.calculateElapsedMinutes = calculateElapsedMinutes;
+  window.normalizeClockInput = normalizeClockInput;
+  window.buildTransplantSummary = buildTransplantSummary;
   window.formatDuration = formatDuration;
 }
 
