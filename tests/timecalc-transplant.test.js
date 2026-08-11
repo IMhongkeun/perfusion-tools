@@ -48,7 +48,14 @@ const transplantSource = mainJs.slice(
   transplantStart,
   mainJs.indexOf("if (typeof window !== 'undefined')", transplantStart)
 );
-const summaryContext = { document: { querySelectorAll: () => [], getElementById: () => null }, saveTimeLiveState: () => {} };
+const transplantStatus = { textContent: '' };
+const summaryContext = {
+  document: {
+    querySelectorAll: () => [],
+    getElementById: id => id === 'transplant-summary-status' ? transplantStatus : null
+  },
+  saveTimeLiveState: () => {}
+};
 vm.runInNewContext(`${transplantSource}
   transplantState.lung.donorAcc = '08:00';
   transplantState.lung.sides.left = { iceOut: '09:10', anastomosisStart: '09:20', reperfusion: '09:55' };
@@ -65,7 +72,24 @@ vm.runInNewContext(`${transplantSource}
   const restored = normalizeStoredTransplantState({ activeType: 'heart', lung: { procedure: 'single', firstSide: 'right', singleSide: 'right', donorAcc: '08:00', pumpStart: '08:10', pumpEnd: '11:00', sides: { left: {}, right: { iceOut: '09:00' } } }, heart: { donorAcc: '07:00', pumpStart: '07:30', pumpEnd: '10:30' } });
   this.restoredSnapshot = JSON.parse(JSON.stringify(restored));
   this.oldSnapshot = JSON.parse(JSON.stringify(normalizeStoredTransplantState(undefined)));
-  this.defaultSnapshot = JSON.parse(JSON.stringify(createDefaultTransplantState()));`, summaryContext);
+  this.defaultSnapshot = JSON.parse(JSON.stringify(createDefaultTransplantState()));
+  transplantState = createDefaultTransplantState();
+  transplantState.lung.procedure = 'single';
+  transplantState.lung.singleSide = 'left';
+  transplantState.lung.sides.right.iceOut = '2400';
+  this.singleLeftHasInvalidClock = hasInvalidTransplantClock('lung');
+  transplantState.lung.singleSide = 'right';
+  this.singleRightHasInvalidClock = hasInvalidTransplantClock('lung');
+  transplantState = createDefaultTransplantState();
+  transplantState.activeType = 'heart';
+  this.emptyHeartTabHasCaseData = hasTransplantCaseData(transplantState);
+  transplantState.heart.donorAcc = '08:00';
+  this.heartTimeHasCaseData = hasTransplantCaseData(transplantState);
+  transplantState.heart = createDefaultTransplantState().heart;
+  this.clearedHeartTabHasCaseData = hasTransplantCaseData(transplantState);
+  document.getElementById('transplant-summary-status').textContent = 'Summary copied.';
+  updateTransplantDerivedDisplays();
+  this.statusAfterSummaryEdit = document.getElementById('transplant-summary-status').textContent;`, summaryContext);
 assert(summaryContext.bilateralSummary.includes('Implant order: Right first'));
 assert(summaryContext.bilateralSummary.indexOf('Right Lung · 1st') < summaryContext.bilateralSummary.indexOf('Left Lung · 2nd'));
 assert(summaryContext.singleSummary.includes('Left Lung · Single'));
@@ -84,12 +108,19 @@ assert.strictEqual(summaryContext.restoredSnapshot.lung.procedure, 'single');
 assert.strictEqual(summaryContext.restoredSnapshot.lung.singleSide, 'right');
 assert.strictEqual(summaryContext.restoredSnapshot.heart.pumpEnd, '10:30');
 assert.deepStrictEqual(summaryContext.oldSnapshot, summaryContext.defaultSnapshot, 'old cases without transplant data should restore defaults');
+assert.strictEqual(summaryContext.singleLeftHasInvalidClock, false, 'hidden Right lung values must not block Single Left summary copy');
+assert.strictEqual(summaryContext.singleRightHasInvalidClock, true, 'invalid Right lung values must block Single Right summary copy');
+assert.strictEqual(summaryContext.emptyHeartTabHasCaseData, false, 'visiting the empty Heart tab must not create case data');
+assert.strictEqual(summaryContext.heartTimeHasCaseData, true, 'an entered Heart time must count as case data');
+assert.strictEqual(summaryContext.clearedHeartTabHasCaseData, false, 'an empty selected Heart calculator must not keep a case alive');
+assert.strictEqual(summaryContext.statusAfterSummaryEdit, '', 'editing summary source data must clear stale copied status');
 
 assert(timecalcHtml.includes('id="time-mode-transplant"'), 'Transplant must be the third top-level mode');
 assert(timecalcHtml.indexOf('time-mode-record') < timecalcHtml.indexOf('time-mode-live'));
 assert(timecalcHtml.indexOf('time-mode-live') < timecalcHtml.indexOf('time-mode-transplant'));
 assert(timecalcHtml.includes('id="transplant-type-lung"'));
 assert(timecalcHtml.includes('id="transplant-type-heart"'));
+assert(timecalcHtml.includes('Transplant case times are stored locally in this browser so they can be restored after refresh. Do not enter patient identifiers.'), 'Transplant should disclose local case-time persistence');
 assert(/sides:\s*{\s*left:/.test(mainJs), 'lung event state should be anatomical-side based');
 assert(mainJs.includes("transplantState.activeType === 'lung' ? renderLungTransplant() : renderHeartTransplant()"));
 assert(mainJs.includes("lung.firstSide === 'left' ? ['left', 'right'] : ['right', 'left']"));

@@ -4863,7 +4863,22 @@ function getTransplantStateSnapshot() {
 
 function hasTransplantCaseData(state) {
   if (!state || typeof state !== 'object') return false;
-  return JSON.stringify(normalizeStoredTransplantState(state)) !== JSON.stringify(createDefaultTransplantState());
+  const normalized = normalizeStoredTransplantState(state);
+  const lungClocks = [
+    normalized.lung.donorAcc,
+    normalized.lung.pumpStart,
+    normalized.lung.pumpEnd,
+    ...Object.values(normalized.lung.sides).flatMap(side => [side.iceOut, side.anastomosisStart, side.reperfusion])
+  ];
+  const heartClocks = [
+    normalized.heart.donorAcc,
+    normalized.heart.iceOut,
+    normalized.heart.anastomosisStart,
+    normalized.heart.recipientAccRelease,
+    normalized.heart.pumpStart,
+    normalized.heart.pumpEnd
+  ];
+  return [...lungClocks, ...heartClocks].some(Boolean);
 }
 
 let transplantState = createDefaultTransplantState();
@@ -5032,9 +5047,15 @@ function getValidSummaryClock(value) {
 
 function hasInvalidTransplantClock(type) {
   const state = type === 'heart' ? transplantState.heart : transplantState.lung;
+  const activeLungSideClocks = type === 'lung'
+    ? getLungSidesInDisplayOrder().flatMap(side => {
+      const values = state.sides[side];
+      return [values.iceOut, values.anastomosisStart, values.reperfusion];
+    })
+    : [];
   const clocks = type === 'heart'
     ? [state.donorAcc, state.iceOut, state.anastomosisStart, state.recipientAccRelease, state.pumpStart, state.pumpEnd]
-    : [state.donorAcc, state.pumpStart, state.pumpEnd, ...Object.values(state.sides).flatMap(side => [side.iceOut, side.anastomosisStart, side.reperfusion])];
+    : [state.donorAcc, state.pumpStart, state.pumpEnd, ...activeLungSideClocks];
   return clocks.some(value => Boolean(value) && normalizeClockInput(value) === null);
 }
 
@@ -5057,6 +5078,8 @@ function buildTransplantSummary(type) {
 }
 
 function updateTransplantDerivedDisplays() {
+  const status = document.getElementById('transplant-summary-status');
+  if (status) status.textContent = '';
   document.querySelectorAll('[data-duration-start]').forEach(element => { element.textContent = getTransplantPath(element.dataset.durationStart) || '—'; });
   document.querySelectorAll('[data-duration-end]').forEach(element => { element.textContent = getTransplantPath(element.dataset.durationEnd) || '—'; });
   document.querySelectorAll('[data-duration-result]').forEach(element => { element.textContent = summaryDuration(getTransplantPath(element.dataset.durationStartPath), getTransplantPath(element.dataset.durationEndPath)); });
