@@ -15,6 +15,19 @@ function validateCardioplegiaInterval(value) {
   return Number.isInteger(intervalMinutes) && intervalMinutes >= 1 && intervalMinutes <= 180 ? intervalMinutes : null;
 }
 
+function normalizePreset(selectedPreset, intervalMinutes, customIntervalMinutes = '') {
+  const validInterval = validateCardioplegiaInterval(intervalMinutes) || 30;
+  if (Object.hasOwn(CARDIOPLEGIA_PRESETS, selectedPreset)) return { selectedPreset, intervalMinutes: CARDIOPLEGIA_PRESETS[selectedPreset], customIntervalMinutes: '' };
+  if (selectedPreset === 'custom') {
+    const custom = validateCardioplegiaInterval(customIntervalMinutes) || validInterval;
+    return { selectedPreset: 'custom', intervalMinutes: custom, customIntervalMinutes: String(custom) };
+  }
+  const migratedPreset = `interval-${validInterval}`;
+  return Object.hasOwn(CARDIOPLEGIA_PRESETS, migratedPreset)
+    ? { selectedPreset: migratedPreset, intervalMinutes: validInterval, customIntervalMinutes: '' }
+    : { selectedPreset: 'custom', intervalMinutes: validInterval, customIntervalMinutes: String(validInterval) };
+}
+
 function completeDose(state, nowEpoch) {
   const intervalMinutes = validateCardioplegiaInterval(state.intervalMinutes);
   const completedAtEpoch = nowEpoch;
@@ -84,6 +97,9 @@ function run() {
   assert.strictEqual(validateCardioplegiaInterval('180'), 180, 'custom interval upper bound should be valid');
   assert.strictEqual(validateCardioplegiaInterval('0'), null, 'custom interval below range should be invalid');
   assert.strictEqual(validateCardioplegiaInterval('181'), null, 'custom interval above range should be invalid');
+  assert.deepStrictEqual(normalizePreset('blood-30', 30), { selectedPreset: 'interval-30', intervalMinutes: 30, customIntervalMinutes: '' }, 'legacy 30-minute preset should migrate to the visible 30-minute option');
+  assert.deepStrictEqual(normalizePreset('del-nido-60', 60), { selectedPreset: 'interval-60', intervalMinutes: 60, customIntervalMinutes: '' }, 'legacy 60-minute preset should migrate to the visible 60-minute option');
+  assert.deepStrictEqual(normalizePreset('blood-20', 20), { selectedPreset: 'custom', intervalMinutes: 20, customIntervalMinutes: '20' }, 'removed intervals should migrate to a visible Custom value');
 
   let state = { selectedPreset: 'interval-30', intervalMinutes: 30, customIntervalMinutes: '', lastCompletedAtEpoch: null, nextDueAtEpoch: null, doseLog: [] };
   state = completeDose(state, 100000);
@@ -111,6 +127,7 @@ function run() {
   assert.strictEqual(getCardioplegiaStatus(activeState, activeState.nextDueAtEpoch + 60000).label, 'Overdue', 'overdue 60s or more should be Overdue');
 
   assert(mainJs.includes("perfusiontools.timecalc.cardioplegiaReminder.v2"), 'reminder should use a v2 versioned storage key');
+  assert(mainJs.includes('function normalizeCardioplegiaPreset'), 'saved legacy preset IDs should be normalized before rendering');
   assert(mainJs.includes("perfusiontools.timecalc.liveTimers.v1"), 'v1 live timer storage key should remain separate');
   assert(mainJs.includes('const completedAtEpoch = Date.now()'), 'complete action should record Date.now as completedAtEpoch');
   assert(mainJs.includes('const nextDueAtEpoch = completedAtEpoch + intervalMinutes * 60000'), 'next due should be derived from completion time and selected interval');

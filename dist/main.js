@@ -3934,6 +3934,25 @@ function getDefaultCardioplegiaReminderState() {
   };
 }
 
+function normalizeCardioplegiaPreset(selectedPreset, intervalMinutes, customIntervalMinutes = '') {
+  const validInterval = validateCardioplegiaInterval(intervalMinutes) || 30;
+  if (Object.prototype.hasOwnProperty.call(CARDIOPLEGIA_PRESETS, selectedPreset)) {
+    return { selectedPreset, intervalMinutes: CARDIOPLEGIA_PRESETS[selectedPreset], customIntervalMinutes: '' };
+  }
+  if (selectedPreset === 'custom') {
+    const validCustom = validateCardioplegiaInterval(customIntervalMinutes) || validInterval;
+    return { selectedPreset: 'custom', intervalMinutes: validCustom, customIntervalMinutes: String(validCustom) };
+  }
+
+  // Migrate removed Del Nido/Blood preset IDs by their saved interval. Values
+  // without a matching quick preset remain visible and editable as Custom.
+  const migratedPreset = `interval-${validInterval}`;
+  if (Object.prototype.hasOwnProperty.call(CARDIOPLEGIA_PRESETS, migratedPreset)) {
+    return { selectedPreset: migratedPreset, intervalMinutes: validInterval, customIntervalMinutes: '' };
+  }
+  return { selectedPreset: 'custom', intervalMinutes: validInterval, customIntervalMinutes: String(validInterval) };
+}
+
 function getTimeRowsSnapshot() {
   return timeRows.map((row, index) => {
     const state = timeLiveTimers[row.id] || {};
@@ -4014,12 +4033,11 @@ function loadTimePreferencesState() {
     const raw = localStorage.getItem(TIME_PREFERENCES_STORAGE_KEY);
     if (!raw) return;
     const saved = JSON.parse(raw);
+    const normalizedPreset = normalizeCardioplegiaPreset(saved.selectedPreset, saved.intervalMinutes, saved.customIntervalMinutes);
     cardioplegiaReminderState = {
       ...cardioplegiaReminderState,
       reminderEnabled: saved.reminderEnabled !== false,
-      selectedPreset: saved.selectedPreset || cardioplegiaReminderState.selectedPreset,
-      intervalMinutes: validateCardioplegiaInterval(saved.intervalMinutes) || cardioplegiaReminderState.intervalMinutes,
-      customIntervalMinutes: saved.customIntervalMinutes || ''
+      ...normalizedPreset
     };
   } catch (err) {
     timeLiveMode = 'record';
@@ -8613,7 +8631,7 @@ function resolveFeedbackResultContext(pagePath) {
 }
 
 function isTimeFeedbackAction(target) {
-  return Boolean(target.closest('.time-start-now, .time-end-now, .time-live-start, .time-live-stop, .time-live-reset, #time-new-case, #time-case-start-new'));
+  return Boolean(target.closest('.time-start-now, .time-end-now, .time-live-start, .time-live-stop, .time-live-reset, [data-transplant-now], #time-new-case, #time-case-start-new'));
 }
 
 function getFeedbackCardMarkup(calculatorKey, promptId) {
