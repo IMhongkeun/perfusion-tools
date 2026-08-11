@@ -251,6 +251,7 @@ async function run() {
     assert(mainJs.includes('resolveFeedbackResultContext(pagePath)'), 'frontend should resolve dynamic result context at eligibility time');
     assert(mainJs.includes("'/timecalc/': { resolve: resolveTimeFeedbackContext }"), 'Time Calculator feedback should resolve the active mode summary');
     assert(mainJs.includes("el(isTransplantMode ? 'transplant-summary-preview' : 'time-summary-preview')"), 'Transplant feedback readiness should use the visible transplant summary');
+    assert(mainJs.includes("el(isTransplantMode ? 'transplant-case-summary' : 'time-case-summary')"), 'Time Calculator feedback should anchor after the active mode summary card');
     assert(mainJs.includes('isTimeFeedbackAction') && mainJs.includes('.time-live-start') && mainJs.includes('.time-start-now') && !mainJs.includes('#time-summary-copy') , 'time calculator should treat result-producing buttons, not copy, as feedback interactions');
     assert(mainJs.includes('resolveHctFeedbackContext') && mainJs.includes("el('hct_mode')?.value === 'onpump'") && mainJs.includes("el('onpump-extra-results')") && mainJs.includes("el('hct-primary-results')"), 'predicted Hct should resolve mode-specific anchors');
     assert(mainJs.includes('resolveUnitConverterFeedbackContext') && mainJs.includes("activeTab === 'pressure'") && mainJs.includes("activeTab === 'cannula'") && mainJs.includes("el('unit-flow-mlmin')"), 'unit converter should resolve active tab-specific readiness targets');

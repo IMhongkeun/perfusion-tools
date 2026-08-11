@@ -139,6 +139,7 @@ assert(mainJs.includes('data-transplant-now="${path}" class="inline-flex h-10 w-
 assert(mainJs.includes('M12 8v4l2.5 2.5M12 22c5.523'), 'Transplant should reuse the standard Time Calculator clock icon');
 assert(mainJs.includes('class="grid grid-cols-1 gap-4"'), 'bilateral lungs should use full-width stacked cards');
 assert(mainJs.includes('id="transplant-summary-preview"'), 'transplant summary preview should be rendered');
+assert(mainJs.includes('id="transplant-case-summary"'), 'transplant summary card should provide a stable feedback anchor');
 assert(mainJs.includes('id="transplant-summary-preview" readonly rows="9" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 font-mono text-xs leading-relaxed text-slate-700 dark:text-slate-100 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"'), 'transplant summary field should match the standard Case summary field styling');
 assert(mainJs.includes('aria-label="Copy transplant case summary"'), 'summary copy action should be an accessible icon button');
 assert(mainJs.includes('absolute right-2 top-2 inline-flex h-10 w-10'), 'summary copy icon should sit inside the card corner with a usable touch target');

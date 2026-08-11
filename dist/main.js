@@ -4991,7 +4991,7 @@ function getLungSidesInDisplayOrder() {
 
 function renderTransplantSummary() {
   const summary = buildTransplantSummary(transplantState.activeType);
-  return `<section class="relative rounded-2xl border border-slate-200 dark:border-primary-800 bg-white/80 dark:bg-primary-900/50 p-4 space-y-3">
+  return `<section id="transplant-case-summary" class="relative rounded-2xl border border-slate-200 dark:border-primary-800 bg-white/80 dark:bg-primary-900/50 p-4 space-y-3">
     <div class="pr-12"><h3 class="text-sm font-semibold text-primary-900 dark:text-white">Transplant Case Summary</h3><p class="text-[11px] text-slate-500 dark:text-slate-400">Review and copy completed transplant times. Do not include patient identifiers.</p></div>
     <button id="transplant-summary-copy" type="button" class="absolute right-2 top-2 inline-flex h-10 w-10 items-center justify-center rounded-lg border-0 bg-transparent text-slate-400 shadow-none hover:bg-slate-100 hover:text-slate-600 dark:text-slate-500 dark:hover:bg-primary-800 dark:hover:text-slate-200 focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 dark:focus:ring-offset-primary-900" aria-label="Copy transplant case summary" title="Copy summary"><svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7.5V6A2.5 2.5 0 0110.5 3.5H18A2.5 2.5 0 0120.5 6v7.5A2.5 2.5 0 0118 16h-1.5M6 8h7.5A2.5 2.5 0 0116 10.5V18a2.5 2.5 0 01-2.5 2.5H6A2.5 2.5 0 013.5 18v-7.5A2.5 2.5 0 016 8z" /></svg></button>
     <textarea id="transplant-summary-preview" readonly rows="9" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 font-mono text-xs leading-relaxed text-slate-700 dark:text-slate-100 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" aria-label="Transplant case summary">${summary}</textarea>
@@ -8543,7 +8543,7 @@ function isTimeFeedbackReady(context) {
 function resolveTimeFeedbackContext() {
   const isTransplantMode = timeLiveMode === 'transplant';
   const readinessTarget = el(isTransplantMode ? 'transplant-summary-preview' : 'time-summary-preview');
-  const insertAfter = isTransplantMode ? readinessTarget?.closest('section') : el('time-case-summary');
+  const insertAfter = el(isTransplantMode ? 'transplant-case-summary' : 'time-case-summary');
   return { insertAfter, readinessTarget, isReady: isTimeFeedbackReady };
 }
 
