@@ -13,6 +13,7 @@ const distTimecalcHtml = fs.readFileSync(path.join(repoRoot, 'dist', 'timecalc',
 assert.strictEqual(timecalcHtml, distTimecalcHtml, 'Time Calculator source and dist output should stay synchronized.');
 assert(timecalcHtml.includes('id="cardioplegia-shortcut" class="hidden fixed inset-x-3 bottom-3 z-40'), 'Time Calculator shortcut should keep its fixed mobile shortcut container.');
 assert(timecalcHtml.indexOf('id="cardioplegia-shortcut"') < timecalcHtml.indexOf('id="back-to-top"'), 'Back-to-top button should stay outside and after the shortcut/nav page content.');
+assert(timecalcHtml.includes('[data-mobile-calculator-nav] .back-to-top-button'), 'The mobile nav should suppress any legacy nested Back-to-top button.');
 assert(timecalcHtml.includes('opacity-0 pointer-events-none') && timecalcHtml.includes('aria-hidden="true" tabindex="-1"'), 'Back-to-top button should start non-interactive and hidden from accessibility APIs.');
 assert(mainJs.includes('button.dataset.backToTopInitialized'), 'Back-to-top initialization should guard against duplicate event listeners.');
 assert(mainJs.includes('renderCardioplegiaShortcut();'), 'Shortcut state changes should continue to use the shared shortcut render path.');
