@@ -101,7 +101,8 @@ function run() {
   assert(timecalcHtml.includes('id="time-case-summary"'), 'Case summary card should exist');
   assert(timecalcHtml.includes('id="time-summary-copy"'), 'Copy summary button should exist');
   assert(timecalcHtml.includes('aria-label="Copy case summary"'), 'Copy summary should remain accessible when rendered as an icon');
-  assert(timecalcHtml.includes('id="time-summary-copy" type="button" class="absolute right-3 top-3 inline-flex h-10 w-10'), 'Copy summary icon should be positioned in the card corner with a usable touch target');
+  assert(timecalcHtml.includes('id="time-summary-copy" type="button" class="absolute right-2 top-2 inline-flex h-10 w-10'), 'Copy summary icon should be positioned inside the card corner with a usable touch target');
+  assert(timecalcHtml.includes('rounded-lg border-0 bg-transparent text-slate-400 shadow-none'), 'Copy summary icon should not render a visible button box');
   assert(!timecalcHtml.includes('>Copy summary</button>'), 'Copy summary action should not render as a text button');
   assert(!timecalcHtml.includes('id="time-summary-refresh"'), 'Refresh summary button should no longer exist');
   assert(!timecalcHtml.includes('Refresh summary'), 'Refresh summary label should no longer appear');

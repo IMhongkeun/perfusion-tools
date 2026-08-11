@@ -129,7 +129,8 @@ assert(mainJs.includes("grid-cols-[minmax(0,1fr)_2.5rem]"), 'time input and comp
 assert(mainJs.includes('class="grid grid-cols-1 gap-4"'), 'bilateral lungs should use full-width stacked cards');
 assert(mainJs.includes('id="transplant-summary-preview"'), 'transplant summary preview should be rendered');
 assert(mainJs.includes('aria-label="Copy transplant case summary"'), 'summary copy action should be an accessible icon button');
-assert(mainJs.includes('absolute right-3 top-3 inline-flex h-10 w-10'), 'summary copy icon should sit in the card corner with a usable touch target');
+assert(mainJs.includes('absolute right-2 top-2 inline-flex h-10 w-10'), 'summary copy icon should sit inside the card corner with a usable touch target');
+assert(mainJs.includes('rounded-lg border-0 bg-transparent text-slate-400 shadow-none'), 'summary copy icon should not render a visible button box');
 assert(!mainJs.includes('>Copy summary</button>'), 'summary copy action should not render as a text button');
 assert(mainJs.includes('function buildTransplantSummary(type)'), 'summary should be generated from shared transplant state');
 assert(mainJs.includes('timeLiveMode = normalizeTimeMode(saved.mode)'), 'validated top-level mode should restore from preferences');
