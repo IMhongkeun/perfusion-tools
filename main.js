@@ -77,7 +77,7 @@ function formatDuration(mins) {
   const h = Math.floor(mins / 60);
   const m = mins % 60;
   const mm = m.toString().padStart(2, '0');
-  return `${mins} min (${h}:${mm})`;
+  return `${mins} min (${h.toString().padStart(2, '0')}:${mm})`;
 }
 
 function formatMinutesToHHMM(totalMins) {
@@ -3672,7 +3672,7 @@ function buildTimeRowHtml(row, index) {
         <div class="flex flex-col gap-1">
           <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
           <div class="flex items-center gap-2">
-            <input id="time-start-${row.id}" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+            <input id="time-start-${row.id}" type="text" inputmode="numeric" placeholder="HH:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
             <button id="time-start-now-${row.id}" type="button" class="time-start-now p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500" data-row-id="${row.id}">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /></svg>
             </button>
@@ -3681,7 +3681,7 @@ function buildTimeRowHtml(row, index) {
         <div class="flex flex-col gap-1">
           <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
           <div class="flex items-center gap-2">
-            <input id="time-end-${row.id}" type="text" inputmode="numeric" placeholder="hh:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+            <input id="time-end-${row.id}" type="text" inputmode="numeric" placeholder="HH:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
             <button id="time-end-now-${row.id}" type="button" class="time-end-now p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500" data-row-id="${row.id}">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /></svg>
             </button>
@@ -3698,6 +3698,7 @@ function buildTimeRowHtml(row, index) {
         <button id="time-live-stop-${row.id}" type="button" class="time-live-stop rounded-lg border border-accent-600 bg-accent-600 px-3 py-1.5 text-xs font-semibold text-white disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 dark:disabled:border-primary-700 dark:disabled:bg-primary-800 dark:disabled:text-slate-500 disabled:cursor-not-allowed" data-row-id="${row.id}">Stop</button>
         <button id="time-live-reset-${row.id}" type="button" class="time-live-reset rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-200" data-row-id="${row.id}">Reset</button>
       </div>
+      ${row.eventType === 'x-clamp' ? `<button id="cardioplegia-reminder-toggle" type="button" class="hidden w-full items-center justify-between rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-left text-xs font-semibold text-slate-600 dark:text-slate-200 hover:border-accent-300 dark:hover:border-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-500" aria-controls="cardioplegia-reminder" aria-expanded="false"><span>Cardioplegia reminder</span><span aria-hidden="true">›</span></button>` : ''}
     </div>`;
 }
 
@@ -3732,6 +3733,9 @@ function restoreTimeRowDomValues(values = {}) {
 function renderTimeRows(preservedValues = null) {
   const rowsEl = document.getElementById('time-rows');
   if (!rowsEl) return;
+  const reminder = document.getElementById('cardioplegia-reminder');
+  const reminderHome = document.getElementById('cardioplegia-reminder-home');
+  if (reminder && reminderHome) reminderHome.appendChild(reminder);
   rowsEl.innerHTML = timeRows.map(buildTimeRowHtml).join('');
   timeRows.forEach(row => {
     const state = timeLiveTimers[row.id];
@@ -3751,6 +3755,7 @@ function renderTimeRows(preservedValues = null) {
     updateTimeLiveControls(row.id);
   });
   updateAddTimeRowUi();
+  renderCardioplegiaReminder();
   renderTimeCaseSummary();
 }
 
@@ -3816,7 +3821,7 @@ function formatSummaryDuration(totalMinutes) {
   const safeMinutes = Math.max(0, totalMinutes || 0);
   const hours = Math.floor(safeMinutes / 60);
   const minutes = safeMinutes % 60;
-  return `${safeMinutes} min / ${hours}:${minutes.toString().padStart(2, '0')}`;
+  return `${safeMinutes} min / ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 }
 
 function getSummaryDurationMinutes(rowId, startMin, endMin, startValue, endValue) {
@@ -3842,18 +3847,25 @@ function getSummaryDurationMinutes(rowId, startMin, endMin, startValue, endValue
   return diff;
 }
 
-function getCompletedTimeRowSummary(row, index) {
+function getTimeRowSummary(row) {
   const labelInput = document.getElementById(`time-label-${row.id}`);
   const startInput = document.getElementById(`time-start-${row.id}`);
   const endInput = document.getElementById(`time-end-${row.id}`);
   const state = timeLiveTimers[row.id];
-  if (!startInput || !endInput || state?.running) return null;
+
+  const enteredLabel = (labelInput?.value || '').trim();
+  const defaultLabel = getDefaultTimeLabel(row);
+  const isDefaultOptionalRow = row.id === 'row-custom-default';
+  const label = enteredLabel || defaultLabel || (isDefaultOptionalRow ? 'Optional event' : '');
+  // Added custom rows join the summary as soon as the user gives them a title.
+  // The three initial rows are always listed so the summary doubles as a case worksheet.
+  if (!label) return null;
+  if (!startInput || !endInput || state?.running) return `${label}: —`;
 
   const startMin = parseTimeToMinutes(startInput.value);
   const endMin = parseTimeToMinutes(endInput.value);
-  if (startMin == null || endMin == null) return null;
+  if (startMin == null || endMin == null) return `${label}: —`;
 
-  const label = (labelInput?.value || '').trim() || `Event ${index + 1}`;
   const startDisplay = formatMinutesToHHMM(startMin);
   const endDisplay = formatMinutesToHHMM(endMin);
   const durationMinutes = getSummaryDurationMinutes(row.id, startMin, endMin, startDisplay, endDisplay);
@@ -3862,16 +3874,18 @@ function getCompletedTimeRowSummary(row, index) {
 
 function buildTimeCaseSummaryText() {
   const lines = ['Perfusion time summary'];
-  getOrderedTimeRows().forEach((row, index) => {
-    const rowSummary = getCompletedTimeRowSummary(row, index);
+  getOrderedTimeRows().forEach(row => {
+    const rowSummary = getTimeRowSummary(row);
     if (rowSummary) lines.push(rowSummary);
   });
 
-  const doseLog = Array.isArray(cardioplegiaReminderState.doseLog) ? cardioplegiaReminderState.doseLog : [];
-  const doseText = doseLog.length ? doseLog.map(formatCardioplegiaClock).join(', ') : '—';
-  lines.push(`Cardioplegia complete: ${doseText}`);
-  const intervalMinutes = getCardioplegiaSummaryIntervalMinutes();
-  if (intervalMinutes) lines.push(`Cardioplegia interval setting: ${intervalMinutes} min`);
+  if (timeLiveMode === 'live') {
+    const doseLog = Array.isArray(cardioplegiaReminderState.doseLog) ? cardioplegiaReminderState.doseLog : [];
+    const doseText = doseLog.length ? doseLog.map(formatCardioplegiaClock).join(', ') : '—';
+    lines.push(`Cardioplegia complete: ${doseText}`);
+    const intervalMinutes = getCardioplegiaSummaryIntervalMinutes();
+    if (intervalMinutes) lines.push(`Cardioplegia interval setting: ${intervalMinutes} min`);
+  }
   return lines.join('\n');
 }
 
@@ -3911,13 +3925,32 @@ async function copyTimeCaseSummary() {
 function getDefaultCardioplegiaReminderState() {
   return {
     reminderEnabled: true,
-    selectedPreset: 'blood-20',
-    intervalMinutes: 20,
+    selectedPreset: 'interval-30',
+    intervalMinutes: 30,
     customIntervalMinutes: '',
     lastCompletedAtEpoch: null,
     nextDueAtEpoch: null,
     doseLog: []
   };
+}
+
+function normalizeCardioplegiaPreset(selectedPreset, intervalMinutes, customIntervalMinutes = '') {
+  const validInterval = validateCardioplegiaInterval(intervalMinutes) || 30;
+  if (Object.prototype.hasOwnProperty.call(CARDIOPLEGIA_PRESETS, selectedPreset)) {
+    return { selectedPreset, intervalMinutes: CARDIOPLEGIA_PRESETS[selectedPreset], customIntervalMinutes: '' };
+  }
+  if (selectedPreset === 'custom') {
+    const validCustom = validateCardioplegiaInterval(customIntervalMinutes) || validInterval;
+    return { selectedPreset: 'custom', intervalMinutes: validCustom, customIntervalMinutes: String(validCustom) };
+  }
+
+  // Migrate removed Del Nido/Blood preset IDs by their saved interval. Values
+  // without a matching quick preset remain visible and editable as Custom.
+  const migratedPreset = `interval-${validInterval}`;
+  if (Object.prototype.hasOwnProperty.call(CARDIOPLEGIA_PRESETS, migratedPreset)) {
+    return { selectedPreset: migratedPreset, intervalMinutes: validInterval, customIntervalMinutes: '' };
+  }
+  return { selectedPreset: 'custom', intervalMinutes: validInterval, customIntervalMinutes: String(validInterval) };
 }
 
 function getTimeRowsSnapshot() {
@@ -3952,7 +3985,8 @@ function hasTimeCaseData(caseData) {
       hasTimeCaseRows(caseData.rows) ||
       caseData.cardioplegia?.lastCompletedAtEpoch ||
       caseData.cardioplegia?.nextDueAtEpoch ||
-      (Array.isArray(caseData.cardioplegia?.doseLog) && caseData.cardioplegia.doseLog.length > 0)
+      (Array.isArray(caseData.cardioplegia?.doseLog) && caseData.cardioplegia.doseLog.length > 0) ||
+      hasTransplantCaseData(caseData.transplant)
     )
   );
 }
@@ -3969,7 +4003,8 @@ function buildTimeCaseData() {
       nextDueAtEpoch: cardioplegiaReminderState.nextDueAtEpoch || null,
       doseLog: Array.isArray(cardioplegiaReminderState.doseLog) ? cardioplegiaReminderState.doseLog : [],
       lastUpdatedAtEpoch: Date.now()
-    }
+    },
+    transplant: getTransplantStateSnapshot()
   };
 }
 
@@ -3978,8 +4013,8 @@ function saveTimePreferencesState() {
     localStorage.setItem(TIME_PREFERENCES_STORAGE_KEY, JSON.stringify({
       mode: timeLiveMode,
       reminderEnabled: cardioplegiaReminderState.reminderEnabled !== false,
-      selectedPreset: cardioplegiaReminderState.selectedPreset || 'blood-20',
-      intervalMinutes: validateCardioplegiaInterval(cardioplegiaReminderState.intervalMinutes) || 20,
+      selectedPreset: cardioplegiaReminderState.selectedPreset || 'interval-30',
+      intervalMinutes: validateCardioplegiaInterval(cardioplegiaReminderState.intervalMinutes) || 30,
       customIntervalMinutes: cardioplegiaReminderState.customIntervalMinutes || ''
     }));
   } catch (err) {
@@ -3987,18 +4022,22 @@ function saveTimePreferencesState() {
   }
 }
 
+function normalizeTimeMode(mode) {
+  return ['record', 'live', 'transplant'].includes(mode) ? mode : 'record';
+}
+
 function loadTimePreferencesState() {
+  // Record is the first workflow and is always the initial view on a new visit.
+  timeLiveMode = 'record';
   try {
     const raw = localStorage.getItem(TIME_PREFERENCES_STORAGE_KEY);
     if (!raw) return;
     const saved = JSON.parse(raw);
-    timeLiveMode = saved.mode === 'live' ? 'live' : 'record';
+    const normalizedPreset = normalizeCardioplegiaPreset(saved.selectedPreset, saved.intervalMinutes, saved.customIntervalMinutes);
     cardioplegiaReminderState = {
       ...cardioplegiaReminderState,
       reminderEnabled: saved.reminderEnabled !== false,
-      selectedPreset: saved.selectedPreset || cardioplegiaReminderState.selectedPreset,
-      intervalMinutes: validateCardioplegiaInterval(saved.intervalMinutes) || cardioplegiaReminderState.intervalMinutes,
-      customIntervalMinutes: saved.customIntervalMinutes || ''
+      ...normalizedPreset
     };
   } catch (err) {
     timeLiveMode = 'record';
@@ -4051,9 +4090,11 @@ function applyTimeCaseData(caseData) {
     cardioplegiaReminderState.nextDueAtEpoch = caseData.cardioplegia.nextDueAtEpoch || null;
     cardioplegiaReminderState.doseLog = Array.isArray(caseData.cardioplegia.doseLog) ? caseData.cardioplegia.doseLog.filter(Number.isFinite) : [];
   }
+  transplantState = normalizeStoredTransplantState(caseData.transplant);
   renderTimeRows();
   renderCardioplegiaReminder();
   renderTimeCaseSummary();
+  renderTransplantCalculator();
 }
 
 function readStoredTimeCaseData() {
@@ -4066,7 +4107,8 @@ function readStoredTimeCaseData() {
         caseStartedAtEpoch: saved.caseStartedAtEpoch || saved.lastUpdatedAtEpoch || Date.now(),
         lastUpdatedAtEpoch: saved.lastUpdatedAtEpoch || Date.now(),
         rows: normalizeStoredTimeRows(saved.rows),
-        cardioplegia: saved.cardioplegia || { intervalMinutes: null, lastCompletedAtEpoch: null, nextDueAtEpoch: null, doseLog: [], lastUpdatedAtEpoch: null }
+        cardioplegia: saved.cardioplegia || { intervalMinutes: null, lastCompletedAtEpoch: null, nextDueAtEpoch: null, doseLog: [], lastUpdatedAtEpoch: null },
+        transplant: saved.transplant
       };
     }
     return null;
@@ -4100,10 +4142,12 @@ function clearTimecalcCaseData(options = {}) {
   timeCaseStartedAtEpoch = null;
   pendingTimeCaseData = null;
   pendingTimeCaseIsStale = false;
+  cardioplegiaReminderExpanded = false;
   cardioplegiaShortcutDismissed = false;
   cardioplegiaReminderState.lastCompletedAtEpoch = null;
   cardioplegiaReminderState.nextDueAtEpoch = null;
   cardioplegiaReminderState.doseLog = [];
+  transplantState = createDefaultTransplantState();
   try {
     localStorage.removeItem(TIME_CASE_STORAGE_KEY);
     localStorage.removeItem(TIME_LIVE_STORAGE_KEY);
@@ -4116,6 +4160,7 @@ function clearTimecalcCaseData(options = {}) {
   renderCardioplegiaReminder();
   renderCardioplegiaShortcut();
   renderTimeCaseSummary();
+  renderTransplantCalculator();
   if (options.keepPreferences !== false) saveTimePreferencesState();
 }
 
@@ -4240,27 +4285,33 @@ function handleManualTimeEdit(rowId, inputEl) {
 }
 
 function setTimeLiveMode(nextMode) {
-  timeLiveMode = nextMode === 'live' ? 'live' : 'record';
+  timeLiveMode = ['record', 'live', 'transplant'].includes(nextMode) ? nextMode : 'record';
   const recordBtn = document.getElementById('time-mode-record');
   const liveBtn = document.getElementById('time-mode-live');
+  const transplantBtn = document.getElementById('time-mode-transplant');
   const notice = document.getElementById('time-live-notice');
-  [recordBtn, liveBtn].forEach(btn => {
+  [recordBtn, liveBtn, transplantBtn].forEach(btn => {
     if (!btn) return;
-    btn.classList.remove('bg-accent-600', 'text-white');
+    btn.setAttribute('aria-pressed', 'false');
+    btn.classList.remove('bg-accent-600', 'text-white', 'shadow-sm');
     btn.classList.add('text-slate-600', 'dark:text-slate-200');
   });
-  const activeBtn = timeLiveMode === 'live' ? liveBtn : recordBtn;
+  const activeBtn = timeLiveMode === 'live' ? liveBtn : (timeLiveMode === 'transplant' ? transplantBtn : recordBtn);
   if (activeBtn) {
-    activeBtn.classList.add('bg-accent-600', 'text-white');
+    activeBtn.setAttribute('aria-pressed', 'true');
+    activeBtn.classList.add('bg-accent-600', 'text-white', 'shadow-sm');
     activeBtn.classList.remove('text-slate-600', 'dark:text-slate-200');
   }
   if (notice) notice.classList.toggle('hidden', timeLiveMode !== 'live');
+  document.getElementById('time-standard-content')?.classList.toggle('hidden', timeLiveMode === 'transplant');
+  document.getElementById('time-transplant-content')?.classList.toggle('hidden', timeLiveMode !== 'transplant');
   renderCardioplegiaReminder();
   renderCardioplegiaShortcut();
   getOrderedTimeRows().forEach(row => {
     updateTimeRow(row.id);
     updateTimeLiveControls(row.id);
   });
+  renderTimeCaseSummary();
   if (pendingTimeCaseData) saveTimePreferencesState();
   else saveTimeLiveState();
 }
@@ -4274,6 +4325,7 @@ function bindTimeRowEvents(rowId) {
   const liveStart = document.getElementById(`time-live-start-${rowId}`);
   const liveStop = document.getElementById(`time-live-stop-${rowId}`);
   const liveReset = document.getElementById(`time-live-reset-${rowId}`);
+  const reminderToggle = getTimeRowEventType(rowId) === 'x-clamp' ? document.getElementById('cardioplegia-reminder-toggle') : null;
   const removeBtn = document.querySelector(`.time-remove-row[data-row-id="${rowId}"]`);
   [s, e, sNow, eNow].forEach(elRef => {
     if (elRef) elRef.removeAttribute('title');
@@ -4283,6 +4335,13 @@ function bindTimeRowEvents(rowId) {
       saveTimeLiveState();
       renderCardioplegiaShortcut();
       renderTimeCaseSummary();
+    });
+  }
+  if (reminderToggle) {
+    reminderToggle.addEventListener('click', () => {
+      cardioplegiaReminderExpanded = !cardioplegiaReminderExpanded;
+      renderCardioplegiaReminder();
+      if (cardioplegiaReminderExpanded) highlightCardioplegiaReminder();
     });
   }
   if (s) {
@@ -4394,23 +4453,21 @@ function autoFormatTimeInput(inputEl) {
 
 const CARDIOPLEGIA_REMINDER_STORAGE_KEY = 'perfusiontools.timecalc.cardioplegiaReminder.v2';
 const CARDIOPLEGIA_PRESETS = {
-  'del-nido-60': 60,
-  'del-nido-75': 75,
-  'del-nido-90': 90,
-  'blood-15': 15,
-  'blood-20': 20,
-  'blood-30': 30
+  'interval-30': 30,
+  'interval-60': 60,
+  'interval-90': 90
 };
 let cardioplegiaReminderState = {
   reminderEnabled: true,
-  selectedPreset: 'blood-20',
-  intervalMinutes: 20,
+  selectedPreset: 'interval-30',
+  intervalMinutes: 30,
   customIntervalMinutes: '',
   lastCompletedAtEpoch: null,
   nextDueAtEpoch: null,
   doseLog: []
 };
 let cardioplegiaReminderTickId = null;
+let cardioplegiaReminderExpanded = false;
 let cardioplegiaShortcutDismissed = false;
 let cardioplegiaShortcutConfirmTimeoutId = null;
 
@@ -4594,8 +4651,21 @@ function renderCardioplegiaReminder() {
   const logEl = document.getElementById('cardioplegia-log');
   if (!root || !completeBtn || !lastEl || !nextEl || !remainingEl || !logEl) return;
 
-  root.classList.toggle('hidden', timeLiveMode !== 'live');
+  const shouldShow = timeLiveMode === 'live' && cardioplegiaReminderExpanded;
+  const crossClampRow = document.querySelector('[data-time-event-type="x-clamp"]');
+  const reminderHome = document.getElementById('cardioplegia-reminder-home');
+  if (shouldShow && crossClampRow) crossClampRow.after(root);
+  else if (reminderHome && root.parentElement !== reminderHome) reminderHome.appendChild(root);
+  root.classList.toggle('hidden', !shouldShow);
+  const toggleButton = document.getElementById('cardioplegia-reminder-toggle');
+  if (toggleButton) {
+    toggleButton.classList.toggle('hidden', timeLiveMode !== 'live');
+    toggleButton.classList.toggle('flex', timeLiveMode === 'live');
+    toggleButton.setAttribute('aria-expanded', String(shouldShow));
+  }
   if (customInput && document.activeElement !== customInput) customInput.value = cardioplegiaReminderState.customIntervalMinutes || '';
+  document.getElementById('cardioplegia-custom-fields')?.classList.toggle('hidden', cardioplegiaReminderState.selectedPreset !== 'custom');
+  document.getElementById('cardioplegia-custom-fields')?.classList.toggle('flex', cardioplegiaReminderState.selectedPreset === 'custom');
   updateCardioplegiaPresetUi();
 
   const intervalMinutes = getCardioplegiaIntervalMinutes();
@@ -4651,9 +4721,6 @@ function initCardioplegiaReminder() {
   const undoBtn = document.getElementById('cardioplegia-undo');
   const resetBtn = document.getElementById('cardioplegia-reset');
   const clearLogBtn = document.getElementById('cardioplegia-clear-log');
-  const shortcutCompleteBtn = document.getElementById('cardioplegia-shortcut-complete');
-  const shortcutViewBtn = document.getElementById('cardioplegia-shortcut-view');
-  const shortcutDismissBtn = document.getElementById('cardioplegia-shortcut-dismiss');
 
   loadCardioplegiaReminderState();
 
@@ -4673,6 +4740,7 @@ function initCardioplegiaReminder() {
       saveCardioplegiaReminderState();
       renderCardioplegiaReminder();
       renderTimeCaseSummary();
+      if (preset === 'custom') customInput?.focus();
     });
   });
 
@@ -4723,14 +4791,6 @@ function initCardioplegiaReminder() {
     });
   }
 
-  if (shortcutCompleteBtn) shortcutCompleteBtn.addEventListener('click', () => completeCardioplegiaDose('shortcut'));
-  if (shortcutViewBtn) shortcutViewBtn.addEventListener('click', highlightCardioplegiaReminder);
-  if (shortcutDismissBtn) {
-    shortcutDismissBtn.addEventListener('click', () => {
-      cardioplegiaShortcutDismissed = true;
-      renderCardioplegiaShortcut();
-    });
-  }
 
   if (cardioplegiaReminderTickId) window.clearInterval(cardioplegiaReminderTickId);
   cardioplegiaReminderTickId = window.setInterval(renderCardioplegiaReminder, 1000);
@@ -4751,6 +4811,7 @@ function initTimeCalculator() {
 
   const recordModeBtn = document.getElementById('time-mode-record');
   const liveModeBtn = document.getElementById('time-mode-live');
+  const transplantModeBtn = document.getElementById('time-mode-transplant');
   const newCaseBtn = document.getElementById('time-new-case');
   const addRowBtn = document.getElementById('time-add-row');
   const summaryCopyBtn = document.getElementById('time-summary-copy');
@@ -4759,6 +4820,7 @@ function initTimeCalculator() {
 
   if (recordModeBtn) recordModeBtn.addEventListener('click', () => setTimeLiveMode('record'));
   if (liveModeBtn) liveModeBtn.addEventListener('click', () => setTimeLiveMode('live'));
+  if (transplantModeBtn) transplantModeBtn.addEventListener('click', () => setTimeLiveMode('transplant'));
   if (addRowBtn) addRowBtn.addEventListener('click', addTimeEventRow);
   if (summaryCopyBtn) summaryCopyBtn.addEventListener('click', copyTimeCaseSummary);
   if (newCaseBtn) {
@@ -4779,9 +4841,409 @@ function initTimeCalculator() {
   if (startNewCaseBtn) startNewCaseBtn.addEventListener('click', () => clearTimecalcCaseData({ keepPreferences: true }));
 
   initCardioplegiaReminder();
+  initTransplantCalculator();
   setTimeLiveMode(timeLiveMode);
   initTimeLiveInterval();
   renderTimeCaseSummary();
+}
+
+// Transplant time management uses one value per clinical event so linked intervals
+// (for example ice out as cold end and warm start) can never diverge.
+function createDefaultTransplantState() {
+  return {
+    activeType: 'lung',
+    lung: {
+      donorAcc: '', pumpStart: '', pumpEnd: '', procedure: 'bilateral', firstSide: 'left', singleSide: 'left',
+      sides: {
+        left: { iceOut: '', anastomosisStart: '', reperfusion: '' },
+        right: { iceOut: '', anastomosisStart: '', reperfusion: '' }
+      }
+    },
+    heart: { donorAcc: '', iceOut: '', anastomosisStart: '', recipientAccRelease: '', pumpStart: '', pumpEnd: '' }
+  };
+}
+
+function normalizeStoredTransplantState(saved) {
+  const defaults = createDefaultTransplantState();
+  if (!saved || typeof saved !== 'object') return defaults;
+  const validSide = value => value === 'left' || value === 'right';
+  const clockValue = value => typeof value === 'string' ? value.slice(0, 5) : '';
+  return {
+    activeType: saved.activeType === 'heart' ? 'heart' : 'lung',
+    lung: {
+      donorAcc: clockValue(saved.lung?.donorAcc),
+      pumpStart: clockValue(saved.lung?.pumpStart),
+      pumpEnd: clockValue(saved.lung?.pumpEnd),
+      procedure: saved.lung?.procedure === 'single' ? 'single' : 'bilateral',
+      firstSide: validSide(saved.lung?.firstSide) ? saved.lung.firstSide : 'left',
+      singleSide: validSide(saved.lung?.singleSide) ? saved.lung.singleSide : 'left',
+      sides: {
+        left: {
+          iceOut: clockValue(saved.lung?.sides?.left?.iceOut),
+          anastomosisStart: clockValue(saved.lung?.sides?.left?.anastomosisStart),
+          reperfusion: clockValue(saved.lung?.sides?.left?.reperfusion)
+        },
+        right: {
+          iceOut: clockValue(saved.lung?.sides?.right?.iceOut),
+          anastomosisStart: clockValue(saved.lung?.sides?.right?.anastomosisStart),
+          reperfusion: clockValue(saved.lung?.sides?.right?.reperfusion)
+        }
+      }
+    },
+    heart: {
+      donorAcc: clockValue(saved.heart?.donorAcc),
+      iceOut: clockValue(saved.heart?.iceOut),
+      anastomosisStart: clockValue(saved.heart?.anastomosisStart),
+      recipientAccRelease: clockValue(saved.heart?.recipientAccRelease),
+      pumpStart: clockValue(saved.heart?.pumpStart),
+      pumpEnd: clockValue(saved.heart?.pumpEnd)
+    }
+  };
+}
+
+function getTransplantStateSnapshot() {
+  return normalizeStoredTransplantState(transplantState);
+}
+
+function hasTransplantCaseData(state) {
+  if (!state || typeof state !== 'object') return false;
+  const normalized = normalizeStoredTransplantState(state);
+  const defaults = createDefaultTransplantState();
+  const hasLungSetup = normalized.lung.procedure !== defaults.lung.procedure ||
+    normalized.lung.firstSide !== defaults.lung.firstSide ||
+    normalized.lung.singleSide !== defaults.lung.singleSide;
+  const lungClocks = [
+    normalized.lung.donorAcc,
+    normalized.lung.pumpStart,
+    normalized.lung.pumpEnd,
+    ...Object.values(normalized.lung.sides).flatMap(side => [side.iceOut, side.anastomosisStart, side.reperfusion])
+  ];
+  const heartClocks = [
+    normalized.heart.donorAcc,
+    normalized.heart.iceOut,
+    normalized.heart.anastomosisStart,
+    normalized.heart.recipientAccRelease,
+    normalized.heart.pumpStart,
+    normalized.heart.pumpEnd
+  ];
+  // activeType is only a view preference, but lung procedure and side choices
+  // are case-specific setup that must survive refresh before times are entered.
+  return hasLungSetup || [...lungClocks, ...heartClocks].some(Boolean);
+}
+
+let transplantState = createDefaultTransplantState();
+
+function parseClockMinutes(value) {
+  if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(value || '')) return null;
+  const [hours, minutes] = value.split(':').map(Number);
+  return (hours * 60) + minutes;
+}
+
+function normalizeClockInput(value) {
+  const trimmed = String(value || '').trim();
+  if (/^\d{4}$/.test(trimmed)) {
+    const formatted = `${trimmed.slice(0, 2)}:${trimmed.slice(2)}`;
+    return parseClockMinutes(formatted) === null ? null : formatted;
+  }
+  if (/^\d{3}$/.test(trimmed)) {
+    const formatted = `0${trimmed[0]}:${trimmed.slice(1)}`;
+    return parseClockMinutes(formatted) === null ? null : formatted;
+  }
+  return parseClockMinutes(trimmed) === null ? null : trimmed;
+}
+
+function calculateElapsedMinutes(startTime, endTime) {
+  const startMinutes = parseClockMinutes(startTime);
+  const endMinutes = parseClockMinutes(endTime);
+  if (startMinutes === null || endMinutes === null) return null;
+  // Formula: end − start. When end is earlier, add one 24-hour midnight crossing.
+  return endMinutes >= startMinutes
+    ? endMinutes - startMinutes
+    : (endMinutes + (24 * 60)) - startMinutes;
+}
+
+function formatTransplantDuration(minutes) {
+  if (!Number.isInteger(minutes) || minutes < 0 || minutes >= 24 * 60) return '—';
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  return `${hours} hr ${String(minutes % 60).padStart(2, '0')} min`;
+}
+
+function transplantClockIcon() {
+  return '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /></svg>';
+}
+
+function transplantEventInput(path, label, value) {
+  const invalid = Boolean(value) && parseClockMinutes(value) === null;
+  return `<label class="block min-w-0 text-xs font-medium text-slate-600 dark:text-slate-300">
+    <span class="mb-1.5 block break-words">${label}</span>
+    <span class="grid min-w-0 grid-cols-[minmax(0,1fr)_2.5rem] items-center gap-1.5">
+      <input type="text" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="HH:mm" value="${value}" data-transplant-path="${path}" aria-invalid="${invalid}" class="min-w-0 w-full h-10 rounded-xl border ${invalid ? 'border-rose-400 ring-1 ring-rose-400' : 'border-slate-200 dark:border-primary-700'} bg-white dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-100 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+      <button type="button" data-transplant-now="${path}" class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-accent-500" aria-label="Enter current time for ${label}">${transplantClockIcon()}</button>
+    </span>
+    <span data-transplant-error="${path}" class="${invalid ? '' : 'hidden'} mt-1 block text-[11px] text-rose-600 dark:text-rose-300">Enter a valid 24-hour time (HH:mm).</span>
+  </label>`;
+}
+
+function transplantDurationCard(title, startLabel, startPath, endLabel, endPath) {
+  const start = getTransplantPath(startPath);
+  const end = getTransplantPath(endPath);
+  return `<section class="rounded-xl border border-slate-200 dark:border-primary-700 bg-white/80 dark:bg-primary-900 px-3 py-2.5">
+    <div class="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] gap-2 sm:items-center">
+      <div class="min-w-0"><h4 class="text-sm font-semibold text-primary-900 dark:text-white">${title}</h4><span class="text-[11px] text-slate-500 dark:text-slate-400">${startLabel} → ${endLabel}</span></div>
+      <div class="min-w-0 font-mono text-xs font-semibold text-slate-600 dark:text-slate-300"><span data-duration-start="${startPath}">${start || '—'}</span> – <span data-duration-end="${endPath}">${end || '—'}</span></div>
+      <output data-duration-result data-duration-start-path="${startPath}" data-duration-end-path="${endPath}" class="rounded-lg bg-accent-50 dark:bg-accent-950/30 px-3 py-2 font-semibold text-primary-900 dark:text-white sm:min-w-28">${formatTransplantDuration(calculateElapsedMinutes(start, end))}</output>
+    </div>
+  </section>`;
+}
+
+function renderLungSide(side, order) {
+  const values = transplantState.lung.sides[side];
+  const sideName = side === 'left' ? 'Left' : 'Right';
+  const prefix = `lung.sides.${side}`;
+  return `<article class="min-w-0 rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-3">
+    <h3 class="text-base font-semibold text-primary-900 dark:text-white">${sideName} Lung <span class="text-xs text-accent-700 dark:text-accent-300">· ${order}</span></h3>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      ${transplantEventInput(`${prefix}.iceOut`, `${sideName} lung ice out`, values.iceOut)}
+      ${transplantEventInput(`${prefix}.anastomosisStart`, `${sideName} lung anastomosis start`, values.anastomosisStart)}
+      ${transplantEventInput(`${prefix}.reperfusion`, `${sideName} lung reperfusion`, values.reperfusion)}
+    </div>
+    <div class="grid grid-cols-1 gap-2">
+      ${transplantDurationCard('Cold Ischemic Time', 'Donor ACC', 'lung.donorAcc', 'Ice out', `${prefix}.iceOut`)}
+      ${transplantDurationCard('Warm Ischemic Time', 'Ice out', `${prefix}.iceOut`, 'Reperfusion', `${prefix}.reperfusion`)}
+      ${transplantDurationCard('Anastomosis Time', 'Anastomosis start', `${prefix}.anastomosisStart`, 'Reperfusion', `${prefix}.reperfusion`)}
+    </div>
+  </article>`;
+}
+
+function getLungSidesInDisplayOrder() {
+  const lung = transplantState.lung;
+  if (lung.procedure === 'single') return [lung.singleSide];
+  return lung.firstSide === 'left' ? ['left', 'right'] : ['right', 'left'];
+}
+
+function renderTransplantSummary() {
+  const summary = buildTransplantSummary(transplantState.activeType);
+  return `<section id="transplant-case-summary" class="relative rounded-2xl border border-slate-200 dark:border-primary-800 bg-white/80 dark:bg-primary-900/50 p-4 space-y-3">
+    <div class="pr-12"><h3 class="text-sm font-semibold text-primary-900 dark:text-white">Transplant Case Summary</h3><p class="text-[11px] text-slate-500 dark:text-slate-400">Review and copy completed transplant times. Do not include patient identifiers.</p></div>
+    <button id="transplant-summary-copy" type="button" class="absolute right-2 top-2 inline-flex h-10 w-10 items-center justify-center rounded-lg border-0 bg-transparent text-slate-400 shadow-none hover:bg-slate-100 hover:text-slate-600 dark:text-slate-500 dark:hover:bg-primary-800 dark:hover:text-slate-200 focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 dark:focus:ring-offset-primary-900" aria-label="Copy transplant case summary" title="Copy summary"><svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7.5V6A2.5 2.5 0 0110.5 3.5H18A2.5 2.5 0 0120.5 6v7.5A2.5 2.5 0 0118 16h-1.5M6 8h7.5A2.5 2.5 0 0116 10.5V18a2.5 2.5 0 01-2.5 2.5H6A2.5 2.5 0 013.5 18v-7.5A2.5 2.5 0 016 8z" /></svg></button>
+    <textarea id="transplant-summary-preview" readonly rows="9" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 font-mono text-xs leading-relaxed text-slate-700 dark:text-slate-100 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" aria-label="Transplant case summary">${summary}</textarea>
+    <span id="transplant-summary-status" class="block min-h-4 text-[11px] font-semibold text-slate-500 dark:text-slate-400" aria-live="polite"></span>
+  </section>`;
+}
+
+function renderLungTransplant() {
+  const lung = transplantState.lung;
+  const sides = getLungSidesInDisplayOrder();
+  return `<div class="space-y-4">
+    <div class="rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-4">
+      <h3 class="text-base font-semibold text-primary-900 dark:text-white">Lung transplant setup</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-xs font-medium text-slate-600 dark:text-slate-300">Transplant type<select data-transplant-setting="procedure" class="mt-1.5 h-10 w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3"><option value="bilateral" ${lung.procedure === 'bilateral' ? 'selected' : ''}>Bilateral</option><option value="single" ${lung.procedure === 'single' ? 'selected' : ''}>Single</option></select></label>
+        ${lung.procedure === 'bilateral' ? `<label class="text-xs font-medium text-slate-600 dark:text-slate-300">First implanted lung<select data-transplant-setting="firstSide" class="mt-1.5 h-10 w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3"><option value="left" ${lung.firstSide === 'left' ? 'selected' : ''}>Left first</option><option value="right" ${lung.firstSide === 'right' ? 'selected' : ''}>Right first</option></select></label>` : `<label class="text-xs font-medium text-slate-600 dark:text-slate-300">Implanted side<select data-transplant-setting="singleSide" class="mt-1.5 h-10 w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3"><option value="left" ${lung.singleSide === 'left' ? 'selected' : ''}>Left</option><option value="right" ${lung.singleSide === 'right' ? 'selected' : ''}>Right</option></select></label>`}
+        ${transplantEventInput('lung.donorAcc', 'Donor ACC Time', lung.donorAcc)}
+      </div>
+    </div>
+    <div class="grid grid-cols-1 gap-4">${sides.map((side, index) => renderLungSide(side, lung.procedure === 'single' ? 'Single' : `${index + 1}${index === 0 ? 'st' : 'nd'}`)).join('')}</div>
+    <section class="rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-3">
+      <h3 class="text-base font-semibold text-primary-900 dark:text-white">Pump Time</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${transplantEventInput('lung.pumpStart', 'Pump start', lung.pumpStart)}${transplantEventInput('lung.pumpEnd', 'Pump end', lung.pumpEnd)}</div>
+      ${transplantDurationCard('Pump Time', 'Pump start', 'lung.pumpStart', 'Pump end', 'lung.pumpEnd')}
+    </section>
+    ${renderTransplantSummary()}
+  </div>`;
+}
+
+function renderHeartTransplant() {
+  const heart = transplantState.heart;
+  return `<div class="space-y-4">
+    <div class="rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/50 p-4">${transplantEventInput('heart.donorAcc', 'Donor ACC Time', heart.donorAcc)}</div>
+    <div class="rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-4">
+      <h3 class="text-base font-semibold text-primary-900 dark:text-white">Heart transplant events</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">${transplantEventInput('heart.iceOut', 'Heart ice out', heart.iceOut)}${transplantEventInput('heart.anastomosisStart', 'Anastomosis start', heart.anastomosisStart)}${transplantEventInput('heart.recipientAccRelease', 'Recipient ACC release', heart.recipientAccRelease)}</div>
+    </div>
+    <div class="space-y-2">
+      ${transplantDurationCard('Cold Ischemic Time', 'Donor ACC', 'heart.donorAcc', 'Heart ice out', 'heart.iceOut')}
+      ${transplantDurationCard('Warm Ischemic Time', 'Heart ice out', 'heart.iceOut', 'Recipient ACC release', 'heart.recipientAccRelease')}
+      ${transplantDurationCard('Anastomosis Time', 'Anastomosis start', 'heart.anastomosisStart', 'Recipient ACC release', 'heart.recipientAccRelease')}
+    </div>
+    <section class="rounded-2xl border border-slate-200 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-3">
+      <h3 class="text-base font-semibold text-primary-900 dark:text-white">Pump Time</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${transplantEventInput('heart.pumpStart', 'Pump start', heart.pumpStart)}${transplantEventInput('heart.pumpEnd', 'Pump end', heart.pumpEnd)}</div>
+      ${transplantDurationCard('Pump Time', 'Pump start', 'heart.pumpStart', 'Pump end', 'heart.pumpEnd')}
+    </section>
+    ${renderTransplantSummary()}
+  </div>`;
+}
+
+function getTransplantPath(path) {
+  return path.split('.').reduce((value, key) => value?.[key], transplantState) || '';
+}
+
+function setTransplantPath(path, value) {
+  const keys = path.split('.');
+  const finalKey = keys.pop();
+  const target = keys.reduce((object, key) => object[key], transplantState);
+  target[finalKey] = value;
+}
+
+function summaryDuration(start, end) {
+  return formatTransplantDuration(calculateElapsedMinutes(start, end));
+}
+
+function getValidSummaryClock(value) {
+  return normalizeClockInput(value) || '—';
+}
+
+function hasInvalidTransplantClock(type) {
+  const state = type === 'heart' ? transplantState.heart : transplantState.lung;
+  const activeLungSideClocks = type === 'lung'
+    ? getLungSidesInDisplayOrder().flatMap(side => {
+      const values = state.sides[side];
+      return [values.iceOut, values.anastomosisStart, values.reperfusion];
+    })
+    : [];
+  const clocks = type === 'heart'
+    ? [state.donorAcc, state.iceOut, state.anastomosisStart, state.recipientAccRelease, state.pumpStart, state.pumpEnd]
+    : [state.donorAcc, state.pumpStart, state.pumpEnd, ...activeLungSideClocks];
+  return clocks.some(value => Boolean(value) && normalizeClockInput(value) === null);
+}
+
+function buildTransplantSummary(type) {
+  if (type === 'heart') {
+    const heart = transplantState.heart;
+    return ['Heart Transplant Time Summary', '', `Donor ACC Time: ${getValidSummaryClock(heart.donorAcc)}`, `Heart ice out: ${getValidSummaryClock(heart.iceOut)}`, `Anastomosis start: ${getValidSummaryClock(heart.anastomosisStart)}`, `Recipient ACC release: ${getValidSummaryClock(heart.recipientAccRelease)}`, '', `Cold Ischemic Time: ${summaryDuration(heart.donorAcc, heart.iceOut)}`, `Warm Ischemic Time: ${summaryDuration(heart.iceOut, heart.recipientAccRelease)}`, `Anastomosis Time: ${summaryDuration(heart.anastomosisStart, heart.recipientAccRelease)}`, '', `Pump start: ${getValidSummaryClock(heart.pumpStart)}`, `Pump end: ${getValidSummaryClock(heart.pumpEnd)}`, `Pump Time: ${summaryDuration(heart.pumpStart, heart.pumpEnd)}`].join('\n');
+  }
+  const lung = transplantState.lung;
+  const lines = ['Lung Transplant Time Summary', `Procedure: ${lung.procedure === 'bilateral' ? 'Bilateral' : 'Single'}`];
+  lines.push(lung.procedure === 'bilateral' ? `Implant order: ${lung.firstSide === 'left' ? 'Left first' : 'Right first'}` : `Implanted side: ${lung.singleSide === 'left' ? 'Left' : 'Right'}`, '', `Donor ACC Time: ${getValidSummaryClock(lung.donorAcc)}`);
+  getLungSidesInDisplayOrder().forEach((side, index) => {
+    const values = lung.sides[side];
+    const sideName = side === 'left' ? 'Left' : 'Right';
+    const order = lung.procedure === 'single' ? 'Single' : `${index + 1}${index === 0 ? 'st' : 'nd'}`;
+    lines.push('', `${sideName} Lung · ${order}`, `Ice out: ${getValidSummaryClock(values.iceOut)}`, `Anastomosis start: ${getValidSummaryClock(values.anastomosisStart)}`, `Reperfusion: ${getValidSummaryClock(values.reperfusion)}`, `Cold Ischemic Time: ${summaryDuration(lung.donorAcc, values.iceOut)}`, `Warm Ischemic Time: ${summaryDuration(values.iceOut, values.reperfusion)}`, `Anastomosis Time: ${summaryDuration(values.anastomosisStart, values.reperfusion)}`);
+  });
+  lines.push('', `Pump start: ${getValidSummaryClock(lung.pumpStart)}`, `Pump end: ${getValidSummaryClock(lung.pumpEnd)}`, `Pump Time: ${summaryDuration(lung.pumpStart, lung.pumpEnd)}`);
+  return lines.join('\n');
+}
+
+function updateTransplantDerivedDisplays() {
+  const status = document.getElementById('transplant-summary-status');
+  if (status) status.textContent = '';
+  document.querySelectorAll('[data-duration-start]').forEach(element => { element.textContent = getTransplantPath(element.dataset.durationStart) || '—'; });
+  document.querySelectorAll('[data-duration-end]').forEach(element => { element.textContent = getTransplantPath(element.dataset.durationEnd) || '—'; });
+  document.querySelectorAll('[data-duration-result]').forEach(element => { element.textContent = summaryDuration(getTransplantPath(element.dataset.durationStartPath), getTransplantPath(element.dataset.durationEndPath)); });
+  const preview = document.getElementById('transplant-summary-preview');
+  if (preview) preview.value = buildTransplantSummary(transplantState.activeType);
+}
+
+function renderTransplantCalculator() {
+  const root = document.getElementById('transplant-calculator');
+  if (!root) return;
+  root.innerHTML = transplantState.activeType === 'lung' ? renderLungTransplant() : renderHeartTransplant();
+  document.querySelectorAll('.transplant-type-btn').forEach(button => {
+    const active = button.id === `transplant-type-${transplantState.activeType}`;
+    button.setAttribute('aria-selected', String(active));
+    button.classList.toggle('bg-accent-600', active);
+    button.classList.toggle('text-white', active);
+    button.classList.toggle('shadow-sm', active);
+    button.classList.toggle('font-bold', active);
+    button.classList.toggle('text-slate-600', !active);
+    button.classList.toggle('dark:text-slate-200', !active);
+  });
+}
+
+async function copyTransplantSummary() {
+  const preview = document.getElementById('transplant-summary-preview');
+  const status = document.getElementById('transplant-summary-status');
+  if (!preview || !status) return;
+  if (hasInvalidTransplantClock(transplantState.activeType)) {
+    status.textContent = 'Fix invalid time fields before copying.';
+    return;
+  }
+  try {
+    if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(preview.value);
+    else {
+      preview.focus();
+      preview.select();
+      const copied = Boolean(document.execCommand && document.execCommand('copy'));
+      if (!copied) throw new Error('Fallback copy failed');
+      preview.setSelectionRange(0, 0);
+    }
+    status.textContent = 'Summary copied.';
+  } catch (error) {
+    status.textContent = 'Unable to copy. Select the summary and copy it manually.';
+  }
+}
+
+function initTransplantCalculator() {
+  const root = document.getElementById('time-transplant-content');
+  if (!root) return;
+  document.getElementById('transplant-type-lung')?.addEventListener('click', () => { transplantState.activeType = 'lung'; renderTransplantCalculator(); saveTimeLiveState(); });
+  document.getElementById('transplant-type-heart')?.addEventListener('click', () => { transplantState.activeType = 'heart'; renderTransplantCalculator(); saveTimeLiveState(); });
+  root.addEventListener('input', event => {
+    const path = event.target.dataset?.transplantPath;
+    if (!path) return;
+    const digits = event.target.value.replace(/\D/g, '').slice(0, 4);
+    let nextValue = event.target.value;
+    if (!event.target.value.includes(':')) nextValue = digits.length === 4 ? `${digits.slice(0, 2)}:${digits.slice(2)}` : digits;
+    event.target.value = nextValue;
+    setTransplantPath(path, nextValue);
+    const invalid = Boolean(nextValue) && parseClockMinutes(nextValue) === null && digits.length >= 4;
+    event.target.setAttribute('aria-invalid', String(invalid));
+    event.target.classList.toggle('border-rose-400', invalid);
+    event.target.classList.toggle('ring-1', invalid);
+    event.target.classList.toggle('ring-rose-400', invalid);
+    document.querySelector(`[data-transplant-error="${path}"]`)?.classList.toggle('hidden', !invalid);
+    updateTransplantDerivedDisplays();
+    saveTimeLiveState();
+  });
+  root.addEventListener('focusout', event => {
+    const path = event.target.dataset?.transplantPath;
+    if (!path || !event.target.value) return;
+    const normalized = normalizeClockInput(event.target.value);
+    if (normalized !== null) {
+      event.target.value = normalized;
+      setTransplantPath(path, normalized);
+      event.target.setAttribute('aria-invalid', 'false');
+      document.querySelector(`[data-transplant-error="${path}"]`)?.classList.add('hidden');
+      updateTransplantDerivedDisplays();
+      saveTimeLiveState();
+    } else {
+      event.target.setAttribute('aria-invalid', 'true');
+      event.target.classList.add('border-rose-400', 'ring-1', 'ring-rose-400');
+      document.querySelector(`[data-transplant-error="${path}"]`)?.classList.remove('hidden');
+    }
+  });
+  root.addEventListener('change', event => {
+    const setting = event.target.dataset?.transplantSetting;
+    if (!setting) return;
+    transplantState.lung[setting] = event.target.value;
+    renderTransplantCalculator();
+    saveTimeLiveState();
+  });
+  root.addEventListener('click', event => {
+    const nowButton = event.target.closest('[data-transplant-now]');
+    if (nowButton) {
+      const now = new Date();
+      setTransplantPath(nowButton.dataset.transplantNow, `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`);
+      renderTransplantCalculator();
+      saveTimeLiveState();
+      return;
+    }
+    if (event.target.closest('#transplant-summary-copy')) copyTransplantSummary();
+  });
+  renderTransplantCalculator();
+}
+
+if (typeof window !== 'undefined') {
+  window.calculateElapsedMinutes = calculateElapsedMinutes;
+  window.normalizeClockInput = normalizeClockInput;
+  window.buildTransplantSummary = buildTransplantSummary;
+  window.formatDuration = formatDuration;
+  window.formatTransplantDuration = formatTransplantDuration;
+  window.createDefaultTransplantState = createDefaultTransplantState;
+  window.normalizeStoredTransplantState = normalizeStoredTransplantState;
 }
 
 // -----------------------------
@@ -7986,7 +8448,7 @@ const FEEDBACK_RESULT_CONTEXTS = {
   '/heparin/': { insertAfter: '#hep2-results', readinessTarget: '#hep2-results' },
   '/priming-volume/': { insertAfter: '[data-feedback-result-anchor="priming-primary"]', readinessTarget: '#priming-builder-total', isReady: () => isPositiveNumericResult(el('priming-builder-total')) },
   '/cannula-pressure-drop/': { insertAfter: '#pressure-drop-results', readinessTarget: '#pressure-drop-results' },
-  '/timecalc/': { insertAfter: '#time-case-summary', readinessTarget: '#time-summary-preview', isReady: isTimeFeedbackReady },
+  '/timecalc/': { resolve: resolveTimeFeedbackContext },
   '/lbm/': { insertAfter: '[data-feedback-result-anchor="lbm-primary"]', readinessTarget: '#lbm_result', isReady: isLbmFeedbackReady },
   '/predicted-hct/': { resolve: resolveHctFeedbackContext },
   '/unit-converter/': { resolve: resolveUnitConverterFeedbackContext },
@@ -8106,9 +8568,18 @@ function isFeedbackResultReady(node) {
 function isTimeFeedbackReady(context) {
   const summary = context.readinessTarget || el('time-summary-preview');
   if (!isElementVisible(summary)) return false;
-  const text = getNodeText(summary);
+  const text = (summary.value || getNodeText(summary)).trim();
   if (!text || /no complete timed events yet|add event|start.*stop/i.test(text)) return false;
   return /\d{1,2}:\d{2}|\d+\s*min/i.test(text);
+}
+
+function resolveTimeFeedbackContext() {
+  const isTransplantMode = timeLiveMode === 'transplant';
+  const readinessTarget = el(isTransplantMode ? 'transplant-summary-preview' : 'time-summary-preview');
+  // Both mode containers can be hidden or rerendered. Keep feedback beside their
+  // shared stable anchor so it remains visible when the user switches workflows.
+  const insertAfter = el('time-feedback-anchor');
+  return { insertAfter, readinessTarget, isReady: isTimeFeedbackReady };
 }
 
 function isLbmFeedbackReady() {
@@ -8162,7 +8633,7 @@ function resolveFeedbackResultContext(pagePath) {
 }
 
 function isTimeFeedbackAction(target) {
-  return Boolean(target.closest('.time-start-now, .time-end-now, .time-live-start, .time-live-stop, .time-live-reset, #time-new-case, #time-case-start-new'));
+  return Boolean(target.closest('.time-start-now, .time-end-now, .time-live-start, .time-live-stop, .time-live-reset, [data-transplant-now], #time-new-case, #time-case-start-new'));
 }
 
 function getFeedbackCardMarkup(calculatorKey, promptId) {

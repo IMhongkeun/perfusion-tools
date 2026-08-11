@@ -233,6 +233,7 @@ async function run() {
     assert(migrationSql.includes('idx_feedback_events_prompt_id'), 'feedback_events migration should index prompt_id');
 
     const mainJs = fs.readFileSync(path.join(__dirname, '..', 'main.js'), 'utf8');
+    const timecalcHtml = fs.readFileSync(path.join(__dirname, '..', 'timecalc', 'index.html'), 'utf8');
     assert(mainJs.includes('visitorId = `pt_${randomPart.replace(/[^a-zA-Z0-9_-]/g, \'\')}`'), 'frontend visitor_id should use pt_ prefix and allowed characters');
     assert(mainJs.includes('Please do not include patient-identifiable information.'), 'feedback details step should warn against patient-identifiable information');
     assert(mainJs.includes('const FEEDBACK_RESULT_CONTEXTS = {'), 'frontend should define route-specific result context mapping');
@@ -249,7 +250,12 @@ async function run() {
     assert(mainJs.includes("details.classList.remove('hidden')"), 'negative feedback should open details');
     assert(mainJs.includes('const FEEDBACK_RESULT_CONTEXTS = {'), 'frontend should use route-specific result contexts');
     assert(mainJs.includes('resolveFeedbackResultContext(pagePath)'), 'frontend should resolve dynamic result context at eligibility time');
-    assert(mainJs.includes('isTimeFeedbackAction') && mainJs.includes('.time-live-start') && mainJs.includes('.time-start-now') && !mainJs.includes('#time-summary-copy') , 'time calculator should treat result-producing buttons, not copy, as feedback interactions');
+    assert(mainJs.includes("'/timecalc/': { resolve: resolveTimeFeedbackContext }"), 'Time Calculator feedback should resolve the active mode summary');
+    assert(mainJs.includes("el(isTransplantMode ? 'transplant-summary-preview' : 'time-summary-preview')"), 'Transplant feedback readiness should use the visible transplant summary');
+    assert(timecalcHtml.includes('id="time-feedback-anchor"'), 'Time Calculator should provide a feedback anchor outside both mode-specific containers');
+    assert(mainJs.includes("const insertAfter = el('time-feedback-anchor')"), 'Record, Live, and Transplant feedback should share the stable anchor');
+    assert(mainJs.includes('shared stable anchor so it remains visible when the user switches workflows.'), 'mode switches should explicitly preserve an active feedback card');
+    assert(mainJs.includes('isTimeFeedbackAction') && mainJs.includes('.time-live-start') && mainJs.includes('.time-start-now') && mainJs.includes('[data-transplant-now]') && !mainJs.includes('#time-summary-copy') , 'time calculator should treat all result-producing clock buttons, not copy, as feedback interactions');
     assert(mainJs.includes('resolveHctFeedbackContext') && mainJs.includes("el('hct_mode')?.value === 'onpump'") && mainJs.includes("el('onpump-extra-results')") && mainJs.includes("el('hct-primary-results')"), 'predicted Hct should resolve mode-specific anchors');
     assert(mainJs.includes('resolveUnitConverterFeedbackContext') && mainJs.includes("activeTab === 'pressure'") && mainJs.includes("activeTab === 'cannula'") && mainJs.includes("el('unit-flow-mlmin')"), 'unit converter should resolve active tab-specific readiness targets');
     assert(mainJs.includes('isZScoreFeedbackReady') && mainJs.includes("el('phn-expected-zero')") && mainJs.includes("el('phn-measured-z')") && !mainJs.includes("'/z-score/': '#phn-result-model'"), 'z-score readiness should use numeric outputs instead of model label');
