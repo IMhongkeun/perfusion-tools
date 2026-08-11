@@ -80,11 +80,13 @@ function getCardioplegiaSummaryIntervalMinutes(state) {
   return validateCardioplegiaInterval(state.intervalMinutes);
 }
 
-function buildCardioplegiaSummaryLines(state) {
+function buildCardioplegiaSummaryLines(state, mode = 'live') {
   const doseText = state.doseLog.length ? state.doseLog.join(', ') : '—';
   const lines = [`Cardioplegia complete: ${doseText}`];
-  const intervalMinutes = getCardioplegiaSummaryIntervalMinutes(state);
-  if (intervalMinutes) lines.push(`Cardioplegia interval setting: ${intervalMinutes} min`);
+  if (mode === 'live') {
+    const intervalMinutes = getCardioplegiaSummaryIntervalMinutes(state);
+    if (intervalMinutes) lines.push(`Cardioplegia interval setting: ${intervalMinutes} min`);
+  }
   return lines;
 }
 
@@ -158,6 +160,7 @@ function run() {
   assert.strictEqual(renderSummaryStatus('Summary copied'), '', 'Undo refresh should clear copied status');
 
   assert(buildCardioplegiaSummaryLines({ selectedPreset: 'blood-20', intervalMinutes: 20, customIntervalMinutes: '', doseLog: [] }).includes('Cardioplegia interval setting: 20 min'), 'valid preset should be included in summary interval');
+  assert(!buildCardioplegiaSummaryLines({ selectedPreset: 'blood-20', intervalMinutes: 20, customIntervalMinutes: '', doseLog: [] }, 'record').includes('Cardioplegia interval setting'), 'Record summary should not include the Live-only cardioplegia interval setting');
   assert(buildCardioplegiaSummaryLines({ selectedPreset: 'custom', intervalMinutes: 20, customIntervalMinutes: '75', doseLog: [] }).includes('Cardioplegia interval setting: 75 min'), 'valid custom interval should be included in summary interval');
   const emptyCustomLines = buildCardioplegiaSummaryLines({ selectedPreset: 'custom', intervalMinutes: 20, customIntervalMinutes: '', doseLog: ['09:37'] });
   assert(!emptyCustomLines.includes('Cardioplegia interval setting: 20 min'), 'empty custom interval should not show stale preset interval');
@@ -174,6 +177,9 @@ function run() {
   assert(mainJs.includes('if (status) status.textContent = message'), 'summary render should always update status text');
   assert(!mainJs.includes("getElementById('time-summary-refresh')"), 'Refresh summary button listener should be removed');
   assert(mainJs.includes('function getCardioplegiaSummaryIntervalMinutes'), 'summary interval helper should exist');
+  assert(mainJs.includes("if (timeLiveMode === 'live') {\n    const intervalMinutes = getCardioplegiaSummaryIntervalMinutes();"), 'production summary should include the cardioplegia interval only in Live mode');
+  const modeHandlerSource = mainJs.slice(mainJs.indexOf('function setTimeLiveMode'), mainJs.indexOf('function bindTimeRowEvents'));
+  assert(modeHandlerSource.includes('renderTimeCaseSummary();'), 'switching Record and Live modes should immediately refresh mode-specific summary content');
   assert(mainJs.includes("cardioplegiaReminderState.selectedPreset === 'custom'"), 'summary interval should branch on custom preset');
   const undoHandlerSource = mainJs.slice(mainJs.indexOf('if (undoBtn)'), mainJs.indexOf('if (resetBtn)'));
   assert(undoHandlerSource.includes('renderTimeCaseSummary();'), 'Undo last handler should refresh case summary preview');

@@ -3870,8 +3870,10 @@ function buildTimeCaseSummaryText() {
   const doseLog = Array.isArray(cardioplegiaReminderState.doseLog) ? cardioplegiaReminderState.doseLog : [];
   const doseText = doseLog.length ? doseLog.map(formatCardioplegiaClock).join(', ') : '—';
   lines.push(`Cardioplegia complete: ${doseText}`);
-  const intervalMinutes = getCardioplegiaSummaryIntervalMinutes();
-  if (intervalMinutes) lines.push(`Cardioplegia interval setting: ${intervalMinutes} min`);
+  if (timeLiveMode === 'live') {
+    const intervalMinutes = getCardioplegiaSummaryIntervalMinutes();
+    if (intervalMinutes) lines.push(`Cardioplegia interval setting: ${intervalMinutes} min`);
+  }
   return lines.join('\n');
 }
 
@@ -4277,6 +4279,7 @@ function setTimeLiveMode(nextMode) {
     updateTimeRow(row.id);
     updateTimeLiveControls(row.id);
   });
+  renderTimeCaseSummary();
   if (pendingTimeCaseData) saveTimePreferencesState();
   else saveTimeLiveState();
 }
