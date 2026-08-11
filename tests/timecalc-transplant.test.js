@@ -126,6 +126,8 @@ assert(mainJs.includes("transplantState.activeType === 'lung' ? renderLungTransp
 assert(mainJs.includes("lung.firstSide === 'left' ? ['left', 'right'] : ['right', 'left']"));
 assert(mainJs.includes("if (lung.procedure === 'single') return [lung.singleSide]"));
 assert(mainJs.includes("grid-cols-[minmax(0,1fr)_2.5rem]"), 'time input and compact clock button should stay side by side');
+assert(mainJs.includes('data-transplant-now="${path}" class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-slate-200'), 'Transplant current-time buttons should reuse the standard outlined clock-button style');
+assert(mainJs.includes('M12 8v4l2.5 2.5M12 22c5.523'), 'Transplant should reuse the standard Time Calculator clock icon');
 assert(mainJs.includes('class="grid grid-cols-1 gap-4"'), 'bilateral lungs should use full-width stacked cards');
 assert(mainJs.includes('id="transplant-summary-preview"'), 'transplant summary preview should be rendered');
 assert(mainJs.includes('aria-label="Copy transplant case summary"'), 'summary copy action should be an accessible icon button');

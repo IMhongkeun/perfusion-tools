@@ -4920,7 +4920,7 @@ function formatTransplantDuration(minutes) {
 }
 
 function transplantClockIcon() {
-  return '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
+  return '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /></svg>';
 }
 
 function transplantEventInput(path, label, value) {
@@ -4929,7 +4929,7 @@ function transplantEventInput(path, label, value) {
     <span class="mb-1.5 block break-words">${label}</span>
     <span class="grid min-w-0 grid-cols-[minmax(0,1fr)_2.5rem] items-center gap-1.5">
       <input type="text" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="HH:mm" value="${value}" data-transplant-path="${path}" aria-invalid="${invalid}" class="min-w-0 w-full h-10 rounded-xl border ${invalid ? 'border-rose-400 ring-1 ring-rose-400' : 'border-slate-200 dark:border-primary-700'} bg-white dark:bg-primary-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-100 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
-      <button type="button" data-transplant-now="${path}" class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-600 text-white hover:bg-accent-700 focus:ring-2 focus:ring-accent-500 focus:ring-offset-2" aria-label="Enter current time for ${label}">${transplantClockIcon()}</button>
+      <button type="button" data-transplant-now="${path}" class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-accent-500" aria-label="Enter current time for ${label}">${transplantClockIcon()}</button>
     </span>
     <span data-transplant-error="${path}" class="${invalid ? '' : 'hidden'} mt-1 block text-[11px] text-rose-600 dark:text-rose-300">Enter a valid 24-hour time (HH:mm).</span>
   </label>`;
