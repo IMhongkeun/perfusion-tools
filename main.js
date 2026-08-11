@@ -3698,6 +3698,7 @@ function buildTimeRowHtml(row, index) {
         <button id="time-live-stop-${row.id}" type="button" class="time-live-stop rounded-lg border border-accent-600 bg-accent-600 px-3 py-1.5 text-xs font-semibold text-white disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 dark:disabled:border-primary-700 dark:disabled:bg-primary-800 dark:disabled:text-slate-500 disabled:cursor-not-allowed" data-row-id="${row.id}">Stop</button>
         <button id="time-live-reset-${row.id}" type="button" class="time-live-reset rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-200" data-row-id="${row.id}">Reset</button>
       </div>
+      ${row.eventType === 'x-clamp' ? `<button id="cardioplegia-reminder-toggle" type="button" class="hidden w-full items-center justify-between rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-left text-xs font-semibold text-slate-600 dark:text-slate-200 hover:border-accent-300 dark:hover:border-accent-700 focus:outline-none focus:ring-2 focus:ring-accent-500" aria-controls="cardioplegia-reminder" aria-expanded="false"><span>Cardioplegia reminder</span><span aria-hidden="true">›</span></button>` : ''}
     </div>`;
 }
 
@@ -3751,6 +3752,7 @@ function renderTimeRows(preservedValues = null) {
     updateTimeLiveControls(row.id);
   });
   updateAddTimeRowUi();
+  renderCardioplegiaReminder();
   renderTimeCaseSummary();
 }
 
@@ -3920,8 +3922,8 @@ async function copyTimeCaseSummary() {
 function getDefaultCardioplegiaReminderState() {
   return {
     reminderEnabled: true,
-    selectedPreset: 'blood-20',
-    intervalMinutes: 20,
+    selectedPreset: 'interval-30',
+    intervalMinutes: 30,
     customIntervalMinutes: '',
     lastCompletedAtEpoch: null,
     nextDueAtEpoch: null,
@@ -3989,8 +3991,8 @@ function saveTimePreferencesState() {
     localStorage.setItem(TIME_PREFERENCES_STORAGE_KEY, JSON.stringify({
       mode: timeLiveMode,
       reminderEnabled: cardioplegiaReminderState.reminderEnabled !== false,
-      selectedPreset: cardioplegiaReminderState.selectedPreset || 'blood-20',
-      intervalMinutes: validateCardioplegiaInterval(cardioplegiaReminderState.intervalMinutes) || 20,
+      selectedPreset: cardioplegiaReminderState.selectedPreset || 'interval-30',
+      intervalMinutes: validateCardioplegiaInterval(cardioplegiaReminderState.intervalMinutes) || 30,
       customIntervalMinutes: cardioplegiaReminderState.customIntervalMinutes || ''
     }));
   } catch (err) {
@@ -4119,6 +4121,7 @@ function clearTimecalcCaseData(options = {}) {
   timeCaseStartedAtEpoch = null;
   pendingTimeCaseData = null;
   pendingTimeCaseIsStale = false;
+  cardioplegiaReminderExpanded = false;
   cardioplegiaShortcutDismissed = false;
   cardioplegiaReminderState.lastCompletedAtEpoch = null;
   cardioplegiaReminderState.nextDueAtEpoch = null;
@@ -4301,6 +4304,7 @@ function bindTimeRowEvents(rowId) {
   const liveStart = document.getElementById(`time-live-start-${rowId}`);
   const liveStop = document.getElementById(`time-live-stop-${rowId}`);
   const liveReset = document.getElementById(`time-live-reset-${rowId}`);
+  const reminderToggle = getTimeRowEventType(rowId) === 'x-clamp' ? document.getElementById('cardioplegia-reminder-toggle') : null;
   const removeBtn = document.querySelector(`.time-remove-row[data-row-id="${rowId}"]`);
   [s, e, sNow, eNow].forEach(elRef => {
     if (elRef) elRef.removeAttribute('title');
@@ -4310,6 +4314,13 @@ function bindTimeRowEvents(rowId) {
       saveTimeLiveState();
       renderCardioplegiaShortcut();
       renderTimeCaseSummary();
+    });
+  }
+  if (reminderToggle) {
+    reminderToggle.addEventListener('click', () => {
+      cardioplegiaReminderExpanded = !cardioplegiaReminderExpanded;
+      renderCardioplegiaReminder();
+      if (cardioplegiaReminderExpanded) highlightCardioplegiaReminder();
     });
   }
   if (s) {
@@ -4421,23 +4432,21 @@ function autoFormatTimeInput(inputEl) {
 
 const CARDIOPLEGIA_REMINDER_STORAGE_KEY = 'perfusiontools.timecalc.cardioplegiaReminder.v2';
 const CARDIOPLEGIA_PRESETS = {
-  'del-nido-60': 60,
-  'del-nido-75': 75,
-  'del-nido-90': 90,
-  'blood-15': 15,
-  'blood-20': 20,
-  'blood-30': 30
+  'interval-30': 30,
+  'interval-60': 60,
+  'interval-90': 90
 };
 let cardioplegiaReminderState = {
   reminderEnabled: true,
-  selectedPreset: 'blood-20',
-  intervalMinutes: 20,
+  selectedPreset: 'interval-30',
+  intervalMinutes: 30,
   customIntervalMinutes: '',
   lastCompletedAtEpoch: null,
   nextDueAtEpoch: null,
   doseLog: []
 };
 let cardioplegiaReminderTickId = null;
+let cardioplegiaReminderExpanded = false;
 let cardioplegiaShortcutDismissed = false;
 let cardioplegiaShortcutConfirmTimeoutId = null;
 
@@ -4621,8 +4630,17 @@ function renderCardioplegiaReminder() {
   const logEl = document.getElementById('cardioplegia-log');
   if (!root || !completeBtn || !lastEl || !nextEl || !remainingEl || !logEl) return;
 
-  root.classList.toggle('hidden', timeLiveMode !== 'live');
+  const shouldShow = timeLiveMode === 'live' && cardioplegiaReminderExpanded;
+  root.classList.toggle('hidden', !shouldShow);
+  const toggleButton = document.getElementById('cardioplegia-reminder-toggle');
+  if (toggleButton) {
+    toggleButton.classList.toggle('hidden', timeLiveMode !== 'live');
+    toggleButton.classList.toggle('flex', timeLiveMode === 'live');
+    toggleButton.setAttribute('aria-expanded', String(shouldShow));
+  }
   if (customInput && document.activeElement !== customInput) customInput.value = cardioplegiaReminderState.customIntervalMinutes || '';
+  document.getElementById('cardioplegia-custom-fields')?.classList.toggle('hidden', cardioplegiaReminderState.selectedPreset !== 'custom');
+  document.getElementById('cardioplegia-custom-fields')?.classList.toggle('flex', cardioplegiaReminderState.selectedPreset === 'custom');
   updateCardioplegiaPresetUi();
 
   const intervalMinutes = getCardioplegiaIntervalMinutes();
@@ -4678,9 +4696,6 @@ function initCardioplegiaReminder() {
   const undoBtn = document.getElementById('cardioplegia-undo');
   const resetBtn = document.getElementById('cardioplegia-reset');
   const clearLogBtn = document.getElementById('cardioplegia-clear-log');
-  const shortcutCompleteBtn = document.getElementById('cardioplegia-shortcut-complete');
-  const shortcutViewBtn = document.getElementById('cardioplegia-shortcut-view');
-  const shortcutDismissBtn = document.getElementById('cardioplegia-shortcut-dismiss');
 
   loadCardioplegiaReminderState();
 
@@ -4700,6 +4715,7 @@ function initCardioplegiaReminder() {
       saveCardioplegiaReminderState();
       renderCardioplegiaReminder();
       renderTimeCaseSummary();
+      if (preset === 'custom') customInput?.focus();
     });
   });
 
@@ -4750,14 +4766,6 @@ function initCardioplegiaReminder() {
     });
   }
 
-  if (shortcutCompleteBtn) shortcutCompleteBtn.addEventListener('click', () => completeCardioplegiaDose('shortcut'));
-  if (shortcutViewBtn) shortcutViewBtn.addEventListener('click', highlightCardioplegiaReminder);
-  if (shortcutDismissBtn) {
-    shortcutDismissBtn.addEventListener('click', () => {
-      cardioplegiaShortcutDismissed = true;
-      renderCardioplegiaShortcut();
-    });
-  }
 
   if (cardioplegiaReminderTickId) window.clearInterval(cardioplegiaReminderTickId);
   cardioplegiaReminderTickId = window.setInterval(renderCardioplegiaReminder, 1000);

@@ -45,12 +45,9 @@ function run() {
   const timecalcHtml = fs.readFileSync(path.join(repoRoot, 'timecalc', 'index.html'), 'utf8');
   const packageJson = fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8');
 
-  assert(timecalcHtml.includes('id="cardioplegia-shortcut"'), 'sticky cardioplegia shortcut should exist');
-  assert(timecalcHtml.includes('X-clamp running · Cardioplegia reminder'), 'shortcut should use requested compact wording');
-  assert(timecalcHtml.includes('id="cardioplegia-shortcut-complete"'), 'shortcut complete button should exist');
-  assert(timecalcHtml.includes('id="cardioplegia-shortcut-view"'), 'shortcut View reminder button should exist');
-  assert(timecalcHtml.includes('id="cardioplegia-shortcut-dismiss"'), 'shortcut should be dismissible');
-  assert(timecalcHtml.includes('Optional reminder. Verify against pump timer and charting record.'), 'shortcut safety copy should be compact');
+  assert(!timecalcHtml.includes('id="cardioplegia-shortcut"'), 'the automatic x-clamp popup should be removed');
+  assert(mainJs.includes('id="cardioplegia-reminder-toggle"'), 'the x-clamp row should provide the compact reminder control instead');
+  assert(mainJs.includes('aria-controls="cardioplegia-reminder" aria-expanded="false"'), 'inline reminder control should expose its expanded state accessibly');
   assert(mainJs.includes("{ id: 'row-xclamp', eventType: 'x-clamp' }"), 'Row 2 should expose stable x-clamp event type for shortcut logic');
 
   assert.strictEqual(isCrossClampLabel('Aortic cross-clamp'), true, 'Aortic cross-clamp label should be recognized');
@@ -72,19 +69,10 @@ function run() {
   assert(/Cardioplegia completed at \d{2}:\d{2} · Next due \d{2}:\d{2}/.test(confirmationText), 'shortcut confirmation should use 24-hour HH:MM text');
   assert(!/(오전|오후|AM|PM)/i.test(confirmationText), 'shortcut confirmation should not include localized AM/PM text');
 
-  assert(mainJs.includes('function isCrossClampLabel'), 'main code should include x-clamp row label detection');
-  assert(mainJs.includes('function getRunningCrossClampRow'), 'main code should search for a running x-clamp row');
   assert(mainJs.includes('function getTimeRowEventType'), 'main code should read stable row event type');
-  assert(!mainJs.includes("eventType === 'x-clamp' || isCrossClampLabel(label)"), 'shortcut should use stable event type instead of custom label matching');
-  assert(mainJs.includes('function renderCardioplegiaShortcut'), 'main code should render shortcut visibility');
-  assert(mainJs.includes("timeLiveMode === 'live' && Boolean(crossClampRow) && !cardioplegiaShortcutDismissed"), 'shortcut should only show in Live mode for running x-clamp rows');
-  assert(mainJs.includes("if (getTimeRowEventType(rowId) === 'x-clamp') cardioplegiaShortcutDismissed = false"), 'x-clamp Start should re-enable shortcut visibility via stable event type');
-  assert(mainJs.includes("completeCardioplegiaDose('shortcut')"), 'shortcut button should reuse shared complete handler');
-  assert(mainJs.includes('showCardioplegiaShortcutConfirmation(completedAtEpoch, nextDueAtEpoch)'), 'shortcut completion should show inline confirmation');
-  assert(mainJs.includes('highlightCardioplegiaReminder();'), 'shortcut completion should scroll/focus the reminder card after recording the dose');
-  assert(mainJs.includes('temporarilyDisableCardioplegiaShortcutComplete();'), 'shortcut completion should briefly disable the complete button to reduce repeat taps');
-  assert(mainJs.includes("Cardioplegia timer started · Next due ${formatCardioplegiaClock(nextDueAtEpoch)}"), 'shortcut title should update after completion');
-  assert(mainJs.includes("Cardioplegia completed at ${formatCardioplegiaClock(completedAtEpoch)} · Next due ${formatCardioplegiaClock(nextDueAtEpoch)}"), 'inline confirmation should include completion and next due times');
+  assert(mainJs.includes("const reminderToggle = getTimeRowEventType(rowId) === 'x-clamp'"), 'only the stable x-clamp row should bind the inline reminder toggle');
+  assert(mainJs.includes('cardioplegiaReminderExpanded = !cardioplegiaReminderExpanded'), 'inline control should toggle the reminder card');
+  assert(mainJs.includes("toggleButton.setAttribute('aria-expanded', String(shouldShow))"), 'inline control should synchronize its accessible expanded state');
   assert(mainJs.includes("function getPreferredScrollBehavior"), 'scroll helper should respect reduced motion settings');
   assert(mainJs.includes("prefers-reduced-motion: reduce"), 'scroll helper should check prefers-reduced-motion');
   assert(mainJs.includes("root.scrollIntoView({ behavior: getPreferredScrollBehavior(), block: 'center' })"), 'View reminder and shortcut completion should scroll to reminder card');
@@ -92,8 +80,7 @@ function run() {
   assert(mainJs.includes("root.classList.add('ring-2', 'ring-accent-400'"), 'View reminder should briefly highlight the reminder card');
   const startHandlerSource = mainJs.slice(mainJs.indexOf("liveStart.addEventListener('click'"), mainJs.indexOf("liveStop.addEventListener('click'"));
   assert(!startHandlerSource.includes('highlightCardioplegiaReminder();'), 'x-clamp Start alone should not auto-scroll to the reminder card');
-  assert(mainJs.includes('cardioplegiaShortcutDismissed = false'), 'New case / x-clamp start should reset shortcut dismissal state');
-  assert(mainJs.includes('renderCardioplegiaShortcut();'), 'New case and live updates should refresh shortcut visibility');
+  assert(mainJs.includes('cardioplegiaReminderExpanded = false'), 'New case should collapse the reminder card');
   assert(packageJson.includes('tests/cardioplegia-shortcut.test.js'), 'test script should include shortcut regression test');
 
   const shortcutSource = mainJs.slice(mainJs.indexOf('function isCrossClampLabel'), mainJs.indexOf('function setupContactActions'));
