@@ -9,11 +9,27 @@ const repoRoot = path.join(__dirname, '..');
 const mainJs = fs.readFileSync(path.join(repoRoot, 'main.js'), 'utf8');
 const timecalcHtml = fs.readFileSync(path.join(repoRoot, 'timecalc', 'index.html'), 'utf8');
 const distTimecalcHtml = fs.readFileSync(path.join(repoRoot, 'dist', 'timecalc', 'index.html'), 'utf8');
+const pagesWithBackToTop = [
+  'index.html', 'bsa/index.html', 'lbm/index.html', 'gdp/index.html', 'heparin/index.html',
+  'predicted-hct/index.html', 'z-score/index.html', 'priming-volume/index.html',
+  'timecalc/index.html', 'quick-reference/index.html', 'cannula-pressure-drop/index.html',
+  'unit-converter/index.html', 'phn-echo/index.html'
+];
 
 assert.strictEqual(timecalcHtml, distTimecalcHtml, 'Time Calculator source and dist output should stay synchronized.');
 assert(!timecalcHtml.includes('id="cardioplegia-shortcut"'), 'Time Calculator should no longer render the fixed cardioplegia popup.');
-assert(timecalcHtml.includes('[data-mobile-calculator-nav] .back-to-top-button'), 'The mobile nav should suppress any legacy nested Back-to-top button.');
 assert(timecalcHtml.includes('opacity-0 pointer-events-none') && timecalcHtml.includes('aria-hidden="true" tabindex="-1"'), 'Back-to-top button should start non-interactive and hidden from accessibility APIs.');
+for (const relativePath of pagesWithBackToTop) {
+  const html = fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
+  const buttonMatches = html.match(/id="back-to-top"/g) || [];
+  const mobileNavEnd = html.indexOf('</nav>', html.indexOf('<nav data-mobile-calculator-nav'));
+  const buttonStart = html.indexOf('<button id="back-to-top"');
+  assert.strictEqual(buttonMatches.length, 1, `${relativePath} should render exactly one Back-to-top button.`);
+  if (mobileNavEnd !== -1) assert(buttonStart > mobileNavEnd, `${relativePath} should not place Back-to-top inside the mobile navigation.`);
+  assert(html.includes('rounded-full border border-slate-200 bg-white text-primary-900'), `${relativePath} should use the light outlined button style.`);
+  assert(html.includes('d="M6 15l6-6 6 6"'), `${relativePath} should use the compact chevron icon.`);
+  assert(!html.includes('[data-mobile-calculator-nav] .back-to-top-button'), `${relativePath} should not retain the obsolete nested-button workaround.`);
+}
 assert(mainJs.includes('button.dataset.backToTopInitialized'), 'Back-to-top initialization should guard against duplicate event listeners.');
 assert(mainJs.includes('renderCardioplegiaShortcut();'), 'Shortcut state changes should continue to use the shared shortcut render path.');
 assert(mainJs.includes('updateBackToTopVisibility();'), 'Back-to-top visibility should be recalculated from shared update paths.');

@@ -60,10 +60,6 @@
       right: max(16px, env(safe-area-inset-right));
     }
 
-    [data-mobile-calculator-nav] .back-to-top-button {
-      display: none !important;
-    }
-
     .bsa-flow-number {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       font-size: 0.75rem;
@@ -747,7 +743,7 @@
     </a>
   </nav>
 
-  <button id="back-to-top" type="button" class="back-to-top-button md:hidden fixed z-50 inline-flex h-12 w-12 translate-y-2 items-center justify-center rounded-full bg-primary-900 text-white opacity-0 pointer-events-none shadow-lg shadow-slate-900/20 ring-1 ring-white/70 transition-all hover:bg-primary-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:bg-accent-500 dark:text-primary-950 dark:ring-primary-900/40 dark:hover:bg-accent-400 dark:focus-visible:ring-offset-primary-950" aria-label="Back to top" aria-hidden="true" tabindex="-1">↑</button>
+  <button id="back-to-top" type="button" class="back-to-top-button md:hidden fixed z-50 inline-flex h-12 w-12 translate-y-2 items-center justify-center rounded-full border border-slate-200 bg-white text-primary-900 opacity-0 pointer-events-none shadow-lg shadow-slate-900/15 transition-all hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:border-primary-700 dark:bg-primary-900 dark:text-white dark:hover:bg-primary-800 dark:focus-visible:ring-offset-primary-950" aria-label="Back to top" aria-hidden="true" tabindex="-1"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 15l6-6 6 6" /></svg></button>
 
   <script src="/main.js"></script>
 </body>
