@@ -74,6 +74,12 @@
       right: max(16px, env(safe-area-inset-right));
     }
 
+    /* Never allow the legacy centered control to render inside mobile navigation. */
+    [data-mobile-calculator-nav] .back-to-top-button,
+    [data-mobile-calculator-nav] #back-to-top {
+      display: none !important;
+    }
+
     .bsa-flow-number {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       font-size: 0.75rem;

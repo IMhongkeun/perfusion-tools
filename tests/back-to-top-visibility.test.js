@@ -28,8 +28,11 @@ for (const relativePath of pagesWithBackToTop) {
   if (mobileNavEnd !== -1) assert(buttonStart > mobileNavEnd, `${relativePath} should not place Back-to-top inside the mobile navigation.`);
   assert(html.includes('rounded-full border border-slate-200 bg-white text-primary-900'), `${relativePath} should use the light outlined button style.`);
   assert(html.includes('d="M6 15l6-6 6 6"'), `${relativePath} should use the compact chevron icon.`);
-  assert(!html.includes('[data-mobile-calculator-nav] .back-to-top-button'), `${relativePath} should not retain the obsolete nested-button workaround.`);
+  assert(html.includes('[data-mobile-calculator-nav] .back-to-top-button'), `${relativePath} should defensively hide any stale centered control.`);
+  assert(!/<nav data-mobile-calculator-nav[\s\S]*?<button id="back-to-top"[\s\S]*?<\/nav>/.test(html), `${relativePath} should not render Back-to-top inside the mobile navigation.`);
 }
+assert(mainJs.includes('removeNestedBackToTopButtons();'), 'Back-to-top initialization should remove stale controls nested in mobile navigation.');
+assert(mainJs.includes("document.querySelectorAll('[data-mobile-calculator-nav] #back-to-top, [data-mobile-calculator-nav] .back-to-top-button')"), 'Legacy cleanup should cover centered controls by id and class.');
 assert(mainJs.includes('button.dataset.backToTopInitialized'), 'Back-to-top initialization should guard against duplicate event listeners.');
 assert(mainJs.includes('renderCardioplegiaShortcut();'), 'Shortcut state changes should continue to use the shared shortcut render path.');
 assert(mainJs.includes('updateBackToTopVisibility();'), 'Back-to-top visibility should be recalculated from shared update paths.');

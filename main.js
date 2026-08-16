@@ -8781,6 +8781,11 @@ function setBackToTopVisible(button, shouldShow) {
   else button.setAttribute('tabindex', '-1');
 }
 
+function removeNestedBackToTopButtons() {
+  document.querySelectorAll('[data-mobile-calculator-nav] #back-to-top, [data-mobile-calculator-nav] .back-to-top-button')
+    .forEach(button => button.remove());
+}
+
 function updateBackToTopVisibility() {
   const button = el('back-to-top');
   if (!button) return;
@@ -8814,6 +8819,7 @@ window.addEventListener('DOMContentLoaded', () => {
   setTimeout(resetScrollToTop, 10);
   initStandaloneTopNav();
   initMobileCalculatorNav();
+  removeNestedBackToTopButtons();
   initBackToTopButton();
   initCalculatorDiscovery();
   const primaryTopNav = el('nav-home') ? el('nav-home').closest('nav') : null;
