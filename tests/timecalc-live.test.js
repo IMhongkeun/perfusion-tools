@@ -18,7 +18,8 @@ function formatDuration(totalMinutes) {
   if (totalMinutes == null || Number.isNaN(totalMinutes)) return '-';
   const h = Math.floor(totalMinutes / 60);
   const m = totalMinutes % 60;
-  return `${totalMinutes} min (${h}:${String(m).padStart(2, '0')})`;
+  if (h < 1) return `${totalMinutes} min`;
+  return `${totalMinutes} min (${h}hr ${String(m).padStart(2, '0')}min)`;
 }
 
 function manualDuration(start, end) {
@@ -83,10 +84,10 @@ function run() {
   const mainJs = fs.readFileSync(path.join(repoRoot, 'main.js'), 'utf8');
   const timecalcHtml = fs.readFileSync(path.join(repoRoot, 'timecalc', 'index.html'), 'utf8');
 
-  assert.strictEqual(manualDuration('08:15', '10:45'), '150 min (2:30)', 'manual start/end duration should remain unchanged');
-  assert.strictEqual(manualDuration('23:30', '00:15'), '45 min (0:45)', 'manual cross-midnight duration should remain unchanged');
+  assert.strictEqual(manualDuration('08:15', '10:45'), '150 min (2hr 30min)', 'manual duration should show readable hours and minutes');
+  assert.strictEqual(manualDuration('23:30', '00:15'), '45 min', 'sub-hour manual duration should not repeat minutes');
   const manualCrossMidnight = manualDurationWithEndDisplay('23:45', '00:15');
-  assert.strictEqual(manualCrossMidnight.duration, '30 min (0:30)', 'manual cross-midnight duration should be calculated internally');
+  assert.strictEqual(manualCrossMidnight.duration, '30 min', 'manual cross-midnight duration should be calculated internally');
   assert.strictEqual(manualCrossMidnight.endDisplay, '00:15', 'manual cross-midnight input should not be rewritten to a 24+ hour display');
   assert.strictEqual(parseTimeToMinutes('24:15'), null, '24+ hour display values should not be accepted as user-facing HH:MM input');
   assert.strictEqual(liveDuration(100000, 100000 + (7 * 60000) + 30000), '00:07:30 (7 min)', 'live duration should show exact HH:MM:SS with floored minute summary');
@@ -97,7 +98,7 @@ function run() {
   assert.strictEqual(liveCrossMidnight.endDisplay, '00:15', 'live stopped cross-midnight end display should stay 24-hour clock time');
   assert.strictEqual(liveCrossMidnight.duration, '00:30:00 (30 min)', 'live stopped cross-midnight duration should use epoch difference');
   assert(!JSON.stringify(liveCrossMidnight.persistedRow).includes('24:15'), 'live stopped persistence should not contain 24+ hour display values');
-  assert.strictEqual(manualDuration('09:00', '09:05'), '5 min (0:05)', 'manual calculation should remain the source of truth when users edit inputs');
+  assert.strictEqual(manualDuration('09:00', '09:05'), '5 min', 'manual calculation should remain the source of truth when users edit inputs');
   const runningState = { running: true, startAtEpoch: 100000, endAtEpoch: null, startDisplay: '09:00', endDisplay: '' };
   assert.strictEqual(displayForMode({ mode: 'record', startValue: '09:00', endValue: '', state: runningState, nowEpoch: 100000 + 90000 }), '-', 'Record mode should keep missing-end manual display instead of live running duration');
   assert.strictEqual(displayForMode({ mode: 'live', startValue: '09:00', endValue: '', state: runningState, nowEpoch: 100000 + 90000 }), '00:01:30 (1 min)', 'returning to Live mode should show Date.now-based running duration');

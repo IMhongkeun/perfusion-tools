@@ -11,12 +11,13 @@ const functionSource = mainJs.slice(
   mainJs.indexOf('function transplantClockIcon')
 );
 const context = {};
-vm.runInNewContext(`${functionSource}; this.calculateElapsedMinutes = calculateElapsedMinutes; this.formatTransplantDuration = formatTransplantDuration; this.normalizeClockInput = normalizeClockInput;`, context);
+vm.runInNewContext(`${functionSource}; this.calculateElapsedMinutes = calculateElapsedMinutes; this.calculateTotalIschemicMinutes = calculateTotalIschemicMinutes; this.formatTransplantDuration = formatTransplantDuration; this.formatTransplantDurationDisplay = formatTransplantDurationDisplay; this.normalizeClockInput = normalizeClockInput;`, context);
 
 const recordFormatterSource = mainJs.slice(mainJs.indexOf('function formatDuration(mins)'), mainJs.indexOf('function formatMinutesToHHMM'));
 const recordContext = {};
 vm.runInNewContext(`${recordFormatterSource}; this.formatDuration = formatDuration;`, recordContext);
-assert.strictEqual(recordContext.formatDuration(65), '65 min (01:05)', 'Record duration should use the shared HH:mm display format');
+assert.strictEqual(recordContext.formatDuration(159), '159 min (2hr 39min)', 'Record duration should show readable hours and minutes in parentheses');
+assert.strictEqual(recordContext.formatDuration(45), '45 min', 'Record duration under one hour should not repeat minutes');
 
 const modeSource = mainJs.slice(mainJs.indexOf('function normalizeTimeMode'), mainJs.indexOf('function loadTimePreferencesState'));
 const modeContext = {};
@@ -28,7 +29,8 @@ assert.strictEqual(modeContext.normalizeTimeMode(null), 'record');
 
 assert.strictEqual(context.calculateElapsedMinutes('08:00', '08:45'), 45);
 assert.strictEqual(context.formatTransplantDuration(context.calculateElapsedMinutes('08:00', '08:45')), '45 min');
-assert.strictEqual(context.formatTransplantDuration(context.calculateElapsedMinutes('08:00', '09:05')), '1 hr 05 min');
+assert.strictEqual(context.formatTransplantDuration(context.calculateElapsedMinutes('08:00', '09:05')), '65 min (1hr 05min)');
+assert(context.formatTransplantDurationDisplay(130).includes('130 min<span class="ml-1 text-[11px]'), 'transplant hours should be rendered as smaller secondary text');
 assert.strictEqual(context.calculateElapsedMinutes('23:50', '00:20'), 30);
 assert.strictEqual(context.calculateElapsedMinutes('08:00', ''), null);
 assert.strictEqual(context.calculateElapsedMinutes('25:00', '09:00'), null);
@@ -41,6 +43,11 @@ assert.strictEqual(context.normalizeClockInput('2350'), '23:50');
 assert.strictEqual(context.normalizeClockInput('08:00'), '08:00');
 assert.strictEqual(context.normalizeClockInput('2400'), null);
 assert.strictEqual(context.normalizeClockInput('1260'), null);
+assert.strictEqual(context.calculateTotalIschemicMinutes('08:00', '09:10', '09:55'), 115, 'total ischemic time should add cold and warm time');
+assert.strictEqual(context.calculateTotalIschemicMinutes('23:00', '23:45', '00:20'), 80, 'total ischemic time should support a midnight crossing');
+assert.strictEqual(context.calculateTotalIschemicMinutes('23:00', '22:00', '21:00'), null, 'total should reject clock values that imply multiple midnight crossings');
+assert.strictEqual(context.calculateTotalIschemicMinutes('23:00', '00:00', '23:00'), null, 'total should reject an ambiguous duration of exactly 24 hours');
+assert.strictEqual(context.calculateTotalIschemicMinutes('08:00', '', '09:55'), null, 'total should wait until both ischemic intervals are complete');
 
 
 const transplantStart = mainJs.indexOf('function createDefaultTransplantState');
@@ -99,14 +106,16 @@ vm.runInNewContext(`${transplantSource}
   this.statusAfterSummaryEdit = document.getElementById('transplant-summary-status').textContent;`, summaryContext);
 assert(summaryContext.bilateralSummary.includes('Implant order: Right first'));
 assert(summaryContext.bilateralSummary.indexOf('Right Lung · 1st') < summaryContext.bilateralSummary.indexOf('Left Lung · 2nd'));
+assert(summaryContext.bilateralSummary.includes('Total Ischemic Time: 115 min (1hr 55min)'), 'completed lung total should be included in copied bilateral summaries');
 assert(summaryContext.singleSummary.includes('Left Lung · Single'));
 assert(!summaryContext.singleSummary.includes('Right Lung'));
-assert(summaryContext.heartSummary.includes('Cold Ischemic Time: 1 hr 20 min'));
+assert(summaryContext.singleSummary.includes('Total Ischemic Time: 115 min (1hr 55min)'), 'completed lung total should be included in copied single-lung summaries');
+assert(summaryContext.heartSummary.includes('Cold Ischemic Time: 80 min (1hr 20min)'));
 assert(summaryContext.heartSummary.includes('Warm Ischemic Time: 50 min'));
 assert(summaryContext.heartSummary.includes('Anastomosis Time: 35 min'));
 assert(summaryContext.heartSummary.includes('Pump start: 08:30'));
 assert(summaryContext.heartSummary.includes('Pump end: 10:30'));
-assert(summaryContext.heartSummary.includes('Pump Time: 2 hr 00 min'));
+assert(summaryContext.heartSummary.includes('Pump Time: 120 min (2hr 00min)'));
 assert(!summaryContext.invalidSummary.includes('24:00'), 'invalid clock values must not be copied into a summary');
 assert(!summaryContext.invalidSummary.includes('123'), 'incomplete clock values must not be copied into a summary');
 assert(summaryContext.invalidSummary.includes('Cold Ischemic Time: —'));
@@ -147,6 +156,13 @@ assert(mainJs.includes('absolute right-2 top-2 inline-flex h-10 w-10'), 'summary
 assert(mainJs.includes('rounded-lg border-0 bg-transparent text-slate-400 shadow-none'), 'summary copy icon should not render a visible button box');
 assert(!mainJs.includes('>Copy summary</button>'), 'summary copy action should not render as a text button');
 assert(mainJs.includes('function buildTransplantSummary(type)'), 'summary should be generated from shared transplant state');
+assert(mainJs.includes('data-total-ischemic-side="${side}"'), 'each rendered lung side should include an automatic total ischemic output');
+assert(mainJs.includes('border-cyan-300 dark:border-cyan-700 bg-cyan-50'), 'total ischemic output should use a non-black highlight color');
+assert(mainJs.includes('grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] gap-2 items-center'), 'total ischemic output should use the same single-row grid as the duration cards');
+assert(mainJs.includes('truncate text-sm font-semibold text-primary-900 dark:text-white'), 'total ischemic title should match the duration-card typography without increasing height');
+assert(mainJs.includes('px-3 py-2 font-semibold text-primary-900 dark:text-white min-w-28'), 'total minutes should match the duration result typography and alignment');
+assert(!mainJs.includes('data-total-ischemic-result aria-live="polite" class="rounded-lg'), 'total minutes should not render a separate inner box');
+assert(mainJs.includes("element.classList.toggle('hidden', totalMinutes === null)"), 'total ischemic output should appear only after cold and warm times are available');
 assert(mainJs.includes("function loadTimePreferencesState() {\n  // Record is the first workflow and is always the initial view on a new visit.\n  timeLiveMode = 'record';"), 'Time Calculator should always open in Record mode');
 assert(!mainJs.includes('timeLiveMode = normalizeTimeMode(saved.mode)'), 'a saved view preference should not override the initial Record mode');
 assert(mainJs.includes('transplant: getTransplantStateSnapshot()'), 'transplant state should use active case persistence');

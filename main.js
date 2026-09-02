@@ -76,8 +76,8 @@ function formatDuration(mins) {
   if (mins == null || mins < 0) return '-';
   const h = Math.floor(mins / 60);
   const m = mins % 60;
-  const mm = m.toString().padStart(2, '0');
-  return `${mins} min (${h.toString().padStart(2, '0')}:${mm})`;
+  if (h < 1) return `${mins} min`;
+  return `${mins} min (${h}hr ${String(m).padStart(2, '0')}min)`;
 }
 
 function formatMinutesToHHMM(totalMins) {
@@ -4963,10 +4963,48 @@ function calculateElapsedMinutes(startTime, endTime) {
 }
 
 function formatTransplantDuration(minutes) {
-  if (!Number.isInteger(minutes) || minutes < 0 || minutes >= 24 * 60) return '—';
+  if (!Number.isInteger(minutes) || minutes < 0) return '—';
   if (minutes < 60) return `${minutes} min`;
   const hours = Math.floor(minutes / 60);
-  return `${hours} hr ${String(minutes % 60).padStart(2, '0')} min`;
+  return `${minutes} min (${hours}hr ${String(minutes % 60).padStart(2, '0')}min)`;
+}
+
+function formatTransplantDurationDisplay(minutes) {
+  const formatted = formatTransplantDuration(minutes);
+  const detailStart = formatted.indexOf(' (');
+  if (detailStart < 0) return formatted;
+  const minutesText = formatted.slice(0, detailStart);
+  const hoursText = formatted.slice(detailStart + 1);
+  return `${minutesText}<span class="ml-1 text-[11px] font-medium text-slate-500 dark:text-slate-300">${hoursText}</span>`;
+}
+
+function calculateTotalIschemicMinutes(coldStart, iceOut, reperfusion) {
+  const coldMinutes = calculateElapsedMinutes(coldStart, iceOut);
+  const warmMinutes = calculateElapsedMinutes(iceOut, reperfusion);
+  // Total ischemic time = cold ischemic time + warm ischemic time.
+  if (!Number.isInteger(coldMinutes) || !Number.isInteger(warmMinutes)) return null;
+  const totalMinutes = coldMinutes + warmMinutes;
+  // Clock-only entries cannot distinguish a second midnight crossing from
+  // out-of-order data, so do not report an ambiguous total of 24 hours or more.
+  return totalMinutes < 24 * 60 ? totalMinutes : null;
+}
+
+function transplantTotalIschemicCard(side) {
+  const sideName = side === 'left' ? 'Left' : 'Right';
+  const iceOutPath = `lung.sides.${side}.iceOut`;
+  const reperfusionPath = `lung.sides.${side}.reperfusion`;
+  const totalMinutes = calculateTotalIschemicMinutes(
+    getTransplantPath('lung.donorAcc'),
+    getTransplantPath(iceOutPath),
+    getTransplantPath(reperfusionPath)
+  );
+  return `<section data-total-ischemic-side="${side}" class="${totalMinutes === null ? 'hidden ' : ''}rounded-xl border border-cyan-300 dark:border-cyan-700 bg-cyan-50 dark:bg-cyan-950/40 px-3 py-2.5">
+    <div class="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] gap-2 items-center">
+      <h4 class="truncate text-sm font-semibold text-primary-900 dark:text-white">${sideName} Total Ischemic Time</h4>
+      <span class="font-mono text-xs font-semibold text-slate-600 dark:text-slate-300">Cold + Warm</span>
+      <output data-total-ischemic-result aria-live="polite" class="px-3 py-2 font-semibold text-primary-900 dark:text-white min-w-28">${totalMinutes === null ? '' : formatTransplantDurationDisplay(totalMinutes)}</output>
+    </div>
+  </section>`;
 }
 
 function transplantClockIcon() {
@@ -4992,7 +5030,7 @@ function transplantDurationCard(title, startLabel, startPath, endLabel, endPath)
     <div class="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] gap-2 sm:items-center">
       <div class="min-w-0"><h4 class="text-sm font-semibold text-primary-900 dark:text-white">${title}</h4><span class="text-[11px] text-slate-500 dark:text-slate-400">${startLabel} → ${endLabel}</span></div>
       <div class="min-w-0 font-mono text-xs font-semibold text-slate-600 dark:text-slate-300"><span data-duration-start="${startPath}">${start || '—'}</span> – <span data-duration-end="${endPath}">${end || '—'}</span></div>
-      <output data-duration-result data-duration-start-path="${startPath}" data-duration-end-path="${endPath}" class="rounded-lg bg-accent-50 dark:bg-accent-950/30 px-3 py-2 font-semibold text-primary-900 dark:text-white sm:min-w-28">${formatTransplantDuration(calculateElapsedMinutes(start, end))}</output>
+      <output data-duration-result data-duration-start-path="${startPath}" data-duration-end-path="${endPath}" class="rounded-lg bg-accent-50 dark:bg-accent-950/30 px-3 py-2 font-semibold text-primary-900 dark:text-white sm:min-w-28">${formatTransplantDurationDisplay(calculateElapsedMinutes(start, end))}</output>
     </div>
   </section>`;
 }
@@ -5012,6 +5050,7 @@ function renderLungSide(side, order) {
       ${transplantDurationCard('Cold Ischemic Time', 'Donor ACC', 'lung.donorAcc', 'Ice out', `${prefix}.iceOut`)}
       ${transplantDurationCard('Warm Ischemic Time', 'Ice out', `${prefix}.iceOut`, 'Reperfusion', `${prefix}.reperfusion`)}
       ${transplantDurationCard('Anastomosis Time', 'Anastomosis start', `${prefix}.anastomosisStart`, 'Reperfusion', `${prefix}.reperfusion`)}
+      ${transplantTotalIschemicCard(side)}
     </div>
   </article>`;
 }
@@ -5121,7 +5160,8 @@ function buildTransplantSummary(type) {
     const values = lung.sides[side];
     const sideName = side === 'left' ? 'Left' : 'Right';
     const order = lung.procedure === 'single' ? 'Single' : `${index + 1}${index === 0 ? 'st' : 'nd'}`;
-    lines.push('', `${sideName} Lung · ${order}`, `Ice out: ${getValidSummaryClock(values.iceOut)}`, `Anastomosis start: ${getValidSummaryClock(values.anastomosisStart)}`, `Reperfusion: ${getValidSummaryClock(values.reperfusion)}`, `Cold Ischemic Time: ${summaryDuration(lung.donorAcc, values.iceOut)}`, `Warm Ischemic Time: ${summaryDuration(values.iceOut, values.reperfusion)}`, `Anastomosis Time: ${summaryDuration(values.anastomosisStart, values.reperfusion)}`);
+    const totalIschemicMinutes = calculateTotalIschemicMinutes(lung.donorAcc, values.iceOut, values.reperfusion);
+    lines.push('', `${sideName} Lung · ${order}`, `Ice out: ${getValidSummaryClock(values.iceOut)}`, `Anastomosis start: ${getValidSummaryClock(values.anastomosisStart)}`, `Reperfusion: ${getValidSummaryClock(values.reperfusion)}`, `Cold Ischemic Time: ${summaryDuration(lung.donorAcc, values.iceOut)}`, `Warm Ischemic Time: ${summaryDuration(values.iceOut, values.reperfusion)}`, `Total Ischemic Time: ${formatTransplantDuration(totalIschemicMinutes)}`, `Anastomosis Time: ${summaryDuration(values.anastomosisStart, values.reperfusion)}`);
   });
   lines.push('', `Pump start: ${getValidSummaryClock(lung.pumpStart)}`, `Pump end: ${getValidSummaryClock(lung.pumpEnd)}`, `Pump Time: ${summaryDuration(lung.pumpStart, lung.pumpEnd)}`);
   return lines.join('\n');
@@ -5132,7 +5172,21 @@ function updateTransplantDerivedDisplays() {
   if (status) status.textContent = '';
   document.querySelectorAll('[data-duration-start]').forEach(element => { element.textContent = getTransplantPath(element.dataset.durationStart) || '—'; });
   document.querySelectorAll('[data-duration-end]').forEach(element => { element.textContent = getTransplantPath(element.dataset.durationEnd) || '—'; });
-  document.querySelectorAll('[data-duration-result]').forEach(element => { element.textContent = summaryDuration(getTransplantPath(element.dataset.durationStartPath), getTransplantPath(element.dataset.durationEndPath)); });
+  document.querySelectorAll('[data-duration-result]').forEach(element => {
+    const minutes = calculateElapsedMinutes(getTransplantPath(element.dataset.durationStartPath), getTransplantPath(element.dataset.durationEndPath));
+    element.innerHTML = formatTransplantDurationDisplay(minutes);
+  });
+  document.querySelectorAll('[data-total-ischemic-side]').forEach(element => {
+    const side = element.dataset.totalIschemicSide;
+    const totalMinutes = calculateTotalIschemicMinutes(
+      getTransplantPath('lung.donorAcc'),
+      getTransplantPath(`lung.sides.${side}.iceOut`),
+      getTransplantPath(`lung.sides.${side}.reperfusion`)
+    );
+    element.classList.toggle('hidden', totalMinutes === null);
+    const result = element.querySelector('[data-total-ischemic-result]');
+    if (result) result.innerHTML = totalMinutes === null ? '' : formatTransplantDurationDisplay(totalMinutes);
+  });
   const preview = document.getElementById('transplant-summary-preview');
   if (preview) preview.value = buildTransplantSummary(transplantState.activeType);
 }

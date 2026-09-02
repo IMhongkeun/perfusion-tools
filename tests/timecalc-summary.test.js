@@ -117,7 +117,8 @@ function run() {
   assert(timecalcHtml.includes('Review and copy completed time events. Do not include patient identifiers.'), 'summary privacy helper should exist');
   assert(mainJs.includes('placeholder="HH:mm"'), 'Record and Live clock placeholders should match Transplant HH:mm casing');
   assert(!mainJs.includes('placeholder="hh:mm"'), 'lowercase clock placeholders should not remain');
-  assert(timecalcHtml.includes('elapsed minutes and an HH:mm readout'), 'Time Calculator instructions should use the shared HH:mm notation');
+  assert(timecalcHtml.includes('elapsed minutes with a readable hours-and-minutes equivalent'), 'Time Calculator instructions should match the displayed duration format');
+  assert(timecalcHtml.includes('185 min (3hr 05min)'), 'calculation notes should document the displayed duration example');
 
   assert.strictEqual(pendingRowSummary({ label: 'CPB / Pump time' }), 'CPB / Pump time: —', 'default CPB title should be visible before times are complete');
   assert.strictEqual(pendingRowSummary({ label: 'Aortic cross-clamp' }), 'Aortic cross-clamp: —', 'default cross-clamp title should be visible before times are complete');

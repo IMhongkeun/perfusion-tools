@@ -401,7 +401,7 @@
       <section id="view-timecalc" class="hidden animate-in fade-in duration-300">
         <div class="rounded-2xl bg-white/95 dark:bg-slate-900/80 shadow-card border border-slate-200/80 dark:border-slate-800 p-6">
           <h2 class="text-xl font-semibold tracking-tight mb-2">Time Calculator</h2>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Enter 24-hour start/end times to see elapsed minutes and an HH:mm readout.</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Enter 24-hour start/end times to see elapsed minutes with a readable hours-and-minutes equivalent.</p>
           <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Tap the clock icon to insert the current time.</p>
 
           <div class="mb-4 rounded-2xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/50 p-4 space-y-4">
@@ -517,7 +517,7 @@
             <div class="calculator-lower-panel">
               <div class="space-y-1">
                 <p class="font-semibold mb-1">1. Purpose</p>
-                <p>This time calculator is designed to quickly estimate elapsed time in minutes and HH:mm format between two clock times. It is intended for tasks such as documenting CPB time, cross-clamp time, cardioplegia intervals, ECMO procedure time blocks, or other peri-operative events where only start and end times are known.</p>
+                <p>This time calculator is designed to quickly estimate elapsed time in total minutes between two clock times, with a readable hours-and-minutes equivalent for durations of one hour or longer. It is intended for tasks such as documenting CPB time, cross-clamp time, cardioplegia intervals, ECMO procedure time blocks, or other peri-operative events where only start and end times are known.</p>
               </div>
 
               <div class="space-y-1">
@@ -540,8 +540,8 @@
                 <p class="font-mono text-[11px]">durationMinutes = (endMinutes + 24 × 60) − startMinutes</p>
                 <p>The result is reported as:</p>
                 <ul class="list-disc pl-4 space-y-1">
-                  <li>Minutes (integer), and</li>
-                  <li>HH:mm format, obtained by: <span class="font-mono text-[11px]">hours = floor(durationMinutes ÷ 60)</span> and <span class="font-mono text-[11px]">minutes = durationMinutes mod 60</span>, with leading zeros for both values (e.g., 03:05).</li>
+                  <li>Total minutes as an integer, and</li>
+                  <li>For durations of one hour or longer, an hours-and-minutes equivalent in parentheses, obtained by: <span class="font-mono text-[11px]">hours = floor(durationMinutes ÷ 60)</span> and <span class="font-mono text-[11px]">minutes = durationMinutes mod 60</span> (e.g., 185 min (3hr 05min)).</li>
                 </ul>
               </div>
 
