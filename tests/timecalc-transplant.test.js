@@ -11,12 +11,13 @@ const functionSource = mainJs.slice(
   mainJs.indexOf('function transplantClockIcon')
 );
 const context = {};
-vm.runInNewContext(`${functionSource}; this.calculateElapsedMinutes = calculateElapsedMinutes; this.calculateTotalIschemicMinutes = calculateTotalIschemicMinutes; this.formatTransplantDuration = formatTransplantDuration; this.normalizeClockInput = normalizeClockInput;`, context);
+vm.runInNewContext(`${functionSource}; this.calculateElapsedMinutes = calculateElapsedMinutes; this.calculateTotalIschemicMinutes = calculateTotalIschemicMinutes; this.formatTransplantDuration = formatTransplantDuration; this.formatTransplantDurationDisplay = formatTransplantDurationDisplay; this.normalizeClockInput = normalizeClockInput;`, context);
 
 const recordFormatterSource = mainJs.slice(mainJs.indexOf('function formatDuration(mins)'), mainJs.indexOf('function formatMinutesToHHMM'));
 const recordContext = {};
 vm.runInNewContext(`${recordFormatterSource}; this.formatDuration = formatDuration;`, recordContext);
-assert.strictEqual(recordContext.formatDuration(65), '65 min (01:05)', 'Record duration should use the shared HH:mm display format');
+assert.strictEqual(recordContext.formatDuration(159), '159 min (2hr 39min)', 'Record duration should show readable hours and minutes in parentheses');
+assert.strictEqual(recordContext.formatDuration(45), '45 min', 'Record duration under one hour should not repeat minutes');
 
 const modeSource = mainJs.slice(mainJs.indexOf('function normalizeTimeMode'), mainJs.indexOf('function loadTimePreferencesState'));
 const modeContext = {};
@@ -28,7 +29,8 @@ assert.strictEqual(modeContext.normalizeTimeMode(null), 'record');
 
 assert.strictEqual(context.calculateElapsedMinutes('08:00', '08:45'), 45);
 assert.strictEqual(context.formatTransplantDuration(context.calculateElapsedMinutes('08:00', '08:45')), '45 min');
-assert.strictEqual(context.formatTransplantDuration(context.calculateElapsedMinutes('08:00', '09:05')), '1 hr 05 min');
+assert.strictEqual(context.formatTransplantDuration(context.calculateElapsedMinutes('08:00', '09:05')), '65 min (1hr 05min)');
+assert(context.formatTransplantDurationDisplay(130).includes('130 min<span class="ml-1 text-[11px]'), 'transplant hours should be rendered as smaller secondary text');
 assert.strictEqual(context.calculateElapsedMinutes('23:50', '00:20'), 30);
 assert.strictEqual(context.calculateElapsedMinutes('08:00', ''), null);
 assert.strictEqual(context.calculateElapsedMinutes('25:00', '09:00'), null);
@@ -104,12 +106,12 @@ assert(summaryContext.bilateralSummary.includes('Implant order: Right first'));
 assert(summaryContext.bilateralSummary.indexOf('Right Lung · 1st') < summaryContext.bilateralSummary.indexOf('Left Lung · 2nd'));
 assert(summaryContext.singleSummary.includes('Left Lung · Single'));
 assert(!summaryContext.singleSummary.includes('Right Lung'));
-assert(summaryContext.heartSummary.includes('Cold Ischemic Time: 1 hr 20 min'));
+assert(summaryContext.heartSummary.includes('Cold Ischemic Time: 80 min (1hr 20min)'));
 assert(summaryContext.heartSummary.includes('Warm Ischemic Time: 50 min'));
 assert(summaryContext.heartSummary.includes('Anastomosis Time: 35 min'));
 assert(summaryContext.heartSummary.includes('Pump start: 08:30'));
 assert(summaryContext.heartSummary.includes('Pump end: 10:30'));
-assert(summaryContext.heartSummary.includes('Pump Time: 2 hr 00 min'));
+assert(summaryContext.heartSummary.includes('Pump Time: 120 min (2hr 00min)'));
 assert(!summaryContext.invalidSummary.includes('24:00'), 'invalid clock values must not be copied into a summary');
 assert(!summaryContext.invalidSummary.includes('123'), 'incomplete clock values must not be copied into a summary');
 assert(summaryContext.invalidSummary.includes('Cold Ischemic Time: —'));
