@@ -5158,7 +5158,8 @@ function buildTransplantSummary(type) {
     const values = lung.sides[side];
     const sideName = side === 'left' ? 'Left' : 'Right';
     const order = lung.procedure === 'single' ? 'Single' : `${index + 1}${index === 0 ? 'st' : 'nd'}`;
-    lines.push('', `${sideName} Lung · ${order}`, `Ice out: ${getValidSummaryClock(values.iceOut)}`, `Anastomosis start: ${getValidSummaryClock(values.anastomosisStart)}`, `Reperfusion: ${getValidSummaryClock(values.reperfusion)}`, `Cold Ischemic Time: ${summaryDuration(lung.donorAcc, values.iceOut)}`, `Warm Ischemic Time: ${summaryDuration(values.iceOut, values.reperfusion)}`, `Anastomosis Time: ${summaryDuration(values.anastomosisStart, values.reperfusion)}`);
+    const totalIschemicMinutes = calculateTotalIschemicMinutes(lung.donorAcc, values.iceOut, values.reperfusion);
+    lines.push('', `${sideName} Lung · ${order}`, `Ice out: ${getValidSummaryClock(values.iceOut)}`, `Anastomosis start: ${getValidSummaryClock(values.anastomosisStart)}`, `Reperfusion: ${getValidSummaryClock(values.reperfusion)}`, `Cold Ischemic Time: ${summaryDuration(lung.donorAcc, values.iceOut)}`, `Warm Ischemic Time: ${summaryDuration(values.iceOut, values.reperfusion)}`, `Total Ischemic Time: ${formatTransplantDuration(totalIschemicMinutes)}`, `Anastomosis Time: ${summaryDuration(values.anastomosisStart, values.reperfusion)}`);
   });
   lines.push('', `Pump start: ${getValidSummaryClock(lung.pumpStart)}`, `Pump end: ${getValidSummaryClock(lung.pumpEnd)}`, `Pump Time: ${summaryDuration(lung.pumpStart, lung.pumpEnd)}`);
   return lines.join('\n');

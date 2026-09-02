@@ -104,8 +104,10 @@ vm.runInNewContext(`${transplantSource}
   this.statusAfterSummaryEdit = document.getElementById('transplant-summary-status').textContent;`, summaryContext);
 assert(summaryContext.bilateralSummary.includes('Implant order: Right first'));
 assert(summaryContext.bilateralSummary.indexOf('Right Lung · 1st') < summaryContext.bilateralSummary.indexOf('Left Lung · 2nd'));
+assert(summaryContext.bilateralSummary.includes('Total Ischemic Time: 115 min (1hr 55min)'), 'completed lung total should be included in copied bilateral summaries');
 assert(summaryContext.singleSummary.includes('Left Lung · Single'));
 assert(!summaryContext.singleSummary.includes('Right Lung'));
+assert(summaryContext.singleSummary.includes('Total Ischemic Time: 115 min (1hr 55min)'), 'completed lung total should be included in copied single-lung summaries');
 assert(summaryContext.heartSummary.includes('Cold Ischemic Time: 80 min (1hr 20min)'));
 assert(summaryContext.heartSummary.includes('Warm Ischemic Time: 50 min'));
 assert(summaryContext.heartSummary.includes('Anastomosis Time: 35 min'));
