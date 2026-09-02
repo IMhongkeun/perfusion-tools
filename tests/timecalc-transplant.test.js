@@ -11,7 +11,7 @@ const functionSource = mainJs.slice(
   mainJs.indexOf('function transplantClockIcon')
 );
 const context = {};
-vm.runInNewContext(`${functionSource}; this.calculateElapsedMinutes = calculateElapsedMinutes; this.formatTransplantDuration = formatTransplantDuration; this.normalizeClockInput = normalizeClockInput;`, context);
+vm.runInNewContext(`${functionSource}; this.calculateElapsedMinutes = calculateElapsedMinutes; this.calculateTotalIschemicMinutes = calculateTotalIschemicMinutes; this.formatTransplantDuration = formatTransplantDuration; this.normalizeClockInput = normalizeClockInput;`, context);
 
 const recordFormatterSource = mainJs.slice(mainJs.indexOf('function formatDuration(mins)'), mainJs.indexOf('function formatMinutesToHHMM'));
 const recordContext = {};
@@ -41,6 +41,9 @@ assert.strictEqual(context.normalizeClockInput('2350'), '23:50');
 assert.strictEqual(context.normalizeClockInput('08:00'), '08:00');
 assert.strictEqual(context.normalizeClockInput('2400'), null);
 assert.strictEqual(context.normalizeClockInput('1260'), null);
+assert.strictEqual(context.calculateTotalIschemicMinutes('08:00', '09:10', '09:55'), 115, 'total ischemic time should add cold and warm time');
+assert.strictEqual(context.calculateTotalIschemicMinutes('23:00', '23:45', '00:20'), 80, 'total ischemic time should support a midnight crossing');
+assert.strictEqual(context.calculateTotalIschemicMinutes('08:00', '', '09:55'), null, 'total should wait until both ischemic intervals are complete');
 
 
 const transplantStart = mainJs.indexOf('function createDefaultTransplantState');
@@ -147,6 +150,9 @@ assert(mainJs.includes('absolute right-2 top-2 inline-flex h-10 w-10'), 'summary
 assert(mainJs.includes('rounded-lg border-0 bg-transparent text-slate-400 shadow-none'), 'summary copy icon should not render a visible button box');
 assert(!mainJs.includes('>Copy summary</button>'), 'summary copy action should not render as a text button');
 assert(mainJs.includes('function buildTransplantSummary(type)'), 'summary should be generated from shared transplant state');
+assert(mainJs.includes('data-total-ischemic-side="${side}"'), 'each rendered lung side should include an automatic total ischemic output');
+assert(mainJs.includes('border-cyan-300 dark:border-cyan-700 bg-cyan-50'), 'total ischemic output should use a non-black highlight color');
+assert(mainJs.includes("element.classList.toggle('hidden', totalMinutes === null)"), 'total ischemic output should appear only after cold and warm times are available');
 assert(mainJs.includes("function loadTimePreferencesState() {\n  // Record is the first workflow and is always the initial view on a new visit.\n  timeLiveMode = 'record';"), 'Time Calculator should always open in Record mode');
 assert(!mainJs.includes('timeLiveMode = normalizeTimeMode(saved.mode)'), 'a saved view preference should not override the initial Record mode');
 assert(mainJs.includes('transplant: getTransplantStateSnapshot()'), 'transplant state should use active case persistence');

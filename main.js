@@ -4969,6 +4969,30 @@ function formatTransplantDuration(minutes) {
   return `${hours} hr ${String(minutes % 60).padStart(2, '0')} min`;
 }
 
+function calculateTotalIschemicMinutes(coldStart, iceOut, reperfusion) {
+  const coldMinutes = calculateElapsedMinutes(coldStart, iceOut);
+  const warmMinutes = calculateElapsedMinutes(iceOut, reperfusion);
+  // Total ischemic time = cold ischemic time + warm ischemic time.
+  return Number.isInteger(coldMinutes) && Number.isInteger(warmMinutes)
+    ? coldMinutes + warmMinutes
+    : null;
+}
+
+function transplantTotalIschemicCard(side) {
+  const sideName = side === 'left' ? 'Left' : 'Right';
+  const iceOutPath = `lung.sides.${side}.iceOut`;
+  const reperfusionPath = `lung.sides.${side}.reperfusion`;
+  const totalMinutes = calculateTotalIschemicMinutes(
+    getTransplantPath('lung.donorAcc'),
+    getTransplantPath(iceOutPath),
+    getTransplantPath(reperfusionPath)
+  );
+  return `<output data-total-ischemic-side="${side}" aria-live="polite" class="${totalMinutes === null ? 'hidden ' : ''}block rounded-xl border border-cyan-300 dark:border-cyan-700 bg-cyan-50 dark:bg-cyan-950/40 px-4 py-3 text-cyan-800 dark:text-cyan-200 shadow-sm">
+    <span class="block text-xs font-semibold uppercase tracking-wide">${sideName} Total Ischemic Time</span>
+    <strong data-total-ischemic-result class="mt-1 block text-xl">${totalMinutes ?? ''} min</strong>
+  </output>`;
+}
+
 function transplantClockIcon() {
   return '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /></svg>';
 }
@@ -5012,6 +5036,7 @@ function renderLungSide(side, order) {
       ${transplantDurationCard('Cold Ischemic Time', 'Donor ACC', 'lung.donorAcc', 'Ice out', `${prefix}.iceOut`)}
       ${transplantDurationCard('Warm Ischemic Time', 'Ice out', `${prefix}.iceOut`, 'Reperfusion', `${prefix}.reperfusion`)}
       ${transplantDurationCard('Anastomosis Time', 'Anastomosis start', `${prefix}.anastomosisStart`, 'Reperfusion', `${prefix}.reperfusion`)}
+      ${transplantTotalIschemicCard(side)}
     </div>
   </article>`;
 }
@@ -5133,6 +5158,17 @@ function updateTransplantDerivedDisplays() {
   document.querySelectorAll('[data-duration-start]').forEach(element => { element.textContent = getTransplantPath(element.dataset.durationStart) || '—'; });
   document.querySelectorAll('[data-duration-end]').forEach(element => { element.textContent = getTransplantPath(element.dataset.durationEnd) || '—'; });
   document.querySelectorAll('[data-duration-result]').forEach(element => { element.textContent = summaryDuration(getTransplantPath(element.dataset.durationStartPath), getTransplantPath(element.dataset.durationEndPath)); });
+  document.querySelectorAll('[data-total-ischemic-side]').forEach(element => {
+    const side = element.dataset.totalIschemicSide;
+    const totalMinutes = calculateTotalIschemicMinutes(
+      getTransplantPath('lung.donorAcc'),
+      getTransplantPath(`lung.sides.${side}.iceOut`),
+      getTransplantPath(`lung.sides.${side}.reperfusion`)
+    );
+    element.classList.toggle('hidden', totalMinutes === null);
+    const result = element.querySelector('[data-total-ischemic-result]');
+    if (result) result.textContent = totalMinutes === null ? '' : `${totalMinutes} min`;
+  });
   const preview = document.getElementById('transplant-summary-preview');
   if (preview) preview.value = buildTransplantSummary(transplantState.activeType);
 }
