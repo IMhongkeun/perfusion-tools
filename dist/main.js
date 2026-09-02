@@ -8356,6 +8356,10 @@ function navigateTo(path, options = {}) {
   }
   route();
 
+  if (current !== target && typeof window.trackAnalyticsPageView === 'function') {
+    window.trackAnalyticsPageView();
+  }
+
   if (resetScrollTop) {
     window.scrollTo({ top: 0, behavior: 'auto' });
   }
@@ -8478,6 +8482,9 @@ window.addEventListener('load', resetScrollToTop);
 window.addEventListener('pageshow', resetScrollToTop);
 window.addEventListener('popstate', () => {
   route();
+  if (typeof window.trackAnalyticsPageView === 'function') {
+    window.trackAnalyticsPageView();
+  }
   resetScrollToTop();
 });
 
