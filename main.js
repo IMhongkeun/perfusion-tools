@@ -4991,7 +4991,7 @@ function transplantTotalIschemicCard(side) {
     <div class="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] gap-2 items-center">
       <h4 class="truncate text-sm font-semibold text-primary-900 dark:text-white">${sideName} Total Ischemic Time</h4>
       <span class="font-mono text-xs font-semibold text-slate-600 dark:text-slate-300">Cold + Warm</span>
-      <output data-total-ischemic-result aria-live="polite" class="rounded-lg bg-cyan-100/80 dark:bg-cyan-900/50 px-3 py-2 font-semibold text-primary-900 dark:text-white min-w-28">${totalMinutes ?? ''} min</output>
+      <output data-total-ischemic-result aria-live="polite" class="px-3 py-2 font-semibold text-primary-900 dark:text-white min-w-28">${totalMinutes ?? ''} min</output>
     </div>
   </section>`;
 }
