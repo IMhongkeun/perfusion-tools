@@ -152,6 +152,9 @@ assert(!mainJs.includes('>Copy summary</button>'), 'summary copy action should n
 assert(mainJs.includes('function buildTransplantSummary(type)'), 'summary should be generated from shared transplant state');
 assert(mainJs.includes('data-total-ischemic-side="${side}"'), 'each rendered lung side should include an automatic total ischemic output');
 assert(mainJs.includes('border-cyan-300 dark:border-cyan-700 bg-cyan-50'), 'total ischemic output should use a non-black highlight color');
+assert(mainJs.includes('grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] gap-2 items-center'), 'total ischemic output should use the same single-row grid as the duration cards');
+assert(mainJs.includes('truncate text-sm font-semibold text-primary-900 dark:text-white'), 'total ischemic title should match the duration-card typography without increasing height');
+assert(mainJs.includes('px-3 py-2 font-semibold text-primary-900 dark:text-white min-w-28'), 'total minutes should match the duration result typography and alignment');
 assert(mainJs.includes("element.classList.toggle('hidden', totalMinutes === null)"), 'total ischemic output should appear only after cold and warm times are available');
 assert(mainJs.includes("function loadTimePreferencesState() {\n  // Record is the first workflow and is always the initial view on a new visit.\n  timeLiveMode = 'record';"), 'Time Calculator should always open in Record mode');
 assert(!mainJs.includes('timeLiveMode = normalizeTimeMode(saved.mode)'), 'a saved view preference should not override the initial Record mode');
