@@ -4982,9 +4982,11 @@ function calculateTotalIschemicMinutes(coldStart, iceOut, reperfusion) {
   const coldMinutes = calculateElapsedMinutes(coldStart, iceOut);
   const warmMinutes = calculateElapsedMinutes(iceOut, reperfusion);
   // Total ischemic time = cold ischemic time + warm ischemic time.
-  return Number.isInteger(coldMinutes) && Number.isInteger(warmMinutes)
-    ? coldMinutes + warmMinutes
-    : null;
+  if (!Number.isInteger(coldMinutes) || !Number.isInteger(warmMinutes)) return null;
+  const totalMinutes = coldMinutes + warmMinutes;
+  // Clock-only entries cannot distinguish a second midnight crossing from
+  // out-of-order data, so do not report an ambiguous total of 24 hours or more.
+  return totalMinutes < 24 * 60 ? totalMinutes : null;
 }
 
 function transplantTotalIschemicCard(side) {

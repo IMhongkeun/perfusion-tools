@@ -45,6 +45,8 @@ assert.strictEqual(context.normalizeClockInput('2400'), null);
 assert.strictEqual(context.normalizeClockInput('1260'), null);
 assert.strictEqual(context.calculateTotalIschemicMinutes('08:00', '09:10', '09:55'), 115, 'total ischemic time should add cold and warm time');
 assert.strictEqual(context.calculateTotalIschemicMinutes('23:00', '23:45', '00:20'), 80, 'total ischemic time should support a midnight crossing');
+assert.strictEqual(context.calculateTotalIschemicMinutes('23:00', '22:00', '21:00'), null, 'total should reject clock values that imply multiple midnight crossings');
+assert.strictEqual(context.calculateTotalIschemicMinutes('23:00', '00:00', '23:00'), null, 'total should reject an ambiguous duration of exactly 24 hours');
 assert.strictEqual(context.calculateTotalIschemicMinutes('08:00', '', '09:55'), null, 'total should wait until both ischemic intervals are complete');
 
 
