@@ -3909,16 +3909,27 @@ function fallbackCopyTimeCaseSummary(summaryText) {
   }
 }
 
-async function copyTimeCaseSummary() {
-  const summaryText = buildTimeCaseSummaryText();
-  renderTimeCaseSummary('');
+async function copyTextWithFallback(text, fallbackCopy) {
   try {
     if (!navigator.clipboard?.writeText) throw new Error('Clipboard API unavailable');
-    await navigator.clipboard.writeText(summaryText);
-    renderTimeCaseSummary('Summary copied');
-  } catch (err) {
-    const fallbackSucceeded = fallbackCopyTimeCaseSummary(summaryText);
-    renderTimeCaseSummary(fallbackSucceeded ? 'Summary copied' : 'Copy failed. Select and copy manually.');
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (error) {
+    try {
+      return Boolean(fallbackCopy());
+    } catch (_) {
+      return false;
+    }
+  }
+}
+
+async function copyTimeCaseSummary(event) {
+  const summaryText = buildTimeCaseSummaryText();
+  renderTimeCaseSummary('');
+  const copied = await copyTextWithFallback(summaryText, () => fallbackCopyTimeCaseSummary(summaryText));
+  renderTimeCaseSummary(copied ? 'Summary copied' : 'Copy failed. Select and copy manually.');
+  if (copied) {
+    window.perfusionCalculatorAnalytics?.copy('timecalc', timeLiveMode, event?.isTrusted === true);
   }
 }
 
@@ -4863,6 +4874,31 @@ function createDefaultTransplantState() {
   };
 }
 
+function hasCompletedTransplantInterval(state, type) {
+  if (!state) return false;
+  if (type === 'heart') {
+    const heart = state.heart || {};
+    return [
+      [heart.donorAcc, heart.iceOut],
+      [heart.iceOut, heart.recipientAccRelease],
+      [heart.anastomosisStart, heart.recipientAccRelease],
+      [heart.pumpStart, heart.pumpEnd]
+    ].some(([start, end]) => calculateElapsedMinutes(start, end) !== null);
+  }
+  const lung = state.lung || {};
+  const activeSides = lung.procedure === 'single' ? [lung.singleSide] : ['left', 'right'];
+  const pairs = [[lung.pumpStart, lung.pumpEnd]];
+  activeSides.forEach(side => {
+    const values = lung.sides?.[side] || {};
+    pairs.push(
+      [lung.donorAcc, values.iceOut],
+      [values.iceOut, values.reperfusion],
+      [values.anastomosisStart, values.reperfusion]
+    );
+  });
+  return pairs.some(([start, end]) => calculateElapsedMinutes(start, end) !== null);
+}
+
 function normalizeStoredTransplantState(saved) {
   const defaults = createDefaultTransplantState();
   if (!saved || typeof saved !== 'object') return defaults;
@@ -5207,7 +5243,7 @@ function renderTransplantCalculator() {
   });
 }
 
-async function copyTransplantSummary() {
+async function copyTransplantSummary(isTrustedInteraction = false) {
   const preview = document.getElementById('transplant-summary-preview');
   const status = document.getElementById('transplant-summary-status');
   if (!preview || !status) return;
@@ -5215,17 +5251,17 @@ async function copyTransplantSummary() {
     status.textContent = 'Fix invalid time fields before copying.';
     return;
   }
-  try {
-    if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(preview.value);
-    else {
+  const copied = await copyTextWithFallback(preview.value, () => {
       preview.focus();
       preview.select();
-      const copied = Boolean(document.execCommand && document.execCommand('copy'));
-      if (!copied) throw new Error('Fallback copy failed');
+      const fallbackSucceeded = Boolean(document.execCommand && document.execCommand('copy'));
       preview.setSelectionRange(0, 0);
-    }
+      return fallbackSucceeded;
+  });
+  if (copied) {
     status.textContent = 'Summary copied.';
-  } catch (error) {
+    window.perfusionCalculatorAnalytics?.copy('timecalc', 'transplant', isTrustedInteraction);
+  } else {
     status.textContent = 'Unable to copy. Select the summary and copy it manually.';
   }
 }
@@ -5285,7 +5321,7 @@ function initTransplantCalculator() {
       saveTimeLiveState();
       return;
     }
-    if (event.target.closest('#transplant-summary-copy')) copyTransplantSummary();
+    if (event.target.closest('#transplant-summary-copy')) copyTransplantSummary(event.isTrusted);
   });
   renderTransplantCalculator();
 }
@@ -6841,6 +6877,15 @@ function getPressureDropComparisonResult(entry, flowValue) {
   };
 }
 
+function hasValidPressureDropEstimate(interpolationResults) {
+  return interpolationResults.some(result => result?.state === 'exact' || result?.state === 'interpolated');
+}
+
+function isPressureDropAnalyticsReady(activeView, singleView, compareView) {
+  const view = activeView === 'compare' ? compareView : singleView;
+  return isElementVisible(view) && view?.dataset.analyticsReady === 'true';
+}
+
 function createPressureDropComparisonChart(selectedEntries, flowValue, showRawPoints, onRawPointsChange) {
   const panel = document.createElement('article');
   panel.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-3';
@@ -7132,6 +7177,7 @@ async function initCannulaPressureDropPage() {
       const flowInputValue = controls.flowInput?.value || '';
       const flowValue = parsePressureDropFlowInput(flowInputValue);
       results.innerHTML = '';
+      if (compareControls.singleView) compareControls.singleView.dataset.analyticsReady = 'false';
 
       if (!entries.length) {
         status.textContent = 'No pressure-drop references loaded';
@@ -7159,6 +7205,10 @@ async function initCannulaPressureDropPage() {
         showRawPressureDropPoints,
         checked => { showRawPressureDropPoints = checked; render(); }
       ));
+      if (compareControls.singleView) {
+        const estimates = getPressureDropSeries(selectedEntry).map(series => interpolatePressureDrop(series.points, flowValue));
+        compareControls.singleView.dataset.analyticsReady = String(hasValidPressureDropEstimate(estimates));
+      }
       results.appendChild(createPressureDropAvailableDatasetsDetails(entries, selectEntry));
       setState({});
       if (focusResultFlow) requestAnimationFrame(focusResultFlowInput);
@@ -7191,12 +7241,17 @@ async function initCannulaPressureDropPage() {
       const flowValue = parsePressureDropFlowInput(compareControls.flowInput?.value || '');
       const selectedEntries = entries.filter(entry => selectedComparisonKeys.includes(getPressureDropComparisonKey(entry)));
       compareControls.results.innerHTML = '';
+      if (compareControls.compareView) compareControls.compareView.dataset.analyticsReady = 'false';
       if (selectedEntries.length === 0) {
         const emptyState = document.createElement('div');
         emptyState.className = 'rounded-xl border border-dashed border-slate-300 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/40 p-5 text-sm text-slate-600 dark:text-slate-300';
         emptyState.innerHTML = '<h3 class="text-base font-semibold text-primary-900 dark:text-white">Add at least one size to compare.</h3><p class="mt-2">Choose a manufacturer, category/type, and model family, then add a size from that same family.</p>';
         compareControls.results.appendChild(emptyState);
       } else {
+        const hasValidComparison = selectedEntries.length >= 2 && selectedEntries.some(entry => (
+          hasValidPressureDropEstimate(getPressureDropSeries(entry).map(series => interpolatePressureDrop(series.points, flowValue)))
+        ));
+        if (compareControls.compareView) compareControls.compareView.dataset.analyticsReady = String(hasValidComparison);
         if (selectedEntries.length === 1) {
           const helper = document.createElement('p');
           helper.className = 'rounded-lg border border-accent-500/20 bg-accent-500/10 dark:bg-accent-500/15 px-3 py-2 text-xs font-medium text-accent-700 dark:text-accent-300';
@@ -7274,6 +7329,7 @@ async function initCannulaPressureDropPage() {
 
     const setPressureDropView = (view) => {
       activePressureDropView = view === 'compare' ? 'compare' : 'single';
+      page.dataset.pressureDropView = activePressureDropView;
       const isCompare = activePressureDropView === 'compare';
       compareControls.singleView?.classList.toggle('hidden', isCompare);
       compareControls.compareView?.classList.toggle('hidden', !isCompare);
@@ -8693,6 +8749,21 @@ function resolveFeedbackResultContext(pagePath) {
   return { insertAfter: context.insertAfter, readinessTarget: context.readinessTarget, isReady: () => readyCheck(context) };
 }
 
+function resolveCalculatorAnalyticsResultContext(pagePath) {
+  if (pagePath === '/cannula-pressure-drop/') {
+    const page = el('cannula-pressure-drop-page');
+    return { isReady: () => isPressureDropAnalyticsReady(
+      page?.dataset.pressureDropView,
+      el('pressure-drop-single-view'),
+      el('pressure-drop-compare-view')
+    ) };
+  }
+  if (pagePath === '/timecalc/' && timeLiveMode === 'transplant') {
+    return { isReady: () => hasCompletedTransplantInterval(transplantState, transplantState.activeType) };
+  }
+  return resolveFeedbackResultContext(pagePath);
+}
+
 function getCalculatorAnalyticsMode(pagePath) {
   if (pagePath === '/predicted-hct/') return el('hct_mode')?.value === 'onpump' ? 'onpump' : 'pre';
   if (pagePath === '/unit-converter/') {
@@ -8713,7 +8784,7 @@ function initCalculatorAnalytics() {
   const calculationButtonSelector = [
     '.time-start-now', '.time-end-now', '.time-live-start', '.time-live-stop',
     '[data-transplant-now]', '#priming-add-tubing-item', '#priming-add-oxygenator-item',
-    '#phn-calc-bsa-btn', '#phn-use-bsa-btn'
+    '#phn-calc-bsa-btn', '#phn-use-bsa-btn', '[data-tubing-inch]', '#pressure-drop-compare-add'
   ].join(',');
 
   function isCalculationInteraction(event) {
@@ -8730,19 +8801,13 @@ function initCalculatorAnalytics() {
   }
 
   function checkCompletion() {
-    const context = resolveFeedbackResultContext(pagePath);
+    const context = resolveCalculatorAnalyticsResultContext(pagePath);
     if (context?.isReady()) analytics.complete(calculatorSlug, getCalculatorAnalyticsMode(pagePath));
   }
 
   ['input', 'change', 'click'].forEach((eventName) => {
     document.addEventListener(eventName, (event) => {
       if (!event.isTrusted) return;
-      const copyButton = event.type === 'click' && event.target instanceof Element
-        ? event.target.closest('button') : null;
-      if (copyButton && resultCopyButtonIds.has(copyButton.id)) {
-        analytics.copy(calculatorSlug, getCalculatorAnalyticsMode(pagePath), true);
-        return;
-      }
       if (!isCalculationInteraction(event)) return;
       analytics.start(calculatorSlug, getCalculatorAnalyticsMode(pagePath), true);
       setTimeout(checkCompletion, 0);
