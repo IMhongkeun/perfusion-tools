@@ -8693,6 +8693,63 @@ function resolveFeedbackResultContext(pagePath) {
   return { insertAfter: context.insertAfter, readinessTarget: context.readinessTarget, isReady: () => readyCheck(context) };
 }
 
+function getCalculatorAnalyticsMode(pagePath) {
+  if (pagePath === '/predicted-hct/') return el('hct_mode')?.value === 'onpump' ? 'onpump' : 'pre';
+  if (pagePath === '/unit-converter/') {
+    return Array.from(document.querySelectorAll('[data-unit-tab]')).find((button) => button.classList.contains('bg-accent-500/15'))?.dataset.unitTab || 'flow';
+  }
+  if (pagePath === '/timecalc/') return ['record', 'live', 'transplant'].includes(timeLiveMode) ? timeLiveMode : 'record';
+  return undefined;
+}
+
+function initCalculatorAnalytics() {
+  const pagePath = normalizeFeedbackPath(window.location.pathname);
+  const calculatorSlug = FEEDBACK_CALCULATOR_ROUTES[pagePath];
+  const analytics = window.perfusionCalculatorAnalytics;
+  if (!calculatorSlug || !analytics) return;
+
+  const excludedButtonPattern = /(?:reset|clear|new-case|case-start-new|copy)/i;
+  const resultCopyButtonIds = new Set(['time-summary-copy', 'transplant-summary-copy']);
+  const calculationButtonSelector = [
+    '.time-start-now', '.time-end-now', '.time-live-start', '.time-live-stop',
+    '[data-transplant-now]', '#priming-add-tubing-item', '#priming-add-oxygenator-item',
+    '#phn-calc-bsa-btn', '#phn-use-bsa-btn'
+  ].join(',');
+
+  function isCalculationInteraction(event) {
+    const target = event.target;
+    if (!(target instanceof Element) || target.closest('[data-feedback-step], .feedback-card')) return false;
+    if (event.type === 'input' || event.type === 'change') {
+      return target.matches('input, select') && !target.matches('[type="checkbox"], [type="radio"]');
+    }
+    if (event.type !== 'click') return false;
+    if (resultCopyButtonIds.has(target.closest('button')?.id)) return false;
+    const button = target.closest('button');
+    if (!button || excludedButtonPattern.test(button.id || '')) return false;
+    return Boolean(button.matches(calculationButtonSelector));
+  }
+
+  function checkCompletion() {
+    const context = resolveFeedbackResultContext(pagePath);
+    if (context?.isReady()) analytics.complete(calculatorSlug, getCalculatorAnalyticsMode(pagePath));
+  }
+
+  ['input', 'change', 'click'].forEach((eventName) => {
+    document.addEventListener(eventName, (event) => {
+      if (!event.isTrusted) return;
+      const copyButton = event.type === 'click' && event.target instanceof Element
+        ? event.target.closest('button') : null;
+      if (copyButton && resultCopyButtonIds.has(copyButton.id)) {
+        analytics.copy(calculatorSlug, getCalculatorAnalyticsMode(pagePath), true);
+        return;
+      }
+      if (!isCalculationInteraction(event)) return;
+      analytics.start(calculatorSlug, getCalculatorAnalyticsMode(pagePath), true);
+      setTimeout(checkCompletion, 0);
+    });
+  });
+}
+
 function isTimeFeedbackAction(target) {
   return Boolean(target.closest('.time-start-now, .time-end-now, .time-live-start, .time-live-stop, .time-live-reset, [data-transplant-now], #time-new-case, #time-case-start-new'));
 }
@@ -9223,6 +9280,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   setupContactActions();
   initFeedbackCard();
+  initCalculatorAnalytics();
 
   if (hasTimeCalculator) {
     initTimeCalculator();
