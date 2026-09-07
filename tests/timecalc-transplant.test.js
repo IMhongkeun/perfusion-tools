@@ -167,10 +167,10 @@ assert(mainJs.includes("function loadTimePreferencesState() {\n  // Record is th
 assert(!mainJs.includes('timeLiveMode = normalizeTimeMode(saved.mode)'), 'a saved view preference should not override the initial Record mode');
 assert(mainJs.includes('transplant: getTransplantStateSnapshot()'), 'transplant state should use active case persistence');
 assert(mainJs.includes('transplantState = createDefaultTransplantState();'), 'new case should reset transplant state');
-assert(mainJs.includes("const copied = Boolean(document.execCommand && document.execCommand('copy'))"), 'fallback copy must check the returned success value');
+assert(mainJs.includes("const fallbackSucceeded = Boolean(document.execCommand && document.execCommand('copy'))"), 'fallback copy must check the returned success value');
 assert(mainJs.includes("status.textContent = 'Fix invalid time fields before copying.'"), 'copy should reject invalid transplant clocks');
 assert(mainJs.includes('navigator.clipboard?.writeText'), 'summary should use the Clipboard API');
-assert(mainJs.includes("if (event.target.closest('#transplant-summary-copy')) copyTransplantSummary()"), 'summary copy button should be delegated safely');
+assert(mainJs.includes("if (event.target.closest('#transplant-summary-copy')) copyTransplantSummary(event.isTrusted)"), 'summary copy button should be delegated safely');
 assert(!mainJs.includes('renderTransplantCalculator();\n    const next = document.querySelector'), 'typing should not rerender the entire transplant calculator');
 
 console.log('All timecalc transplant tests passed.');
