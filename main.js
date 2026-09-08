@@ -293,12 +293,21 @@ function initCalculatorDiscoveryPageshow() {
   calculatorDiscoveryPageshowInitialized = true;
 }
 
+let initialHomeDiscoveryRendered = false;
+
+function renderInitialHomeDiscovery() {
+  if (!isHomeCalculatorDirectoryContext() || initialHomeDiscoveryRendered) return;
+  renderCalculatorDirectory();
+  renderRecentCalculators();
+  initialHomeDiscoveryRendered = true;
+}
+
 function initCalculatorDiscovery() {
   initCalculatorDiscoveryPageshow();
-  renderCalculatorDirectory();
+  renderInitialHomeDiscovery();
   const calculator = getCalculatorByRoute(window.location.pathname);
   if (calculator) saveVisitedCalculator(calculator.path);
-  renderRecentCalculators();
+  if (!initialHomeDiscoveryRendered) renderRecentCalculators();
   const clearButton = document.getElementById('clear-recent-calculators');
   if (clearButton && clearButton.dataset.recentClearInitialized !== 'true') {
     clearButton.addEventListener('click', () => clearRecentCalculatorRoutes());
@@ -8496,6 +8505,9 @@ function route() {
       }
     }
   }
+
+  // Informational routes remain paint-hidden until their correct view is active.
+  document.documentElement.classList.remove('root-route-pending');
 
   const topResetRoutes = new Set(['timecalc', 'unit-converter', 'quick-reference', 'info']);
   if (topResetRoutes.has(key) && !shouldPreserveQuickReferenceHashScroll()) {

@@ -344,13 +344,21 @@
     .info-block.warn { background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.35); }
     .info-block.alert { background: rgba(249, 115, 22, 0.1); border-color: rgba(249, 115, 22, 0.35); }
 
-    /* Reserve the known calculator-directory footprint before main.js renders it. */
-    #view-home { min-height: 74rem; }
-    @media (min-width: 768px) {
-      #view-home { min-height: 48rem; }
-    }
+    /* Keep inactive root-document routes hidden; only the real Home pathname opts in before paint. */
+    html.initial-home-route #view-home { display: block; }
+    html.root-route-pending main { visibility: hidden; }
   </style>
 
+  <script>
+    // Run during head parsing so informational routes never expose the inactive Home view.
+    const initialPath = window.location.pathname.replace(/\/+$/, '') || '/';
+    const informationalPaths = new Set(['/info', '/privacy', '/terms', '/contact']);
+    if (initialPath === '/' || initialPath === '/index.html') {
+      document.documentElement.classList.add('initial-home-route');
+    } else if (informationalPaths.has(initialPath)) {
+      document.documentElement.classList.add('root-route-pending');
+    }
+  </script>
   <script src="/analytics.js"></script>
 
   <script>
@@ -643,7 +651,7 @@
         </div>
       </section>
 
-      <section id="view-home" class="animate-in fade-in duration-300" aria-labelledby="all-calculators-heading">
+      <section id="view-home" class="hidden animate-in fade-in duration-300" aria-labelledby="all-calculators-heading">
         <div class="space-y-6">
           <div class="px-1 space-y-1">
             <p class="text-[11px] uppercase tracking-wider text-accent-500 font-semibold">Start here</p>
@@ -899,5 +907,6 @@
   <button id="back-to-top" type="button" class="back-to-top-button md:hidden fixed z-50 inline-flex h-12 w-12 translate-y-2 items-center justify-center rounded-full border border-slate-200 bg-white text-primary-900 opacity-0 pointer-events-none shadow-lg shadow-slate-900/15 transition-all hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:border-primary-700 dark:bg-primary-900 dark:text-white dark:hover:bg-primary-800 dark:focus-visible:ring-offset-primary-950" aria-label="Back to top" aria-hidden="true" tabindex="-1"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 15l6-6 6 6" /></svg></button>
 
   <script src="/main.js"></script>
+  <script>renderInitialHomeDiscovery();</script>
 </body>
 </html>
