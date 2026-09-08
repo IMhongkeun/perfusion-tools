@@ -293,12 +293,21 @@ function initCalculatorDiscoveryPageshow() {
   calculatorDiscoveryPageshowInitialized = true;
 }
 
+let initialHomeDiscoveryRendered = false;
+
+function renderInitialHomeDiscovery(allowInactiveHome = false) {
+  if ((!allowInactiveHome && !isHomeCalculatorDirectoryContext()) || initialHomeDiscoveryRendered) return;
+  renderCalculatorDirectory();
+  renderRecentCalculators();
+  initialHomeDiscoveryRendered = true;
+}
+
 function initCalculatorDiscovery() {
   initCalculatorDiscoveryPageshow();
-  renderCalculatorDirectory();
+  renderInitialHomeDiscovery();
   const calculator = getCalculatorByRoute(window.location.pathname);
   if (calculator) saveVisitedCalculator(calculator.path);
-  renderRecentCalculators();
+  if (!initialHomeDiscoveryRendered) renderRecentCalculators();
   const clearButton = document.getElementById('clear-recent-calculators');
   if (clearButton && clearButton.dataset.recentClearInitialized !== 'true') {
     clearButton.addEventListener('click', () => clearRecentCalculatorRoutes());
@@ -343,7 +352,7 @@ function initStandaloneTopNav() {
   if (!nav) {
     nav = document.createElement('nav');
     nav.id = 'global-top-nav';
-    nav.className = 'hidden md:flex items-center gap-1 text-sm font-medium overflow-x-auto whitespace-nowrap max-w-[68%] pr-1';
+    nav.className = 'hidden md:flex flex-1 items-center gap-1 text-sm font-medium overflow-x-auto whitespace-nowrap max-w-[68%] ml-auto pr-1';
     headerRow.insertBefore(nav, themeBtn);
   }
 
@@ -8424,6 +8433,8 @@ function navigateTo(path, options = {}) {
 
 function route() {
   const path = getActivePath();
+  // First-paint Home visibility must not override the router after startup.
+  document.documentElement.classList.remove('initial-home-route');
   const sections = ['view-home', 'view-bsa', 'view-phn-echo', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'view-unit-converter', 'view-quick-reference', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
     const section = el(sid);
@@ -8452,6 +8463,9 @@ function route() {
   else if (path.includes('terms')) { showSection('view-terms'); key = 'terms'; }
   else if (path.includes('contact')) { showSection('view-contact'); key = 'contact'; }
   else { showSection('view-home'); key = 'home'; }
+
+  // A session that started on an informational route populates Home on first visit.
+  if (key === 'home') renderInitialHomeDiscovery(true);
 
   const navMap = {
     'home': ['nav-home', 'side-home', 'mob-home'],
@@ -8496,6 +8510,9 @@ function route() {
       }
     }
   }
+
+  // Informational routes remain paint-hidden until their correct view is active.
+  document.documentElement.classList.remove('root-route-pending');
 
   const topResetRoutes = new Set(['timecalc', 'unit-converter', 'quick-reference', 'info']);
   if (topResetRoutes.has(key) && !shouldPreserveQuickReferenceHashScroll()) {
