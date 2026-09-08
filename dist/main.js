@@ -343,7 +343,7 @@ function initStandaloneTopNav() {
   if (!nav) {
     nav = document.createElement('nav');
     nav.id = 'global-top-nav';
-    nav.className = 'hidden md:flex items-center gap-1 text-sm font-medium overflow-x-auto whitespace-nowrap max-w-[68%] pr-1';
+    nav.className = 'hidden md:flex flex-1 items-center gap-1 text-sm font-medium overflow-x-auto whitespace-nowrap max-w-[68%] ml-auto pr-1';
     headerRow.insertBefore(nav, themeBtn);
   }
 
