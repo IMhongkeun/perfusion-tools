@@ -47,14 +47,23 @@ assert(
   'Cannula loading states should reserve a modest responsive footprint without a persistent empty slab.'
 );
 
-const standalonePages = [
-  'bsa/index.html', 'cannula-pressure-drop/index.html', 'gdp/index.html',
+const bsa = read('bsa/index.html');
+const bsaHeader = bsa.slice(bsa.indexOf('<header'), bsa.indexOf('</header>') + '</header>'.length);
+assert.strictEqual((bsaHeader.match(/<nav(?:\s|>)/g) || []).length, 1, 'BSA should contain one desktop header navigation landmark.');
+assert(!bsaHeader.includes('id="global-top-nav"'), 'BSA should not contain an inert standalone navigation placeholder.');
+assert(
+  bsaHeader.indexOf('id="nav-home"') !== -1 && bsaHeader.indexOf('id="nav-home"') < bsaHeader.indexOf('id="theme-toggle"'),
+  'BSA should retain its complete first-paint navigation before the theme control.'
+);
+
+const placeholderPages = [
+  'cannula-pressure-drop/index.html', 'gdp/index.html',
   'heparin/index.html', 'lbm/index.html', 'phn-echo/index.html',
   'predicted-hct/index.html', 'priming-volume/index.html',
   'quick-reference/index.html', 'timecalc/index.html',
   'unit-converter/index.html', 'z-score/index.html'
 ];
-standalonePages.forEach(relativePath => {
+placeholderPages.forEach(relativePath => {
   const html = read(relativePath);
   assert(
     html.includes('id="global-top-nav"') && html.indexOf('id="global-top-nav"') < html.indexOf('id="theme-toggle"'),
