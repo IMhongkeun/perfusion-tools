@@ -295,8 +295,8 @@ function initCalculatorDiscoveryPageshow() {
 
 let initialHomeDiscoveryRendered = false;
 
-function renderInitialHomeDiscovery() {
-  if (!isHomeCalculatorDirectoryContext() || initialHomeDiscoveryRendered) return;
+function renderInitialHomeDiscovery(allowInactiveHome = false) {
+  if ((!allowInactiveHome && !isHomeCalculatorDirectoryContext()) || initialHomeDiscoveryRendered) return;
   renderCalculatorDirectory();
   renderRecentCalculators();
   initialHomeDiscoveryRendered = true;
@@ -8433,6 +8433,8 @@ function navigateTo(path, options = {}) {
 
 function route() {
   const path = getActivePath();
+  // First-paint Home visibility must not override the router after startup.
+  document.documentElement.classList.remove('initial-home-route');
   const sections = ['view-home', 'view-bsa', 'view-phn-echo', 'view-do2i', 'view-hct', 'view-lbm', 'view-priming-volume', 'view-heparin', 'view-timecalc', 'view-unit-converter', 'view-quick-reference', 'view-info', 'view-privacy', 'view-terms', 'view-contact'];
   sections.forEach(sid => {
     const section = el(sid);
@@ -8461,6 +8463,9 @@ function route() {
   else if (path.includes('terms')) { showSection('view-terms'); key = 'terms'; }
   else if (path.includes('contact')) { showSection('view-contact'); key = 'contact'; }
   else { showSection('view-home'); key = 'home'; }
+
+  // A session that started on an informational route populates Home on first visit.
+  if (key === 'home') renderInitialHomeDiscovery(true);
 
   const navMap = {
     'home': ['nav-home', 'side-home', 'mob-home'],

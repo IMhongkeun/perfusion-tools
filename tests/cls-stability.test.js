@@ -85,4 +85,42 @@ assert(
   'Routing should reveal informational content only after selecting the correct view.'
 );
 
+const discoveryBlock = mainJs.slice(
+  mainJs.indexOf('let initialHomeDiscoveryRendered'),
+  mainJs.indexOf('\nfunction initCalculatorDiscovery()')
+);
+function createDiscoveryHarness(isInitialHome) {
+  const calls = { directory: 0, recent: 0 };
+  const context = {
+    isHomeCalculatorDirectoryContext: () => isInitialHome,
+    renderCalculatorDirectory: () => { calls.directory += 1; },
+    renderRecentCalculators: () => { calls.recent += 1; }
+  };
+  vm.createContext(context);
+  vm.runInContext(`${discoveryBlock}\nthis.renderHome = renderInitialHomeDiscovery;`, context);
+  return { calls, renderHome: context.renderHome };
+}
+
+const initialHomeHarness = createDiscoveryHarness(true);
+initialHomeHarness.renderHome();
+initialHomeHarness.renderHome();
+assert.deepStrictEqual(initialHomeHarness.calls, { directory: 1, recent: 1 }, 'Initial Home discovery should render once during startup.');
+
+const informationalHarness = createDiscoveryHarness(false);
+informationalHarness.renderHome();
+assert.deepStrictEqual(informationalHarness.calls, { directory: 0, recent: 0 }, 'Informational startup must not render inactive Home discovery.');
+informationalHarness.renderHome(true);
+informationalHarness.renderHome(true);
+assert.deepStrictEqual(informationalHarness.calls, { directory: 1, recent: 1 }, 'First SPA visit to Home should populate discovery exactly once.');
+
+assert(
+  mainJs.includes("document.documentElement.classList.remove('initial-home-route');") &&
+  mainJs.indexOf("document.documentElement.classList.remove('initial-home-route');") < mainJs.indexOf("const sections = ['view-home'"),
+  'route() should release initial Home visibility before normal hidden-state routing.'
+);
+assert(
+  mainJs.includes("if (key === 'home') renderInitialHomeDiscovery(true);"),
+  'route() should lazily populate Home after an informational-route startup.'
+);
+
 console.log('CLS stability regression tests passed');
