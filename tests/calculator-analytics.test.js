@@ -8,9 +8,35 @@ const vm = require('vm');
 const repoRoot = path.join(__dirname, '..');
 const source = fs.readFileSync(path.join(repoRoot, 'analytics.js'), 'utf8');
 const calls = [];
+const scripts = [];
 const window = { dataLayer: [], location: { href: 'https://perfusiontools.com/predicted-hct/', pathname: '/predicted-hct/', search: '' }, gtag(...args) { calls.push(args); } };
-const document = { title: 'Predicted Hct', head: { appendChild() {} }, createElement() { return {}; } };
+const document = {
+  title: 'Predicted Hct',
+  head: { appendChild(script) { scripts.push(script); } },
+  createElement() { return { getAttribute(attribute) { return this[attribute] || null; } }; },
+  getElementsByTagName(tagName) { return tagName === 'script' ? scripts : []; }
+};
 vm.runInNewContext(source, { window, document, Set, Object, Date });
+assert.strictEqual(scripts.filter(script => script.src === 'https://www.clarity.ms/tag/v9kiiq48nz').length, 1, 'Clarity must load from the shared analytics script.');
+assert.strictEqual(typeof window.clarity, 'function', 'Clarity queue must be available before the remote script loads.');
+window.clarity('event', 'safe-structural-event');
+assert.strictEqual(window.clarity.q.length, 1, 'Pre-load Clarity calls must be queued.');
+vm.runInNewContext(source, { window, document, Set, Object, Date });
+assert.strictEqual(scripts.filter(script => script.src === 'https://www.clarity.ms/tag/v9kiiq48nz').length, 1, 'Repeated analytics evaluation must not duplicate Clarity.');
+
+const fallbackScripts = [];
+const fallbackWindow = { location: window.location, gtag() {} };
+const fallbackDocument = {
+  title: document.title,
+  head: { appendChild(script) { fallbackScripts.push(script); } },
+  createElement() { return {}; },
+  getElementsByTagName() { throw new Error('Clarity blocked'); }
+};
+assert.doesNotThrow(
+  () => vm.runInNewContext(source, { window: fallbackWindow, document: fallbackDocument, Set, Object, Date }),
+  'A blocked Clarity setup must not interrupt shared analytics initialization.'
+);
+assert.strictEqual(fallbackScripts.filter(script => script.src?.includes('googletagmanager.com')).length, 1, 'GA4 must still load when Clarity setup fails.');
 calls.length = 0;
 
 const analytics = window.perfusionCalculatorAnalytics;
