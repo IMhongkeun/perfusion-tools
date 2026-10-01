@@ -6,6 +6,7 @@ const path = require('path');
 
 const repoRoot = path.join(__dirname, '..');
 const measurementId = 'G-WZYBQ2VC7E';
+const clarityProjectId = 'v9kiiq48nz';
 const standaloneRoutes = [
   '/',
   '/bsa/',
@@ -38,6 +39,10 @@ assert(analyticsSource.includes(`const gaMeasurementId = '${measurementId}';`), 
 assert.strictEqual(countMatches(analyticsSource, /googletagmanager\.com\/gtag\/js/g), 1, 'gtag.js must be loaded exactly once.');
 assert.strictEqual(countMatches(analyticsSource, /window\.gtag\('config', gaMeasurementId\)/g), 1, 'GA4 must be configured exactly once.');
 assert.strictEqual(countMatches(analyticsSource, /window\.gtag\('event', 'page_view'/g), 1, 'The shared script must expose one SPA page-view sender.');
+assert(analyticsSource.includes(`const clarityProjectId = '${clarityProjectId}';`), 'Shared analytics must use the intended Clarity project ID.');
+assert.strictEqual(countMatches(analyticsSource, /https:\/\/www\.clarity\.ms\/tag\//g), 1, 'Shared analytics must declare one Clarity tag endpoint.');
+assert(analyticsSource.includes('if (window.__perfusionToolsClarityInitialized) return;'), 'Clarity initialization must be idempotent.');
+assert(analyticsSource.includes("document.getElementsByTagName('script')"), 'Clarity initialization must detect existing script elements.');
 
 for (const route of standaloneRoutes) {
   const sourcePath = routeToHtmlPath(repoRoot, route);
@@ -48,6 +53,7 @@ for (const route of standaloneRoutes) {
   assert.strictEqual(outputHtml, sourceHtml, `${route} source and dist HTML must remain synchronized.`);
   assert.strictEqual(countMatches(sourceHtml, /<script src="\/analytics\.js"><\/script>/g), 1, `${route} must load shared analytics exactly once.`);
   assert.strictEqual(countMatches(sourceHtml, /googletagmanager\.com\/gtag\/js|gtag\s*\(\s*['"]config['"]/g), 0, `${route} must not contain a duplicate inline GA implementation.`);
+  assert.strictEqual(countMatches(sourceHtml, /clarity\.ms\/tag|v9kiiq48nz/g), 0, `${route} must not contain a page-specific Clarity implementation.`);
 }
 
 const redirects = fs.readFileSync(path.join(repoRoot, '_redirects'), 'utf8');

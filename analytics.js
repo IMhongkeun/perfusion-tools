@@ -1,6 +1,35 @@
 'use strict';
 
 const gaMeasurementId = 'G-WZYBQ2VC7E';
+const clarityProjectId = 'v9kiiq48nz';
+const clarityScriptUrl = `https://www.clarity.ms/tag/${clarityProjectId}`;
+
+function initializeClarity() {
+  if (window.__perfusionToolsClarityInitialized) return;
+  window.__perfusionToolsClarityInitialized = true;
+
+  try {
+    window.clarity = window.clarity || function clarity() {
+      (window.clarity.q = window.clarity.q || []).push(arguments);
+    };
+
+    const scripts = document.getElementsByTagName('script');
+    for (const script of scripts) {
+      const source = (typeof script.getAttribute === 'function' && script.getAttribute('src')) || script.src || '';
+      if (source === clarityScriptUrl || source.startsWith(`${clarityScriptUrl}?`)) return;
+    }
+
+    const clarityScript = document.createElement('script');
+    clarityScript.async = true;
+    clarityScript.src = clarityScriptUrl;
+    clarityScript.onerror = function ignoreClarityLoadError() {};
+    document.head.appendChild(clarityScript);
+  } catch (_) {
+    // Analytics must never interfere with calculator behavior when Clarity is unavailable.
+  }
+}
+
+initializeClarity();
 
 window.dataLayer = window.dataLayer || [];
 window.gtag = window.gtag || function gtag() {
