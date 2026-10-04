@@ -20,6 +20,7 @@ const visibleText = stripTags(lbmHtml);
 const expectedTitle = 'Lean Body Mass (LBM) Calculator | Boer & Hume Formulas';
 const expectedTitleHtml = 'Lean Body Mass (LBM) Calculator | Boer &amp; Hume Formulas';
 const expectedDescription = 'Calculate lean body mass from height, weight, and sex using Boer and Hume formulas. Compare estimates and review dosing-weight and clinical context.';
+const expectedModifiedDate = '2026-10-04';
 
 assert(lbmHtml.includes(`<title>${expectedTitleHtml}</title>`), 'LBM page title should exactly match the requested SERP title.');
 assert(lbmHtml.includes(`<meta name="description" content="${expectedDescription}" />`), 'LBM meta description should exactly match the requested SERP description.');
@@ -56,6 +57,7 @@ const medicalWebPage = jsonLd['@graph'].find(node => node['@type'] === 'MedicalW
 assert(faqPage, 'LBM JSON-LD should include FAQPage structured data.');
 assert(medicalWebPage, 'LBM JSON-LD should include MedicalWebPage structured data.');
 assert.strictEqual(medicalWebPage.name, expectedTitle, 'LBM MedicalWebPage name should stay synchronized with the page title.');
+assert.strictEqual(medicalWebPage.dateModified, expectedModifiedDate, 'LBM MedicalWebPage dateModified should reflect the metadata update date.');
 faqPage.mainEntity.forEach(question => {
   assert(visibleText.includes(question.name), `FAQPage question should match visible FAQ: ${question.name}`);
   assert(visibleText.includes(question.acceptedAnswer.text), `FAQPage answer should match visible FAQ: ${question.name}`);
