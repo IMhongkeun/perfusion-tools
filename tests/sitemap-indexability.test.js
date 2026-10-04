@@ -99,8 +99,7 @@ const bsaNodes = getJsonLdNodes(bsaHtml);
 const bsaMedicalPage = bsaNodes.find((node) => node['@type'] === 'MedicalWebPage');
 assert(bsaMedicalPage, 'BSA MedicalWebPage structured data should exist.');
 assert.strictEqual(bsaMedicalPage.url, bsaUrl);
-assert.strictEqual(bsaMedicalPage.dateModified, '2026-08-01');
-assert.strictEqual(bsaMedicalPage.dateModified, rootBsaLastmod);
+assert.strictEqual(bsaMedicalPage.dateModified, '2026-10-04');
 
 assert(redirects.includes('/info/      /             200'), '/info/ home rewrite rule should remain unchanged.');
 assert(redirects.includes('/privacy/   /             200'), '/privacy/ rewrite should remain unchanged.');

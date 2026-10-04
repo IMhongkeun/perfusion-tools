@@ -29,11 +29,11 @@ function loadBsaRuntime(source) {
   return context.module.exports;
 }
 
-const staticTitle = 'BSA Calculator for CPB Flow Indexing | Perfusion Tools';
-const staticDescription = 'Calculate body surface area with Mosteller, Du Bois, and Haycock formulas to support CPB flow indexing and perfusion planning.';
-const socialTitle = 'BSA Calculator for Perfusion Flow Guidance | Perfusion Tools';
-const socialDescription = 'Calculate Body Surface Area for CPB flow planning using multiple formulas and indexed flow guidance.';
-const routeDescription = 'Body Surface Area (BSA) calculator for perfusionists with Mosteller, Du Bois, Haycock, and Boyd formulas plus CPB flow guidance by cardiac index.';
+const staticTitle = 'Body Surface Area (BSA) Calculator | CPB Flow Indexing';
+const staticDescription = 'Calculate body surface area with Mosteller, Du Bois, Haycock, and Boyd formulas, then estimate CPB pump flow by cardiac index for perfusion planning.';
+const socialTitle = staticTitle;
+const socialDescription = staticDescription;
+const routeDescription = staticDescription;
 const headingDescription = 'Calculate BSA first, then estimate indexed pump flow targets (CI 1.0-3.0) for clinical perfusion planning.';
 const h1 = 'BSA Calculator for Perfusion Flow Guidance in CPB';
 
@@ -103,7 +103,9 @@ assert(!visibleAnswers.some((answer) => /Heparin|\bIBW\b|\bABW\b|transferred dat
 const medicalPage = nodes.find((node) => node['@type'] === 'MedicalWebPage');
 const webApp = nodes.find((node) => node['@type'] === 'WebApplication');
 const breadcrumb = nodes.find((node) => node['@type'] === 'BreadcrumbList');
-assert.strictEqual(medicalPage.dateModified, '2026-08-01');
+assert.strictEqual(medicalPage.name, staticTitle);
+assert.strictEqual(medicalPage.description, staticDescription);
+assert.strictEqual(medicalPage.dateModified, '2026-10-04');
 assert.strictEqual(medicalPage.url, 'https://perfusiontools.com/bsa/');
 assert.strictEqual(webApp.name, 'BSA Calculator');
 assert.strictEqual(webApp.url, 'https://perfusiontools.com/bsa/');
@@ -122,5 +124,6 @@ assert(heparinHtml.includes(`Use the ${bsaLink} to verify body surface area when
 for (const page of ['bsa', 'gdp', 'heparin']) {
   assert.strictEqual(read('dist', page, 'index.html'), read(page, 'index.html'), `${page} source and dist should match.`);
 }
+assert.strictEqual(read('dist', 'index.html'), read('index.html'), 'Root source and dist should match.');
 
 console.log('All BSA SEO tests passed.');
