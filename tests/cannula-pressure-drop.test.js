@@ -689,6 +689,64 @@ for (const [code, configuration, size, graphLabel, needle, lengthCm, range, poin
   assert.strictEqual(interpolatePressureDrop(entry.points, minimum - 0.001).state, 'out_of_range');
   assert.strictEqual(interpolatePressureDrop(entry.points, maximum + 0.001).state, 'out_of_range');
 }
+const nextGenBicavalModel = 'Bio-Medicus NextGen Femoral Bi-caval Venous Cannula';
+const nextGenBicavalContracts = [
+  ['15 Fr', 5.0, 64.8, 48.9, '96670-115', '96600-115', '0–3.39', 35],
+  ['17 Fr', 5.7, 64.8, 48.9, '96670-117', '96600-117', '0–4.66', 40],
+  ['19 Fr', 6.3, 69.9, 54.0, '96670-119', '96600-119', '0–6', 46],
+  ['21 Fr', 7.0, 69.9, 54.0, '96670-121', '96600-121', '0–6', 46],
+  ['23 Fr', 7.7, 76.2, 60.0, '96670-123', '96600-123', '0–6', 46],
+  ['25 Fr', 8.3, 76.2, 60.0, '96670-125', '96600-125', '0–6', 46],
+  ['27 Fr', 9.0, 76.2, 60.0, '96670-127', '96600-127', '0–6', 46],
+  ['29 Fr', 9.7, 76.2, 60.0, '96670-129', '96600-129', '0–6', 46]
+];
+const nextGenBicavalEntries = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' && entry.model === nextGenBicavalModel);
+assert.strictEqual(nextGenBicavalEntries.length, nextGenBicavalContracts.length, 'Exactly eight NextGen Femoral Bi-caval Venous datasets should remain.');
+const nextGenBicavalAudit = require('../scripts/audit-cannula-pressure-data').auditDataset({ items: pressureDropData });
+for (const [size, outerDiameterMm, overallLengthCm, tipLengthCm, singlesCode, kitCode, range, pointCount] of nextGenBicavalContracts) {
+  const matches = nextGenBicavalEntries.filter(entry => entry.size === size);
+  assert.strictEqual(matches.length, 1, `${size} should exist exactly once.`);
+  const entry = matches[0];
+  assert.strictEqual(entry.outerDiameterMm, outerDiameterMm);
+  assert.strictEqual(entry.overallLengthCm, overallLengthCm);
+  assert.strictEqual(entry.tipLengthCm, tipLengthCm);
+  assert.strictEqual(entry.cannulaOrderCode, singlesCode);
+  assert.strictEqual(entry.cannulaKitOrderCode, kitCode);
+  assert.strictEqual(entry.connectorSize, 'Non-vented 3/8 in (0.95 cm)');
+  assert.strictEqual(entry.cartonQuantity, '1 per carton');
+  assert.strictEqual(entry.testMedium, 'Water');
+  assert.strictEqual(entry.points.length, pointCount);
+  assert.deepStrictEqual(entry.points[0], { flow: 0, pressureDrop: 0 });
+  assert.strictEqual(entry.referenceFlowRangeLabel, range);
+  const finalFlow = Number(range.split('–')[1]);
+  assert.strictEqual(entry.points.at(-1).flow, finalFlow);
+  assert(entry.outOfRangeMessage.includes(`0 to ${finalFlow} L/min`));
+  assert(entry.outOfRangeMessage.includes('Pressure loss is not estimated'));
+  assert(entry.digitizationNote.includes('manufacturer-published Bio-Medicus NextGen Femoral Bi-caval Venous pressure-loss chart'));
+  assert(entry.digitizationNote.includes('calibrated automatic WebPlotDigitizer extraction'));
+  assert(entry.digitizationNote.includes('manufacturer curve visibly begins at the graph origin'));
+  assert(entry.digitizationNote.includes('(0,0) source-origin anchor is retained'));
+  assert(entry.digitizationNote.includes('near-origin anti-aliased line pixel below 0.10 L/min was omitted'));
+  assert(entry.digitizationNote.includes('flow to 0.01 L/min; pressure loss to 0.1 mmHg'));
+  assert(entry.digitizationNote.includes('No fitted curve or smoothing was applied'));
+  assert(entry.digitizationNote.includes(`Do not extrapolate outside the digitized source range of 0–${finalFlow} L/min`));
+  assert(!entry.points.some(point => point.flow > 0 && point.flow < 0.1), `${size} must not restore the omitted anti-aliased pixel.`);
+  entry.points.forEach((point, index) => {
+    assert(Math.abs(point.flow * 100 - Math.round(point.flow * 100)) < 1e-8, `${size} flow should be rounded to 0.01 L/min.`);
+    assert(point.pressureDrop >= 0);
+    if (index > 0) {
+      assert(point.flow > entry.points[index - 1].flow);
+      assert(point.pressureDrop >= entry.points[index - 1].pressureDrop);
+    }
+  });
+  if (size === '15 Fr') assert.strictEqual(finalFlow, 3.39);
+  if (size === '17 Fr') assert.strictEqual(finalFlow, 4.66);
+  if (['19 Fr', '21 Fr', '23 Fr', '25 Fr', '27 Fr', '29 Fr'].includes(size)) assert.strictEqual(finalFlow, 6);
+  assert.strictEqual(interpolatePressureDrop(entry.points, finalFlow + 0.01).state, 'out_of_range');
+  const shapeFindings = nextGenBicavalAudit.findings.filter(finding => finding.cannulaOrderCode === singlesCode &&
+    ['local-reversal', 'local-kink', 'slope-whiplash', 'sparse-curve'].includes(finding.rule));
+  assert.deepStrictEqual(shapeFindings, [], `${size} should have no curve-shape QC findings.`);
+}
 const livaNovaDatasetCount = pressureDropData.filter(entry => entry.manufacturer === 'LivaNova').length;
 assert(mainJs.includes(`Browse ${pressureDropData.length} manufacturer pressure-flow datasets for cannula selection.`));
 
