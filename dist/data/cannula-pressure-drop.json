@@ -7141,7 +7141,7 @@
       "manufacturer": "LivaNova",
       "model": "Aortic Root Cannula / without Vent Line",
       "category": "Aortic root / cardioplegia",
-      "size": "18Ga",
+      "size": "18 Ga / 4 Fr",
       "overallLengthCm": 12.5,
       "connectionSite": "Aortic root",
       "cartonQuantity": 10,
@@ -7151,84 +7151,152 @@
       "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-aortic-root/with-and-whitout-vent-line",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Aortic Root Cannula without Vent Line 18Ga curve. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. Visible source curve begins near 0.10 L/min and ends near 0.40 L/min. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.40 L/min.",
-      "referenceFlowRangeLabel": "0–0.40",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.40 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Aortic Root Cannula without Vent Line pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. Graph label 20Ga refers to insertion needle gauge, not cannula-tip gauge; this curve maps to cannula tip 18 Ga / 4 Fr, insertion needle 20 Ga - Gold, and primary catalog number AR-11018. The manufacturer x-axis spans 0.1–0.6 L/min; the supplied coordinates already use the corrected source-axis calibration. No synthetic zero-flow anchor was added. No smoothing, fitted curve, or extrapolation outside the visible digitized source range.",
+      "referenceFlowRangeLabel": "0.106–0.60",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.106 to 0.60 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0,
-          "pressureDrop": 0
+          "flow": 0.106,
+          "pressureDrop": 3
         },
         {
-          "flow": 0.1,
-          "pressureDrop": 6.1
+          "flow": 0.121,
+          "pressureDrop": 3.3
         },
         {
-          "flow": 0.12,
-          "pressureDrop": 8.1
+          "flow": 0.136,
+          "pressureDrop": 4
         },
         {
-          "flow": 0.14,
-          "pressureDrop": 10.6
+          "flow": 0.151,
+          "pressureDrop": 4.7
         },
         {
-          "flow": 0.17,
-          "pressureDrop": 13.5
+          "flow": 0.166,
+          "pressureDrop": 5.3
         },
         {
-          "flow": 0.2,
-          "pressureDrop": 16.3
+          "flow": 0.18,
+          "pressureDrop": 6.2
         },
         {
-          "flow": 0.22,
-          "pressureDrop": 20.1
+          "flow": 0.195,
+          "pressureDrop": 7.3
+        },
+        {
+          "flow": 0.21,
+          "pressureDrop": 8.7
+        },
+        {
+          "flow": 0.225,
+          "pressureDrop": 10.2
         },
         {
           "flow": 0.24,
-          "pressureDrop": 25.1
+          "pressureDrop": 11.8
         },
         {
-          "flow": 0.26,
-          "pressureDrop": 30.0
+          "flow": 0.255,
+          "pressureDrop": 13.4
         },
         {
-          "flow": 0.28,
-          "pressureDrop": 34.6
+          "flow": 0.27,
+          "pressureDrop": 15.1
+        },
+        {
+          "flow": 0.285,
+          "pressureDrop": 16.7
         },
         {
           "flow": 0.3,
-          "pressureDrop": 39.8
+          "pressureDrop": 18.6
         },
         {
-          "flow": 0.32,
-          "pressureDrop": 45.3
+          "flow": 0.315,
+          "pressureDrop": 20.6
         },
         {
           "flow": 0.33,
-          "pressureDrop": 49.9
+          "pressureDrop": 22.6
         },
         {
-          "flow": 0.34,
-          "pressureDrop": 54.6
+          "flow": 0.346,
+          "pressureDrop": 24.8
         },
         {
-          "flow": 0.35,
-          "pressureDrop": 59.8
+          "flow": 0.359,
+          "pressureDrop": 27.2
         },
         {
-          "flow": 0.37,
-          "pressureDrop": 64.7
+          "flow": 0.374,
+          "pressureDrop": 29.5
         },
         {
-          "flow": 0.38,
-          "pressureDrop": 69.8
+          "flow": 0.388,
+          "pressureDrop": 31.7
         },
         {
-          "flow": 0.4,
-          "pressureDrop": 77.4
+          "flow": 0.403,
+          "pressureDrop": 34.2
+        },
+        {
+          "flow": 0.419,
+          "pressureDrop": 36.8
+        },
+        {
+          "flow": 0.432,
+          "pressureDrop": 39.5
+        },
+        {
+          "flow": 0.448,
+          "pressureDrop": 42.4
+        },
+        {
+          "flow": 0.462,
+          "pressureDrop": 44.9
+        },
+        {
+          "flow": 0.478,
+          "pressureDrop": 47.9
+        },
+        {
+          "flow": 0.491,
+          "pressureDrop": 50.6
+        },
+        {
+          "flow": 0.506,
+          "pressureDrop": 53.9
+        },
+        {
+          "flow": 0.521,
+          "pressureDrop": 57.3
+        },
+        {
+          "flow": 0.535,
+          "pressureDrop": 60.5
+        },
+        {
+          "flow": 0.551,
+          "pressureDrop": 63.9
+        },
+        {
+          "flow": 0.565,
+          "pressureDrop": 67.5
+        },
+        {
+          "flow": 0.576,
+          "pressureDrop": 70.4
+        },
+        {
+          "flow": 0.588,
+          "pressureDrop": 73.4
+        },
+        {
+          "flow": 0.6,
+          "pressureDrop": 76.1
         }
       ],
-      "notes": "Aortic root cannula / without vent line dataset; do not categorize as femoral arterial, femoral venous, coronary ostia perfusion, or retrograde cardioplegia. Source type: digitized_graph. Product/family: Aortic Root Cannula. Model/description: without Vent Line. Type/site: Aortic root. Product/model display: Aortic Root Cannula / without Vent Line. Source graph label: 18Ga. Without vent line catalog number: AR-11018. With vent line catalog number: not available / -. Primary catalog number for this without-vent-line dataset: AR-11018. Effective length: 12.5 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula without Vent Line pressure-flow graph. Source range: 0 to 0.40 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula without Vent Line 18Ga curve. This dataset must not be labeled as with Vent Line. The source page/catalog metadata for this curve corresponds to the without-vent-line item AR-11018. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range."
+      "notes": "Aortic root cannula / without vent line dataset; do not categorize as femoral arterial, femoral venous, coronary ostia perfusion, or retrograde cardioplegia. Product/family: Aortic Root Cannula. Model/description: without Vent Line. Type/site: Aortic root. Displayed cannula tip size: 18 Ga / 4 Fr. Source graph label: 20Ga. Insertion needle: 20 Ga - Gold. Without vent line catalog number: AR-11018. With vent line catalog number: not available / -. Primary catalog number for this without vent line dataset: AR-11018. Effective length: 12.5 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula without Vent Line pressure-flow graph. Source range: 0.106 to 0.60 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula without Vent Line 20Ga curve. The graph label refers to insertion needle gauge, not cannula-tip gauge. The manufacturer x-axis is labeled 0.1–0.6 L/min; supplied coordinates use the already corrected 0.1–0.6 calibration. No synthetic zero-flow anchor was added. Do not extrapolate below 0.106 or above 0.60 L/min."
     },
     {
       "manufacturer": "LivaNova",
@@ -7244,88 +7312,148 @@
       "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-aortic-root/with-and-whitout-vent-line",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Aortic Root Cannula with Vent Line 16Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. This dataset maps source graph label 16Ga to the product table row with cannula tip size 14 Ga / 7 Fr, insertion needle 16 Ga - White, and with-vent catalog number AR-11114. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min.",
-      "referenceFlowRangeLabel": "0–0.60",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.60 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Aortic Root Cannula with Vent Line pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. Graph label 16Ga refers to insertion needle gauge, not cannula-tip gauge; this curve maps to cannula tip 14 Ga / 7 Fr, insertion needle 16 Ga - White, and primary catalog number AR-11114. The manufacturer x-axis spans 0.1–0.6 L/min; the supplied coordinates already use the corrected source-axis calibration. No synthetic zero-flow anchor was added. No smoothing, fitted curve, or extrapolation outside the visible digitized source range.",
+      "referenceFlowRangeLabel": "0.107–0.60",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.107 to 0.60 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0,
-          "pressureDrop": 0
+          "flow": 0.107,
+          "pressureDrop": 3.9
         },
         {
-          "flow": 0.1,
-          "pressureDrop": 4.0
+          "flow": 0.122,
+          "pressureDrop": 4.5
         },
         {
-          "flow": 0.14,
-          "pressureDrop": 6.1
+          "flow": 0.137,
+          "pressureDrop": 5.3
         },
         {
-          "flow": 0.17,
-          "pressureDrop": 8.1
+          "flow": 0.152,
+          "pressureDrop": 6.3
         },
         {
-          "flow": 0.2,
-          "pressureDrop": 10.3
+          "flow": 0.167,
+          "pressureDrop": 7.5
         },
         {
-          "flow": 0.23,
-          "pressureDrop": 13.1
+          "flow": 0.182,
+          "pressureDrop": 8.7
         },
         {
-          "flow": 0.27,
+          "flow": 0.197,
+          "pressureDrop": 9.8
+        },
+        {
+          "flow": 0.212,
+          "pressureDrop": 10.9
+        },
+        {
+          "flow": 0.227,
+          "pressureDrop": 12.3
+        },
+        {
+          "flow": 0.242,
+          "pressureDrop": 13.6
+        },
+        {
+          "flow": 0.257,
+          "pressureDrop": 15.1
+        },
+        {
+          "flow": 0.272,
           "pressureDrop": 16.5
         },
         {
-          "flow": 0.3,
-          "pressureDrop": 19.2
+          "flow": 0.287,
+          "pressureDrop": 18.2
         },
         {
-          "flow": 0.34,
-          "pressureDrop": 25.1
+          "flow": 0.302,
+          "pressureDrop": 19.9
         },
         {
-          "flow": 0.38,
-          "pressureDrop": 30.0
+          "flow": 0.317,
+          "pressureDrop": 21.6
         },
         {
-          "flow": 0.4,
-          "pressureDrop": 33.4
+          "flow": 0.332,
+          "pressureDrop": 23.7
         },
         {
-          "flow": 0.43,
-          "pressureDrop": 39.9
+          "flow": 0.347,
+          "pressureDrop": 25.8
         },
         {
-          "flow": 0.46,
-          "pressureDrop": 44.8
+          "flow": 0.362,
+          "pressureDrop": 28.2
         },
         {
-          "flow": 0.5,
-          "pressureDrop": 52.1
+          "flow": 0.377,
+          "pressureDrop": 30.4
         },
         {
-          "flow": 0.51,
-          "pressureDrop": 56.0
+          "flow": 0.392,
+          "pressureDrop": 32.9
         },
         {
-          "flow": 0.53,
-          "pressureDrop": 59.8
+          "flow": 0.407,
+          "pressureDrop": 35.5
         },
         {
-          "flow": 0.56,
-          "pressureDrop": 65.1
+          "flow": 0.422,
+          "pressureDrop": 38.3
         },
         {
-          "flow": 0.57,
-          "pressureDrop": 69.8
+          "flow": 0.437,
+          "pressureDrop": 40.8
+        },
+        {
+          "flow": 0.452,
+          "pressureDrop": 43.6
+        },
+        {
+          "flow": 0.467,
+          "pressureDrop": 46.4
+        },
+        {
+          "flow": 0.482,
+          "pressureDrop": 49.3
+        },
+        {
+          "flow": 0.497,
+          "pressureDrop": 52.2
+        },
+        {
+          "flow": 0.512,
+          "pressureDrop": 55.5
+        },
+        {
+          "flow": 0.527,
+          "pressureDrop": 58.9
+        },
+        {
+          "flow": 0.542,
+          "pressureDrop": 62.2
+        },
+        {
+          "flow": 0.557,
+          "pressureDrop": 65.8
+        },
+        {
+          "flow": 0.572,
+          "pressureDrop": 69.2
+        },
+        {
+          "flow": 0.587,
+          "pressureDrop": 72.4
         },
         {
           "flow": 0.6,
-          "pressureDrop": 75.7
+          "pressureDrop": 75.3
         }
       ],
-      "notes": "Aortic root cannula / with vent line dataset; do not categorize as femoral arterial or femoral venous. Source type: digitized_graph. Product/family: Aortic Root Cannula. Model/description: with Vent Line. Type/site: Aortic root. Displayed cannula tip size: 14 Ga / 7 Fr. Source graph label: 16Ga. Insertion needle: 16 Ga - White. Without vent line catalog number: AR-11014. With vent line catalog number: AR-11114. Primary catalog number for this with-vent-line dataset: AR-11114. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula with Vent Line pressure-flow graph. Source range: 0 to 0.60 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula with Vent Line 16Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min."
+      "notes": "Aortic root cannula / with vent line dataset; do not categorize as femoral arterial or femoral venous. Product/family: Aortic Root Cannula. Model/description: with Vent Line. Type/site: Aortic root. Displayed cannula tip size: 14 Ga / 7 Fr. Source graph label: 16Ga. Insertion needle: 16 Ga - White. Without vent line catalog number: AR-11014. With vent line catalog number: AR-11114. Primary catalog number for this with vent line dataset: AR-11114. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula with Vent Line pressure-flow graph. Source range: 0.107 to 0.60 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula with Vent Line 16Ga curve. The graph label refers to insertion needle gauge, not cannula-tip gauge. The manufacturer x-axis is labeled 0.1–0.6 L/min; supplied coordinates use the already corrected 0.1–0.6 calibration. No synthetic zero-flow anchor was added. Do not extrapolate below 0.107 or above 0.60 L/min."
     },
     {
       "manufacturer": "LivaNova",
@@ -7341,104 +7469,148 @@
       "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-aortic-root/with-and-whitout-vent-line",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Aortic Root Cannula with Vent Line 14Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. This dataset maps source graph label 14Ga to the product table row with cannula tip size 12 Ga / 9 Fr, insertion needle 14 Ga - Green, and with-vent catalog number AR-11112. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min.",
-      "referenceFlowRangeLabel": "0–0.60",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.60 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Aortic Root Cannula with Vent Line pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. Graph label 14Ga refers to insertion needle gauge, not cannula-tip gauge; this curve maps to cannula tip 12 Ga / 9 Fr, insertion needle 14 Ga - Green, and primary catalog number AR-11112. The manufacturer x-axis spans 0.1–0.6 L/min; the supplied coordinates already use the corrected source-axis calibration. No synthetic zero-flow anchor was added. No smoothing, fitted curve, or extrapolation outside the visible digitized source range.",
+      "referenceFlowRangeLabel": "0.104–0.60",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.104 to 0.60 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0,
-          "pressureDrop": 0
+          "flow": 0.104,
+          "pressureDrop": 3
         },
         {
-          "flow": 0.14,
-          "pressureDrop": 4.2
+          "flow": 0.119,
+          "pressureDrop": 3.1
         },
         {
-          "flow": 0.16,
-          "pressureDrop": 5.1
+          "flow": 0.134,
+          "pressureDrop": 3.5
         },
         {
-          "flow": 0.18,
+          "flow": 0.149,
+          "pressureDrop": 4.3
+        },
+        {
+          "flow": 0.164,
+          "pressureDrop": 5
+        },
+        {
+          "flow": 0.179,
           "pressureDrop": 5.7
         },
         {
-          "flow": 0.2,
-          "pressureDrop": 6.4
+          "flow": 0.194,
+          "pressureDrop": 6.2
         },
         {
-          "flow": 0.22,
+          "flow": 0.209,
+          "pressureDrop": 6.7
+        },
+        {
+          "flow": 0.224,
           "pressureDrop": 7.4
         },
         {
-          "flow": 0.24,
-          "pressureDrop": 8.6
+          "flow": 0.239,
+          "pressureDrop": 8.2
+        },
+        {
+          "flow": 0.255,
+          "pressureDrop": 9.2
         },
         {
           "flow": 0.27,
-          "pressureDrop": 10.3
+          "pressureDrop": 10.4
+        },
+        {
+          "flow": 0.285,
+          "pressureDrop": 11.4
         },
         {
           "flow": 0.3,
           "pressureDrop": 12.5
         },
         {
-          "flow": 0.32,
-          "pressureDrop": 13.8
+          "flow": 0.315,
+          "pressureDrop": 13.7
         },
         {
-          "flow": 0.35,
-          "pressureDrop": 15.8
+          "flow": 0.33,
+          "pressureDrop": 14.8
         },
         {
-          "flow": 0.37,
-          "pressureDrop": 18.0
+          "flow": 0.345,
+          "pressureDrop": 16
         },
         {
-          "flow": 0.4,
-          "pressureDrop": 20.2
+          "flow": 0.36,
+          "pressureDrop": 17
         },
         {
-          "flow": 0.43,
-          "pressureDrop": 23.4
+          "flow": 0.375,
+          "pressureDrop": 18.3
+        },
+        {
+          "flow": 0.39,
+          "pressureDrop": 19.8
+        },
+        {
+          "flow": 0.405,
+          "pressureDrop": 21.4
+        },
+        {
+          "flow": 0.42,
+          "pressureDrop": 22.9
+        },
+        {
+          "flow": 0.435,
+          "pressureDrop": 24.4
         },
         {
           "flow": 0.45,
-          "pressureDrop": 25.6
+          "pressureDrop": 25.5
         },
         {
-          "flow": 0.47,
-          "pressureDrop": 27.5
+          "flow": 0.465,
+          "pressureDrop": 27.4
         },
         {
-          "flow": 0.49,
-          "pressureDrop": 30.0
+          "flow": 0.479,
+          "pressureDrop": 28.9
+        },
+        {
+          "flow": 0.494,
+          "pressureDrop": 30.5
         },
         {
           "flow": 0.51,
-          "pressureDrop": 32.2
+          "pressureDrop": 32.4
         },
         {
-          "flow": 0.53,
-          "pressureDrop": 34.6
+          "flow": 0.525,
+          "pressureDrop": 34.1
         },
         {
-          "flow": 0.55,
-          "pressureDrop": 37.4
+          "flow": 0.539,
+          "pressureDrop": 35.9
         },
         {
-          "flow": 0.57,
+          "flow": 0.553,
+          "pressureDrop": 37.8
+        },
+        {
+          "flow": 0.569,
           "pressureDrop": 39.8
         },
         {
-          "flow": 0.58,
+          "flow": 0.585,
           "pressureDrop": 41.6
         },
         {
           "flow": 0.6,
-          "pressureDrop": 44.0
+          "pressureDrop": 43.4
         }
       ],
-      "notes": "Aortic root cannula / with vent line dataset; do not categorize as femoral arterial or femoral venous. Source type: digitized_graph. Product/family: Aortic Root Cannula. Model/description: with Vent Line. Type/site: Aortic root. Displayed cannula tip size: 12 Ga / 9 Fr. Source graph label: 14Ga. Insertion needle: 14 Ga - Green. Without vent line catalog number: AR-11012. With vent line catalog number: AR-11112. Primary catalog number for this with-vent-line dataset: AR-11112. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula with Vent Line pressure-flow graph. Source range: 0 to 0.60 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula with Vent Line 14Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min."
+      "notes": "Aortic root cannula / with vent line dataset; do not categorize as femoral arterial or femoral venous. Product/family: Aortic Root Cannula. Model/description: with Vent Line. Type/site: Aortic root. Displayed cannula tip size: 12 Ga / 9 Fr. Source graph label: 14Ga. Insertion needle: 14 Ga - Green. Without vent line catalog number: AR-11012. With vent line catalog number: AR-11112. Primary catalog number for this with vent line dataset: AR-11112. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula with Vent Line pressure-flow graph. Source range: 0.104 to 0.60 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula with Vent Line 14Ga curve. The graph label refers to insertion needle gauge, not cannula-tip gauge. The manufacturer x-axis is labeled 0.1–0.6 L/min; supplied coordinates use the already corrected 0.1–0.6 calibration. No synthetic zero-flow anchor was added. Do not extrapolate below 0.104 or above 0.60 L/min."
     },
     {
       "manufacturer": "LivaNova",
@@ -7454,108 +7626,108 @@
       "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-aortic-root/with-and-whitout-vent-line",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Aortic Root Cannula without Vent Line 18Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. This dataset maps source graph label 18Ga to the product table row with cannula tip size 16 Ga / 5 Fr, insertion needle 18 Ga - Pink, and without-vent catalog number AR-11016. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.40 L/min.",
-      "referenceFlowRangeLabel": "0–0.40",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.40 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Aortic Root Cannula without Vent Line pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. Graph label 18Ga refers to insertion needle gauge, not cannula-tip gauge; this curve maps to cannula tip 16 Ga / 5 Fr, insertion needle 18 Ga - Pink, and primary catalog number AR-11016. The manufacturer x-axis spans 0.1–0.6 L/min; the supplied coordinates already use the corrected source-axis calibration. No synthetic zero-flow anchor was added. No smoothing, fitted curve, or extrapolation outside the visible digitized source range.",
+      "referenceFlowRangeLabel": "0.106–0.40",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.106 to 0.40 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0,
-          "pressureDrop": 0
+          "flow": 0.106,
+          "pressureDrop": 6.4
         },
         {
-          "flow": 0.1,
-          "pressureDrop": 6.1
+          "flow": 0.122,
+          "pressureDrop": 8
         },
         {
-          "flow": 0.12,
-          "pressureDrop": 8.3
+          "flow": 0.137,
+          "pressureDrop": 9.7
         },
         {
-          "flow": 0.14,
-          "pressureDrop": 10.2
+          "flow": 0.152,
+          "pressureDrop": 11.1
         },
         {
-          "flow": 0.16,
-          "pressureDrop": 12.7
+          "flow": 0.167,
+          "pressureDrop": 12.9
         },
         {
-          "flow": 0.18,
-          "pressureDrop": 14.8
+          "flow": 0.182,
+          "pressureDrop": 14.5
         },
         {
-          "flow": 0.2,
-          "pressureDrop": 16.8
+          "flow": 0.197,
+          "pressureDrop": 16.2
         },
         {
-          "flow": 0.22,
-          "pressureDrop": 19.9
+          "flow": 0.212,
+          "pressureDrop": 19.2
         },
         {
-          "flow": 0.23,
-          "pressureDrop": 23.7
+          "flow": 0.227,
+          "pressureDrop": 22.2
         },
         {
-          "flow": 0.25,
-          "pressureDrop": 27.3
+          "flow": 0.242,
+          "pressureDrop": 25.4
         },
         {
-          "flow": 0.26,
-          "pressureDrop": 30.0
+          "flow": 0.257,
+          "pressureDrop": 28.6
         },
         {
-          "flow": 0.28,
-          "pressureDrop": 32.8
+          "flow": 0.272,
+          "pressureDrop": 31.6
         },
         {
-          "flow": 0.29,
-          "pressureDrop": 36.0
+          "flow": 0.286,
+          "pressureDrop": 35
         },
         {
-          "flow": 0.3,
-          "pressureDrop": 39.9
+          "flow": 0.299,
+          "pressureDrop": 38.4
         },
         {
           "flow": 0.31,
-          "pressureDrop": 43.7
+          "pressureDrop": 42.5
         },
         {
           "flow": 0.32,
-          "pressureDrop": 46.8
+          "pressureDrop": 46.3
         },
         {
           "flow": 0.33,
-          "pressureDrop": 50.1
+          "pressureDrop": 50.4
         },
         {
           "flow": 0.34,
-          "pressureDrop": 53.7
+          "pressureDrop": 54.1
         },
         {
-          "flow": 0.35,
-          "pressureDrop": 57.0
+          "flow": 0.349,
+          "pressureDrop": 57.5
         },
         {
-          "flow": 0.36,
-          "pressureDrop": 60.2
+          "flow": 0.359,
+          "pressureDrop": 61.2
         },
         {
           "flow": 0.37,
-          "pressureDrop": 63.9
+          "pressureDrop": 65.3
         },
         {
-          "flow": 0.38,
-          "pressureDrop": 69.9
+          "flow": 0.382,
+          "pressureDrop": 69.6
         },
         {
-          "flow": 0.39,
-          "pressureDrop": 72.4
+          "flow": 0.391,
+          "pressureDrop": 72.9
         },
         {
           "flow": 0.4,
-          "pressureDrop": 75.9
+          "pressureDrop": 75.4
         }
       ],
-      "notes": "Aortic root cannula / without vent line dataset; do not categorize as femoral arterial or femoral venous. Source type: digitized_graph. Product/family: Aortic Root Cannula. Model/description: without Vent Line. Type/site: Aortic root. Displayed cannula tip size: 16 Ga / 5 Fr. Source graph label: 18Ga. Insertion needle: 18 Ga - Pink. Without vent line catalog number: AR-11016. With vent line catalog number: AR-11116. Primary catalog number for this without-vent-line dataset: AR-11016. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula without Vent Line pressure-flow graph. Source range: 0 to 0.40 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula without Vent Line 18Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.40 L/min."
+      "notes": "Aortic root cannula / without vent line dataset; do not categorize as femoral arterial or femoral venous. Product/family: Aortic Root Cannula. Model/description: without Vent Line. Type/site: Aortic root. Displayed cannula tip size: 16 Ga / 5 Fr. Source graph label: 18Ga. Insertion needle: 18 Ga - Pink. Without vent line catalog number: AR-11016. With vent line catalog number: AR-11116. Primary catalog number for this without vent line dataset: AR-11016. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula without Vent Line pressure-flow graph. Source range: 0.106 to 0.40 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula without Vent Line 18Ga curve. The graph label refers to insertion needle gauge, not cannula-tip gauge. The manufacturer x-axis is labeled 0.1–0.6 L/min; supplied coordinates use the already corrected 0.1–0.6 calibration. No synthetic zero-flow anchor was added. Do not extrapolate below 0.106 or above 0.40 L/min."
     },
     {
       "manufacturer": "LivaNova",
@@ -7571,100 +7743,148 @@
       "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-aortic-root/with-and-whitout-vent-line",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Aortic Root Cannula without Vent Line 16Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. This dataset maps source graph label 16Ga to the product table row with cannula tip size 14 Ga / 7 Fr, insertion needle 16 Ga - White, and without-vent catalog number AR-11014. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min.",
-      "referenceFlowRangeLabel": "0–0.60",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.60 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Aortic Root Cannula without Vent Line pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. Graph label 16Ga refers to insertion needle gauge, not cannula-tip gauge; this curve maps to cannula tip 14 Ga / 7 Fr, insertion needle 16 Ga - White, and primary catalog number AR-11014. The manufacturer x-axis spans 0.1–0.6 L/min; the supplied coordinates already use the corrected source-axis calibration. No synthetic zero-flow anchor was added. No smoothing, fitted curve, or extrapolation outside the visible digitized source range.",
+      "referenceFlowRangeLabel": "0.106–0.60",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.106 to 0.60 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0,
-          "pressureDrop": 0
+          "flow": 0.106,
+          "pressureDrop": 4.3
         },
         {
-          "flow": 0.12,
+          "flow": 0.121,
           "pressureDrop": 4.7
         },
         {
-          "flow": 0.15,
-          "pressureDrop": 6.0
+          "flow": 0.138,
+          "pressureDrop": 5.4
         },
         {
-          "flow": 0.17,
-          "pressureDrop": 7.2
+          "flow": 0.152,
+          "pressureDrop": 6.2
         },
         {
-          "flow": 0.19,
-          "pressureDrop": 8.5
+          "flow": 0.166,
+          "pressureDrop": 6.9
         },
         {
-          "flow": 0.21,
-          "pressureDrop": 10.2
+          "flow": 0.181,
+          "pressureDrop": 8
         },
         {
-          "flow": 0.24,
-          "pressureDrop": 12.1
+          "flow": 0.197,
+          "pressureDrop": 8.8
         },
         {
-          "flow": 0.26,
-          "pressureDrop": 14.8
+          "flow": 0.212,
+          "pressureDrop": 9.9
         },
         {
-          "flow": 0.28,
-          "pressureDrop": 16.5
+          "flow": 0.226,
+          "pressureDrop": 11.1
         },
         {
-          "flow": 0.31,
-          "pressureDrop": 20.1
+          "flow": 0.242,
+          "pressureDrop": 12.2
         },
         {
-          "flow": 0.34,
-          "pressureDrop": 24.5
+          "flow": 0.257,
+          "pressureDrop": 13.6
         },
         {
-          "flow": 0.38,
-          "pressureDrop": 30.0
+          "flow": 0.272,
+          "pressureDrop": 15.2
         },
         {
-          "flow": 0.41,
-          "pressureDrop": 35.3
+          "flow": 0.287,
+          "pressureDrop": 16.9
         },
         {
-          "flow": 0.43,
-          "pressureDrop": 40.1
+          "flow": 0.302,
+          "pressureDrop": 18.9
         },
         {
-          "flow": 0.46,
-          "pressureDrop": 45.5
+          "flow": 0.316,
+          "pressureDrop": 20.9
+        },
+        {
+          "flow": 0.331,
+          "pressureDrop": 22.9
+        },
+        {
+          "flow": 0.346,
+          "pressureDrop": 25.1
+        },
+        {
+          "flow": 0.361,
+          "pressureDrop": 27.7
+        },
+        {
+          "flow": 0.376,
+          "pressureDrop": 30
+        },
+        {
+          "flow": 0.391,
+          "pressureDrop": 32.6
+        },
+        {
+          "flow": 0.406,
+          "pressureDrop": 35.2
+        },
+        {
+          "flow": 0.421,
+          "pressureDrop": 38.1
+        },
+        {
+          "flow": 0.436,
+          "pressureDrop": 41.1
+        },
+        {
+          "flow": 0.451,
+          "pressureDrop": 44
+        },
+        {
+          "flow": 0.465,
+          "pressureDrop": 47.2
         },
         {
           "flow": 0.48,
-          "pressureDrop": 50.1
+          "pressureDrop": 50.5
         },
         {
-          "flow": 0.5,
-          "pressureDrop": 54.5
+          "flow": 0.496,
+          "pressureDrop": 54
         },
         {
-          "flow": 0.52,
-          "pressureDrop": 60.2
+          "flow": 0.509,
+          "pressureDrop": 57.8
         },
         {
-          "flow": 0.54,
-          "pressureDrop": 65.3
+          "flow": 0.524,
+          "pressureDrop": 61.3
         },
         {
-          "flow": 0.56,
-          "pressureDrop": 70.1
+          "flow": 0.538,
+          "pressureDrop": 65
         },
         {
-          "flow": 0.58,
-          "pressureDrop": 75.1
+          "flow": 0.552,
+          "pressureDrop": 68.6
+        },
+        {
+          "flow": 0.568,
+          "pressureDrop": 72.7
+        },
+        {
+          "flow": 0.584,
+          "pressureDrop": 77.1
         },
         {
           "flow": 0.6,
-          "pressureDrop": 80.1
+          "pressureDrop": 80.3
         }
       ],
-      "notes": "Aortic root cannula / without vent line dataset; do not categorize as femoral arterial or femoral venous. Source type: digitized_graph. Product/family: Aortic Root Cannula. Model/description: without Vent Line. Type/site: Aortic root. Displayed cannula tip size: 14 Ga / 7 Fr. Source graph label: 16Ga. Insertion needle: 16 Ga - White. Without vent line catalog number: AR-11014. With vent line catalog number: AR-11114. Primary catalog number for this without-vent-line dataset: AR-11014. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula without Vent Line pressure-flow graph. Source range: 0 to 0.60 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula without Vent Line 16Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min."
+      "notes": "Aortic root cannula / without vent line dataset; do not categorize as femoral arterial or femoral venous. Product/family: Aortic Root Cannula. Model/description: without Vent Line. Type/site: Aortic root. Displayed cannula tip size: 14 Ga / 7 Fr. Source graph label: 16Ga. Insertion needle: 16 Ga - White. Without vent line catalog number: AR-11014. With vent line catalog number: AR-11114. Primary catalog number for this without vent line dataset: AR-11014. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula without Vent Line pressure-flow graph. Source range: 0.106 to 0.60 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula without Vent Line 16Ga curve. The graph label refers to insertion needle gauge, not cannula-tip gauge. The manufacturer x-axis is labeled 0.1–0.6 L/min; supplied coordinates use the already corrected 0.1–0.6 calibration. No synthetic zero-flow anchor was added. Do not extrapolate below 0.106 or above 0.60 L/min."
     },
     {
       "manufacturer": "LivaNova",
@@ -7680,100 +7900,148 @@
       "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-aortic-root/with-and-whitout-vent-line",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Aortic Root Cannula without Vent Line 14Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. This dataset maps source graph label 14Ga to the product table row with cannula tip size 12 Ga / 9 Fr, insertion needle 14 Ga - Green, and without-vent catalog number AR-11012. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min.",
-      "referenceFlowRangeLabel": "0–0.60",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.60 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Aortic Root Cannula without Vent Line pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. Graph label 14Ga refers to insertion needle gauge, not cannula-tip gauge; this curve maps to cannula tip 12 Ga / 9 Fr, insertion needle 14 Ga - Green, and primary catalog number AR-11012. The manufacturer x-axis spans 0.1–0.6 L/min; the supplied coordinates already use the corrected source-axis calibration. No synthetic zero-flow anchor was added. No smoothing, fitted curve, or extrapolation outside the visible digitized source range.",
+      "referenceFlowRangeLabel": "0.106–0.60",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.106 to 0.60 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0,
-          "pressureDrop": 0
+          "flow": 0.106,
+          "pressureDrop": 3.1
         },
         {
-          "flow": 0.11,
+          "flow": 0.12,
+          "pressureDrop": 3.3
+        },
+        {
+          "flow": 0.135,
           "pressureDrop": 3.8
         },
         {
-          "flow": 0.14,
-          "pressureDrop": 4.4
+          "flow": 0.151,
+          "pressureDrop": 4.3
         },
         {
-          "flow": 0.17,
-          "pressureDrop": 5.0
+          "flow": 0.165,
+          "pressureDrop": 4.9
         },
         {
-          "flow": 0.2,
-          "pressureDrop": 6.1
+          "flow": 0.18,
+          "pressureDrop": 5.4
         },
         {
-          "flow": 0.22,
-          "pressureDrop": 7.1
+          "flow": 0.195,
+          "pressureDrop": 6.2
         },
         {
-          "flow": 0.25,
-          "pressureDrop": 8.5
+          "flow": 0.21,
+          "pressureDrop": 6.7
         },
         {
-          "flow": 0.28,
-          "pressureDrop": 10.1
+          "flow": 0.225,
+          "pressureDrop": 7.4
+        },
+        {
+          "flow": 0.24,
+          "pressureDrop": 8.1
+        },
+        {
+          "flow": 0.254,
+          "pressureDrop": 8.8
+        },
+        {
+          "flow": 0.269,
+          "pressureDrop": 9.9
+        },
+        {
+          "flow": 0.285,
+          "pressureDrop": 10.8
         },
         {
           "flow": 0.3,
-          "pressureDrop": 11.8
+          "pressureDrop": 11.9
         },
         {
-          "flow": 0.32,
-          "pressureDrop": 13.4
+          "flow": 0.315,
+          "pressureDrop": 13
         },
         {
-          "flow": 0.34,
-          "pressureDrop": 14.9
+          "flow": 0.33,
+          "pressureDrop": 14.1
         },
         {
-          "flow": 0.37,
-          "pressureDrop": 16.5
+          "flow": 0.345,
+          "pressureDrop": 15.2
+        },
+        {
+          "flow": 0.36,
+          "pressureDrop": 16.2
+        },
+        {
+          "flow": 0.375,
+          "pressureDrop": 17.1
         },
         {
           "flow": 0.39,
-          "pressureDrop": 18.2
+          "pressureDrop": 18.3
         },
         {
-          "flow": 0.41,
-          "pressureDrop": 20.1
+          "flow": 0.405,
+          "pressureDrop": 19.6
         },
         {
-          "flow": 0.44,
-          "pressureDrop": 23.1
+          "flow": 0.42,
+          "pressureDrop": 21.2
         },
         {
-          "flow": 0.47,
-          "pressureDrop": 25.3
+          "flow": 0.435,
+          "pressureDrop": 22.6
         },
         {
-          "flow": 0.49,
-          "pressureDrop": 27.5
+          "flow": 0.45,
+          "pressureDrop": 24.1
+        },
+        {
+          "flow": 0.465,
+          "pressureDrop": 25.2
+        },
+        {
+          "flow": 0.48,
+          "pressureDrop": 26.9
+        },
+        {
+          "flow": 0.495,
+          "pressureDrop": 28.3
         },
         {
           "flow": 0.51,
-          "pressureDrop": 30.0
+          "pressureDrop": 30.2
         },
         {
-          "flow": 0.54,
+          "flow": 0.525,
+          "pressureDrop": 32.2
+        },
+        {
+          "flow": 0.541,
           "pressureDrop": 34.2
         },
         {
-          "flow": 0.57,
-          "pressureDrop": 37.2
+          "flow": 0.555,
+          "pressureDrop": 35.7
         },
         {
-          "flow": 0.59,
-          "pressureDrop": 39.9
+          "flow": 0.57,
+          "pressureDrop": 37.9
+        },
+        {
+          "flow": 0.585,
+          "pressureDrop": 39.4
         },
         {
           "flow": 0.6,
-          "pressureDrop": 41.0
+          "pressureDrop": 40.9
         }
       ],
-      "notes": "Aortic root cannula / without vent line dataset; do not categorize as femoral arterial or femoral venous. Source type: digitized_graph. Product/family: Aortic Root Cannula. Model/description: without Vent Line. Type/site: Aortic root. Displayed cannula tip size: 12 Ga / 9 Fr. Source graph label: 14Ga. Insertion needle: 14 Ga - Green. Without vent line catalog number: AR-11012. With vent line catalog number: AR-11112. Primary catalog number for this without-vent-line dataset: AR-11012. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula without Vent Line pressure-flow graph. Source range: 0 to 0.60 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula without Vent Line 14Ga curve. The source graph labels appear to correspond to insertion needle gauge rather than cannula tip size. The source graph x-axis is labeled 0.1–0.6 L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min."
+      "notes": "Aortic root cannula / without vent line dataset; do not categorize as femoral arterial or femoral venous. Product/family: Aortic Root Cannula. Model/description: without Vent Line. Type/site: Aortic root. Displayed cannula tip size: 12 Ga / 9 Fr. Source graph label: 14Ga. Insertion needle: 14 Ga - Green. Without vent line catalog number: AR-11012. With vent line catalog number: AR-11112. Primary catalog number for this without vent line dataset: AR-11012. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula without Vent Line pressure-flow graph. Source range: 0.106 to 0.60 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula without Vent Line 14Ga curve. The graph label refers to insertion needle gauge, not cannula-tip gauge. The manufacturer x-axis is labeled 0.1–0.6 L/min; supplied coordinates use the already corrected 0.1–0.6 calibration. No synthetic zero-flow anchor was added. Do not extrapolate below 0.106 or above 0.60 L/min."
     },
     {
       "manufacturer": "LivaNova",
@@ -22274,6 +22542,124 @@
       ],
       "notes": "Dual lumen · Infusion + Drainage. The drainage lumen drains venous blood from the SVC and IVC; the infusion lumen returns oxygenated blood toward the right atrium. Negative drainage values represent the drainage-side pressure direction shown in the manufacturer flow-characteristics graph.",
       "orderUnit": "1/Carton"
+    }
+,
+    {
+      "manufacturer": "LivaNova",
+      "model": "Aortic Root Cannula with Vent Line",
+      "category": "Aortic root / cardioplegia",
+      "size": "16 Ga / 5 Fr",
+      "overallLengthCm": 15,
+      "connectionSite": "Aortic root",
+      "cartonQuantity": 10,
+      "cannulaOrderCodeLabel": "Catalog number",
+      "cannulaOrderCode": "AR-11116",
+      "sourceLabel": "LivaNova Aortic Root Cannula with Vent Line pressure-flow graph",
+      "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-aortic-root/with-and-whitout-vent-line",
+      "testMedium": "Manufacturer graph; medium not specified",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Re-digitized from the manufacturer-published Aortic Root Cannula with Vent Line pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. Graph label 18Ga refers to insertion needle gauge, not cannula-tip gauge; this curve maps to cannula tip 16 Ga / 5 Fr, insertion needle 18 Ga - Pink, and primary catalog number AR-11116. The manufacturer x-axis spans 0.1–0.6 L/min; the supplied coordinates already use the corrected source-axis calibration. No synthetic zero-flow anchor was added. No smoothing, fitted curve, or extrapolation outside the visible digitized source range.",
+      "referenceFlowRangeLabel": "0.107–0.40",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.107 to 0.40 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0.107,
+          "pressureDrop": 6.6
+        },
+        {
+          "flow": 0.122,
+          "pressureDrop": 8.2
+        },
+        {
+          "flow": 0.137,
+          "pressureDrop": 9.7
+        },
+        {
+          "flow": 0.152,
+          "pressureDrop": 11.2
+        },
+        {
+          "flow": 0.167,
+          "pressureDrop": 12.9
+        },
+        {
+          "flow": 0.182,
+          "pressureDrop": 14.5
+        },
+        {
+          "flow": 0.197,
+          "pressureDrop": 16.2
+        },
+        {
+          "flow": 0.212,
+          "pressureDrop": 19.3
+        },
+        {
+          "flow": 0.227,
+          "pressureDrop": 22.6
+        },
+        {
+          "flow": 0.242,
+          "pressureDrop": 26.5
+        },
+        {
+          "flow": 0.257,
+          "pressureDrop": 29.8
+        },
+        {
+          "flow": 0.271,
+          "pressureDrop": 33.1
+        },
+        {
+          "flow": 0.286,
+          "pressureDrop": 36.7
+        },
+        {
+          "flow": 0.301,
+          "pressureDrop": 40.2
+        },
+        {
+          "flow": 0.312,
+          "pressureDrop": 44.1
+        },
+        {
+          "flow": 0.323,
+          "pressureDrop": 48.5
+        },
+        {
+          "flow": 0.333,
+          "pressureDrop": 51.6
+        },
+        {
+          "flow": 0.342,
+          "pressureDrop": 55.8
+        },
+        {
+          "flow": 0.353,
+          "pressureDrop": 59.7
+        },
+        {
+          "flow": 0.362,
+          "pressureDrop": 63
+        },
+        {
+          "flow": 0.372,
+          "pressureDrop": 67.2
+        },
+        {
+          "flow": 0.383,
+          "pressureDrop": 70.8
+        },
+        {
+          "flow": 0.394,
+          "pressureDrop": 74.9
+        },
+        {
+          "flow": 0.4,
+          "pressureDrop": 77.3
+        }
+      ],
+      "notes": "Aortic root cannula / with vent line dataset; do not categorize as femoral arterial or femoral venous. Product/family: Aortic Root Cannula. Model/description: with Vent Line. Type/site: Aortic root. Displayed cannula tip size: 16 Ga / 5 Fr. Source graph label: 18Ga. Insertion needle: 18 Ga - Pink. Without vent line catalog number: AR-11016. With vent line catalog number: AR-11116. Primary catalog number for this with vent line dataset: AR-11116. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula with Vent Line pressure-flow graph. Source range: 0.107 to 0.40 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula with Vent Line 18Ga curve. The graph label refers to insertion needle gauge, not cannula-tip gauge. The manufacturer x-axis is labeled 0.1–0.6 L/min; supplied coordinates use the already corrected 0.1–0.6 calibration. No synthetic zero-flow anchor was added. Do not extrapolate below 0.107 or above 0.40 L/min."
     }
   ]
 }
