@@ -11,6 +11,7 @@ const thresholds = Object.freeze({
   kinkAbsoluteMmHg: 5,
   kinkRelative: 0.12,
   extremeKinkRelative: 0.22,
+  slopeMinimumLocalDeviationMmHg: 3,
   slopeDifference: 20,
   slopeRatio: 2.5,
   extremeSlopeRatio: 4,
@@ -143,11 +144,14 @@ function auditSeries(entry, series) {
     const smallerSlope = Math.min(Math.abs(firstSlope), Math.abs(secondSlope));
     const slopeRatio = Math.max(Math.abs(firstSlope), Math.abs(secondSlope)) /
       Math.max(smallerSlope, 0.1);
-    if (slopeDifference >= thresholds.slopeDifference &&
+    // Large slope ratios near an almost-flat origin can occur naturally on smooth, strongly convex curves.
+    // Requiring a minimum absolute local deviation prevents low-amplitude curvature from being treated as a digitization artifact.
+    if (deviation >= thresholds.slopeMinimumLocalDeviationMmHg &&
+        slopeDifference >= thresholds.slopeDifference &&
         slopeRatio >= thresholds.slopeRatio) {
       const severity = slopeRatio >= thresholds.extremeSlopeRatio ? 'HIGH' : 'MEDIUM';
       add(severity, 'slope-whiplash', middle.flow,
-        { firstSlope, secondSlope, slopeDifference, slopeRatio },
+        { firstSlope, secondSlope, slopeDifference, slopeRatio, localDeviationMmHg: deviation },
         'Adjacent slopes change abruptly; manual source review recommended.');
     }
   }
