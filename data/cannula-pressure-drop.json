@@ -4302,96 +4302,128 @@
       "sourceUrl": "",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint near the y-axis upper limit; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin. Source curve digitized to visible endpoint (0 to 1.05 L/min); do not extrapolate beyond the digitized source range. The full graph x-axis extends to 6 L/min, but this 12 Fr curve reaches the visible endpoint near 100 mmHg at approximately 1.05 L/min.",
-      "referenceFlowRangeLabel": "0–1.05",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.05 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized range. After manual source review, three closely spaced automatic-extraction points (0.56, 0.68, and 0.84 L/min) were omitted because their 0.01 L/min spacing produced unstable local slope estimates inconsistent with the visibly smooth manufacturer curve.",
+      "referenceFlowRangeLabel": "0–1.04",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.04 L/min). Pressure drop is not estimated.",
       "points": [
         {
           "flow": 0,
           "pressureDrop": 0
         },
         {
-          "flow": 0.22,
-          "pressureDrop": 5.6
+          "flow": 0.05,
+          "pressureDrop": 0.9
         },
         {
-          "flow": 0.32,
-          "pressureDrop": 10.5
+          "flow": 0.17,
+          "pressureDrop": 3.6
         },
         {
-          "flow": 0.41,
-          "pressureDrop": 14.8
+          "flow": 0.27,
+          "pressureDrop": 7.4
         },
         {
-          "flow": 0.47,
-          "pressureDrop": 20.4
+          "flow": 0.35,
+          "pressureDrop": 10.8
+        },
+        {
+          "flow": 0.4,
+          "pressureDrop": 14.6
+        },
+        {
+          "flow": 0.46,
+          "pressureDrop": 18.5
+        },
+        {
+          "flow": 0.49,
+          "pressureDrop": 21.9
         },
         {
           "flow": 0.52,
           "pressureDrop": 25.3
         },
         {
-          "flow": 0.57,
-          "pressureDrop": 30.0
+          "flow": 0.55,
+          "pressureDrop": 27.8
         },
         {
-          "flow": 0.61,
-          "pressureDrop": 34.5
+          "flow": 0.59,
+          "pressureDrop": 33.5
         },
         {
-          "flow": 0.66,
-          "pressureDrop": 40.1
+          "flow": 0.63,
+          "pressureDrop": 36.1
         },
         {
-          "flow": 0.71,
-          "pressureDrop": 46.2
+          "flow": 0.67,
+          "pressureDrop": 40.2
         },
         {
-          "flow": 0.74,
-          "pressureDrop": 50.4
+          "flow": 0.7,
+          "pressureDrop": 46
+        },
+        {
+          "flow": 0.72,
+          "pressureDrop": 50.1
+        },
+        {
+          "flow": 0.75,
+          "pressureDrop": 53
+        },
+        {
+          "flow": 0.77,
+          "pressureDrop": 55.7
         },
         {
           "flow": 0.79,
-          "pressureDrop": 55.6
-        },
-        {
-          "flow": 0.8,
-          "pressureDrop": 60.5
+          "pressureDrop": 60.1
         },
         {
           "flow": 0.83,
-          "pressureDrop": 64.4
+          "pressureDrop": 63.7
         },
         {
           "flow": 0.87,
-          "pressureDrop": 70.2
+          "pressureDrop": 69.7
+        },
+        {
+          "flow": 0.89,
+          "pressureDrop": 72.7
         },
         {
           "flow": 0.91,
-          "pressureDrop": 74.7
+          "pressureDrop": 75.1
         },
         {
-          "flow": 0.93,
-          "pressureDrop": 80.3
+          "flow": 0.94,
+          "pressureDrop": 79.7
         },
         {
-          "flow": 0.96,
-          "pressureDrop": 85.0
+          "flow": 0.95,
+          "pressureDrop": 82.3
         },
         {
-          "flow": 0.99,
-          "pressureDrop": 90.1
+          "flow": 0.97,
+          "pressureDrop": 84.9
+        },
+        {
+          "flow": 0.98,
+          "pressureDrop": 87.6
+        },
+        {
+          "flow": 1,
+          "pressureDrop": 91.6
         },
         {
           "flow": 1.02,
-          "pressureDrop": 93.5
+          "pressureDrop": 96.8
         },
         {
-          "flow": 1.05,
-          "pressureDrop": 98.9
+          "flow": 1.04,
+          "pressureDrop": 99.1
         }
       ],
-      "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 2.5 cm. Connector acceptance: 1/4 inch. Catalog number: RV-41012. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 1.05 L/min. Source curve digitized to the visible endpoint near the y-axis upper limit. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
+      "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 2.5 cm. Connector acceptance: 1/4 inch. Catalog number: RV-41012. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 1.04 L/min. Source curve digitized to the visible endpoint near the y-axis upper limit. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
     },
     {
       "manufacturer": "LivaNova",
@@ -4406,96 +4438,128 @@
       "sourceUrl": "",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint near the y-axis upper limit; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin. Source curve digitized to visible endpoint (0 to 1.68 L/min); do not extrapolate beyond the digitized source range. The full graph x-axis extends to 6 L/min, but this 14 Fr curve reaches the visible endpoint near 100 mmHg at approximately 1.68 L/min.",
-      "referenceFlowRangeLabel": "0–1.68",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.68 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized range.",
+      "referenceFlowRangeLabel": "0–1.67",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.67 L/min). Pressure drop is not estimated.",
       "points": [
         {
           "flow": 0,
           "pressureDrop": 0
         },
         {
-          "flow": 0.39,
-          "pressureDrop": 5.6
+          "flow": 0.07,
+          "pressureDrop": 0.7
         },
         {
-          "flow": 0.52,
-          "pressureDrop": 10.3
+          "flow": 0.2,
+          "pressureDrop": 2.1
+        },
+        {
+          "flow": 0.31,
+          "pressureDrop": 4.2
+        },
+        {
+          "flow": 0.45,
+          "pressureDrop": 7.4
+        },
+        {
+          "flow": 0.53,
+          "pressureDrop": 11
         },
         {
           "flow": 0.63,
-          "pressureDrop": 15.0
+          "pressureDrop": 14.6
         },
         {
-          "flow": 0.75,
-          "pressureDrop": 20.6
+          "flow": 0.71,
+          "pressureDrop": 18.4
         },
         {
-          "flow": 0.84,
-          "pressureDrop": 24.4
+          "flow": 0.79,
+          "pressureDrop": 22.6
+        },
+        {
+          "flow": 0.86,
+          "pressureDrop": 25.8
         },
         {
           "flow": 0.92,
-          "pressureDrop": 30.3
+          "pressureDrop": 29.8
         },
         {
-          "flow": 1.0,
-          "pressureDrop": 34.7
+          "flow": 0.97,
+          "pressureDrop": 33.3
         },
         {
-          "flow": 1.06,
-          "pressureDrop": 40.3
+          "flow": 1.03,
+          "pressureDrop": 37.2
         },
         {
-          "flow": 1.15,
-          "pressureDrop": 45.3
+          "flow": 1.08,
+          "pressureDrop": 40.7
         },
         {
-          "flow": 1.2,
-          "pressureDrop": 50.5
+          "flow": 1.14,
+          "pressureDrop": 45.1
         },
         {
-          "flow": 1.24,
-          "pressureDrop": 54.3
+          "flow": 1.18,
+          "pressureDrop": 49.5
+        },
+        {
+          "flow": 1.23,
+          "pressureDrop": 53
+        },
+        {
+          "flow": 1.28,
+          "pressureDrop": 57
         },
         {
           "flow": 1.32,
-          "pressureDrop": 60.3
+          "pressureDrop": 60.9
         },
         {
-          "flow": 1.34,
+          "flow": 1.35,
           "pressureDrop": 64.6
         },
         {
-          "flow": 1.41,
-          "pressureDrop": 70.2
+          "flow": 1.39,
+          "pressureDrop": 68.6
         },
         {
-          "flow": 1.44,
-          "pressureDrop": 74.2
+          "flow": 1.43,
+          "pressureDrop": 72.3
+        },
+        {
+          "flow": 1.47,
+          "pressureDrop": 76
         },
         {
           "flow": 1.51,
-          "pressureDrop": 80.0
+          "pressureDrop": 79.5
         },
         {
-          "flow": 1.56,
-          "pressureDrop": 85.4
+          "flow": 1.55,
+          "pressureDrop": 83.4
+        },
+        {
+          "flow": 1.58,
+          "pressureDrop": 86.3
         },
         {
           "flow": 1.6,
-          "pressureDrop": 90.3
+          "pressureDrop": 89.8
         },
         {
-          "flow": 1.63,
-          "pressureDrop": 94.4
+          "flow": 1.64,
+          "pressureDrop": 94.9
         },
         {
-          "flow": 1.68,
-          "pressureDrop": 99.6
+          "flow": 1.67,
+          "pressureDrop": 99.5
         }
       ],
-      "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 2.5 cm. Connector acceptance: 1/4 inch. Catalog number: RV-41014. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 1.68 L/min. Source curve digitized to the visible endpoint near the y-axis upper limit. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
+      "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 2.5 cm. Connector acceptance: 1/4 inch. Catalog number: RV-41014. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 1.67 L/min. Source curve digitized to the visible endpoint near the y-axis upper limit. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
     },
     {
       "manufacturer": "LivaNova",
@@ -4510,7 +4574,7 @@
       "sourceUrl": "",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint near the y-axis upper limit; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin. Source curve digitized to visible endpoint (0 to 2.83 L/min); do not extrapolate beyond the digitized source range. The full graph x-axis extends to 6 L/min, but this 16 Fr curve reaches the visible endpoint near 100 mmHg at approximately 2.83 L/min.",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized range.",
       "referenceFlowRangeLabel": "0–2.83",
       "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 2.83 L/min). Pressure drop is not estimated.",
       "points": [
@@ -4519,92 +4583,128 @@
           "pressureDrop": 0
         },
         {
-          "flow": 0.26,
-          "pressureDrop": 2.7
+          "flow": 0.08,
+          "pressureDrop": 1
         },
         {
-          "flow": 0.48,
-          "pressureDrop": 4.3
+          "flow": 0.23,
+          "pressureDrop": 1.6
         },
         {
-          "flow": 0.72,
-          "pressureDrop": 7.4
+          "flow": 0.37,
+          "pressureDrop": 3.1
         },
         {
-          "flow": 0.86,
-          "pressureDrop": 10.3
+          "flow": 0.51,
+          "pressureDrop": 4.5
         },
         {
-          "flow": 0.99,
-          "pressureDrop": 12.8
+          "flow": 0.67,
+          "pressureDrop": 6.3
         },
         {
-          "flow": 1.13,
-          "pressureDrop": 16.8
+          "flow": 0.82,
+          "pressureDrop": 9.1
         },
         {
-          "flow": 1.26,
-          "pressureDrop": 20.2
+          "flow": 0.96,
+          "pressureDrop": 12.1
         },
         {
-          "flow": 1.39,
-          "pressureDrop": 24.2
+          "flow": 1.1,
+          "pressureDrop": 15.6
         },
         {
-          "flow": 1.54,
-          "pressureDrop": 30.1
+          "flow": 1.23,
+          "pressureDrop": 19.2
         },
         {
-          "flow": 1.65,
-          "pressureDrop": 34.3
+          "flow": 1.34,
+          "pressureDrop": 22.7
         },
         {
-          "flow": 1.77,
-          "pressureDrop": 40.3
+          "flow": 1.44,
+          "pressureDrop": 26.1
         },
         {
-          "flow": 1.89,
-          "pressureDrop": 44.8
+          "flow": 1.53,
+          "pressureDrop": 29.6
         },
         {
-          "flow": 1.98,
-          "pressureDrop": 50.4
+          "flow": 1.63,
+          "pressureDrop": 33.2
         },
         {
-          "flow": 2.09,
-          "pressureDrop": 55.2
+          "flow": 1.71,
+          "pressureDrop": 36.2
         },
         {
-          "flow": 2.18,
-          "pressureDrop": 60.3
+          "flow": 1.78,
+          "pressureDrop": 39.6
+        },
+        {
+          "flow": 1.85,
+          "pressureDrop": 43.1
+        },
+        {
+          "flow": 1.92,
+          "pressureDrop": 46.5
+        },
+        {
+          "flow": 1.99,
+          "pressureDrop": 50.2
+        },
+        {
+          "flow": 2.07,
+          "pressureDrop": 53.9
+        },
+        {
+          "flow": 2.13,
+          "pressureDrop": 57.2
+        },
+        {
+          "flow": 2.2,
+          "pressureDrop": 60.4
         },
         {
           "flow": 2.27,
-          "pressureDrop": 64.4
+          "pressureDrop": 64.1
         },
         {
-          "flow": 2.36,
-          "pressureDrop": 70.2
+          "flow": 2.34,
+          "pressureDrop": 67.8
         },
         {
-          "flow": 2.45,
-          "pressureDrop": 75.3
+          "flow": 2.39,
+          "pressureDrop": 71.1
         },
         {
-          "flow": 2.54,
-          "pressureDrop": 80.0
+          "flow": 2.48,
+          "pressureDrop": 75.5
         },
         {
-          "flow": 2.62,
-          "pressureDrop": 85.2
+          "flow": 2.55,
+          "pressureDrop": 79.3
         },
         {
-          "flow": 2.69,
-          "pressureDrop": 90.3
+          "flow": 2.6,
+          "pressureDrop": 83
+        },
+        {
+          "flow": 2.65,
+          "pressureDrop": 86.8
+        },
+        {
+          "flow": 2.7,
+          "pressureDrop": 90.1
         },
         {
           "flow": 2.76,
           "pressureDrop": 93.9
+        },
+        {
+          "flow": 2.8,
+          "pressureDrop": 97
         },
         {
           "flow": 2.83,
@@ -4626,112 +4726,148 @@
       "sourceUrl": "",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint near the y-axis upper limit; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin. Source curve digitized to visible endpoint (0 to 3.58 L/min); do not extrapolate beyond the digitized source range. The full graph x-axis extends to 6 L/min, but this 18 Fr curve reaches the visible endpoint near 100 mmHg at approximately 3.58 L/min.",
-      "referenceFlowRangeLabel": "0–3.58",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 3.58 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized range.",
+      "referenceFlowRangeLabel": "0–3.57",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 3.57 L/min). Pressure drop is not estimated.",
       "points": [
         {
           "flow": 0,
           "pressureDrop": 0
         },
         {
-          "flow": 0.26,
-          "pressureDrop": 2.0
+          "flow": 0.05,
+          "pressureDrop": 0.8
         },
         {
-          "flow": 0.47,
-          "pressureDrop": 3.2
+          "flow": 0.2,
+          "pressureDrop": 1.5
         },
         {
-          "flow": 0.73,
+          "flow": 0.35,
+          "pressureDrop": 2.2
+        },
+        {
+          "flow": 0.5,
+          "pressureDrop": 3.1
+        },
+        {
+          "flow": 0.65,
+          "pressureDrop": 4.2
+        },
+        {
+          "flow": 0.79,
           "pressureDrop": 5.4
         },
         {
-          "flow": 1.0,
-          "pressureDrop": 8.3
+          "flow": 0.94,
+          "pressureDrop": 7.3
         },
         {
-          "flow": 1.11,
-          "pressureDrop": 10.3
+          "flow": 1.09,
+          "pressureDrop": 9.1
         },
         {
-          "flow": 1.26,
-          "pressureDrop": 12.8
+          "flow": 1.24,
+          "pressureDrop": 12.1
         },
         {
-          "flow": 1.4,
-          "pressureDrop": 15.7
+          "flow": 1.39,
+          "pressureDrop": 15.2
         },
         {
-          "flow": 1.58,
-          "pressureDrop": 20.4
+          "flow": 1.53,
+          "pressureDrop": 18.6
         },
         {
-          "flow": 1.8,
-          "pressureDrop": 25.8
+          "flow": 1.67,
+          "pressureDrop": 21.9
         },
         {
-          "flow": 1.94,
-          "pressureDrop": 30.1
+          "flow": 1.81,
+          "pressureDrop": 25.6
         },
         {
-          "flow": 2.09,
-          "pressureDrop": 34.7
+          "flow": 1.91,
+          "pressureDrop": 29.1
         },
         {
-          "flow": 2.23,
-          "pressureDrop": 40.1
+          "flow": 2.03,
+          "pressureDrop": 32.7
         },
         {
-          "flow": 2.38,
-          "pressureDrop": 45.3
+          "flow": 2.14,
+          "pressureDrop": 36.3
+        },
+        {
+          "flow": 2.26,
+          "pressureDrop": 40
+        },
+        {
+          "flow": 2.35,
+          "pressureDrop": 43
+        },
+        {
+          "flow": 2.45,
+          "pressureDrop": 46.8
         },
         {
           "flow": 2.54,
-          "pressureDrop": 50.5
+          "pressureDrop": 50.2
         },
         {
-          "flow": 2.64,
-          "pressureDrop": 55.1
+          "flow": 2.63,
+          "pressureDrop": 53.8
         },
         {
-          "flow": 2.78,
-          "pressureDrop": 60.3
+          "flow": 2.71,
+          "pressureDrop": 57.3
         },
         {
-          "flow": 2.86,
-          "pressureDrop": 64.1
+          "flow": 2.79,
+          "pressureDrop": 60.7
         },
         {
-          "flow": 2.99,
-          "pressureDrop": 70.4
+          "flow": 2.88,
+          "pressureDrop": 64.5
         },
         {
-          "flow": 3.07,
-          "pressureDrop": 74.4
+          "flow": 2.95,
+          "pressureDrop": 67.9
         },
         {
-          "flow": 3.2,
-          "pressureDrop": 80.1
+          "flow": 3.03,
+          "pressureDrop": 71.5
         },
         {
-          "flow": 3.3,
-          "pressureDrop": 85.0
+          "flow": 3.11,
+          "pressureDrop": 74.8
         },
         {
-          "flow": 3.4,
-          "pressureDrop": 90.1
+          "flow": 3.17,
+          "pressureDrop": 78.7
         },
         {
-          "flow": 3.48,
-          "pressureDrop": 94.4
+          "flow": 3.27,
+          "pressureDrop": 83
         },
         {
-          "flow": 3.58,
-          "pressureDrop": 100.0
+          "flow": 3.34,
+          "pressureDrop": 86.7
+        },
+        {
+          "flow": 3.41,
+          "pressureDrop": 90.2
+        },
+        {
+          "flow": 3.5,
+          "pressureDrop": 94.8
+        },
+        {
+          "flow": 3.57,
+          "pressureDrop": 98.8
         }
       ],
-      "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 3 cm. Connector acceptance: 1/4 inch–3/8 inch. Catalog number: RV-41018. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 3.58 L/min. Source curve digitized to the visible endpoint near the y-axis upper limit. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
+      "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 3 cm. Connector acceptance: 1/4 inch–3/8 inch. Catalog number: RV-41018. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 3.57 L/min. Source curve digitized to the visible endpoint near the y-axis upper limit. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
     },
     {
       "manufacturer": "LivaNova",
@@ -4746,116 +4882,160 @@
       "sourceUrl": "",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint near the y-axis upper limit; values rounded for practical reference use. Source curve digitized to visible endpoint (0 to 4.22 L/min); do not extrapolate beyond the digitized source range. The full graph x-axis extends to 6 L/min, but this 20 Fr curve reaches the visible endpoint near 100 mmHg at approximately 4.22 L/min.",
-      "referenceFlowRangeLabel": "0–4.22",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 4.22 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized range.",
+      "referenceFlowRangeLabel": "0–4.23",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 4.23 L/min). Pressure drop is not estimated.",
       "points": [
         {
           "flow": 0,
           "pressureDrop": 0
         },
         {
-          "flow": 0.3,
+          "flow": 0.05,
+          "pressureDrop": 0.6
+        },
+        {
+          "flow": 0.2,
+          "pressureDrop": 1.1
+        },
+        {
+          "flow": 0.35,
           "pressureDrop": 1.4
         },
         {
-          "flow": 0.54,
-          "pressureDrop": 2.3
+          "flow": 0.5,
+          "pressureDrop": 1.8
         },
         {
-          "flow": 0.8,
-          "pressureDrop": 4.0
+          "flow": 0.65,
+          "pressureDrop": 2.6
         },
         {
-          "flow": 1.02,
-          "pressureDrop": 6.7
+          "flow": 0.79,
+          "pressureDrop": 3.6
         },
         {
-          "flow": 1.19,
-          "pressureDrop": 8.3
+          "flow": 0.95,
+          "pressureDrop": 5
         },
         {
-          "flow": 1.33,
-          "pressureDrop": 10.6
+          "flow": 1.09,
+          "pressureDrop": 7
         },
         {
-          "flow": 1.44,
-          "pressureDrop": 12.3
+          "flow": 1.24,
+          "pressureDrop": 9.1
         },
         {
-          "flow": 1.63,
-          "pressureDrop": 15.5
+          "flow": 1.39,
+          "pressureDrop": 11.2
         },
         {
-          "flow": 1.94,
-          "pressureDrop": 21.5
+          "flow": 1.54,
+          "pressureDrop": 13.7
         },
         {
-          "flow": 2.14,
-          "pressureDrop": 26.5
+          "flow": 1.69,
+          "pressureDrop": 16.3
         },
         {
-          "flow": 2.33,
-          "pressureDrop": 30.7
+          "flow": 1.83,
+          "pressureDrop": 19.3
         },
         {
-          "flow": 2.53,
-          "pressureDrop": 35.9
+          "flow": 1.98,
+          "pressureDrop": 22.4
         },
         {
-          "flow": 2.66,
-          "pressureDrop": 40.4
+          "flow": 2.13,
+          "pressureDrop": 25.9
         },
         {
-          "flow": 2.83,
-          "pressureDrop": 44.4
+          "flow": 2.28,
+          "pressureDrop": 29.5
         },
         {
-          "flow": 2.97,
-          "pressureDrop": 50.4
+          "flow": 2.41,
+          "pressureDrop": 32.9
         },
         {
-          "flow": 3.13,
-          "pressureDrop": 54.9
+          "flow": 2.54,
+          "pressureDrop": 36.1
         },
         {
-          "flow": 3.26,
-          "pressureDrop": 60.3
+          "flow": 2.64,
+          "pressureDrop": 39.5
         },
         {
-          "flow": 3.39,
-          "pressureDrop": 65.0
+          "flow": 2.77,
+          "pressureDrop": 43.1
         },
         {
-          "flow": 3.53,
-          "pressureDrop": 70.2
+          "flow": 2.87,
+          "pressureDrop": 46.4
         },
         {
-          "flow": 3.64,
-          "pressureDrop": 74.5
+          "flow": 2.98,
+          "pressureDrop": 49.6
         },
         {
-          "flow": 3.78,
-          "pressureDrop": 80.1
+          "flow": 3.08,
+          "pressureDrop": 53
         },
         {
-          "flow": 3.9,
-          "pressureDrop": 85.7
+          "flow": 3.17,
+          "pressureDrop": 56.3
+        },
+        {
+          "flow": 3.27,
+          "pressureDrop": 60
+        },
+        {
+          "flow": 3.37,
+          "pressureDrop": 63.3
+        },
+        {
+          "flow": 3.45,
+          "pressureDrop": 66.7
+        },
+        {
+          "flow": 3.54,
+          "pressureDrop": 70
+        },
+        {
+          "flow": 3.63,
+          "pressureDrop": 73.7
+        },
+        {
+          "flow": 3.73,
+          "pressureDrop": 77.4
+        },
+        {
+          "flow": 3.82,
+          "pressureDrop": 80.7
+        },
+        {
+          "flow": 3.89,
+          "pressureDrop": 84.9
         },
         {
           "flow": 3.99,
-          "pressureDrop": 90.1
+          "pressureDrop": 89
         },
         {
-          "flow": 4.08,
-          "pressureDrop": 94.0
+          "flow": 4.07,
+          "pressureDrop": 92.5
         },
         {
-          "flow": 4.22,
-          "pressureDrop": 100.0
+          "flow": 4.15,
+          "pressureDrop": 95.9
+        },
+        {
+          "flow": 4.23,
+          "pressureDrop": 99.1
         }
       ],
-      "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 3.5 cm. Connector acceptance: 1/4 inch–3/8 inch. Catalog number: RV-41020. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 4.22 L/min. Source curve digitized to the visible endpoint near the y-axis upper limit. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
+      "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 3.5 cm. Connector acceptance: 1/4 inch–3/8 inch. Catalog number: RV-41020. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 4.23 L/min. Source curve digitized to the visible endpoint near the y-axis upper limit. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
     },
     {
       "manufacturer": "LivaNova",
@@ -4863,135 +5043,187 @@
       "category": "Adult venous",
       "size": "22 Fr",
       "connectionSite": "Venous return",
-      "connectorSize": "3/8 inch",
+      "connectorSize": "1/4 inch–3/8 inch",
       "cannulaOrderCodeLabel": "Catalog number",
       "cannulaOrderCode": "RV-41022",
       "sourceLabel": "LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure",
       "sourceUrl": "",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint near the y-axis upper limit; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin. Source curve digitized to visible endpoint (0 to 5.38 L/min); do not extrapolate beyond the digitized source range. The full graph x-axis extends to 6 L/min, but this 22 Fr curve reaches the visible endpoint near 100 mmHg at approximately 5.38 L/min.",
-      "referenceFlowRangeLabel": "0–5.38",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 5.38 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized range.",
+      "referenceFlowRangeLabel": "0–5.39",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 5.39 L/min). Pressure drop is not estimated.",
       "points": [
         {
           "flow": 0,
           "pressureDrop": 0
         },
         {
-          "flow": 0.42,
+          "flow": 0.07,
+          "pressureDrop": 0.6
+        },
+        {
+          "flow": 0.21,
+          "pressureDrop": 0.8
+        },
+        {
+          "flow": 0.36,
           "pressureDrop": 1.1
         },
         {
-          "flow": 0.71,
-          "pressureDrop": 2.5
+          "flow": 0.51,
+          "pressureDrop": 1.5
         },
         {
-          "flow": 0.99,
-          "pressureDrop": 4.2
+          "flow": 0.66,
+          "pressureDrop": 2.4
         },
         {
-          "flow": 1.19,
-          "pressureDrop": 5.6
+          "flow": 0.81,
+          "pressureDrop": 3.2
         },
         {
-          "flow": 1.43,
-          "pressureDrop": 7.9
+          "flow": 0.96,
+          "pressureDrop": 4
         },
         {
-          "flow": 1.65,
-          "pressureDrop": 10.5
+          "flow": 1.1,
+          "pressureDrop": 4.7
         },
         {
-          "flow": 1.77,
-          "pressureDrop": 11.7
+          "flow": 1.25,
+          "pressureDrop": 5.7
         },
         {
-          "flow": 1.98,
-          "pressureDrop": 14.3
+          "flow": 1.4,
+          "pressureDrop": 7.1
         },
         {
-          "flow": 2.19,
-          "pressureDrop": 17.3
+          "flow": 1.55,
+          "pressureDrop": 8.9
         },
         {
-          "flow": 2.37,
-          "pressureDrop": 20.4
+          "flow": 1.7,
+          "pressureDrop": 10.6
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 22.6
+          "flow": 1.85,
+          "pressureDrop": 12.4
         },
         {
-          "flow": 2.71,
-          "pressureDrop": 26.5
+          "flow": 2,
+          "pressureDrop": 14.4
         },
         {
-          "flow": 2.97,
-          "pressureDrop": 30.9
+          "flow": 2.14,
+          "pressureDrop": 16.6
         },
         {
-          "flow": 3.2,
-          "pressureDrop": 36.3
+          "flow": 2.29,
+          "pressureDrop": 18.9
         },
         {
-          "flow": 3.4,
-          "pressureDrop": 40.3
+          "flow": 2.44,
+          "pressureDrop": 21.1
         },
         {
-          "flow": 3.49,
-          "pressureDrop": 42.8
+          "flow": 2.59,
+          "pressureDrop": 23.7
         },
         {
-          "flow": 3.66,
-          "pressureDrop": 46.8
+          "flow": 2.74,
+          "pressureDrop": 26.4
         },
         {
-          "flow": 3.8,
-          "pressureDrop": 50.2
+          "flow": 2.89,
+          "pressureDrop": 29.2
         },
         {
-          "flow": 3.96,
-          "pressureDrop": 54.3
+          "flow": 3.04,
+          "pressureDrop": 32.2
         },
         {
-          "flow": 4.16,
-          "pressureDrop": 60.3
+          "flow": 3.18,
+          "pressureDrop": 35.3
         },
         {
-          "flow": 4.35,
-          "pressureDrop": 65.7
+          "flow": 3.33,
+          "pressureDrop": 38.7
+        },
+        {
+          "flow": 3.48,
+          "pressureDrop": 42
+        },
+        {
+          "flow": 3.62,
+          "pressureDrop": 45.5
+        },
+        {
+          "flow": 3.76,
+          "pressureDrop": 49
+        },
+        {
+          "flow": 3.89,
+          "pressureDrop": 52.2
+        },
+        {
+          "flow": 4.01,
+          "pressureDrop": 55.7
+        },
+        {
+          "flow": 4.15,
+          "pressureDrop": 59.5
+        },
+        {
+          "flow": 4.27,
+          "pressureDrop": 62.9
+        },
+        {
+          "flow": 4.38,
+          "pressureDrop": 66.2
         },
         {
           "flow": 4.49,
-          "pressureDrop": 70.0
+          "pressureDrop": 69.6
         },
         {
-          "flow": 4.64,
-          "pressureDrop": 74.4
+          "flow": 4.61,
+          "pressureDrop": 73.1
         },
         {
-          "flow": 4.8,
-          "pressureDrop": 80.1
+          "flow": 4.71,
+          "pressureDrop": 76.4
         },
         {
-          "flow": 4.93,
-          "pressureDrop": 84.1
+          "flow": 4.82,
+          "pressureDrop": 79.7
         },
         {
-          "flow": 5.09,
-          "pressureDrop": 90.1
+          "flow": 4.91,
+          "pressureDrop": 83
         },
         {
-          "flow": 5.21,
-          "pressureDrop": 94.2
+          "flow": 5.01,
+          "pressureDrop": 86.3
         },
         {
-          "flow": 5.38,
-          "pressureDrop": 100.0
+          "flow": 5.11,
+          "pressureDrop": 89.7
+        },
+        {
+          "flow": 5.2,
+          "pressureDrop": 93
+        },
+        {
+          "flow": 5.28,
+          "pressureDrop": 96
+        },
+        {
+          "flow": 5.39,
+          "pressureDrop": 99.1
         }
       ],
-      "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 4 cm. Connector acceptance: 3/8 inch. Catalog number: RV-41022. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 5.38 L/min. Source curve digitized to the visible endpoint near the y-axis upper limit. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
+      "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 3.5 cm. Connector acceptance: 1/4 inch–3/8 inch. Catalog number: RV-41022. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 5.39 L/min. Source curve digitized to the visible endpoint near the y-axis upper limit. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
     },
     {
       "manufacturer": "LivaNova",
@@ -5006,8 +5238,8 @@
       "sourceUrl": "",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin. Source curve digitized to visible endpoint (0 to 6.0 L/min); do not extrapolate beyond the digitized source range. The full graph x-axis extends to 6 L/min, and this 24 Fr curve remains visible to the 6.0 L/min endpoint.",
-      "referenceFlowRangeLabel": "0–6.0",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized range.",
+      "referenceFlowRangeLabel": "0–6",
       "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.0 L/min). Pressure drop is not estimated.",
       "points": [
         {
@@ -5015,104 +5247,172 @@
           "pressureDrop": 0
         },
         {
-          "flow": 0.28,
-          "pressureDrop": 1.1
+          "flow": 0.07,
+          "pressureDrop": 0.9
+        },
+        {
+          "flow": 0.22,
+          "pressureDrop": 1
+        },
+        {
+          "flow": 0.36,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 0.51,
+          "pressureDrop": 1.6
         },
         {
           "flow": 0.65,
-          "pressureDrop": 1.8
+          "pressureDrop": 2.1
         },
         {
-          "flow": 1.01,
-          "pressureDrop": 3.8
+          "flow": 0.81,
+          "pressureDrop": 2.9
         },
         {
-          "flow": 1.38,
-          "pressureDrop": 6.0
+          "flow": 0.96,
+          "pressureDrop": 3.9
         },
         {
-          "flow": 1.66,
-          "pressureDrop": 7.8
+          "flow": 1.1,
+          "pressureDrop": 4.4
         },
         {
-          "flow": 1.95,
-          "pressureDrop": 9.7
+          "flow": 1.25,
+          "pressureDrop": 5.1
         },
         {
-          "flow": 2.21,
-          "pressureDrop": 12.5
+          "flow": 1.4,
+          "pressureDrop": 5.7
         },
         {
-          "flow": 2.43,
-          "pressureDrop": 14.8
+          "flow": 1.55,
+          "pressureDrop": 6.4
         },
         {
-          "flow": 2.65,
-          "pressureDrop": 17.5
+          "flow": 1.7,
+          "pressureDrop": 7.4
         },
         {
-          "flow": 2.87,
+          "flow": 1.85,
+          "pressureDrop": 8.7
+        },
+        {
+          "flow": 2,
+          "pressureDrop": 9.9
+        },
+        {
+          "flow": 2.14,
+          "pressureDrop": 11.4
+        },
+        {
+          "flow": 2.29,
+          "pressureDrop": 13
+        },
+        {
+          "flow": 2.44,
+          "pressureDrop": 14.7
+        },
+        {
+          "flow": 2.59,
+          "pressureDrop": 16.6
+        },
+        {
+          "flow": 2.74,
+          "pressureDrop": 18.6
+        },
+        {
+          "flow": 2.89,
           "pressureDrop": 20.6
         },
         {
-          "flow": 3.0,
-          "pressureDrop": 22.7
+          "flow": 3.03,
+          "pressureDrop": 22.8
         },
         {
-          "flow": 3.26,
-          "pressureDrop": 26.4
+          "flow": 3.18,
+          "pressureDrop": 25
         },
         {
-          "flow": 3.49,
-          "pressureDrop": 30.1
+          "flow": 3.33,
+          "pressureDrop": 27.4
         },
         {
-          "flow": 3.72,
-          "pressureDrop": 33.9
+          "flow": 3.48,
+          "pressureDrop": 29.8
         },
         {
-          "flow": 3.94,
-          "pressureDrop": 37.5
+          "flow": 3.63,
+          "pressureDrop": 32.1
         },
         {
-          "flow": 4.05,
-          "pressureDrop": 40.3
+          "flow": 3.78,
+          "pressureDrop": 34.7
         },
         {
-          "flow": 4.28,
-          "pressureDrop": 44.6
+          "flow": 3.93,
+          "pressureDrop": 37.4
         },
         {
-          "flow": 4.54,
-          "pressureDrop": 50.5
+          "flow": 4.07,
+          "pressureDrop": 40.2
         },
         {
-          "flow": 4.76,
-          "pressureDrop": 55.6
+          "flow": 4.22,
+          "pressureDrop": 43.1
         },
         {
-          "flow": 4.96,
-          "pressureDrop": 60.1
+          "flow": 4.37,
+          "pressureDrop": 46.3
         },
         {
-          "flow": 5.19,
-          "pressureDrop": 65.3
+          "flow": 4.52,
+          "pressureDrop": 49.5
         },
         {
-          "flow": 5.38,
-          "pressureDrop": 70.0
+          "flow": 4.67,
+          "pressureDrop": 52.2
         },
         {
-          "flow": 5.58,
-          "pressureDrop": 74.9
+          "flow": 4.82,
+          "pressureDrop": 56.1
         },
         {
-          "flow": 5.79,
-          "pressureDrop": 80.3
+          "flow": 4.97,
+          "pressureDrop": 59.6
         },
         {
-          "flow": 6.0,
-          "pressureDrop": 86.1
+          "flow": 5.1,
+          "pressureDrop": 62.7
+        },
+        {
+          "flow": 5.23,
+          "pressureDrop": 65.9
+        },
+        {
+          "flow": 5.37,
+          "pressureDrop": 69.4
+        },
+        {
+          "flow": 5.51,
+          "pressureDrop": 72.7
+        },
+        {
+          "flow": 5.63,
+          "pressureDrop": 75.9
+        },
+        {
+          "flow": 5.75,
+          "pressureDrop": 79.3
+        },
+        {
+          "flow": 5.86,
+          "pressureDrop": 82.2
+        },
+        {
+          "flow": 6,
+          "pressureDrop": 85.1
         }
       ],
       "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 4 cm. Connector acceptance: 1/4 inch–3/8 inch. Catalog number: RV-41024. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 6.0 L/min. Source curve digitized to the visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
@@ -5130,8 +5430,8 @@
       "sourceUrl": "",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin. Source curve digitized to visible endpoint (0 to 6.0 L/min); do not extrapolate beyond the digitized source range. The full graph x-axis extends to 6 L/min, and this 26 Fr curve remains visible to the 6.0 L/min endpoint.",
-      "referenceFlowRangeLabel": "0–6.0",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized range.",
+      "referenceFlowRangeLabel": "0–6",
       "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.0 L/min). Pressure drop is not estimated.",
       "points": [
         {
@@ -5139,88 +5439,168 @@
           "pressureDrop": 0
         },
         {
-          "flow": 0.28,
-          "pressureDrop": 0.5
+          "flow": 0.05,
+          "pressureDrop": 1
         },
         {
-          "flow": 0.64,
+          "flow": 0.2,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 0.35,
           "pressureDrop": 1.6
         },
         {
-          "flow": 1.0,
+          "flow": 0.5,
+          "pressureDrop": 1.8
+        },
+        {
+          "flow": 0.65,
+          "pressureDrop": 2
+        },
+        {
+          "flow": 0.79,
+          "pressureDrop": 2.7
+        },
+        {
+          "flow": 0.94,
           "pressureDrop": 3.2
         },
         {
-          "flow": 1.31,
-          "pressureDrop": 4.7
+          "flow": 1.09,
+          "pressureDrop": 3.9
         },
         {
-          "flow": 1.65,
-          "pressureDrop": 6.5
+          "flow": 1.24,
+          "pressureDrop": 4.6
         },
         {
-          "flow": 1.96,
+          "flow": 1.39,
+          "pressureDrop": 5.3
+        },
+        {
+          "flow": 1.54,
+          "pressureDrop": 6
+        },
+        {
+          "flow": 1.68,
+          "pressureDrop": 6.8
+        },
+        {
+          "flow": 1.83,
+          "pressureDrop": 7.5
+        },
+        {
+          "flow": 1.98,
           "pressureDrop": 8.5
         },
         {
-          "flow": 2.22,
-          "pressureDrop": 10.3
+          "flow": 2.13,
+          "pressureDrop": 9.6
+        },
+        {
+          "flow": 2.28,
+          "pressureDrop": 10.7
         },
         {
           "flow": 2.43,
-          "pressureDrop": 12.1
+          "pressureDrop": 11.8
         },
         {
-          "flow": 2.66,
-          "pressureDrop": 13.9
+          "flow": 2.58,
+          "pressureDrop": 13.2
         },
         {
-          "flow": 3.0,
-          "pressureDrop": 17.5
+          "flow": 2.72,
+          "pressureDrop": 14.6
         },
         {
-          "flow": 3.25,
-          "pressureDrop": 20.4
+          "flow": 2.87,
+          "pressureDrop": 16.1
         },
         {
-          "flow": 3.6,
-          "pressureDrop": 24.7
+          "flow": 3.02,
+          "pressureDrop": 17.7
         },
         {
-          "flow": 4.0,
-          "pressureDrop": 31.0
+          "flow": 3.17,
+          "pressureDrop": 19.5
         },
         {
-          "flow": 4.31,
-          "pressureDrop": 36.3
+          "flow": 3.32,
+          "pressureDrop": 21.1
         },
         {
-          "flow": 4.54,
-          "pressureDrop": 40.1
+          "flow": 3.47,
+          "pressureDrop": 23.2
+        },
+        {
+          "flow": 3.61,
+          "pressureDrop": 25.2
+        },
+        {
+          "flow": 3.76,
+          "pressureDrop": 27.3
+        },
+        {
+          "flow": 3.91,
+          "pressureDrop": 29.6
+        },
+        {
+          "flow": 4.06,
+          "pressureDrop": 31.9
+        },
+        {
+          "flow": 4.21,
+          "pressureDrop": 34.4
+        },
+        {
+          "flow": 4.36,
+          "pressureDrop": 37
+        },
+        {
+          "flow": 4.51,
+          "pressureDrop": 39.7
+        },
+        {
+          "flow": 4.65,
+          "pressureDrop": 42.3
         },
         {
           "flow": 4.8,
-          "pressureDrop": 45.5
+          "pressureDrop": 45.2
         },
         {
-          "flow": 5.05,
-          "pressureDrop": 50.2
+          "flow": 4.95,
+          "pressureDrop": 48.2
         },
         {
-          "flow": 5.33,
-          "pressureDrop": 56.0
+          "flow": 5.1,
+          "pressureDrop": 51.1
+        },
+        {
+          "flow": 5.25,
+          "pressureDrop": 54
+        },
+        {
+          "flow": 5.4,
+          "pressureDrop": 57.1
         },
         {
           "flow": 5.55,
-          "pressureDrop": 60.3
+          "pressureDrop": 60.2
         },
         {
-          "flow": 5.77,
-          "pressureDrop": 65.7
+          "flow": 5.69,
+          "pressureDrop": 63.4
         },
         {
-          "flow": 6.0,
-          "pressureDrop": 70.0
+          "flow": 5.84,
+          "pressureDrop": 66.8
+        },
+        {
+          "flow": 6,
+          "pressureDrop": 69.2
         }
       ],
       "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 4 cm. Connector acceptance: 3/8 inch. Catalog number: RV-41026. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 6.0 L/min. Source curve digitized to the visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
@@ -5238,8 +5618,8 @@
       "sourceUrl": "",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin. Source curve digitized to visible endpoint (0 to 6.0 L/min); do not extrapolate beyond the digitized source range. The full graph x-axis extends to 6 L/min, and this 28 Fr curve remains visible to the 6.0 L/min endpoint.",
-      "referenceFlowRangeLabel": "0–6.0",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized range.",
+      "referenceFlowRangeLabel": "0–6",
       "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.0 L/min). Pressure drop is not estimated.",
       "points": [
         {
@@ -5247,80 +5627,168 @@
           "pressureDrop": 0
         },
         {
-          "flow": 0.58,
-          "pressureDrop": 0.9
+          "flow": 0.05,
+          "pressureDrop": 0.8
         },
         {
-          "flow": 1.0,
-          "pressureDrop": 2.0
+          "flow": 0.2,
+          "pressureDrop": 1
         },
         {
-          "flow": 1.3,
-          "pressureDrop": 2.7
+          "flow": 0.35,
+          "pressureDrop": 1
         },
         {
-          "flow": 1.63,
-          "pressureDrop": 3.8
+          "flow": 0.5,
+          "pressureDrop": 1.1
         },
         {
-          "flow": 1.97,
-          "pressureDrop": 5.2
+          "flow": 0.65,
+          "pressureDrop": 1.3
         },
         {
-          "flow": 2.26,
-          "pressureDrop": 6.7
+          "flow": 0.81,
+          "pressureDrop": 1.3
         },
         {
-          "flow": 2.53,
-          "pressureDrop": 8.5
+          "flow": 0.94,
+          "pressureDrop": 1.6
         },
         {
-          "flow": 2.79,
-          "pressureDrop": 10.3
+          "flow": 1.09,
+          "pressureDrop": 1.8
         },
         {
-          "flow": 2.99,
-          "pressureDrop": 11.9
+          "flow": 1.23,
+          "pressureDrop": 2.4
+        },
+        {
+          "flow": 1.37,
+          "pressureDrop": 2.9
+        },
+        {
+          "flow": 1.54,
+          "pressureDrop": 3.4
+        },
+        {
+          "flow": 1.7,
+          "pressureDrop": 4
+        },
+        {
+          "flow": 1.84,
+          "pressureDrop": 4.7
+        },
+        {
+          "flow": 1.99,
+          "pressureDrop": 5.3
+        },
+        {
+          "flow": 2.16,
+          "pressureDrop": 6.2
+        },
+        {
+          "flow": 2.3,
+          "pressureDrop": 6.8
+        },
+        {
+          "flow": 2.43,
+          "pressureDrop": 7.5
+        },
+        {
+          "flow": 2.57,
+          "pressureDrop": 8.6
+        },
+        {
+          "flow": 2.72,
+          "pressureDrop": 9.7
+        },
+        {
+          "flow": 2.87,
+          "pressureDrop": 10.6
+        },
+        {
+          "flow": 3.02,
+          "pressureDrop": 11.8
+        },
+        {
+          "flow": 3.17,
+          "pressureDrop": 13
         },
         {
           "flow": 3.32,
-          "pressureDrop": 14.4
+          "pressureDrop": 14.3
         },
         {
-          "flow": 3.65,
-          "pressureDrop": 17.3
+          "flow": 3.47,
+          "pressureDrop": 15.6
         },
         {
-          "flow": 3.98,
-          "pressureDrop": 20.6
+          "flow": 3.61,
+          "pressureDrop": 16.9
         },
         {
-          "flow": 4.31,
-          "pressureDrop": 23.8
+          "flow": 3.76,
+          "pressureDrop": 18.3
         },
         {
-          "flow": 4.6,
-          "pressureDrop": 26.7
+          "flow": 3.91,
+          "pressureDrop": 19.7
         },
         {
-          "flow": 4.9,
-          "pressureDrop": 30.3
+          "flow": 4.06,
+          "pressureDrop": 21
         },
         {
-          "flow": 5.13,
-          "pressureDrop": 33.6
+          "flow": 4.21,
+          "pressureDrop": 22.6
         },
         {
-          "flow": 5.41,
-          "pressureDrop": 37.0
+          "flow": 4.36,
+          "pressureDrop": 24.2
         },
         {
-          "flow": 5.68,
-          "pressureDrop": 40.4
+          "flow": 4.5,
+          "pressureDrop": 25.8
         },
         {
-          "flow": 6.0,
-          "pressureDrop": 45.3
+          "flow": 4.65,
+          "pressureDrop": 27.4
+        },
+        {
+          "flow": 4.8,
+          "pressureDrop": 29.2
+        },
+        {
+          "flow": 4.95,
+          "pressureDrop": 30.8
+        },
+        {
+          "flow": 5.1,
+          "pressureDrop": 32.8
+        },
+        {
+          "flow": 5.25,
+          "pressureDrop": 34.8
+        },
+        {
+          "flow": 5.4,
+          "pressureDrop": 36.7
+        },
+        {
+          "flow": 5.54,
+          "pressureDrop": 38.7
+        },
+        {
+          "flow": 5.69,
+          "pressureDrop": 40.6
+        },
+        {
+          "flow": 5.84,
+          "pressureDrop": 42.6
+        },
+        {
+          "flow": 6,
+          "pressureDrop": 44.2
         }
       ],
       "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 4 cm. Connector acceptance: 3/8 inch. Catalog number: RV-41028. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 6.0 L/min. Source curve digitized to the visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
@@ -5338,8 +5806,8 @@
       "sourceUrl": "",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin. Source curve digitized to visible endpoint (0 to 6.0 L/min); do not extrapolate beyond the digitized source range. The full graph x-axis extends to 6 L/min, and this 30 Fr curve remains visible to the 6.0 L/min endpoint.",
-      "referenceFlowRangeLabel": "0–6.0",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized range.",
+      "referenceFlowRangeLabel": "0–6",
       "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.0 L/min). Pressure drop is not estimated.",
       "points": [
         {
@@ -5347,80 +5815,168 @@
           "pressureDrop": 0
         },
         {
-          "flow": 0.41,
-          "pressureDrop": 0.5
-        },
-        {
-          "flow": 0.63,
+          "flow": 0.04,
           "pressureDrop": 0.7
         },
         {
-          "flow": 0.99,
-          "pressureDrop": 0.9
+          "flow": 0.19,
+          "pressureDrop": 1
         },
         {
-          "flow": 1.25,
-          "pressureDrop": 1.4
+          "flow": 0.34,
+          "pressureDrop": 1
         },
         {
-          "flow": 1.59,
-          "pressureDrop": 2.2
+          "flow": 0.48,
+          "pressureDrop": 1.1
         },
         {
-          "flow": 1.99,
-          "pressureDrop": 3.4
+          "flow": 0.64,
+          "pressureDrop": 1.2
         },
         {
-          "flow": 2.28,
-          "pressureDrop": 4.7
+          "flow": 0.79,
+          "pressureDrop": 1.2
         },
         {
-          "flow": 2.6,
-          "pressureDrop": 6.1
+          "flow": 0.93,
+          "pressureDrop": 1.5
         },
         {
-          "flow": 2.97,
-          "pressureDrop": 7.8
+          "flow": 1.08,
+          "pressureDrop": 1.6
         },
         {
-          "flow": 3.4,
-          "pressureDrop": 10.1
+          "flow": 1.23,
+          "pressureDrop": 2
         },
         {
-          "flow": 3.64,
-          "pressureDrop": 12.1
+          "flow": 1.37,
+          "pressureDrop": 2.4
         },
         {
-          "flow": 3.98,
-          "pressureDrop": 13.7
+          "flow": 1.52,
+          "pressureDrop": 2.8
         },
         {
-          "flow": 4.24,
+          "flow": 1.67,
+          "pressureDrop": 3
+        },
+        {
+          "flow": 1.82,
+          "pressureDrop": 3.5
+        },
+        {
+          "flow": 1.97,
+          "pressureDrop": 3.8
+        },
+        {
+          "flow": 2.12,
+          "pressureDrop": 4.2
+        },
+        {
+          "flow": 2.26,
+          "pressureDrop": 4.8
+        },
+        {
+          "flow": 2.41,
+          "pressureDrop": 5.3
+        },
+        {
+          "flow": 2.56,
+          "pressureDrop": 5.8
+        },
+        {
+          "flow": 2.71,
+          "pressureDrop": 6.5
+        },
+        {
+          "flow": 2.86,
+          "pressureDrop": 7.3
+        },
+        {
+          "flow": 3.01,
+          "pressureDrop": 8
+        },
+        {
+          "flow": 3.15,
+          "pressureDrop": 9
+        },
+        {
+          "flow": 3.3,
+          "pressureDrop": 9.7
+        },
+        {
+          "flow": 3.45,
+          "pressureDrop": 10.4
+        },
+        {
+          "flow": 3.6,
+          "pressureDrop": 11.1
+        },
+        {
+          "flow": 3.75,
+          "pressureDrop": 12.2
+        },
+        {
+          "flow": 3.9,
+          "pressureDrop": 13.2
+        },
+        {
+          "flow": 4.05,
+          "pressureDrop": 14.2
+        },
+        {
+          "flow": 4.19,
           "pressureDrop": 15.3
         },
         {
-          "flow": 4.52,
-          "pressureDrop": 17.7
+          "flow": 4.34,
+          "pressureDrop": 16.3
         },
         {
-          "flow": 4.86,
-          "pressureDrop": 20.2
+          "flow": 4.49,
+          "pressureDrop": 17.4
         },
         {
-          "flow": 4.95,
-          "pressureDrop": 21.3
+          "flow": 4.64,
+          "pressureDrop": 18.7
         },
         {
-          "flow": 5.22,
-          "pressureDrop": 23.6
+          "flow": 4.79,
+          "pressureDrop": 19.8
         },
         {
-          "flow": 5.6,
-          "pressureDrop": 26.9
+          "flow": 4.94,
+          "pressureDrop": 20.9
         },
         {
-          "flow": 6.0,
-          "pressureDrop": 31.0
+          "flow": 5.08,
+          "pressureDrop": 22.2
+        },
+        {
+          "flow": 5.23,
+          "pressureDrop": 23.5
+        },
+        {
+          "flow": 5.38,
+          "pressureDrop": 24.8
+        },
+        {
+          "flow": 5.53,
+          "pressureDrop": 26.2
+        },
+        {
+          "flow": 5.68,
+          "pressureDrop": 27.5
+        },
+        {
+          "flow": 5.83,
+          "pressureDrop": 29.1
+        },
+        {
+          "flow": 6,
+          "pressureDrop": 30.5
         }
       ],
       "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 5.5 cm. Connector acceptance: 3/8 inch. Catalog number: RV-41030. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 6.0 L/min. Source curve digitized to the visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
@@ -5438,8 +5994,8 @@
       "sourceUrl": "",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin. Source curve digitized to visible endpoint (0 to 6.0 L/min); do not extrapolate beyond the digitized source range. The full graph x-axis extends to 6 L/min, and this 32 Fr curve remains visible to the 6.0 L/min endpoint.",
-      "referenceFlowRangeLabel": "0–6.0",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized range.",
+      "referenceFlowRangeLabel": "0–6",
       "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.0 L/min). Pressure drop is not estimated.",
       "points": [
         {
@@ -5447,68 +6003,168 @@
           "pressureDrop": 0
         },
         {
-          "flow": 0.49,
-          "pressureDrop": 0.4
+          "flow": 0.05,
+          "pressureDrop": 0.6
         },
         {
-          "flow": 1.01,
-          "pressureDrop": 0.5
+          "flow": 0.2,
+          "pressureDrop": 0.8
         },
         {
-          "flow": 1.44,
+          "flow": 0.35,
+          "pressureDrop": 1
+        },
+        {
+          "flow": 0.5,
+          "pressureDrop": 1
+        },
+        {
+          "flow": 0.65,
+          "pressureDrop": 1
+        },
+        {
+          "flow": 0.79,
+          "pressureDrop": 1
+        },
+        {
+          "flow": 0.94,
+          "pressureDrop": 1.1
+        },
+        {
+          "flow": 1.09,
+          "pressureDrop": 1.2
+        },
+        {
+          "flow": 1.24,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 1.39,
+          "pressureDrop": 1.4
+        },
+        {
+          "flow": 1.54,
           "pressureDrop": 1.8
         },
         {
-          "flow": 2.0,
-          "pressureDrop": 2.5
+          "flow": 1.68,
+          "pressureDrop": 2
         },
         {
-          "flow": 2.49,
-          "pressureDrop": 4.0
+          "flow": 1.84,
+          "pressureDrop": 2
         },
         {
-          "flow": 2.96,
-          "pressureDrop": 5.6
+          "flow": 2,
+          "pressureDrop": 2.6
         },
         {
-          "flow": 3.28,
-          "pressureDrop": 7.2
+          "flow": 2.15,
+          "pressureDrop": 3.1
+        },
+        {
+          "flow": 2.29,
+          "pressureDrop": 3.5
+        },
+        {
+          "flow": 2.43,
+          "pressureDrop": 4
+        },
+        {
+          "flow": 2.57,
+          "pressureDrop": 4.5
+        },
+        {
+          "flow": 2.72,
+          "pressureDrop": 5
+        },
+        {
+          "flow": 2.87,
+          "pressureDrop": 5.4
+        },
+        {
+          "flow": 3.02,
+          "pressureDrop": 5.9
+        },
+        {
+          "flow": 3.17,
+          "pressureDrop": 6.5
+        },
+        {
+          "flow": 3.32,
+          "pressureDrop": 7.1
+        },
+        {
+          "flow": 3.47,
+          "pressureDrop": 7.6
         },
         {
           "flow": 3.61,
-          "pressureDrop": 8.7
+          "pressureDrop": 8.3
         },
         {
-          "flow": 3.95,
-          "pressureDrop": 10.3
+          "flow": 3.76,
+          "pressureDrop": 9.2
         },
         {
-          "flow": 4.3,
-          "pressureDrop": 11.9
+          "flow": 3.91,
+          "pressureDrop": 9.8
         },
         {
-          "flow": 4.61,
-          "pressureDrop": 13.7
+          "flow": 4.06,
+          "pressureDrop": 10.5
         },
         {
-          "flow": 4.97,
-          "pressureDrop": 16.1
+          "flow": 4.21,
+          "pressureDrop": 11.4
         },
         {
-          "flow": 5.33,
-          "pressureDrop": 18.4
+          "flow": 4.36,
+          "pressureDrop": 12.3
         },
         {
-          "flow": 5.58,
-          "pressureDrop": 20.4
+          "flow": 4.5,
+          "pressureDrop": 13.2
         },
         {
-          "flow": 5.72,
+          "flow": 4.65,
+          "pressureDrop": 14.1
+        },
+        {
+          "flow": 4.8,
+          "pressureDrop": 14.9
+        },
+        {
+          "flow": 4.95,
+          "pressureDrop": 15.8
+        },
+        {
+          "flow": 5.1,
+          "pressureDrop": 16.8
+        },
+        {
+          "flow": 5.25,
+          "pressureDrop": 17.7
+        },
+        {
+          "flow": 5.39,
+          "pressureDrop": 18.8
+        },
+        {
+          "flow": 5.54,
+          "pressureDrop": 19.7
+        },
+        {
+          "flow": 5.69,
+          "pressureDrop": 20.7
+        },
+        {
+          "flow": 5.84,
           "pressureDrop": 21.7
         },
         {
-          "flow": 6.0,
-          "pressureDrop": 23.5
+          "flow": 6,
+          "pressureDrop": 23
         }
       ],
       "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 5.5 cm. Connector acceptance: 3/8 inch. Catalog number: RV-41032. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 6.0 L/min. Source curve digitized to the visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
@@ -5526,8 +6182,8 @@
       "sourceUrl": "",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin. Source curve digitized to visible endpoint (0 to 6.0 L/min); do not extrapolate beyond the digitized source range. The full graph x-axis extends to 6 L/min, and this 34 Fr curve remains visible to the 6.0 L/min endpoint.",
-      "referenceFlowRangeLabel": "0–6.0",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized range.",
+      "referenceFlowRangeLabel": "0–6",
       "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.0 L/min). Pressure drop is not estimated.",
       "points": [
         {
@@ -5535,52 +6191,168 @@
           "pressureDrop": 0
         },
         {
-          "flow": 0.48,
-          "pressureDrop": 0.7
+          "flow": 0.07,
+          "pressureDrop": 0.8
         },
         {
-          "flow": 1.04,
-          "pressureDrop": 0.9
+          "flow": 0.21,
+          "pressureDrop": 1
         },
         {
-          "flow": 1.49,
+          "flow": 0.36,
+          "pressureDrop": 1.1
+        },
+        {
+          "flow": 0.51,
+          "pressureDrop": 1.1
+        },
+        {
+          "flow": 0.66,
+          "pressureDrop": 1.1
+        },
+        {
+          "flow": 0.81,
+          "pressureDrop": 1.1
+        },
+        {
+          "flow": 0.96,
+          "pressureDrop": 1.1
+        },
+        {
+          "flow": 1.1,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 1.25,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 1.4,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 1.55,
           "pressureDrop": 1.4
         },
         {
-          "flow": 1.98,
-          "pressureDrop": 2.0
+          "flow": 1.7,
+          "pressureDrop": 1.6
         },
         {
-          "flow": 2.49,
+          "flow": 1.85,
+          "pressureDrop": 1.7
+        },
+        {
+          "flow": 1.99,
+          "pressureDrop": 2
+        },
+        {
+          "flow": 2.14,
+          "pressureDrop": 2.3
+        },
+        {
+          "flow": 2.29,
+          "pressureDrop": 2.6
+        },
+        {
+          "flow": 2.44,
+          "pressureDrop": 3
+        },
+        {
+          "flow": 2.59,
           "pressureDrop": 3.4
         },
         {
-          "flow": 2.96,
-          "pressureDrop": 4.9
+          "flow": 2.74,
+          "pressureDrop": 3.9
         },
         {
-          "flow": 3.46,
-          "pressureDrop": 6.5
+          "flow": 2.89,
+          "pressureDrop": 4.5
         },
         {
-          "flow": 3.97,
-          "pressureDrop": 8.5
+          "flow": 3.03,
+          "pressureDrop": 5
         },
         {
-          "flow": 4.43,
+          "flow": 3.18,
+          "pressureDrop": 5.4
+        },
+        {
+          "flow": 3.33,
+          "pressureDrop": 6.3
+        },
+        {
+          "flow": 3.5,
+          "pressureDrop": 6.6
+        },
+        {
+          "flow": 3.64,
+          "pressureDrop": 7.2
+        },
+        {
+          "flow": 3.78,
+          "pressureDrop": 7.9
+        },
+        {
+          "flow": 3.92,
+          "pressureDrop": 8.4
+        },
+        {
+          "flow": 4.07,
+          "pressureDrop": 9.1
+        },
+        {
+          "flow": 4.22,
+          "pressureDrop": 9.6
+        },
+        {
+          "flow": 4.37,
           "pressureDrop": 10.3
         },
         {
-          "flow": 4.98,
-          "pressureDrop": 13.2
+          "flow": 4.52,
+          "pressureDrop": 10.8
         },
         {
-          "flow": 5.5,
-          "pressureDrop": 15.9
+          "flow": 4.67,
+          "pressureDrop": 11.6
         },
         {
-          "flow": 6.0,
-          "pressureDrop": 18.6
+          "flow": 4.81,
+          "pressureDrop": 12.3
+        },
+        {
+          "flow": 4.96,
+          "pressureDrop": 13.1
+        },
+        {
+          "flow": 5.11,
+          "pressureDrop": 13.8
+        },
+        {
+          "flow": 5.26,
+          "pressureDrop": 14.6
+        },
+        {
+          "flow": 5.41,
+          "pressureDrop": 15.4
+        },
+        {
+          "flow": 5.56,
+          "pressureDrop": 16.2
+        },
+        {
+          "flow": 5.71,
+          "pressureDrop": 17
+        },
+        {
+          "flow": 5.85,
+          "pressureDrop": 17.9
+        },
+        {
+          "flow": 6,
+          "pressureDrop": 18.3
         }
       ],
       "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 5.5 cm. Connector acceptance: 3/8 inch. Catalog number: RV-41034. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 6.0 L/min. Source curve digitized to the visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
@@ -5598,8 +6370,8 @@
       "sourceUrl": "",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin, and the provided cleaned points preserve a monotonic curve. Source curve digitized to visible endpoint (0 to 6.0 L/min); do not extrapolate beyond the digitized source range. The full graph x-axis extends to 6 L/min, and this 36 Fr curve remains visible to the 6.0 L/min endpoint.",
-      "referenceFlowRangeLabel": "0–6.0",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized range. Three low-flow color-extraction artifact points around 0.9–1.25 L/min were omitted because they introduced a small non-monotonic dip in the crowded near-origin region.",
+      "referenceFlowRangeLabel": "0–6",
       "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.0 L/min). Pressure drop is not estimated.",
       "points": [
         {
@@ -5607,52 +6379,156 @@
           "pressureDrop": 0
         },
         {
-          "flow": 1.02,
-          "pressureDrop": 0.9
+          "flow": 0.04,
+          "pressureDrop": 0.7
         },
         {
-          "flow": 1.47,
+          "flow": 0.19,
+          "pressureDrop": 1
+        },
+        {
+          "flow": 0.34,
+          "pressureDrop": 1
+        },
+        {
+          "flow": 0.48,
+          "pressureDrop": 1
+        },
+        {
+          "flow": 0.63,
+          "pressureDrop": 1
+        },
+        {
+          "flow": 0.78,
+          "pressureDrop": 1
+        },
+        {
+          "flow": 1.37,
+          "pressureDrop": 1
+        },
+        {
+          "flow": 1.51,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 1.67,
+          "pressureDrop": 1.4
+        },
+        {
+          "flow": 1.82,
           "pressureDrop": 1.4
         },
         {
           "flow": 1.97,
-          "pressureDrop": 1.8
+          "pressureDrop": 1.4
         },
         {
-          "flow": 2.48,
+          "flow": 2.12,
+          "pressureDrop": 1.6
+        },
+        {
+          "flow": 2.26,
+          "pressureDrop": 1.9
+        },
+        {
+          "flow": 2.41,
+          "pressureDrop": 2
+        },
+        {
+          "flow": 2.56,
+          "pressureDrop": 2.2
+        },
+        {
+          "flow": 2.71,
+          "pressureDrop": 2.4
+        },
+        {
+          "flow": 2.86,
           "pressureDrop": 2.7
         },
         {
-          "flow": 2.97,
+          "flow": 3.01,
+          "pressureDrop": 3
+        },
+        {
+          "flow": 3.15,
+          "pressureDrop": 3.3
+        },
+        {
+          "flow": 3.3,
           "pressureDrop": 3.6
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 4.9
+          "flow": 3.45,
+          "pressureDrop": 3.9
         },
         {
-          "flow": 3.99,
+          "flow": 3.6,
+          "pressureDrop": 4.1
+        },
+        {
+          "flow": 3.75,
+          "pressureDrop": 4.5
+        },
+        {
+          "flow": 3.9,
+          "pressureDrop": 4.8
+        },
+        {
+          "flow": 4.04,
+          "pressureDrop": 5.2
+        },
+        {
+          "flow": 4.19,
           "pressureDrop": 5.6
         },
         {
-          "flow": 4.44,
-          "pressureDrop": 7.4
+          "flow": 4.34,
+          "pressureDrop": 6
+        },
+        {
+          "flow": 4.49,
+          "pressureDrop": 6.3
+        },
+        {
+          "flow": 4.64,
+          "pressureDrop": 6.7
+        },
+        {
+          "flow": 4.79,
+          "pressureDrop": 7
         },
         {
           "flow": 4.94,
-          "pressureDrop": 8.8
+          "pressureDrop": 7.3
         },
         {
-          "flow": 5.37,
-          "pressureDrop": 10.5
+          "flow": 5.08,
+          "pressureDrop": 7.7
         },
         {
-          "flow": 5.62,
-          "pressureDrop": 11.6
+          "flow": 5.23,
+          "pressureDrop": 8.2
         },
         {
-          "flow": 6.0,
-          "pressureDrop": 12.6
+          "flow": 5.38,
+          "pressureDrop": 8.6
+        },
+        {
+          "flow": 5.53,
+          "pressureDrop": 9.2
+        },
+        {
+          "flow": 5.68,
+          "pressureDrop": 9.5
+        },
+        {
+          "flow": 5.83,
+          "pressureDrop": 9.9
+        },
+        {
+          "flow": 6,
+          "pressureDrop": 10.4
         }
       ],
       "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 6 cm. Connector acceptance: 1/2 inch. Catalog number: RV-41036. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 6.0 L/min. Source curve digitized to the visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."
@@ -5670,8 +6546,8 @@
       "sourceUrl": "",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized from LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph to the visible endpoint; values rounded for practical reference use. The near-origin digitized point is normalized to 0 L/min and 0 mmHg because the manufacturer graph visually starts at the origin, and the provided cleaned points omit a non-monotonic intermediate digitized point to preserve the expected monotonic pressure-flow relationship. Source curve digitized to visible endpoint (0 to 6.0 L/min); do not extrapolate beyond the digitized source range. The full graph x-axis extends to 6 L/min, and this 38 Fr curve remains visible to the 6.0 L/min endpoint.",
-      "referenceFlowRangeLabel": "0–6.0",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized range.",
+      "referenceFlowRangeLabel": "0–6",
       "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.0 L/min). Pressure drop is not estimated.",
       "points": [
         {
@@ -5679,52 +6555,168 @@
           "pressureDrop": 0
         },
         {
-          "flow": 0.47,
-          "pressureDrop": 0.7
+          "flow": 0.04,
+          "pressureDrop": 0.8
         },
         {
-          "flow": 1.01,
-          "pressureDrop": 0.9
-        },
-        {
-          "flow": 1.97,
+          "flow": 0.19,
           "pressureDrop": 1.1
         },
         {
-          "flow": 2.46,
-          "pressureDrop": 2.0
+          "flow": 0.34,
+          "pressureDrop": 1.1
         },
         {
-          "flow": 3.0,
-          "pressureDrop": 2.7
+          "flow": 0.48,
+          "pressureDrop": 1.1
         },
         {
-          "flow": 3.48,
+          "flow": 0.63,
+          "pressureDrop": 1.1
+        },
+        {
+          "flow": 0.78,
+          "pressureDrop": 1.2
+        },
+        {
+          "flow": 0.93,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 1.08,
+          "pressureDrop": 1.6
+        },
+        {
+          "flow": 1.23,
+          "pressureDrop": 1.6
+        },
+        {
+          "flow": 1.37,
+          "pressureDrop": 1.7
+        },
+        {
+          "flow": 1.52,
+          "pressureDrop": 1.8
+        },
+        {
+          "flow": 1.67,
+          "pressureDrop": 1.9
+        },
+        {
+          "flow": 1.82,
+          "pressureDrop": 1.9
+        },
+        {
+          "flow": 1.97,
+          "pressureDrop": 2.2
+        },
+        {
+          "flow": 2.1,
+          "pressureDrop": 2.2
+        },
+        {
+          "flow": 2.25,
+          "pressureDrop": 2.5
+        },
+        {
+          "flow": 2.4,
+          "pressureDrop": 2.8
+        },
+        {
+          "flow": 2.56,
+          "pressureDrop": 2.8
+        },
+        {
+          "flow": 2.71,
+          "pressureDrop": 3.1
+        },
+        {
+          "flow": 2.86,
           "pressureDrop": 3.4
         },
         {
-          "flow": 4.0,
+          "flow": 3.01,
+          "pressureDrop": 3.7
+        },
+        {
+          "flow": 3.15,
+          "pressureDrop": 3.9
+        },
+        {
+          "flow": 3.3,
+          "pressureDrop": 4.1
+        },
+        {
+          "flow": 3.45,
+          "pressureDrop": 4.5
+        },
+        {
+          "flow": 3.6,
           "pressureDrop": 4.7
         },
         {
-          "flow": 4.48,
-          "pressureDrop": 6.0
+          "flow": 3.75,
+          "pressureDrop": 5
         },
         {
-          "flow": 4.95,
-          "pressureDrop": 7.0
+          "flow": 3.9,
+          "pressureDrop": 5.4
         },
         {
-          "flow": 5.3,
-          "pressureDrop": 8.1
+          "flow": 4.04,
+          "pressureDrop": 5.9
         },
         {
-          "flow": 5.69,
+          "flow": 4.19,
+          "pressureDrop": 6.3
+        },
+        {
+          "flow": 4.34,
+          "pressureDrop": 6.7
+        },
+        {
+          "flow": 4.49,
+          "pressureDrop": 7.2
+        },
+        {
+          "flow": 4.64,
+          "pressureDrop": 7.6
+        },
+        {
+          "flow": 4.79,
+          "pressureDrop": 8.2
+        },
+        {
+          "flow": 4.94,
+          "pressureDrop": 9.1
+        },
+        {
+          "flow": 5.08,
+          "pressureDrop": 9.5
+        },
+        {
+          "flow": 5.23,
           "pressureDrop": 9.9
         },
         {
-          "flow": 6.0,
-          "pressureDrop": 10.5
+          "flow": 5.38,
+          "pressureDrop": 10.4
+        },
+        {
+          "flow": 5.53,
+          "pressureDrop": 10.8
+        },
+        {
+          "flow": 5.68,
+          "pressureDrop": 11.3
+        },
+        {
+          "flow": 5.83,
+          "pressureDrop": 12.1
+        },
+        {
+          "flow": 6,
+          "pressureDrop": 12.7
         }
       ],
       "notes": "Single Stage Right Angle Lighthouse Tip Venous Return Cannulae, Right Angle Lighthouse Tip, Wire-reinforced Tubing. Stage: Single stage. Tip length: 6 cm. Connector acceptance: 3/8 inch. Catalog number: RV-41038. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae brochure pressure-flow graph. Extrapolation: false. Source range: 0 to 6.0 L/min. Source curve digitized to the visible endpoint. Do not extrapolate beyond the digitized source range. This is a venous return cannula dataset; do not apply the arterial 100 mmHg caution threshold."

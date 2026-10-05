@@ -65,6 +65,70 @@ const nextGenModels = [
   'Bio-Medicus NextGen Femoral Arterial Cannula',
   'Bio-Medicus NextGen Jugular Venous Cannula'
 ];
+const lighthouseModel = 'Single Stage Right Angle Lighthouse Tip Venous Return Cannulae — Right Angle Lighthouse Tip, Wire-reinforced Tubing';
+const lighthouseProducts = [
+  ['RV-41012', 12, '1/4 inch', 2.5],
+  ['RV-41014', 14, '1/4 inch', 2.5],
+  ['RV-41016', 16, '1/4 inch', 2.5],
+  ['RV-41018', 18, '1/4 inch–3/8 inch', 3],
+  ['RV-41020', 20, '1/4 inch–3/8 inch', 3.5],
+  ['RV-41022', 22, '1/4 inch–3/8 inch', 3.5],
+  ['RV-41024', 24, '1/4 inch–3/8 inch', 4],
+  ['RV-41026', 26, '3/8 inch', 4],
+  ['RV-41028', 28, '3/8 inch', 4],
+  ['RV-41030', 30, '3/8 inch', 5.5],
+  ['RV-41032', 32, '3/8 inch', 5.5],
+  ['RV-41034', 34, '3/8 inch', 5.5],
+  ['RV-41036', 36, '1/2 inch', 6],
+  ['RV-41038', 38, '3/8 inch', 6]
+];
+const lighthouseEntries = pressureDropData.filter(entry => entry.manufacturer === 'LivaNova' &&
+  entry.model === lighthouseModel);
+assert.strictEqual(lighthouseEntries.length, lighthouseProducts.length);
+for (const [code, fr, connector, tipLengthCm] of lighthouseProducts) {
+  const matches = lighthouseEntries.filter(entry => entry.cannulaOrderCode === code);
+  assert.strictEqual(matches.length, 1, `${code} must have one Lighthouse dataset.`);
+  const entry = matches[0];
+  assert.strictEqual(entry.size, `${fr} Fr`);
+  assert.strictEqual(entry.connectorSize, connector);
+  assert(entry.notes.includes(`Tip length: ${tipLengthCm} cm.`));
+  assert(entry.notes.includes(`Connector acceptance: ${connector}.`));
+  assert(entry.notes.includes(`Catalog number: ${code}.`));
+  assert(entry.notes.includes('Quantity per box: 10.'));
+  assert(entry.notes.includes('Available coated: no.'));
+  assert(entry.digitizationNote.includes('calibrated automatic WebPlotDigitizer extraction'));
+  assert(entry.digitizationNote.includes('(0,0) source-origin anchor'));
+  assert(entry.digitizationNote.includes('No fitted curve, smoothing, or extrapolation'));
+  if (code === 'RV-41012') {
+    assert.strictEqual(entry.points.length, 29);
+    for (const flow of [0.56, 0.68, 0.84]) {
+      assert(!entry.points.some(point => point.flow === flow), `RV-41012 must omit the reviewed ${flow} L/min digitization artifact.`);
+    }
+    assert(entry.digitizationNote.includes('three closely spaced automatic-extraction points'));
+    assert(entry.digitizationNote.includes('0.01 L/min spacing produced unstable local slope estimates'));
+    assert(entry.digitizationNote.includes('inconsistent with the visibly smooth manufacturer curve'));
+  }
+  if (code === 'RV-41036') {
+    assert(entry.digitizationNote.includes('Three low-flow color-extraction artifact points'));
+    assert(entry.connectorSize.includes('1/2 inch'));
+  }
+  if (code === 'RV-41038') assert.strictEqual(entry.connectorSize, '3/8 inch');
+  if (code === 'RV-41022') assert.strictEqual(entry.connectorSize, '1/4 inch–3/8 inch');
+  assert.deepStrictEqual(entry.points[0], { flow: 0, pressureDrop: 0 });
+  entry.points.forEach((point, index) => {
+    assert(Number.isFinite(point.flow) && Number.isFinite(point.pressureDrop));
+    assert(point.pressureDrop >= 0);
+    if (index > 0) {
+      assert(point.flow > entry.points[index - 1].flow);
+      assert(point.pressureDrop >= entry.points[index - 1].pressureDrop);
+    }
+  });
+  const finalFlow = entry.points.at(-1).flow;
+  const endpointLabel = finalFlow === 6 ? '6.0' : String(finalFlow);
+  assert.strictEqual(entry.referenceFlowRangeLabel, `0–${finalFlow}`);
+  assert(entry.notes.includes(`Source range: 0 to ${endpointLabel} L/min.`));
+  assert(entry.outOfRangeMessage.includes(`0 to ${endpointLabel} L/min`));
+}
 const hlsVenousProducts = [
   ['PVL 2155', 21, 7.0, 55, 20, 20],
   ['PVL 2355', 23, 7.7, 55, 20, 20],
