@@ -1282,6 +1282,40 @@ for (const [size, productCode, sapCode, outerDiameterMm, insertableLength, conne
   assert(product.digitizationNote.includes('No fitted curve or smoothing'));
   assert(product.digitizationNote.includes('no extrapolation is made beyond any digitized series endpoint'));
 }
+
+// Hard-coded checks against the current manufacturer re-digitization protect every independent curve.
+const avalonValueRegressions = [
+  ['13 Fr', 'infusion', 0.52, 103.8, 0.535, 108.6],
+  ['13 Fr', 'drainage', 0.70, -51.0, 0.745, -57.2],
+  ['16 Fr', 'infusion', 0.78, 103.4, 0.80, 109.0],
+  ['16 Fr', 'drainage', 1.07, -44.2, 1.12, -47.8],
+  ['19 Fr', 'infusion', 1.08, 70.3, 1.125, 77.05],
+  ['19 Fr', 'drainage', 1.24, -30.6, 1.285, -32.75],
+  ['20 Fr', 'infusion', 1.25, 110.4, 1.28, 115.25],
+  ['20 Fr', 'drainage', 1.55, -57.4, 1.59, -60.65],
+  ['23 Fr', 'infusion', 1.87, 97.4, 1.91, 101.65],
+  ['23 Fr', 'drainage', 2.02, -48.1, 2.11, -51.95],
+  ['27 Fr', 'infusion', 2.43, 77.7, 2.52, 83.95],
+  ['27 Fr', 'drainage', 2.63, -29.7, 2.715, -31.8],
+  ['31 Fr', 'infusion', 3.15, 64.4, 3.24, 68.3],
+  ['31 Fr', 'drainage', 2.92, -15.5, 3.01, -16.45]
+];
+assert.strictEqual(avalonValueRegressions.length, 14, 'Every Avalon pressure series must have value-level coverage.');
+for (const [size, seriesId, exactFlow, exactPressure, interpolationFlow, expectedInterpolation] of avalonValueRegressions) {
+  const product = avalonProducts.find(entry => entry.size === size);
+  const series = product.pressureSeries.find(entry => entry.id === seriesId);
+  assert(series, `${size} ${seriesId} series must exist for the value regression.`);
+  assert(series.points.some(point => point.flow === exactFlow && point.pressureDrop === exactPressure),
+    `${size} ${seriesId} must retain source point (${exactFlow}, ${exactPressure}).`);
+  const exactResult = interpolatePressureDrop(series.points, exactFlow);
+  assert.strictEqual(exactResult.state, 'exact');
+  assert.strictEqual(exactResult.value, exactPressure);
+  const interpolationResult = interpolatePressureDrop(series.points, interpolationFlow);
+  assert.strictEqual(interpolationResult.state, 'interpolated', `${size} ${seriesId} must interpolate within range.`);
+  assert(Math.abs(interpolationResult.value - expectedInterpolation) < 1e-8,
+    `${size} ${seriesId} interpolation at ${interpolationFlow} L/min must remain ${expectedInterpolation} mmHg.`);
+}
+
 const avalonFindings = avalonAudit.findings.filter(finding => avalonCodes.has(finding.cannulaOrderCode));
 assert(avalonFindings.every(finding => finding.rule === 'slope-whiplash'), 'Avalon findings should remain the documented slope-whiplash heuristic only.');
 for (const finding of avalonFindings) {
@@ -1298,17 +1332,86 @@ for (const finding of avalonFindings) {
 }
 const avalon31Drainage = avalonProducts.find(entry => entry.cannulaOrderCode === '10031-CE').pressureSeries.find(series => series.id === 'drainage');
 assert(!avalonAudit.findings.some(finding => finding.cannulaOrderCode === '10031-CE' && finding.series === 'Drainage' && finding.rule === 'local-reversal'));
-assert(mainJs.includes('function normalizePressureDropEntry') && mainJs.includes("label: 'Pressure drop'"));
-assert(mainJs.includes('drawPressureDropSeriesChart(svg, chartSeries') && mainJs.includes('data-zero-pressure-line="true"'));
-assert(mainJs.includes("item.lineStyle === 'dashed'") && mainJs.includes("{ curveMode: 'linear' }"));
-assert(mainJs.includes('function createPressureDropComparisonChart') && mainJs.includes('colorIndex: productIndex'));
-assert(mainJs.includes('displayLabel: `${entry.size || entry.model} — ${series.label}`'));
-assert(mainJs.includes('selectedComparisonKeys.length < 4') && mainJs.includes('selectedComparisonKeys.length >= 4'));
-assert(mainJs.includes("lumenRows.className = 'mt-2 grid gap-2'") && mainJs.includes('result.seriesResults.forEach(item =>'));
-assert(mainJs.includes('const valueText = getPressureDropResultValueText(interpolationResult);'));
-assert(mainJs.includes('const valueText = getPressureDropResultValueText(result);'));
-assert(mainJs.includes("text.textContent = 'Show raw digitized points'") && mainJs.includes("input.type = 'checkbox'"));
-assert(mainJs.includes("curveMode: 'linear', showRawPoints") && !mainJs.includes("curveMode: 'smooth'"));
+// Execute the production renderer and assert the SVG behavior directly.
+const chartRendererSource = mainJs.slice(
+  mainJs.indexOf('const PRESSURE_DROP_PRODUCT_COLORS'),
+  mainJs.indexOf('\nfunction getPressureDropProductFamily')
+);
+const chartRuntime = vm.runInNewContext(`${chartRendererSource}; ({
+  drawPressureDropSeriesChart,
+  drawPressureDropChart,
+  getPressureDropLegendLayout,
+  productColors: PRESSURE_DROP_PRODUCT_COLORS
+})`, {
+  getValidPressureDropPoints,
+  buildPressureDropAxisTicks,
+  formatPressureDropAxisTick: (value, range = 0) => {
+    const decimals = Math.abs(range) > 0 && Math.abs(range) < 1 ? 2 : (Math.abs(range) < 10 ? 1 : 0);
+    return value.toFixed(decimals).replace(/\.0+$/, '').replace(/(\.\d*[1-9])0+$/, '$1');
+  },
+  formatSignedPressureDrop: (value, decimals = 1) => {
+    const roundedValue = Math.abs(value) < 0.5 * (10 ** -decimals) ? 0 : value;
+    return `${roundedValue > 0 ? '+' : ''}${roundedValue.toFixed(decimals)}`;
+  },
+  Number, Math, String, Array
+});
+const renderedSvg = { dataset: {}, innerHTML: '' };
+chartRuntime.drawPressureDropSeriesChart(renderedSvg, [
+  { id: 'empty', label: 'Empty leading series', lineStyle: 'solid', points: [] },
+  { id: 'drainage', label: 'Drainage', displayLabel: '23 Fr — Drainage', semanticType: 'drainage', lineStyle: 'dashed', colorIndex: 2, points: [
+    { flow: 1, pressureDrop: -10 }, { flow: 2, pressureDrop: -20 }
+  ] }
+], 1.5, [{ state: 'no_points', value: NaN }, { state: 'interpolated', value: -15 }], { curveMode: 'linear' });
+assert(renderedSvg.innerHTML.includes('23 Fr — Drainage; Target flow: 1.50 L/min; Signed pressure: -15.0 mmHg'), 'Rendered tooltip must preserve lumen identity and signed pressure.');
+assert(!renderedSvg.innerHTML.includes('data-raw-pressure-point="true"'), 'Raw points must be hidden by default.');
+assert(renderedSvg.innerHTML.includes('<path '), 'The renderer must output line paths.');
+assert(renderedSvg.innerHTML.includes('data-series-id="drainage"'), 'Empty leading series must not shift estimate/marker association.');
+assert(renderedSvg.innerHTML.includes('stroke-dasharray="7 4"'), 'Drainage path must remain dashed.');
+assert(!renderedSvg.innerHTML.includes('Empty leading series; Target flow'), 'Empty series must not receive another series estimate.');
+assert(renderedSvg.innerHTML.includes('Flow [L/min]') && renderedSvg.innerHTML.includes('Pressure drop [mmHg]'), 'Rendered axes must retain bracketed units.');
+assert.strictEqual(new Set(Array.from(chartRuntime.productColors)).size, 4, 'Product indexes must map to distinct colors.');
+
+const visibleRawPointsSvg = { dataset: {}, innerHTML: '' };
+const visibleSeries = [
+  { id: 'infusion', label: 'Infusion', displayLabel: '23 Fr — Infusion', lineStyle: 'solid', colorIndex: 0, points: [{ flow: 1, pressureDrop: 10 }, { flow: 2, pressureDrop: 20 }] },
+  { id: 'drainage', label: 'Drainage', displayLabel: '23 Fr — Drainage', lineStyle: 'dashed', colorIndex: 0, points: [{ flow: 1, pressureDrop: -10 }, { flow: 2, pressureDrop: -20 }] }
+];
+chartRuntime.drawPressureDropSeriesChart(visibleRawPointsSvg, visibleSeries, 1.5, [{ value: 15 }, { value: -15 }], { curveMode: 'linear', showRawPoints: true });
+assert.strictEqual((visibleRawPointsSvg.innerHTML.match(/data-raw-pressure-point="true"/g) || []).length, 4, 'Raw-point toggle must render all source points.');
+assert(visibleRawPointsSvg.innerHTML.includes('23 Fr — Infusion; Flow: 1.00 L/min; Signed pressure: +10.0 mmHg'));
+assert(visibleRawPointsSvg.innerHTML.includes('23 Fr — Drainage; Flow: 1.00 L/min; Signed pressure: -10.0 mmHg'));
+assert.strictEqual((visibleRawPointsSvg.innerHTML.match(/data-series-id=/g) || []).length, 2, 'Both target-flow markers must render.');
+assert(visibleRawPointsSvg.innerHTML.includes(' r="2"') && visibleRawPointsSvg.innerHTML.includes(' r="4"'), 'Raw markers must be smaller than target-flow markers.');
+const firstProductColor = chartRuntime.productColors[0];
+assert.strictEqual((visibleRawPointsSvg.innerHTML.match(new RegExp(`<path[^>]+stroke="${firstProductColor}"`, 'g')) || []).length, 2, 'Both lumens of one product must share its product color.');
+assert.strictEqual((visibleRawPointsSvg.innerHTML.match(new RegExp(`data-series-id="(?:infusion|drainage)"[^>]+fill="${firstProductColor}"`, 'g')) || []).length, 2, 'Both target markers must share their product color.');
+assert.strictEqual((visibleRawPointsSvg.innerHTML.match(new RegExp(`data-raw-pressure-point="true"[^>]+stroke="${firstProductColor}"`, 'g')) || []).length, 4, 'Both raw-point groups must share their product color.');
+assert(visibleRawPointsSvg.innerHTML.includes('23 Fr — Infusion') && visibleRawPointsSvg.innerHTML.includes('23 Fr — Drainage'), 'Legend labels must retain both lumen identities.');
+const infusionPath = visibleRawPointsSvg.innerHTML.match(/23 Fr — Infusion pressure series"><path([^>]*)>/)?.[1];
+const drainagePath = visibleRawPointsSvg.innerHTML.match(/23 Fr — Drainage pressure series"><path([^>]*)>/)?.[1];
+assert(infusionPath && !infusionPath.includes('stroke-dasharray'), 'Infusion path must remain solid.');
+assert(drainagePath && drainagePath.includes('stroke-dasharray="7 4"'), 'Drainage path must remain dashed.');
+
+const legacySvg = { dataset: {}, innerHTML: '' };
+chartRuntime.drawPressureDropChart(legacySvg, [{ flow: 1, pressureDrop: 10 }, { flow: 2, pressureDrop: 20 }], 1.5, 15, { curveMode: 'linear' });
+assert(legacySvg.innerHTML.includes(`<path d="M`) && legacySvg.innerHTML.includes(`stroke="${firstProductColor}"`), 'Legacy single-series chart must retain the first product color.');
+
+const comparedSeries = Array.from({ length: 4 }, (_, productIndex) => ([
+  { id: `p${productIndex}-infusion`, label: `P${productIndex} Infusion`, colorIndex: productIndex, lineStyle: 'solid', points: [{ flow: 1, pressureDrop: 10 }, { flow: 2, pressureDrop: 20 }] },
+  { id: `p${productIndex}-drainage`, label: `P${productIndex} Drainage`, colorIndex: productIndex, lineStyle: 'dashed', points: [{ flow: 1, pressureDrop: -10 }, { flow: 2, pressureDrop: -20 }] }
+])).flat();
+const comparisonColorSvg = { dataset: {}, innerHTML: '' };
+chartRuntime.drawPressureDropSeriesChart(comparisonColorSvg, comparedSeries, 1.5, comparedSeries.map((_, index) => ({ value: index % 2 ? -15 : 15 })), { curveMode: 'linear' });
+chartRuntime.productColors.forEach(color => {
+  assert.strictEqual((comparisonColorSvg.innerHTML.match(new RegExp(`<path[^>]+stroke="${color}"`, 'g')) || []).length, 2, `Each compared product color ${color} must be shared by its two lumen paths.`);
+});
+assert.strictEqual(new Set(Array.from(chartRuntime.productColors)).size, 4, 'Compared products must retain distinct colors.');
+[2, 4, 6, 8].forEach(entryCount => {
+  const layout = chartRuntime.getPressureDropLegendLayout(entryCount);
+  assert.strictEqual(layout.positions.length, entryCount);
+  assert.strictEqual(new Set(Array.from(layout.positions, position => `${position.x},${position.y}`)).size, entryCount, `${entryCount} legend entries must have unique positions.`);
+  assert(layout.topPadding > Math.max(...Array.from(layout.positions, position => position.y)), `${entryCount} entries must be above the dynamically padded plot.`);
+});
 
 const normalizeSeriesSource = mainJs.slice(mainJs.indexOf('function normalizePressureDropSeries'), mainJs.indexOf('function normalizePressureDropEntry'));
 const normalizePressureDropSeriesRuntime = vm.runInNewContext(`${normalizeSeriesSource}; normalizePressureDropSeries`);
