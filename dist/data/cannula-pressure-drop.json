@@ -8258,112 +8258,116 @@
       "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 9 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.68 L/min.",
-      "referenceFlowRangeLabel": "0–0.68",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.68 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Coronary Ostia Perfusion Cannulae conical-tip pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added. The first very-low-flow anti-aliased line pixel below 0.03 L/min was omitted; values were rounded to 0.01 L/min and 0.1 mmHg for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized source range. After manual source review, isolated extraction artifact point(s) (0.34 L/min, 39.6 mmHg) were omitted because local pixel spacing produced unstable slope estimates inconsistent with the visibly smooth manufacturer curve.",
+      "referenceFlowRangeLabel": "0–0.69",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.69 L/min). Pressure drop is not estimated.",
       "points": [
         {
           "flow": 0,
           "pressureDrop": 0
         },
         {
-          "flow": 0.05,
-          "pressureDrop": 3.7
+          "flow": 0.06,
+          "pressureDrop": 4.3
         },
         {
-          "flow": 0.1,
-          "pressureDrop": 6.6
+          "flow": 0.11,
+          "pressureDrop": 7.6
         },
         {
           "flow": 0.16,
-          "pressureDrop": 11.2
+          "pressureDrop": 11.8
         },
         {
           "flow": 0.2,
-          "pressureDrop": 16.2
+          "pressureDrop": 17.1
         },
         {
           "flow": 0.24,
-          "pressureDrop": 20.6
+          "pressureDrop": 22.1
         },
         {
           "flow": 0.28,
-          "pressureDrop": 25.9
+          "pressureDrop": 27.8
         },
         {
-          "flow": 0.3,
-          "pressureDrop": 32.7
+          "flow": 0.31,
+          "pressureDrop": 33.4
         },
         {
-          "flow": 0.33,
-          "pressureDrop": 39.7
+          "flow": 0.35,
+          "pressureDrop": 44.9
         },
         {
-          "flow": 0.36,
-          "pressureDrop": 46.1
+          "flow": 0.37,
+          "pressureDrop": 50.5
         },
         {
-          "flow": 0.38,
-          "pressureDrop": 52.5
+          "flow": 0.4,
+          "pressureDrop": 56
         },
         {
-          "flow": 0.41,
-          "pressureDrop": 60.1
+          "flow": 0.42,
+          "pressureDrop": 61.4
         },
         {
           "flow": 0.44,
-          "pressureDrop": 66.3
+          "pressureDrop": 67.2
         },
         {
           "flow": 0.46,
-          "pressureDrop": 72.2
+          "pressureDrop": 73.1
         },
         {
           "flow": 0.48,
-          "pressureDrop": 79.9
+          "pressureDrop": 78.5
         },
         {
           "flow": 0.5,
-          "pressureDrop": 85.8
+          "pressureDrop": 84.8
         },
         {
-          "flow": 0.53,
-          "pressureDrop": 93.3
+          "flow": 0.52,
+          "pressureDrop": 90.7
         },
         {
           "flow": 0.54,
-          "pressureDrop": 100.5
+          "pressureDrop": 98.2
         },
         {
           "flow": 0.56,
-          "pressureDrop": 105.6
+          "pressureDrop": 105.1
         },
         {
           "flow": 0.58,
-          "pressureDrop": 112.4
+          "pressureDrop": 110.9
         },
         {
           "flow": 0.6,
-          "pressureDrop": 119.8
+          "pressureDrop": 118
         },
         {
           "flow": 0.62,
-          "pressureDrop": 125.8
+          "pressureDrop": 125.2
         },
         {
           "flow": 0.64,
-          "pressureDrop": 133.2
+          "pressureDrop": 132.2
         },
         {
-          "flow": 0.66,
-          "pressureDrop": 140.5
+          "flow": 0.65,
+          "pressureDrop": 138.6
         },
         {
-          "flow": 0.68,
-          "pressureDrop": 150.1
+          "flow": 0.67,
+          "pressureDrop": 145.2
+        },
+        {
+          "flow": 0.69,
+          "pressureDrop": 149.2
         }
       ],
-      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and 1/4\" Tubing Connector. Type/site: Coronary ostia perfusion. Size: 9 Fr. 45° tip catalog number: P608-30. 90° tip catalog number: P606-30. Connection size: 1/4\" tubing connector. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 0.68 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 9 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.68 L/min. Catalog numbers include P608-30 for 45° tip and P606-30 for 90° tip."
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and 1/4\" Tubing Connector. Type/site: Coronary ostia perfusion. Size: 9 Fr. 45° tip catalog number: P608-30. 90° tip catalog number: P606-30. Connection size: 1/4\" tubing connector. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 0.69 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 9 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.69 L/min. Catalog numbers include P608-30 for 45° tip and P606-30 for 90° tip."
     },
     {
       "manufacturer": "LivaNova",
@@ -8379,136 +8383,128 @@
       "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 11 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.94 L/min.",
-      "referenceFlowRangeLabel": "0–0.94",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.94 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Coronary Ostia Perfusion Cannulae conical-tip pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added. The first very-low-flow anti-aliased line pixel below 0.03 L/min was omitted; values were rounded to 0.01 L/min and 0.1 mmHg for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized source range.",
+      "referenceFlowRangeLabel": "0–0.93",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.93 L/min). Pressure drop is not estimated.",
       "points": [
         {
           "flow": 0,
           "pressureDrop": 0
         },
         {
-          "flow": 0.13,
-          "pressureDrop": 6.4
+          "flow": 0.07,
+          "pressureDrop": 3.5
         },
         {
-          "flow": 0.21,
-          "pressureDrop": 10.1
+          "flow": 0.12,
+          "pressureDrop": 5.3
         },
         {
-          "flow": 0.27,
-          "pressureDrop": 16.5
+          "flow": 0.17,
+          "pressureDrop": 7.6
         },
         {
-          "flow": 0.3,
-          "pressureDrop": 20.6
+          "flow": 0.22,
+          "pressureDrop": 11.5
         },
         {
-          "flow": 0.35,
-          "pressureDrop": 25.2
+          "flow": 0.26,
+          "pressureDrop": 16.9
         },
         {
-          "flow": 0.39,
-          "pressureDrop": 29.2
+          "flow": 0.31,
+          "pressureDrop": 21.6
+        },
+        {
+          "flow": 0.36,
+          "pressureDrop": 25.9
+        },
+        {
+          "flow": 0.4,
+          "pressureDrop": 31.1
         },
         {
           "flow": 0.42,
-          "pressureDrop": 34.9
-        },
-        {
-          "flow": 0.44,
-          "pressureDrop": 40.2
+          "pressureDrop": 36.8
         },
         {
           "flow": 0.46,
-          "pressureDrop": 43.2
+          "pressureDrop": 41.9
         },
         {
-          "flow": 0.5,
-          "pressureDrop": 48.9
+          "flow": 0.49,
+          "pressureDrop": 47.8
         },
         {
           "flow": 0.53,
-          "pressureDrop": 54.9
+          "pressureDrop": 53.7
         },
         {
           "flow": 0.56,
-          "pressureDrop": 60.4
+          "pressureDrop": 59.4
         },
         {
-          "flow": 0.58,
-          "pressureDrop": 63.4
+          "flow": 0.59,
+          "pressureDrop": 64.9
         },
         {
           "flow": 0.61,
-          "pressureDrop": 70.0
+          "pressureDrop": 70.9
         },
         {
           "flow": 0.63,
-          "pressureDrop": 74.2
+          "pressureDrop": 75.5
         },
         {
-          "flow": 0.65,
-          "pressureDrop": 79.9
+          "flow": 0.64,
+          "pressureDrop": 80.2
         },
         {
-          "flow": 0.66,
-          "pressureDrop": 84.7
-        },
-        {
-          "flow": 0.68,
-          "pressureDrop": 89.3
+          "flow": 0.67,
+          "pressureDrop": 85.9
         },
         {
           "flow": 0.69,
-          "pressureDrop": 94.2
+          "pressureDrop": 93.1
         },
         {
-          "flow": 0.72,
-          "pressureDrop": 99.9
+          "flow": 0.71,
+          "pressureDrop": 99.3
         },
         {
-          "flow": 0.73,
-          "pressureDrop": 103.8
+          "flow": 0.74,
+          "pressureDrop": 106.3
         },
         {
-          "flow": 0.75,
-          "pressureDrop": 109.3
+          "flow": 0.76,
+          "pressureDrop": 112.4
         },
         {
-          "flow": 0.77,
-          "pressureDrop": 114.3
+          "flow": 0.79,
+          "pressureDrop": 118.6
         },
         {
-          "flow": 0.8,
-          "pressureDrop": 119.6
+          "flow": 0.82,
+          "pressureDrop": 124.9
         },
         {
-          "flow": 0.81,
-          "pressureDrop": 123.3
+          "flow": 0.84,
+          "pressureDrop": 130.6
         },
         {
-          "flow": 0.83,
-          "pressureDrop": 128.6
+          "flow": 0.87,
+          "pressureDrop": 136.5
         },
         {
-          "flow": 0.86,
-          "pressureDrop": 133.7
+          "flow": 0.9,
+          "pressureDrop": 142.6
         },
         {
-          "flow": 0.89,
-          "pressureDrop": 139.8
-        },
-        {
-          "flow": 0.91,
-          "pressureDrop": 144.4
-        },
-        {
-          "flow": 0.94,
-          "pressureDrop": 150.1
+          "flow": 0.93,
+          "pressureDrop": 148.1
         }
       ],
-      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and 1/4\" Tubing Connector. Type/site: Coronary ostia perfusion. Size: 11 Fr. 45° tip catalog number: P608-35. 90° tip catalog number: P606-35. Connection size: 1/4\" tubing connector. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 0.94 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 11 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.94 L/min. Catalog numbers include P608-35 for 45° tip and P606-35 for 90° tip."
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and 1/4\" Tubing Connector. Type/site: Coronary ostia perfusion. Size: 11 Fr. 45° tip catalog number: P608-35. 90° tip catalog number: P606-35. Connection size: 1/4\" tubing connector. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 0.93 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 11 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.93 L/min. Catalog numbers include P608-35 for 45° tip and P606-35 for 90° tip."
     },
     {
       "manufacturer": "LivaNova",
@@ -8524,33 +8520,45 @@
       "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 12 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.20 L/min.",
-      "referenceFlowRangeLabel": "0–1.20",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.20 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Coronary Ostia Perfusion Cannulae conical-tip pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added. The first very-low-flow anti-aliased line pixel below 0.03 L/min was omitted; values were rounded to 0.01 L/min and 0.1 mmHg for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized source range.",
+      "referenceFlowRangeLabel": "0–1.2",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.2 L/min). Pressure drop is not estimated.",
       "points": [
         {
           "flow": 0,
           "pressureDrop": 0
         },
         {
+          "flow": 0.07,
+          "pressureDrop": 2.3
+        },
+        {
           "flow": 0.12,
-          "pressureDrop": 3.3
+          "pressureDrop": 3.5
         },
         {
-          "flow": 0.21,
-          "pressureDrop": 6.4
+          "flow": 0.17,
+          "pressureDrop": 4.7
         },
         {
-          "flow": 0.28,
-          "pressureDrop": 9.0
+          "flow": 0.22,
+          "pressureDrop": 6.6
         },
         {
-          "flow": 0.35,
-          "pressureDrop": 12.3
+          "flow": 0.26,
+          "pressureDrop": 8.6
         },
         {
-          "flow": 0.4,
-          "pressureDrop": 15.6
+          "flow": 0.31,
+          "pressureDrop": 10.9
+        },
+        {
+          "flow": 0.36,
+          "pressureDrop": 13.1
+        },
+        {
+          "flow": 0.41,
+          "pressureDrop": 16.7
         },
         {
           "flow": 0.46,
@@ -8558,67 +8566,79 @@
         },
         {
           "flow": 0.51,
-          "pressureDrop": 26.3
+          "pressureDrop": 26.2
         },
         {
-          "flow": 0.56,
-          "pressureDrop": 34.0
+          "flow": 0.55,
+          "pressureDrop": 32.5
         },
         {
-          "flow": 0.6,
-          "pressureDrop": 39.9
+          "flow": 0.59,
+          "pressureDrop": 38.4
         },
         {
-          "flow": 0.65,
-          "pressureDrop": 47.0
+          "flow": 0.63,
+          "pressureDrop": 44.3
         },
         {
-          "flow": 0.7,
-          "pressureDrop": 54.2
+          "flow": 0.67,
+          "pressureDrop": 50.1
         },
         {
-          "flow": 0.74,
-          "pressureDrop": 60.1
+          "flow": 0.71,
+          "pressureDrop": 55.9
         },
         {
-          "flow": 0.79,
-          "pressureDrop": 72.2
+          "flow": 0.76,
+          "pressureDrop": 63
         },
         {
-          "flow": 0.84,
-          "pressureDrop": 80.5
+          "flow": 0.78,
+          "pressureDrop": 68.8
+        },
+        {
+          "flow": 0.81,
+          "pressureDrop": 75.2
+        },
+        {
+          "flow": 0.85,
+          "pressureDrop": 81
         },
         {
           "flow": 0.88,
-          "pressureDrop": 86.3
+          "pressureDrop": 86.4
         },
         {
-          "flow": 0.93,
-          "pressureDrop": 93.3
+          "flow": 0.91,
+          "pressureDrop": 92.2
         },
         {
-          "flow": 0.97,
-          "pressureDrop": 100.3
+          "flow": 0.95,
+          "pressureDrop": 97.3
         },
         {
-          "flow": 1.0,
-          "pressureDrop": 105.8
+          "flow": 0.99,
+          "pressureDrop": 103.2
         },
         {
-          "flow": 1.04,
-          "pressureDrop": 113.7
+          "flow": 1.02,
+          "pressureDrop": 109.6
         },
         {
-          "flow": 1.07,
-          "pressureDrop": 120.1
+          "flow": 1.05,
+          "pressureDrop": 115.1
         },
         {
-          "flow": 1.1,
-          "pressureDrop": 126.9
+          "flow": 1.08,
+          "pressureDrop": 122.2
+        },
+        {
+          "flow": 1.11,
+          "pressureDrop": 128.7
         },
         {
           "flow": 1.13,
-          "pressureDrop": 133.4
+          "pressureDrop": 134.4
         },
         {
           "flow": 1.16,
@@ -8626,14 +8646,14 @@
         },
         {
           "flow": 1.18,
-          "pressureDrop": 144.6
+          "pressureDrop": 145.4
         },
         {
           "flow": 1.2,
-          "pressureDrop": 150.1
+          "pressureDrop": 149.7
         }
       ],
-      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and 1/4\" Tubing Connector. Type/site: Coronary ostia perfusion. Size: 12 Fr. 45° tip catalog number: P608-40. 90° tip catalog number: P606-40. Connection size: 1/4\" tubing connector. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 1.20 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 12 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.20 L/min. Catalog numbers include P608-40 for 45° tip and P606-40 for 90° tip."
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and 1/4\" Tubing Connector. Type/site: Coronary ostia perfusion. Size: 12 Fr. 45° tip catalog number: P608-40. 90° tip catalog number: P606-40. Connection size: 1/4\" tubing connector. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 1.2 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip 12 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.2 L/min. Catalog numbers include P608-40 for 45° tip and P606-40 for 90° tip."
     },
     {
       "manufacturer": "LivaNova",
@@ -8649,112 +8669,164 @@
       "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 9 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.85 L/min.",
-      "referenceFlowRangeLabel": "0–0.85",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.85 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Coronary Ostia Perfusion Cannulae conical-tip pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added. The first very-low-flow anti-aliased line pixel below 0.03 L/min was omitted; values were rounded to 0.01 L/min and 0.1 mmHg for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized source range.",
+      "referenceFlowRangeLabel": "0–0.84",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.84 L/min). Pressure drop is not estimated.",
       "points": [
         {
           "flow": 0,
           "pressureDrop": 0
         },
         {
-          "flow": 0.08,
-          "pressureDrop": 4.0
+          "flow": 0.05,
+          "pressureDrop": 3
         },
         {
-          "flow": 0.14,
-          "pressureDrop": 7.2
+          "flow": 0.09,
+          "pressureDrop": 4.1
+        },
+        {
+          "flow": 0.13,
+          "pressureDrop": 5.9
+        },
+        {
+          "flow": 0.16,
+          "pressureDrop": 7.7
         },
         {
           "flow": 0.2,
-          "pressureDrop": 10.8
+          "pressureDrop": 10
         },
         {
-          "flow": 0.24,
-          "pressureDrop": 15.0
+          "flow": 0.23,
+          "pressureDrop": 12.5
         },
         {
-          "flow": 0.28,
-          "pressureDrop": 20.6
+          "flow": 0.26,
+          "pressureDrop": 17.5
+        },
+        {
+          "flow": 0.29,
+          "pressureDrop": 21.3
         },
         {
           "flow": 0.32,
-          "pressureDrop": 25.8
+          "pressureDrop": 25.6
+        },
+        {
+          "flow": 0.35,
+          "pressureDrop": 29.8
         },
         {
           "flow": 0.38,
-          "pressureDrop": 33.4
+          "pressureDrop": 34
         },
         {
-          "flow": 0.42,
-          "pressureDrop": 40.2
+          "flow": 0.4,
+          "pressureDrop": 38.1
+        },
+        {
+          "flow": 0.43,
+          "pressureDrop": 41.6
         },
         {
           "flow": 0.45,
-          "pressureDrop": 45.8
+          "pressureDrop": 46.3
         },
         {
-          "flow": 0.49,
-          "pressureDrop": 53.2
+          "flow": 0.47,
+          "pressureDrop": 50.4
+        },
+        {
+          "flow": 0.5,
+          "pressureDrop": 54.7
         },
         {
           "flow": 0.52,
-          "pressureDrop": 60.1
+          "pressureDrop": 58.7
+        },
+        {
+          "flow": 0.54,
+          "pressureDrop": 62.8
         },
         {
           "flow": 0.55,
-          "pressureDrop": 66.2
+          "pressureDrop": 67.4
         },
         {
-          "flow": 0.57,
-          "pressureDrop": 73.6
+          "flow": 0.56,
+          "pressureDrop": 71.6
+        },
+        {
+          "flow": 0.58,
+          "pressureDrop": 76.2
         },
         {
           "flow": 0.6,
-          "pressureDrop": 80.1
+          "pressureDrop": 80.4
         },
         {
-          "flow": 0.63,
-          "pressureDrop": 86.4
+          "flow": 0.62,
+          "pressureDrop": 84.7
+        },
+        {
+          "flow": 0.64,
+          "pressureDrop": 89.2
         },
         {
           "flow": 0.66,
-          "pressureDrop": 93.4
+          "pressureDrop": 93.7
         },
         {
-          "flow": 0.7,
-          "pressureDrop": 99.9
+          "flow": 0.69,
+          "pressureDrop": 98.3
+        },
+        {
+          "flow": 0.71,
+          "pressureDrop": 102
         },
         {
           "flow": 0.72,
-          "pressureDrop": 105.5
+          "pressureDrop": 106.5
+        },
+        {
+          "flow": 0.74,
+          "pressureDrop": 111
         },
         {
           "flow": 0.75,
-          "pressureDrop": 113.3
+          "pressureDrop": 115.5
         },
         {
           "flow": 0.77,
-          "pressureDrop": 119.4
+          "pressureDrop": 120.1
+        },
+        {
+          "flow": 0.78,
+          "pressureDrop": 124.7
         },
         {
           "flow": 0.79,
-          "pressureDrop": 126.3
+          "pressureDrop": 129.4
         },
         {
           "flow": 0.81,
-          "pressureDrop": 134.4
+          "pressureDrop": 135.1
         },
         {
           "flow": 0.82,
-          "pressureDrop": 139.8
+          "pressureDrop": 139.9
         },
         {
-          "flow": 0.85,
-          "pressureDrop": 149.9
+          "flow": 0.83,
+          "pressureDrop": 144.9
+        },
+        {
+          "flow": 0.84,
+          "pressureDrop": 149
         }
       ],
-      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 9 Fr. 45° tip catalog number: P618-30. 90° tip catalog number: P616-30. Connection size: female luer lock. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 0.85 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 9 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.85 L/min. Catalog numbers include P618-30 for 45° tip and P616-30 for 90° tip."
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 9 Fr. 45° tip catalog number: P618-30. 90° tip catalog number: P616-30. Connection size: female luer lock. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 0.84 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 9 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 0.84 L/min. Catalog numbers include P618-30 for 45° tip and P616-30 for 90° tip."
     },
     {
       "manufacturer": "LivaNova",
@@ -8770,108 +8842,180 @@
       "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 11 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.16 L/min.",
-      "referenceFlowRangeLabel": "0–1.16",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.16 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Coronary Ostia Perfusion Cannulae conical-tip pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added. The first very-low-flow anti-aliased line pixel below 0.03 L/min was omitted; values were rounded to 0.01 L/min and 0.1 mmHg for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized source range.",
+      "referenceFlowRangeLabel": "0–1.15",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.15 L/min). Pressure drop is not estimated.",
       "points": [
         {
           "flow": 0,
           "pressureDrop": 0
         },
         {
-          "flow": 0.13,
-          "pressureDrop": 5.8
+          "flow": 0.04,
+          "pressureDrop": 2.5
         },
         {
-          "flow": 0.21,
-          "pressureDrop": 10.1
+          "flow": 0.08,
+          "pressureDrop": 3.8
+        },
+        {
+          "flow": 0.12,
+          "pressureDrop": 5.4
+        },
+        {
+          "flow": 0.15,
+          "pressureDrop": 7.2
+        },
+        {
+          "flow": 0.19,
+          "pressureDrop": 9.2
+        },
+        {
+          "flow": 0.23,
+          "pressureDrop": 11.2
+        },
+        {
+          "flow": 0.26,
+          "pressureDrop": 12.7
         },
         {
           "flow": 0.3,
-          "pressureDrop": 14.6
+          "pressureDrop": 14.9
         },
         {
-          "flow": 0.38,
-          "pressureDrop": 20.4
+          "flow": 0.34,
+          "pressureDrop": 17.3
+        },
+        {
+          "flow": 0.37,
+          "pressureDrop": 19.9
+        },
+        {
+          "flow": 0.41,
+          "pressureDrop": 22.7
         },
         {
           "flow": 0.45,
-          "pressureDrop": 26.7
+          "pressureDrop": 26.3
         },
         {
-          "flow": 0.51,
-          "pressureDrop": 32.5
+          "flow": 0.48,
+          "pressureDrop": 30.2
         },
         {
-          "flow": 0.55,
-          "pressureDrop": 40.2
+          "flow": 0.52,
+          "pressureDrop": 34.7
+        },
+        {
+          "flow": 0.54,
+          "pressureDrop": 39.2
+        },
+        {
+          "flow": 0.57,
+          "pressureDrop": 43.3
         },
         {
           "flow": 0.59,
-          "pressureDrop": 47.1
+          "pressureDrop": 47.3
         },
         {
-          "flow": 0.64,
-          "pressureDrop": 53.6
+          "flow": 0.62,
+          "pressureDrop": 51.6
+        },
+        {
+          "flow": 0.65,
+          "pressureDrop": 56.1
         },
         {
           "flow": 0.68,
-          "pressureDrop": 60.1
+          "pressureDrop": 60.3
         },
         {
-          "flow": 0.71,
-          "pressureDrop": 66.2
+          "flow": 0.7,
+          "pressureDrop": 64.5
+        },
+        {
+          "flow": 0.72,
+          "pressureDrop": 68.7
         },
         {
           "flow": 0.74,
-          "pressureDrop": 73.2
+          "pressureDrop": 72.8
         },
         {
-          "flow": 0.77,
-          "pressureDrop": 79.9
+          "flow": 0.76,
+          "pressureDrop": 77.3
+        },
+        {
+          "flow": 0.78,
+          "pressureDrop": 81.5
         },
         {
           "flow": 0.8,
           "pressureDrop": 85.9
         },
         {
-          "flow": 0.83,
-          "pressureDrop": 92.5
+          "flow": 0.82,
+          "pressureDrop": 89.9
         },
         {
-          "flow": 0.87,
-          "pressureDrop": 99.9
+          "flow": 0.84,
+          "pressureDrop": 94.4
         },
         {
-          "flow": 0.89,
-          "pressureDrop": 105.2
+          "flow": 0.86,
+          "pressureDrop": 99.5
+        },
+        {
+          "flow": 0.88,
+          "pressureDrop": 103.9
+        },
+        {
+          "flow": 0.9,
+          "pressureDrop": 108
         },
         {
           "flow": 0.93,
-          "pressureDrop": 112.7
+          "pressureDrop": 112.4
         },
         {
-          "flow": 0.97,
-          "pressureDrop": 119.6
+          "flow": 0.95,
+          "pressureDrop": 116.5
         },
         {
-          "flow": 1.01,
-          "pressureDrop": 125.4
+          "flow": 0.98,
+          "pressureDrop": 120.4
+        },
+        {
+          "flow": 1,
+          "pressureDrop": 124.8
+        },
+        {
+          "flow": 1.03,
+          "pressureDrop": 129.1
         },
         {
           "flow": 1.05,
-          "pressureDrop": 132.4
+          "pressureDrop": 133.7
         },
         {
-          "flow": 1.1,
-          "pressureDrop": 139.8
+          "flow": 1.08,
+          "pressureDrop": 137.9
         },
         {
-          "flow": 1.16,
-          "pressureDrop": 149.5
+          "flow": 1.11,
+          "pressureDrop": 142
+        },
+        {
+          "flow": 1.13,
+          "pressureDrop": 146.6
+        },
+        {
+          "flow": 1.15,
+          "pressureDrop": 149.7
         }
       ],
-      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 11 Fr. 45° tip catalog number: P618-35. 90° tip catalog number: P616-35. Connection size: female luer lock. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 1.16 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 11 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.16 L/min. Catalog numbers include P618-35 for 45° tip and P616-35 for 90° tip."
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 11 Fr. 45° tip catalog number: P618-35. 90° tip catalog number: P616-35. Connection size: female luer lock. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 1.15 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 11 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.15 L/min. Catalog numbers include P618-35 for 45° tip and P616-35 for 90° tip."
     },
     {
       "manufacturer": "LivaNova",
@@ -8887,100 +9031,192 @@
       "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 12 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.51 L/min.",
-      "referenceFlowRangeLabel": "0–1.51",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.51 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Coronary Ostia Perfusion Cannulae conical-tip pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added. The first very-low-flow anti-aliased line pixel below 0.03 L/min was omitted; values were rounded to 0.01 L/min and 0.1 mmHg for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized source range. After manual source review, isolated extraction artifact point(s) (0.12 L/min, 3.6 mmHg; 0.42 L/min, 11 mmHg) were omitted because local pixel spacing produced unstable slope estimates inconsistent with the visibly smooth manufacturer curve.",
+      "referenceFlowRangeLabel": "0–1.5",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.5 L/min). Pressure drop is not estimated.",
       "points": [
         {
           "flow": 0,
           "pressureDrop": 0
         },
         {
-          "flow": 0.08,
-          "pressureDrop": 2.9
+          "flow": 0.05,
+          "pressureDrop": 1.8
+        },
+        {
+          "flow": 0.09,
+          "pressureDrop": 2.8
         },
         {
           "flow": 0.16,
-          "pressureDrop": 4.5
+          "pressureDrop": 3.7
         },
         {
-          "flow": 0.26,
-          "pressureDrop": 6.7
+          "flow": 0.2,
+          "pressureDrop": 4.4
         },
         {
-          "flow": 0.35,
-          "pressureDrop": 9.0
+          "flow": 0.23,
+          "pressureDrop": 5.3
         },
         {
-          "flow": 0.44,
-          "pressureDrop": 12.1
+          "flow": 0.27,
+          "pressureDrop": 6.2
+        },
+        {
+          "flow": 0.31,
+          "pressureDrop": 7.1
+        },
+        {
+          "flow": 0.34,
+          "pressureDrop": 8
+        },
+        {
+          "flow": 0.38,
+          "pressureDrop": 9.3
+        },
+        {
+          "flow": 0.45,
+          "pressureDrop": 14.6
         },
         {
           "flow": 0.49,
-          "pressureDrop": 20.2
+          "pressureDrop": 18.6
         },
         {
-          "flow": 0.54,
-          "pressureDrop": 24.2
+          "flow": 0.52,
+          "pressureDrop": 22.7
         },
         {
-          "flow": 0.6,
-          "pressureDrop": 30.7
+          "flow": 0.56,
+          "pressureDrop": 26.4
         },
         {
-          "flow": 0.66,
-          "pressureDrop": 34.3
+          "flow": 0.59,
+          "pressureDrop": 29.7
+        },
+        {
+          "flow": 0.63,
+          "pressureDrop": 32.4
+        },
+        {
+          "flow": 0.67,
+          "pressureDrop": 34.7
+        },
+        {
+          "flow": 0.7,
+          "pressureDrop": 37.4
         },
         {
           "flow": 0.74,
           "pressureDrop": 40.4
         },
         {
-          "flow": 0.82,
-          "pressureDrop": 49.4
+          "flow": 0.78,
+          "pressureDrop": 44.2
         },
         {
-          "flow": 0.91,
-          "pressureDrop": 60.1
+          "flow": 0.81,
+          "pressureDrop": 48.2
         },
         {
-          "flow": 0.99,
-          "pressureDrop": 70.0
+          "flow": 0.85,
+          "pressureDrop": 52.4
         },
         {
-          "flow": 1.06,
-          "pressureDrop": 80.1
+          "flow": 0.89,
+          "pressureDrop": 56.5
+        },
+        {
+          "flow": 0.92,
+          "pressureDrop": 60.3
+        },
+        {
+          "flow": 0.95,
+          "pressureDrop": 64.3
+        },
+        {
+          "flow": 0.97,
+          "pressureDrop": 68.6
+        },
+        {
+          "flow": 1,
+          "pressureDrop": 73
+        },
+        {
+          "flow": 1.03,
+          "pressureDrop": 77
+        },
+        {
+          "flow": 1.07,
+          "pressureDrop": 81.4
+        },
+        {
+          "flow": 1.1,
+          "pressureDrop": 85.5
         },
         {
           "flow": 1.13,
           "pressureDrop": 89.8
         },
         {
-          "flow": 1.2,
-          "pressureDrop": 99.9
+          "flow": 1.16,
+          "pressureDrop": 94.1
         },
         {
-          "flow": 1.27,
-          "pressureDrop": 108.6
+          "flow": 1.19,
+          "pressureDrop": 98.2
         },
         {
-          "flow": 1.34,
-          "pressureDrop": 119.6
+          "flow": 1.22,
+          "pressureDrop": 102
+        },
+        {
+          "flow": 1.25,
+          "pressureDrop": 106.6
+        },
+        {
+          "flow": 1.28,
+          "pressureDrop": 110.7
+        },
+        {
+          "flow": 1.31,
+          "pressureDrop": 114.8
+        },
+        {
+          "flow": 1.33,
+          "pressureDrop": 119.4
+        },
+        {
+          "flow": 1.36,
+          "pressureDrop": 123.2
+        },
+        {
+          "flow": 1.38,
+          "pressureDrop": 127.9
         },
         {
           "flow": 1.4,
-          "pressureDrop": 129.7
+          "pressureDrop": 132.1
+        },
+        {
+          "flow": 1.43,
+          "pressureDrop": 136.3
         },
         {
           "flow": 1.45,
-          "pressureDrop": 139.6
+          "pressureDrop": 140.6
         },
         {
-          "flow": 1.51,
-          "pressureDrop": 149.9
+          "flow": 1.47,
+          "pressureDrop": 144.8
+        },
+        {
+          "flow": 1.5,
+          "pressureDrop": 148.8
         }
       ],
-      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 12 Fr. 45° tip catalog number: P618-40. 90° tip catalog number: P616-40. Connection size: female luer lock. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 1.51 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 12 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.51 L/min. Catalog numbers include P618-40 for 45° tip and P616-40 for 90° tip."
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 12 Fr. 45° tip catalog number: P618-40. 90° tip catalog number: P616-40. Connection size: female luer lock. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 1.5 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 12 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.5 L/min. Catalog numbers include P618-40 for 45° tip and P616-40 for 90° tip."
     },
     {
       "manufacturer": "LivaNova",
@@ -8996,100 +9232,204 @@
       "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 14 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.63 L/min.",
-      "referenceFlowRangeLabel": "0–1.63",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.63 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Coronary Ostia Perfusion Cannulae conical-tip pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added. The first very-low-flow anti-aliased line pixel below 0.03 L/min was omitted; values were rounded to 0.01 L/min and 0.1 mmHg for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized source range. After manual source review, isolated extraction artifact point(s) (0.38 L/min, 7.7 mmHg) were omitted because local pixel spacing produced unstable slope estimates inconsistent with the visibly smooth manufacturer curve.",
+      "referenceFlowRangeLabel": "0–1.62",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.62 L/min). Pressure drop is not estimated.",
       "points": [
         {
           "flow": 0,
           "pressureDrop": 0
         },
         {
-          "flow": 0.1,
-          "pressureDrop": 2.5
+          "flow": 0.04,
+          "pressureDrop": 1.4
         },
         {
-          "flow": 0.21,
-          "pressureDrop": 4.7
+          "flow": 0.08,
+          "pressureDrop": 2
         },
         {
-          "flow": 0.32,
-          "pressureDrop": 7.2
+          "flow": 0.12,
+          "pressureDrop": 2.6
+        },
+        {
+          "flow": 0.16,
+          "pressureDrop": 3.5
+        },
+        {
+          "flow": 0.19,
+          "pressureDrop": 4
+        },
+        {
+          "flow": 0.23,
+          "pressureDrop": 4.6
+        },
+        {
+          "flow": 0.27,
+          "pressureDrop": 5.2
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 6.2
+        },
+        {
+          "flow": 0.34,
+          "pressureDrop": 7
         },
         {
           "flow": 0.41,
           "pressureDrop": 9.2
         },
         {
+          "flow": 0.45,
+          "pressureDrop": 10.1
+        },
+        {
+          "flow": 0.49,
+          "pressureDrop": 11.5
+        },
+        {
           "flow": 0.53,
-          "pressureDrop": 14.4
+          "pressureDrop": 14
+        },
+        {
+          "flow": 0.56,
+          "pressureDrop": 16.7
         },
         {
           "flow": 0.6,
-          "pressureDrop": 20.2
+          "pressureDrop": 20
+        },
+        {
+          "flow": 0.63,
+          "pressureDrop": 24
         },
         {
           "flow": 0.67,
-          "pressureDrop": 28.3
+          "pressureDrop": 27.7
         },
         {
-          "flow": 0.73,
-          "pressureDrop": 34.3
+          "flow": 0.7,
+          "pressureDrop": 31.8
         },
         {
-          "flow": 0.8,
-          "pressureDrop": 40.2
+          "flow": 0.74,
+          "pressureDrop": 35.4
         },
         {
-          "flow": 0.87,
-          "pressureDrop": 46.9
+          "flow": 0.78,
+          "pressureDrop": 37.9
+        },
+        {
+          "flow": 0.81,
+          "pressureDrop": 41.5
+        },
+        {
+          "flow": 0.86,
+          "pressureDrop": 46.2
+        },
+        {
+          "flow": 0.89,
+          "pressureDrop": 49.8
         },
         {
           "flow": 0.93,
-          "pressureDrop": 53.0
+          "pressureDrop": 52.9
         },
         {
-          "flow": 0.99,
-          "pressureDrop": 59.9
+          "flow": 0.96,
+          "pressureDrop": 56.6
         },
         {
-          "flow": 1.09,
-          "pressureDrop": 69.6
+          "flow": 1,
+          "pressureDrop": 60.1
         },
         {
-          "flow": 1.16,
-          "pressureDrop": 79.9
+          "flow": 1.03,
+          "pressureDrop": 63.7
         },
         {
-          "flow": 1.24,
-          "pressureDrop": 91.1
+          "flow": 1.06,
+          "pressureDrop": 67.5
         },
         {
-          "flow": 1.3,
-          "pressureDrop": 100.3
+          "flow": 1.1,
+          "pressureDrop": 71.5
         },
         {
-          "flow": 1.37,
-          "pressureDrop": 110.4
+          "flow": 1.14,
+          "pressureDrop": 76.2
+        },
+        {
+          "flow": 1.17,
+          "pressureDrop": 80.9
+        },
+        {
+          "flow": 1.19,
+          "pressureDrop": 85.3
+        },
+        {
+          "flow": 1.22,
+          "pressureDrop": 89.3
+        },
+        {
+          "flow": 1.25,
+          "pressureDrop": 93.9
+        },
+        {
+          "flow": 1.28,
+          "pressureDrop": 98.4
+        },
+        {
+          "flow": 1.32,
+          "pressureDrop": 102.7
+        },
+        {
+          "flow": 1.35,
+          "pressureDrop": 107
+        },
+        {
+          "flow": 1.38,
+          "pressureDrop": 111.6
+        },
+        {
+          "flow": 1.4,
+          "pressureDrop": 116.1
         },
         {
           "flow": 1.43,
           "pressureDrop": 120.1
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 130.4
+          "flow": 1.47,
+          "pressureDrop": 125.3
         },
         {
-          "flow": 1.56,
-          "pressureDrop": 139.6
+          "flow": 1.49,
+          "pressureDrop": 129.1
         },
         {
-          "flow": 1.63,
-          "pressureDrop": 150.4
+          "flow": 1.52,
+          "pressureDrop": 134.5
+        },
+        {
+          "flow": 1.55,
+          "pressureDrop": 138.8
+        },
+        {
+          "flow": 1.58,
+          "pressureDrop": 143.5
+        },
+        {
+          "flow": 1.6,
+          "pressureDrop": 146.6
+        },
+        {
+          "flow": 1.62,
+          "pressureDrop": 150.1
         }
       ],
-      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 14 Fr. 45° tip catalog number: P618-45. 90° tip catalog number: P616-45. Connection size: female luer lock. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 1.63 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 14 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.63 L/min. Catalog numbers include P618-45 for 45° tip and P616-45 for 90° tip."
+      "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 14 Fr. 45° tip catalog number: P618-45. 90° tip catalog number: P616-45. Connection size: female luer lock. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 1.62 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 14 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.62 L/min. Catalog numbers include P618-45 for 45° tip and P616-45 for 90° tip."
     },
     {
       "manufacturer": "LivaNova",
@@ -9105,7 +9445,7 @@
       "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/antegrade-coronary-ostia-perfusion",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 15 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.94 L/min.",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Coronary Ostia Perfusion Cannulae conical-tip pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added. The first very-low-flow anti-aliased line pixel below 0.03 L/min was omitted; values were rounded to 0.01 L/min and 0.1 mmHg for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized source range.",
       "referenceFlowRangeLabel": "0–1.94",
       "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.94 L/min). Pressure drop is not estimated.",
       "points": [
@@ -9114,96 +9454,224 @@
           "pressureDrop": 0
         },
         {
-          "flow": 0.07,
-          "pressureDrop": 2.0
+          "flow": 0.04,
+          "pressureDrop": 0.9
         },
         {
-          "flow": 0.14,
-          "pressureDrop": 2.7
+          "flow": 0.08,
+          "pressureDrop": 1.6
+        },
+        {
+          "flow": 0.12,
+          "pressureDrop": 1.8
+        },
+        {
+          "flow": 0.15,
+          "pressureDrop": 2.1
+        },
+        {
+          "flow": 0.19,
+          "pressureDrop": 2.5
         },
         {
           "flow": 0.23,
-          "pressureDrop": 4.5
+          "pressureDrop": 3
+        },
+        {
+          "flow": 0.26,
+          "pressureDrop": 3.6
+        },
+        {
+          "flow": 0.3,
+          "pressureDrop": 4.2
         },
         {
           "flow": 0.34,
-          "pressureDrop": 6.1
+          "pressureDrop": 4.9
         },
         {
-          "flow": 0.44,
-          "pressureDrop": 8.1
+          "flow": 0.37,
+          "pressureDrop": 5.8
         },
         {
-          "flow": 0.54,
-          "pressureDrop": 9.9
+          "flow": 0.41,
+          "pressureDrop": 6.5
         },
         {
-          "flow": 0.62,
-          "pressureDrop": 13.7
+          "flow": 0.45,
+          "pressureDrop": 7.4
         },
         {
-          "flow": 0.69,
-          "pressureDrop": 20.6
+          "flow": 0.49,
+          "pressureDrop": 8
         },
         {
-          "flow": 0.78,
-          "pressureDrop": 28.9
+          "flow": 0.52,
+          "pressureDrop": 8.9
+        },
+        {
+          "flow": 0.56,
+          "pressureDrop": 10.6
+        },
+        {
+          "flow": 0.6,
+          "pressureDrop": 12.8
+        },
+        {
+          "flow": 0.64,
+          "pressureDrop": 15
+        },
+        {
+          "flow": 0.67,
+          "pressureDrop": 17.1
+        },
+        {
+          "flow": 0.7,
+          "pressureDrop": 20.3
+        },
+        {
+          "flow": 0.73,
+          "pressureDrop": 23.2
+        },
+        {
+          "flow": 0.76,
+          "pressureDrop": 27
+        },
+        {
+          "flow": 0.79,
+          "pressureDrop": 29.6
+        },
+        {
+          "flow": 0.83,
+          "pressureDrop": 32.8
         },
         {
           "flow": 0.87,
-          "pressureDrop": 34.8
+          "pressureDrop": 34.5
+        },
+        {
+          "flow": 0.91,
+          "pressureDrop": 36.4
         },
         {
           "flow": 0.95,
-          "pressureDrop": 40.6
+          "pressureDrop": 39.2
         },
         {
-          "flow": 1.03,
-          "pressureDrop": 47.1
+          "flow": 0.98,
+          "pressureDrop": 42.8
+        },
+        {
+          "flow": 1.02,
+          "pressureDrop": 46.3
+        },
+        {
+          "flow": 1.05,
+          "pressureDrop": 50.1
+        },
+        {
+          "flow": 1.09,
+          "pressureDrop": 53.2
         },
         {
           "flow": 1.13,
-          "pressureDrop": 54.8
+          "pressureDrop": 55.6
         },
         {
-          "flow": 1.19,
-          "pressureDrop": 60.1
+          "flow": 1.17,
+          "pressureDrop": 58.1
         },
         {
-          "flow": 1.3,
-          "pressureDrop": 69.8
+          "flow": 1.2,
+          "pressureDrop": 61.9
         },
         {
-          "flow": 1.39,
-          "pressureDrop": 79.9
+          "flow": 1.24,
+          "pressureDrop": 64.8
         },
         {
-          "flow": 1.47,
-          "pressureDrop": 89.1
+          "flow": 1.28,
+          "pressureDrop": 68.4
+        },
+        {
+          "flow": 1.31,
+          "pressureDrop": 71.6
+        },
+        {
+          "flow": 1.35,
+          "pressureDrop": 75
+        },
+        {
+          "flow": 1.38,
+          "pressureDrop": 79.7
+        },
+        {
+          "flow": 1.42,
+          "pressureDrop": 83.2
+        },
+        {
+          "flow": 1.45,
+          "pressureDrop": 87.6
+        },
+        {
+          "flow": 1.49,
+          "pressureDrop": 92
+        },
+        {
+          "flow": 1.52,
+          "pressureDrop": 95.8
         },
         {
           "flow": 1.56,
-          "pressureDrop": 100.3
+          "pressureDrop": 100.1
         },
         {
-          "flow": 1.64,
-          "pressureDrop": 109.5
+          "flow": 1.6,
+          "pressureDrop": 104.7
+        },
+        {
+          "flow": 1.63,
+          "pressureDrop": 108.9
+        },
+        {
+          "flow": 1.67,
+          "pressureDrop": 113.2
+        },
+        {
+          "flow": 1.69,
+          "pressureDrop": 117.5
         },
         {
           "flow": 1.72,
-          "pressureDrop": 119.6
+          "pressureDrop": 121.5
         },
         {
-          "flow": 1.79,
-          "pressureDrop": 130.2
+          "flow": 1.76,
+          "pressureDrop": 126.9
+        },
+        {
+          "flow": 1.8,
+          "pressureDrop": 131.4
+        },
+        {
+          "flow": 1.83,
+          "pressureDrop": 135.9
         },
         {
           "flow": 1.86,
-          "pressureDrop": 139.6
+          "pressureDrop": 140
+        },
+        {
+          "flow": 1.89,
+          "pressureDrop": 144.4
+        },
+        {
+          "flow": 1.92,
+          "pressureDrop": 148.2
         },
         {
           "flow": 1.94,
-          "pressureDrop": 149.9
+          "pressureDrop": 150.3
         }
       ],
       "notes": "Cardioplegia product / Coronary ostia perfusion cannula dataset; do not categorize as femoral arterial, femoral venous, or aortic root. Product/family: Coronary Ostia Perfusion Cannulae. Model/description: Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector. Type/site: Coronary ostia perfusion. Size: 15 Fr. 45° tip catalog number: P618-50. 90° tip catalog number: P616-50. Connection size: female luer lock. Quantity per box: 10. Available coated: Depends on Country Registration. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source range: 0 to 1.94 L/min. Extrapolation: false. Source curve digitized from the Coronary Ostia Perfusion Cannulae with Conical Tip and Female Luer Lock Connector 15 Fr curve. The source graph x-axis is labeled 0–2.0 L/min and y-axis is labeled 0–160 mmHg. The digitized start point was normalized to zero flow and zero pressure drop. Do not extrapolate beyond the visible digitized source range of 1.94 L/min. Catalog numbers include P618-50 for 45° tip and P616-50 for 90° tip."

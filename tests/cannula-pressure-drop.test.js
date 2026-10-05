@@ -129,6 +129,57 @@ for (const [code, fr, connector, tipLengthCm] of lighthouseProducts) {
   assert(entry.notes.includes(`Source range: 0 to ${endpointLabel} L/min.`));
   assert(entry.outOfRangeMessage.includes(`0 to ${endpointLabel} L/min`));
 }
+const conicalTipConnector = 'Coronary Ostia Perfusion Cannulae — Conical Tip, Stainless Steel Shaft and 1/4" Tubing Connector';
+const conicalTipLuer = 'Coronary Ostia Perfusion Cannulae — Conical Tip, Stainless Steel Shaft and Female Luer Lock Connector';
+const conicalTipProducts = [
+  [conicalTipLuer, '9 Fr', 'P618-30 (45° tip); P616-30 (90° tip)'],
+  [conicalTipLuer, '11 Fr', 'P618-35 (45° tip); P616-35 (90° tip)'],
+  [conicalTipLuer, '12 Fr', 'P618-40 (45° tip); P616-40 (90° tip)'],
+  [conicalTipLuer, '14 Fr', 'P618-45 (45° tip); P616-45 (90° tip)'],
+  [conicalTipLuer, '15 Fr', 'P618-50 (45° tip); P616-50 (90° tip)'],
+  [conicalTipConnector, '9 Fr', 'P608-30 (45° tip); P606-30 (90° tip)'],
+  [conicalTipConnector, '11 Fr', 'P608-35 (45° tip); P606-35 (90° tip)'],
+  [conicalTipConnector, '12 Fr', 'P608-40 (45° tip); P606-40 (90° tip)']
+];
+const conicalTipEntries = pressureDropData.filter(entry => entry.manufacturer === 'LivaNova' &&
+  [conicalTipConnector, conicalTipLuer].includes(entry.model));
+assert.strictEqual(conicalTipEntries.length, conicalTipProducts.length);
+for (const [model, size, catalogNumbers] of conicalTipProducts) {
+  const matches = conicalTipEntries.filter(entry => entry.model === model && entry.size === size);
+  assert.strictEqual(matches.length, 1, `${model} ${size} must exist exactly once.`);
+  const entry = matches[0];
+  assert.strictEqual(entry.cannulaOrderCode, catalogNumbers);
+  assert.strictEqual(entry.category, 'Cardioplegia');
+  assert.strictEqual(entry.connectionSite, 'Coronary ostia perfusion');
+  assert.deepStrictEqual(entry.points[0], { flow: 0, pressureDrop: 0 });
+  entry.points.forEach((point, index) => {
+    assert(Number.isFinite(point.flow) && Number.isFinite(point.pressureDrop));
+    assert(point.pressureDrop >= 0);
+    if (index > 0) {
+      assert(point.flow > entry.points[index - 1].flow);
+      assert(point.pressureDrop >= entry.points[index - 1].pressureDrop);
+    }
+  });
+  const finalFlow = entry.points.at(-1).flow;
+  assert.strictEqual(entry.referenceFlowRangeLabel, `0–${finalFlow}`);
+  assert(entry.outOfRangeMessage.includes(`0 to ${finalFlow} L/min`));
+  assert(entry.outOfRangeMessage.includes('Pressure drop is not estimated'));
+  assert(entry.notes.includes('Extrapolation: false'));
+  assert(entry.digitizationNote.includes('calibrated automatic WebPlotDigitizer extraction'));
+  assert(entry.digitizationNote.includes('(0,0) source-origin anchor'));
+  assert(entry.digitizationNote.includes('anti-aliased line pixel below 0.03 L/min was omitted'));
+  assert(entry.digitizationNote.includes('No fitted curve, smoothing, or extrapolation'));
+}
+assert.notStrictEqual(conicalTipConnector, conicalTipLuer, '1/4 inch and female luer lock connector products must remain distinct variants.');
+for (const [code, artifact] of [
+  ['P618-40 (45° tip); P616-40 (90° tip)', '0.12 L/min, 3.6 mmHg; 0.42 L/min, 11 mmHg'],
+  ['P618-45 (45° tip); P616-45 (90° tip)', '0.38 L/min, 7.7 mmHg'],
+  ['P608-30 (45° tip); P606-30 (90° tip)', '0.34 L/min, 39.6 mmHg']
+]) {
+  const entry = conicalTipEntries.find(item => item.cannulaOrderCode === code);
+  assert(artifact.split('; ').every(point => entry.digitizationNote.includes(point)), `${code} must document the reviewed omitted artifacts.`);
+}
+
 const hlsVenousProducts = [
   ['PVL 2155', 21, 7.0, 55, 20, 20],
   ['PVL 2355', 23, 7.7, 55, 20, 20],
