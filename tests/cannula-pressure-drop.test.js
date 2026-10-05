@@ -7,19 +7,43 @@ const vm = require('vm');
 
 const mainJs = fs.readFileSync(path.join(__dirname, '..', 'main.js'), 'utf8');
 const pressureDropData = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'cannula-pressure-drop.json'), 'utf8')).items;
-const rapFvEntries = pressureDropData.filter(entry => entry.manufacturer === 'LivaNova' &&
-  entry.model === 'RAP FV Femoral Venous Cannulae');
-const rapFvCatalogBySize = new Map([
-  ['22 Fr distal / 22 Fr proximal', '200-100'],
-  ['23 Fr distal / 25 Fr proximal', '200-150']
-]);
-assert.strictEqual(rapFvEntries.length, 2);
-for (const [size, catalogNumber] of rapFvCatalogBySize) {
-  const matches = rapFvEntries.filter(entry => entry.size === size && entry.cannulaOrderCode === catalogNumber);
-  assert.strictEqual(matches.length, 1, `${size} must retain catalog number ${catalogNumber}.`);
+const hlsArterialProducts = [
+  ['PAS 1315', 13, 4.3, 15, 2.94],
+  ['PAS 1515', 15, 5.0, 15, 3.96],
+  ['PAS 1715', 17, 5.7, 15, 5.56],
+  ['PAS 1915', 19, 6.3, 15, 7],
+  ['PAS 2115', 21, 7.0, 15, 7],
+  ['PAS 2315', 23, 7.7, 15, 7],
+  ['PAL 1523', 15, 5.0, 23, 3.52],
+  ['PAL 1723', 17, 5.7, 23, 5.02],
+  ['PAL 1923', 19, 6.3, 23, 6.39],
+  ['PAL 2123', 21, 7.0, 23, 7],
+  ['PAL 2323', 23, 7.7, 23, 7]
+];
+const hlsArterialEntries = pressureDropData.filter(entry => entry.manufacturer === 'Getinge / Maquet' &&
+  entry.model === 'HLS Arterial Cannula');
+assert.strictEqual(hlsArterialEntries.length, hlsArterialProducts.length);
+for (const [code, fr, mm, lengthCm, maximumFlow] of hlsArterialProducts) {
+  const matches = hlsArterialEntries.filter(entry => entry.cannulaOrderCode === code);
+  assert.strictEqual(matches.length, 1, `${code} must have one distinct HLS arterial dataset.`);
   const entry = matches[0];
-  assert(!entry.points.some(point => point.flow === 0 && point.pressureDrop === 0));
-  assert(entry.points.length >= 3);
+  assert.strictEqual(entry.size, `${code} · ${fr} Fr / ${mm.toFixed(1)} mm · ${lengthCm} cm`);
+  assert.strictEqual(entry.cannulaOrderCodeLabel, 'Type / Catalog number');
+  assert(entry.notes.includes(`${fr} Fr (${mm.toFixed(1)} mm) outer diameter`) ||
+    entry.notes.includes(`${fr} Fr / ${mm.toFixed(1)} mm`));
+  assert(entry.notes.toLowerCase().includes(`${lengthCm} cm insertion length`) ||
+    entry.notes.toLowerCase().includes(`insertion length: ${lengthCm} cm`));
+  assert(entry.notes.toLowerCase().includes('side holes: 2') || entry.notes.includes('2 side holes'));
+  assert(entry.notes.toLowerCase().includes('perforation length: 1 cm') || entry.notes.includes('1 cm perforation length'));
+  assert(entry.notes.includes(`BE-${code}`));
+  assert(entry.notes.includes('3/8'));
+  if (code.startsWith('PAL')) {
+    assert.strictEqual(entry.outerDiameterFr, fr);
+    assert.strictEqual(entry.outerDiameterMm, mm);
+    assert.strictEqual(entry.connectorSize, '3/8" LL');
+    assert.strictEqual(entry.cartonQuantity, 1);
+  }
+  assert.deepStrictEqual(entry.points[0], { flow: 0, pressureDrop: 0 });
   entry.points.forEach((point, index) => {
     assert(Number.isFinite(point.flow) && Number.isFinite(point.pressureDrop));
     assert(point.pressureDrop >= 0);
@@ -28,10 +52,14 @@ for (const [size, catalogNumber] of rapFvCatalogBySize) {
       assert(point.pressureDrop >= entry.points[index - 1].pressureDrop);
     }
   });
-  const firstFlow = entry.points[0].flow;
-  const lastFlow = entry.points.at(-1).flow;
-  assert.strictEqual(entry.referenceFlowRangeLabel, `${firstFlow}–${lastFlow}`);
-  assert(entry.outOfRangeMessage.includes(`${firstFlow} to ${lastFlow} L/min`));
+  assert.strictEqual(entry.points.at(-1).flow, maximumFlow);
+  assert.strictEqual(entry.referenceFlowRangeLabel, `0–${maximumFlow}`);
+  assert(entry.outOfRangeMessage.includes(`${maximumFlow} L/min`));
+}
+for (const fr of [15, 17, 19, 21, 23]) {
+  const sameFrEntries = hlsArterialEntries.filter(entry => entry.size.includes(`· ${fr} Fr /`));
+  assert.strictEqual(sameFrEntries.length, 2, `${fr} Fr PAS and PAL cannulas must remain separate.`);
+  assert.deepStrictEqual(new Set(sameFrEntries.map(entry => entry.cannulaOrderCode.split(' ')[0])), new Set(['PAS', 'PAL']));
 }
 const nextGenModels = [
   'Bio-Medicus NextGen Femoral Arterial Cannula',
@@ -596,30 +624,25 @@ function run() {
   const getingeHlsSizeLabels = getingeArterialMatches.map(entry => entry.size).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   assert.deepStrictEqual(
     getingeHlsSizeLabels,
-    [
-      'PAS 1315 · 13 Fr / 4.3 mm · 15 cm',
-      'PAS 1515 · 15 Fr / 5.0 mm · 15 cm',
-      'PAS 1715 · 17 Fr / 5.7 mm · 15 cm',
-      'PAS 1915 · 19 Fr / 6.3 mm · 15 cm',
-      'PAS 2115 · 21 Fr / 7.0 mm · 15 cm',
-      'PAS 2315 · 23 Fr / 7.7 mm · 15 cm'
-    ],
-    'Getinge / Maquet HLS arterial cannula lookup should group PAS 1315 with the other HLS arterial PAS sizes.'
+    hlsArterialProducts.map(([code, fr, mm, lengthCm]) =>
+      `${code} · ${fr} Fr / ${mm.toFixed(1)} mm · ${lengthCm} cm`
+    ).sort((a, b) => a.localeCompare(b, undefined, { numeric: true })),
+    'Getinge / Maquet HLS arterial cannula lookup should include all PAS and PAL products.'
   );
   const getingeArterialModelOptions = Array.from(new Set(getingeArterialMatches.map(entry => entry.model)));
   assert.deepStrictEqual(getingeArterialModelOptions, ['HLS Arterial Cannula'], 'Getinge / Maquet HLS arterial entries should expose one canonical model option.');
   const pas1315 = getingeArterialMatches.find(entry => entry.cannulaOrderCode === 'PAS 1315');
   assert(pas1315, 'PAS 1315 should remain available after canonical model regrouping.');
-  const pas1315Exact = interpolatePressureDrop(pas1315.points, 0.2);
+  const pas1315Exact = interpolatePressureDrop(pas1315.points, pas1315.points[1].flow);
   assert.strictEqual(pas1315Exact.state, 'exact');
-  assert.strictEqual(pas1315Exact.value, 2.7, 'PAS 1315 should still use its own unchanged pressure-flow curve points.');
+  assert.strictEqual(pas1315Exact.value, pas1315.points[1].pressureDrop);
   assert.strictEqual(
     getPressureDropComparisonSizeLabel(pas1315),
     'PAS 1315 · 13 Fr / 4.3 mm · 15 cm',
     'PAS 1315 comparison primary label should not append family, connector, or duplicate order-code text.'
   );
   assert(!mainJs.includes('Arterial HLS cannula · 3/8 inch LL · PAS 1315'), 'PAS 1315-only secondary header text should not be rendered in the comparison UI.');
-  ['PAS 1515', 'PAS 1715', 'PAS 1915', 'PAS 2115', 'PAS 2315'].forEach(orderCode => {
+  hlsArterialProducts.filter(([code]) => code !== 'PAS 1315').forEach(([orderCode]) => {
     const entry = getingeArterialMatches.find(item => item.cannulaOrderCode === orderCode);
     assert(entry, `${orderCode} should remain available for label regression coverage.`);
     assert.strictEqual(
@@ -629,8 +652,9 @@ function run() {
     );
   });
   const pas1715 = getingeArterialMatches.find(entry => entry.cannulaOrderCode === 'PAS 1715');
-  assert.strictEqual(interpolatePressureDrop(pas1715.points, 5).state, 'exact', 'Comparison warning/status should still be able to identify exact digitized source points.');
-  assert.strictEqual(interpolatePressureDrop(pas1715.points, 5.25).state, 'interpolated', 'Comparison warning/status should still be able to distinguish interpolated values.');
+  const [firstPoint, secondPoint] = pas1715.points.slice(1, 3);
+  assert.strictEqual(interpolatePressureDrop(pas1715.points, firstPoint.flow).state, 'exact', 'Comparison warning/status should still be able to identify exact digitized source points.');
+  assert.strictEqual(interpolatePressureDrop(pas1715.points, (firstPoint.flow + secondPoint.flow) / 2).state, 'interpolated', 'Comparison warning/status should still be able to distinguish interpolated values.');
 
   const comparisonEntries = getingeArterialMatches
     .filter(entry => ['PAS 1915', 'PAS 2115', 'PAS 2315'].includes(entry.cannulaOrderCode))

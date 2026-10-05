@@ -9095,123 +9095,99 @@
       "size": "PAS 1315 · 13 Fr / 4.3 mm · 15 cm",
       "sourceLabel": "Arterial HLS cannulae product pressure-flow graph",
       "sourceUrl": "",
-      "testMedium": "Manufacturer graph; medium not specified",
+      "testMedium": "H2O at room temperature",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "PAS 1315 pressure-flow data were updated with a denser digitized point set. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range of 2.91 L/min.",
+      "digitizationNote": "Digitized from the manufacturer-published HLS arterial pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
       "points": [
         {
           "flow": 0,
           "pressureDrop": 0
         },
         {
-          "flow": 0.2,
-          "pressureDrop": 2.7
+          "flow": 0.15,
+          "pressureDrop": 2.1
         },
         {
-          "flow": 0.37,
-          "pressureDrop": 5.4
+          "flow": 0.41,
+          "pressureDrop": 4.8
         },
         {
-          "flow": 0.52,
-          "pressureDrop": 9.0
+          "flow": 0.62,
+          "pressureDrop": 10.6
         },
         {
-          "flow": 0.69,
-          "pressureDrop": 13.0
+          "flow": 0.86,
+          "pressureDrop": 17.9
         },
         {
-          "flow": 0.84,
-          "pressureDrop": 17.0
+          "flow": 1.04,
+          "pressureDrop": 25.2
         },
         {
-          "flow": 0.96,
-          "pressureDrop": 22.0
+          "flow": 1.29,
+          "pressureDrop": 37.3
         },
         {
-          "flow": 1.08,
-          "pressureDrop": 27.8
+          "flow": 1.5,
+          "pressureDrop": 48.8
         },
         {
-          "flow": 1.21,
-          "pressureDrop": 33.2
+          "flow": 1.66,
+          "pressureDrop": 59.1
         },
         {
-          "flow": 1.36,
-          "pressureDrop": 40.4
+          "flow": 1.84,
+          "pressureDrop": 73
         },
         {
-          "flow": 1.53,
-          "pressureDrop": 51.1
+          "flow": 1.96,
+          "pressureDrop": 82.7
         },
         {
-          "flow": 1.68,
-          "pressureDrop": 61.0
+          "flow": 2.18,
+          "pressureDrop": 103.2
         },
         {
-          "flow": 1.8,
-          "pressureDrop": 70.0
+          "flow": 2.28,
+          "pressureDrop": 114.4
         },
         {
-          "flow": 1.92,
-          "pressureDrop": 80.7
-        },
-        {
-          "flow": 2.03,
-          "pressureDrop": 89.7
-        },
-        {
-          "flow": 2.15,
-          "pressureDrop": 100.0
-        },
-        {
-          "flow": 2.23,
-          "pressureDrop": 110.3
-        },
-        {
-          "flow": 2.32,
-          "pressureDrop": 119.7
-        },
-        {
-          "flow": 2.38,
-          "pressureDrop": 129.6
+          "flow": 2.39,
+          "pressureDrop": 127.4
         },
         {
           "flow": 2.47,
-          "pressureDrop": 140.8
+          "pressureDrop": 137.1
         },
         {
-          "flow": 2.55,
-          "pressureDrop": 149.8
+          "flow": 2.57,
+          "pressureDrop": 149.7
         },
         {
-          "flow": 2.63,
-          "pressureDrop": 160.1
+          "flow": 2.67,
+          "pressureDrop": 164.3
         },
         {
-          "flow": 2.69,
-          "pressureDrop": 169.5
+          "flow": 2.78,
+          "pressureDrop": 178.9
         },
         {
-          "flow": 2.76,
-          "pressureDrop": 180.3
+          "flow": 2.87,
+          "pressureDrop": 190.1
         },
         {
-          "flow": 2.84,
-          "pressureDrop": 189.7
-        },
-        {
-          "flow": 2.91,
-          "pressureDrop": 199.6
+          "flow": 2.94,
+          "pressureDrop": 198.9
         }
       ],
-      "notes": "Adult arterial / arterial HLS cannula dataset; do not categorize as venous, cardioplegia, aortic root, coronary ostia, or retrograde cardioplegia. Product/family: Arterial HLS Cannulae. Model/description: PAS arterial HLS cannula. Type/site: Arterial HLS cannula. Size: 13 Fr / 4.3 mm. Type/catalog number: PAS 1315. Bioline coated catalog number: BE-PAS 1315. Insertion length: 15 cm. Side holes: 2. Perforation length: 1 cm. Connector: 3/8 inch LL. Quantity per carton/box: 1. Source type: digitized_graph. Source description: Arterial HLS cannulae product pressure-flow graph. Source range: 0 to 2.91 L/min. Extrapolation: false. PAS 1315 pressure-flow data were updated with a denser digitized point set. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the digitized source range of 2.91 L/min. This is an adult arterial HLS cannula dataset; preserve the existing arterial pressure-drop caution behavior if configured. Do not use this dataset for PAS 1515, PAS 1715, PAS 1915, PAS 2115, PAS 2315, PAL 1523, PAL 1723, PAL 1923, PAL 2123, or PAL 2323.",
+      "notes": "Adult arterial / arterial HLS cannula dataset; do not categorize as venous, cardioplegia, aortic root, coronary ostia, or retrograde cardioplegia. Product/family: Arterial HLS Cannulae. Model/description: PAS arterial HLS cannula. Type/site: Arterial HLS cannula. Size: 13 Fr / 4.3 mm. Type/catalog number: PAS 1315. Bioline coated catalog number: BE-PAS 1315. Insertion length: 15 cm. Side holes: 2. Perforation length: 1 cm. Connector: 3/8 inch LL. Quantity per carton/box: 1. Source type: digitized_graph. Source description: Arterial HLS cannulae product pressure-flow graph. Source range: 0 to 2.94 L/min. Extrapolation: false. Digitized from the manufacturer-published HLS arterial pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range. This is an adult arterial HLS cannula dataset; preserve the existing arterial pressure-drop caution behavior if configured. Do not use this dataset for PAS 1515, PAS 1715, PAS 1915, PAS 2115, PAS 2315, PAL 1523, PAL 1723, PAL 1923, PAL 2123, or PAL 2323.",
       "connectionSite": "Arterial HLS cannula",
       "connectorSize": "3/8 inch LL",
       "cartonQuantity": 1,
       "cannulaOrderCodeLabel": "Type / Catalog number",
       "cannulaOrderCode": "PAS 1315",
-      "referenceFlowRangeLabel": "0–2.91",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 2.91 L/min). Pressure drop is not estimated."
+      "referenceFlowRangeLabel": "0–2.94",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 2.94 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Getinge / Maquet",
@@ -9220,42 +9196,120 @@
       "size": "PAS 1515 · 15 Fr / 5.0 mm · 15 cm",
       "sourceLabel": "Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table",
       "sourceUrl": "Uploaded Getinge/Maquet HLS arterial cannula chart and product order table",
-      "testMedium": "Water at room temperature",
+      "testMedium": "H2O at room temperature",
       "dataStatus": "Digitized curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.",
+      "digitizationNote": "Digitized from the manufacturer-published HLS arterial pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 5
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 12
+          "flow": 0.09,
+          "pressureDrop": 0.3
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 27
+          "flow": 0.31,
+          "pressureDrop": 2.1
+        },
+        {
+          "flow": 0.53,
+          "pressureDrop": 4.9
+        },
+        {
+          "flow": 0.73,
+          "pressureDrop": 7.7
+        },
+        {
+          "flow": 0.95,
+          "pressureDrop": 11.8
+        },
+        {
+          "flow": 1.16,
+          "pressureDrop": 17.2
+        },
+        {
+          "flow": 1.37,
+          "pressureDrop": 23.5
+        },
+        {
+          "flow": 1.58,
+          "pressureDrop": 29.2
+        },
+        {
+          "flow": 1.79,
+          "pressureDrop": 36.9
         },
         {
           "flow": 2,
-          "pressureDrop": 46
+          "pressureDrop": 45.2
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 73
+          "flow": 2.2,
+          "pressureDrop": 55.1
         },
         {
-          "flow": 3,
-          "pressureDrop": 114
+          "flow": 2.37,
+          "pressureDrop": 64.5
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 156
+          "flow": 2.51,
+          "pressureDrop": 75
+        },
+        {
+          "flow": 2.65,
+          "pressureDrop": 84.1
+        },
+        {
+          "flow": 2.78,
+          "pressureDrop": 94.2
+        },
+        {
+          "flow": 2.91,
+          "pressureDrop": 103.6
+        },
+        {
+          "flow": 3.01,
+          "pressureDrop": 113.9
+        },
+        {
+          "flow": 3.14,
+          "pressureDrop": 124.3
+        },
+        {
+          "flow": 3.26,
+          "pressureDrop": 135.7
+        },
+        {
+          "flow": 3.38,
+          "pressureDrop": 144.9
+        },
+        {
+          "flow": 3.51,
+          "pressureDrop": 155.8
+        },
+        {
+          "flow": 3.61,
+          "pressureDrop": 164.7
+        },
+        {
+          "flow": 3.71,
+          "pressureDrop": 174.1
+        },
+        {
+          "flow": 3.83,
+          "pressureDrop": 185.6
+        },
+        {
+          "flow": 3.96,
+          "pressureDrop": 197.9
         }
       ],
       "notes": "PAS 1515: 15 Fr (5.0 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAS 1515 Bioline coating.",
       "cannulaOrderCodeLabel": "Type / Catalog number",
-      "cannulaOrderCode": "PAS 1515"
+      "cannulaOrderCode": "PAS 1515",
+      "referenceFlowRangeLabel": "0–3.96",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 3.96 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Getinge / Maquet",
@@ -9264,58 +9318,140 @@
       "size": "PAS 1715 · 17 Fr / 5.7 mm · 15 cm",
       "sourceLabel": "Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table",
       "sourceUrl": "Uploaded Getinge/Maquet HLS arterial cannula chart and product order table",
-      "testMedium": "Water at room temperature",
+      "testMedium": "H2O at room temperature",
       "dataStatus": "Digitized curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.",
+      "digitizationNote": "Digitized from the manufacturer-published HLS arterial pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 2
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 8
+          "flow": 0.09,
+          "pressureDrop": 0.6
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 15
+          "flow": 0.31,
+          "pressureDrop": 1.7
         },
         {
-          "flow": 2,
-          "pressureDrop": 25
+          "flow": 0.52,
+          "pressureDrop": 3
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 38
+          "flow": 0.73,
+          "pressureDrop": 4.2
         },
         {
-          "flow": 3,
-          "pressureDrop": 55
+          "flow": 0.95,
+          "pressureDrop": 6.1
+        },
+        {
+          "flow": 1.16,
+          "pressureDrop": 9.3
+        },
+        {
+          "flow": 1.37,
+          "pressureDrop": 13
+        },
+        {
+          "flow": 1.58,
+          "pressureDrop": 17.2
+        },
+        {
+          "flow": 1.8,
+          "pressureDrop": 20.9
+        },
+        {
+          "flow": 2.01,
+          "pressureDrop": 24.8
+        },
+        {
+          "flow": 2.22,
+          "pressureDrop": 30.1
+        },
+        {
+          "flow": 2.44,
+          "pressureDrop": 36.3
+        },
+        {
+          "flow": 2.65,
+          "pressureDrop": 42.2
+        },
+        {
+          "flow": 2.86,
+          "pressureDrop": 49.6
+        },
+        {
+          "flow": 3.08,
+          "pressureDrop": 58
+        },
+        {
+          "flow": 3.29,
+          "pressureDrop": 66.9
         },
         {
           "flow": 3.5,
           "pressureDrop": 77
         },
         {
-          "flow": 4,
-          "pressureDrop": 101
+          "flow": 3.71,
+          "pressureDrop": 86.1
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 129
+          "flow": 3.91,
+          "pressureDrop": 96.6
         },
         {
-          "flow": 5,
-          "pressureDrop": 161
+          "flow": 4.1,
+          "pressureDrop": 105.9
         },
         {
-          "flow": 5.5,
-          "pressureDrop": 195
+          "flow": 4.28,
+          "pressureDrop": 115.3
+        },
+        {
+          "flow": 4.45,
+          "pressureDrop": 124.7
+        },
+        {
+          "flow": 4.62,
+          "pressureDrop": 135.3
+        },
+        {
+          "flow": 4.77,
+          "pressureDrop": 144.6
+        },
+        {
+          "flow": 4.94,
+          "pressureDrop": 155
+        },
+        {
+          "flow": 5.07,
+          "pressureDrop": 164.1
+        },
+        {
+          "flow": 5.22,
+          "pressureDrop": 174.5
+        },
+        {
+          "flow": 5.36,
+          "pressureDrop": 183.5
+        },
+        {
+          "flow": 5.48,
+          "pressureDrop": 191.6
+        },
+        {
+          "flow": 5.56,
+          "pressureDrop": 196.8
         }
       ],
       "notes": "PAS 1715: 17 Fr (5.7 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAS 1715 Bioline coating.",
       "cannulaOrderCodeLabel": "Type / Catalog number",
-      "cannulaOrderCode": "PAS 1715"
+      "cannulaOrderCode": "PAS 1715",
+      "referenceFlowRangeLabel": "0–5.56",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 5.56 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Getinge / Maquet",
@@ -9324,66 +9460,156 @@
       "size": "PAS 1915 · 19 Fr / 6.3 mm · 15 cm",
       "sourceLabel": "Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table",
       "sourceUrl": "Uploaded Getinge/Maquet HLS arterial cannula chart and product order table",
-      "testMedium": "Water at room temperature",
+      "testMedium": "H2O at room temperature",
       "dataStatus": "Digitized curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.",
+      "digitizationNote": "Digitized from the manufacturer-published HLS arterial pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 2
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 4
+          "flow": 0.04,
+          "pressureDrop": 0.9
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 9
+          "flow": 0.25,
+          "pressureDrop": 1.9
         },
         {
-          "flow": 2,
-          "pressureDrop": 15
+          "flow": 0.46,
+          "pressureDrop": 2.8
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 23
+          "flow": 0.67,
+          "pressureDrop": 3.6
         },
         {
-          "flow": 3,
-          "pressureDrop": 34
+          "flow": 0.89,
+          "pressureDrop": 4.7
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 46
+          "flow": 1.1,
+          "pressureDrop": 5.8
         },
         {
-          "flow": 4,
-          "pressureDrop": 61
+          "flow": 1.31,
+          "pressureDrop": 6.9
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 78
+          "flow": 1.54,
+          "pressureDrop": 9.1
         },
         {
-          "flow": 5,
-          "pressureDrop": 97
+          "flow": 1.77,
+          "pressureDrop": 11.6
         },
         {
-          "flow": 5.5,
-          "pressureDrop": 117
+          "flow": 1.95,
+          "pressureDrop": 13.7
+        },
+        {
+          "flow": 2.18,
+          "pressureDrop": 16.8
+        },
+        {
+          "flow": 2.38,
+          "pressureDrop": 20.3
+        },
+        {
+          "flow": 2.59,
+          "pressureDrop": 24.4
+        },
+        {
+          "flow": 2.8,
+          "pressureDrop": 28.7
+        },
+        {
+          "flow": 3.02,
+          "pressureDrop": 33.3
+        },
+        {
+          "flow": 3.23,
+          "pressureDrop": 38.5
+        },
+        {
+          "flow": 3.44,
+          "pressureDrop": 43.5
+        },
+        {
+          "flow": 3.66,
+          "pressureDrop": 49.5
+        },
+        {
+          "flow": 3.87,
+          "pressureDrop": 55.8
+        },
+        {
+          "flow": 4.08,
+          "pressureDrop": 61.6
+        },
+        {
+          "flow": 4.29,
+          "pressureDrop": 69.5
+        },
+        {
+          "flow": 4.51,
+          "pressureDrop": 77.3
+        },
+        {
+          "flow": 4.72,
+          "pressureDrop": 84.6
+        },
+        {
+          "flow": 4.93,
+          "pressureDrop": 93.2
+        },
+        {
+          "flow": 5.15,
+          "pressureDrop": 101.5
+        },
+        {
+          "flow": 5.36,
+          "pressureDrop": 110.4
+        },
+        {
+          "flow": 5.57,
+          "pressureDrop": 119.4
+        },
+        {
+          "flow": 5.79,
+          "pressureDrop": 128.7
         },
         {
           "flow": 6,
-          "pressureDrop": 140
+          "pressureDrop": 138.3
         },
         {
-          "flow": 6.5,
-          "pressureDrop": 165
+          "flow": 6.19,
+          "pressureDrop": 147
+        },
+        {
+          "flow": 6.39,
+          "pressureDrop": 157.4
+        },
+        {
+          "flow": 6.59,
+          "pressureDrop": 168.2
+        },
+        {
+          "flow": 6.79,
+          "pressureDrop": 179
+        },
+        {
+          "flow": 7,
+          "pressureDrop": 188.7
         }
       ],
       "notes": "PAS 1915: 19 Fr (6.3 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAS 1915 Bioline coating.",
       "cannulaOrderCodeLabel": "Type / Catalog number",
-      "cannulaOrderCode": "PAS 1915"
+      "cannulaOrderCode": "PAS 1915",
+      "referenceFlowRangeLabel": "0–7",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 7 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Getinge / Maquet",
@@ -9392,70 +9618,156 @@
       "size": "PAS 2315 · 23 Fr / 7.7 mm · 15 cm",
       "sourceLabel": "Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table",
       "sourceUrl": "Uploaded Getinge/Maquet HLS arterial cannula chart and product order table",
-      "testMedium": "Water at room temperature",
+      "testMedium": "H2O at room temperature",
       "dataStatus": "Digitized curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.",
+      "digitizationNote": "Digitized from the manufacturer-published HLS arterial pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
       "points": [
         {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.07,
+          "pressureDrop": 0.5
+        },
+        {
+          "flow": 0.29,
+          "pressureDrop": 1.5
+        },
+        {
           "flow": 0.5,
-          "pressureDrop": 1
+          "pressureDrop": 1.5
         },
         {
-          "flow": 1,
-          "pressureDrop": 2
+          "flow": 0.71,
+          "pressureDrop": 1.9
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 4
+          "flow": 0.93,
+          "pressureDrop": 2.9
         },
         {
-          "flow": 2,
-          "pressureDrop": 7
+          "flow": 1.14,
+          "pressureDrop": 3.7
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 12
+          "flow": 1.35,
+          "pressureDrop": 4.4
         },
         {
-          "flow": 3,
-          "pressureDrop": 16
+          "flow": 1.56,
+          "pressureDrop": 5.7
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 21
+          "flow": 1.78,
+          "pressureDrop": 6.7
         },
         {
-          "flow": 4,
-          "pressureDrop": 27
+          "flow": 1.99,
+          "pressureDrop": 7.6
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 34
+          "flow": 2.2,
+          "pressureDrop": 9.3
+        },
+        {
+          "flow": 2.42,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 2.63,
+          "pressureDrop": 11.9
+        },
+        {
+          "flow": 2.84,
+          "pressureDrop": 13.8
+        },
+        {
+          "flow": 3.05,
+          "pressureDrop": 15.8
+        },
+        {
+          "flow": 3.28,
+          "pressureDrop": 17.8
+        },
+        {
+          "flow": 3.48,
+          "pressureDrop": 20.1
+        },
+        {
+          "flow": 3.69,
+          "pressureDrop": 22
+        },
+        {
+          "flow": 3.91,
+          "pressureDrop": 25.3
+        },
+        {
+          "flow": 4.12,
+          "pressureDrop": 28.1
+        },
+        {
+          "flow": 4.33,
+          "pressureDrop": 31.2
+        },
+        {
+          "flow": 4.54,
+          "pressureDrop": 34.2
+        },
+        {
+          "flow": 4.76,
+          "pressureDrop": 38.2
         },
         {
           "flow": 5,
-          "pressureDrop": 43
+          "pressureDrop": 41.7
         },
         {
-          "flow": 5.5,
-          "pressureDrop": 51
+          "flow": 5.18,
+          "pressureDrop": 44.7
         },
         {
-          "flow": 6,
+          "flow": 5.4,
+          "pressureDrop": 48.3
+        },
+        {
+          "flow": 5.61,
+          "pressureDrop": 52.4
+        },
+        {
+          "flow": 5.82,
+          "pressureDrop": 56.7
+        },
+        {
+          "flow": 6.04,
           "pressureDrop": 60
         },
         {
-          "flow": 6.5,
-          "pressureDrop": 72
+          "flow": 6.25,
+          "pressureDrop": 64.7
+        },
+        {
+          "flow": 6.46,
+          "pressureDrop": 69.3
+        },
+        {
+          "flow": 6.67,
+          "pressureDrop": 73.8
+        },
+        {
+          "flow": 6.85,
+          "pressureDrop": 77.3
         },
         {
           "flow": 7,
-          "pressureDrop": 82
+          "pressureDrop": 80.6
         }
       ],
       "notes": "PAS 2315: 23 Fr (7.7 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAS 2315 Bioline coating.",
       "cannulaOrderCodeLabel": "Type / Catalog number",
-      "cannulaOrderCode": "PAS 2315"
+      "cannulaOrderCode": "PAS 2315",
+      "referenceFlowRangeLabel": "0–7",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 7 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Getinge / Maquet",
@@ -9464,70 +9776,886 @@
       "size": "PAS 2115 · 21 Fr / 7.0 mm · 15 cm",
       "sourceLabel": "Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table",
       "sourceUrl": "Uploaded Getinge/Maquet HLS arterial cannula chart and product order table",
-      "testMedium": "Water at room temperature",
+      "testMedium": "H2O at room temperature",
       "dataStatus": "Digitized curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.",
+      "digitizationNote": "Digitized from the manufacturer-published HLS arterial pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 2
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 4
+          "flow": 0.11,
+          "pressureDrop": 0.5
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 7
+          "flow": 0.33,
+          "pressureDrop": 1.5
         },
         {
-          "flow": 2,
-          "pressureDrop": 11
+          "flow": 0.54,
+          "pressureDrop": 1.5
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 16
+          "flow": 0.75,
+          "pressureDrop": 2.6
         },
         {
-          "flow": 3,
-          "pressureDrop": 22
+          "flow": 0.96,
+          "pressureDrop": 3.3
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 29
+          "flow": 1.18,
+          "pressureDrop": 4.2
         },
         {
-          "flow": 4,
-          "pressureDrop": 39
+          "flow": 1.39,
+          "pressureDrop": 5.1
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 50
+          "flow": 1.6,
+          "pressureDrop": 6
         },
         {
-          "flow": 5,
-          "pressureDrop": 62
+          "flow": 1.82,
+          "pressureDrop": 8
         },
         {
-          "flow": 5.5,
-          "pressureDrop": 75
+          "flow": 2.03,
+          "pressureDrop": 10.4
         },
         {
-          "flow": 6,
-          "pressureDrop": 89
+          "flow": 2.26,
+          "pressureDrop": 12.2
         },
         {
-          "flow": 6.5,
-          "pressureDrop": 104
+          "flow": 2.47,
+          "pressureDrop": 14.7
+        },
+        {
+          "flow": 2.67,
+          "pressureDrop": 16.8
+        },
+        {
+          "flow": 2.88,
+          "pressureDrop": 19.5
+        },
+        {
+          "flow": 3.1,
+          "pressureDrop": 22.5
+        },
+        {
+          "flow": 3.31,
+          "pressureDrop": 25.8
+        },
+        {
+          "flow": 3.52,
+          "pressureDrop": 29.4
+        },
+        {
+          "flow": 3.75,
+          "pressureDrop": 33.6
+        },
+        {
+          "flow": 3.96,
+          "pressureDrop": 37.9
+        },
+        {
+          "flow": 4.18,
+          "pressureDrop": 42.1
+        },
+        {
+          "flow": 4.39,
+          "pressureDrop": 46.9
+        },
+        {
+          "flow": 4.6,
+          "pressureDrop": 51.5
+        },
+        {
+          "flow": 4.82,
+          "pressureDrop": 56.5
+        },
+        {
+          "flow": 5.03,
+          "pressureDrop": 61.7
+        },
+        {
+          "flow": 5.24,
+          "pressureDrop": 67.1
+        },
+        {
+          "flow": 5.46,
+          "pressureDrop": 72.6
+        },
+        {
+          "flow": 5.67,
+          "pressureDrop": 78.2
+        },
+        {
+          "flow": 5.88,
+          "pressureDrop": 84
+        },
+        {
+          "flow": 6.09,
+          "pressureDrop": 90.1
+        },
+        {
+          "flow": 6.31,
+          "pressureDrop": 96.5
+        },
+        {
+          "flow": 6.52,
+          "pressureDrop": 103
+        },
+        {
+          "flow": 6.73,
+          "pressureDrop": 109.9
         },
         {
           "flow": 7,
-          "pressureDrop": 121
+          "pressureDrop": 116.6
         }
       ],
       "notes": "PAS 2115: 21 Fr (7.0 mm) outer diameter, 15 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAS 2115 Bioline coating.",
       "cannulaOrderCodeLabel": "Type / Catalog number",
-      "cannulaOrderCode": "PAS 2115"
+      "cannulaOrderCode": "PAS 2115",
+      "referenceFlowRangeLabel": "0–7",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 7 L/min). Pressure drop is not estimated."
+    },
+    {
+      "manufacturer": "Getinge / Maquet",
+      "model": "HLS Arterial Cannula",
+      "category": "femoral arterial",
+      "size": "PAL 1523 · 15 Fr / 5.0 mm · 23 cm",
+      "sourceLabel": "Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table",
+      "sourceUrl": "Uploaded Getinge/Maquet HLS arterial cannula chart and product order table",
+      "testMedium": "H2O at room temperature",
+      "dataStatus": "Digitized curve",
+      "digitizationNote": "Digitized from the manufacturer-published HLS arterial pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.11,
+          "pressureDrop": 0.3
+        },
+        {
+          "flow": 0.33,
+          "pressureDrop": 1.5
+        },
+        {
+          "flow": 0.53,
+          "pressureDrop": 4.6
+        },
+        {
+          "flow": 0.71,
+          "pressureDrop": 7.4
+        },
+        {
+          "flow": 0.93,
+          "pressureDrop": 11.3
+        },
+        {
+          "flow": 1.17,
+          "pressureDrop": 18.6
+        },
+        {
+          "flow": 1.41,
+          "pressureDrop": 26
+        },
+        {
+          "flow": 1.64,
+          "pressureDrop": 34.5
+        },
+        {
+          "flow": 1.84,
+          "pressureDrop": 42.9
+        },
+        {
+          "flow": 1.99,
+          "pressureDrop": 51.4
+        },
+        {
+          "flow": 2.11,
+          "pressureDrop": 59.7
+        },
+        {
+          "flow": 2.24,
+          "pressureDrop": 70.4
+        },
+        {
+          "flow": 2.37,
+          "pressureDrop": 80
+        },
+        {
+          "flow": 2.49,
+          "pressureDrop": 90.1
+        },
+        {
+          "flow": 2.6,
+          "pressureDrop": 100.2
+        },
+        {
+          "flow": 2.71,
+          "pressureDrop": 111
+        },
+        {
+          "flow": 2.81,
+          "pressureDrop": 119.4
+        },
+        {
+          "flow": 2.89,
+          "pressureDrop": 128.2
+        },
+        {
+          "flow": 2.99,
+          "pressureDrop": 137.1
+        },
+        {
+          "flow": 3.13,
+          "pressureDrop": 150.9
+        },
+        {
+          "flow": 3.27,
+          "pressureDrop": 166.1
+        },
+        {
+          "flow": 3.4,
+          "pressureDrop": 179.9
+        },
+        {
+          "flow": 3.52,
+          "pressureDrop": 193.3
+        }
+      ],
+      "notes": "PAL 1523: 15 Fr (5.0 mm) outer diameter, 23 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAL 1523 Bioline coating. One cannula per carton.",
+      "outerDiameterFr": 15,
+      "outerDiameterMm": 5,
+      "connectorSize": "3/8\" LL",
+      "cartonQuantity": 1,
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PAL 1523",
+      "referenceFlowRangeLabel": "0–3.52",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 3.52 L/min). Pressure drop is not estimated."
+    },
+    {
+      "manufacturer": "Getinge / Maquet",
+      "model": "HLS Arterial Cannula",
+      "category": "femoral arterial",
+      "size": "PAL 1723 · 17 Fr / 5.7 mm · 23 cm",
+      "sourceLabel": "Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table",
+      "sourceUrl": "Uploaded Getinge/Maquet HLS arterial cannula chart and product order table",
+      "testMedium": "H2O at room temperature",
+      "dataStatus": "Digitized curve",
+      "digitizationNote": "Digitized from the manufacturer-published HLS arterial pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.11,
+          "pressureDrop": 0.6
+        },
+        {
+          "flow": 0.33,
+          "pressureDrop": 1.4
+        },
+        {
+          "flow": 0.54,
+          "pressureDrop": 2
+        },
+        {
+          "flow": 0.75,
+          "pressureDrop": 3.8
+        },
+        {
+          "flow": 0.98,
+          "pressureDrop": 7
+        },
+        {
+          "flow": 1.18,
+          "pressureDrop": 9.2
+        },
+        {
+          "flow": 1.39,
+          "pressureDrop": 13.5
+        },
+        {
+          "flow": 1.6,
+          "pressureDrop": 18
+        },
+        {
+          "flow": 1.82,
+          "pressureDrop": 22.9
+        },
+        {
+          "flow": 2.03,
+          "pressureDrop": 29.3
+        },
+        {
+          "flow": 2.24,
+          "pressureDrop": 37.3
+        },
+        {
+          "flow": 2.46,
+          "pressureDrop": 45.1
+        },
+        {
+          "flow": 2.67,
+          "pressureDrop": 54.4
+        },
+        {
+          "flow": 2.88,
+          "pressureDrop": 63.7
+        },
+        {
+          "flow": 3.09,
+          "pressureDrop": 74.5
+        },
+        {
+          "flow": 3.27,
+          "pressureDrop": 83.8
+        },
+        {
+          "flow": 3.44,
+          "pressureDrop": 94
+        },
+        {
+          "flow": 3.62,
+          "pressureDrop": 103.8
+        },
+        {
+          "flow": 3.78,
+          "pressureDrop": 114.5
+        },
+        {
+          "flow": 3.94,
+          "pressureDrop": 123.7
+        },
+        {
+          "flow": 4.09,
+          "pressureDrop": 134.7
+        },
+        {
+          "flow": 4.24,
+          "pressureDrop": 144.2
+        },
+        {
+          "flow": 4.38,
+          "pressureDrop": 154.4
+        },
+        {
+          "flow": 4.51,
+          "pressureDrop": 163.6
+        },
+        {
+          "flow": 4.65,
+          "pressureDrop": 174.3
+        },
+        {
+          "flow": 4.78,
+          "pressureDrop": 183.7
+        },
+        {
+          "flow": 4.93,
+          "pressureDrop": 195
+        },
+        {
+          "flow": 5.02,
+          "pressureDrop": 199.7
+        }
+      ],
+      "notes": "PAL 1723: 17 Fr (5.7 mm) outer diameter, 23 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAL 1723 Bioline coating. One cannula per carton.",
+      "outerDiameterFr": 17,
+      "outerDiameterMm": 5.7,
+      "connectorSize": "3/8\" LL",
+      "cartonQuantity": 1,
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PAL 1723",
+      "referenceFlowRangeLabel": "0–5.02",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 5.02 L/min). Pressure drop is not estimated."
+    },
+    {
+      "manufacturer": "Getinge / Maquet",
+      "model": "HLS Arterial Cannula",
+      "category": "femoral arterial",
+      "size": "PAL 1923 · 19 Fr / 6.3 mm · 23 cm",
+      "sourceLabel": "Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table",
+      "sourceUrl": "Uploaded Getinge/Maquet HLS arterial cannula chart and product order table",
+      "testMedium": "H2O at room temperature",
+      "dataStatus": "Digitized curve",
+      "digitizationNote": "Digitized from the manufacturer-published HLS arterial pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.09,
+          "pressureDrop": 0.6
+        },
+        {
+          "flow": 0.31,
+          "pressureDrop": 1.6
+        },
+        {
+          "flow": 0.52,
+          "pressureDrop": 2.2
+        },
+        {
+          "flow": 0.73,
+          "pressureDrop": 2.8
+        },
+        {
+          "flow": 0.95,
+          "pressureDrop": 4.4
+        },
+        {
+          "flow": 1.16,
+          "pressureDrop": 6.1
+        },
+        {
+          "flow": 1.36,
+          "pressureDrop": 8.4
+        },
+        {
+          "flow": 1.57,
+          "pressureDrop": 11.6
+        },
+        {
+          "flow": 1.81,
+          "pressureDrop": 14.7
+        },
+        {
+          "flow": 2.01,
+          "pressureDrop": 18.9
+        },
+        {
+          "flow": 2.22,
+          "pressureDrop": 22.4
+        },
+        {
+          "flow": 2.44,
+          "pressureDrop": 27.7
+        },
+        {
+          "flow": 2.65,
+          "pressureDrop": 33.4
+        },
+        {
+          "flow": 2.86,
+          "pressureDrop": 39.3
+        },
+        {
+          "flow": 3.07,
+          "pressureDrop": 45.5
+        },
+        {
+          "flow": 3.29,
+          "pressureDrop": 52
+        },
+        {
+          "flow": 3.5,
+          "pressureDrop": 59.3
+        },
+        {
+          "flow": 3.71,
+          "pressureDrop": 66.1
+        },
+        {
+          "flow": 3.93,
+          "pressureDrop": 74.4
+        },
+        {
+          "flow": 4.14,
+          "pressureDrop": 82.4
+        },
+        {
+          "flow": 4.35,
+          "pressureDrop": 91.1
+        },
+        {
+          "flow": 4.57,
+          "pressureDrop": 99.8
+        },
+        {
+          "flow": 4.78,
+          "pressureDrop": 109.8
+        },
+        {
+          "flow": 4.99,
+          "pressureDrop": 119.2
+        },
+        {
+          "flow": 5.18,
+          "pressureDrop": 128.4
+        },
+        {
+          "flow": 5.35,
+          "pressureDrop": 137.7
+        },
+        {
+          "flow": 5.53,
+          "pressureDrop": 146.9
+        },
+        {
+          "flow": 5.7,
+          "pressureDrop": 156.8
+        },
+        {
+          "flow": 5.87,
+          "pressureDrop": 166.6
+        },
+        {
+          "flow": 6.04,
+          "pressureDrop": 176.4
+        },
+        {
+          "flow": 6.2,
+          "pressureDrop": 185.5
+        },
+        {
+          "flow": 6.39,
+          "pressureDrop": 196.4
+        }
+      ],
+      "notes": "PAL 1923: 19 Fr (6.3 mm) outer diameter, 23 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAL 1923 Bioline coating. One cannula per carton.",
+      "outerDiameterFr": 19,
+      "outerDiameterMm": 6.3,
+      "connectorSize": "3/8\" LL",
+      "cartonQuantity": 1,
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PAL 1923",
+      "referenceFlowRangeLabel": "0–6.39",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.39 L/min). Pressure drop is not estimated."
+    },
+    {
+      "manufacturer": "Getinge / Maquet",
+      "model": "HLS Arterial Cannula",
+      "category": "femoral arterial",
+      "size": "PAL 2123 · 21 Fr / 7.0 mm · 23 cm",
+      "sourceLabel": "Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table",
+      "sourceUrl": "Uploaded Getinge/Maquet HLS arterial cannula chart and product order table",
+      "testMedium": "H2O at room temperature",
+      "dataStatus": "Digitized curve",
+      "digitizationNote": "Digitized from the manufacturer-published HLS arterial pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.11,
+          "pressureDrop": 0.7
+        },
+        {
+          "flow": 0.34,
+          "pressureDrop": 1
+        },
+        {
+          "flow": 0.53,
+          "pressureDrop": 1.7
+        },
+        {
+          "flow": 0.75,
+          "pressureDrop": 2.8
+        },
+        {
+          "flow": 0.96,
+          "pressureDrop": 3.5
+        },
+        {
+          "flow": 1.18,
+          "pressureDrop": 5
+        },
+        {
+          "flow": 1.39,
+          "pressureDrop": 6.4
+        },
+        {
+          "flow": 1.6,
+          "pressureDrop": 8.2
+        },
+        {
+          "flow": 1.82,
+          "pressureDrop": 10.7
+        },
+        {
+          "flow": 2.03,
+          "pressureDrop": 12.4
+        },
+        {
+          "flow": 2.24,
+          "pressureDrop": 15.1
+        },
+        {
+          "flow": 2.49,
+          "pressureDrop": 17.9
+        },
+        {
+          "flow": 2.68,
+          "pressureDrop": 21.7
+        },
+        {
+          "flow": 2.9,
+          "pressureDrop": 24.5
+        },
+        {
+          "flow": 3.09,
+          "pressureDrop": 29.2
+        },
+        {
+          "flow": 3.31,
+          "pressureDrop": 32.8
+        },
+        {
+          "flow": 3.52,
+          "pressureDrop": 36.9
+        },
+        {
+          "flow": 3.73,
+          "pressureDrop": 40.8
+        },
+        {
+          "flow": 3.95,
+          "pressureDrop": 45.4
+        },
+        {
+          "flow": 4.16,
+          "pressureDrop": 49.2
+        },
+        {
+          "flow": 4.37,
+          "pressureDrop": 54.5
+        },
+        {
+          "flow": 4.58,
+          "pressureDrop": 60.3
+        },
+        {
+          "flow": 4.8,
+          "pressureDrop": 66.5
+        },
+        {
+          "flow": 5.01,
+          "pressureDrop": 72.6
+        },
+        {
+          "flow": 5.22,
+          "pressureDrop": 79.3
+        },
+        {
+          "flow": 5.44,
+          "pressureDrop": 85.8
+        },
+        {
+          "flow": 5.65,
+          "pressureDrop": 93.5
+        },
+        {
+          "flow": 5.88,
+          "pressureDrop": 100.6
+        },
+        {
+          "flow": 6.08,
+          "pressureDrop": 107.9
+        },
+        {
+          "flow": 6.29,
+          "pressureDrop": 115.8
+        },
+        {
+          "flow": 6.5,
+          "pressureDrop": 123.5
+        },
+        {
+          "flow": 6.72,
+          "pressureDrop": 130.1
+        },
+        {
+          "flow": 6.81,
+          "pressureDrop": 134.8
+        },
+        {
+          "flow": 6.93,
+          "pressureDrop": 138.8
+        },
+        {
+          "flow": 7,
+          "pressureDrop": 142.2
+        }
+      ],
+      "notes": "PAL 2123: 21 Fr (7.0 mm) outer diameter, 23 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAL 2123 Bioline coating. One cannula per carton.",
+      "outerDiameterFr": 21,
+      "outerDiameterMm": 7,
+      "connectorSize": "3/8\" LL",
+      "cartonQuantity": 1,
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PAL 2123",
+      "referenceFlowRangeLabel": "0–7",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 7 L/min). Pressure drop is not estimated."
+    },
+    {
+      "manufacturer": "Getinge / Maquet",
+      "model": "HLS Arterial Cannula",
+      "category": "femoral arterial",
+      "size": "PAL 2323 · 23 Fr / 7.7 mm · 23 cm",
+      "sourceLabel": "Getinge/Maquet HLS Arterial Cannula pressure-drop chart and product order table",
+      "sourceUrl": "Uploaded Getinge/Maquet HLS arterial cannula chart and product order table",
+      "testMedium": "H2O at room temperature",
+      "dataStatus": "Digitized curve",
+      "digitizationNote": "Digitized from the manufacturer-published HLS arterial pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.09,
+          "pressureDrop": 0.5
+        },
+        {
+          "flow": 0.31,
+          "pressureDrop": 0.7
+        },
+        {
+          "flow": 0.52,
+          "pressureDrop": 0.8
+        },
+        {
+          "flow": 0.73,
+          "pressureDrop": 1.6
+        },
+        {
+          "flow": 0.95,
+          "pressureDrop": 2.8
+        },
+        {
+          "flow": 1.16,
+          "pressureDrop": 4
+        },
+        {
+          "flow": 1.37,
+          "pressureDrop": 4.7
+        },
+        {
+          "flow": 1.58,
+          "pressureDrop": 5.9
+        },
+        {
+          "flow": 1.8,
+          "pressureDrop": 7.4
+        },
+        {
+          "flow": 2.01,
+          "pressureDrop": 9.2
+        },
+        {
+          "flow": 2.24,
+          "pressureDrop": 10.5
+        },
+        {
+          "flow": 2.43,
+          "pressureDrop": 11.9
+        },
+        {
+          "flow": 2.64,
+          "pressureDrop": 14.7
+        },
+        {
+          "flow": 2.86,
+          "pressureDrop": 17.1
+        },
+        {
+          "flow": 3.07,
+          "pressureDrop": 20
+        },
+        {
+          "flow": 3.29,
+          "pressureDrop": 22.4
+        },
+        {
+          "flow": 3.49,
+          "pressureDrop": 25.2
+        },
+        {
+          "flow": 3.71,
+          "pressureDrop": 28.7
+        },
+        {
+          "flow": 3.93,
+          "pressureDrop": 31.4
+        },
+        {
+          "flow": 4.14,
+          "pressureDrop": 35
+        },
+        {
+          "flow": 4.35,
+          "pressureDrop": 38.8
+        },
+        {
+          "flow": 4.56,
+          "pressureDrop": 42.2
+        },
+        {
+          "flow": 4.78,
+          "pressureDrop": 45.9
+        },
+        {
+          "flow": 4.99,
+          "pressureDrop": 50.2
+        },
+        {
+          "flow": 5.2,
+          "pressureDrop": 54.5
+        },
+        {
+          "flow": 5.42,
+          "pressureDrop": 59.1
+        },
+        {
+          "flow": 5.63,
+          "pressureDrop": 63
+        },
+        {
+          "flow": 5.84,
+          "pressureDrop": 67.9
+        },
+        {
+          "flow": 6.06,
+          "pressureDrop": 72.9
+        },
+        {
+          "flow": 6.27,
+          "pressureDrop": 78.4
+        },
+        {
+          "flow": 6.48,
+          "pressureDrop": 83.1
+        },
+        {
+          "flow": 6.69,
+          "pressureDrop": 88.9
+        },
+        {
+          "flow": 7,
+          "pressureDrop": 94.7
+        }
+      ],
+      "notes": "PAL 2323: 23 Fr (7.7 mm) outer diameter, 23 cm insertion length, 2 side holes, 1 cm perforation length, 3/8\" LL connector, BE-PAL 2323 Bioline coating. One cannula per carton.",
+      "outerDiameterFr": 23,
+      "outerDiameterMm": 7.7,
+      "connectorSize": "3/8\" LL",
+      "cartonQuantity": 1,
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PAL 2323",
+      "referenceFlowRangeLabel": "0–7",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 7 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Getinge / Maquet",
