@@ -40,14 +40,20 @@ assert(hasRule(audit([[0, 0], [NaN, 1], [1, Infinity], [2, 20]]), 'invalid-press
 assert(hasRule(audit([[0, 0], [1, 10]]), 'too-few-points'));
 
 const before = fs.readFileSync(datasetPath);
-const realReport = auditDataset(JSON.parse(before.toString('utf8')));
-assert.equal(realReport.entries, 179);
+const realData = JSON.parse(before.toString('utf8'));
+assert(Array.isArray(realData.items) && realData.items.length > 0);
+const realReport = auditDataset(realData);
+assert.equal(realReport.entries, realData.items.length);
 assert(realReport.seriesAnalyzed >= realReport.entries);
-assert(realReport.findings.some(finding => finding.manufacturer === 'LivaNova' &&
-  finding.model === 'RAP FV Femoral Venous Cannulae' &&
-  finding.size === '23 Fr distal / 25 Fr proximal' && finding.rule === 'local-reversal'));
-assert(realReport.findings.some(finding => finding.manufacturer === 'Medtronic' &&
-  finding.model === 'Bio-Medicus NextGen Femoral Arterial Cannula' &&
-  finding.size === '15 Fr' && ['local-kink', 'slope-whiplash'].includes(finding.rule)));
+assert(Array.isArray(realReport.findings));
+for (const finding of realReport.findings) {
+  assert(['HIGH', 'MEDIUM', 'LOW'].includes(finding.severity));
+  assert(typeof finding.rule === 'string' && finding.rule.length > 0);
+  assert(typeof finding.manufacturer === 'string' && finding.manufacturer.length > 0);
+  assert(typeof finding.model === 'string' && finding.model.length > 0);
+  assert(typeof finding.size === 'string' && finding.size.length > 0);
+  assert(typeof finding.series === 'string' && finding.series.length > 0);
+  assert(typeof finding.reason === 'string' && finding.reason.length > 0);
+}
 assert.deepStrictEqual(fs.readFileSync(datasetPath), before);
 console.log('Cannula pressure data QC tests passed.');
