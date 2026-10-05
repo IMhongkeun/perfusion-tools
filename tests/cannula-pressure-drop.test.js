@@ -65,6 +65,65 @@ const nextGenModels = [
   'Bio-Medicus NextGen Femoral Arterial Cannula',
   'Bio-Medicus NextGen Jugular Venous Cannula'
 ];
+const hlsVenousProducts = [
+  ['PVL 2155', 21, 7.0, 55, 20, 20],
+  ['PVL 2355', 23, 7.7, 55, 20, 20],
+  ['PVL 2555', 25, 8.3, 55, 24, 20],
+  ['PVL 2955', 29, 9.7, 55, 32, 20],
+  ['PVS 1938', 19, 6.3, 38, 12, 10],
+  ['PVS 2138', 21, 7.0, 38, 12, 10],
+  ['PVS 2338', 23, 7.7, 38, 16, 10],
+  ['PVS 2538', 25, 8.3, 38, 20, 10]
+];
+const hlsVenousEntries = pressureDropData.filter(entry => entry.manufacturer === 'Getinge / Maquet' &&
+  entry.model === 'HLS Venous Cannula');
+assert.strictEqual(hlsVenousEntries.length, hlsVenousProducts.length);
+for (const [code, fr, mm, insertionLengthCm, sideHoles, perforationLengthCm] of hlsVenousProducts) {
+  const matches = hlsVenousEntries.filter(entry => entry.cannulaOrderCode === code);
+  assert.strictEqual(matches.length, 1, `${code} must have one distinct HLS venous dataset.`);
+  const entry = matches[0];
+  assert.strictEqual(entry.size, code);
+  assert.strictEqual(entry.category, code.startsWith('PVS') ? 'venous' : 'femoral venous');
+  assert.strictEqual(entry.cannulaOrderCodeLabel, 'Type / Catalog number');
+  assert.strictEqual(entry.dataStatus, 'Digitized curve');
+  assert(entry.notes.includes(`${fr} Fr (${mm.toFixed(1)} mm) outer diameter`));
+  assert(entry.notes.includes(`${insertionLengthCm} cm insertion length`));
+  assert(entry.notes.includes(`${sideHoles} side holes`));
+  assert(entry.notes.includes(`${perforationLengthCm} cm perforation length`));
+  assert(entry.notes.includes('3/8" connector'));
+  assert(entry.notes.includes(`BE-${code}`));
+  assert.strictEqual(entry.testMedium, 'H2O at room temperature');
+  assert(entry.digitizationNote.includes('calibrated automatic WebPlotDigitizer extraction'));
+  assert(entry.digitizationNote.includes('(0,0) source-origin anchor'));
+  assert(entry.digitizationNote.includes('No fitted curve, smoothing, or extrapolation'));
+  if (code.startsWith('PVS')) {
+    assert.strictEqual(entry.outerDiameterFr, fr);
+    assert.strictEqual(entry.outerDiameterMm, mm);
+    assert.strictEqual(entry.insertableLength, `${insertionLengthCm} cm`);
+    assert.strictEqual(entry.connectorSize, '3/8"');
+    assert.strictEqual(entry.cartonQuantity, 1);
+    assert(entry.notes.includes('One cannula per carton'));
+    assert(!Object.hasOwn(entry, 'connectionSite'), 'PVS entries should not imply an unsupported anatomical site.');
+  }
+  assert.deepStrictEqual(entry.points[0], { flow: 0, pressureDrop: 0 });
+  entry.points.forEach((point, index) => {
+    assert(Number.isFinite(point.flow) && Number.isFinite(point.pressureDrop));
+    assert(point.pressureDrop >= 0);
+    if (index > 0) {
+      assert(point.flow > entry.points[index - 1].flow);
+      assert(point.pressureDrop >= entry.points[index - 1].pressureDrop);
+    }
+  });
+  const finalFlow = entry.points.at(-1).flow;
+  assert.match(entry.referenceFlowRangeLabel, /^0–\d+(?:\.\d+)?$/);
+  assert.strictEqual(entry.referenceFlowRangeLabel, `0–${finalFlow}`);
+  assert(entry.outOfRangeMessage.includes(`${finalFlow} L/min`));
+}
+for (const fr of [21, 23, 25]) {
+  const matchingSizes = hlsVenousProducts.filter(([, sizeFr]) => sizeFr === fr);
+  assert.strictEqual(matchingSizes.length, 2, `${fr} Fr PVS and PVL products must remain distinct.`);
+  assert.notStrictEqual(matchingSizes[0][0], matchingSizes[1][0]);
+}
 const nextGenSizes = ['15 Fr', '17 Fr', '19 Fr', '21 Fr', '23 Fr', '25 Fr'];
 for (const model of nextGenModels) {
   for (const size of nextGenSizes) {
@@ -614,6 +673,16 @@ function run() {
   );
   assert(getingeCategoryOptions.some(option => option.label === 'Arterial cannula'), 'Getinge / Maquet should include one arterial category option.');
   assert(getingeCategoryOptions.some(option => option.label === 'Venous cannula'), 'Getinge / Maquet should include one venous category option.');
+  const getingeHlsVenousMatches = getPressureDropLookupMatches(pressureDropData, {
+    manufacturer: 'Getinge / Maquet',
+    category: 'venous cannula',
+    model: 'HLS Venous Cannula'
+  });
+  assert.deepStrictEqual(
+    getingeHlsVenousMatches.map(entry => entry.cannulaOrderCode).sort(),
+    hlsVenousProducts.map(([code]) => code).sort(),
+    'The broad venous category should include all distinct HLS venous products without asserting an anatomical site.'
+  );
 
 
   const getingeArterialMatches = getPressureDropLookupMatches(pressureDropData, {
