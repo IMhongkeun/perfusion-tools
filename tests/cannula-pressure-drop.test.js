@@ -689,6 +689,78 @@ for (const [code, configuration, size, graphLabel, needle, lengthCm, range, poin
   assert.strictEqual(interpolatePressureDrop(entry.points, minimum - 0.001).state, 'out_of_range');
   assert.strictEqual(interpolatePressureDrop(entry.points, maximum + 0.001).state, 'out_of_range');
 }
+const dlpMetalTipModel = 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip';
+const dlpMetalTipContracts = [
+  ['67312', '12 Fr / 4.0 mm', 12, 4.0, '1/4 in / 0.64 cm', '0–2.25', 42],
+  ['67314', '14 Fr / 4.7 mm', 14, 4.7, '1/4 in / 0.64 cm', '0–3.92', 50],
+  ['67316', '16 Fr / 5.3 mm', 16, 5.3, '1/4 in / 0.64 cm', '0–4.75', 40],
+  ['67318', '18 Fr / 6.0 mm', 18, 6.0, '1/4 in / 0.64 cm', '0–6', 33],
+  ['67320', '20 Fr / 6.7 mm', 20, 6.7, '1/4 in / 0.64 cm', '0–6', 33],
+  ['69312', '12 Fr / 4.0 mm', 12, 4.0, '3/8 in / 0.95 cm', '0–1.54', 39],
+  ['69314', '14 Fr / 4.7 mm', 14, 4.7, '3/8 in / 0.95 cm', '0–2.68', 43],
+  ['69316', '16 Fr / 5.3 mm', 16, 5.3, '3/8 in / 0.95 cm', '0–3.22', 35],
+  ['69318', '18 Fr / 6.0 mm', 18, 6.0, '3/8 in / 0.95 cm', '0–4.61', 30],
+  ['69320', '20 Fr / 6.7 mm', 20, 6.7, '3/8 in / 0.95 cm', '0–5.49', 33],
+  ['69322', '22 Fr / 7.3 mm', 22, 7.3, '3/8 in / 0.95 cm', '0–6', 33],
+  ['69324', '24 Fr / 8.0 mm', 24, 8.0, '3/8 in / 0.95 cm', '0–6', 33],
+  ['69328', '28 Fr / 9.3 mm', 28, 9.3, '3/8 in / 0.95 cm', '0–6', 33],
+  ['69331', '31 Fr / 10.3 mm', 31, 10.3, '3/8 in / 0.95 cm', '0–6', 33]
+];
+const dlpMetalTipEntries = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' && entry.model === dlpMetalTipModel);
+assert.strictEqual(dlpMetalTipEntries.length, 14, 'Exactly 14 DLP Right Angle Metal Tip datasets should remain.');
+assert.strictEqual(dlpMetalTipEntries.filter(entry => entry.connectorSize === '1/4 in / 0.64 cm').length, 5);
+assert.strictEqual(dlpMetalTipEntries.filter(entry => entry.connectorSize === '3/8 in / 0.95 cm').length, 9);
+const dlpMetalTipAudit = require('../scripts/audit-cannula-pressure-data').auditDataset({ items: pressureDropData });
+for (const [code, size, outerDiameterFr, outerDiameterMm, connector, range, pointCount] of dlpMetalTipContracts) {
+  const matches = dlpMetalTipEntries.filter(entry => entry.cannulaOrderCode === code);
+  assert.strictEqual(matches.length, 1, `${code} should exist exactly once.`);
+  const entry = matches[0];
+  assert.strictEqual(entry.size, size);
+  assert.strictEqual(entry.outerDiameterFr, outerDiameterFr);
+  assert.strictEqual(entry.outerDiameterMm, outerDiameterMm);
+  assert.strictEqual(entry.connectorSize, connector);
+  assert.strictEqual(entry.overallLengthCm, 35.6);
+  assert.strictEqual(entry.cartonQuantity, 10);
+  assert.strictEqual(entry.testMedium, 'Water');
+  assert.strictEqual(entry.points.length, pointCount);
+  assert.deepStrictEqual(entry.points[0], { flow: 0, pressureDrop: 0 });
+  assert.strictEqual(entry.referenceFlowRangeLabel, range);
+  const finalFlow = Number(range.split('–')[1]);
+  assert.strictEqual(entry.points.at(-1).flow, finalFlow);
+  assert(entry.outOfRangeMessage.includes(`0 to ${finalFlow} L/min`));
+  assert(entry.outOfRangeMessage.includes('Pressure loss is not estimated'));
+  assert(entry.digitizationNote.includes('manufacturer-published DLP Single Stage Venous Cannulae with Right Angle Metal Tip graph'));
+  assert(entry.digitizationNote.includes(connector.startsWith('1/4') ? '1/4 in connection site' : '3/8 in connection site'));
+  assert(entry.digitizationNote.includes('calibrated automatic WebPlotDigitizer extraction'));
+  assert(entry.digitizationNote.includes('test medium: water'));
+  assert(entry.digitizationNote.includes('(0,0) source-origin anchor is retained'));
+  assert(entry.digitizationNote.includes('Near-origin source-axis and anti-aliased plotted-line pixels below 0.10 L/min were excluded'));
+  assert(entry.digitizationNote.includes('flow to 0.01 L/min; pressure loss to 0.1 mmHg'));
+  assert(entry.digitizationNote.includes('No fitted curve or smoothing was applied'));
+  assert(entry.digitizationNote.includes(`Do not extrapolate outside the visible source range of 0–${finalFlow} L/min`));
+  assert(!entry.model.includes('Extended Tip'));
+  assert(!entry.points.some(point => point.flow < 0 || point.pressureDrop < 0));
+  entry.points.forEach((point, index) => {
+    assert(Math.abs(point.flow * 100 - Math.round(point.flow * 100)) < 1e-8);
+    if (index > 0) {
+      assert(point.flow > entry.points[index - 1].flow);
+      assert(point.pressureDrop >= entry.points[index - 1].pressureDrop);
+    }
+  });
+  assert.strictEqual(interpolatePressureDrop(entry.points, finalFlow + 0.01).state, 'out_of_range');
+  const shapeFindings = dlpMetalTipAudit.findings.filter(finding => finding.cannulaOrderCode === code &&
+    ['local-reversal', 'local-kink', 'slope-whiplash', 'sparse-curve'].includes(finding.rule));
+  assert.deepStrictEqual(shapeFindings, [], `${code} should have no curve-shape QC findings.`);
+}
+const reviewedDlpArtifacts = [
+  ['67312', 0.27, 5.4],
+  ['69312', 1.34, 75.3], ['69312', 1.4, 81.9],
+  ['69314', 2.44, 82.6]
+];
+for (const [code, flow, pressureDrop] of reviewedDlpArtifacts) {
+  const entry = dlpMetalTipEntries.find(item => item.cannulaOrderCode === code);
+  assert(!entry.points.some(point => point.flow === flow && point.pressureDrop === pressureDrop), `${code} should not restore the manually rejected artifact.`);
+}
 const livaNovaDatasetCount = pressureDropData.filter(entry => entry.manufacturer === 'LivaNova').length;
 assert(mainJs.includes(`Browse ${pressureDropData.length} manufacturer pressure-flow datasets for cannula selection.`));
 
