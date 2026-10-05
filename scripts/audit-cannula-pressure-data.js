@@ -6,6 +6,7 @@ const path = require('path');
 // Screening thresholds only. Findings always call for manual source review.
 const thresholds = Object.freeze({
   minimumUsablePoints: 3,
+  pressureSignToleranceMmHg: 0.5,
   reversalMmHg: 0.25,
   kinkAbsoluteMmHg: 5,
   kinkRelative: 0.12,
@@ -19,6 +20,17 @@ const thresholds = Object.freeze({
 });
 
 const severityRank = { LOW: 1, MEDIUM: 2, HIGH: 3 };
+const fatalRules = new Set([
+  'invalid-flow',
+  'invalid-pressure',
+  'negative-flow',
+  'conflicting-flow',
+  'unexpected-pressure-sign'
+]);
+
+function hasFatalFindings(report) {
+  return report.findings.some(finding => fatalRules.has(finding.rule));
+}
 
 function auditSeries(entry, series) {
   if (!Array.isArray(series.points)) {
@@ -29,8 +41,15 @@ function auditSeries(entry, series) {
     manufacturer: entry.manufacturer,
     model: entry.model,
     size: entry.size,
-    series: series.label
+    series: series.label,
+    seriesId: series.id,
+    semanticType: series.semanticType
   };
+  for (const field of ['cannulaOrderCode', 'cannulaKitOrderCode', 'connectorSize', 'connectionSite']) {
+    if (entry[field] !== undefined && entry[field] !== null && entry[field] !== '') {
+      identity[field] = entry[field];
+    }
+  }
   function add(severity, rule, flow, diagnostics, reason) {
     findings.push({ ...identity, severity, rule, flow, diagnostics, reason });
   }
@@ -49,6 +68,16 @@ function auditSeries(entry, series) {
     if (Number.isFinite(flow) && flow < 0) {
       add('HIGH', 'negative-flow', flow, { pointIndex: index },
         'Negative flow; manual source review recommended.');
+    }
+    const semanticType = series.semanticType || 'pressure-drop';
+    const expectedSign = semanticType === 'drainage' ? -1 : 1;
+    if (typeof pressure === 'number' && Number.isFinite(pressure) &&
+        ((expectedSign > 0 && pressure < -thresholds.pressureSignToleranceMmHg) ||
+         (expectedSign < 0 && pressure > thresholds.pressureSignToleranceMmHg))) {
+      add('HIGH', 'unexpected-pressure-sign', Number.isFinite(flow) ? flow : null,
+        { pressureMmHg: pressure, expectedSign: expectedSign > 0 ? 'positive' : 'negative',
+          toleranceMmHg: thresholds.pressureSignToleranceMmHg },
+        `Pressure sign conflicts with ${semanticType} series beyond the sign tolerance; manual source review recommended.`);
     }
     if (typeof flow === 'number' && Number.isFinite(flow) && flow >= 0 &&
         typeof pressure === 'number' && Number.isFinite(pressure)) {
@@ -148,11 +177,8 @@ function auditDataset(data) {
         typeof entry.model !== 'string' || typeof entry.size !== 'string') {
       throw new Error(`Invalid entry metadata at index ${index}.`);
     }
-    const seriesList = entry.pressureSeries === undefined ?
-      [{ label: 'Pressure drop', points: entry.points }] : entry.pressureSeries;
-    if (!Array.isArray(seriesList) || seriesList.length === 0) {
-      throw new Error(`Invalid pressureSeries for entry ${index}.`);
-    }
+    const seriesList = Array.isArray(entry.pressureSeries) && entry.pressureSeries.length > 0 ?
+      entry.pressureSeries : [{ label: 'Pressure drop', semanticType: 'pressure-drop', points: entry.points }];
     seriesList.forEach((series, seriesIndex) => {
       if (!series || typeof series.label !== 'string') {
         throw new Error(`Invalid series metadata at entry ${index}, series ${seriesIndex}.`);
@@ -163,7 +189,12 @@ function auditDataset(data) {
   });
   const curves = new Map();
   for (const finding of findings) {
-    const key = JSON.stringify([finding.manufacturer, finding.model, finding.size, finding.series]);
+    const key = JSON.stringify([
+      finding.manufacturer, finding.model, finding.size,
+      finding.cannulaOrderCode, finding.cannulaKitOrderCode,
+      finding.connectorSize, finding.connectionSite,
+      finding.seriesId, finding.series
+    ]);
     const current = curves.get(key);
     if (!current || severityRank[finding.severity] > severityRank[current]) {
       curves.set(key, finding.severity);
@@ -188,7 +219,13 @@ function formatReport(report) {
     lines.push('', `[${severity}]`);
     for (const finding of findings) {
       const location = Array.isArray(finding.flow) ? finding.flow.join('–') : finding.flow;
-      lines.push(`${finding.manufacturer} | ${finding.model} | ${finding.size} | ${finding.series}`);
+      const productDetails = [
+        finding.cannulaOrderCode && `order ${finding.cannulaOrderCode}`,
+        finding.cannulaKitOrderCode && `kit ${finding.cannulaKitOrderCode}`,
+        finding.connectorSize && `connector ${finding.connectorSize}`,
+        finding.connectionSite && `site ${finding.connectionSite}`
+      ].filter(Boolean);
+      lines.push(`${finding.manufacturer} | ${finding.model} | ${finding.size} | ${finding.series}${productDetails.length ? ` | ${productDetails.join(' | ')}` : ''}`);
       lines.push(`  ${finding.rule}${location === null ? '' : ` at ${location} L/min`}: ${finding.reason}`);
     }
   }
@@ -196,23 +233,25 @@ function formatReport(report) {
   return lines.join('\n');
 }
 
-function main() {
-  const args = process.argv.slice(2);
+function main(args = process.argv.slice(2), options = {}) {
   if (args.some(arg => arg !== '--json')) {
     throw new Error('Usage: node scripts/audit-cannula-pressure-data.js [--json]');
   }
   const datasetPath = path.join(__dirname, '..', 'data', 'cannula-pressure-drop.json');
-  const report = auditDataset(JSON.parse(fs.readFileSync(datasetPath, 'utf8')));
-  process.stdout.write(args.includes('--json') ? `${JSON.stringify(report, null, 2)}\n` : `${formatReport(report)}\n`);
+  const data = options.data || JSON.parse(fs.readFileSync(datasetPath, 'utf8'));
+  const report = auditDataset(data);
+  const output = options.output || process.stdout;
+  output.write(args.includes('--json') ? `${JSON.stringify(report, null, 2)}\n` : `${formatReport(report)}\n`);
+  return hasFatalFindings(report) ? 1 : 0;
 }
 
 if (require.main === module) {
   try {
-    main();
+    process.exitCode = main();
   } catch (error) {
     console.error(`Cannula data QC could not complete: ${error.message}`);
     process.exitCode = 1;
   }
 }
 
-module.exports = { auditDataset, auditSeries, formatReport, thresholds };
+module.exports = { auditDataset, auditSeries, formatReport, hasFatalFindings, main, thresholds };
