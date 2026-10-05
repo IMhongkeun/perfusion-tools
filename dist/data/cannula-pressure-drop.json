@@ -4302,7 +4302,7 @@
       "sourceUrl": "",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized range.",
+      "digitizationNote": "Re-digitized from the manufacturer-published LivaNova Single Stage Right Angle Lighthouse Tip Venous Return Cannulae pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the visible digitized range. After manual source review, three closely spaced automatic-extraction points (0.56, 0.68, and 0.84 L/min) were omitted because their 0.01 L/min spacing produced unstable local slope estimates inconsistent with the visibly smooth manufacturer curve.",
       "referenceFlowRangeLabel": "0–1.04",
       "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 1.04 L/min). Pressure drop is not estimated.",
       "points": [
@@ -4347,10 +4347,6 @@
           "pressureDrop": 27.8
         },
         {
-          "flow": 0.56,
-          "pressureDrop": 30.4
-        },
-        {
           "flow": 0.59,
           "pressureDrop": 33.5
         },
@@ -4361,10 +4357,6 @@
         {
           "flow": 0.67,
           "pressureDrop": 40.2
-        },
-        {
-          "flow": 0.68,
-          "pressureDrop": 44.2
         },
         {
           "flow": 0.7,
@@ -4389,10 +4381,6 @@
         {
           "flow": 0.83,
           "pressureDrop": 63.7
-        },
-        {
-          "flow": 0.84,
-          "pressureDrop": 66.5
         },
         {
           "flow": 0.87,

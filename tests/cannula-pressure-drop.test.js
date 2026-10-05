@@ -99,6 +99,15 @@ for (const [code, fr, connector, tipLengthCm] of lighthouseProducts) {
   assert(entry.digitizationNote.includes('calibrated automatic WebPlotDigitizer extraction'));
   assert(entry.digitizationNote.includes('(0,0) source-origin anchor'));
   assert(entry.digitizationNote.includes('No fitted curve, smoothing, or extrapolation'));
+  if (code === 'RV-41012') {
+    assert.strictEqual(entry.points.length, 29);
+    for (const flow of [0.56, 0.68, 0.84]) {
+      assert(!entry.points.some(point => point.flow === flow), `RV-41012 must omit the reviewed ${flow} L/min digitization artifact.`);
+    }
+    assert(entry.digitizationNote.includes('three closely spaced automatic-extraction points'));
+    assert(entry.digitizationNote.includes('0.01 L/min spacing produced unstable local slope estimates'));
+    assert(entry.digitizationNote.includes('inconsistent with the visibly smooth manufacturer curve'));
+  }
   if (code === 'RV-41036') {
     assert(entry.digitizationNote.includes('Three low-flow color-extraction artifact points'));
     assert(entry.connectorSize.includes('1/2 inch'));
