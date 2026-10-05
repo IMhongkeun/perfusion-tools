@@ -10664,68 +10664,176 @@
       "size": "PVL 2155",
       "sourceLabel": "Getinge/Maquet HLS venous cannula product order table and PVL 2155 pressure-drop chart",
       "sourceUrl": "Uploaded Getinge/Maquet HLS venous cannula product order table and pressure-drop chart",
-      "testMedium": "Water at room temperature",
+      "testMedium": "H2O at room temperature",
       "dataStatus": "Digitized curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.",
+      "digitizationNote": "Digitized from the manufacturer-published HLS venous pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 2
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 6
+          "flow": 0.27,
+          "pressureDrop": 0.9
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 10
+          "flow": 0.45,
+          "pressureDrop": 1.3
         },
         {
-          "flow": 2,
-          "pressureDrop": 17
+          "flow": 0.62,
+          "pressureDrop": 1.9
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 25
+          "flow": 0.8,
+          "pressureDrop": 3
         },
         {
-          "flow": 3,
-          "pressureDrop": 35
+          "flow": 0.98,
+          "pressureDrop": 4.4
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 47
+          "flow": 1.16,
+          "pressureDrop": 6.2
         },
         {
-          "flow": 4,
-          "pressureDrop": 60
+          "flow": 1.33,
+          "pressureDrop": 8.4
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 74
+          "flow": 1.51,
+          "pressureDrop": 9.7
         },
         {
-          "flow": 5,
-          "pressureDrop": 90
+          "flow": 1.69,
+          "pressureDrop": 11.7
         },
         {
-          "flow": 5.5,
-          "pressureDrop": 108
+          "flow": 1.87,
+          "pressureDrop": 14.8
         },
         {
-          "flow": 6,
-          "pressureDrop": 126
+          "flow": 2.05,
+          "pressureDrop": 17.4
         },
         {
-          "flow": 6.5,
-          "pressureDrop": 146
+          "flow": 2.22,
+          "pressureDrop": 20.1
         },
         {
-          "flow": 7,
-          "pressureDrop": 169
+          "flow": 2.4,
+          "pressureDrop": 23.3
+        },
+        {
+          "flow": 2.57,
+          "pressureDrop": 26.6
+        },
+        {
+          "flow": 2.75,
+          "pressureDrop": 30.2
+        },
+        {
+          "flow": 2.92,
+          "pressureDrop": 33.9
+        },
+        {
+          "flow": 3.11,
+          "pressureDrop": 38
+        },
+        {
+          "flow": 3.28,
+          "pressureDrop": 41.7
+        },
+        {
+          "flow": 3.46,
+          "pressureDrop": 45.8
+        },
+        {
+          "flow": 3.62,
+          "pressureDrop": 49.9
+        },
+        {
+          "flow": 3.81,
+          "pressureDrop": 54.6
+        },
+        {
+          "flow": 3.99,
+          "pressureDrop": 59.5
+        },
+        {
+          "flow": 4.17,
+          "pressureDrop": 64.4
+        },
+        {
+          "flow": 4.34,
+          "pressureDrop": 69.5
+        },
+        {
+          "flow": 4.52,
+          "pressureDrop": 74.9
+        },
+        {
+          "flow": 4.7,
+          "pressureDrop": 80.4
+        },
+        {
+          "flow": 4.87,
+          "pressureDrop": 86.3
+        },
+        {
+          "flow": 5.05,
+          "pressureDrop": 92.4
+        },
+        {
+          "flow": 5.23,
+          "pressureDrop": 98.6
+        },
+        {
+          "flow": 5.41,
+          "pressureDrop": 105
+        },
+        {
+          "flow": 5.58,
+          "pressureDrop": 111.4
+        },
+        {
+          "flow": 5.76,
+          "pressureDrop": 117.8
+        },
+        {
+          "flow": 5.94,
+          "pressureDrop": 124.4
+        },
+        {
+          "flow": 6.11,
+          "pressureDrop": 131.2
+        },
+        {
+          "flow": 6.29,
+          "pressureDrop": 138.1
+        },
+        {
+          "flow": 6.47,
+          "pressureDrop": 145.3
+        },
+        {
+          "flow": 6.64,
+          "pressureDrop": 153.1
+        },
+        {
+          "flow": 6.81,
+          "pressureDrop": 160.9
+        },
+        {
+          "flow": 6.95,
+          "pressureDrop": 167.9
         }
       ],
-      "notes": "PVL 2155: 21 Fr (7.0 mm) outer diameter, 55 cm insertion length, 20 side holes, 20 cm perforation length, 3/8\" connector, BE-PVL 2155 Bioline coating."
+      "notes": "PVL 2155: 21 Fr (7.0 mm) outer diameter, 55 cm insertion length, 20 side holes, 20 cm perforation length, 3/8\" connector, BE-PVL 2155 Bioline coating.",
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PVL 2155",
+      "referenceFlowRangeLabel": "0–6.95",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.95 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Getinge / Maquet",
@@ -10734,68 +10842,180 @@
       "size": "PVL 2355",
       "sourceLabel": "Getinge/Maquet HLS venous cannula product order table and PVL 2355 pressure-drop chart",
       "sourceUrl": "Uploaded Getinge/Maquet HLS venous cannula product order table and pressure-drop chart",
-      "testMedium": "Water at room temperature",
+      "testMedium": "H2O at room temperature",
       "dataStatus": "Digitized curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.",
+      "digitizationNote": "Digitized from the manufacturer-published HLS venous pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 2
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
+          "flow": 0.09,
+          "pressureDrop": 0.6
+        },
+        {
+          "flow": 0.27,
+          "pressureDrop": 0.9
+        },
+        {
+          "flow": 0.45,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 0.62,
+          "pressureDrop": 1.9
+        },
+        {
+          "flow": 0.8,
           "pressureDrop": 3
         },
         {
+          "flow": 0.98,
+          "pressureDrop": 4
+        },
+        {
+          "flow": 1.16,
+          "pressureDrop": 5.1
+        },
+        {
+          "flow": 1.33,
+          "pressureDrop": 6.2
+        },
+        {
           "flow": 1.5,
-          "pressureDrop": 8
+          "pressureDrop": 7.2
         },
         {
-          "flow": 2,
-          "pressureDrop": 12
+          "flow": 1.69,
+          "pressureDrop": 9
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 18
+          "flow": 1.86,
+          "pressureDrop": 10
         },
         {
-          "flow": 3,
-          "pressureDrop": 24
+          "flow": 2.04,
+          "pressureDrop": 11.7
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 32
+          "flow": 2.21,
+          "pressureDrop": 13.2
         },
         {
-          "flow": 4,
-          "pressureDrop": 41
+          "flow": 2.39,
+          "pressureDrop": 16.1
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 50
+          "flow": 2.56,
+          "pressureDrop": 18.2
         },
         {
-          "flow": 5,
-          "pressureDrop": 60
+          "flow": 2.75,
+          "pressureDrop": 20.8
         },
         {
-          "flow": 5.5,
-          "pressureDrop": 72
+          "flow": 2.93,
+          "pressureDrop": 23.3
         },
         {
-          "flow": 6,
-          "pressureDrop": 84
+          "flow": 3.11,
+          "pressureDrop": 25.9
         },
         {
-          "flow": 6.5,
-          "pressureDrop": 90
+          "flow": 3.28,
+          "pressureDrop": 28.6
         },
         {
-          "flow": 7,
-          "pressureDrop": 113
+          "flow": 3.46,
+          "pressureDrop": 31.4
+        },
+        {
+          "flow": 3.64,
+          "pressureDrop": 34.6
+        },
+        {
+          "flow": 3.81,
+          "pressureDrop": 37.5
+        },
+        {
+          "flow": 3.99,
+          "pressureDrop": 40.6
+        },
+        {
+          "flow": 4.16,
+          "pressureDrop": 43.9
+        },
+        {
+          "flow": 4.34,
+          "pressureDrop": 47.4
+        },
+        {
+          "flow": 4.52,
+          "pressureDrop": 50.7
+        },
+        {
+          "flow": 4.7,
+          "pressureDrop": 54.5
+        },
+        {
+          "flow": 4.89,
+          "pressureDrop": 58.4
+        },
+        {
+          "flow": 5.07,
+          "pressureDrop": 62.2
+        },
+        {
+          "flow": 5.24,
+          "pressureDrop": 66
+        },
+        {
+          "flow": 5.42,
+          "pressureDrop": 70.1
+        },
+        {
+          "flow": 5.61,
+          "pressureDrop": 74.5
+        },
+        {
+          "flow": 5.78,
+          "pressureDrop": 78.7
+        },
+        {
+          "flow": 5.95,
+          "pressureDrop": 83.4
+        },
+        {
+          "flow": 6.14,
+          "pressureDrop": 88.5
+        },
+        {
+          "flow": 6.31,
+          "pressureDrop": 93.3
+        },
+        {
+          "flow": 6.49,
+          "pressureDrop": 98.6
+        },
+        {
+          "flow": 6.66,
+          "pressureDrop": 103.8
+        },
+        {
+          "flow": 6.84,
+          "pressureDrop": 109.1
+        },
+        {
+          "flow": 6.96,
+          "pressureDrop": 112.9
         }
       ],
-      "notes": "PVL 2355: 23 Fr (7.7 mm) outer diameter, 55 cm insertion length, 20 side holes, 20 cm perforation length, 3/8\" connector, BE-PVL 2355 Bioline coating."
+      "notes": "PVL 2355: 23 Fr (7.7 mm) outer diameter, 55 cm insertion length, 20 side holes, 20 cm perforation length, 3/8\" connector, BE-PVL 2355 Bioline coating.",
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PVL 2355",
+      "referenceFlowRangeLabel": "0–6.96",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.96 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Getinge / Maquet",
@@ -10804,68 +11024,176 @@
       "size": "PVL 2555",
       "sourceLabel": "Getinge/Maquet HLS venous cannula product order table and PVL 2555 pressure-drop chart",
       "sourceUrl": "Uploaded Getinge/Maquet HLS venous cannula product order table and pressure-drop chart",
-      "testMedium": "Water at room temperature",
+      "testMedium": "H2O at room temperature",
       "dataStatus": "Digitized curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.",
+      "digitizationNote": "Digitized from the manufacturer-published HLS venous pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 2
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
+          "flow": 0.11,
+          "pressureDrop": 0.6
+        },
+        {
+          "flow": 0.29,
+          "pressureDrop": 1
+        },
+        {
+          "flow": 0.46,
+          "pressureDrop": 1.7
+        },
+        {
+          "flow": 0.64,
+          "pressureDrop": 2.3
+        },
+        {
+          "flow": 0.82,
           "pressureDrop": 3
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 6
+          "flow": 0.98,
+          "pressureDrop": 3.8
         },
         {
-          "flow": 2,
-          "pressureDrop": 8
+          "flow": 1.17,
+          "pressureDrop": 4.4
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 12
+          "flow": 1.35,
+          "pressureDrop": 5
         },
         {
-          "flow": 3,
-          "pressureDrop": 17
+          "flow": 1.53,
+          "pressureDrop": 5.9
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 22
+          "flow": 1.7,
+          "pressureDrop": 6.7
         },
         {
-          "flow": 4,
-          "pressureDrop": 28
+          "flow": 1.88,
+          "pressureDrop": 7.7
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 34
+          "flow": 2.06,
+          "pressureDrop": 9
         },
         {
-          "flow": 5,
-          "pressureDrop": 42
+          "flow": 2.23,
+          "pressureDrop": 10
+        },
+        {
+          "flow": 2.41,
+          "pressureDrop": 11.7
+        },
+        {
+          "flow": 2.62,
+          "pressureDrop": 13
+        },
+        {
+          "flow": 2.8,
+          "pressureDrop": 14.7
+        },
+        {
+          "flow": 2.97,
+          "pressureDrop": 16.6
+        },
+        {
+          "flow": 3.18,
+          "pressureDrop": 19
+        },
+        {
+          "flow": 3.37,
+          "pressureDrop": 20.8
+        },
+        {
+          "flow": 3.55,
+          "pressureDrop": 22.9
+        },
+        {
+          "flow": 3.73,
+          "pressureDrop": 24.9
+        },
+        {
+          "flow": 3.91,
+          "pressureDrop": 27
+        },
+        {
+          "flow": 4.09,
+          "pressureDrop": 29.1
+        },
+        {
+          "flow": 4.26,
+          "pressureDrop": 31.4
+        },
+        {
+          "flow": 4.43,
+          "pressureDrop": 33.7
+        },
+        {
+          "flow": 4.61,
+          "pressureDrop": 36.1
+        },
+        {
+          "flow": 4.79,
+          "pressureDrop": 38.8
+        },
+        {
+          "flow": 4.96,
+          "pressureDrop": 41.5
+        },
+        {
+          "flow": 5.16,
+          "pressureDrop": 44.6
+        },
+        {
+          "flow": 5.32,
+          "pressureDrop": 47.3
         },
         {
           "flow": 5.5,
-          "pressureDrop": 50
+          "pressureDrop": 50.5
         },
         {
-          "flow": 6,
-          "pressureDrop": 59
+          "flow": 5.68,
+          "pressureDrop": 53.7
         },
         {
-          "flow": 6.5,
-          "pressureDrop": 69
+          "flow": 5.86,
+          "pressureDrop": 57
         },
         {
-          "flow": 7,
-          "pressureDrop": 79
+          "flow": 6.03,
+          "pressureDrop": 60.1
+        },
+        {
+          "flow": 6.21,
+          "pressureDrop": 63.6
+        },
+        {
+          "flow": 6.38,
+          "pressureDrop": 66.9
+        },
+        {
+          "flow": 6.56,
+          "pressureDrop": 70.6
+        },
+        {
+          "flow": 6.74,
+          "pressureDrop": 74.2
+        },
+        {
+          "flow": 6.9,
+          "pressureDrop": 77.6
         }
       ],
-      "notes": "PVL 2555: 25 Fr (8.3 mm) outer diameter, 55 cm insertion length, 24 side holes, 20 cm perforation length, 3/8\" connector, BE-PVL 2555 Bioline coating."
+      "notes": "PVL 2555: 25 Fr (8.3 mm) outer diameter, 55 cm insertion length, 24 side holes, 20 cm perforation length, 3/8\" connector, BE-PVL 2555 Bioline coating.",
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PVL 2555",
+      "referenceFlowRangeLabel": "0–6.9",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.9 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Getinge / Maquet",
@@ -10874,68 +11202,908 @@
       "size": "PVL 2955",
       "sourceLabel": "Getinge/Maquet HLS venous cannula product order table and PVL 2955 pressure-drop chart",
       "sourceUrl": "Uploaded Getinge/Maquet HLS venous cannula product order table and pressure-drop chart",
-      "testMedium": "Water at room temperature",
+      "testMedium": "H2O at room temperature",
       "dataStatus": "Digitized curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-drop chart; values rounded for practical reference use.",
+      "digitizationNote": "Digitized from the manufacturer-published HLS venous pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range. One sub-0.1 mmHg local low-flow pixel extraction artifact was removed because it contradicted the visibly monotonic source curve.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 1
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 2
+          "flow": 0.08,
+          "pressureDrop": 0.6
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 3
+          "flow": 0.25,
+          "pressureDrop": 0.9
         },
         {
-          "flow": 2,
-          "pressureDrop": 5
+          "flow": 0.43,
+          "pressureDrop": 1.3
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 8
+          "flow": 0.61,
+          "pressureDrop": 1.8
         },
         {
-          "flow": 3,
-          "pressureDrop": 10
+          "flow": 0.98,
+          "pressureDrop": 2.1
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 13
+          "flow": 1.14,
+          "pressureDrop": 2.1
         },
         {
-          "flow": 4,
-          "pressureDrop": 16
+          "flow": 1.32,
+          "pressureDrop": 2.1
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 21
+          "flow": 1.48,
+          "pressureDrop": 2.7
         },
         {
-          "flow": 5,
+          "flow": 1.67,
+          "pressureDrop": 3.1
+        },
+        {
+          "flow": 1.85,
+          "pressureDrop": 4.1
+        },
+        {
+          "flow": 2.03,
+          "pressureDrop": 5.7
+        },
+        {
+          "flow": 2.2,
+          "pressureDrop": 6.2
+        },
+        {
+          "flow": 2.4,
+          "pressureDrop": 6.9
+        },
+        {
+          "flow": 2.59,
+          "pressureDrop": 7.9
+        },
+        {
+          "flow": 2.78,
+          "pressureDrop": 8.8
+        },
+        {
+          "flow": 2.95,
+          "pressureDrop": 9.7
+        },
+        {
+          "flow": 3.14,
+          "pressureDrop": 10.8
+        },
+        {
+          "flow": 3.33,
+          "pressureDrop": 11.9
+        },
+        {
+          "flow": 3.49,
+          "pressureDrop": 12.8
+        },
+        {
+          "flow": 3.68,
+          "pressureDrop": 14
+        },
+        {
+          "flow": 3.91,
+          "pressureDrop": 15.7
+        },
+        {
+          "flow": 4.09,
+          "pressureDrop": 17.1
+        },
+        {
+          "flow": 4.27,
+          "pressureDrop": 18.8
+        },
+        {
+          "flow": 4.45,
+          "pressureDrop": 20.5
+        },
+        {
+          "flow": 4.64,
+          "pressureDrop": 22.4
+        },
+        {
+          "flow": 4.81,
+          "pressureDrop": 24.2
+        },
+        {
+          "flow": 5.01,
+          "pressureDrop": 26.1
+        },
+        {
+          "flow": 5.18,
+          "pressureDrop": 27.7
+        },
+        {
+          "flow": 5.37,
+          "pressureDrop": 29.8
+        },
+        {
+          "flow": 5.56,
+          "pressureDrop": 31.7
+        },
+        {
+          "flow": 5.74,
+          "pressureDrop": 33.5
+        },
+        {
+          "flow": 5.92,
+          "pressureDrop": 35.4
+        },
+        {
+          "flow": 6.11,
+          "pressureDrop": 37.4
+        },
+        {
+          "flow": 6.28,
+          "pressureDrop": 39.2
+        },
+        {
+          "flow": 6.46,
+          "pressureDrop": 41.2
+        },
+        {
+          "flow": 6.64,
+          "pressureDrop": 43.2
+        },
+        {
+          "flow": 6.82,
+          "pressureDrop": 45.3
+        },
+        {
+          "flow": 6.95,
+          "pressureDrop": 46.8
+        }
+      ],
+      "notes": "PVL 2955: 29 Fr (9.7 mm) outer diameter, 55 cm insertion length, 32 side holes, 20 cm perforation length, 3/8\" connector, BE-PVL 2955 Bioline coating.",
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PVL 2955",
+      "referenceFlowRangeLabel": "0–6.95",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.95 L/min). Pressure drop is not estimated."
+    },
+    {
+      "manufacturer": "Getinge / Maquet",
+      "model": "HLS Venous Cannula",
+      "category": "venous",
+      "size": "PVS 1938",
+      "outerDiameterFr": 19,
+      "outerDiameterMm": 6.3,
+      "insertableLength": "38 cm",
+      "connectorSize": "3/8\"",
+      "cartonQuantity": 1,
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PVS 1938",
+      "sourceLabel": "Getinge/Maquet HLS venous cannula product order table and PVS 1938 pressure-drop chart",
+      "sourceUrl": "Uploaded Getinge/Maquet HLS venous cannula product order table and pressure-drop chart",
+      "testMedium": "H2O at room temperature",
+      "dataStatus": "Digitized curve",
+      "digitizationNote": "Digitized from the manufacturer-published HLS venous pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.08,
+          "pressureDrop": 0.6
+        },
+        {
+          "flow": 0.25,
+          "pressureDrop": 0.9
+        },
+        {
+          "flow": 0.43,
+          "pressureDrop": 1.7
+        },
+        {
+          "flow": 0.6,
+          "pressureDrop": 2.7
+        },
+        {
+          "flow": 0.78,
+          "pressureDrop": 3.8
+        },
+        {
+          "flow": 0.97,
+          "pressureDrop": 5.8
+        },
+        {
+          "flow": 1.13,
+          "pressureDrop": 8.2
+        },
+        {
+          "flow": 1.34,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 1.49,
+          "pressureDrop": 13.1
+        },
+        {
+          "flow": 1.67,
+          "pressureDrop": 15.5
+        },
+        {
+          "flow": 1.87,
+          "pressureDrop": 19.8
+        },
+        {
+          "flow": 2.04,
+          "pressureDrop": 23.7
+        },
+        {
+          "flow": 2.22,
+          "pressureDrop": 27.8
+        },
+        {
+          "flow": 2.39,
+          "pressureDrop": 31.9
+        },
+        {
+          "flow": 2.57,
+          "pressureDrop": 36.7
+        },
+        {
+          "flow": 2.75,
+          "pressureDrop": 41.6
+        },
+        {
+          "flow": 2.92,
+          "pressureDrop": 46.7
+        },
+        {
+          "flow": 3.1,
+          "pressureDrop": 52.1
+        },
+        {
+          "flow": 3.28,
+          "pressureDrop": 57.8
+        },
+        {
+          "flow": 3.46,
+          "pressureDrop": 63.6
+        },
+        {
+          "flow": 3.63,
+          "pressureDrop": 69.8
+        },
+        {
+          "flow": 3.81,
+          "pressureDrop": 76.1
+        },
+        {
+          "flow": 3.99,
+          "pressureDrop": 82.8
+        },
+        {
+          "flow": 4.17,
+          "pressureDrop": 89.6
+        },
+        {
+          "flow": 4.34,
+          "pressureDrop": 96.6
+        },
+        {
+          "flow": 4.52,
+          "pressureDrop": 103.9
+        },
+        {
+          "flow": 4.7,
+          "pressureDrop": 111.3
+        },
+        {
+          "flow": 4.87,
+          "pressureDrop": 119
+        },
+        {
+          "flow": 5.05,
+          "pressureDrop": 126.9
+        },
+        {
+          "flow": 5.23,
+          "pressureDrop": 135.4
+        },
+        {
+          "flow": 5.4,
+          "pressureDrop": 143.5
+        },
+        {
+          "flow": 5.56,
+          "pressureDrop": 151.7
+        },
+        {
+          "flow": 5.72,
+          "pressureDrop": 160
+        },
+        {
+          "flow": 5.88,
+          "pressureDrop": 168.5
+        },
+        {
+          "flow": 6.03,
+          "pressureDrop": 176.7
+        },
+        {
+          "flow": 6.19,
+          "pressureDrop": 185.1
+        },
+        {
+          "flow": 6.34,
+          "pressureDrop": 193.7
+        },
+        {
+          "flow": 6.44,
+          "pressureDrop": 199.1
+        }
+      ],
+      "notes": "PVS 1938: 19 Fr (6.3 mm) outer diameter, 38 cm insertion length, 12 side holes, 10 cm perforation length, 3/8\" connector, BE-PVS 1938 Bioline coating. One cannula per carton.",
+      "referenceFlowRangeLabel": "0–6.44",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.44 L/min). Pressure drop is not estimated."
+    },
+    {
+      "manufacturer": "Getinge / Maquet",
+      "model": "HLS Venous Cannula",
+      "category": "venous",
+      "size": "PVS 2138",
+      "outerDiameterFr": 21,
+      "outerDiameterMm": 7,
+      "insertableLength": "38 cm",
+      "connectorSize": "3/8\"",
+      "cartonQuantity": 1,
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PVS 2138",
+      "sourceLabel": "Getinge/Maquet HLS venous cannula product order table and PVS 2138 pressure-drop chart",
+      "sourceUrl": "Uploaded Getinge/Maquet HLS venous cannula product order table and pressure-drop chart",
+      "testMedium": "H2O at room temperature",
+      "dataStatus": "Digitized curve",
+      "digitizationNote": "Digitized from the manufacturer-published HLS venous pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.08,
+          "pressureDrop": 0.6
+        },
+        {
+          "flow": 0.25,
+          "pressureDrop": 0.9
+        },
+        {
+          "flow": 0.43,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 0.61,
+          "pressureDrop": 1.8
+        },
+        {
+          "flow": 0.79,
+          "pressureDrop": 2.7
+        },
+        {
+          "flow": 0.96,
+          "pressureDrop": 4.2
+        },
+        {
+          "flow": 1.14,
+          "pressureDrop": 5.5
+        },
+        {
+          "flow": 1.32,
+          "pressureDrop": 7.2
+        },
+        {
+          "flow": 1.49,
+          "pressureDrop": 9.3
+        },
+        {
+          "flow": 1.67,
+          "pressureDrop": 11.5
+        },
+        {
+          "flow": 1.86,
+          "pressureDrop": 13.1
+        },
+        {
+          "flow": 2.02,
+          "pressureDrop": 15.5
+        },
+        {
+          "flow": 2.21,
+          "pressureDrop": 17.5
+        },
+        {
+          "flow": 2.38,
+          "pressureDrop": 20.2
+        },
+        {
+          "flow": 2.56,
+          "pressureDrop": 22.9
+        },
+        {
+          "flow": 2.73,
           "pressureDrop": 26
         },
         {
-          "flow": 5.5,
-          "pressureDrop": 31
+          "flow": 2.91,
+          "pressureDrop": 29.2
         },
         {
-          "flow": 6,
-          "pressureDrop": 36
+          "flow": 3.11,
+          "pressureDrop": 32.9
         },
         {
-          "flow": 6.5,
-          "pressureDrop": 41
+          "flow": 3.28,
+          "pressureDrop": 36.4
         },
         {
-          "flow": 7,
-          "pressureDrop": 47
+          "flow": 3.46,
+          "pressureDrop": 40.3
+        },
+        {
+          "flow": 3.65,
+          "pressureDrop": 44.3
+        },
+        {
+          "flow": 3.81,
+          "pressureDrop": 48.1
+        },
+        {
+          "flow": 3.98,
+          "pressureDrop": 52.2
+        },
+        {
+          "flow": 4.16,
+          "pressureDrop": 56.9
+        },
+        {
+          "flow": 4.34,
+          "pressureDrop": 61.8
+        },
+        {
+          "flow": 4.52,
+          "pressureDrop": 66.5
+        },
+        {
+          "flow": 4.7,
+          "pressureDrop": 71.6
+        },
+        {
+          "flow": 4.87,
+          "pressureDrop": 76.8
+        },
+        {
+          "flow": 5.05,
+          "pressureDrop": 82
+        },
+        {
+          "flow": 5.23,
+          "pressureDrop": 87.3
+        },
+        {
+          "flow": 5.41,
+          "pressureDrop": 92.7
+        },
+        {
+          "flow": 5.58,
+          "pressureDrop": 98.2
+        },
+        {
+          "flow": 5.76,
+          "pressureDrop": 103.8
+        },
+        {
+          "flow": 5.94,
+          "pressureDrop": 109.7
+        },
+        {
+          "flow": 6.11,
+          "pressureDrop": 115.8
+        },
+        {
+          "flow": 6.29,
+          "pressureDrop": 122.2
+        },
+        {
+          "flow": 6.47,
+          "pressureDrop": 128.8
+        },
+        {
+          "flow": 6.64,
+          "pressureDrop": 135.7
+        },
+        {
+          "flow": 6.82,
+          "pressureDrop": 142.8
+        },
+        {
+          "flow": 6.95,
+          "pressureDrop": 148
         }
       ],
-      "notes": "PVL 2955: 29 Fr (9.7 mm) outer diameter, 55 cm insertion length, 32 side holes, 20 cm perforation length, 3/8\" connector, BE-PVL 2955 Bioline coating."
+      "notes": "PVS 2138: 21 Fr (7.0 mm) outer diameter, 38 cm insertion length, 12 side holes, 10 cm perforation length, 3/8\" connector, BE-PVS 2138 Bioline coating. One cannula per carton.",
+      "referenceFlowRangeLabel": "0–6.95",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.95 L/min). Pressure drop is not estimated."
+    },
+    {
+      "manufacturer": "Getinge / Maquet",
+      "model": "HLS Venous Cannula",
+      "category": "venous",
+      "size": "PVS 2338",
+      "outerDiameterFr": 23,
+      "outerDiameterMm": 7.7,
+      "insertableLength": "38 cm",
+      "connectorSize": "3/8\"",
+      "cartonQuantity": 1,
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PVS 2338",
+      "sourceLabel": "Getinge/Maquet HLS venous cannula product order table and PVS 2338 pressure-drop chart",
+      "sourceUrl": "Uploaded Getinge/Maquet HLS venous cannula product order table and pressure-drop chart",
+      "testMedium": "H2O at room temperature",
+      "dataStatus": "Digitized curve",
+      "digitizationNote": "Digitized from the manufacturer-published HLS venous pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.08,
+          "pressureDrop": 0.6
+        },
+        {
+          "flow": 0.25,
+          "pressureDrop": 0.9
+        },
+        {
+          "flow": 0.43,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 0.61,
+          "pressureDrop": 1.8
+        },
+        {
+          "flow": 0.79,
+          "pressureDrop": 2.8
+        },
+        {
+          "flow": 0.96,
+          "pressureDrop": 3.8
+        },
+        {
+          "flow": 1.14,
+          "pressureDrop": 4.8
+        },
+        {
+          "flow": 1.32,
+          "pressureDrop": 5.4
+        },
+        {
+          "flow": 1.49,
+          "pressureDrop": 6.1
+        },
+        {
+          "flow": 1.67,
+          "pressureDrop": 7.5
+        },
+        {
+          "flow": 1.84,
+          "pressureDrop": 9
+        },
+        {
+          "flow": 2.02,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 2.2,
+          "pressureDrop": 12
+        },
+        {
+          "flow": 2.38,
+          "pressureDrop": 13.7
+        },
+        {
+          "flow": 2.57,
+          "pressureDrop": 16.2
+        },
+        {
+          "flow": 2.74,
+          "pressureDrop": 17.5
+        },
+        {
+          "flow": 2.91,
+          "pressureDrop": 20.3
+        },
+        {
+          "flow": 3.1,
+          "pressureDrop": 22.3
+        },
+        {
+          "flow": 3.28,
+          "pressureDrop": 24.5
+        },
+        {
+          "flow": 3.46,
+          "pressureDrop": 26.9
+        },
+        {
+          "flow": 3.64,
+          "pressureDrop": 29.5
+        },
+        {
+          "flow": 3.81,
+          "pressureDrop": 32
+        },
+        {
+          "flow": 3.99,
+          "pressureDrop": 34.8
+        },
+        {
+          "flow": 4.17,
+          "pressureDrop": 37.6
+        },
+        {
+          "flow": 4.35,
+          "pressureDrop": 40.7
+        },
+        {
+          "flow": 4.52,
+          "pressureDrop": 43.7
+        },
+        {
+          "flow": 4.7,
+          "pressureDrop": 47
+        },
+        {
+          "flow": 4.87,
+          "pressureDrop": 50.2
+        },
+        {
+          "flow": 5.05,
+          "pressureDrop": 53.6
+        },
+        {
+          "flow": 5.23,
+          "pressureDrop": 57.2
+        },
+        {
+          "flow": 5.41,
+          "pressureDrop": 61
+        },
+        {
+          "flow": 5.59,
+          "pressureDrop": 65
+        },
+        {
+          "flow": 5.76,
+          "pressureDrop": 68.9
+        },
+        {
+          "flow": 5.94,
+          "pressureDrop": 73.2
+        },
+        {
+          "flow": 6.11,
+          "pressureDrop": 77.4
+        },
+        {
+          "flow": 6.28,
+          "pressureDrop": 81.5
+        },
+        {
+          "flow": 6.47,
+          "pressureDrop": 86.3
+        },
+        {
+          "flow": 6.65,
+          "pressureDrop": 91
+        },
+        {
+          "flow": 6.82,
+          "pressureDrop": 95.3
+        },
+        {
+          "flow": 6.95,
+          "pressureDrop": 98.6
+        }
+      ],
+      "notes": "PVS 2338: 23 Fr (7.7 mm) outer diameter, 38 cm insertion length, 16 side holes, 10 cm perforation length, 3/8\" connector, BE-PVS 2338 Bioline coating. One cannula per carton.",
+      "referenceFlowRangeLabel": "0–6.95",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.95 L/min). Pressure drop is not estimated."
+    },
+    {
+      "manufacturer": "Getinge / Maquet",
+      "model": "HLS Venous Cannula",
+      "category": "venous",
+      "size": "PVS 2538",
+      "outerDiameterFr": 25,
+      "outerDiameterMm": 8.3,
+      "insertableLength": "38 cm",
+      "connectorSize": "3/8\"",
+      "cartonQuantity": 1,
+      "cannulaOrderCodeLabel": "Type / Catalog number",
+      "cannulaOrderCode": "PVS 2538",
+      "sourceLabel": "Getinge/Maquet HLS venous cannula product order table and PVS 2538 pressure-drop chart",
+      "sourceUrl": "Uploaded Getinge/Maquet HLS venous cannula product order table and pressure-drop chart",
+      "testMedium": "H2O at room temperature",
+      "dataStatus": "Digitized curve",
+      "digitizationNote": "Digitized from the manufacturer-published HLS venous pressure-drop graph using calibrated automatic WebPlotDigitizer extraction with H2O at room temperature. A (0,0) source-origin anchor was added; values were rounded for practical reference use. No fitted curve, smoothing, or extrapolation beyond the digitized source range.",
+      "points": [
+        {
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.14,
+          "pressureDrop": 0.7
+        },
+        {
+          "flow": 0.32,
+          "pressureDrop": 1
+        },
+        {
+          "flow": 0.5,
+          "pressureDrop": 1.5
+        },
+        {
+          "flow": 0.67,
+          "pressureDrop": 2
+        },
+        {
+          "flow": 0.85,
+          "pressureDrop": 2.5
+        },
+        {
+          "flow": 1.03,
+          "pressureDrop": 3.1
+        },
+        {
+          "flow": 1.2,
+          "pressureDrop": 3.9
+        },
+        {
+          "flow": 1.38,
+          "pressureDrop": 4.6
+        },
+        {
+          "flow": 1.56,
+          "pressureDrop": 5.9
+        },
+        {
+          "flow": 1.74,
+          "pressureDrop": 6.8
+        },
+        {
+          "flow": 1.91,
+          "pressureDrop": 7.6
+        },
+        {
+          "flow": 2.09,
+          "pressureDrop": 8.5
+        },
+        {
+          "flow": 2.26,
+          "pressureDrop": 9.3
+        },
+        {
+          "flow": 2.43,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 2.64,
+          "pressureDrop": 12
+        },
+        {
+          "flow": 2.81,
+          "pressureDrop": 13.4
+        },
+        {
+          "flow": 2.99,
+          "pressureDrop": 14.9
+        },
+        {
+          "flow": 3.17,
+          "pressureDrop": 16.5
+        },
+        {
+          "flow": 3.36,
+          "pressureDrop": 18.8
+        },
+        {
+          "flow": 3.54,
+          "pressureDrop": 20.8
+        },
+        {
+          "flow": 3.71,
+          "pressureDrop": 22.1
+        },
+        {
+          "flow": 3.89,
+          "pressureDrop": 24.1
+        },
+        {
+          "flow": 4.07,
+          "pressureDrop": 26.1
+        },
+        {
+          "flow": 4.25,
+          "pressureDrop": 28.2
+        },
+        {
+          "flow": 4.42,
+          "pressureDrop": 30.4
+        },
+        {
+          "flow": 4.6,
+          "pressureDrop": 32.6
+        },
+        {
+          "flow": 4.77,
+          "pressureDrop": 34.7
+        },
+        {
+          "flow": 4.95,
+          "pressureDrop": 37.1
+        },
+        {
+          "flow": 5.14,
+          "pressureDrop": 39.7
+        },
+        {
+          "flow": 5.3,
+          "pressureDrop": 42
+        },
+        {
+          "flow": 5.49,
+          "pressureDrop": 44.9
+        },
+        {
+          "flow": 5.66,
+          "pressureDrop": 47.6
+        },
+        {
+          "flow": 5.84,
+          "pressureDrop": 50.4
+        },
+        {
+          "flow": 6.01,
+          "pressureDrop": 53.2
+        },
+        {
+          "flow": 6.21,
+          "pressureDrop": 56.5
+        },
+        {
+          "flow": 6.39,
+          "pressureDrop": 59.7
+        },
+        {
+          "flow": 6.56,
+          "pressureDrop": 62.8
+        },
+        {
+          "flow": 6.75,
+          "pressureDrop": 66.2
+        },
+        {
+          "flow": 6.91,
+          "pressureDrop": 69.3
+        }
+      ],
+      "notes": "PVS 2538: 25 Fr (8.3 mm) outer diameter, 38 cm insertion length, 20 side holes, 10 cm perforation length, 3/8\" connector, BE-PVS 2538 Bioline coating. One cannula per carton.",
+      "referenceFlowRangeLabel": "0–6.91",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 6.91 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Medtronic",
