@@ -7,6 +7,33 @@ const vm = require('vm');
 
 const mainJs = fs.readFileSync(path.join(__dirname, '..', 'main.js'), 'utf8');
 const pressureDropData = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'cannula-pressure-drop.json'), 'utf8')).items;
+const nextGenModels = [
+  'Bio-Medicus NextGen Femoral Arterial Cannula',
+  'Bio-Medicus NextGen Jugular Venous Cannula'
+];
+const nextGenSizes = ['15 Fr', '17 Fr', '19 Fr', '21 Fr', '23 Fr', '25 Fr'];
+for (const model of nextGenModels) {
+  for (const size of nextGenSizes) {
+    const matches = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' &&
+      entry.model === model && entry.size === size);
+    assert.strictEqual(matches.length, 1, `${model} ${size} must have one distinct dataset.`);
+    const entry = matches[0];
+    assert(!entry.pressureSeries, `${model} ${size} must remain a separate single-series entry.`);
+    assert(Array.isArray(entry.points) && entry.points.length >= 3);
+    assert.deepStrictEqual(entry.points[0], { flow: 0, pressureDrop: 0 });
+    entry.points.forEach((point, index) => {
+      assert(Number.isFinite(point.flow) && Number.isFinite(point.pressureDrop));
+      assert(point.pressureDrop >= 0);
+      if (index > 0) {
+        assert(point.flow > entry.points[index - 1].flow);
+        assert(point.pressureDrop >= entry.points[index - 1].pressureDrop);
+      }
+    });
+    const maximumFlow = entry.points.at(-1).flow;
+    assert.strictEqual(entry.referenceFlowRangeLabel, `0–${maximumFlow}`);
+    assert(entry.outOfRangeMessage.includes(`${maximumFlow} L/min`));
+  }
+}
 assert(
   mainJs.includes('const PRESSURE_DROP_EXACT_FLOW_TOLERANCE = 1e-6;'),
   'Pressure-drop exact flow tolerance should be a tiny epsilon so dense adjacent points still interpolate.'
