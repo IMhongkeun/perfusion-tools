@@ -13861,42 +13861,160 @@
       "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
       "testMedium": "Water",
       "dataStatus": "Digitized curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Medtronic Bio-Medicus NextGen pressure-loss graph using calibrated automatic curve extraction. Values were rounded for practical reference use. A (0,0) source-origin anchor was added. No negative near-origin pixel extraction artifacts required removal. No fitted curve was used. Do not extrapolate beyond the digitized source range.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 5
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 14
+          "flow": 0.07,
+          "pressureDrop": 1.1
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 26
+          "flow": 0.22,
+          "pressureDrop": 1.8
         },
         {
-          "flow": 2,
-          "pressureDrop": 45
+          "flow": 0.38,
+          "pressureDrop": 3.1
+        },
+        {
+          "flow": 0.55,
+          "pressureDrop": 4.7
+        },
+        {
+          "flow": 0.7,
+          "pressureDrop": 6.7
+        },
+        {
+          "flow": 0.85,
+          "pressureDrop": 9.3
+        },
+        {
+          "flow": 1.02,
+          "pressureDrop": 12.8
+        },
+        {
+          "flow": 1.17,
+          "pressureDrop": 16.7
+        },
+        {
+          "flow": 1.32,
+          "pressureDrop": 21
+        },
+        {
+          "flow": 1.48,
+          "pressureDrop": 25.5
+        },
+        {
+          "flow": 1.64,
+          "pressureDrop": 30.7
+        },
+        {
+          "flow": 1.79,
+          "pressureDrop": 36.3
+        },
+        {
+          "flow": 1.95,
+          "pressureDrop": 41.6
+        },
+        {
+          "flow": 2.08,
+          "pressureDrop": 47.6
+        },
+        {
+          "flow": 2.22,
+          "pressureDrop": 54
+        },
+        {
+          "flow": 2.37,
+          "pressureDrop": 61.1
         },
         {
           "flow": 2.5,
-          "pressureDrop": 88
+          "pressureDrop": 68.5
         },
         {
-          "flow": 3,
-          "pressureDrop": 99
+          "flow": 2.62,
+          "pressureDrop": 75
+        },
+        {
+          "flow": 2.74,
+          "pressureDrop": 81.8
+        },
+        {
+          "flow": 2.85,
+          "pressureDrop": 88.7
+        },
+        {
+          "flow": 2.96,
+          "pressureDrop": 95.6
+        },
+        {
+          "flow": 3.06,
+          "pressureDrop": 102.4
+        },
+        {
+          "flow": 3.15,
+          "pressureDrop": 108.9
+        },
+        {
+          "flow": 3.23,
+          "pressureDrop": 115.4
+        },
+        {
+          "flow": 3.33,
+          "pressureDrop": 122.6
+        },
+        {
+          "flow": 3.42,
+          "pressureDrop": 130.4
         },
         {
           "flow": 3.5,
-          "pressureDrop": 137
+          "pressureDrop": 136.9
         },
         {
-          "flow": 4,
-          "pressureDrop": 185
+          "flow": 3.57,
+          "pressureDrop": 143.2
+        },
+        {
+          "flow": 3.64,
+          "pressureDrop": 149.8
+        },
+        {
+          "flow": 3.71,
+          "pressureDrop": 156.4
+        },
+        {
+          "flow": 3.78,
+          "pressureDrop": 163.3
+        },
+        {
+          "flow": 3.85,
+          "pressureDrop": 170.4
+        },
+        {
+          "flow": 3.92,
+          "pressureDrop": 177.8
+        },
+        {
+          "flow": 3.99,
+          "pressureDrop": 185.5
+        },
+        {
+          "flow": 4.06,
+          "pressureDrop": 192.7
+        },
+        {
+          "flow": 4.12,
+          "pressureDrop": 198.8
         }
       ],
-      "notes": "Bio-Medicus NextGen femoral arterial cannula. 15 Fr (5.0 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-115; cannula kit order code 96530-115."
+      "notes": "Bio-Medicus NextGen femoral arterial cannula. 15 Fr (5.0 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-115; cannula kit order code 96530-115.",
+      "referenceFlowRangeLabel": "0–4.12",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0 to 4.12 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Medtronic",
@@ -14457,43 +14575,156 @@
       "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
       "testMedium": "Water",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.",
-      "outOfRangeMessage": "Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Medtronic Bio-Medicus NextGen pressure-loss graph using calibrated automatic curve extraction. Values were rounded for practical reference use. A (0,0) source-origin anchor was added. Minor negative near-origin pixel extraction artifacts were removed. No fitted curve was used. Do not extrapolate beyond the digitized source range.",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0 to 4.19 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 3
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 11
+          "flow": 0.23,
+          "pressureDrop": 0.2
         },
         {
-          "flow": 1.5,
+          "flow": 0.38,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 0.54,
+          "pressureDrop": 3.7
+        },
+        {
+          "flow": 0.7,
+          "pressureDrop": 6.1
+        },
+        {
+          "flow": 0.85,
+          "pressureDrop": 8.7
+        },
+        {
+          "flow": 1.01,
+          "pressureDrop": 11.9
+        },
+        {
+          "flow": 1.17,
+          "pressureDrop": 15.5
+        },
+        {
+          "flow": 1.32,
+          "pressureDrop": 19.5
+        },
+        {
+          "flow": 1.48,
           "pressureDrop": 24
         },
         {
-          "flow": 2,
-          "pressureDrop": 41
+          "flow": 1.64,
+          "pressureDrop": 29
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 65
+          "flow": 1.79,
+          "pressureDrop": 34.5
         },
         {
-          "flow": 3,
-          "pressureDrop": 94
+          "flow": 1.95,
+          "pressureDrop": 40.4
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 132
+          "flow": 2.1,
+          "pressureDrop": 46.9
         },
         {
-          "flow": 4,
-          "pressureDrop": 178
+          "flow": 2.25,
+          "pressureDrop": 53.6
+        },
+        {
+          "flow": 2.4,
+          "pressureDrop": 60.4
+        },
+        {
+          "flow": 2.53,
+          "pressureDrop": 67.4
+        },
+        {
+          "flow": 2.65,
+          "pressureDrop": 74
+        },
+        {
+          "flow": 2.77,
+          "pressureDrop": 80.6
+        },
+        {
+          "flow": 2.88,
+          "pressureDrop": 87.4
+        },
+        {
+          "flow": 2.99,
+          "pressureDrop": 94.6
+        },
+        {
+          "flow": 3.1,
+          "pressureDrop": 101.8
+        },
+        {
+          "flow": 3.2,
+          "pressureDrop": 108.8
+        },
+        {
+          "flow": 3.3,
+          "pressureDrop": 116.1
+        },
+        {
+          "flow": 3.39,
+          "pressureDrop": 123.1
+        },
+        {
+          "flow": 3.48,
+          "pressureDrop": 130
+        },
+        {
+          "flow": 3.56,
+          "pressureDrop": 137.2
+        },
+        {
+          "flow": 3.65,
+          "pressureDrop": 144.4
+        },
+        {
+          "flow": 3.72,
+          "pressureDrop": 151.5
+        },
+        {
+          "flow": 3.8,
+          "pressureDrop": 158
+        },
+        {
+          "flow": 3.87,
+          "pressureDrop": 164.9
+        },
+        {
+          "flow": 3.94,
+          "pressureDrop": 172
+        },
+        {
+          "flow": 4.01,
+          "pressureDrop": 179.2
+        },
+        {
+          "flow": 4.08,
+          "pressureDrop": 186.8
+        },
+        {
+          "flow": 4.14,
+          "pressureDrop": 193.8
+        },
+        {
+          "flow": 4.19,
+          "pressureDrop": 198.9
         }
       ],
-      "notes": "Bio-Medicus NextGen jugular venous cannula. 15 Fr (5.0 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-115; cannula kit order code 96530-115."
+      "notes": "Bio-Medicus NextGen jugular venous cannula. 15 Fr (5.0 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-115; cannula kit order code 96530-115.",
+      "referenceFlowRangeLabel": "0–4.19"
     },
     {
       "manufacturer": "Medtronic",
@@ -14514,55 +14745,168 @@
       "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
       "testMedium": "Water",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.",
-      "outOfRangeMessage": "Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Medtronic Bio-Medicus NextGen pressure-loss graph using calibrated automatic curve extraction. Values were rounded for practical reference use. A (0,0) source-origin anchor was added. No negative near-origin pixel extraction artifacts required removal. No fitted curve was used. Do not extrapolate beyond the digitized source range.",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0 to 5.59 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0.5,
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.47,
           "pressureDrop": 1
         },
         {
-          "flow": 1,
-          "pressureDrop": 6
+          "flow": 0.63,
+          "pressureDrop": 2.2
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 15
+          "flow": 0.78,
+          "pressureDrop": 3.3
         },
         {
-          "flow": 2,
-          "pressureDrop": 27
+          "flow": 0.94,
+          "pressureDrop": 5.4
+        },
+        {
+          "flow": 1.1,
+          "pressureDrop": 7.8
+        },
+        {
+          "flow": 1.25,
+          "pressureDrop": 10.8
+        },
+        {
+          "flow": 1.41,
+          "pressureDrop": 13.7
+        },
+        {
+          "flow": 1.56,
+          "pressureDrop": 16.8
+        },
+        {
+          "flow": 1.72,
+          "pressureDrop": 20.4
+        },
+        {
+          "flow": 1.88,
+          "pressureDrop": 24.2
+        },
+        {
+          "flow": 2.03,
+          "pressureDrop": 28.3
+        },
+        {
+          "flow": 2.19,
+          "pressureDrop": 32.7
+        },
+        {
+          "flow": 2.35,
+          "pressureDrop": 37.4
         },
         {
           "flow": 2.5,
-          "pressureDrop": 42
+          "pressureDrop": 42.4
         },
         {
-          "flow": 3,
-          "pressureDrop": 60
+          "flow": 2.66,
+          "pressureDrop": 47.6
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 80
+          "flow": 2.81,
+          "pressureDrop": 53.1
         },
         {
-          "flow": 4,
-          "pressureDrop": 104
+          "flow": 2.97,
+          "pressureDrop": 58.9
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 131
+          "flow": 3.13,
+          "pressureDrop": 65
+        },
+        {
+          "flow": 3.28,
+          "pressureDrop": 71.3
+        },
+        {
+          "flow": 3.44,
+          "pressureDrop": 77.9
+        },
+        {
+          "flow": 3.59,
+          "pressureDrop": 84.4
+        },
+        {
+          "flow": 3.73,
+          "pressureDrop": 91.2
+        },
+        {
+          "flow": 3.87,
+          "pressureDrop": 97.9
+        },
+        {
+          "flow": 4.02,
+          "pressureDrop": 104.9
+        },
+        {
+          "flow": 4.15,
+          "pressureDrop": 111.8
+        },
+        {
+          "flow": 4.28,
+          "pressureDrop": 118.6
+        },
+        {
+          "flow": 4.41,
+          "pressureDrop": 125.5
+        },
+        {
+          "flow": 4.53,
+          "pressureDrop": 132.3
+        },
+        {
+          "flow": 4.65,
+          "pressureDrop": 139.2
+        },
+        {
+          "flow": 4.77,
+          "pressureDrop": 146.3
+        },
+        {
+          "flow": 4.88,
+          "pressureDrop": 153.2
         },
         {
           "flow": 5,
-          "pressureDrop": 160
+          "pressureDrop": 160.2
         },
         {
-          "flow": 5.5,
-          "pressureDrop": 193
+          "flow": 5.11,
+          "pressureDrop": 167.3
+        },
+        {
+          "flow": 5.22,
+          "pressureDrop": 174.3
+        },
+        {
+          "flow": 5.32,
+          "pressureDrop": 180.8
+        },
+        {
+          "flow": 5.42,
+          "pressureDrop": 187.6
+        },
+        {
+          "flow": 5.52,
+          "pressureDrop": 194.4
+        },
+        {
+          "flow": 5.59,
+          "pressureDrop": 199.5
         }
       ],
-      "notes": "Bio-Medicus NextGen jugular venous cannula. 17 Fr (5.7 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-117; cannula kit order code 96530-117."
+      "notes": "Bio-Medicus NextGen jugular venous cannula. 17 Fr (5.7 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-117; cannula kit order code 96530-117.",
+      "referenceFlowRangeLabel": "0–5.59"
     },
     {
       "manufacturer": "Medtronic",
@@ -14583,59 +14927,156 @@
       "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
       "testMedium": "Water",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.",
-      "outOfRangeMessage": "Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Medtronic Bio-Medicus NextGen pressure-loss graph using calibrated automatic curve extraction. Values were rounded for practical reference use. A (0,0) source-origin anchor was added. No negative near-origin pixel extraction artifacts required removal. No fitted curve was used. Do not extrapolate beyond the digitized source range.",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0 to 6 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 1
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 4
+          "flow": 0.65,
+          "pressureDrop": 1.1
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 9
+          "flow": 0.81,
+          "pressureDrop": 2.2
         },
         {
-          "flow": 2,
-          "pressureDrop": 16
+          "flow": 0.97,
+          "pressureDrop": 3.6
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 24
+          "flow": 1.12,
+          "pressureDrop": 5.3
+        },
+        {
+          "flow": 1.28,
+          "pressureDrop": 7.4
+        },
+        {
+          "flow": 1.44,
+          "pressureDrop": 9.4
+        },
+        {
+          "flow": 1.59,
+          "pressureDrop": 11.1
+        },
+        {
+          "flow": 1.75,
+          "pressureDrop": 12.9
+        },
+        {
+          "flow": 1.91,
+          "pressureDrop": 15
+        },
+        {
+          "flow": 2.06,
+          "pressureDrop": 17.3
+        },
+        {
+          "flow": 2.22,
+          "pressureDrop": 19.6
+        },
+        {
+          "flow": 2.37,
+          "pressureDrop": 21.9
+        },
+        {
+          "flow": 2.53,
+          "pressureDrop": 24.7
+        },
+        {
+          "flow": 2.69,
+          "pressureDrop": 28.1
+        },
+        {
+          "flow": 2.84,
+          "pressureDrop": 31.2
         },
         {
           "flow": 3,
-          "pressureDrop": 34
+          "pressureDrop": 34.4
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 45
+          "flow": 3.16,
+          "pressureDrop": 37.6
         },
         {
-          "flow": 4,
-          "pressureDrop": 59
+          "flow": 3.31,
+          "pressureDrop": 41.3
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 73
+          "flow": 3.47,
+          "pressureDrop": 44.9
         },
         {
-          "flow": 5,
-          "pressureDrop": 90
+          "flow": 3.63,
+          "pressureDrop": 48.8
+        },
+        {
+          "flow": 3.78,
+          "pressureDrop": 53
+        },
+        {
+          "flow": 3.94,
+          "pressureDrop": 57.2
+        },
+        {
+          "flow": 4.09,
+          "pressureDrop": 61.4
+        },
+        {
+          "flow": 4.25,
+          "pressureDrop": 66
+        },
+        {
+          "flow": 4.41,
+          "pressureDrop": 70.7
+        },
+        {
+          "flow": 4.56,
+          "pressureDrop": 75.7
+        },
+        {
+          "flow": 4.72,
+          "pressureDrop": 80.8
+        },
+        {
+          "flow": 4.88,
+          "pressureDrop": 86
+        },
+        {
+          "flow": 5.03,
+          "pressureDrop": 91.5
+        },
+        {
+          "flow": 5.19,
+          "pressureDrop": 97.2
+        },
+        {
+          "flow": 5.34,
+          "pressureDrop": 103.1
         },
         {
           "flow": 5.5,
-          "pressureDrop": 109
+          "pressureDrop": 109.3
+        },
+        {
+          "flow": 5.66,
+          "pressureDrop": 115.5
+        },
+        {
+          "flow": 5.81,
+          "pressureDrop": 121.3
         },
         {
           "flow": 6,
-          "pressureDrop": 130
+          "pressureDrop": 127.4
         }
       ],
-      "notes": "Bio-Medicus NextGen jugular venous cannula. 19 Fr (6.3 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-119; cannula kit order code 96530-119."
+      "notes": "Bio-Medicus NextGen jugular venous cannula. 19 Fr (6.3 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-119; cannula kit order code 96530-119.",
+      "referenceFlowRangeLabel": "0–6"
     },
     {
       "manufacturer": "Medtronic",
@@ -14656,59 +15097,164 @@
       "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
       "testMedium": "Water",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate. A near-zero low-flow value was rounded to 0 mmHg to avoid displaying a negative pressure-drop artifact from manual digitization.",
-      "outOfRangeMessage": "Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Medtronic Bio-Medicus NextGen pressure-loss graph using calibrated automatic curve extraction. Values were rounded for practical reference use. A (0,0) source-origin anchor was added. No negative near-origin pixel extraction artifacts required removal. No fitted curve was used. Do not extrapolate beyond the digitized source range.",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0 to 6 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0.5,
+          "flow": 0,
           "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 2
+          "flow": 0.38,
+          "pressureDrop": 0.1
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 6
+          "flow": 0.54,
+          "pressureDrop": 0.9
         },
         {
-          "flow": 2,
-          "pressureDrop": 10
+          "flow": 0.7,
+          "pressureDrop": 0.9
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 17
+          "flow": 0.85,
+          "pressureDrop": 1.7
         },
         {
-          "flow": 3,
-          "pressureDrop": 23
+          "flow": 1.01,
+          "pressureDrop": 3
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 31
+          "flow": 1.17,
+          "pressureDrop": 4.1
         },
         {
-          "flow": 4,
-          "pressureDrop": 40
+          "flow": 1.32,
+          "pressureDrop": 5.3
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 50
+          "flow": 1.48,
+          "pressureDrop": 6.6
         },
         {
-          "flow": 5,
-          "pressureDrop": 61
+          "flow": 1.64,
+          "pressureDrop": 7.4
         },
         {
-          "flow": 5.5,
-          "pressureDrop": 73
+          "flow": 1.79,
+          "pressureDrop": 8.4
+        },
+        {
+          "flow": 1.95,
+          "pressureDrop": 9.9
+        },
+        {
+          "flow": 2.1,
+          "pressureDrop": 11.6
+        },
+        {
+          "flow": 2.26,
+          "pressureDrop": 13.4
+        },
+        {
+          "flow": 2.42,
+          "pressureDrop": 14.8
+        },
+        {
+          "flow": 2.57,
+          "pressureDrop": 16.7
+        },
+        {
+          "flow": 2.73,
+          "pressureDrop": 19.6
+        },
+        {
+          "flow": 2.89,
+          "pressureDrop": 21.7
+        },
+        {
+          "flow": 3.04,
+          "pressureDrop": 24
+        },
+        {
+          "flow": 3.2,
+          "pressureDrop": 26.5
+        },
+        {
+          "flow": 3.36,
+          "pressureDrop": 29.2
+        },
+        {
+          "flow": 3.51,
+          "pressureDrop": 31.6
+        },
+        {
+          "flow": 3.67,
+          "pressureDrop": 34.4
+        },
+        {
+          "flow": 3.82,
+          "pressureDrop": 37.2
+        },
+        {
+          "flow": 3.98,
+          "pressureDrop": 40.1
+        },
+        {
+          "flow": 4.14,
+          "pressureDrop": 43.1
+        },
+        {
+          "flow": 4.29,
+          "pressureDrop": 46.3
+        },
+        {
+          "flow": 4.45,
+          "pressureDrop": 49.4
+        },
+        {
+          "flow": 4.61,
+          "pressureDrop": 53
+        },
+        {
+          "flow": 4.76,
+          "pressureDrop": 56.3
+        },
+        {
+          "flow": 4.92,
+          "pressureDrop": 59.8
+        },
+        {
+          "flow": 5.07,
+          "pressureDrop": 63.4
+        },
+        {
+          "flow": 5.23,
+          "pressureDrop": 67
+        },
+        {
+          "flow": 5.39,
+          "pressureDrop": 70.8
+        },
+        {
+          "flow": 5.54,
+          "pressureDrop": 74.8
+        },
+        {
+          "flow": 5.7,
+          "pressureDrop": 78.8
+        },
+        {
+          "flow": 5.86,
+          "pressureDrop": 82.9
         },
         {
           "flow": 6,
-          "pressureDrop": 86
+          "pressureDrop": 85.8
         }
       ],
-      "notes": "Bio-Medicus NextGen jugular venous cannula. 21 Fr (7.0 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-121; cannula kit order code 96530-121."
+      "notes": "Bio-Medicus NextGen jugular venous cannula. 21 Fr (7.0 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-121; cannula kit order code 96530-121.",
+      "referenceFlowRangeLabel": "0–6"
     },
     {
       "manufacturer": "Medtronic",
@@ -14729,59 +15275,172 @@
       "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
       "testMedium": "Water",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.",
-      "outOfRangeMessage": "Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Medtronic Bio-Medicus NextGen pressure-loss graph using calibrated automatic curve extraction. Values were rounded for practical reference use. A (0,0) source-origin anchor was added. No negative near-origin pixel extraction artifacts required removal. No fitted curve was used. Do not extrapolate beyond the digitized source range.",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0 to 6 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 1
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
+          "flow": 0.1,
+          "pressureDrop": 0.2
+        },
+        {
+          "flow": 0.26,
+          "pressureDrop": 0.6
+        },
+        {
+          "flow": 0.41,
+          "pressureDrop": 0.8
+        },
+        {
+          "flow": 0.57,
+          "pressureDrop": 1.4
+        },
+        {
+          "flow": 0.73,
+          "pressureDrop": 1.5
+        },
+        {
+          "flow": 0.88,
           "pressureDrop": 2
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 5
+          "flow": 1.04,
+          "pressureDrop": 2.6
         },
         {
-          "flow": 2,
-          "pressureDrop": 8
+          "flow": 1.19,
+          "pressureDrop": 3.5
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 12
+          "flow": 1.35,
+          "pressureDrop": 4.5
         },
         {
-          "flow": 3,
-          "pressureDrop": 16
+          "flow": 1.51,
+          "pressureDrop": 5.4
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 21
+          "flow": 1.66,
+          "pressureDrop": 6.5
         },
         {
-          "flow": 4,
-          "pressureDrop": 26
+          "flow": 1.82,
+          "pressureDrop": 7.5
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 33
+          "flow": 1.98,
+          "pressureDrop": 8.3
         },
         {
-          "flow": 5,
-          "pressureDrop": 40
+          "flow": 2.13,
+          "pressureDrop": 9.1
         },
         {
-          "flow": 5.5,
-          "pressureDrop": 48
+          "flow": 2.29,
+          "pressureDrop": 9.7
+        },
+        {
+          "flow": 2.45,
+          "pressureDrop": 11
+        },
+        {
+          "flow": 2.6,
+          "pressureDrop": 12.1
+        },
+        {
+          "flow": 2.76,
+          "pressureDrop": 13.8
+        },
+        {
+          "flow": 2.91,
+          "pressureDrop": 15.2
+        },
+        {
+          "flow": 3.07,
+          "pressureDrop": 16.6
+        },
+        {
+          "flow": 3.23,
+          "pressureDrop": 18.4
+        },
+        {
+          "flow": 3.38,
+          "pressureDrop": 19.7
+        },
+        {
+          "flow": 3.54,
+          "pressureDrop": 21.2
+        },
+        {
+          "flow": 3.7,
+          "pressureDrop": 23
+        },
+        {
+          "flow": 3.85,
+          "pressureDrop": 24.8
+        },
+        {
+          "flow": 4.01,
+          "pressureDrop": 26.7
+        },
+        {
+          "flow": 4.17,
+          "pressureDrop": 28.5
+        },
+        {
+          "flow": 4.32,
+          "pressureDrop": 30.5
+        },
+        {
+          "flow": 4.48,
+          "pressureDrop": 32.6
+        },
+        {
+          "flow": 4.63,
+          "pressureDrop": 34.7
+        },
+        {
+          "flow": 4.79,
+          "pressureDrop": 36.9
+        },
+        {
+          "flow": 4.95,
+          "pressureDrop": 39.3
+        },
+        {
+          "flow": 5.1,
+          "pressureDrop": 41.5
+        },
+        {
+          "flow": 5.26,
+          "pressureDrop": 44
+        },
+        {
+          "flow": 5.42,
+          "pressureDrop": 46.6
+        },
+        {
+          "flow": 5.57,
+          "pressureDrop": 49.2
+        },
+        {
+          "flow": 5.73,
+          "pressureDrop": 52
+        },
+        {
+          "flow": 5.89,
+          "pressureDrop": 54.7
         },
         {
           "flow": 6,
-          "pressureDrop": 57
+          "pressureDrop": 56.4
         }
       ],
-      "notes": "Bio-Medicus NextGen jugular venous cannula. 23 Fr (7.7 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-123; cannula kit order code 96530-123."
+      "notes": "Bio-Medicus NextGen jugular venous cannula. 23 Fr (7.7 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-123; cannula kit order code 96530-123.",
+      "referenceFlowRangeLabel": "0–6"
     },
     {
       "manufacturer": "Medtronic",
@@ -14802,59 +15461,156 @@
       "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
       "testMedium": "Water",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.",
-      "outOfRangeMessage": "Target flow is outside the digitized manufacturer chart range. Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Medtronic Bio-Medicus NextGen pressure-loss graph using calibrated automatic curve extraction. Values were rounded for practical reference use. A (0,0) source-origin anchor was added. Minor negative near-origin pixel extraction artifacts were removed. No fitted curve was used. Do not extrapolate beyond the digitized source range.",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0 to 6 L/min). Pressure drop is not estimated.",
       "points": [
         {
-          "flow": 0.5,
+          "flow": 0,
           "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 2
+          "flow": 0.7,
+          "pressureDrop": 0.4
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 3
+          "flow": 0.85,
+          "pressureDrop": 1
         },
         {
-          "flow": 2,
+          "flow": 1.01,
+          "pressureDrop": 1.3
+        },
+        {
+          "flow": 1.17,
+          "pressureDrop": 1.5
+        },
+        {
+          "flow": 1.32,
+          "pressureDrop": 2.2
+        },
+        {
+          "flow": 1.48,
+          "pressureDrop": 3.1
+        },
+        {
+          "flow": 1.64,
+          "pressureDrop": 3.6
+        },
+        {
+          "flow": 1.79,
+          "pressureDrop": 4.4
+        },
+        {
+          "flow": 1.95,
           "pressureDrop": 5
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 8
+          "flow": 2.1,
+          "pressureDrop": 5.9
         },
         {
-          "flow": 3,
-          "pressureDrop": 11
+          "flow": 2.26,
+          "pressureDrop": 6.7
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 15
+          "flow": 2.42,
+          "pressureDrop": 7.4
         },
         {
-          "flow": 4,
-          "pressureDrop": 19
+          "flow": 2.57,
+          "pressureDrop": 8.4
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 24
+          "flow": 2.73,
+          "pressureDrop": 9.5
         },
         {
-          "flow": 5,
-          "pressureDrop": 29
+          "flow": 2.89,
+          "pressureDrop": 10.8
         },
         {
-          "flow": 5.5,
-          "pressureDrop": 34
+          "flow": 3.04,
+          "pressureDrop": 11.9
+        },
+        {
+          "flow": 3.2,
+          "pressureDrop": 12.8
+        },
+        {
+          "flow": 3.36,
+          "pressureDrop": 14.1
+        },
+        {
+          "flow": 3.51,
+          "pressureDrop": 15.3
+        },
+        {
+          "flow": 3.67,
+          "pressureDrop": 16.5
+        },
+        {
+          "flow": 3.82,
+          "pressureDrop": 17.4
+        },
+        {
+          "flow": 3.98,
+          "pressureDrop": 18.7
+        },
+        {
+          "flow": 4.14,
+          "pressureDrop": 20
+        },
+        {
+          "flow": 4.29,
+          "pressureDrop": 21.4
+        },
+        {
+          "flow": 4.45,
+          "pressureDrop": 23.1
+        },
+        {
+          "flow": 4.61,
+          "pressureDrop": 24.7
+        },
+        {
+          "flow": 4.76,
+          "pressureDrop": 26.2
+        },
+        {
+          "flow": 4.92,
+          "pressureDrop": 27.9
+        },
+        {
+          "flow": 5.07,
+          "pressureDrop": 29.6
+        },
+        {
+          "flow": 5.23,
+          "pressureDrop": 31.1
+        },
+        {
+          "flow": 5.39,
+          "pressureDrop": 32.9
+        },
+        {
+          "flow": 5.54,
+          "pressureDrop": 34.8
+        },
+        {
+          "flow": 5.7,
+          "pressureDrop": 36.6
+        },
+        {
+          "flow": 5.86,
+          "pressureDrop": 38.6
         },
         {
           "flow": 6,
-          "pressureDrop": 41
+          "pressureDrop": 40
         }
       ],
-      "notes": "Bio-Medicus NextGen jugular venous cannula. 25 Fr (8.3 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-125; cannula kit order code 96530-125."
+      "notes": "Bio-Medicus NextGen jugular venous cannula. 25 Fr (8.3 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-125; cannula kit order code 96530-125.",
+      "referenceFlowRangeLabel": "0–6"
     },
     {
       "manufacturer": "Medtronic",
@@ -14865,54 +15621,172 @@
       "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
       "testMedium": "Water",
       "dataStatus": "Digitized curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Medtronic Bio-Medicus NextGen pressure-loss graph using calibrated automatic curve extraction. Values were rounded for practical reference use. A (0,0) source-origin anchor was added. Minor negative near-origin pixel extraction artifacts were removed. No fitted curve was used. Do not extrapolate beyond the digitized source range.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 2
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 5
+          "flow": 0.41,
+          "pressureDrop": 0.5
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 13
+          "flow": 0.57,
+          "pressureDrop": 0.9
         },
         {
-          "flow": 2,
-          "pressureDrop": 24
+          "flow": 0.73,
+          "pressureDrop": 1.7
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 37
+          "flow": 0.88,
+          "pressureDrop": 3.2
         },
         {
-          "flow": 3,
-          "pressureDrop": 54
+          "flow": 1.04,
+          "pressureDrop": 4.9
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 73
+          "flow": 1.19,
+          "pressureDrop": 7.1
         },
         {
-          "flow": 4,
-          "pressureDrop": 96
+          "flow": 1.35,
+          "pressureDrop": 9.7
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 122
+          "flow": 1.51,
+          "pressureDrop": 12.8
         },
         {
-          "flow": 5,
-          "pressureDrop": 152
+          "flow": 1.66,
+          "pressureDrop": 15.2
         },
         {
-          "flow": 5.5,
-          "pressureDrop": 185
+          "flow": 1.82,
+          "pressureDrop": 18.4
+        },
+        {
+          "flow": 1.98,
+          "pressureDrop": 21.9
+        },
+        {
+          "flow": 2.13,
+          "pressureDrop": 25.8
+        },
+        {
+          "flow": 2.29,
+          "pressureDrop": 30.1
+        },
+        {
+          "flow": 2.45,
+          "pressureDrop": 34.6
+        },
+        {
+          "flow": 2.6,
+          "pressureDrop": 39.6
+        },
+        {
+          "flow": 2.76,
+          "pressureDrop": 44.5
+        },
+        {
+          "flow": 2.91,
+          "pressureDrop": 50
+        },
+        {
+          "flow": 3.07,
+          "pressureDrop": 55.8
+        },
+        {
+          "flow": 3.23,
+          "pressureDrop": 61.8
+        },
+        {
+          "flow": 3.38,
+          "pressureDrop": 68
+        },
+        {
+          "flow": 3.53,
+          "pressureDrop": 74.4
+        },
+        {
+          "flow": 3.68,
+          "pressureDrop": 81
+        },
+        {
+          "flow": 3.83,
+          "pressureDrop": 88
+        },
+        {
+          "flow": 3.97,
+          "pressureDrop": 94.5
+        },
+        {
+          "flow": 4.1,
+          "pressureDrop": 101.2
+        },
+        {
+          "flow": 4.24,
+          "pressureDrop": 108.2
+        },
+        {
+          "flow": 4.36,
+          "pressureDrop": 114.7
+        },
+        {
+          "flow": 4.48,
+          "pressureDrop": 121.4
+        },
+        {
+          "flow": 4.61,
+          "pressureDrop": 128.6
+        },
+        {
+          "flow": 4.73,
+          "pressureDrop": 135.8
+        },
+        {
+          "flow": 4.84,
+          "pressureDrop": 142.5
+        },
+        {
+          "flow": 4.95,
+          "pressureDrop": 149.4
+        },
+        {
+          "flow": 5.06,
+          "pressureDrop": 156.1
+        },
+        {
+          "flow": 5.16,
+          "pressureDrop": 162.6
+        },
+        {
+          "flow": 5.26,
+          "pressureDrop": 169.4
+        },
+        {
+          "flow": 5.36,
+          "pressureDrop": 176.1
+        },
+        {
+          "flow": 5.46,
+          "pressureDrop": 182.7
+        },
+        {
+          "flow": 5.56,
+          "pressureDrop": 190.1
+        },
+        {
+          "flow": 5.66,
+          "pressureDrop": 197.6
         }
       ],
-      "notes": "Bio-Medicus NextGen femoral arterial cannula. 17 Fr (5.7 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-117; cannula kit order code 96530-117."
+      "notes": "Bio-Medicus NextGen femoral arterial cannula. 17 Fr (5.7 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-117; cannula kit order code 96530-117.",
+      "referenceFlowRangeLabel": "0–5.66",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0 to 5.66 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Medtronic",
@@ -14923,58 +15797,160 @@
       "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
       "testMedium": "Water",
       "dataStatus": "Digitized curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Medtronic Bio-Medicus NextGen pressure-loss graph using calibrated automatic curve extraction. Values were rounded for practical reference use. A (0,0) source-origin anchor was added. No negative near-origin pixel extraction artifacts required removal. No fitted curve was used. Do not extrapolate beyond the digitized source range.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 2
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 5
+          "flow": 0.61,
+          "pressureDrop": 0.6
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 9
+          "flow": 0.77,
+          "pressureDrop": 1.3
         },
         {
-          "flow": 2,
-          "pressureDrop": 15
+          "flow": 0.92,
+          "pressureDrop": 2.6
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 23
+          "flow": 1.08,
+          "pressureDrop": 4.1
         },
         {
-          "flow": 3,
-          "pressureDrop": 32
+          "flow": 1.24,
+          "pressureDrop": 5.3
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 42
+          "flow": 1.39,
+          "pressureDrop": 6.9
         },
         {
-          "flow": 4,
-          "pressureDrop": 55
+          "flow": 1.55,
+          "pressureDrop": 8.5
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 69
+          "flow": 1.71,
+          "pressureDrop": 9.8
         },
         {
-          "flow": 5,
-          "pressureDrop": 85
+          "flow": 1.86,
+          "pressureDrop": 12.1
         },
         {
-          "flow": 5.5,
-          "pressureDrop": 104
+          "flow": 2.02,
+          "pressureDrop": 14.6
+        },
+        {
+          "flow": 2.18,
+          "pressureDrop": 17.1
+        },
+        {
+          "flow": 2.33,
+          "pressureDrop": 19.7
+        },
+        {
+          "flow": 2.49,
+          "pressureDrop": 21.9
+        },
+        {
+          "flow": 2.64,
+          "pressureDrop": 24.4
+        },
+        {
+          "flow": 2.8,
+          "pressureDrop": 27.5
+        },
+        {
+          "flow": 2.96,
+          "pressureDrop": 30.8
+        },
+        {
+          "flow": 3.11,
+          "pressureDrop": 33.9
+        },
+        {
+          "flow": 3.27,
+          "pressureDrop": 36.8
+        },
+        {
+          "flow": 3.43,
+          "pressureDrop": 40.1
+        },
+        {
+          "flow": 3.58,
+          "pressureDrop": 43.6
+        },
+        {
+          "flow": 3.74,
+          "pressureDrop": 47.6
+        },
+        {
+          "flow": 3.9,
+          "pressureDrop": 51.5
+        },
+        {
+          "flow": 4.05,
+          "pressureDrop": 55.7
+        },
+        {
+          "flow": 4.21,
+          "pressureDrop": 60.2
+        },
+        {
+          "flow": 4.36,
+          "pressureDrop": 64.7
+        },
+        {
+          "flow": 4.52,
+          "pressureDrop": 69.4
+        },
+        {
+          "flow": 4.68,
+          "pressureDrop": 74.4
+        },
+        {
+          "flow": 4.83,
+          "pressureDrop": 80
+        },
+        {
+          "flow": 4.99,
+          "pressureDrop": 85.1
+        },
+        {
+          "flow": 5.15,
+          "pressureDrop": 90.8
+        },
+        {
+          "flow": 5.3,
+          "pressureDrop": 96.8
+        },
+        {
+          "flow": 5.46,
+          "pressureDrop": 102.8
+        },
+        {
+          "flow": 5.61,
+          "pressureDrop": 109
+        },
+        {
+          "flow": 5.76,
+          "pressureDrop": 115.2
+        },
+        {
+          "flow": 5.9,
+          "pressureDrop": 121.6
         },
         {
           "flow": 6,
-          "pressureDrop": 125
+          "pressureDrop": 125.6
         }
       ],
-      "notes": "Bio-Medicus NextGen femoral arterial cannula. 19 Fr (6.3 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-119; cannula kit order code 96530-119."
+      "notes": "Bio-Medicus NextGen femoral arterial cannula. 19 Fr (6.3 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-119; cannula kit order code 96530-119.",
+      "referenceFlowRangeLabel": "0–6",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0 to 6 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Medtronic",
@@ -14985,58 +15961,160 @@
       "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
       "testMedium": "Water",
       "dataStatus": "Digitized curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Medtronic Bio-Medicus NextGen pressure-loss graph using calibrated automatic curve extraction. Values were rounded for practical reference use. A (0,0) source-origin anchor was added. Minor negative near-origin pixel extraction artifacts were removed. No fitted curve was used. Do not extrapolate beyond the digitized source range.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 3
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.53,
+          "pressureDrop": 0.4
+        },
+        {
+          "flow": 0.68,
+          "pressureDrop": 0.8
+        },
+        {
+          "flow": 0.84,
+          "pressureDrop": 1.3
         },
         {
           "flow": 1,
-          "pressureDrop": 4
+          "pressureDrop": 2
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 6
+          "flow": 1.15,
+          "pressureDrop": 2.9
         },
         {
-          "flow": 2,
-          "pressureDrop": 10
+          "flow": 1.31,
+          "pressureDrop": 3.9
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 16
+          "flow": 1.46,
+          "pressureDrop": 4.9
         },
         {
-          "flow": 3,
-          "pressureDrop": 21
+          "flow": 1.62,
+          "pressureDrop": 6.7
+        },
+        {
+          "flow": 1.78,
+          "pressureDrop": 8.2
+        },
+        {
+          "flow": 1.93,
+          "pressureDrop": 9.5
+        },
+        {
+          "flow": 2.09,
+          "pressureDrop": 10.8
+        },
+        {
+          "flow": 2.25,
+          "pressureDrop": 12
+        },
+        {
+          "flow": 2.4,
+          "pressureDrop": 13.6
+        },
+        {
+          "flow": 2.56,
+          "pressureDrop": 15.2
+        },
+        {
+          "flow": 2.72,
+          "pressureDrop": 16.8
+        },
+        {
+          "flow": 2.87,
+          "pressureDrop": 18.8
+        },
+        {
+          "flow": 3.03,
+          "pressureDrop": 20.4
+        },
+        {
+          "flow": 3.18,
+          "pressureDrop": 22.2
+        },
+        {
+          "flow": 3.34,
+          "pressureDrop": 24.4
         },
         {
           "flow": 3.5,
-          "pressureDrop": 28
+          "pressureDrop": 26.5
         },
         {
-          "flow": 4,
-          "pressureDrop": 35
+          "flow": 3.65,
+          "pressureDrop": 28.8
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 44
+          "flow": 3.81,
+          "pressureDrop": 31.2
         },
         {
-          "flow": 5,
-          "pressureDrop": 53
+          "flow": 3.97,
+          "pressureDrop": 33.6
         },
         {
-          "flow": 5.5,
-          "pressureDrop": 65
+          "flow": 4.12,
+          "pressureDrop": 36.1
+        },
+        {
+          "flow": 4.28,
+          "pressureDrop": 38.8
+        },
+        {
+          "flow": 4.44,
+          "pressureDrop": 41.5
+        },
+        {
+          "flow": 4.59,
+          "pressureDrop": 44.6
+        },
+        {
+          "flow": 4.75,
+          "pressureDrop": 47.8
+        },
+        {
+          "flow": 4.9,
+          "pressureDrop": 51
+        },
+        {
+          "flow": 5.06,
+          "pressureDrop": 54.3
+        },
+        {
+          "flow": 5.22,
+          "pressureDrop": 58.2
+        },
+        {
+          "flow": 5.37,
+          "pressureDrop": 61.9
+        },
+        {
+          "flow": 5.53,
+          "pressureDrop": 65.8
+        },
+        {
+          "flow": 5.69,
+          "pressureDrop": 69.9
+        },
+        {
+          "flow": 5.84,
+          "pressureDrop": 74.3
         },
         {
           "flow": 6,
-          "pressureDrop": 79
+          "pressureDrop": 78
         }
       ],
-      "notes": "Bio-Medicus NextGen femoral arterial cannula. 21 Fr (7.0 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-121; cannula kit order code 96530-121."
+      "notes": "Bio-Medicus NextGen femoral arterial cannula. 21 Fr (7.0 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-121; cannula kit order code 96530-121.",
+      "referenceFlowRangeLabel": "0–6",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0 to 6 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Medtronic",
@@ -15047,58 +16125,168 @@
       "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
       "testMedium": "Water",
       "dataStatus": "Digitized curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Medtronic Bio-Medicus NextGen pressure-loss graph using calibrated automatic curve extraction. Values were rounded for practical reference use. A (0,0) source-origin anchor was added. No negative near-origin pixel extraction artifacts required removal. No fitted curve was used. Do not extrapolate beyond the digitized source range.",
       "points": [
         {
-          "flow": 0.5,
-          "pressureDrop": 2
+          "flow": 0,
+          "pressureDrop": 0
         },
         {
-          "flow": 1,
-          "pressureDrop": 4
+          "flow": 0.24,
+          "pressureDrop": 0.1
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 5
+          "flow": 0.4,
+          "pressureDrop": 0.2
         },
         {
-          "flow": 2,
-          "pressureDrop": 8
+          "flow": 0.56,
+          "pressureDrop": 0.4
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 11
+          "flow": 0.71,
+          "pressureDrop": 0.8
         },
         {
-          "flow": 3,
-          "pressureDrop": 14
+          "flow": 0.87,
+          "pressureDrop": 1.2
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 18
+          "flow": 1.02,
+          "pressureDrop": 1.6
         },
         {
-          "flow": 4,
-          "pressureDrop": 23
+          "flow": 1.18,
+          "pressureDrop": 2.3
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 28
+          "flow": 1.34,
+          "pressureDrop": 3
         },
         {
-          "flow": 5,
-          "pressureDrop": 35
+          "flow": 1.49,
+          "pressureDrop": 3.8
         },
         {
-          "flow": 5.5,
-          "pressureDrop": 42
+          "flow": 1.65,
+          "pressureDrop": 4.6
+        },
+        {
+          "flow": 1.81,
+          "pressureDrop": 5.3
+        },
+        {
+          "flow": 1.96,
+          "pressureDrop": 6.3
+        },
+        {
+          "flow": 2.12,
+          "pressureDrop": 7.6
+        },
+        {
+          "flow": 2.27,
+          "pressureDrop": 8.6
+        },
+        {
+          "flow": 2.43,
+          "pressureDrop": 9.5
+        },
+        {
+          "flow": 2.59,
+          "pressureDrop": 10.5
+        },
+        {
+          "flow": 2.74,
+          "pressureDrop": 11.5
+        },
+        {
+          "flow": 2.9,
+          "pressureDrop": 12.1
+        },
+        {
+          "flow": 3.06,
+          "pressureDrop": 13.2
+        },
+        {
+          "flow": 3.21,
+          "pressureDrop": 14.4
+        },
+        {
+          "flow": 3.37,
+          "pressureDrop": 15.7
+        },
+        {
+          "flow": 3.53,
+          "pressureDrop": 17.3
+        },
+        {
+          "flow": 3.68,
+          "pressureDrop": 18.9
+        },
+        {
+          "flow": 3.84,
+          "pressureDrop": 20.2
+        },
+        {
+          "flow": 3.99,
+          "pressureDrop": 21.8
+        },
+        {
+          "flow": 4.15,
+          "pressureDrop": 23.5
+        },
+        {
+          "flow": 4.31,
+          "pressureDrop": 25.2
+        },
+        {
+          "flow": 4.46,
+          "pressureDrop": 27.1
+        },
+        {
+          "flow": 4.62,
+          "pressureDrop": 28.9
+        },
+        {
+          "flow": 4.78,
+          "pressureDrop": 31
+        },
+        {
+          "flow": 4.93,
+          "pressureDrop": 33.2
+        },
+        {
+          "flow": 5.09,
+          "pressureDrop": 35.4
+        },
+        {
+          "flow": 5.25,
+          "pressureDrop": 37.8
+        },
+        {
+          "flow": 5.4,
+          "pressureDrop": 40.1
+        },
+        {
+          "flow": 5.56,
+          "pressureDrop": 42.7
+        },
+        {
+          "flow": 5.71,
+          "pressureDrop": 45.3
+        },
+        {
+          "flow": 5.87,
+          "pressureDrop": 48.3
         },
         {
           "flow": 6,
-          "pressureDrop": 51
+          "pressureDrop": 50.2
         }
       ],
-      "notes": "Bio-Medicus NextGen femoral arterial cannula. 23 Fr (7.7 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-123; cannula kit order code 96530-123."
+      "notes": "Bio-Medicus NextGen femoral arterial cannula. 23 Fr (7.7 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-123; cannula kit order code 96530-123.",
+      "referenceFlowRangeLabel": "0–6",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0 to 6 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Medtronic",
@@ -15109,58 +16297,168 @@
       "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
       "testMedium": "Water",
       "dataStatus": "Digitized curve",
-      "digitizationNote": "Digitized manually from manufacturer-published pressure-loss chart; values rounded for practical reference use. Femoral arterial and jugular venous curves are kept separate.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Medtronic Bio-Medicus NextGen pressure-loss graph using calibrated automatic curve extraction. Values were rounded for practical reference use. A (0,0) source-origin anchor was added. Minor negative near-origin pixel extraction artifacts were removed. No fitted curve was used. Do not extrapolate beyond the digitized source range.",
       "points": [
         {
-          "flow": 0.5,
+          "flow": 0,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.27,
+          "pressureDrop": 0
+        },
+        {
+          "flow": 0.43,
+          "pressureDrop": 0.2
+        },
+        {
+          "flow": 0.58,
+          "pressureDrop": 0.5
+        },
+        {
+          "flow": 0.74,
+          "pressureDrop": 0.6
+        },
+        {
+          "flow": 0.9,
+          "pressureDrop": 0.9
+        },
+        {
+          "flow": 1.05,
+          "pressureDrop": 1.5
+        },
+        {
+          "flow": 1.21,
+          "pressureDrop": 1.8
+        },
+        {
+          "flow": 1.37,
+          "pressureDrop": 2.4
+        },
+        {
+          "flow": 1.52,
           "pressureDrop": 3
         },
         {
-          "flow": 1,
+          "flow": 1.68,
+          "pressureDrop": 3.6
+        },
+        {
+          "flow": 1.83,
           "pressureDrop": 4
         },
         {
-          "flow": 1.5,
-          "pressureDrop": 4
+          "flow": 1.99,
+          "pressureDrop": 4.5
         },
         {
-          "flow": 2,
-          "pressureDrop": 6
+          "flow": 2.15,
+          "pressureDrop": 5
         },
         {
-          "flow": 2.5,
-          "pressureDrop": 8
+          "flow": 2.3,
+          "pressureDrop": 5.6
         },
         {
-          "flow": 3,
-          "pressureDrop": 10
+          "flow": 2.46,
+          "pressureDrop": 6.2
         },
         {
-          "flow": 3.5,
-          "pressureDrop": 12
+          "flow": 2.62,
+          "pressureDrop": 6.9
         },
         {
-          "flow": 4,
-          "pressureDrop": 15
+          "flow": 2.77,
+          "pressureDrop": 7.5
         },
         {
-          "flow": 4.5,
-          "pressureDrop": 18
+          "flow": 2.93,
+          "pressureDrop": 8.2
         },
         {
-          "flow": 5,
-          "pressureDrop": 22
+          "flow": 3.09,
+          "pressureDrop": 8.7
         },
         {
-          "flow": 5.5,
-          "pressureDrop": 25
+          "flow": 3.24,
+          "pressureDrop": 9.4
+        },
+        {
+          "flow": 3.4,
+          "pressureDrop": 10.2
+        },
+        {
+          "flow": 3.55,
+          "pressureDrop": 11
+        },
+        {
+          "flow": 3.71,
+          "pressureDrop": 11.8
+        },
+        {
+          "flow": 3.87,
+          "pressureDrop": 12.6
+        },
+        {
+          "flow": 4.02,
+          "pressureDrop": 13.6
+        },
+        {
+          "flow": 4.18,
+          "pressureDrop": 14.7
+        },
+        {
+          "flow": 4.34,
+          "pressureDrop": 15.4
+        },
+        {
+          "flow": 4.49,
+          "pressureDrop": 16.4
+        },
+        {
+          "flow": 4.65,
+          "pressureDrop": 17.7
+        },
+        {
+          "flow": 4.8,
+          "pressureDrop": 19
+        },
+        {
+          "flow": 4.96,
+          "pressureDrop": 20.2
+        },
+        {
+          "flow": 5.12,
+          "pressureDrop": 21.4
+        },
+        {
+          "flow": 5.27,
+          "pressureDrop": 22.9
+        },
+        {
+          "flow": 5.43,
+          "pressureDrop": 24.3
+        },
+        {
+          "flow": 5.59,
+          "pressureDrop": 25.7
+        },
+        {
+          "flow": 5.74,
+          "pressureDrop": 27.2
+        },
+        {
+          "flow": 5.9,
+          "pressureDrop": 28.8
         },
         {
           "flow": 6,
-          "pressureDrop": 31
+          "pressureDrop": 29.8
         }
       ],
-      "notes": "Bio-Medicus NextGen femoral arterial cannula. 25 Fr (8.3 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-125; cannula kit order code 96530-125."
+      "notes": "Bio-Medicus NextGen femoral arterial cannula. 25 Fr (8.3 mm), 12.5 in (31.8 cm) overall length, 7.09 in (18.0 cm) tip length, 3/8 in connector. Cannula order code 96570-125; cannula kit order code 96530-125.",
+      "referenceFlowRangeLabel": "0–6",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0 to 6 L/min). Pressure drop is not estimated."
     },
     {
       "manufacturer": "Getinge / Maquet",
