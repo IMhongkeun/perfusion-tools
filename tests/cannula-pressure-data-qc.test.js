@@ -3,25 +3,99 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const { auditDataset, hasFatalFindings, main } = require('../scripts/audit-cannula-pressure-data');
+const { auditDataset, hasFatalFindings, main, thresholds } = require('../scripts/audit-cannula-pressure-data');
 
 const datasetPath = path.join(__dirname, '..', 'data', 'cannula-pressure-drop.json');
 const entry = points => ({ manufacturer: 'Test', model: 'Fixture', size: '1 Fr', points });
 const points = values => values.map(([flow, pressureDrop]) => ({ flow, pressureDrop }));
 const audit = values => auditDataset({ items: [entry(points(values))] }).findings;
-const auditWithType = (values, semanticType) => auditDataset({ items: [{
+const auditWithTypeReport = (values, semanticType) => auditDataset({ items: [{
   manufacturer: 'Test', model: 'Fixture', size: '1 Fr',
   pressureSeries: [{ id: semanticType, label: semanticType, semanticType, points: points(values) }]
-}] }).findings;
+}] });
+const auditWithType = (values, semanticType) => auditWithTypeReport(values, semanticType).findings;
 const hasRule = (findings, rule) => findings.some(finding => finding.rule === rule);
+const localMetrics = ([leftFlow, leftPressure], [middleFlow, middlePressure], [rightFlow, rightPressure]) => {
+  const leftMagnitude = Math.abs(leftPressure);
+  const middleMagnitude = Math.abs(middlePressure);
+  const rightMagnitude = Math.abs(rightPressure);
+  const expectedMagnitude = leftMagnitude + (rightMagnitude - leftMagnitude) *
+    (middleFlow - leftFlow) / (rightFlow - leftFlow);
+  const firstSlope = (middleMagnitude - leftMagnitude) / (middleFlow - leftFlow);
+  const secondSlope = (rightMagnitude - middleMagnitude) / (rightFlow - middleFlow);
+  const smallerSlope = Math.min(Math.abs(firstSlope), Math.abs(secondSlope));
+  return {
+    localDeviationMmHg: Math.abs(middleMagnitude - expectedMagnitude),
+    slopeDifference: Math.abs(secondSlope - firstSlope),
+    slopeRatio: Math.max(Math.abs(firstSlope), Math.abs(secondSlope)) / Math.max(smallerSlope, 0.1)
+  };
+};
 
 assert.equal(audit([[0, 0], [1, 10], [2, 20], [3, 30]]).length, 0);
 assert(!hasRule(audit([[0, 0], [1, 10], [2, 9.9], [3, 20]]), 'local-reversal'));
 assert(hasRule(audit([[0, 0], [1, 10], [2, 8], [3, 20]]), 'local-reversal'));
-assert(hasRule(audit([[0, 0], [1, 10], [2, 50], [3, 30], [4, 40]]), 'local-kink'));
-assert(hasRule(audit([[0, 0], [1, 10], [2, 20], [3, 75], [4, 85]]), 'slope-whiplash'));
-const smoothConvex = audit([[0, 0], [1, 5], [2, 15], [3, 30], [4, 50]]);
-assert(!smoothConvex.some(finding => finding.severity === 'HIGH'));
+assert.equal(thresholds.slopeMinimumLocalDeviationMmHg, 3);
+
+// Strong low-flow convexity can change slopes sharply while staying close to the neighboring linear trend.
+const smoothConvexValues = [[0, 0], [0.6, 0.2], [0.7, 2.8], [1.7, 50]];
+const smoothConvexMetrics = localMetrics(...smoothConvexValues.slice(0, 3));
+assert(smoothConvexMetrics.slopeDifference > thresholds.slopeDifference);
+assert(smoothConvexMetrics.slopeRatio > thresholds.slopeRatio);
+assert(smoothConvexMetrics.localDeviationMmHg < thresholds.slopeMinimumLocalDeviationMmHg);
+const smoothInfusion = auditWithType(smoothConvexValues, 'infusion');
+assert(!hasRule(smoothInfusion, 'slope-whiplash'), 'Smooth convex positive-pressure curve must not trigger slope-whiplash below 3 mmHg.');
+assert(!hasRule(smoothInfusion, 'unexpected-pressure-sign'));
+const smoothDrainageValues = smoothConvexValues.map(([flow, pressure]) => [flow, -pressure]);
+const smoothDrainageMetrics = localMetrics(...smoothDrainageValues.slice(0, 3));
+assert(smoothDrainageMetrics.slopeDifference > thresholds.slopeDifference);
+assert(smoothDrainageMetrics.slopeRatio > thresholds.slopeRatio);
+assert(smoothDrainageMetrics.localDeviationMmHg < thresholds.slopeMinimumLocalDeviationMmHg);
+const smoothDrainage = auditWithType(smoothDrainageValues, 'drainage');
+assert(!hasRule(smoothDrainage, 'slope-whiplash'), 'Smooth convex negative-pressure curve must not trigger slope-whiplash below 3 mmHg.');
+assert(!hasRule(smoothDrainage, 'unexpected-pressure-sign'), 'Negative drainage pressure must retain its valid sign semantics.');
+
+// Below-floor geometry is suppressed, while a clearly displaced point above the floor can still trigger.
+const aboveFloorMetrics = localMetrics([0, 0], [0.6, 0.2], [0.7, 4.8]);
+assert(aboveFloorMetrics.localDeviationMmHg > thresholds.slopeMinimumLocalDeviationMmHg + 0.5);
+const aboveFloorFindings = auditWithType([[0, 0], [0.6, 0.2], [0.7, 4.8], [1.7, 70]], 'infusion');
+const aboveFloorWhiplash = aboveFloorFindings.find(finding => finding.rule === 'slope-whiplash' && finding.flow === 0.6);
+assert(aboveFloorWhiplash, 'A genuine artifact above the floor must remain detectable.');
+assert(aboveFloorWhiplash.diagnostics.localDeviationMmHg >= thresholds.slopeMinimumLocalDeviationMmHg);
+
+// Separate true artifacts protect both existing severity bands after the new floor is applied.
+const mediumArtifactFindings = audit([[0, 0], [1, 10], [2, 20], [3, 55], [4, 65]]);
+const mediumArtifact = mediumArtifactFindings.find(finding => finding.rule === 'slope-whiplash' && finding.flow === 2);
+assert(mediumArtifact && mediumArtifact.severity === 'MEDIUM');
+assert(mediumArtifact.diagnostics.slopeRatio >= thresholds.slopeRatio);
+assert(mediumArtifact.diagnostics.slopeRatio < thresholds.extremeSlopeRatio);
+assert(mediumArtifact.diagnostics.localDeviationMmHg > thresholds.slopeMinimumLocalDeviationMmHg);
+const highArtifactFindings = audit([[0, 0], [1, 10], [2, 20], [3, 70], [4, 80]]);
+const highArtifact = highArtifactFindings.find(finding => finding.rule === 'slope-whiplash' && finding.flow === 2);
+assert(highArtifact && highArtifact.severity === 'HIGH');
+assert(highArtifact.diagnostics.slopeRatio >= thresholds.extremeSlopeRatio);
+assert(highArtifact.diagnostics.localDeviationMmHg > thresholds.slopeMinimumLocalDeviationMmHg);
+
+// Local-kink and local-reversal remain independent of the whiplash floor.
+const kinkFindings = audit([[0, 0], [1, 10], [2, 50], [3, 30], [4, 40]]);
+const preservedKink = kinkFindings.find(finding => finding.rule === 'local-kink' && finding.flow === 2);
+assert(preservedKink && preservedKink.severity === 'HIGH');
+assert.deepStrictEqual(preservedKink.diagnostics, {
+  deviationMmHg: 30, relativeDeviation: 1.5, expectedMagnitudeMmHg: 20
+});
+const reversalFindings = audit([[0, 0], [1, 10], [2, 8], [3, 20]]);
+assert(hasRule(reversalFindings, 'local-reversal'));
+
+// Both semantic sign checks remain fatal.
+const wrongSignInfusionReport = auditWithTypeReport([[0, -10], [1, -20], [2, -30]], 'infusion');
+const wrongSignDrainageReport = auditWithTypeReport([[0, 10], [1, 20], [2, 30]], 'drainage');
+assert(hasFatalFindings(wrongSignInfusionReport));
+assert(hasFatalFindings(wrongSignDrainageReport));
+assert(hasRule(wrongSignInfusionReport.findings, 'unexpected-pressure-sign'));
+assert(hasRule(wrongSignDrainageReport.findings, 'unexpected-pressure-sign'));
+assert(audit([[0, 0], [1, 40], [2, 100]]).some(finding =>
+  finding.rule === 'sparse-curve' && finding.severity === 'LOW'), 'Sparse-curve QC must remain active.');
+
+assert(hasRule(audit([[0, 0], [1, 20], [2, 75], [3, 85]]), 'slope-whiplash'));
 assert(!hasRule(audit([[0, 0], [1, -10], [2, -20], [3, -30]]), 'local-reversal'));
 assert(hasRule(audit([[0, 0], [1, -10], [2, -8], [3, -20]]), 'local-reversal'));
 assert(!hasRule(auditWithType([[0, 1], [1, 10], [2, 20]], 'infusion'), 'unexpected-pressure-sign'));
