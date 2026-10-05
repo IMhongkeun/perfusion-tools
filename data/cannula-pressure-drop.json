@@ -8043,224 +8043,332 @@
       ],
       "notes": "Aortic root cannula / without vent line dataset; do not categorize as femoral arterial or femoral venous. Product/family: Aortic Root Cannula. Model/description: without Vent Line. Type/site: Aortic root. Displayed cannula tip size: 12 Ga / 9 Fr. Source graph label: 14Ga. Insertion needle: 14 Ga - Green. Without vent line catalog number: AR-11012. With vent line catalog number: AR-11112. Primary catalog number for this without vent line dataset: AR-11012. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula without Vent Line pressure-flow graph. Source range: 0.106 to 0.60 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula without Vent Line 14Ga curve. The graph label refers to insertion needle gauge, not cannula-tip gauge. The manufacturer x-axis is labeled 0.1–0.6 L/min; supplied coordinates use the already corrected 0.1–0.6 calibration. No synthetic zero-flow anchor was added. Do not extrapolate below 0.106 or above 0.60 L/min."
     },
-    {
-      "manufacturer": "LivaNova",
-      "model": "Aortic Root Long Needle",
-      "category": "Aortic root / cardioplegia",
-      "size": "14 Ga / 7 Fr",
-      "overallLengthCm": 35,
-      "connectionSite": "Aortic root",
-      "cartonQuantity": 10,
-      "cannulaOrderCodeLabel": "Catalog number",
-      "cannulaOrderCode": "AR-17014",
-      "sourceLabel": "LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure",
-      "sourceUrl": "",
-      "testMedium": "Manufacturer graph; medium not specified",
-      "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Aortic Root Long Needle 14Ga curve. The source graph x-axis is labeled 100–600 ml/min and was converted to L/min; digitized raw x values were mapped to the source-labeled axis with the raw left edge mapped to 0.10 L/min and raw right edge mapped to 0.60 L/min. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min.",
-      "referenceFlowRangeLabel": "0–0.60",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.60 L/min). Pressure drop is not estimated.",
-      "points": [
-        {
-          "flow": 0,
-          "pressureDrop": 0
-        },
-        {
-          "flow": 0.1,
-          "pressureDrop": 3.7
-        },
-        {
-          "flow": 0.13,
-          "pressureDrop": 6.0
-        },
-        {
-          "flow": 0.15,
-          "pressureDrop": 7.9
-        },
-        {
-          "flow": 0.18,
-          "pressureDrop": 10.2
-        },
-        {
-          "flow": 0.2,
-          "pressureDrop": 12.4
-        },
-        {
-          "flow": 0.23,
-          "pressureDrop": 14.8
-        },
-        {
-          "flow": 0.26,
-          "pressureDrop": 17.3
-        },
-        {
-          "flow": 0.29,
-          "pressureDrop": 20.0
-        },
-        {
-          "flow": 0.31,
-          "pressureDrop": 23.5
-        },
-        {
-          "flow": 0.34,
-          "pressureDrop": 26.8
-        },
-        {
-          "flow": 0.36,
-          "pressureDrop": 30.0
-        },
-        {
-          "flow": 0.38,
-          "pressureDrop": 33.2
-        },
-        {
-          "flow": 0.41,
-          "pressureDrop": 36.5
-        },
-        {
-          "flow": 0.43,
-          "pressureDrop": 40.0
-        },
-        {
-          "flow": 0.46,
-          "pressureDrop": 45.7
-        },
-        {
-          "flow": 0.49,
-          "pressureDrop": 50.2
-        },
-        {
-          "flow": 0.51,
-          "pressureDrop": 54.6
-        },
-        {
-          "flow": 0.53,
-          "pressureDrop": 60.0
-        },
-        {
-          "flow": 0.55,
-          "pressureDrop": 65.1
-        },
-        {
-          "flow": 0.57,
-          "pressureDrop": 70.2
-        },
-        {
-          "flow": 0.6,
-          "pressureDrop": 76.5
-        }
-      ],
-      "notes": "Aortic root long needle / minimally invasive cardiac surgery cannula dataset; do not categorize as femoral arterial, femoral venous, coronary ostia perfusion, or retrograde cardioplegia. Product/family: Aortic Root Long Needle. Model/description: Minimally invasive cardiac surgery aortic root long needle. Type/site: Aortic root. Cannula tip outer diameter: 14 Ga / 7 Fr. Source graph label: 14Ga. In this source page, the graph label 14Ga corresponds to the table's cannula tip outer diameter 14 Ga / 7 Fr, not the insertion needle. Insertion needle: 16 Ga - White. Catalog number: AR-17014. Effective length: 35 cm. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure pressure-flow graph. Source range: 0 to 0.60 L/min. Extrapolation: false. The source graph x-axis is labeled 100–600 ml/min and was converted to L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min. Do not use the 12 Ga catalog number AR-17012 for this dataset."
-    },
-    {
-      "manufacturer": "LivaNova",
-      "model": "Aortic Root Long Needle",
-      "category": "Aortic root / cardioplegia",
-      "size": "12 Ga / 9 Fr",
-      "overallLengthCm": 35,
-      "connectionSite": "Aortic root",
-      "cartonQuantity": 10,
-      "cannulaOrderCodeLabel": "Catalog number",
-      "cannulaOrderCode": "AR-17012",
-      "sourceLabel": "LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure",
-      "sourceUrl": "",
-      "testMedium": "Manufacturer graph; medium not specified",
-      "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Aortic Root Long Needle 12Ga curve. The source graph x-axis is labeled 100–600 ml/min and was converted to L/min; digitized raw x values were mapped to the source-labeled axis with the raw left edge mapped to 0.10 L/min and raw right edge mapped to 0.60 L/min. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min.",
-      "referenceFlowRangeLabel": "0–0.60",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.60 L/min). Pressure drop is not estimated.",
-      "points": [
-        {
-          "flow": 0,
-          "pressureDrop": 0
-        },
-        {
-          "flow": 0.1,
-          "pressureDrop": 2.2
-        },
-        {
-          "flow": 0.13,
-          "pressureDrop": 4.1
-        },
-        {
-          "flow": 0.16,
-          "pressureDrop": 6.2
-        },
-        {
-          "flow": 0.19,
-          "pressureDrop": 8.1
-        },
-        {
-          "flow": 0.22,
-          "pressureDrop": 10.3
-        },
-        {
-          "flow": 0.25,
-          "pressureDrop": 12.9
-        },
-        {
-          "flow": 0.29,
-          "pressureDrop": 15.2
-        },
-        {
-          "flow": 0.31,
-          "pressureDrop": 17.5
-        },
-        {
-          "flow": 0.34,
-          "pressureDrop": 20.2
-        },
-        {
-          "flow": 0.36,
-          "pressureDrop": 22.5
-        },
-        {
-          "flow": 0.38,
-          "pressureDrop": 24.6
-        },
-        {
-          "flow": 0.4,
-          "pressureDrop": 27.3
-        },
-        {
-          "flow": 0.42,
-          "pressureDrop": 30.0
-        },
-        {
-          "flow": 0.45,
-          "pressureDrop": 33.5
-        },
-        {
-          "flow": 0.47,
-          "pressureDrop": 36.8
-        },
-        {
-          "flow": 0.5,
-          "pressureDrop": 40.0
-        },
-        {
-          "flow": 0.52,
-          "pressureDrop": 43.7
-        },
-        {
-          "flow": 0.54,
-          "pressureDrop": 47.0
-        },
-        {
-          "flow": 0.56,
-          "pressureDrop": 50.0
-        },
-        {
-          "flow": 0.58,
-          "pressureDrop": 53.5
-        },
-        {
-          "flow": 0.6,
-          "pressureDrop": 57.0
-        }
-      ],
-      "notes": "Aortic root long needle / minimally invasive cardiac surgery cannula dataset; do not categorize as femoral arterial, femoral venous, coronary ostia perfusion, or retrograde cardioplegia. Product/family: Aortic Root Long Needle. Model/description: Minimally invasive cardiac surgery aortic root long needle. Type/site: Aortic root. Cannula tip outer diameter: 12 Ga / 9 Fr. Source graph label: 12Ga. In this source page, the graph label 12Ga corresponds to the table's cannula tip outer diameter 12 Ga / 9 Fr, not the insertion needle. Insertion needle: 14 Ga - Green. Catalog number: AR-17012. Effective length: 35 cm. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure pressure-flow graph. Source range: 0 to 0.60 L/min. Extrapolation: false. The source graph x-axis is labeled 100–600 ml/min and was converted to L/min; digitized raw x values were mapped to the source-labeled axis. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond 0.60 L/min. Do not use the 14 Ga catalog number AR-17014 for this dataset."
-    },
+          {
+        "manufacturer": "LivaNova",
+        "model": "Aortic Root Long Needle",
+        "category": "Aortic root / cardioplegia",
+        "size": "14 Ga / 7 Fr",
+        "overallLengthCm": 35,
+        "connectionSite": "Aortic root",
+        "cartonQuantity": 10,
+        "cannulaOrderCodeLabel": "Catalog number",
+        "cannulaOrderCode": "AR-17014",
+        "sourceLabel": "LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure",
+        "sourceUrl": "",
+        "testMedium": "Manufacturer graph; medium not specified",
+        "dataStatus": "digitized-curve",
+        "digitizationNote": "Re-digitized from the manufacturer-published Aortic Root Long Needle 14Ga pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. The source x-axis is 100–600 mL/min; flow was converted to L/min by dividing by 1000 with no additional X-axis remapping. Graph label 14Ga corresponds directly to cannula-tip outer diameter (14 Ga / 7 Fr), not insertion-needle gauge; insertion needle 16 Ga - White; catalog AR-17014. Values are rounded for practical reference use (flow to 0.001 L/min; pressure drop to 0.1 mmHg). No synthetic zero-flow anchor was added. No fitted curve or smoothing was applied. Do not extrapolate outside 0.104–0.60 L/min.",
+        "referenceFlowRangeLabel": "0.104–0.60",
+        "outOfRangeMessage": "Target flow is outside the digitized source range (0.104 to 0.60 L/min). Pressure drop is not estimated.",
+        "points": [
+          {
+            "flow": 0.104,
+            "pressureDrop": 4.3
+          },
+          {
+            "flow": 0.12,
+            "pressureDrop": 5.4
+          },
+          {
+            "flow": 0.135,
+            "pressureDrop": 6.6
+          },
+          {
+            "flow": 0.149,
+            "pressureDrop": 8
+          },
+          {
+            "flow": 0.164,
+            "pressureDrop": 9.3
+          },
+          {
+            "flow": 0.178,
+            "pressureDrop": 10.5
+          },
+          {
+            "flow": 0.192,
+            "pressureDrop": 11.8
+          },
+          {
+            "flow": 0.207,
+            "pressureDrop": 13.1
+          },
+          {
+            "flow": 0.221,
+            "pressureDrop": 14.3
+          },
+          {
+            "flow": 0.235,
+            "pressureDrop": 15.6
+          },
+          {
+            "flow": 0.25,
+            "pressureDrop": 16.8
+          },
+          {
+            "flow": 0.264,
+            "pressureDrop": 18.1
+          },
+          {
+            "flow": 0.278,
+            "pressureDrop": 19.5
+          },
+          {
+            "flow": 0.293,
+            "pressureDrop": 21
+          },
+          {
+            "flow": 0.307,
+            "pressureDrop": 22.6
+          },
+          {
+            "flow": 0.321,
+            "pressureDrop": 24.3
+          },
+          {
+            "flow": 0.336,
+            "pressureDrop": 26.1
+          },
+          {
+            "flow": 0.35,
+            "pressureDrop": 28.1
+          },
+          {
+            "flow": 0.364,
+            "pressureDrop": 30
+          },
+          {
+            "flow": 0.379,
+            "pressureDrop": 32.1
+          },
+          {
+            "flow": 0.393,
+            "pressureDrop": 34.2
+          },
+          {
+            "flow": 0.407,
+            "pressureDrop": 36.5
+          },
+          {
+            "flow": 0.422,
+            "pressureDrop": 38.7
+          },
+          {
+            "flow": 0.436,
+            "pressureDrop": 41
+          },
+          {
+            "flow": 0.45,
+            "pressureDrop": 43.4
+          },
+          {
+            "flow": 0.465,
+            "pressureDrop": 45.9
+          },
+          {
+            "flow": 0.479,
+            "pressureDrop": 48.5
+          },
+          {
+            "flow": 0.494,
+            "pressureDrop": 51.3
+          },
+          {
+            "flow": 0.508,
+            "pressureDrop": 54.3
+          },
+          {
+            "flow": 0.522,
+            "pressureDrop": 57.6
+          },
+          {
+            "flow": 0.537,
+            "pressureDrop": 61
+          },
+          {
+            "flow": 0.551,
+            "pressureDrop": 64.6
+          },
+          {
+            "flow": 0.565,
+            "pressureDrop": 68.2
+          },
+          {
+            "flow": 0.58,
+            "pressureDrop": 71.9
+          },
+          {
+            "flow": 0.6,
+            "pressureDrop": 75.3
+          }
+        ],
+        "notes": "Aortic root long needle / minimally invasive cardiac surgery cannula dataset; do not categorize as femoral arterial, femoral venous, coronary ostia perfusion, or retrograde cardioplegia. Product/family: Aortic Root Long Needle. Model/description: Minimally invasive cardiac surgery aortic root long needle. Type/site: Aortic root. Cannula tip outer diameter: 14 Ga / 7 Fr. Source graph label: 14Ga. For this Aortic Root Long Needle source graph, 14Ga corresponds directly to cannula-tip outer diameter, not insertion needle gauge. Insertion needle: 16 Ga - White. Catalog number: AR-17014. Effective length: 35 cm. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure pressure-flow graph. Source X axis: 100–600 mL/min; flow converted to L/min by division by 1000, with no additional X-axis remapping. Source range: 0.104 to 0.60 L/min. Extrapolation: false. Values rounded for practical reference use: flow to 0.001 L/min and pressure drop to 0.1 mmHg. No synthetic zero-flow anchor was added. No fitted curve or smoothing was applied. Do not estimate pressure drop below 0.104 L/min or above 0.60 L/min."
+      },
+          {
+        "manufacturer": "LivaNova",
+        "model": "Aortic Root Long Needle",
+        "category": "Aortic root / cardioplegia",
+        "size": "12 Ga / 9 Fr",
+        "overallLengthCm": 35,
+        "connectionSite": "Aortic root",
+        "cartonQuantity": 10,
+        "cannulaOrderCodeLabel": "Catalog number",
+        "cannulaOrderCode": "AR-17012",
+        "sourceLabel": "LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure",
+        "sourceUrl": "",
+        "testMedium": "Manufacturer graph; medium not specified",
+        "dataStatus": "digitized-curve",
+        "digitizationNote": "Re-digitized from the manufacturer-published Aortic Root Long Needle 12Ga pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. The source x-axis is 100–600 mL/min; flow was converted to L/min by dividing by 1000 with no additional X-axis remapping. Graph label 12Ga corresponds directly to cannula-tip outer diameter (12 Ga / 9 Fr), not insertion-needle gauge; insertion needle 14 Ga - Green; catalog AR-17012. Values are rounded for practical reference use (flow to 0.001 L/min; pressure drop to 0.1 mmHg). No synthetic zero-flow anchor was added. No fitted curve or smoothing was applied. Do not extrapolate outside 0.106–0.60 L/min.",
+        "referenceFlowRangeLabel": "0.106–0.60",
+        "outOfRangeMessage": "Target flow is outside the digitized source range (0.106 to 0.60 L/min). Pressure drop is not estimated.",
+        "points": [
+          {
+            "flow": 0.106,
+            "pressureDrop": 3.3
+          },
+          {
+            "flow": 0.121,
+            "pressureDrop": 4.2
+          },
+          {
+            "flow": 0.135,
+            "pressureDrop": 5
+          },
+          {
+            "flow": 0.149,
+            "pressureDrop": 6
+          },
+          {
+            "flow": 0.164,
+            "pressureDrop": 6.8
+          },
+          {
+            "flow": 0.178,
+            "pressureDrop": 7.8
+          },
+          {
+            "flow": 0.192,
+            "pressureDrop": 9
+          },
+          {
+            "flow": 0.207,
+            "pressureDrop": 9.9
+          },
+          {
+            "flow": 0.221,
+            "pressureDrop": 10.7
+          },
+          {
+            "flow": 0.235,
+            "pressureDrop": 11.6
+          },
+          {
+            "flow": 0.25,
+            "pressureDrop": 12.7
+          },
+          {
+            "flow": 0.264,
+            "pressureDrop": 13.7
+          },
+          {
+            "flow": 0.278,
+            "pressureDrop": 14.8
+          },
+          {
+            "flow": 0.293,
+            "pressureDrop": 16
+          },
+          {
+            "flow": 0.307,
+            "pressureDrop": 17.3
+          },
+          {
+            "flow": 0.321,
+            "pressureDrop": 18.8
+          },
+          {
+            "flow": 0.336,
+            "pressureDrop": 20.2
+          },
+          {
+            "flow": 0.35,
+            "pressureDrop": 21.7
+          },
+          {
+            "flow": 0.364,
+            "pressureDrop": 23.4
+          },
+          {
+            "flow": 0.379,
+            "pressureDrop": 25.1
+          },
+          {
+            "flow": 0.393,
+            "pressureDrop": 26.8
+          },
+          {
+            "flow": 0.407,
+            "pressureDrop": 28.5
+          },
+          {
+            "flow": 0.422,
+            "pressureDrop": 30.1
+          },
+          {
+            "flow": 0.436,
+            "pressureDrop": 31.7
+          },
+          {
+            "flow": 0.45,
+            "pressureDrop": 33.6
+          },
+          {
+            "flow": 0.465,
+            "pressureDrop": 35.3
+          },
+          {
+            "flow": 0.479,
+            "pressureDrop": 37.3
+          },
+          {
+            "flow": 0.494,
+            "pressureDrop": 39.3
+          },
+          {
+            "flow": 0.508,
+            "pressureDrop": 41.3
+          },
+          {
+            "flow": 0.522,
+            "pressureDrop": 43.6
+          },
+          {
+            "flow": 0.537,
+            "pressureDrop": 46
+          },
+          {
+            "flow": 0.551,
+            "pressureDrop": 48.5
+          },
+          {
+            "flow": 0.565,
+            "pressureDrop": 50.8
+          },
+          {
+            "flow": 0.58,
+            "pressureDrop": 53.4
+          },
+          {
+            "flow": 0.593,
+            "pressureDrop": 55.7
+          },
+          {
+            "flow": 0.6,
+            "pressureDrop": 56.6
+          }
+        ],
+        "notes": "Aortic root long needle / minimally invasive cardiac surgery cannula dataset; do not categorize as femoral arterial, femoral venous, coronary ostia perfusion, or retrograde cardioplegia. Product/family: Aortic Root Long Needle. Model/description: Minimally invasive cardiac surgery aortic root long needle. Type/site: Aortic root. Cannula tip outer diameter: 12 Ga / 9 Fr. Source graph label: 12Ga. For this Aortic Root Long Needle source graph, 12Ga corresponds directly to cannula-tip outer diameter, not insertion needle gauge. Insertion needle: 14 Ga - Green. Catalog number: AR-17012. Effective length: 35 cm. Quantity per box: 10. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Minimally Invasive Cardiac Surgery Cannulae brochure pressure-flow graph. Source X axis: 100–600 mL/min; flow converted to L/min by division by 1000, with no additional X-axis remapping. Source range: 0.106 to 0.60 L/min. Extrapolation: false. Values rounded for practical reference use: flow to 0.001 L/min and pressure drop to 0.1 mmHg. No synthetic zero-flow anchor was added. No fitted curve or smoothing was applied. Do not estimate pressure drop below 0.106 L/min or above 0.60 L/min."
+      },
     {
       "manufacturer": "LivaNova",
       "model": "Coronary Ostia Perfusion Cannulae — Basket Tip, Stainless Steel Shaft and Female Luer Lock Connector",

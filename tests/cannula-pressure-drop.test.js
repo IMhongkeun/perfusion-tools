@@ -1062,17 +1062,58 @@ function run() {
     getPressureDropLookupMatches(livaNovaEntries, { category: 'arterial cannula' }).some(entry => entry.model === 'Arterial Femoral Cannulae — Polyurethane tubing with suture ring, with introducer'),
     'LivaNova Arterial Femoral Cannulae should remain classified as Arterial cannula.'
   );
-  const rootPressureDropSnapshots = [
-    ['Aortic Root Long Needle', '14 Ga / 7 Fr', 0.36, 30],
-    ['Aortic Root Long Needle', '12 Ga / 9 Fr', 0.38, 24.6]
+  const longNeedleContracts = [
+    ['AR-17012', '12 Ga / 9 Fr', '12Ga', '14 Ga - Green', 35, '0.106–0.60', 36],
+    ['AR-17014', '14 Ga / 7 Fr', '14Ga', '16 Ga - White', 35, '0.104–0.60', 35]
   ];
-  rootPressureDropSnapshots.forEach(([model, size, flow, expectedDrop]) => {
-    const entry = livaNovaRootEntries.find(item => item.model === model && item.size === size);
-    assert(entry, `${model} ${size} should remain available after root reclassification.`);
-    const result = interpolatePressureDrop(entry.points, flow);
-    assert.strictEqual(result.state, 'exact', `${model} ${size} should retain the same exact pressure-flow point at ${flow} L/min.`);
-    assert.strictEqual(result.value, expectedDrop, `${model} ${size} pressure-drop data should remain unchanged.`);
-  });
+  const longNeedleEntries = livaNovaEntries.filter(entry => entry.model === 'Aortic Root Long Needle');
+  assert.strictEqual(longNeedleEntries.length, 2, 'Exactly two Aortic Root Long Needle datasets should remain.');
+  const auditReport = require('../scripts/audit-cannula-pressure-data').auditDataset({ items: pressureDropData });
+  for (const [code, size, graphLabel, insertionNeedle, lengthCm, range, pointCount] of longNeedleContracts) {
+    const matches = longNeedleEntries.filter(entry => entry.cannulaOrderCode === code);
+    assert.strictEqual(matches.length, 1, `${code} should exist exactly once.`);
+    const entry = matches[0];
+    assert.strictEqual(entry.size, size);
+    assert.strictEqual(entry.category, 'Aortic root / cardioplegia');
+    assert.strictEqual(entry.connectionSite, 'Aortic root');
+    assert.strictEqual(entry.overallLengthCm, lengthCm);
+    assert.strictEqual(entry.cartonQuantity, 10);
+    assert.strictEqual(entry.points.length, pointCount);
+    assert(entry.digitizationNote.includes(`Graph label ${graphLabel} corresponds directly to cannula-tip outer diameter`));
+    assert(entry.digitizationNote.includes(`insertion needle ${insertionNeedle}`));
+    assert(entry.digitizationNote.includes('source x-axis is 100–600 mL/min'));
+    assert(entry.digitizationNote.includes('converted to L/min by dividing by 1000'));
+    assert(entry.digitizationNote.includes('no additional X-axis remapping'));
+    assert(entry.digitizationNote.includes('No synthetic zero-flow anchor was added'));
+    assert(entry.digitizationNote.includes('No fitted curve or smoothing was applied'));
+    assert(entry.notes.includes(`Source graph label: ${graphLabel}.`));
+    assert(entry.notes.includes(`Cannula tip outer diameter: ${size}.`));
+    assert(entry.notes.includes(`Insertion needle: ${insertionNeedle}.`));
+    assert(entry.notes.includes('Source X axis: 100–600 mL/min; flow converted to L/min by division by 1000'));
+    assert(entry.notes.includes('No synthetic zero-flow anchor was added.'));
+    assert(!/zero-flow anchor was added for physiologic interpolation/i.test(entry.notes));
+    assert.strictEqual(entry.referenceFlowRangeLabel, range);
+    const [minimumText, maximumText] = range.split('–');
+    const minimum = Number(minimumText), maximum = Number(maximumText);
+    assert.strictEqual(entry.points[0].flow, minimum);
+    assert.strictEqual(entry.points.at(-1).flow, maximum);
+    assert(entry.outOfRangeMessage.includes(`${minimumText} to ${maximumText} L/min`));
+    assert(entry.outOfRangeMessage.includes('Pressure drop is not estimated'));
+    assert(!entry.points.some(point => point.flow === 0 && point.pressureDrop === 0));
+    entry.points.forEach((point, index) => {
+      assert(Math.abs(point.flow * 1000 - Math.round(point.flow * 1000)) < 1e-8);
+      assert(point.pressureDrop >= 0);
+      if (index > 0) {
+        assert(point.flow > entry.points[index - 1].flow);
+        assert(point.pressureDrop >= entry.points[index - 1].pressureDrop);
+      }
+    });
+    assert.strictEqual(interpolatePressureDrop(entry.points, minimum - 0.001).state, 'out_of_range');
+    assert.strictEqual(interpolatePressureDrop(entry.points, maximum + 0.001).state, 'out_of_range');
+    const shapeFindings = auditReport.findings.filter(finding => finding.cannulaOrderCode === code &&
+      ['local-reversal', 'local-kink', 'slope-whiplash', 'sparse-curve'].includes(finding.rule));
+    assert.deepStrictEqual(shapeFindings, [], `${code} should remain free of curve-shape QC findings.`);
+  }
 
   const livaNovaArterialHighDrop = livaNovaEntries.find(entry => entry.model === 'Arterial Femoral Cannulae — Polyurethane tubing with suture ring, with introducer' && entry.size === '19 Fr');
   assert(livaNovaArterialHighDrop, 'A LivaNova arterial high-pressure example should remain available.');
