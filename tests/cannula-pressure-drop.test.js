@@ -626,6 +626,72 @@ function interpolatePressureDrop(points, targetFlow) {
   return { state: 'out_of_range', value: null, minFlow, maxFlow };
 }
 
+const aorticRootCurves = [
+  ['AR-11012', 'without Vent Line', '12 Ga / 9 Fr', '14Ga', '14 Ga - Green', 15, '0.106–0.60', 34],
+  ['AR-11014', 'without Vent Line', '14 Ga / 7 Fr', '16Ga', '16 Ga - White', 15, '0.106–0.60', 34],
+  ['AR-11016', 'without Vent Line', '16 Ga / 5 Fr', '18Ga', '18 Ga - Pink', 15, '0.106–0.40', 24],
+  ['AR-11018', 'without Vent Line', '18 Ga / 4 Fr', '20Ga', '20 Ga - Gold', 12.5, '0.106–0.60', 35],
+  ['AR-11112', 'with Vent Line', '12 Ga / 9 Fr', '14Ga', '14 Ga - Green', 15, '0.104–0.60', 34],
+  ['AR-11114', 'with Vent Line', '14 Ga / 7 Fr', '16Ga', '16 Ga - White', 15, '0.107–0.60', 34],
+  ['AR-11116', 'with Vent Line', '16 Ga / 5 Fr', '18Ga', '18 Ga - Pink', 15, '0.107–0.40', 24]
+];
+const aorticRootCodes = new Set(aorticRootCurves.map(([code]) => code));
+const aorticRootEntries = pressureDropData.filter(entry => aorticRootCodes.has(entry.cannulaOrderCode));
+assert.strictEqual(aorticRootEntries.length, aorticRootCurves.length);
+assert.deepStrictEqual(
+  aorticRootCurves.filter(([, configuration]) => configuration === 'without Vent Line').map(([code]) => code),
+  aorticRootEntries.filter(entry => entry.model.toLowerCase().includes('without vent line')).map(entry => entry.cannulaOrderCode).sort((a, b) => a.localeCompare(b))
+);
+assert.deepStrictEqual(
+  aorticRootCurves.filter(([, configuration]) => configuration === 'with Vent Line').map(([code]) => code),
+  aorticRootEntries.filter(entry => entry.model === 'Aortic Root Cannula with Vent Line').map(entry => entry.cannulaOrderCode).sort((a, b) => a.localeCompare(b))
+);
+assert.strictEqual(aorticRootEntries.filter(entry => entry.cannulaOrderCode === 'AR-11116').length, 1);
+assert(!aorticRootEntries.some(entry => entry.cannulaOrderCode === 'AR-11118' || entry.model === 'Aortic Root Cannula with Vent Line' && entry.size === '18 Ga / 4 Fr'));
+for (const [code, configuration, size, graphLabel, needle, lengthCm, range, pointCount] of aorticRootCurves) {
+  const entry = aorticRootEntries.find(item => item.cannulaOrderCode === code);
+  assert.strictEqual(entry.size, size);
+  assert.strictEqual(entry.connectionSite, 'Aortic root');
+  assert.strictEqual(entry.category, 'Aortic root / cardioplegia');
+  assert.strictEqual(entry.overallLengthCm, lengthCm);
+  assert.strictEqual(entry.points.length, pointCount);
+  assert(entry.digitizationNote.includes(`Graph label ${graphLabel} refers to insertion needle gauge`));
+  assert(entry.digitizationNote.includes(`insertion needle ${needle}`));
+  assert(entry.digitizationNote.includes(`primary catalog number ${code}`));
+  assert(entry.digitizationNote.includes('corrected source-axis calibration'));
+  assert(entry.digitizationNote.includes('No synthetic zero-flow anchor was added'));
+  assert(entry.digitizationNote.includes('No smoothing, fitted curve, or extrapolation'));
+  assert(entry.notes.includes(`Source graph label: ${graphLabel}.`));
+  assert(entry.notes.includes(`Insertion needle: ${needle}.`));
+  assert(entry.notes.includes(`Primary catalog number for this ${configuration.toLowerCase()} dataset: ${code}.`));
+  assert(entry.notes.includes(`Effective length: ${lengthCm} cm.`));
+  assert(entry.notes.includes('Quantity per box: 10.'));
+  assert(entry.notes.includes('Available coated: no.'));
+  assert(entry.notes.includes('Extrapolation: false.'));
+  assert(entry.notes.includes('No synthetic zero-flow anchor was added.'));
+  assert(!/zero-flow anchor was added for physiologic interpolation/i.test(entry.notes));
+  assert.strictEqual(entry.referenceFlowRangeLabel, range);
+  const [minimumText, maximumText] = range.split('–');
+  const minimum = Number(minimumText), maximum = Number(maximumText);
+  assert.strictEqual(entry.points[0].flow, minimum);
+  assert.strictEqual(entry.points.at(-1).flow, maximum);
+  assert(entry.outOfRangeMessage.includes(`${minimumText} to ${maximumText} L/min`));
+  assert(entry.outOfRangeMessage.includes('Pressure drop is not estimated'));
+  assert(!entry.points.some(point => point.flow === 0 && point.pressureDrop === 0));
+  entry.points.forEach((point, index) => {
+    assert(Math.abs(point.flow * 1000 - Math.round(point.flow * 1000)) < 1e-8, `${code} flow precision should remain at 0.001 L/min.`);
+    assert(point.pressureDrop >= 0);
+    if (index > 0) {
+      assert(point.flow > entry.points[index - 1].flow);
+      assert(point.pressureDrop >= entry.points[index - 1].pressureDrop);
+    }
+  });
+  assert.strictEqual(interpolatePressureDrop(entry.points, minimum - 0.001).state, 'out_of_range');
+  assert.strictEqual(interpolatePressureDrop(entry.points, maximum + 0.001).state, 'out_of_range');
+}
+const livaNovaDatasetCount = pressureDropData.filter(entry => entry.manufacturer === 'LivaNova').length;
+assert(mainJs.includes(`Browse ${pressureDropData.length} manufacturer pressure-flow datasets for cannula selection.`));
+
 const retrogradeF14Model = 'Retrograde Cardioplegia Cannulae — Self-Inflating PVC Balloon';
 const retrogradeF14Entries = pressureDropData.filter(entry => entry.manufacturer === 'LivaNova' &&
   entry.model === retrogradeF14Model && entry.size === '14 Fr');
@@ -964,7 +1030,7 @@ function run() {
 
   const livaNovaEntries = pressureDropData.filter(entry => entry.manufacturer === 'LivaNova');
   const livaNovaRootEntries = livaNovaEntries.filter(entry => /aortic root/i.test(entry.model || ''));
-  assert.strictEqual(livaNovaRootEntries.length, 8, 'LivaNova root-related entries should remain present.');
+  assert.strictEqual(livaNovaRootEntries.length, 9, 'LivaNova root-related entries should remain present.');
   assert(
     livaNovaRootEntries.every(entry => getPressureDropCategoryFilterValue(entry.category) === 'aortic root / cardioplegia'),
     'All LivaNova root-related entries should be classified as Aortic root / cardioplegia.'
@@ -997,12 +1063,6 @@ function run() {
     'LivaNova Arterial Femoral Cannulae should remain classified as Arterial cannula.'
   );
   const rootPressureDropSnapshots = [
-    ['Aortic Root Cannula / without Vent Line', '18Ga', 0.28, 34.6],
-    ['Aortic Root Cannula with Vent Line', '14 Ga / 7 Fr', 0.38, 30],
-    ['Aortic Root Cannula with Vent Line', '12 Ga / 9 Fr', 0.37, 18],
-    ['Aortic Root Cannula without Vent Line', '16 Ga / 5 Fr', 0.29, 36],
-    ['Aortic Root Cannula without Vent Line', '14 Ga / 7 Fr', 0.38, 30],
-    ['Aortic Root Cannula without Vent Line', '12 Ga / 9 Fr', 0.37, 16.5],
     ['Aortic Root Long Needle', '14 Ga / 7 Fr', 0.36, 30],
     ['Aortic Root Long Needle', '12 Ga / 9 Fr', 0.38, 24.6]
   ];
@@ -1753,6 +1813,9 @@ staticSummaryFiles.forEach(relativePath => {
   const html = fs.readFileSync(path.join(__dirname, '..', relativePath), 'utf8');
   assert(html.includes(`${pressureDropData.length} datasets`), `${relativePath} must show the canonical dataset total.`);
   assert(html.includes(`${getingeCount} datasets`) || html.includes(`Getinge / Maquet (${getingeCount})`), `${relativePath} must show the canonical Getinge / Maquet count.`);
+  if (html.includes('<strong>LivaNova</strong>')) {
+    assert(html.includes(`<strong>LivaNova</strong>: ${livaNovaDatasetCount} datasets`), `${relativePath} must show the canonical LivaNova count.`);
+  }
   assert.match(html, /Avalon Elite/i, `${relativePath} must mention Avalon Elite.`);
   assert.match(html, /jugular/i, `${relativePath} must include jugular venous coverage.`);
 });
