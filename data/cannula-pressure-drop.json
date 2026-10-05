@@ -10497,100 +10497,140 @@
       "sourceUrl": "https://www.livanova.com/cannulae/en-us/adult/cardioplegia-cannulae/retrograde-coronary-sinus",
       "testMedium": "Manufacturer graph; medium not specified",
       "dataStatus": "digitized-curve",
-      "digitizationNote": "Source curve digitized from the Retrograde Cardioplegia Cannulae with Self-Inflating PVC Balloon F14 curve. The source graph x-axis is labeled 0–0.6 L/min and y-axis is labeled 0–60 mmHg. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the visible digitized source range of 0.60 L/min.",
-      "referenceFlowRangeLabel": "0–0.60",
-      "outOfRangeMessage": "Target flow is outside the digitized source range (0 to 0.60 L/min). Pressure drop is not estimated.",
+      "digitizationNote": "Re-digitized from the manufacturer-published Retrograde Cardioplegia Cannulae with Self-Inflating PVC Balloon F14 pressure-flow graph using calibrated automatic WebPlotDigitizer extraction. The visible source curve begins at approximately 0.05 L/min; no synthetic zero-flow anchor is included. Values were rounded for practical reference use. The final flow coordinate was normalized to 0.60 L/min because the extracted endpoint was within 0.01 L/min of the published graph boundary; the extracted pressure value was preserved. No fitted curve, smoothing, interpolation, or extrapolation outside the visible digitized source range.",
+      "referenceFlowRangeLabel": "0.05–0.60",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.05 to 0.60 L/min). Pressure drop is not estimated.",
       "points": [
-        {
-          "flow": 0,
-          "pressureDrop": 0
-        },
         {
           "flow": 0.05,
           "pressureDrop": 0.5
         },
         {
+          "flow": 0.07,
+          "pressureDrop": 1.6
+        },
+        {
           "flow": 0.09,
-          "pressureDrop": 2.9
+          "pressureDrop": 2.7
         },
         {
           "flow": 0.11,
-          "pressureDrop": 4.5
+          "pressureDrop": 3.8
+        },
+        {
+          "flow": 0.12,
+          "pressureDrop": 5
         },
         {
           "flow": 0.14,
           "pressureDrop": 6.1
         },
         {
-          "flow": 0.17,
-          "pressureDrop": 8.1
+          "flow": 0.16,
+          "pressureDrop": 7.3
+        },
+        {
+          "flow": 0.18,
+          "pressureDrop": 8.4
         },
         {
           "flow": 0.2,
-          "pressureDrop": 10.3
+          "pressureDrop": 9.8
+        },
+        {
+          "flow": 0.21,
+          "pressureDrop": 10.9
         },
         {
           "flow": 0.23,
-          "pressureDrop": 12.5
+          "pressureDrop": 12.3
         },
         {
-          "flow": 0.26,
-          "pressureDrop": 14.7
+          "flow": 0.25,
+          "pressureDrop": 13.6
+        },
+        {
+          "flow": 0.27,
+          "pressureDrop": 14.9
+        },
+        {
+          "flow": 0.29,
+          "pressureDrop": 16.2
         },
         {
           "flow": 0.3,
-          "pressureDrop": 17.0
+          "pressureDrop": 17.6
+        },
+        {
+          "flow": 0.32,
+          "pressureDrop": 19
         },
         {
           "flow": 0.34,
-          "pressureDrop": 20.3
+          "pressureDrop": 20.4
         },
         {
           "flow": 0.36,
-          "pressureDrop": 22.5
+          "pressureDrop": 21.9
         },
         {
-          "flow": 0.4,
-          "pressureDrop": 25.6
+          "flow": 0.37,
+          "pressureDrop": 23.6
         },
         {
-          "flow": 0.42,
-          "pressureDrop": 28.4
+          "flow": 0.39,
+          "pressureDrop": 25.3
         },
         {
-          "flow": 0.44,
-          "pressureDrop": 30.2
+          "flow": 0.41,
+          "pressureDrop": 27.1
         },
         {
-          "flow": 0.47,
-          "pressureDrop": 33.2
+          "flow": 0.43,
+          "pressureDrop": 28.9
+        },
+        {
+          "flow": 0.45,
+          "pressureDrop": 30.7
+        },
+        {
+          "flow": 0.46,
+          "pressureDrop": 32.8
+        },
+        {
+          "flow": 0.48,
+          "pressureDrop": 35
         },
         {
           "flow": 0.5,
-          "pressureDrop": 36.8
+          "pressureDrop": 37.5
         },
         {
           "flow": 0.52,
-          "pressureDrop": 40.2
+          "pressureDrop": 40
+        },
+        {
+          "flow": 0.53,
+          "pressureDrop": 42.4
         },
         {
           "flow": 0.55,
-          "pressureDrop": 44.0
+          "pressureDrop": 44.9
         },
         {
-          "flow": 0.56,
-          "pressureDrop": 46.8
+          "flow": 0.57,
+          "pressureDrop": 47.4
         },
         {
           "flow": 0.58,
-          "pressureDrop": 49.9
+          "pressureDrop": 50
         },
         {
           "flow": 0.6,
-          "pressureDrop": 53.0
+          "pressureDrop": 52.9
         }
       ],
-      "notes": "Cardioplegia product / Retrograde cardioplegia cannula / coronary sinus cannula dataset; do not categorize as femoral arterial, femoral venous, aortic root, or coronary ostia perfusion. Product/family: Retrograde Cardioplegia Cannulae. Model/description: Self-Inflating PVC Balloon. Type/site: Retrograde cardioplegia / coronary sinus. Cannula tip size: 14 Fr. Balloon diameter options: 14 mm; 18 mm; 20 mm. Without stylet catalog numbers: RCS-11114 for 14 mm balloon, RCS-12114 for 18 mm balloon, RCS-13114 for 20 mm balloon. Solid malleable stylet catalog numbers: RCS-11214 for 14 mm balloon, RCS-12214 for 18 mm balloon, RCS-13214 for 20 mm balloon. Solid malleable stylet with handle catalog numbers: RCS-11314 for 14 mm balloon, RCS-12314 for 18 mm balloon, RCS-13314 for 20 mm balloon. Effective length: 30.5 cm. Quantity per box: 5. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source graph label: F14. Source range: 0 to 0.60 L/min. Extrapolation: false. Source curve digitized from the Retrograde Cardioplegia Cannulae with Self-Inflating PVC Balloon F14 curve. The source graph x-axis is labeled 0–0.6 L/min and y-axis is labeled 0–60 mmHg. A zero-flow anchor was added for physiologic interpolation. Do not extrapolate beyond the visible digitized source range of 0.60 L/min. The source graph provides a single F14 curve; balloon diameter options 14 mm, 18 mm, and 20 mm are included as catalog variants rather than separate pressure-flow datasets."
+      "notes": "Cardioplegia product / Retrograde cardioplegia cannula / coronary sinus cannula dataset; do not categorize as femoral arterial, femoral venous, aortic root, or coronary ostia perfusion. Product/family: Retrograde Cardioplegia Cannulae. Model/description: Self-Inflating PVC Balloon. Type/site: Retrograde cardioplegia / coronary sinus. Cannula tip size: 14 Fr. Balloon diameter options: 14 mm; 18 mm; 20 mm. Without stylet catalog numbers: RCS-11114 for 14 mm balloon, RCS-12114 for 18 mm balloon, RCS-13114 for 20 mm balloon. Solid malleable stylet catalog numbers: RCS-11214 for 14 mm balloon, RCS-12214 for 18 mm balloon, RCS-13214 for 20 mm balloon. Solid malleable stylet with handle catalog numbers: RCS-11314 for 14 mm balloon, RCS-12314 for 18 mm balloon, RCS-13314 for 20 mm balloon. Effective length: 30.5 cm. Quantity per box: 5. Available coated: no. Source type: digitized_graph. Source description: LivaNova Adult Cannulae - Cardioplegia Products brochure pressure-flow graph. Source graph label: F14. Source range: 0.05 to 0.60 L/min. Extrapolation: false. Source curve digitized from the Retrograde Cardioplegia Cannulae with Self-Inflating PVC Balloon F14 curve. The source graph x-axis is labeled 0–0.6 L/min and y-axis is labeled 0–60 mmHg. Do not extrapolate below 0.05 L/min or above 0.60 L/min, outside the visible digitized source range. The source graph provides a single F14 curve; balloon diameter options 14 mm, 18 mm, and 20 mm are included as catalog variants rather than separate pressure-flow datasets."
     },
     {
       "manufacturer": "Getinge / Maquet",

@@ -626,6 +626,41 @@ function interpolatePressureDrop(points, targetFlow) {
   return { state: 'out_of_range', value: null, minFlow, maxFlow };
 }
 
+const retrogradeF14Model = 'Retrograde Cardioplegia Cannulae — Self-Inflating PVC Balloon';
+const retrogradeF14Entries = pressureDropData.filter(entry => entry.manufacturer === 'LivaNova' &&
+  entry.model === retrogradeF14Model && entry.size === '14 Fr');
+assert.strictEqual(retrogradeF14Entries.length, 1, 'The shared F14 curve must remain one dataset for all balloon variants.');
+const retrogradeF14 = retrogradeF14Entries[0];
+const retrogradeF14CatalogCodes = [
+  'RCS-11114', 'RCS-12114', 'RCS-13114',
+  'RCS-11214', 'RCS-12214', 'RCS-13214',
+  'RCS-11314', 'RCS-12314', 'RCS-13314'
+];
+assert.deepStrictEqual(retrogradeF14.cannulaOrderCode.split('; '), retrogradeF14CatalogCodes);
+assert.deepStrictEqual(retrogradeF14.points[0], { flow: 0.05, pressureDrop: 0.5 });
+assert.strictEqual(retrogradeF14.points.at(-1).flow, 0.6);
+assert(!retrogradeF14.points.some(point => point.flow === 0 && point.pressureDrop === 0), 'The unsupported synthetic origin must not return.');
+retrogradeF14.points.forEach((point, index) => {
+  assert(Number.isFinite(point.flow) && Number.isFinite(point.pressureDrop));
+  assert(point.flow >= 0.05 && point.pressureDrop >= 0);
+  if (index > 0) {
+    assert(point.flow > retrogradeF14.points[index - 1].flow);
+    assert(point.pressureDrop >= retrogradeF14.points[index - 1].pressureDrop);
+  }
+});
+assert.strictEqual(retrogradeF14.referenceFlowRangeLabel, '0.05–0.60');
+assert(retrogradeF14.outOfRangeMessage.includes('0.05 to 0.60 L/min'));
+assert(retrogradeF14.outOfRangeMessage.includes('Pressure drop is not estimated'));
+assert(!/zero-flow anchor was added|physiologic interpolation/i.test(retrogradeF14.digitizationNote));
+assert(retrogradeF14.digitizationNote.includes('visible source curve begins at approximately 0.05 L/min'));
+assert(retrogradeF14.digitizationNote.includes('no synthetic zero-flow anchor is included'));
+assert(retrogradeF14.notes.includes('Source range: 0.05 to 0.60 L/min.'));
+assert(!/zero-flow anchor was added|physiologic interpolation/i.test(retrogradeF14.notes));
+assert.strictEqual(interpolatePressureDrop(retrogradeF14.points, 0.049).state, 'out_of_range');
+assert.strictEqual(interpolatePressureDrop(retrogradeF14.points, 0.05).state, 'exact');
+assert.strictEqual(interpolatePressureDrop(retrogradeF14.points, 0.6).state, 'exact');
+assert.strictEqual(interpolatePressureDrop(retrogradeF14.points, 0.601).state, 'out_of_range');
+
 
 function getPressureDropSizeOptionValue(entry) {
   const connectionSite = entry.connectionSite || '';
