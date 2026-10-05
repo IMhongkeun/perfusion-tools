@@ -7,6 +7,53 @@ const vm = require('vm');
 
 const mainJs = fs.readFileSync(path.join(__dirname, '..', 'main.js'), 'utf8');
 const pressureDropData = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'cannula-pressure-drop.json'), 'utf8')).items;
+const aorticArchCurvedModel = 'Aortic Arch Cannulae — Curved Tip with Suture Flange, Wire-reinforced Tubing';
+const aorticArchCurvedProducts = [
+  ['14 Fr', 4.5, 23, '1/4 inch', 'A212-45C (connector without luer vent); A212-45B (connector with luer vent down); no connector with luer vent up listed for this size', 3.04],
+  ['16 Fr', 5.2, 23, '3/8 inch', 'A212-52C (connector without luer vent); A212-52B (connector with luer vent down); A212-52A (connector with luer vent up)', 4.55],
+  ['20 Fr', 6.5, 23, '3/8 inch', 'A212-65C (connector without luer vent); A212-65B (connector with luer vent down); A212-65A (connector with luer vent up)', 7.52],
+  ['22 Fr', 7.3, 23, '3/8 inch', 'A212-73C (connector without luer vent); A212-73B (connector with luer vent down); A212-73A (connector with luer vent up)', 9],
+  ['24 Fr', 8.0, 24, '3/8 inch', 'A212-80C (connector without luer vent); A212-80B (connector with luer vent down); A212-80A (connector with luer vent up)', 9]
+];
+const aorticArchCurvedEntries = pressureDropData.filter(entry => entry.manufacturer === 'LivaNova' && entry.model === aorticArchCurvedModel);
+assert.strictEqual(aorticArchCurvedEntries.length, aorticArchCurvedProducts.length);
+for (const [size, tipMm, lengthCm, connector, productCodes, finalFlow] of aorticArchCurvedProducts) {
+  const matches = aorticArchCurvedEntries.filter(entry => entry.size === size);
+  assert.strictEqual(matches.length, 1, `${size} Curved Tip with Suture Flange entry must exist exactly once.`);
+  const entry = matches[0];
+  assert.strictEqual(entry.category, 'Adult arterial');
+  assert.strictEqual(entry.connectionSite, 'Aortic arch');
+  assert.strictEqual(entry.connectorSize, connector);
+  assert.strictEqual(entry.overallLengthCm, lengthCm);
+  assert(entry.notes.includes(`Tip size: ${tipMm.toFixed(1)} mm.`));
+  assert(entry.notes.includes(`Effective length: ${lengthCm} cm.`));
+  assert(entry.notes.includes('Quantity per box: 10.'));
+  assert(entry.notes.includes('Available coated: Depends on Country Registration.'));
+  const listedCodes = productCodes.match(/A212-\d+[A-C]/g) || [];
+  listedCodes.forEach(code => assert(entry.notes.includes(`${code} =`)));
+  if (size === '14 Fr') assert(!entry.cannulaOrderCode.includes('A212-45A'), '14 Fr must not gain an A-suffix luer-vent-up code.');
+  assert.deepStrictEqual(entry.points[0], { flow: 0, pressureDrop: 0 });
+  entry.points.forEach((point, index) => {
+    assert(Number.isFinite(point.flow) && Number.isFinite(point.pressureDrop));
+    assert(point.pressureDrop >= 0);
+    if (index > 0) {
+      assert(point.flow > entry.points[index - 1].flow);
+      assert(point.pressureDrop >= entry.points[index - 1].pressureDrop);
+    }
+  });
+  const flowText = finalFlow === 9 ? '9.0' : String(finalFlow);
+  assert.strictEqual(entry.referenceFlowRangeLabel, `0–${flowText}`);
+  assert(entry.outOfRangeMessage.includes(`0 to ${flowText} L/min`));
+  assert(entry.outOfRangeMessage.includes('Pressure drop is not estimated'));
+  assert(entry.notes.includes('Extrapolation: false'));
+  assert(entry.notes.includes(`Source range: 0 to ${flowText} L/min.`));
+  assert(entry.notes.includes('100 mmHg'), 'Adult arterial pressure-drop caution wording must remain present.');
+  assert(entry.digitizationNote.includes('manufacturer-published LivaNova Aortic Arch Cannulae'));
+  assert(entry.digitizationNote.includes('calibrated automatic WebPlotDigitizer extraction'));
+  assert(entry.digitizationNote.includes('(0,0) source-origin anchor'));
+  assert(entry.digitizationNote.includes('No fitted curve, smoothing, or extrapolation'));
+  if (finalFlow === 9) assert(entry.digitizationNote.includes('final flow coordinate was normalized to 9.0 L/min'));
+}
 const hlsArterialProducts = [
   ['PAS 1315', 13, 4.3, 15, 2.94],
   ['PAS 1515', 15, 5.0, 15, 3.96],
