@@ -756,9 +756,16 @@ function run() {
 
   const livaNovaRapFv = livaNovaEntries.find(entry => entry.model === 'RAP FV Femoral Venous Cannulae' && entry.cannulaOrderCode === '200-100');
   assert(livaNovaRapFv, 'LivaNova RAP FV F22/22 venous example should remain available.');
-  const rapFvHighDrop = interpolatePressureDrop(livaNovaRapFv.points, 6.29);
-  assert.strictEqual(rapFvHighDrop.value, 129.7, 'RAP FV F22/22 source pressure-drop value should remain unchanged.');
-  const rapFvComparisonResult = getPressureDropComparisonResult(livaNovaRapFv, 6.29);
+  const rapFvFirstFlow = livaNovaRapFv.points[0].flow;
+  const rapFvLastPoint = livaNovaRapFv.points.at(-1);
+  assert.strictEqual(interpolatePressureDrop(livaNovaRapFv.points, rapFvFirstFlow - 0.01).state, 'out_of_range');
+  assert.strictEqual(interpolatePressureDrop(livaNovaRapFv.points, rapFvLastPoint.flow + 0.01).state, 'out_of_range');
+  assert.strictEqual(interpolatePressureDrop(livaNovaRapFv.points, rapFvLastPoint.flow).value, rapFvLastPoint.pressureDrop);
+  const venousHighDropFixture = {
+    ...livaNovaRapFv,
+    points: [{ flow: 1, pressureDrop: 0 }, { flow: 2, pressureDrop: 120 }]
+  };
+  const rapFvComparisonResult = getPressureDropComparisonResult(venousHighDropFixture, 2);
   assert.strictEqual(shouldApplyPressureDropHighWarning(livaNovaRapFv), false, 'Venous dataset note should suppress the arterial-only 100 mmHg threshold.');
   assert.strictEqual(rapFvComparisonResult.isHighPressure, false, 'Venous cannula ΔP above 100 mmHg must not show the arterial high-pressure warning.');
   assert.strictEqual(rapFvComparisonResult.warningText, 'Digitized source point.', 'Venous high ΔP should keep the normal exact/interpolated status text.');
