@@ -1438,7 +1438,8 @@ const targetRuntime = vm.runInNewContext([
     getPressureDropComparisonFr, updatePressureDropTargetFlowSelection, createPressureDropTargetFlowChart,
     getPressureDropTargetFlowIdentity, getPressureDropTargetFlowSeries, getPressureDropTargetFlowModelOptions, createPressureDropTargetFlowTable,
     initPressureDropTargetFlowComparison, isPressureDropAnalyticsReady, drawPressureDropSeriesChart,
-    searchPressureDropCatalog, getPressureDropExploredFlow })`
+    searchPressureDropCatalog, getPressureDropExploredFlow, getPressureDropManufacturerFlowLimit,
+    getPressureDropManufacturerLimitLabel })`
 ].join('\n'), {
   document: targetTestDocument,
   el: id => targetNodes[id], isElementVisible: node => Boolean(node && !node.classList.contains('hidden')),
@@ -1467,7 +1468,12 @@ const documentedCentralVenousModels = {
     'DLP Single Stage Venous Cannulae with Right Angle Metal Tip'
   ]
 };
-const documentedCentralVenous = pressureDropData.filter(entry => documentedCentralVenousModels[entry.manufacturer]?.includes(entry.model));
+const newlyCentralSkus = new Set(['V122-24', 'V122-28', 'V122-32', 'V122-34', 'V122-36',
+  'V900-01', 'V900-02', 'V152-32', 'V152-36']);
+const newlyFemoralSkus = new Set(['PVS 1938', 'PVS 2138', 'PVS 2338', 'PVS 2538']);
+const documentedCentralVenous = pressureDropData.filter(entry =>
+  documentedCentralVenousModels[entry.manufacturer]?.includes(entry.model) ||
+  (entry.manufacturer === 'LivaNova' && newlyCentralSkus.has(entry.cannulaOrderCode)));
 const centralVenous = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'central' });
 assert(documentedCentralVenous.length > 0);
 assert.deepStrictEqual(new Set(centralVenous), new Set(documentedCentralVenous), 'Only documented central families enter the Central filter');
@@ -1489,8 +1495,11 @@ const femoralOnly = pressureDropData.filter(entry => /Femoral/i.test(entry.model
 assert(femoralOnly.length > 0 && femoralOnly.every(entry => !centralVenous.includes(entry)));
 assert(avalonProducts.every(entry => !centralVenous.includes(entry) && classifyComparison(entry).location === 'jugular'));
 const unspecifiedVenous = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'other' });
-assert(unspecifiedVenous.some(entry => entry.model.startsWith('Single Stage Straight Bullet Tip')));
-assert(unspecifiedVenous.some(entry => entry.model === 'HLS Venous Cannula'));
+assert.strictEqual(unspecifiedVenous.length, 0, 'Reviewed remaining venous SKUs have documented access mapping');
+assert([...newlyCentralSkus].every(code => centralVenous.some(entry => entry.cannulaOrderCode === code)));
+const femoralVenous = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'femoral' });
+assert([...newlyFemoralSkus].every(code => femoralVenous.some(entry => entry.cannulaOrderCode === code)));
+assert([...newlyFemoralSkus].every(code => !centralVenous.some(entry => entry.cannulaOrderCode === code)));
 assert(unspecifiedVenous.every(entry => !centralVenous.includes(entry)));
 const centralAtFour = targetRuntime.getPressureDropTargetFlowRows(pressureDropData, { category: 'venous', location: 'central' }, 4);
 assert.strictEqual(centralAtFour.length, centralVenous.length);
@@ -1536,6 +1545,22 @@ for (const input of ['', '.', '0', '-1', 'NaN', 'Infinity', '1e309', '4.5junk', 
 }
 assert.strictEqual(targetRuntime.parsePressureDropTargetFlow('4,5'), 4.5);
 assert.strictEqual(targetRuntime.parsePressureDropTargetFlow('100000'), 100000, 'No arbitrary clinical maximum');
+const maxFlowEntry = pressureDropData.find(entry => entry.manufacturer === 'LivaNova' &&
+  entry.model.startsWith('Optiflow Aortic Arch Cannulae — Straight Tip') && entry.size === '24 Fr');
+assert(maxFlowEntry && maxFlowEntry.points.at(-1).flow === 9, 'The digitized curve retains its 9 L/min endpoint');
+assert.strictEqual(targetRuntime.getPressureDropManufacturerFlowLimit(maxFlowEntry, 8)?.aboveVerifiedLimit, false);
+const aboveVerified = targetRuntime.getPressureDropManufacturerFlowLimit(maxFlowEntry, 8.3);
+assert.strictEqual(aboveVerified?.maxFlowLMin, 8);
+assert.strictEqual(aboveVerified?.verifiedSku, 'A292-80C');
+assert.strictEqual(aboveVerified?.partialSkuCoverage, true, 'Other connector variants must not be inferred');
+assert.strictEqual(aboveVerified?.aboveVerifiedLimit, true);
+assert(targetRuntime.getPressureDropManufacturerLimitLabel(aboveVerified).includes('other variants unverified'));
+assert.strictEqual(targetRuntime.getPressureDropManufacturerFlowLimit(pressureDropData[0], 100), null,
+  'Unknown manufacturer limits must remain unknown');
+const maxFlowResult = targetRuntime.getPressureDropTargetFlowResult(maxFlowEntry, 8.3);
+assert(maxFlowResult.inRange && maxFlowResult.aboveVerifiedManufacturerMax);
+assert(Math.abs(maxFlowResult.magnitude - 41.8) < 0.1, 'Existing interpolation is unchanged');
+assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(maxFlowEntry, 9.1).interpolationResult.state, 'out_of_range');
 const targetFixtures = [
   { manufacturer: 'Medtronic', model: 'A', category: 'femoral arterial', size: '19 Fr', points: [{ flow: 1, pressureDrop: 10 }, { flow: 5, pressureDrop: 90 }] },
   { manufacturer: 'Getinge / Maquet', model: 'B', category: 'femoral arterial', size: '21 Fr', points: [{ flow: 0, pressureDrop: 0 }, { flow: 5, pressureDrop: 50 }] },
@@ -1863,17 +1888,18 @@ let committedExploration = null;
 const exploringChart = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[0], targetFixtures[2]], 4.5, false,
   () => {}, () => {}, targetFixtures, value => { committedExploration = value; });
 const exploringSvg = pressureDescendants(exploringChart, node => node.tagName === 'svg')[0];
-const chartReadout = pressureDescendants(exploringChart, node => node.textContent.startsWith('Exploring '))[0];
+const chartReadout = pressureDescendants(exploringChart, node => node.textContent.startsWith('Target: '))[0];
 const chartSlider = pressureDescendants(exploringChart, node => node.type === 'range')[0];
 assert(chartSlider && chartSlider.attributes['aria-label'].includes('0.1 L/min'));
 assert.strictEqual(exploringSvg.dataset.minFlow, '0');
 exploringSvg.dispatch('pointermove', { clientX: 58 + 344 * (4.1 / 5) });
-assert(chartReadout.textContent.includes('Exploring 4.1 L/min · target 4.5 L/min'));
+assert(chartReadout.textContent.includes('Target: 4.5 L/min · Exploring: 4.1 L/min'));
 assert(exploringChart.textContent.includes('Out of range'), 'Each curve keeps its own source domain');
 assert.strictEqual(committedExploration, null, 'Pointer movement does not commit a target');
 chartSlider.value = '4.0'; chartSlider.dispatch('input');
-assert(exploringChart.textContent.includes('(exact; signed +70.0 mmHg)'), 'Keyboard slider resolves exact source points');
-assert(exploringChart.textContent.includes('(interpolated; signed +70.0 mmHg)'), 'Other series interpolates independently');
+assert(exploringChart.textContent.includes('Explore: 70.0 mmHg'), 'Keyboard slider resolves exact source points');
+assert(pressureDescendants(exploringChart, node => node.title?.includes('Signed pressure: +70.0 mmHg')).length >= 2,
+  'Each series preserves its own signed interpolation details');
 const useFlow = pressureDescendants(exploringChart, node => node.textContent === 'Use as target flow')[0];
 useFlow.dispatch('click'); assert.strictEqual(committedExploration, 4);
 const avalonExploration = targetRuntime.createPressureDropTargetFlowChart([avalonProducts[0]], 1, false, () => {}, () => {});
@@ -1899,7 +1925,8 @@ assert(!pressureDescendants(compactItems[1], node => node.className.includes('te
 assert(pressureDescendants(compactItems[0], node => node.tagName === 'a' && node.href === 'https://example.com/catalog.pdf').length);
 let removedKey = null;
 const removalOverlay = targetRuntime.createPressureDropTargetFlowChart([highArterial], 5, false, () => {}, key => { removedKey = key; });
-const compactRemove = pressureDescendants(removalOverlay, node => node.tagName === 'button')[0];
+const compactRemove = pressureDescendants(removalOverlay,
+  node => node.tagName === 'button' && node.attributes['aria-label']?.startsWith('Remove '))[0];
 assert.strictEqual(compactRemove.textContent, '×');
 assert(compactRemove.attributes['aria-label'].includes('High arterial source'));
 compactRemove.dispatch('click');
