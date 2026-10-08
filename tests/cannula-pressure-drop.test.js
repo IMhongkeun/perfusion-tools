@@ -1425,3 +1425,264 @@ assert.throws(
   /conflicting pressures/
 );
 console.log('Avalon Elite product, pressure-series, and QC invariants passed.');
+
+// Phase 1: execute the production classifier, interpolation, selection controller
+// and SVG renderer together. Existing Avalon value/rendering coverage stays above.
+function pressureProductionFunction(name) {
+  const start = mainJs.indexOf(`function ${name}(`);
+  assert(start >= 0, `Production function ${name} must exist`);
+  const nextDeclaration = /\n(?:function |async function |const |let )/g;
+  nextDeclaration.lastIndex = start + 1;
+  const next = nextDeclaration.exec(mainJs)?.index;
+  return mainJs.slice(start, next ?? mainJs.length);
+}
+class PressureTestNode {
+  constructor(tagName = 'div') {
+    this.tagName = tagName; this.children = []; this.dataset = {}; this.style = {};
+    this.attributes = {}; this.listeners = {}; this.value = ''; this.className = '';
+    this.classList = {
+      contains: name => this.className.split(' ').includes(name),
+      add: (...names) => { this.className += ` ${names.join(' ')}`; },
+      toggle: (name, on) => {
+        const names = new Set(this.className.split(' ').filter(Boolean));
+        if (on) names.add(name); else names.delete(name);
+        this.className = [...names].join(' ');
+      }
+    };
+  }
+  append(...nodes) { this.children.push(...nodes); }
+  appendChild(node) { this.append(node); return node; }
+  setAttribute(name, value) { this.attributes[name] = String(value); }
+  addEventListener(name, callback) { this.listeners[name] = callback; }
+  dispatch(name) { this.listeners[name]?.(); }
+  focus() { targetTestDocument.activeElement = this; }
+  querySelectorAll(selector) {
+    assert.strictEqual(selector, 'input[type="checkbox"]');
+    return pressureDescendants(this, node => node.type === 'checkbox');
+  }
+  set innerHTML(value) { this.children = []; this.html = value; this.text = ''; }
+  get innerHTML() { return this.html || ''; }
+  set textContent(value) { this.children = []; this.text = String(value); }
+  get textContent() { return (this.text || '') + this.children.map(child => child.textContent).join(' '); }
+}
+function pressureDescendants(node, predicate) {
+  return node.children.flatMap(child => [ ...(predicate(child) ? [child] : []), ...pressureDescendants(child, predicate) ]);
+}
+const targetNodes = Object.fromEntries(['view', 'flow', 'category', 'location', 'manufacturer', 'model', 'sort', 'results', 'summary', 'chart']
+  .map(name => [`pressure-drop-target-${name}`, new PressureTestNode()]));
+targetNodes['pressure-drop-target-category'].value = 'arterial';
+targetNodes['pressure-drop-target-sort'].value = 'pressure';
+const targetTestDocument = {
+  createElement: tag => new PressureTestNode(tag),
+  createElementNS: (_, tag) => new PressureTestNode(tag)
+};
+const targetFunctionNames = [
+  'normalizePressureDropFilterLabel', 'getPressureDropGroupLabel', 'getPressureDropCategoryFilterValue',
+  'getPressureDropConnectionOptionValue', 'getPressureDropComparisonKey', 'shouldApplyPressureDropHighWarning',
+  'getPressureDropComparisonResult', 'hasValidPressureDropEstimate', 'isPressureDropAnalyticsReady',
+  'parsePressureDropFlowInput', 'getPressureDropResultStateText', 'getPressureDropResultValueText',
+  'formatPressureDropFlowValue', 'getPressureDropRangeText', 'formatSignedPressureDrop',
+  'buildPressureDropAxisTicks', 'formatPressureDropAxisTick', 'getPressureDropSourceNode',
+  'getUniquePressureDropOptionPairs', 'setPressureDropSelectOptionPairs', 'createPressureDropRawPointsToggle'
+];
+const targetRuntime = vm.runInNewContext([
+  mainJs.slice(mainJs.indexOf('function normalizePressureDropKey'), mainJs.indexOf('function fitPressureDropPowerLaw')),
+  chartRendererSource,
+  ...targetFunctionNames.map(pressureProductionFunction),
+  mainJs.slice(mainJs.indexOf('function classifyPressureDropComparisonEntry'), mainJs.indexOf('async function initCannulaPressureDropPage')),
+  `; ({ classifyPressureDropComparisonEntry, getPressureDropTargetFlowKey, getPressureDropTargetFlowMatches,
+    parsePressureDropTargetFlow, getPressureDropTargetFlowResult, getPressureDropTargetFlowRows,
+    getPressureDropComparisonFr, updatePressureDropTargetFlowSelection, createPressureDropTargetFlowChart,
+    initPressureDropTargetFlowComparison, isPressureDropAnalyticsReady, drawPressureDropSeriesChart })`
+].join('\n'), {
+  document: targetTestDocument,
+  el: id => targetNodes[id], isElementVisible: node => Boolean(node && !node.classList.contains('hidden'))
+});
+const classifyComparison = targetRuntime.classifyPressureDropComparisonEntry;
+const classificationCounts = {};
+pressureDropData.forEach(entry => {
+  const classification = classifyComparison(entry);
+  const group = `${classification.category}/${classification.location}`;
+  classificationCounts[group] = (classificationCounts[group] || 0) + 1;
+});
+assert.deepStrictEqual(classificationCounts, {
+  'venous/femoral': 19, 'arterial/femoral': 24, 'arterial/central': 13,
+  'venous/other': 79, 'specialty/other': 35, 'arterial/other': 13, 'venous/jugular': 6
+}, 'Catalog audit must not silently infer anatomy or admit specialty devices');
+assert(avalonProducts.every(entry => !classifyComparison(entry).eligible), 'Both Avalon lumens stay outside standard comparison');
+assert.strictEqual(classifyComparison({ category: 'arterial cardioplegia', model: 'Ambiguous' }).eligible, false);
+assert.strictEqual(classifyComparison({ category: 'arterial', model: 'EOPA Central', connectionSite: '1/4 in' }).location, 'other');
+assert.strictEqual(classifyComparison({ category: 'venous', model: 'Bi-caval' }).location, 'other');
+assert.strictEqual(classifyComparison({ category: 'venous', connectionSite: 'Right atrium' }).location, 'central');
+assert.strictEqual(classifyComparison({ category: 'femoral venous', connectionSite: 'Jugular venous' }).location, 'jugular', 'Explicit anatomical site takes precedence');
+assert.strictEqual(classifyComparison({ category: 'arterial', connectionSite: 'Femoral venous' }).eligible, false, 'Conflicting type/site metadata is ambiguous');
+assert.strictEqual(classifyComparison({ category: 'arterial', connectionSite: 'Aortic root' }).eligible, false);
+assert.strictEqual(new Set(pressureDropData.map(targetRuntime.getPressureDropTargetFlowKey)).size, 189);
+const catalogEntry = pressureDropData[0];
+assert.strictEqual(targetRuntime.getPressureDropTargetFlowKey(catalogEntry), targetRuntime.getPressureDropTargetFlowKey({ ...catalogEntry, lookupId: 'reordered' }));
+
+for (const input of ['', '.', '0', '-1', 'NaN', 'Infinity', '1e309', '4.5junk', '1.2.3']) {
+  assert(Number.isNaN(targetRuntime.parsePressureDropTargetFlow(input)), `${input} must not yield a usable flow`);
+}
+assert.strictEqual(targetRuntime.parsePressureDropTargetFlow('4,5'), 4.5);
+assert.strictEqual(targetRuntime.parsePressureDropTargetFlow('100000'), 100000, 'No arbitrary clinical maximum');
+const targetFixtures = [
+  { manufacturer: 'Medtronic', model: 'A', category: 'femoral arterial', size: '19 Fr', points: [{ flow: 1, pressureDrop: 10 }, { flow: 5, pressureDrop: 90 }] },
+  { manufacturer: 'Getinge / Maquet', model: 'B', category: 'femoral arterial', size: '21 Fr', points: [{ flow: 0, pressureDrop: 0 }, { flow: 5, pressureDrop: 50 }] },
+  { manufacturer: 'LivaNova', model: 'C', category: 'femoral arterial', size: '15 Fr', points: [{ flow: 0, pressureDrop: 0 }, { flow: 4, pressureDrop: 70 }] },
+  { manufacturer: 'Medtronic', model: 'D', category: 'venous', size: '23 Fr', points: [{ flow: 1, pressureDrop: -10 }, { flow: 5, pressureDrop: -90 }] }
+];
+const arterialFilters = { category: 'arterial', location: 'femoral' };
+const fixtureRows = targetRuntime.getPressureDropTargetFlowRows(targetFixtures, arterialFilters, 4.5);
+assert.deepStrictEqual(Array.from(fixtureRows, row => row.entry.manufacturer), ['Getinge / Maquet', 'Medtronic', 'LivaNova']);
+assert.strictEqual(fixtureRows[0].result.interpolationResult.value, 45);
+assert.strictEqual(fixtureRows[1].result.interpolationResult.value, 80);
+assert.strictEqual(fixtureRows[2].result.interpolationResult.state, 'out_of_range');
+assert.strictEqual(fixtureRows[2].result.magnitude, null, 'Out-of-range products get no substituted endpoint');
+for (const [flow, expected] of [[1, 10], [5, 90]]) {
+  const result = targetRuntime.getPressureDropTargetFlowResult(targetFixtures[0], flow);
+  assert.strictEqual(result.interpolationResult.state, 'exact'); assert.strictEqual(result.magnitude, expected);
+}
+for (const flow of [0.99, 5.01]) assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(targetFixtures[0], flow).inRange, false);
+const signedResult = targetRuntime.getPressureDropTargetFlowResult(targetFixtures[3], 4.5);
+assert.strictEqual(signedResult.interpolationResult.value, -80); assert.strictEqual(signedResult.magnitude, 80);
+assert.deepStrictEqual(Array.from(targetRuntime.getPressureDropTargetFlowRows(targetFixtures, arterialFilters, 3, 'size'), row => row.entry.size), ['15 Fr', '19 Fr', '21 Fr']);
+assert.deepStrictEqual(Array.from(targetRuntime.getPressureDropTargetFlowRows(targetFixtures, arterialFilters, 3, 'manufacturer'), row => row.entry.manufacturer), ['Getinge / Maquet', 'LivaNova', 'Medtronic']);
+assert.deepStrictEqual(Array.from(targetRuntime.getPressureDropTargetFlowRows(targetFixtures, arterialFilters, 3, 'model'), row => row.entry.model), ['A', 'B', 'C']);
+const actualFemoralRows = targetRuntime.getPressureDropTargetFlowRows(pressureDropData, arterialFilters, 4.5);
+assert.strictEqual(actualFemoralRows.length, 24);
+assert.strictEqual(new Set(Array.from(actualFemoralRows, row => row.entry.manufacturer)).size, 3);
+const filteredFamily = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { ...arterialFilters, manufacturer: 'Medtronic', model: nextGenModels[0] });
+assert.strictEqual(filteredFamily.length, 6);
+assert.strictEqual(targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { ...arterialFilters, manufacturer: 'LivaNova', model: nextGenModels[0] }).length, 0);
+
+// Hard-coded cross-manufacturer catalog regressions at the same target flow.
+const actualNextGen19 = actualFemoralRows.find(row => row.entry.model === nextGenModels[0] && row.entry.size === '19 Fr');
+const actualHls19 = actualFemoralRows.find(row => row.entry.cannulaOrderCode === 'PAS 1915');
+// Independently calculated from (4.36,64.7)/(4.52,69.4) and
+// (4.29,69.5)/(4.51,77.3); do not derive expected values from the runtime.
+assert(Math.abs(actualNextGen19.result.interpolationResult.value - 68.8125) < 1e-8);
+assert(Math.abs(actualHls19.result.interpolationResult.value - 76.94545454545455) < 1e-8);
+
+const allKeys = new Set(pressureDropData.map(targetRuntime.getPressureDropTargetFlowKey));
+const fiveKeys = [...allKeys].slice(0, 5);
+let selection = [];
+fiveKeys.forEach(key => { selection = targetRuntime.updatePressureDropTargetFlowSelection(selection, key, true, allKeys); });
+assert.strictEqual(selection.length, 4);
+assert.strictEqual(targetRuntime.updatePressureDropTargetFlowSelection(selection, fiveKeys[0], true, allKeys).length, 4);
+selection = targetRuntime.updatePressureDropTargetFlowSelection(selection, fiveKeys[1], false, allKeys);
+assert.strictEqual(selection.length, 3);
+assert.strictEqual(targetRuntime.updatePressureDropTargetFlowSelection(selection, fiveKeys[4], true, allKeys).length, 4);
+assert.strictEqual(targetRuntime.updatePressureDropTargetFlowSelection(selection, 'missing', true, allKeys).length, 3);
+
+// Execute UI event handlers; verify flow preservation, filters, readiness and
+// chart association instead of inspecting main.js source strings.
+const controller = targetRuntime.initPressureDropTargetFlowComparison(pressureDropData, () => {});
+assert(controller);
+assert.strictEqual(targetNodes['pressure-drop-target-view'].dataset.analyticsReady, 'false');
+assert.strictEqual(targetNodes['pressure-drop-target-manufacturer'].value, '');
+const targetFlowInput = targetNodes['pressure-drop-target-flow'];
+targetFlowInput.value = '4.5'; targetFlowInput.dispatch('input');
+assert.strictEqual(targetNodes['pressure-drop-target-view'].dataset.analyticsReady, 'true');
+const locationInput = targetNodes['pressure-drop-target-location'];
+locationInput.value = 'femoral'; locationInput.dispatch('change');
+function currentRows() { return pressureDescendants(targetNodes['pressure-drop-target-results'], node => node.tagName === 'tr'); }
+function rowCheckbox(row) { return pressureDescendants(row, node => node.type === 'checkbox')[0]; }
+const initialKeys = currentRows().map(row => row.dataset.productKey);
+assert.strictEqual(initialKeys.length, 24);
+assert(currentRows().some(row => row.textContent.includes('Out of source range')));
+for (const row of currentRows().slice(0, 4)) {
+  const box = rowCheckbox(row);
+  box.focus(); box.checked = true; box.dispatch('change');
+  assert.strictEqual(targetTestDocument.activeElement.dataset.productKey, row.dataset.productKey, 'Selection rerender preserves keyboard focus');
+}
+targetTestDocument.activeElement = null;
+assert.strictEqual(currentRows().filter(row => rowCheckbox(row).checked).length, 4);
+assert(currentRows().filter(row => !rowCheckbox(row).checked).every(row => rowCheckbox(row).disabled));
+const targetSort = targetNodes['pressure-drop-target-sort'];
+targetSort.value = 'size'; targetSort.dispatch('change');
+assert.strictEqual(currentRows().filter(row => rowCheckbox(row).checked).length, 4);
+assert.deepStrictEqual(new Set(currentRows().map(row => row.dataset.productKey)), new Set(initialKeys));
+const manufacturerInput = targetNodes['pressure-drop-target-manufacturer'];
+manufacturerInput.value = 'Medtronic'; manufacturerInput.dispatch('change');
+assert(currentRows().every(row => row.textContent.includes('Medtronic')));
+assert.strictEqual(targetFlowInput.value, '4.5');
+assert.strictEqual(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'li').length, 4, 'Manufacturer filtering retains eligible chart selections');
+const familyInput = targetNodes['pressure-drop-target-model'];
+familyInput.value = nextGenModels[0]; familyInput.dispatch('change');
+assert.strictEqual(currentRows().length, 6);
+manufacturerInput.value = 'Getinge / Maquet'; manufacturerInput.dispatch('change');
+assert.strictEqual(familyInput.value, '', 'Invalid family resets on manufacturer changes');
+assert.strictEqual(targetFlowInput.value, '4.5');
+manufacturerInput.value = ''; manufacturerInput.dispatch('change');
+assert.strictEqual(currentRows().length, 24);
+const removeButton = pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'button')[0];
+removeButton.dispatch('click');
+assert.strictEqual(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'li').length, 3);
+targetFlowInput.value = '100000'; targetFlowInput.dispatch('input');
+assert.strictEqual(currentRows().length, 24, 'Out-of-range-only results retain all products');
+assert.strictEqual(targetNodes['pressure-drop-target-view'].dataset.analyticsReady, 'false');
+assert(targetNodes['pressure-drop-target-results'].textContent.includes('No in-range estimates'));
+targetNodes['pressure-drop-target-category'].value = 'venous'; targetNodes['pressure-drop-target-category'].dispatch('change');
+assert.strictEqual(currentRows().length, 19);
+assert.strictEqual(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'li').length, 0, 'Category switch clears incompatible curves');
+targetNodes['pressure-drop-target-model'].value = 'not a product'; controller.refresh();
+assert(targetNodes['pressure-drop-target-results'].textContent.includes('No matching cannulas'));
+assert.strictEqual(targetNodes['pressure-drop-target-view'].dataset.analyticsReady, 'false');
+
+const overlay = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[0], targetFixtures[1]], 4.5, true, () => {}, () => {});
+const overlaySvg = pressureDescendants(overlay, node => node.tagName === 'svg')[0];
+assert(overlaySvg.innerHTML.includes('data-target-flow-line="true"'));
+assert.strictEqual((overlaySvg.innerHTML.match(/data-series-id=/g) || []).length, 2);
+assert(overlaySvg.innerHTML.includes('Signed pressure: +80.0 mmHg') && overlaySvg.innerHTML.includes('Signed pressure: +45.0 mmHg'));
+assert.strictEqual((overlaySvg.innerHTML.match(/data-raw-pressure-point=/g) || []).length, 4);
+const externalLegend = pressureDescendants(overlay, node => node.tagName === 'li');
+assert(externalLegend[0].textContent.includes('Medtronic · A · 19 Fr'));
+assert(externalLegend[1].textContent.includes('Getinge / Maquet · B · 21 Fr'));
+assert.strictEqual(externalLegend[0].dataset.productKey, targetRuntime.getPressureDropTargetFlowKey(targetFixtures[0]));
+assert.strictEqual(pressureDescendants(externalLegend[0], node => node.style.backgroundColor)[0].style.backgroundColor, chartRuntime.productColors[0]);
+const signedOverlay = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[3]], 4.5, false, () => {}, () => {});
+assert(signedOverlay.textContent.includes('signed pressure -80.0 mmHg'));
+assert(pressureDescendants(signedOverlay, node => node.tagName === 'svg')[0].innerHTML.includes('Signed pressure: -80.0 mmHg'));
+const emptyFirst = { ...targetFixtures[0], model: 'Metadata', points: [] };
+const mixedOverlay = targetRuntime.createPressureDropTargetFlowChart([emptyFirst, targetFixtures[1]], 4.5, false, () => {}, () => {});
+const mixedSvg = pressureDescendants(mixedOverlay, node => node.tagName === 'svg')[0];
+assert.strictEqual((mixedSvg.innerHTML.match(/data-series-id=/g) || []).length, 1);
+assert(mixedSvg.innerHTML.includes('Signed pressure: +45.0 mmHg') && !mixedSvg.innerHTML.includes('+80.0'), 'Empty series must not shift target estimates');
+assert(mixedSvg.innerHTML.includes(`fill="${chartRuntime.productColors[1]}"`));
+const outsideOverlay = targetRuntime.createPressureDropTargetFlowChart(targetFixtures.slice(0, 3), 100, false, () => {}, () => {});
+const outsideSvg = pressureDescendants(outsideOverlay, node => node.tagName === 'svg')[0];
+assert.strictEqual((outsideSvg.innerHTML.match(/data-series-id=/g) || []).length, 0);
+assert(!outsideSvg.innerHTML.includes('data-target-flow-line'));
+assert(outsideOverlay.textContent.includes('No selected curve has an in-range estimate'));
+const readyTarget = new PressureTestNode(); readyTarget.dataset.analyticsReady = 'true';
+assert.strictEqual(targetRuntime.isPressureDropAnalyticsReady('target', readyTarget, readyTarget, readyTarget), true);
+readyTarget.className = 'hidden';
+assert.strictEqual(targetRuntime.isPressureDropAnalyticsReady('target', readyTarget, readyTarget, readyTarget), false);
+console.log('Target-flow classification, interpolation, filtering, selection, chart and readiness regressions passed.');
+
+const switchStart = mainJs.indexOf('    const setPressureDropView = (view) => {');
+const switchSource = mainJs.slice(switchStart, mainJs.indexOf('\n    [', switchStart));
+const switchPage = new PressureTestNode();
+const switchPanels = { single: new PressureTestNode(), compare: new PressureTestNode(), target: new PressureTestNode() };
+const switchTabs = { single: new PressureTestNode(), compare: new PressureTestNode(), target: new PressureTestNode() };
+const switchRenders = [];
+const switchView = vm.runInNewContext(`let activePressureDropView = 'single'; ${switchSource}; setPressureDropView`, {
+  page: switchPage, status: new PressureTestNode(), selectedComparisonKeys: [],
+  compareControls: { singleView: switchPanels.single, compareView: switchPanels.compare, singleTab: switchTabs.single, compareTab: switchTabs.compare },
+  targetView: switchPanels.target, targetTab: switchTabs.target,
+  targetComparison: { refresh: () => switchRenders.push('target') },
+  populateCompareOptions: () => {}, renderCompare: () => switchRenders.push('compare'), render: () => switchRenders.push('single')
+});
+for (const mode of ['target', 'single', 'compare', 'target']) {
+  Object.values(switchPanels).forEach(panel => { panel.dataset.analyticsReady = 'true'; });
+  switchView(mode);
+  assert.strictEqual(switchPage.dataset.pressureDropView, mode);
+  Object.entries(switchPanels).forEach(([name, panel]) => {
+    assert.strictEqual(panel.classList.contains('hidden'), name !== mode);
+    if (name !== mode) assert.strictEqual(panel.dataset.analyticsReady, 'false', 'Mode switches clear inactive readiness');
+    assert.strictEqual(switchTabs[name].attributes['aria-pressed'], String(name === mode));
+  });
+}
+assert.deepStrictEqual(switchRenders, ['target', 'single', 'compare', 'target']);
+console.log('Pressure-drop mode switching and inactive readiness regressions passed.');
