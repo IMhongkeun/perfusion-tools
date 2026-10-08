@@ -6917,6 +6917,15 @@ function isPressureDropAnalyticsReady(activeView, singleView, targetView) {
 // https://www.livanova.com/cannulae/en-us/adult/venous-return-cannulae/triple-stage/rts-11029
 // Medtronic's family-level indication (including straight, right-angle and
 // malleable DLP single-stage forms): https://www.accessdata.fda.gov/cdrh_docs/pdf12/K120988.pdf
+// Exact SKU-level central/peripheral access mappings. These are non-clinical
+// display classifications and do not alter pressure-flow data or product approval.
+const PRESSURE_DROP_CENTRAL_VENOUS_SKUS = new Set([
+  'V122-24', 'V122-28', 'V122-32', 'V122-34', 'V122-36',
+  'V900-01', 'V900-02', 'V152-32', 'V152-36'
+]);
+const PRESSURE_DROP_FEMORAL_VENOUS_SKUS = new Set([
+  'PVS 1938', 'PVS 2138', 'PVS 2338', 'PVS 2538'
+]);
 const PRESSURE_DROP_CENTRAL_VENOUS_MODELS = {
   LivaNova: new Set([
     'Single Stage Right Angle Lighthouse Tip Venous Return Cannulae — Right Angle Lighthouse Tip, Wire-reinforced Tubing',
@@ -6977,8 +6986,14 @@ function classifyPressureDropComparisonEntry(entry) {
   const documentedCentral = entry.manufacturer === 'Medtronic' && type === 'arterial' &&
     centralArterialFamilies.has(entry.model) && !site;
   const documentedCentralVenous = type === 'venous' &&
-    PRESSURE_DROP_CENTRAL_VENOUS_MODELS[entry.manufacturer]?.has(entry.model);
-  const location = explicitSite?.location || categoryLocations[category] || (documentedCentral || documentedCentralVenous ? 'central' : 'other');
+    (PRESSURE_DROP_CENTRAL_VENOUS_MODELS[entry.manufacturer]?.has(entry.model) ||
+      (entry.manufacturer === 'LivaNova' && PRESSURE_DROP_CENTRAL_VENOUS_SKUS.has(entry.cannulaOrderCode)));
+  // Getinge HLS PVS 38 cm is the short peripheral/femoral venous family;
+  // match exact submitted order codes, not all similarly named HLS devices.
+  const documentedFemoralVenous = type === 'venous' && entry.manufacturer === 'Getinge / Maquet' &&
+    entry.model === 'HLS Venous Cannula' && PRESSURE_DROP_FEMORAL_VENOUS_SKUS.has(entry.cannulaOrderCode);
+  const location = explicitSite?.location || categoryLocations[category] ||
+    (documentedFemoralVenous ? 'femoral' : (documentedCentral || documentedCentralVenous ? 'central' : 'other'));
   return { eligible: true, category: type, location,
     configuration: isAvalon ? 'Dual-lumen VV ECMO' : type === 'arterial' ? 'Standard arterial perfusion' : 'Standard venous drainage' };
 }
@@ -7079,6 +7094,41 @@ function parsePressureDropTargetFlow(value) {
   return flow > 0 ? flow : NaN;
 }
 
+// Manufacturer-stated maximum flow is NOT the endpoint of the digitized
+// hydraulic curve. Verify limits per SKU; never infer an entire model family.
+// Repository Optiflow rows combine connector variants, so these limits are
+// explicitly identified as verified for SKU C ONLY (other variants unknown).
+const PRESSURE_DROP_VERIFIED_FLOW_LIMITS = [
+  {
+    manufacturer: 'LivaNova', model: 'Optiflow Aortic Arch Cannulae — Straight Tip, Wire-reinforced Tubing',
+    size: '24 Fr', verifiedSku: 'A292-80C', maxFlowLMin: 8,
+    source: 'https://www.livanova.com/cannulae/en-us/adult/arterial-cannulae/optiflow-arterial/straight-tip-wire-reinforced-tubing/a292-80c'
+  },
+  {
+    manufacturer: 'LivaNova', model: 'Optiflow Aortic Arch Cannulae — Curved Tip, Wire-reinforced Tubing',
+    size: '24 Fr', verifiedSku: 'A282-80C', maxFlowLMin: 8,
+    source: 'https://www.livanova.com/cannulae/en-us/adult/arterial-cannulae/optiflow-arterial/curved-tip-wire-reinforced-tubing/a282-80c'
+  }
+];
+
+function getPressureDropManufacturerFlowLimit(entry, flow) {
+  const verified = PRESSURE_DROP_VERIFIED_FLOW_LIMITS.find(item =>
+    entry.manufacturer === item.manufacturer && entry.model === item.model &&
+    entry.size === item.size && String(entry.cannulaOrderCode || '').includes(item.verifiedSku));
+  if (!verified) return null;
+  const skuCodes = String(entry.cannulaOrderCode || '').match(/A\d{3}-\d{2}[A-Z]/g) || [];
+  return {
+    ...verified,
+    partialSkuCoverage: new Set(skuCodes).size > 1,
+    aboveVerifiedLimit: Number.isFinite(flow) && flow > verified.maxFlowLMin
+  };
+}
+
+function getPressureDropManufacturerLimitLabel(limit) {
+  if (!limit?.aboveVerifiedLimit) return '';
+  return `Above verified SKU max (${limit.maxFlowLMin.toFixed(1)} L/min; ${limit.verifiedSku}${limit.partialSkuCoverage ? ' only; other variants unverified' : ''})`;
+}
+
 function getPressureDropTargetFlowResult(entry, flow) {
   const series = getPressureDropTargetFlowSeries(entry);
   if (!series) return { series: null, interpolationResult: { state: 'unavailable', value: null },
@@ -7088,8 +7138,10 @@ function getPressureDropTargetFlowResult(entry, flow) {
   const comparison = getPressureDropComparisonResult({ ...entry, pressureSeries: [series], points: series.points }, flow);
   const result = comparison.seriesResults[0];
   const inRange = hasValidPressureDropEstimate([result.interpolationResult]);
+  const manufacturerLimit = getPressureDropManufacturerFlowLimit(entry, flow);
   return { ...result, inRange, magnitude: inRange ? Math.abs(result.interpolationResult.value) : null,
     isHighPressure: comparison.isHighPressure, warningText: comparison.warningText,
+    manufacturerLimit, aboveVerifiedManufacturerMax: Boolean(manufacturerLimit?.aboveVerifiedLimit),
     lumenLabel: series.id === 'drainage' ? 'Drainage ΔP' : '' };
 }
 
@@ -7108,6 +7160,12 @@ function getPressureDropTargetFlowRows(entries, filters, flow, sort = 'pressure'
     result: getPressureDropTargetFlowResult(entry, flow)
   })).sort((left, right) => {
     if (left.result.inRange !== right.result.inRange) return left.result.inRange ? -1 : 1;
+    // A verified above-limit curve estimate must not be an unqualified
+    // lower-ΔP recommendation, even though interpolation remains available.
+    if (sort === 'pressure' && left.result.inRange &&
+        left.result.aboveVerifiedManufacturerMax !== right.result.aboveVerifiedManufacturerMax) {
+      return left.result.aboveVerifiedManufacturerMax ? 1 : -1;
+    }
     let difference = 0;
     if (sort === 'pressure' && left.result.inRange) difference = left.result.magnitude - right.result.magnitude;
     if (sort === 'size') {
@@ -7145,7 +7203,7 @@ function getPressureDropExploredFlow(clientX, rect, dataset) {
   return Math.max(min, Math.min(max, Math.round((rawFlow + Number.EPSILON) * 10) / 10));
 }
 
-function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCommitFlow) {
+function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCommitFlow, controls, exploredCells) {
   if (!series.length || !Number.isFinite(Number(svg.dataset.minFlow))) return;
   const minimum = Number(svg.dataset.minFlow), maximum = Number(svg.dataset.maxFlow);
   const left = Number(svg.dataset.plotLeft), right = Number(svg.dataset.plotRight);
@@ -7164,31 +7222,27 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
     overlay.appendChild(marker); return marker;
   });
   svg.appendChild(overlay);
-  const controls = document.createElement('div');
-  controls.className = 'min-w-0 space-y-2 rounded-lg bg-slate-50 dark:bg-primary-800 p-3 text-xs';
+  controls.className = 'flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-xs text-slate-600 dark:text-slate-300';
   const readout = document.createElement('p');
-  readout.className = 'font-semibold tabular-nums';
-  const estimates = document.createElement('div');
-  estimates.className = 'space-y-1';
-  const items = series.map(item => {
-    const row = document.createElement('p'); row.className = 'min-w-0 break-words';
-    estimates.appendChild(row); return row;
-  });
+  readout.className = 'min-w-0 flex-1 font-semibold tabular-nums text-primary-900 dark:text-white';
   const slider = document.createElement('input');
   slider.type = 'range'; slider.step = '0.1';
   slider.min = String(Math.ceil(minimum * 10) / 10);
   slider.max = String(Math.floor(maximum * 10) / 10);
-  slider.className = 'w-full accent-sky-600';
+  slider.className = 'order-last w-full accent-sky-600';
   slider.setAttribute('aria-label', 'Explore flow in 0.1 L/min steps');
   const commit = document.createElement('button');
-  commit.type = 'button'; commit.className = 'rounded-lg border border-slate-300 dark:border-primary-600 px-2 py-1 text-accent-700 dark:text-accent-300';
+  commit.type = 'button';
+  commit.className = 'shrink-0 rounded-lg border border-slate-300 dark:border-primary-600 px-2 py-1 text-accent-700 dark:text-accent-300';
   commit.textContent = 'Use as target flow';
+  controls.append(readout, commit);
+  if (Number(slider.min) <= Number(slider.max)) controls.appendChild(slider);
   let exploredFlow = null;
   const update = flow => {
     exploredFlow = flow;
     const x = left + ((flow - minimum) / Math.max(maximum - minimum, 0.0001)) * (right - left);
     guide.setAttribute('x1', x); guide.setAttribute('x2', x);
-    readout.textContent = `Exploring ${flow.toFixed(1)} L/min · target ${Number.isFinite(committedFlow) ? `${committedFlow} L/min` : 'not set'}`;
+    readout.textContent = `Target: ${Number.isFinite(committedFlow) ? `${committedFlow} L/min` : 'not set'} · Exploring: ${flow.toFixed(1)} L/min`;
     series.forEach((item, index) => {
       const result = interpolatePressureDrop(item.points, flow);
       const valid = hasValidPressureDropEstimate([result]);
@@ -7197,7 +7251,15 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
         const y = bottom - ((result.value - minDrop) / pressureRange) * (bottom - top);
         markers[index].setAttribute('cx', x); markers[index].setAttribute('cy', y);
       }
-      items[index].textContent = `${item.exploreLabel || item.displayLabel || item.label}: ${valid ? `${Math.abs(result.value).toFixed(1)} mmHg (${result.state}; signed ${formatSignedPressureDrop(result.value)} mmHg)` : 'Out of range'}`;
+      const cell = exploredCells[index];
+      if (cell) {
+        const limit = getPressureDropManufacturerFlowLimit(item.entry, flow);
+        const limitText = getPressureDropManufacturerLimitLabel(limit);
+        cell.textContent = `Explore: ${valid ? `${Math.abs(result.value).toFixed(1)} mmHg` : 'Out of range'}${limitText ? ` · ${limitText}` : ''}`;
+        cell.title = valid ? `Signed pressure: ${formatSignedPressureDrop(result.value)} mmHg${limitText ? `; ${limitText}. Source: ${limit.source}` : ''}` : '';
+        cell.classList.toggle('text-amber-700', Boolean(limitText));
+        cell.classList.toggle('dark:text-amber-300', Boolean(limitText));
+      }
     });
     if (Number(slider.min) <= Number(slider.max)) slider.value = String(Math.max(Number(slider.min), Math.min(Number(slider.max), flow)));
   };
@@ -7207,10 +7269,6 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
   svg.addEventListener('pointerdown', explorePointer);
   slider.addEventListener('input', () => update(Number(slider.value)));
   commit.addEventListener('click', () => { if (exploredFlow !== null) onCommitFlow?.(exploredFlow); });
-  if (Number(slider.min) <= Number(slider.max)) {
-    controls.append(readout, estimates, slider, commit);
-  } else controls.append(readout, estimates, commit);
-  panel.appendChild(controls);
   update(Number.isFinite(committedFlow) && committedFlow >= minimum && committedFlow <= maximum
     ? getPressureDropExploredFlow(left + ((committedFlow - minimum) / Math.max(maximum - minimum, 0.0001)) * (right - left), { left: 0, width: 420 }, svg.dataset)
     : minimum);
@@ -7223,7 +7281,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
   heading.className = 'text-sm font-semibold text-primary-900 dark:text-white';
   heading.textContent = 'Selected pressure-flow curves';
   panel.append(heading, createPressureDropRawPointsToggle(showRawPoints, onRawPointsChange, 'pressure-drop-target-raw-points'));
-  const series = [], estimates = [];
+  const series = [], estimates = [], exploredCells = [];
   const legend = document.createElement('ol');
   legend.className = 'divide-y divide-slate-100 dark:divide-primary-800 text-xs text-slate-600 dark:text-slate-300';
   entries.forEach((entry, index) => {
@@ -7232,7 +7290,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     const identity = getPressureDropTargetFlowIdentity(entry, catalogEntries);
     const configuration = classifyPressureDropComparisonEntry(entry).configuration;
     if (result.series) {
-      series.push({ ...result.series, id: encodeURIComponent(key), colorIndex: index,
+      series.push({ ...result.series, entry, id: encodeURIComponent(key), colorIndex: index,
         displayLabel: `${index + 1} · ${entry.manufacturer} · ${entry.model} · ${identity}${result.lumenLabel ? ' · Drainage' : ''}`,
         exploreLabel: `${index + 1}. ${entry.manufacturer} · ${getPressureDropTargetFlowDisplayName(entry)} · ${identity}${result.lumenLabel ? ' · Drainage' : ''}` });
       estimates.push(result.interpolationResult);
@@ -7260,10 +7318,20 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
       : result.unavailableReason || 'Out of range';
     if (result.inRange) value.title = `Signed pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
     if (result.isHighPressure && result.inRange) value.setAttribute('aria-label', `${value.textContent}. ${result.warningText}`);
+    const limitLabel = getPressureDropManufacturerLimitLabel(result.manufacturerLimit);
+    if (limitLabel) {
+      value.className += ' text-amber-700 dark:text-amber-300';
+      value.title = `${value.title ? value.title + ' · ' : ''}${limitLabel}. Source: ${result.manufacturerLimit.source}`;
+    }
+    const explored = document.createElement('span');
+    explored.className = 'min-w-0 text-xs tabular-nums text-sky-700 dark:text-sky-300';
+    explored.textContent = 'Explore: —';
+    if (result.series) exploredCells.push(explored);
     const status = document.createElement('span');
     status.className = 'shrink-0 rounded-full bg-slate-100 dark:bg-primary-800 px-2 py-0.5 text-[11px]';
-    status.textContent = result.unavailableReason ? 'Not comparable' : result.inRange
+    status.textContent = limitLabel ? 'Above verified SKU max' : result.unavailableReason ? 'Not comparable' : result.inRange
       ? (result.interpolationResult.state === 'exact' ? 'Exact' : 'Interpolated') : 'Out of range';
+    if (limitLabel) { status.title = limitLabel; status.className += ' text-amber-700 dark:text-amber-300'; }
     const sourceUrl = String(entry.sourceUrl || '').trim();
     const source = /^https?:\/\//i.test(sourceUrl) ? document.createElement('a') : null;
     if (source) {
@@ -7278,7 +7346,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     remove.textContent = '×';
     remove.setAttribute('aria-label', `Remove ${entry.manufacturer} ${entry.model} ${identity} from chart`);
     remove.addEventListener('click', () => onRemove(key));
-    item.append(swatch, rank, name, size, value, status);
+    item.append(swatch, rank, name, size, value, explored, status);
     if (source) item.appendChild(source);
     item.appendChild(remove);
     legend.appendChild(item);
@@ -7290,11 +7358,13 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
   svg.classList.add('block', 'w-full', 'h-auto', 'text-slate-500', 'dark:text-slate-300');
   // Full product names wrap in the HTML legend, avoiding overlap in the SVG.
   drawPressureDropSeriesChart(svg, series, flow, estimates, { curveMode: 'linear', showRawPoints, showLegend: false, showTargetFlowLine: true });
+  const exploreControls = document.createElement('div');
+  panel.appendChild(exploreControls);
   panel.append(svg, legend);
-  attachPressureDropChartExplorer(panel, svg, series, flow, onCommitFlow);
+  attachPressureDropChartExplorer(panel, svg, series, flow, onCommitFlow, exploreControls, exploredCells);
   const note = document.createElement('p');
   note.className = 'text-xs text-slate-500 dark:text-slate-400';
-  note.textContent = 'Curves retain signed source pressures and end at digitized endpoints. Selections remain across manufacturer and family filters.';
+  note.textContent = 'In-range means within the digitized curve, not necessarily within a manufacturer maximum flow. Curve endpoints are not approved flow limits; check each product source.';
   if (!estimates.some(estimate => hasValidPressureDropEstimate([estimate]))) {
     note.textContent += ' No selected curve has an in-range estimate at this target flow.';
   }
@@ -7376,6 +7446,13 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
         cell.title = result.warningText;
       }
       if (index === 3 && result.lumenLabel) cell.setAttribute('aria-label', `${result.lumenLabel}: ${value}`);
+      if (index === 3 && result.aboveVerifiedManufacturerMax) {
+        const warning = document.createElement('p');
+        warning.className = 'mt-1 text-xs font-semibold text-amber-700 dark:text-amber-300';
+        warning.textContent = getPressureDropManufacturerLimitLabel(result.manufacturerLimit);
+        warning.title = result.manufacturerLimit.source;
+        cell.appendChild(warning);
+      }
       if (index === 4) cell.title = `Source range: ${result.rangeText}`;
       row.appendChild(cell);
     });
@@ -7427,7 +7504,7 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
     controls.view.dataset.analyticsReady = String(rows.some(row => row.result.inRange));
     controls.flow.setAttribute('aria-invalid', String(Boolean(controls.flow.value.trim()) && !Number.isFinite(flow)));
     controls.results.innerHTML = '';
-    controls.summary.textContent = Number.isFinite(flow) ? `Target flow: ${flow} L/min · ${rows.filter(row => row.result.inRange).length} in-range estimates · ${rows.length} matching cannulas` : 'Enter a positive target flow in L/min to estimate pressure drop.';
+    controls.summary.textContent = Number.isFinite(flow) ? `Target flow: ${flow} L/min · ${rows.filter(row => row.result.inRange).length} in-range curve estimates · ${rows.length} matching cannulas` : 'Enter a positive target flow in L/min to estimate pressure drop.';
     const message = document.createElement('p');
     message.className = 'text-sm text-slate-600 dark:text-slate-300';
     if (!rows.length) message.textContent = 'No matching cannulas. Broaden location, manufacturer or family filters.';
