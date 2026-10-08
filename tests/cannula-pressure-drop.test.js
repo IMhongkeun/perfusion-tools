@@ -360,10 +360,10 @@ assert(
 );
 assert(
   pressureDropPageHtml.includes('id="pressure-drop-single-tab"') &&
-  pressureDropPageHtml.includes('id="pressure-drop-compare-tab"') &&
-  pressureDropPageHtml.includes('id="pressure-drop-compare-flow"') &&
-  pressureDropPageHtml.includes('id="pressure-drop-compare-results"'),
-  'Cannula pressure-drop page should add a separate tabbed Compare sizes view while keeping the single lookup markup present.'
+  pressureDropPageHtml.includes('id="pressure-drop-target-tab"') &&
+  pressureDropPageHtml.includes('id="pressure-drop-target-location-note"') &&
+  !pressureDropPageHtml.includes('pressure-drop-compare-'),
+  'Only target-flow comparison and single lookup remain; location fallback has a visible note.'
 );
 assert(
   pressureDropPageHtml.includes('manufacturer pressure-flow curve data') &&
@@ -375,7 +375,7 @@ assert(
   pressureDropPageHtml.includes('Arterial &amp; venous cannulas') &&
   pressureDropPageHtml.includes('available manufacturer pressure-flow curves or tables') &&
   pressureDropPageHtml.includes('linear interpolation between adjacent source points') &&
-  pressureDropPageHtml.includes('Compare sizes view applies one shared target flow'),
+  pressureDropPageHtml.includes('Compare at Target Flow applies one shared flow'),
   'Cannula pressure-drop methodology should explain manufacturer source data, linear interpolation, and shared-flow Compare sizes behavior.'
 );
 assert(
@@ -502,73 +502,11 @@ assert(
   'Comparison mode should reuse the shared interpolation helper without duplicating calculation logic.'
 );
 assert(
-  mainJs.includes('function getPressureDropComparisonSizeLabel(entry)') &&
-  mainJs.includes('if (entry.size) return entry.size;') &&
-  mainJs.includes('label: getPressureDropComparisonSizeLabel(entry)') &&
-  !mainJs.includes('function getPressureDropComparisonSecondaryLabel(entry)') &&
-  !mainJs.includes('secondaryLabel'),
-  'Comparison dropdown, column headers, cards, and summaries should share one concise primary size-label formatter without secondary header metadata.'
-);
-assert(
-  mainJs.includes('selectedComparisonKeys.length >= 4') &&
-  mainJs.includes('selectedComparisonKeys.includes(key)') &&
-  mainJs.includes('selectedComparisonKeys = selectedComparisonKeys.filter(key => validScopeKeys.has(key))'),
-  'Comparison mode should prevent duplicates, cap selection at four cannulas, and clear selections that no longer match the same-family scope.'
-);
-assert(
-  mainJs.includes('const hasCompleteComparisonScope = () => Boolean(') &&
-  mainJs.includes('if (!hasCompleteComparisonScope()) return [];') &&
-  mainJs.includes('manufacturer: compareControls.manufacturerSelect.value') &&
-  mainJs.includes("manufacturerValue ? 'Select type' : 'Select manufacturer first'") &&
-  mainJs.includes("categoryValue ? 'Select model / family' : 'Select type first'") &&
-  mainJs.includes("scopeComplete ? (availableSizeOptions.length ? 'Select size to add' : 'No sizes available for this selection') : 'Select manufacturer, type, and model first'"),
-  'Compare scope entries and size options should stay empty/placeholder-only until manufacturer, category/type, and model/family are selected.'
-);
-assert(
-  mainJs.includes('const canAddComparisonSize = () => (') &&
-  mainJs.includes("Number.isFinite(parsePressureDropFlowInput(compareControls.flowInput?.value || ''))") &&
-  mainJs.includes('compareControls.addButton.disabled = !canAddComparisonSize()') &&
-  mainJs.includes('if (!canAddComparisonSize() || selectedComparisonKeys.includes(key)) return;'),
-  'Compare Add size button should require valid flow, complete scope, selected size, non-duplicate key, and the max-count limit.'
-);
-assert(
-  pressureDropPageHtml.includes('id="pressure-drop-compare-scope-lock"') &&
-  pressureDropPageHtml.includes('Clear selected sizes to change comparison scope.') &&
-  pressureDropPageHtml.includes('id="pressure-drop-compare-clear"') &&
-  mainJs.includes('compareControls.manufacturerSelect.disabled = hasSelectedComparisonItems') &&
-  mainJs.includes('compareControls.categorySelect.disabled = hasSelectedComparisonItems || !manufacturerValue') &&
-  mainJs.includes('compareControls.modelSelect.disabled = hasSelectedComparisonItems || !categoryValue') &&
-  mainJs.includes('selectedComparisonKeys = [];'),
-  'Compare mode should lock parent scope controls while selected sizes exist and provide a clear comparison control.'
-);
-assert(
-  mainJs.includes('Out of source range') &&
-  mainJs.includes('No extrapolation.') &&
-  mainJs.includes('High pressure drop warning (>100 mmHg).') &&
-  mainJs.includes('function shouldApplyPressureDropHighWarning(entry)') &&
-  mainJs.includes("getPressureDropCategoryFilterValue(entry?.category) === 'arterial cannula'"),
-  'Comparison mode should show explicit out-of-source-range labels and gate high pressure status to applicable arterial cannulas.'
-);
-assert(
-  mainJs.includes("wrap.className = 'hidden md:block overflow-x-auto") &&
-  mainJs.includes("stack.className = 'grid gap-3 md:hidden'") &&
-  mainJs.includes('createPressureDropComparisonTable') &&
-  mainJs.includes('createPressureDropComparisonCards'),
-  'Comparison mode should render a desktop table and mobile card stack rather than a wide mobile table.'
-);
-assert(
-  mainJs.includes('selectedEntries.length === 0') &&
-  mainJs.includes('Add at least one size to compare.') &&
-  mainJs.includes('selectedEntries.length === 1') &&
-  mainJs.includes('Add one more size to compare.') &&
-  !mainJs.includes('Add at least two sizes to compare.'),
-  'Comparison mode should show an empty state only for zero selections and render the table/card after one selected size.'
-);
-assert(
-  mainJs.includes("removeButton.textContent = '×'") &&
-  mainJs.includes("Remove ${getPressureDropComparisonSizeLabel(entry)} from comparison") &&
-  !mainJs.includes("removeButton.textContent = 'Remove'"),
-  'Comparison remove controls should use compact accessible X buttons rather than large red text links.'
+  !mainJs.includes('function createPressureDropComparisonTable') &&
+  !mainJs.includes('selectedComparisonKeys') &&
+  mainJs.includes("remove.textContent = '×'") &&
+  mainJs.includes('createPressureDropTargetFlowChart'),
+  'The redundant same-family view and its controls are gone; selected curves use compact removal controls.'
 );
 
 const pressureDropExactFlowTolerance = 1e-6;
@@ -1468,7 +1406,7 @@ class PressureTestNode {
 function pressureDescendants(node, predicate) {
   return node.children.flatMap(child => [ ...(predicate(child) ? [child] : []), ...pressureDescendants(child, predicate) ]);
 }
-const targetNodes = Object.fromEntries(['view', 'flow', 'category', 'location', 'manufacturer', 'model', 'sort', 'results', 'summary', 'chart']
+const targetNodes = Object.fromEntries(['view', 'flow', 'category', 'location', 'manufacturer', 'model', 'sort', 'results', 'summary', 'chart', 'location-note']
   .map(name => [`pressure-drop-target-${name}`, new PressureTestNode()]));
 targetNodes['pressure-drop-target-category'].value = 'arterial';
 targetNodes['pressure-drop-target-sort'].value = 'pressure';
@@ -1478,7 +1416,7 @@ const targetTestDocument = {
 };
 const targetFunctionNames = [
   'normalizePressureDropFilterLabel', 'getPressureDropGroupLabel', 'getPressureDropCategoryFilterValue',
-  'getPressureDropConnectionOptionValue', 'getPressureDropComparisonKey', 'shouldApplyPressureDropHighWarning',
+  'getPressureDropConnectionOptionValue', 'shouldApplyPressureDropHighWarning',
   'getPressureDropComparisonResult', 'hasValidPressureDropEstimate', 'isPressureDropAnalyticsReady',
   'parsePressureDropFlowInput', 'getPressureDropResultStateText', 'getPressureDropResultValueText',
   'formatPressureDropFlowValue', 'getPressureDropRangeText', 'formatSignedPressureDrop',
@@ -1513,6 +1451,11 @@ assert.deepStrictEqual(classificationCounts, {
 assert(avalonProducts.every(entry => !classifyComparison(entry).eligible), 'Both Avalon lumens stay outside standard comparison');
 assert.strictEqual(classifyComparison({ category: 'arterial cardioplegia', model: 'Ambiguous' }).eligible, false);
 assert.strictEqual(classifyComparison({ category: 'arterial', model: 'EOPA Central', connectionSite: '1/4 in' }).location, 'other');
+const eopaEntries = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' && /EOPA/.test(entry.model));
+assert.strictEqual(eopaEntries.length, 6);
+assert(eopaEntries.every(entry => classifyComparison(entry).eligible && classifyComparison(entry).location === 'other'));
+assert(eopaEntries.every(entry => targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'arterial', location: 'other' }).includes(entry)));
+assert(eopaEntries.every(entry => !targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'arterial', location: 'central' }).includes(entry)), 'Undocumented sites must not be presented as central');
 assert.strictEqual(classifyComparison({ category: 'venous', model: 'Bi-caval' }).location, 'other');
 assert.strictEqual(classifyComparison({ category: 'venous', connectionSite: 'Right atrium' }).location, 'central');
 assert.strictEqual(classifyComparison({ category: 'femoral venous', connectionSite: 'Jugular venous' }).location, 'jugular', 'Explicit anatomical site takes precedence');
@@ -1558,12 +1501,18 @@ assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(venousHighMagni
 const outOfRangeHigh = targetRuntime.getPressureDropTargetFlowResult(highArterial, 6);
 assert.strictEqual(outOfRangeHigh.isHighPressure, false);
 assert.strictEqual(outOfRangeHigh.magnitude, null);
+const interpolatedHigh = targetRuntime.getPressureDropTargetFlowResult(highArterial, 4.5);
+assert.strictEqual(interpolatedHigh.interpolationResult.state, 'interpolated');
+assert.strictEqual(interpolatedHigh.isHighPressure, true);
+const highOutOfRangeRows = pressureDescendants(targetRuntime.createPressureDropTargetFlowTable([{ entry: highArterial, key: 'high-out', identity: '19 Fr', result: outOfRangeHigh }], [], () => {}), node => node.tagName === 'tr');
+assert(!pressureDescendants(highOutOfRangeRows[0], node => node.className.includes('text-amber-700')).length, 'Out-of-range values never get high-pressure emphasis');
 const warningRows = [highArterial, venousHighMagnitude].map(entry => ({
   entry, key: targetRuntime.getPressureDropTargetFlowKey(entry), identity: entry.size,
   result: targetRuntime.getPressureDropTargetFlowResult(entry, 5)
 }));
 const warningTableRows = pressureDescendants(targetRuntime.createPressureDropTargetFlowTable(warningRows, [], () => {}), node => node.tagName === 'tr');
-assert(warningTableRows[0].textContent.includes('High pressure drop warning (>100 mmHg).'), 'Arterial warning renders in desktop/mobile row');
+assert(!warningTableRows[0].textContent.includes('High pressure drop warning'), 'High arterial pressure uses color rather than a warning paragraph');
+assert(pressureDescendants(warningTableRows[0], node => node.attributes['aria-label']?.includes('High pressure drop warning')).length, 'Warning remains available to assistive technology');
 assert(!warningTableRows[1].textContent.includes('High pressure drop warning'), 'Venous results retain their own semantics');
 assert.deepStrictEqual(Array.from(targetRuntime.getPressureDropTargetFlowRows(targetFixtures, arterialFilters, 3, 'size'), row => row.entry.size), ['15 Fr', '19 Fr', '21 Fr']);
 assert.deepStrictEqual(Array.from(targetRuntime.getPressureDropTargetFlowRows(targetFixtures, arterialFilters, 3, 'manufacturer'), row => row.entry.manufacturer), ['Getinge / Maquet', 'LivaNova', 'Medtronic']);
@@ -1632,13 +1581,19 @@ assert.strictEqual(targetNodes['pressure-drop-target-manufacturer'].value, '');
 const targetFlowInput = targetNodes['pressure-drop-target-flow'];
 targetFlowInput.value = '4.5'; targetFlowInput.dispatch('input');
 assert.strictEqual(targetNodes['pressure-drop-target-view'].dataset.analyticsReady, 'true');
+assert.strictEqual(targetNodes['pressure-drop-target-location-note'].textContent, '');
+assert(currentRows().some(row => row.textContent.includes('EOPA')), 'All locations includes EOPA without inventing a central site');
 const locationInput = targetNodes['pressure-drop-target-location'];
+locationInput.value = 'femoral'; locationInput.dispatch('change');
+assert(targetNodes['pressure-drop-target-location-note'].textContent.includes('EOPA'));
+locationInput.value = 'other'; locationInput.dispatch('change');
+assert(currentRows().some(row => row.textContent.includes('EOPA')), 'Other / Unspecified exposes EOPA');
 locationInput.value = 'femoral'; locationInput.dispatch('change');
 function currentRows() { return pressureDescendants(targetNodes['pressure-drop-target-results'], node => node.tagName === 'tr'); }
 function rowCheckbox(row) { return pressureDescendants(row, node => node.type === 'checkbox')[0]; }
 const initialKeys = currentRows().map(row => row.dataset.productKey);
 assert.strictEqual(initialKeys.length, 24);
-assert(currentRows().some(row => row.textContent.includes('Out of source range')));
+assert(currentRows().some(row => row.textContent.includes('Out of range')));
 for (const row of currentRows().slice(0, 4)) {
   const box = rowCheckbox(row);
   box.focus(); box.checked = true; box.dispatch('change');
@@ -1685,12 +1640,35 @@ assert.strictEqual((overlaySvg.innerHTML.match(/data-series-id=/g) || []).length
 assert(overlaySvg.innerHTML.includes('Signed pressure: +80.0 mmHg') && overlaySvg.innerHTML.includes('Signed pressure: +45.0 mmHg'));
 assert.strictEqual((overlaySvg.innerHTML.match(/data-raw-pressure-point=/g) || []).length, 4);
 const externalLegend = pressureDescendants(overlay, node => node.tagName === 'li');
-assert(externalLegend[0].textContent.includes('Medtronic · A · 19 Fr'));
-assert(externalLegend[1].textContent.includes('Getinge / Maquet · B · 21 Fr'));
+assert(externalLegend[0].textContent.includes('Medtronic · A') && externalLegend[0].textContent.includes('19 Fr'));
+assert(externalLegend[1].textContent.includes('Getinge / Maquet · B') && externalLegend[1].textContent.includes('21 Fr'));
 assert.strictEqual(externalLegend[0].dataset.productKey, targetRuntime.getPressureDropTargetFlowKey(targetFixtures[0]));
 assert.strictEqual(pressureDescendants(externalLegend[0], node => node.style.backgroundColor)[0].style.backgroundColor, chartRuntime.productColors[0]);
+const compactOverlay = targetRuntime.createPressureDropTargetFlowChart(
+  [{ ...highArterial, sourceUrl: 'https://example.com/catalog.pdf' }, venousHighMagnitude, highArterial], 5, false, () => {}, () => {});
+const compactItems = pressureDescendants(compactOverlay, node => node.tagName === 'li');
+assert.strictEqual(compactItems.length, 3);
+assert(compactItems[0].textContent.includes('120.0 mmHg') && compactItems[0].textContent.includes('Exact'));
+assert(!compactItems[0].textContent.includes('signed pressure') && !compactItems[0].textContent.includes('High pressure drop warning'));
+assert(pressureDescendants(compactItems[0], node => node.title?.includes('Signed pressure: +120.0 mmHg')).length);
+assert(pressureDescendants(compactItems[0], node => node.className.includes('text-amber-700')).length);
+assert(!pressureDescendants(compactItems[1], node => node.className.includes('text-amber-700')).length, 'Venous magnitude has neutral styling');
+assert(pressureDescendants(compactItems[0], node => node.tagName === 'a' && node.href === 'https://example.com/catalog.pdf').length);
+let removedKey = null;
+const removalOverlay = targetRuntime.createPressureDropTargetFlowChart([highArterial], 5, false, () => {}, key => { removedKey = key; });
+const compactRemove = pressureDescendants(removalOverlay, node => node.tagName === 'button')[0];
+assert.strictEqual(compactRemove.textContent, '×');
+assert(compactRemove.attributes['aria-label'].includes('High arterial source'));
+compactRemove.dispatch('click');
+assert.strictEqual(removedKey, targetRuntime.getPressureDropTargetFlowKey(highArterial));
+const outOfRangeOverlay = targetRuntime.createPressureDropTargetFlowChart([highArterial], 6, false, () => {}, () => {});
+const outOfRangeItem = pressureDescendants(outOfRangeOverlay, node => node.tagName === 'li')[0];
+assert(outOfRangeItem.textContent.includes('Out of range'));
+assert(!pressureDescendants(outOfRangeItem, node => node.className.includes('text-amber-700')).length);
+
 const signedOverlay = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[3]], 4.5, false, () => {}, () => {});
-assert(signedOverlay.textContent.includes('signed pressure -80.0 mmHg'));
+assert(!signedOverlay.textContent.includes('signed pressure'));
+assert(pressureDescendants(signedOverlay, node => node.title?.includes('Signed pressure: -80.0 mmHg')).length);
 assert(pressureDescendants(signedOverlay, node => node.tagName === 'svg')[0].innerHTML.includes('Signed pressure: -80.0 mmHg'));
 const emptyFirst = { ...targetFixtures[0], model: 'Metadata', points: [] };
 const mixedOverlay = targetRuntime.createPressureDropTargetFlowChart([emptyFirst, targetFixtures[1]], 4.5, false, () => {}, () => {});
@@ -1704,43 +1682,42 @@ assert.strictEqual((outsideSvg.innerHTML.match(/data-series-id=/g) || []).length
 assert(!outsideSvg.innerHTML.includes('data-target-flow-line'));
 assert(outsideOverlay.textContent.includes('No selected curve has an in-range estimate'));
 const readyTarget = new PressureTestNode(); readyTarget.dataset.analyticsReady = 'true';
-assert.strictEqual(targetRuntime.isPressureDropAnalyticsReady('target', readyTarget, readyTarget, readyTarget), true);
+assert.strictEqual(targetRuntime.isPressureDropAnalyticsReady('target', readyTarget, readyTarget), true);
 readyTarget.className = 'hidden';
-assert.strictEqual(targetRuntime.isPressureDropAnalyticsReady('target', readyTarget, readyTarget, readyTarget), false);
+assert.strictEqual(targetRuntime.isPressureDropAnalyticsReady('target', readyTarget, readyTarget), false);
 console.log('Target-flow classification, interpolation, filtering, selection, chart and readiness regressions passed.');
 
 const switchStart = mainJs.indexOf('    const setPressureDropView = (view) => {');
 const switchSource = mainJs.slice(switchStart, mainJs.indexOf('\n    [', switchStart));
 const switchPage = new PressureTestNode();
-const switchPanels = { single: new PressureTestNode(), compare: new PressureTestNode(), target: new PressureTestNode() };
-const switchTabs = { single: new PressureTestNode(), compare: new PressureTestNode(), target: new PressureTestNode() };
+const switchPanels = { single: new PressureTestNode(), target: new PressureTestNode() };
+const switchTabs = { single: new PressureTestNode(), target: new PressureTestNode() };
 const switchRenders = [];
 const switchView = vm.runInNewContext(`let activePressureDropView = 'single'; ${switchSource}; setPressureDropView`, {
-  page: switchPage, status: new PressureTestNode(), selectedComparisonKeys: [],
-  compareControls: { singleView: switchPanels.single, compareView: switchPanels.compare, singleTab: switchTabs.single, compareTab: switchTabs.compare },
+  page: switchPage, status: new PressureTestNode(),
+  singleView: switchPanels.single, singleTab: switchTabs.single,
   targetView: switchPanels.target, targetTab: switchTabs.target,
   targetComparison: { refresh: () => switchRenders.push('target') },
-  populateCompareOptions: () => {}, renderCompare: () => switchRenders.push('compare'), render: () => switchRenders.push('single')
+  render: () => switchRenders.push('single')
 });
-for (const mode of ['target', 'single', 'compare', 'target']) {
+for (const mode of ['target', 'single', 'target']) {
   Object.values(switchPanels).forEach(panel => { panel.dataset.analyticsReady = 'true'; });
   switchView(mode);
   assert.strictEqual(switchPage.dataset.pressureDropView, mode);
   Object.entries(switchPanels).forEach(([name, panel]) => {
     assert.strictEqual(panel.classList.contains('hidden'), name !== mode);
-    if (name !== mode) assert.strictEqual(panel.dataset.analyticsReady, 'false', 'Mode switches clear inactive readiness');
+    if (name !== mode) assert.strictEqual(panel.dataset.analyticsReady, 'false');
     assert.strictEqual(switchTabs[name].attributes['aria-pressed'], String(name === mode));
   });
 }
-assert.deepStrictEqual(switchRenders, ['target', 'single', 'compare', 'target']);
+assert.deepStrictEqual(switchRenders, ['target', 'single', 'target']);
 console.log('Pressure-drop mode switching and inactive readiness regressions passed.');
 
 // Execute the production feedback resolver with the active view and its real
 // readiness contract. The feedback card itself remains unique across modes.
 const feedbackNodes = Object.fromEntries([
   'cannula-pressure-drop-page', 'pressure-drop-target-view', 'pressure-drop-single-view',
-  'pressure-drop-compare-view', 'pressure-drop-target-results', 'pressure-drop-results',
-  'pressure-drop-compare-results'
+  'pressure-drop-target-results', 'pressure-drop-results'
 ].map(id => [id, new PressureTestNode()]));
 const feedbackVisible = node => Boolean(node && !node.classList.contains('hidden'));
 const feedbackContextSource = mainJs.slice(mainJs.indexOf('const FEEDBACK_RESULT_CONTEXTS ='), mainJs.indexOf('const FEEDBACK_STORAGE_KEY'));
@@ -1764,11 +1741,10 @@ const feedbackRuntime = vm.runInNewContext([
 });
 for (const [mode, viewId, resultId] of [
   ['target', 'pressure-drop-target-view', 'pressure-drop-target-results'],
-  ['single', 'pressure-drop-single-view', 'pressure-drop-results'],
-  ['compare', 'pressure-drop-compare-view', 'pressure-drop-compare-results']
+  ['single', 'pressure-drop-single-view', 'pressure-drop-results']
 ]) {
   feedbackNodes['cannula-pressure-drop-page'].dataset.pressureDropView = mode;
-  for (const panelId of ['pressure-drop-target-view', 'pressure-drop-single-view', 'pressure-drop-compare-view']) {
+  for (const panelId of ['pressure-drop-target-view', 'pressure-drop-single-view']) {
     feedbackNodes[panelId].className = panelId === viewId ? '' : 'hidden';
     feedbackNodes[panelId].dataset.analyticsReady = panelId === viewId ? 'false' : 'true';
   }
@@ -1797,7 +1773,7 @@ let existingFeedbackCard = null;
 let insertedFeedbackCards = 0;
 const feedbackEventHandlers = {};
 const feedbackTimers = [];
-for (const id of ['pressure-drop-target-view', 'pressure-drop-single-view', 'pressure-drop-compare-view']) {
+for (const id of ['pressure-drop-target-view', 'pressure-drop-single-view']) {
   feedbackNodes[id].insertAdjacentHTML = () => { insertedFeedbackCards += 1; existingFeedbackCard = new PressureTestNode(); };
 }
 const feedbackRoot = { addEventListener: (type, handler) => { feedbackEventHandlers[type] = handler; } };

@@ -6834,22 +6834,6 @@ function createPressureDropAvailableDatasetsDetails(entries, onSelect) {
   return details;
 }
 
-function getPressureDropComparisonKey(entry) {
-  return [
-    entry.lookupId,
-    entry.manufacturer,
-    getPressureDropCategoryFilterValue(entry.category),
-    entry.model,
-    getPressureDropSizeOptionValue(entry),
-    getPressureDropConnectionOptionValue(entry)
-  ].filter(Boolean).join('||');
-}
-
-function getPressureDropComparisonSizeLabel(entry) {
-  if (entry.size) return entry.size;
-  return entry.cannulaOrderCode || 'Unknown size';
-}
-
 function shouldApplyPressureDropHighWarning(entry) {
   const noteText = normalizePressureDropFilterLabel([
     entry?.notes,
@@ -6893,157 +6877,9 @@ function hasValidPressureDropEstimate(interpolationResults) {
   return interpolationResults.some(result => result?.state === 'exact' || result?.state === 'interpolated');
 }
 
-function isPressureDropAnalyticsReady(activeView, singleView, compareView, targetView) {
-  const view = activeView === 'target' ? targetView : activeView === 'compare' ? compareView : singleView;
+function isPressureDropAnalyticsReady(activeView, singleView, targetView) {
+  const view = activeView === 'target' ? targetView : singleView;
   return isElementVisible(view) && view?.dataset.analyticsReady === 'true';
-}
-
-function createPressureDropComparisonChart(selectedEntries, flowValue, showRawPoints, onRawPointsChange) {
-  const panel = document.createElement('article');
-  panel.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-3';
-  const title = document.createElement('div');
-  title.innerHTML = '<h3 class="text-sm font-semibold text-primary-900 dark:text-white">Selected pressure-flow curves</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Digitized manufacturer points are connected with straight line segments. Each size uses one color; solid and dashed lines identify Infusion and Drainage.</p>';
-  title.appendChild(createPressureDropRawPointsToggle(showRawPoints, onRawPointsChange, 'pressure-drop-compare-show-raw-points'));
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('viewBox', '0 0 420 200');
-  svg.setAttribute('role', 'img');
-  const chartSeries = [];
-  const estimates = [];
-  selectedEntries.forEach((entry, productIndex) => {
-    getPressureDropSeries(entry).forEach(series => {
-      chartSeries.push({
-        ...series,
-        colorIndex: productIndex,
-        displayLabel: `${entry.size || entry.model} — ${series.label}`
-      });
-      const result = interpolatePressureDrop(series.points, flowValue);
-      estimates.push(result);
-    });
-  });
-  svg.setAttribute('aria-label', chartSeries.map((series, index) => `${series.displayLabel}: ${getPressureDropResultStateText(estimates[index])}`).join(', '));
-  svg.classList.add('block', 'w-full', 'h-auto', 'text-slate-500', 'dark:text-slate-300');
-  drawPressureDropSeriesChart(svg, chartSeries, flowValue, estimates, { curveMode: 'linear', showRawPoints });
-  panel.append(title, svg);
-  return panel;
-}
-
-function createPressureDropComparisonTable(selectedEntries, flowValue, onRemove) {
-  const wrap = document.createElement('div');
-  wrap.className = 'hidden md:block overflow-x-auto rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30';
-  const table = document.createElement('table');
-  table.className = 'min-w-full text-sm';
-  const head = document.createElement('thead');
-  const headRow = document.createElement('tr');
-  headRow.className = 'border-b border-slate-200 dark:border-primary-800';
-  headRow.innerHTML = '<th class="w-40 p-3 text-left text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Field</th>';
-  selectedEntries.forEach(entry => {
-    const th = document.createElement('th');
-    th.className = 'min-w-44 p-3 text-left align-top';
-    const removeButton = document.createElement('button');
-    removeButton.type = 'button';
-    removeButton.className = 'ml-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 dark:border-primary-700 text-base leading-none text-slate-500 dark:text-slate-300 hover:border-rose-300 hover:text-rose-600 dark:hover:border-rose-500/60 dark:hover:text-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500';
-    removeButton.textContent = '×';
-    removeButton.setAttribute('aria-label', `Remove ${getPressureDropComparisonSizeLabel(entry)} from comparison`);
-    removeButton.addEventListener('click', () => onRemove(getPressureDropComparisonKey(entry)));
-    const headerTop = document.createElement('div');
-    headerTop.className = 'flex items-start justify-between gap-2';
-    const label = document.createElement('div');
-    label.className = 'min-w-0 font-semibold text-primary-900 dark:text-white';
-    label.textContent = getPressureDropComparisonSizeLabel(entry);
-    headerTop.append(label, removeButton);
-    th.append(headerTop);
-    headRow.appendChild(th);
-  });
-  head.appendChild(headRow);
-  table.appendChild(head);
-
-  const body = document.createElement('tbody');
-  const rows = [
-    ['Manufacturer', entry => entry.manufacturer || '—'],
-    ['Category / type', entry => getPressureDropGroupLabel(entry.category)],
-    ['Model / family', entry => entry.model || '—'],
-    ['Size / code label', entry => getPressureDropComparisonSizeLabel(entry)],
-    ['ΔP at target flow', entry => getPressureDropComparisonResult(entry, flowValue).valueText, true],
-    ['Manufacturer chart flow range', entry => getPressureDropComparisonResult(entry, flowValue).rangeText],
-    ['Data status / source quality', entry => formatPressureDropDataStatus(entry.dataStatus)],
-    ['Warning / status', entry => getPressureDropComparisonResult(entry, flowValue).warningText]
-  ];
-  rows.forEach(([label, getter, isAccent]) => {
-    const tr = document.createElement('tr');
-    tr.className = `border-b border-slate-100 dark:border-primary-800/70 last:border-0 ${isAccent ? 'bg-accent-500/10 dark:bg-accent-500/15' : ''}`;
-    const th = document.createElement('th');
-    th.className = 'p-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400';
-    th.textContent = label;
-    tr.appendChild(th);
-    selectedEntries.forEach(entry => {
-      const result = getPressureDropComparisonResult(entry, flowValue);
-      const td = document.createElement('td');
-      td.className = `whitespace-pre-line p-3 align-top ${isAccent ? 'font-bold text-primary-900 dark:text-white' : 'text-slate-700 dark:text-slate-200'} ${result.isOutOfRange || result.isHighPressure ? 'text-amber-700 dark:text-amber-300' : ''}`;
-      td.textContent = getter(entry);
-      tr.appendChild(td);
-    });
-    body.appendChild(tr);
-  });
-  table.appendChild(body);
-  wrap.appendChild(table);
-  return wrap;
-}
-
-function createPressureDropComparisonCards(selectedEntries, flowValue, onRemove) {
-  const stack = document.createElement('div');
-  stack.className = 'grid gap-3 md:hidden';
-  selectedEntries.forEach(entry => {
-    const result = getPressureDropComparisonResult(entry, flowValue);
-    const card = document.createElement('article');
-    card.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-3';
-    const header = document.createElement('div');
-    header.className = 'flex items-start justify-between gap-3';
-    const title = document.createElement('div');
-    const primaryTitle = document.createElement('h3');
-    primaryTitle.className = 'text-sm font-semibold text-primary-900 dark:text-white';
-    primaryTitle.textContent = getPressureDropComparisonSizeLabel(entry);
-    const scopeText = document.createElement('p');
-    scopeText.className = 'mt-1 text-xs text-slate-500 dark:text-slate-400';
-    scopeText.textContent = `${entry.manufacturer || '—'} · ${getPressureDropGroupLabel(entry.category)}`;
-    title.append(primaryTitle, scopeText);
-    const removeButton = document.createElement('button');
-    removeButton.type = 'button';
-    removeButton.className = 'inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-slate-200 dark:border-primary-700 text-lg leading-none text-slate-500 dark:text-slate-300 hover:border-rose-300 hover:text-rose-600 dark:hover:border-rose-500/60 dark:hover:text-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500';
-    removeButton.textContent = '×';
-    removeButton.setAttribute('aria-label', `Remove ${getPressureDropComparisonSizeLabel(entry)} from comparison`);
-    removeButton.addEventListener('click', () => onRemove(getPressureDropComparisonKey(entry)));
-    header.append(title, removeButton);
-    const value = document.createElement('div');
-    value.className = `rounded-lg border p-3 ${result.isOutOfRange || result.isHighPressure ? 'border-amber-300 dark:border-amber-500/50 bg-amber-50 dark:bg-amber-500/10' : 'border-accent-500/25 bg-accent-500/10 dark:bg-accent-500/15'}`;
-    const valueLabel = document.createElement('p');
-    valueLabel.className = 'text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400';
-    valueLabel.textContent = 'ΔP at target flow';
-    const lumenRows = document.createElement('div');
-    lumenRows.className = 'mt-2 grid gap-2';
-    result.seriesResults.forEach(item => {
-      const lumenRow = document.createElement('div');
-      lumenRow.className = 'min-w-0 rounded-md bg-white/60 dark:bg-primary-900/40 p-2';
-      lumenRow.innerHTML = `<p class="text-xs font-semibold text-slate-600 dark:text-slate-300">${item.series.label}</p><p class="break-words text-lg font-bold text-primary-900 dark:text-white">${item.valueText}</p><p class="text-xs text-slate-500 dark:text-slate-400">${item.statusText}</p>`;
-      lumenRows.appendChild(lumenRow);
-    });
-    value.append(valueLabel, lumenRows);
-    const details = document.createElement('dl');
-    details.className = 'grid gap-2 text-xs';
-    [
-      ['Model / family', entry.model || '—'],
-      ['Manufacturer chart flow range', result.rangeText],
-      ['Data status / source quality', formatPressureDropDataStatus(entry.dataStatus)],
-      ['Warning / status', result.warningText]
-    ].forEach(([term, description]) => {
-      const row = document.createElement('div');
-      row.className = 'rounded-lg bg-slate-50 dark:bg-primary-800/60 p-2';
-      row.innerHTML = `<dt class="text-slate-500 dark:text-slate-400">${term}</dt><dd class="mt-1 font-medium text-slate-700 dark:text-slate-200">${description}</dd>`;
-      details.appendChild(row);
-    });
-    card.append(header, value, details);
-    stack.appendChild(card);
-  });
-  return stack;
 }
 
 // Standard comparison classification uses exact catalog metadata, not broad
@@ -7176,8 +7012,8 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
   heading.textContent = 'Selected pressure-flow curves';
   panel.append(heading, createPressureDropRawPointsToggle(showRawPoints, onRawPointsChange, 'pressure-drop-target-raw-points'));
   const series = [], estimates = [];
-  const legend = document.createElement('ul');
-  legend.className = 'space-y-2 text-xs text-slate-600 dark:text-slate-300';
+  const legend = document.createElement('ol');
+  legend.className = 'divide-y divide-slate-100 dark:divide-primary-800 text-xs text-slate-600 dark:text-slate-300';
   entries.forEach((entry, index) => {
     const result = getPressureDropTargetFlowResult(entry, flow);
     const key = getPressureDropTargetFlowKey(entry);
@@ -7185,23 +7021,46 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     series.push({ ...result.series, id: encodeURIComponent(key), colorIndex: index, displayLabel: `${index + 1} · ${entry.manufacturer} · ${identity}` });
     estimates.push(result.interpolationResult);
     const item = document.createElement('li');
-    item.className = 'flex min-w-0 items-start gap-2';
+    item.className = 'flex min-w-0 flex-wrap items-center gap-2 py-2';
     item.dataset.productKey = key;
     const swatch = document.createElement('span');
-    swatch.className = 'mt-1 h-2 w-4 shrink-0 rounded';
+    swatch.className = 'h-2 w-3 shrink-0 rounded';
     swatch.style.backgroundColor = PRESSURE_DROP_PRODUCT_COLORS[index];
     swatch.setAttribute('aria-hidden', 'true');
-    const text = document.createElement('span');
-    text.className = 'min-w-0 flex-1 break-words';
-    const signedText = result.inRange ? `; signed pressure ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg` : '';
-    text.textContent = `${index + 1}. ${entry.manufacturer} · ${entry.model} · ${identity} — ${getPressureDropTargetFlowValueText(result)}${signedText}`;
+    const rank = document.createElement('span');
+    rank.className = 'shrink-0 tabular-nums text-slate-500 dark:text-slate-400';
+    rank.textContent = `${index + 1}.`;
+    const name = document.createElement('span');
+    name.className = 'min-w-0 flex-1 break-words';
+    name.textContent = `${entry.manufacturer} · ${entry.model}`;
+    const size = document.createElement('span');
+    size.className = 'shrink-0 text-slate-500 dark:text-slate-400';
+    size.textContent = identity;
+    const value = document.createElement('span');
+    value.className = `shrink-0 tabular-nums font-semibold ${result.isHighPressure && result.inRange ? 'text-amber-700 dark:text-amber-300' : 'text-primary-900 dark:text-white'}`;
+    value.textContent = result.inRange ? `${result.magnitude.toFixed(1)} mmHg` : 'Out of range';
+    if (result.inRange) value.title = `Signed pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
+    if (result.isHighPressure && result.inRange) value.setAttribute('aria-label', `${value.textContent}. ${result.warningText}`);
+    const status = document.createElement('span');
+    status.className = 'shrink-0 rounded-full bg-slate-100 dark:bg-primary-800 px-2 py-0.5 text-[11px]';
+    status.textContent = result.inRange ? (result.interpolationResult.state === 'exact' ? 'Exact' : 'Interpolated') : 'Out of range';
+    const sourceUrl = String(entry.sourceUrl || '').trim();
+    const source = /^https?:\/\//i.test(sourceUrl) ? document.createElement('a') : null;
+    if (source) {
+      source.href = sourceUrl; source.target = '_blank'; source.rel = 'noopener noreferrer';
+      source.className = 'shrink-0 text-accent-700 dark:text-accent-300 underline';
+      source.textContent = '↗';
+      source.setAttribute('aria-label', `Open catalog source for ${entry.manufacturer} ${entry.model} ${identity}`);
+    }
     const remove = document.createElement('button');
     remove.type = 'button';
-    remove.className = 'min-h-10 shrink-0 rounded px-2 text-accent-700 dark:text-accent-300 focus:ring-2 focus:ring-accent-500';
-    remove.textContent = 'Remove';
+    remove.className = 'inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-lg text-slate-500 dark:text-slate-300 hover:text-rose-600 focus:ring-2 focus:ring-accent-500';
+    remove.textContent = '×';
     remove.setAttribute('aria-label', `Remove ${entry.manufacturer} ${entry.model} ${identity} from chart`);
     remove.addEventListener('click', () => onRemove(key));
-    item.append(swatch, text, remove);
+    item.append(swatch, rank, name, size, value, status);
+    if (source) item.appendChild(source);
+    item.appendChild(remove);
     legend.appendChild(item);
   });
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -7263,7 +7122,7 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
     row.appendChild(selectCell);
     const values = [entry.manufacturer, entry.model, identity,
       getPressureDropTargetFlowValueText(result),
-      `${result.inRange ? result.statusText + '. ' : ''}Available: ${result.rangeText}`];
+      result.inRange ? (result.interpolationResult.state === 'exact' ? 'Exact' : 'Interpolated') : 'Out of range'];
     values.forEach((value, index) => {
       const cell = document.createElement('td');
       cell.className = 'block break-words py-1 md:table-cell md:p-2 md:align-top';
@@ -7284,12 +7143,12 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
         signed.textContent = `Signed drainage pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
         cell.appendChild(signed);
       }
-      if (index === 3 && result.isHighPressure) {
-        const warning = document.createElement('p');
-        warning.className = 'mt-1 font-semibold text-amber-700 dark:text-amber-300';
-        warning.textContent = result.warningText;
-        cell.appendChild(warning);
+      if (index === 3 && result.isHighPressure && result.inRange) {
+        cell.className += ' text-amber-700 dark:text-amber-300';
+        cell.setAttribute('aria-label', `${value}. ${result.warningText}`);
+        cell.title = result.warningText;
       }
+      if (index === 4) cell.title = `Source range: ${result.rangeText}`;
       row.appendChild(cell);
     });
     body.appendChild(row);
@@ -7304,7 +7163,8 @@ function initPressureDropTargetFlowComparison(entries, onStatus) {
     category: el('pressure-drop-target-category'), location: el('pressure-drop-target-location'),
     manufacturer: el('pressure-drop-target-manufacturer'), model: el('pressure-drop-target-model'),
     sort: el('pressure-drop-target-sort'), results: el('pressure-drop-target-results'),
-    summary: el('pressure-drop-target-summary'), chart: el('pressure-drop-target-chart')
+    summary: el('pressure-drop-target-summary'), chart: el('pressure-drop-target-chart'),
+    locationNote: el('pressure-drop-target-location-note')
   };
   if (Object.values(controls).some(control => !control)) return null;
   let selectedKeys = [], showRawPoints = false;
@@ -7326,6 +7186,11 @@ function initPressureDropTargetFlowComparison(entries, onStatus) {
     const focusedProductKey = document.activeElement?.dataset.productKey;
     const flow = parsePressureDropTargetFlow(controls.flow.value);
     const rows = getPressureDropTargetFlowRows(entries, getFilters(), flow, controls.sort.value);
+    const unspecified = getPressureDropTargetFlowMatches(entries, { category: controls.category.value, location: 'other' })
+      .filter(entry => !controls.manufacturer.value || entry.manufacturer === controls.manufacturer.value);
+    controls.locationNote.textContent = controls.location.value && controls.location.value !== 'other' && unspecified.length
+      ? `${unspecified.length} ${controls.category.value} products have no documented insertion site (including ${unspecified.some(entry => /EOPA/i.test(entry.model)) ? 'EOPA' : 'other models'}). Choose Other / Unspecified or All locations to see them.`
+      : '';
     const eligibleKeys = getEligibleKeys();
     selectedKeys = selectedKeys.filter(key => eligibleKeys.has(key));
     controls.view.dataset.analyticsReady = String(rows.some(row => row.result.inRange));
@@ -7398,26 +7263,12 @@ async function initCannulaPressureDropPage() {
       flowInput: el('pressure-drop-page-flow'),
       connectionWrap: el('pressure-drop-page-connection-wrap')
     };
-    const compareControls = {
-      singleTab: el('pressure-drop-single-tab'),
-      compareTab: el('pressure-drop-compare-tab'),
-      singleView: el('pressure-drop-single-view'),
-      compareView: el('pressure-drop-compare-view'),
-      flowInput: el('pressure-drop-compare-flow'),
-      manufacturerSelect: el('pressure-drop-compare-manufacturer'),
-      categorySelect: el('pressure-drop-compare-category'),
-      modelSelect: el('pressure-drop-compare-model'),
-      sizeSelect: el('pressure-drop-compare-size'),
-      addButton: el('pressure-drop-compare-add'),
-      clearButton: el('pressure-drop-compare-clear'),
-      scopeLock: el('pressure-drop-compare-scope-lock'),
-      results: el('pressure-drop-compare-results')
-    };
+    const singleView = el('pressure-drop-single-view');
+    const singleTab = el('pressure-drop-single-tab');
     const targetView = el('pressure-drop-target-view');
     const targetTab = el('pressure-drop-target-tab');
     const targetComparison = initPressureDropTargetFlowComparison(entries, text => { status.textContent = text; });
     let activePressureDropView = 'single';
-    let selectedComparisonKeys = [];
     let showRawPressureDropPoints = false;
     const resetButton = el('pressure-drop-page-reset');
     const modelCombobox = createPressureDropSearchableSelect(controls.modelSelect, 'Select model / cannula');
@@ -7511,7 +7362,7 @@ async function initCannulaPressureDropPage() {
       const flowInputValue = controls.flowInput?.value || '';
       const flowValue = parsePressureDropFlowInput(flowInputValue);
       results.innerHTML = '';
-      if (compareControls.singleView) compareControls.singleView.dataset.analyticsReady = 'false';
+      if (singleView) singleView.dataset.analyticsReady = 'false';
 
       if (!entries.length) {
         status.textContent = 'No pressure-drop references loaded';
@@ -7539,137 +7390,19 @@ async function initCannulaPressureDropPage() {
         showRawPressureDropPoints,
         checked => { showRawPressureDropPoints = checked; render(); }
       ));
-      if (compareControls.singleView) {
+      if (singleView) {
         const estimates = getPressureDropSeries(selectedEntry).map(series => interpolatePressureDrop(series.points, flowValue));
-        compareControls.singleView.dataset.analyticsReady = String(hasValidPressureDropEstimate(estimates));
+        singleView.dataset.analyticsReady = String(hasValidPressureDropEstimate(estimates));
       }
       results.appendChild(createPressureDropAvailableDatasetsDetails(entries, selectEntry));
       setState({});
       if (focusResultFlow) requestAnimationFrame(focusResultFlowInput);
     };
 
-    const hasCompleteComparisonScope = () => Boolean(
-      compareControls.manufacturerSelect?.value &&
-      compareControls.categorySelect?.value &&
-      compareControls.modelSelect?.value
-    );
-
-    const getComparisonScopeEntries = () => {
-      if (!hasCompleteComparisonScope()) return [];
-      return getPressureDropLookupMatches(entries, {
-        manufacturer: compareControls.manufacturerSelect.value,
-        category: compareControls.categorySelect.value,
-        model: compareControls.modelSelect.value
-      });
-    };
-
-    const canAddComparisonSize = () => (
-      selectedComparisonKeys.length < 4 &&
-      Number.isFinite(parsePressureDropFlowInput(compareControls.flowInput?.value || '')) &&
-      hasCompleteComparisonScope() &&
-      Boolean(compareControls.sizeSelect?.value)
-    );
-
-    const renderCompare = () => {
-      if (!compareControls.results) return;
-      const flowValue = parsePressureDropFlowInput(compareControls.flowInput?.value || '');
-      const selectedEntries = entries.filter(entry => selectedComparisonKeys.includes(getPressureDropComparisonKey(entry)));
-      compareControls.results.innerHTML = '';
-      if (compareControls.compareView) compareControls.compareView.dataset.analyticsReady = 'false';
-      if (selectedEntries.length === 0) {
-        const emptyState = document.createElement('div');
-        emptyState.className = 'rounded-xl border border-dashed border-slate-300 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/40 p-5 text-sm text-slate-600 dark:text-slate-300';
-        emptyState.innerHTML = '<h3 class="text-base font-semibold text-primary-900 dark:text-white">Add at least one size to compare.</h3><p class="mt-2">Choose a manufacturer, category/type, and model family, then add a size from that same family.</p>';
-        compareControls.results.appendChild(emptyState);
-      } else {
-        const hasValidComparison = selectedEntries.length >= 2 && selectedEntries.some(entry => (
-          hasValidPressureDropEstimate(getPressureDropSeries(entry).map(series => interpolatePressureDrop(series.points, flowValue)))
-        ));
-        if (compareControls.compareView) compareControls.compareView.dataset.analyticsReady = String(hasValidComparison);
-        if (selectedEntries.length === 1) {
-          const helper = document.createElement('p');
-          helper.className = 'rounded-lg border border-accent-500/20 bg-accent-500/10 dark:bg-accent-500/15 px-3 py-2 text-xs font-medium text-accent-700 dark:text-accent-300';
-          helper.textContent = 'Add one more size to compare.';
-          compareControls.results.appendChild(helper);
-        }
-        if (selectedEntries.some(entry => getPressureDropSeries(entry).length > 1)) {
-          compareControls.results.appendChild(createPressureDropComparisonChart(
-            selectedEntries,
-            flowValue,
-            showRawPressureDropPoints,
-            checked => { showRawPressureDropPoints = checked; renderCompare(); }
-          ));
-        }
-        compareControls.results.appendChild(createPressureDropComparisonTable(selectedEntries, flowValue, removeKey => {
-          selectedComparisonKeys = selectedComparisonKeys.filter(key => key !== removeKey);
-          populateCompareOptions('');
-          renderCompare();
-        }));
-        compareControls.results.appendChild(createPressureDropComparisonCards(selectedEntries, flowValue, removeKey => {
-          selectedComparisonKeys = selectedComparisonKeys.filter(key => key !== removeKey);
-          populateCompareOptions('');
-          renderCompare();
-        }));
-      }
-      if (compareControls.addButton) {
-        compareControls.addButton.disabled = !canAddComparisonSize();
-        compareControls.addButton.textContent = selectedComparisonKeys.length >= 4 ? 'Maximum 4 selected' : 'Add size';
-      }
-    };
-
-    const populateCompareOptions = (changedLevel = '') => {
-      let hasSelectedComparisonItems = selectedComparisonKeys.length > 0;
-      if (changedLevel === 'manufacturer') {
-        if (compareControls.categorySelect) compareControls.categorySelect.value = '';
-        if (compareControls.modelSelect) compareControls.modelSelect.value = '';
-        if (compareControls.sizeSelect) compareControls.sizeSelect.value = '';
-      } else if (changedLevel === 'category') {
-        if (compareControls.modelSelect) compareControls.modelSelect.value = '';
-        if (compareControls.sizeSelect) compareControls.sizeSelect.value = '';
-      } else if (changedLevel === 'model') {
-        if (compareControls.sizeSelect) compareControls.sizeSelect.value = '';
-      }
-
-      setPressureDropSelectOptionPairs(compareControls.manufacturerSelect, getUniquePressureDropOptionPairs(entries, entry => entry.manufacturer), 'Select manufacturer');
-      const manufacturerValue = compareControls.manufacturerSelect?.value || '';
-      const categoryEntries = manufacturerValue ? getPressureDropLookupMatches(entries, { manufacturer: manufacturerValue }) : [];
-      setPressureDropSelectOptionPairs(compareControls.categorySelect, getUniquePressureDropCategoryOptionPairs(categoryEntries), manufacturerValue ? 'Select type' : 'Select manufacturer first');
-      const categoryValue = compareControls.categorySelect?.value || '';
-      const modelEntries = manufacturerValue && categoryValue ? getPressureDropLookupMatches(entries, { manufacturer: manufacturerValue, category: categoryValue }) : [];
-      setPressureDropSelectOptionPairs(compareControls.modelSelect, getUniquePressureDropOptionPairs(modelEntries, entry => entry.model), categoryValue ? 'Select model / family' : 'Select type first');
-      const scopeComplete = hasCompleteComparisonScope();
-      const scopeEntries = scopeComplete ? getComparisonScopeEntries() : [];
-      const selectedSet = new Set(selectedComparisonKeys);
-      const availableSizeOptions = scopeEntries
-        .filter(entry => !selectedSet.has(getPressureDropComparisonKey(entry)))
-        .map(entry => ({ value: getPressureDropComparisonKey(entry), label: getPressureDropComparisonSizeLabel(entry) }))
-        .sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true }));
-      setPressureDropSelectOptionPairs(
-        compareControls.sizeSelect,
-        availableSizeOptions,
-        scopeComplete ? (availableSizeOptions.length ? 'Select size to add' : 'No sizes available for this selection') : 'Select manufacturer, type, and model first'
-      );
-      if (scopeComplete) {
-        const validScopeKeys = new Set(scopeEntries.map(getPressureDropComparisonKey));
-        selectedComparisonKeys = selectedComparisonKeys.filter(key => validScopeKeys.has(key));
-      }
-      hasSelectedComparisonItems = selectedComparisonKeys.length > 0;
-      if (compareControls.manufacturerSelect) compareControls.manufacturerSelect.disabled = hasSelectedComparisonItems;
-      if (compareControls.categorySelect) compareControls.categorySelect.disabled = hasSelectedComparisonItems || !manufacturerValue;
-      if (compareControls.modelSelect) compareControls.modelSelect.disabled = hasSelectedComparisonItems || !categoryValue;
-      if (compareControls.scopeLock) compareControls.scopeLock.classList.toggle('hidden', !hasSelectedComparisonItems);
-      if (compareControls.addButton) compareControls.addButton.disabled = !canAddComparisonSize();
-    };
-
     const setPressureDropView = (view) => {
-      activePressureDropView = ['compare', 'target'].includes(view) ? view : 'single';
+      activePressureDropView = view === 'target' ? 'target' : 'single';
       page.dataset.pressureDropView = activePressureDropView;
-      const views = [
-        ['single', compareControls.singleView, compareControls.singleTab],
-        ['target', targetView, targetTab],
-        ['compare', compareControls.compareView, compareControls.compareTab]
-      ];
-      views.forEach(([name, panel, button]) => {
+      [['single', singleView, singleTab], ['target', targetView, targetTab]].forEach(([name, panel, button]) => {
         const active = name === activePressureDropView;
         panel?.classList.toggle('hidden', !active);
         if (!active && panel) panel.dataset.analyticsReady = 'false';
@@ -7677,11 +7410,7 @@ async function initCannulaPressureDropPage() {
         ['bg-white', 'dark:bg-primary-900', 'text-accent-700', 'dark:text-accent-300'].forEach(style => button?.classList.toggle(style, active));
       });
       if (activePressureDropView === 'target') targetComparison?.refresh();
-      else if (activePressureDropView === 'compare') {
-        populateCompareOptions('');
-        renderCompare();
-        status.textContent = `${selectedComparisonKeys.length} selected for size comparison`;
-      } else render();
+      else render();
     };
 
     [
@@ -7699,37 +7428,10 @@ async function initCannulaPressureDropPage() {
       populateLookupOptions('manufacturer');
       render();
     });
-    [
-      ['manufacturer', compareControls.manufacturerSelect],
-      ['category', compareControls.categorySelect],
-      ['model', compareControls.modelSelect]
-    ].forEach(([level, select]) => {
-      if (select) select.addEventListener('change', () => { populateCompareOptions(level); renderCompare(); status.textContent = `${selectedComparisonKeys.length} selected for size comparison`; });
-    });
-    if (compareControls.sizeSelect) compareControls.sizeSelect.addEventListener('change', renderCompare);
-    if (compareControls.flowInput) compareControls.flowInput.addEventListener('input', renderCompare);
-    if (compareControls.addButton) compareControls.addButton.addEventListener('click', () => {
-      const key = compareControls.sizeSelect?.value || '';
-      if (!canAddComparisonSize() || selectedComparisonKeys.includes(key)) return;
-      selectedComparisonKeys.push(key);
-      if (compareControls.sizeSelect) compareControls.sizeSelect.value = '';
-      populateCompareOptions('');
-      renderCompare();
-      status.textContent = `${selectedComparisonKeys.length} selected for size comparison`;
-    });
-    if (compareControls.clearButton) compareControls.clearButton.addEventListener('click', () => {
-      selectedComparisonKeys = [];
-      if (compareControls.sizeSelect) compareControls.sizeSelect.value = '';
-      populateCompareOptions('');
-      renderCompare();
-      status.textContent = '0 selected for size comparison';
-    });
     targetTab?.addEventListener('click', () => setPressureDropView('target'));
-    compareControls.singleTab?.addEventListener('click', () => setPressureDropView('single'));
-    compareControls.compareTab?.addEventListener('click', () => setPressureDropView('compare'));
+    singleTab?.addEventListener('click', () => setPressureDropView('single'));
 
     populateLookupOptions('');
-    populateCompareOptions('');
     render();
     setPressureDropView('target');
   } catch (err) {
@@ -9046,18 +8748,15 @@ function resolveTimeFeedbackContext() {
 function resolvePressureDropFeedbackContext() {
   const page = el('cannula-pressure-drop-page');
   const activeView = page?.dataset.pressureDropView;
-  const viewId = activeView === 'target' ? 'pressure-drop-target-view'
-    : activeView === 'compare' ? 'pressure-drop-compare-view' : 'pressure-drop-single-view';
-  const resultId = activeView === 'target' ? 'pressure-drop-target-results'
-    : activeView === 'compare' ? 'pressure-drop-compare-results' : 'pressure-drop-results';
+  const viewId = activeView === 'target' ? 'pressure-drop-target-view' : 'pressure-drop-single-view';
+  const resultId = activeView === 'target' ? 'pressure-drop-target-results' : 'pressure-drop-results';
   const insertAfter = el(viewId);
   const readinessTarget = el(resultId);
   // Place the one feedback card beside the active view, outside its rerendered
   // contents. This keeps an existing card visible when the user switches modes.
   return { insertAfter, readinessTarget, isReady: () =>
     isElementVisible(insertAfter) && isElementVisible(readinessTarget) &&
-    isPressureDropAnalyticsReady(activeView, el('pressure-drop-single-view'),
-      el('pressure-drop-compare-view'), el('pressure-drop-target-view')) };
+    isPressureDropAnalyticsReady(activeView, el('pressure-drop-single-view'), el('pressure-drop-target-view')) };
 }
 
 function isLbmFeedbackReady() {
@@ -9116,7 +8815,6 @@ function resolveCalculatorAnalyticsResultContext(pagePath) {
     return { isReady: () => isPressureDropAnalyticsReady(
       page?.dataset.pressureDropView,
       el('pressure-drop-single-view'),
-      el('pressure-drop-compare-view'),
       el('pressure-drop-target-view')
     ) };
   }
@@ -9146,7 +8844,7 @@ function initCalculatorAnalytics() {
   const calculationButtonSelector = [
     '.time-start-now', '.time-end-now', '.time-live-start', '.time-live-stop',
     '[data-transplant-now]', '#priming-add-tubing-item', '#priming-add-oxygenator-item',
-    '#phn-calc-bsa-btn', '#phn-use-bsa-btn', '[data-tubing-inch]', '#pressure-drop-compare-add'
+    '#phn-calc-bsa-btn', '#phn-use-bsa-btn', '[data-tubing-inch]'
   ].join(',');
 
   function isCalculationInteraction(event) {
