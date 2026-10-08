@@ -1537,6 +1537,12 @@ assert.strictEqual(classifyComparison({ category: 'femoral venous', connectionSi
 assert.strictEqual(classifyComparison({ category: 'arterial', connectionSite: 'Femoral venous' }).eligible, false, 'Conflicting type/site metadata is ambiguous');
 assert.strictEqual(classifyComparison({ category: 'arterial', connectionSite: 'Aortic root' }).eligible, false);
 assert.strictEqual(new Set(pressureDropData.map(targetRuntime.getPressureDropTargetFlowKey)).size, 189);
+const aorticArch24 = pressureDropData.filter(entry => entry.manufacturer === 'LivaNova' &&
+  entry.size === '24 Fr' && entry.model.startsWith('Aortic Arch Cannulae —'));
+assert.strictEqual(aorticArch24.length, 2);
+assert.notStrictEqual(targetRuntime.getPressureDropTargetFlowModelOptions(aorticArch24)[0].label,
+  targetRuntime.getPressureDropTargetFlowModelOptions(aorticArch24)[1].label,
+  'Straight and curved aortic-arch cannulas must be visually distinguishable');
 const catalogEntry = pressureDropData[0];
 assert.strictEqual(targetRuntime.getPressureDropTargetFlowKey(catalogEntry), targetRuntime.getPressureDropTargetFlowKey({ ...catalogEntry, lookupId: 'reordered' }));
 
