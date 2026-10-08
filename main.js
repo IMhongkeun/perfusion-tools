@@ -6909,9 +6909,30 @@ function isPressureDropAnalyticsReady(activeView, singleView, targetView) {
   return isElementVisible(view) && view?.dataset.analyticsReady === 'true';
 }
 
-// Standard comparison classification uses exact catalog metadata, not broad
-// arterial/venous substrings. Connector dimensions and "Venous return" do not
-// identify an anatomical insertion site. Model names never fill missing sites.
+// These exact catalog families have manufacturer-documented central venous
+// drainage indications. The mapping describes access in the comparison UI;
+// the source records, pressures and product identities remain unchanged.
+// LivaNova: https://www.livanova.com/cannulae/en-us/adult/venous-return-cannulae/single-stage/right-angle-lighthouse-tip-wire-reinforced-tubing/rv-41026
+// https://www.livanova.com/cannulae/en-us/adult/venous-return-cannulae/dual-stage/wire-reinforced-tubing/rds-61137
+// https://www.livanova.com/cannulae/en-us/adult/venous-return-cannulae/triple-stage/rts-11029
+// Medtronic's family-level indication (including straight, right-angle and
+// malleable DLP single-stage forms): https://www.accessdata.fda.gov/cdrh_docs/pdf12/K120988.pdf
+const PRESSURE_DROP_CENTRAL_VENOUS_MODELS = {
+  LivaNova: new Set([
+    'Single Stage Right Angle Lighthouse Tip Venous Return Cannulae — Right Angle Lighthouse Tip, Wire-reinforced Tubing',
+    'Dual Stage Venous Return Cannulae — Wire-reinforced Tubing',
+    'Triple Stage Venous Return — Wire-reinforced Tubing'
+  ]),
+  Medtronic: new Set([
+    'DLP Single Stage Venous Cannulae',
+    'DLP Malleable Single Stage Venous Cannulae',
+    'DLP Right Angle Single Stage Venous Cannulae',
+    'DLP Single Stage Venous Cannulae with Right Angle Metal Tip'
+  ])
+};
+
+// Standard comparison classification uses exact catalog metadata and vetted
+// model mappings, not broad arterial/venous substrings or tip-shape guesses.
 function classifyPressureDropComparisonEntry(entry) {
   const category = normalizePressureDropFilterLabel(entry.category);
   const site = normalizePressureDropFilterLabel(entry.connectionSite);
@@ -6955,7 +6976,9 @@ function classifyPressureDropComparisonEntry(entry) {
   const centralArterialFamilies = new Set(['EOPA 3D Arterial Cannulae', 'Select 3D II Arterial Cannulae']);
   const documentedCentral = entry.manufacturer === 'Medtronic' && type === 'arterial' &&
     centralArterialFamilies.has(entry.model) && !site;
-  const location = explicitSite?.location || categoryLocations[category] || (documentedCentral ? 'central' : 'other');
+  const documentedCentralVenous = type === 'venous' &&
+    PRESSURE_DROP_CENTRAL_VENOUS_MODELS[entry.manufacturer]?.has(entry.model);
+  const location = explicitSite?.location || categoryLocations[category] || (documentedCentral || documentedCentralVenous ? 'central' : 'other');
   return { eligible: true, category: type, location,
     configuration: isAvalon ? 'Dual-lumen VV ECMO' : type === 'arterial' ? 'Standard arterial perfusion' : 'Standard venous drainage' };
 }
@@ -7381,7 +7404,7 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
   const refreshOptions = () => {
     const locations = controls.category.value === 'arterial'
       ? [{ value: 'central', label: 'Central / Aortic' }, { value: 'femoral', label: 'Femoral' }]
-      : [{ value: 'femoral', label: 'Femoral' }, { value: 'central', label: 'Central / Right atrial' }, { value: 'jugular', label: 'Jugular' }];
+      : [{ value: 'femoral', label: 'Femoral' }, { value: 'central', label: 'Central (RA / SVC / IVC)' }, { value: 'jugular', label: 'Jugular' }];
     setPressureDropSelectOptionPairs(controls.location, [...locations, { value: 'other', label: 'Other / Unspecified' }], 'All locations');
     const filters = getFilters();
     const locationEntries = getPressureDropTargetFlowMatches(entries, { category: filters.category, location: filters.location });

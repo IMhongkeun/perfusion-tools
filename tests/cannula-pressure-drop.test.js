@@ -1432,7 +1432,7 @@ const targetRuntime = vm.runInNewContext([
   mainJs.slice(mainJs.indexOf('function normalizePressureDropKey'), mainJs.indexOf('function fitPressureDropPowerLaw')),
   chartRendererSource,
   ...targetFunctionNames.map(pressureProductionFunction),
-  mainJs.slice(mainJs.indexOf('function classifyPressureDropComparisonEntry'), mainJs.indexOf('async function initCannulaPressureDropPage')),
+  mainJs.slice(mainJs.indexOf('const PRESSURE_DROP_CENTRAL_VENOUS_MODELS'), mainJs.indexOf('async function initCannulaPressureDropPage')),
   `; ({ classifyPressureDropComparisonEntry, getPressureDropTargetFlowKey, getPressureDropTargetFlowMatches,
     parsePressureDropTargetFlow, getPressureDropTargetFlowResult, getPressureDropTargetFlowRows,
     getPressureDropComparisonFr, updatePressureDropTargetFlowSelection, createPressureDropTargetFlowChart,
@@ -1455,6 +1455,48 @@ pressureDropData.forEach(entry => {
 assert.strictEqual(Object.values(classificationCounts).reduce((sum, count) => sum + count, 0), pressureDropData.length);
 assert.strictEqual(classificationCounts['venous/jugular'],
   pressureDropData.filter(entry => entry.category === 'jugular venous').length);
+const documentedCentralVenousModels = {
+  LivaNova: [
+    'Single Stage Right Angle Lighthouse Tip Venous Return Cannulae — Right Angle Lighthouse Tip, Wire-reinforced Tubing',
+    'Dual Stage Venous Return Cannulae — Wire-reinforced Tubing',
+    'Triple Stage Venous Return — Wire-reinforced Tubing'
+  ],
+  Medtronic: [
+    'DLP Single Stage Venous Cannulae', 'DLP Malleable Single Stage Venous Cannulae',
+    'DLP Right Angle Single Stage Venous Cannulae',
+    'DLP Single Stage Venous Cannulae with Right Angle Metal Tip'
+  ]
+};
+const documentedCentralVenous = pressureDropData.filter(entry => documentedCentralVenousModels[entry.manufacturer]?.includes(entry.model));
+const centralVenous = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'central' });
+assert(documentedCentralVenous.length > 0);
+assert.deepStrictEqual(new Set(centralVenous), new Set(documentedCentralVenous), 'Only documented central families enter the Central filter');
+assert.strictEqual(new Set(centralVenous.map(targetRuntime.getPressureDropTargetFlowKey)).size, centralVenous.length, 'A documented family is never duplicated');
+for (const [manufacturer, models] of Object.entries(documentedCentralVenousModels)) {
+  for (const model of models) {
+    const family = pressureDropData.filter(entry => entry.manufacturer === manufacturer && entry.model === model);
+    assert(family.length > 0 && family.every(entry => centralVenous.includes(entry)), `Documented central family ${model}`);
+  }
+}
+assert(centralVenous.some(entry => entry.cannulaOrderCode === 'RV-41026'), 'Right-angle lighthouse SVC/IVC family');
+assert(centralVenous.some(entry => entry.cannulaOrderCode === '66124'), 'Straight DLP SVC/IVC family');
+assert.strictEqual(classifyComparison({ ...centralVenous.find(entry => entry.cannulaOrderCode === '66124'),
+  category: 'femoral venous', connectionSite: 'Femoral venous' }).location, 'femoral',
+  'A SKU with explicit femoral access would override the family mapping');
+assert(centralVenous.some(entry => entry.cannulaOrderCode?.includes('RDS-61137')), 'Dual-stage RA/caval family');
+assert(centralVenous.some(entry => entry.cannulaOrderCode?.includes('RTS-11029')), 'Triple-stage RA/caval family');
+const femoralOnly = pressureDropData.filter(entry => /Femoral/i.test(entry.model));
+assert(femoralOnly.length > 0 && femoralOnly.every(entry => !centralVenous.includes(entry)));
+assert(avalonProducts.every(entry => !centralVenous.includes(entry) && classifyComparison(entry).location === 'jugular'));
+const unspecifiedVenous = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'other' });
+assert(unspecifiedVenous.some(entry => entry.model.startsWith('Single Stage Straight Bullet Tip')));
+assert(unspecifiedVenous.some(entry => entry.model === 'HLS Venous Cannula'));
+assert(unspecifiedVenous.every(entry => !centralVenous.includes(entry)));
+const centralAtFour = targetRuntime.getPressureDropTargetFlowRows(pressureDropData, { category: 'venous', location: 'central' }, 4);
+assert.strictEqual(centralAtFour.length, centralVenous.length);
+assert(centralAtFour.some(row => row.result.inRange) && centralAtFour.some(row => row.result.interpolationResult.state === 'out_of_range'));
+assert.strictEqual(targetRuntime.getPressureDropTargetFlowRows(pressureDropData, { category: 'venous', location: 'central' }, 1000).length, centralVenous.length,
+  'Out-of-range curves remain anatomically eligible');
 assert(pressureDropData.filter(entry => classifyComparison(entry).category === 'specialty')
   .every(entry => /cardioplegia|aortic root/i.test(entry.category)));
 assert(avalonProducts.every(entry => classifyComparison(entry).eligible && classifyComparison(entry).category === 'venous' && classifyComparison(entry).location === 'jugular' && classifyComparison(entry).configuration === 'Dual-lumen VV ECMO'));
@@ -1784,6 +1826,36 @@ assert(specialty);
 searchController.selectSearchEntry(specialty);
 assert.strictEqual(specialtySelection, specialty, 'Specialty uses the existing Single Lookup route');
 assert.strictEqual(targetFlowInput.value, '1');
+targetNodes['pressure-drop-target-category'].value = 'venous'; targetNodes['pressure-drop-target-category'].dispatch('change');
+locationInput.value = 'central'; locationInput.dispatch('change');
+manufacturerInput.value = ''; manufacturerInput.dispatch('change');
+familyInput.value = ''; familyInput.dispatch('change');
+assert.strictEqual(locationInput.children.find(option => option.value === 'central').textContent, 'Central (RA / SVC / IVC)');
+assert.strictEqual(currentRows().length, centralVenous.length);
+assert(currentRows().some(row => row.textContent.includes('Right Angle')));
+assert(currentRows().some(row => row.textContent.includes('Dual Stage')));
+assert(currentRows().some(row => row.textContent.includes('Out of range')), 'At 1 L/min, eligible central rows retain source-range status');
+manufacturerInput.value = 'LivaNova'; manufacturerInput.dispatch('change');
+assert.strictEqual(currentRows().length, centralVenous.filter(entry => entry.manufacturer === 'LivaNova').length);
+familyInput.value = documentedCentralVenousModels.LivaNova[0]; familyInput.dispatch('change');
+assert(currentRows().length > 0 && currentRows().every(row => row.textContent.includes('Right Angle Lighthouse')));
+manufacturerInput.value = 'Medtronic'; manufacturerInput.dispatch('change');
+assert.strictEqual(familyInput.value, '');
+familyInput.value = 'DLP Single Stage Venous Cannulae'; familyInput.dispatch('change');
+assert(currentRows().length > 0 && currentRows().every(row => row.textContent.includes('DLP Single Stage')));
+assert.strictEqual(targetFlowInput.value, '1');
+targetFlowInput.value = '1000'; targetFlowInput.dispatch('input');
+assert(currentRows().length > 0 && currentRows().every(row => row.textContent.includes('Out of range')));
+assert.strictEqual(targetNodes['pressure-drop-target-view'].dataset.analyticsReady, 'false');
+targetFlowInput.value = '4'; targetFlowInput.dispatch('input');
+assert(currentRows().some(row => row.textContent.includes('mmHg')));
+assert.strictEqual(targetNodes['pressure-drop-target-view'].dataset.analyticsReady, 'true');
+catalogSearch.value = 'RV-41026'; catalogSearch.dispatch('input');
+assert.strictEqual(catalogMatches.children.length, 1, 'Global search still finds a central SKU through an unrelated active manufacturer');
+catalogMatches.children[0].dispatch('click');
+assert.strictEqual(locationInput.value, 'central');
+assert.strictEqual(manufacturerInput.value, 'LivaNova');
+assert(currentRows().some(row => row.dataset.productKey === targetRuntime.getPressureDropTargetFlowKey(pressureDropData.find(entry => entry.cannulaOrderCode === 'RV-41026'))));
 
 const overlay = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[0], targetFixtures[1]], 4.5, true, () => {}, () => {});
 const overlaySvg = pressureDescendants(overlay, node => node.tagName === 'svg')[0];
