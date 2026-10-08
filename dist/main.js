@@ -7016,7 +7016,11 @@ function getPressureDropTargetFlowModelLabel(model) {
     'EOPA 3D Arterial Cannulae': 'EOPA 3D',
     'EOPA Arterial Cannulae': 'EOPA',
     'Select 3D II Arterial Cannulae': 'Select 3D II',
-    'Select Series Angled Tip Arterial Cannulae': 'Select Series · Angled Tip'
+    'Select Series Angled Tip Arterial Cannulae': 'Select Series · Angled Tip',
+    'Optiflow Aortic Arch Cannulae — Curved Tip, Wire-reinforced Tubing': 'Optiflow Aortic Arch · Curved Tip',
+    'Optiflow Aortic Arch Cannulae — Straight Tip, Wire-reinforced Tubing': 'Optiflow Aortic Arch · Straight Tip',
+    'Aortic Arch Cannulae — Curved Tip with Suture Flange, Wire-reinforced Tubing': 'Aortic Arch · Curved Tip',
+    'Aortic Arch Cannulae — Straight Tip with Suture Collar, Wire-reinforced Tubing': 'Aortic Arch · Straight Tip'
   };
   return shortNames[model] || model.replace(/ — (?:[^—]*, )?Wire-reinforced Tubing$/i, '');
 }
