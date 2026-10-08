@@ -100,12 +100,7 @@
       max-height: 320px;
       overflow-x: hidden;
     }
-    .pressure-drop-combobox-panel [role="option"],
-    .pressure-drop-combobox button > span:first-child {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+    .pressure-drop-combobox-panel [role="option"] { overflow-wrap: anywhere; }
     @media (max-width: 768px) {
       .pressure-drop-combobox-panel {
         position: fixed;
@@ -496,7 +491,7 @@
                 </div>
               </div>
               <p class="text-xs text-slate-500 dark:text-slate-400">Compare hydraulic performance using pressure-drop magnitude (|ΔP|). Manufacturer test media and conditions differ; these curves are not standardized bench comparisons and do not establish clinical suitability, vessel adequacy or actual venous drainage.</p>
-              <p class="text-xs text-slate-500 dark:text-slate-400">Other / Unspecified includes records without an anatomical insertion site. Specialty devices, including Avalon dual-lumen catheters, remain available in Single lookup.</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Other / Unspecified includes records without a documented insertion site. Avalon Elite is a distinct dual-lumen VV ECMO device under Venous / Jugular; comparison uses its drainage curve only. Its infusion curve remains in Single lookup.</p>
             </div>
             <p id="pressure-drop-target-location-note" class="text-xs text-slate-600 dark:text-slate-300" role="status"></p>
             <p id="pressure-drop-target-summary" class="text-sm font-semibold text-primary-900 dark:text-white" role="status"></p>

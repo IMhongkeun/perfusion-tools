@@ -6406,6 +6406,7 @@ function setPressureDropSelectOptionPairs(selectNode, optionPairs, placeholder) 
     const node = document.createElement('option');
     node.value = option.value;
     node.textContent = option.label;
+    if (option.searchText) node.dataset.searchText = option.searchText;
     selectNode.appendChild(node);
   });
   selectNode.value = optionPairs.some(option => option.value === currentValue) ? currentValue : '';
@@ -6421,14 +6422,15 @@ function createPressureDropSearchableSelect(selectNode, placeholder, onChange) {
   selectNode.tabIndex = -1;
 
   const wrapper = document.createElement('div');
-  wrapper.className = 'pressure-drop-combobox relative';
+  wrapper.className = 'pressure-drop-combobox relative min-w-0 w-full';
   const button = document.createElement('button');
   button.type = 'button';
-  button.className = 'flex w-full items-center justify-between gap-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-left text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white disabled:opacity-60';
+  button.className = 'flex min-w-0 w-full items-center justify-between gap-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-left text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white disabled:opacity-60';
   button.setAttribute('aria-haspopup', 'listbox');
   button.setAttribute('aria-expanded', 'false');
+  button.setAttribute('aria-label', placeholder);
   const label = document.createElement('span');
-  label.className = 'min-w-0 flex-1 truncate';
+  label.className = 'min-w-0 flex-1 break-words line-clamp-2';
   const icon = document.createElement('span');
   icon.className = 'flex-shrink-0 text-slate-400 dark:text-slate-500';
   icon.setAttribute('aria-hidden', 'true');
@@ -6438,7 +6440,7 @@ function createPressureDropSearchableSelect(selectNode, placeholder, onChange) {
   const panel = document.createElement('div');
   panel.className = 'pressure-drop-combobox-panel absolute z-30 mt-1 hidden rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 shadow-xl p-2';
   panel.style.maxWidth = 'min(520px, calc(100vw - 32px))';
-  panel.style.width = 'min(520px, calc(100vw - 32px))';
+  panel.style.width = '100%';
   panel.style.maxHeight = '320px';
   panel.style.overflow = 'hidden';
 
@@ -6451,6 +6453,8 @@ function createPressureDropSearchableSelect(selectNode, placeholder, onChange) {
   const list = document.createElement('div');
   list.className = 'max-h-[260px] overflow-y-auto overflow-x-hidden pr-1';
   list.setAttribute('role', 'listbox');
+  list.id = `${selectNode.id}-options`;
+  search.setAttribute('aria-controls', list.id);
   panel.append(search, list);
   wrapper.append(button, panel);
   selectNode.insertAdjacentElement('afterend', wrapper);
@@ -6467,20 +6471,24 @@ function createPressureDropSearchableSelect(selectNode, placeholder, onChange) {
   const updatePanelPosition = () => {
     const rect = wrapper.getBoundingClientRect();
     const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+    const below = viewportHeight - rect.bottom - 16;
+    const above = rect.top - 20;
+    const openAbove = below < 160 && above > below;
+    const availableHeight = Math.max(100, Math.min(320, openAbove ? above : below));
+    panel.style.maxHeight = `${availableHeight}px`;
+    list.style.maxHeight = `${Math.max(56, availableHeight - 60)}px`;
     if (viewportWidth <= 768) {
-      panel.style.top = `${Math.max(rect.bottom + 4, 16)}px`;
+      panel.style.top = `${Math.max(16, openAbove ? rect.top - availableHeight - 4 : rect.bottom + 4)}px`;
       panel.style.left = '16px';
       panel.style.right = '16px';
+      panel.style.bottom = 'auto';
       return;
     }
-    panel.style.top = '';
-    if (viewportWidth && rect.left + 520 > viewportWidth - 16) {
-      panel.style.left = 'auto';
-      panel.style.right = '0';
-    } else {
-      panel.style.left = '0';
-      panel.style.right = 'auto';
-    }
+    panel.style.top = openAbove ? 'auto' : '100%';
+    panel.style.bottom = openAbove ? '100%' : 'auto';
+    panel.style.left = '0';
+    panel.style.right = 'auto';
   };
   const selectValue = (value) => {
     selectNode.value = value;
@@ -6491,12 +6499,12 @@ function createPressureDropSearchableSelect(selectNode, placeholder, onChange) {
   };
   const renderOptions = () => {
     const query = search.value.trim().toLowerCase();
-    visibleOptions = options.filter(option => !query || option.label.toLowerCase().includes(query));
+    visibleOptions = options.filter(option => !query || option.searchText.toLowerCase().includes(query));
     list.innerHTML = '';
     visibleOptions.forEach((option, index) => {
       const item = document.createElement('button');
       item.type = 'button';
-      item.className = `block w-full overflow-hidden text-ellipsis whitespace-nowrap rounded-lg px-3 py-2 text-left text-sm ${option.value === selectNode.value ? 'bg-accent-500/10 text-accent-700 dark:text-accent-300' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-primary-800'}`;
+      item.className = `block w-full min-w-0 break-words whitespace-normal rounded-lg px-3 py-2 text-left text-sm ${option.value === selectNode.value ? 'bg-accent-500/10 text-accent-700 dark:text-accent-300' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-primary-800'}`;
       item.setAttribute('role', 'option');
       item.setAttribute('aria-selected', option.value === selectNode.value ? 'true' : 'false');
       item.title = option.label;
@@ -6531,10 +6539,13 @@ function createPressureDropSearchableSelect(selectNode, placeholder, onChange) {
     setTimeout(() => search.focus(), 0);
   };
   const refresh = () => {
-    options = Array.from(selectNode.options).map(option => ({ value: option.value, label: option.textContent || option.value }));
+    options = Array.from(selectNode.options).map(option => ({ value: option.value,
+      label: option.textContent || option.value,
+      searchText: option.dataset.searchText || `${option.textContent || ''} ${option.value}` }));
     const selected = options.find(option => option.value === selectNode.value);
     label.textContent = selected?.label || placeholder;
     label.title = selected?.label || placeholder;
+    button.setAttribute('aria-label', `${placeholder}: ${selected?.label || placeholder}`);
     button.disabled = selectNode.disabled;
     renderOptions();
   };
@@ -6889,11 +6900,14 @@ function classifyPressureDropComparisonEntry(entry) {
   const category = normalizePressureDropFilterLabel(entry.category);
   const site = normalizePressureDropFilterLabel(entry.connectionSite);
   const model = normalizePressureDropFilterLabel(entry.model);
+  const isAvalon = entry.manufacturer === 'Getinge / Maquet' && model === 'avalon elite bi-caval dual-lumen catheter';
   const specialtyCategories = new Set(['aortic root / cardioplegia', 'cardioplegia', 'vent']);
   const specialtySites = new Set(['aortic root', 'coronary ostia perfusion', 'retrograde cardioplegia / coronary sinus']);
-  if (specialtyCategories.has(category) || specialtySites.has(site) ||
-      model === 'avalon elite bi-caval dual-lumen catheter' || getPressureDropSeries(entry).length !== 1) {
-    return { eligible: false, category: 'specialty', location: 'other' };
+  if (specialtyCategories.has(category) || specialtySites.has(site)) {
+    const configuration = site === 'coronary ostia perfusion' ? 'Coronary ostial perfusion'
+      : site === 'retrograde cardioplegia / coronary sinus' ? 'Retrograde cardioplegia'
+        : category === 'vent' ? 'Vent' : 'Antegrade cardioplegia';
+    return { eligible: false, category: 'specialty', location: 'other', configuration };
   }
   const arterialCategories = new Set(['arterial', 'adult arterial', 'femoral arterial']);
   const venousCategories = new Set(['venous', 'adult venous', 'femoral venous', 'femoral bi-caval venous', 'jugular venous']);
@@ -6918,7 +6932,52 @@ function classifyPressureDropComparisonEntry(entry) {
     'femoral arterial': 'femoral', 'femoral venous': 'femoral',
     'femoral bi-caval venous': 'femoral', 'jugular venous': 'jugular'
   };
-  return { eligible: true, category: type, location: explicitSite?.location || categoryLocations[category] || 'other' };
+  // Medtronic documents ascending-aorta perfusion for these exact families:
+  // https://www.medtronic.com/se-sv/healthcare-professionals/products/cardiovascular/cannulae/adult-extracorporeal-circuit/indications-safety-warnings.html
+  // https://www.medtronic.com/en-us/healthcare-professionals/products/cardiovascular/cannulae/arterial-cannulae/select-3d-ii-arterial-cannula.html
+  // EOPA (without 3D) and Select Angled Tip retain an unspecified site.
+  const centralArterialFamilies = new Set(['EOPA 3D Arterial Cannulae', 'Select 3D II Arterial Cannulae']);
+  const documentedCentral = entry.manufacturer === 'Medtronic' && type === 'arterial' &&
+    centralArterialFamilies.has(entry.model) && !site;
+  const location = explicitSite?.location || categoryLocations[category] || (documentedCentral ? 'central' : 'other');
+  return { eligible: true, category: type, location,
+    configuration: isAvalon ? 'Dual-lumen VV ECMO' : type === 'arterial' ? 'Standard arterial perfusion' : 'Standard venous drainage' };
+}
+
+function getPressureDropTargetFlowSeries(entry) {
+  const series = getPressureDropSeries(entry);
+  const classification = classifyPressureDropComparisonEntry(entry);
+  if (classification.configuration !== 'Dual-lumen VV ECMO') return series.length === 1 ? series[0] : null;
+  // Getinge documents jugular access, separate bicaval drainage and RA return:
+  // https://www.getinge.com/anz/products/avalon-elite-catheter/
+  // Require explicit, matching series metadata; never infer lumen by position/sign.
+  const drainage = series.filter(item => item.id === 'drainage' && item.semanticType === 'drainage' && item.label === 'Drainage');
+  const infusion = series.filter(item => item.id === 'infusion' && item.semanticType === 'infusion' && item.label === 'Infusion');
+  return drainage.length === 1 && infusion.length === 1 && series.length === 2 ? drainage[0] : null;
+}
+
+function getPressureDropTargetFlowModelLabel(model) {
+  const shortNames = {
+    'Avalon Elite Bi-Caval Dual-Lumen Catheter': 'Avalon Elite · Dual-lumen ECMO',
+    'EOPA 3D Arterial Cannulae': 'EOPA 3D',
+    'EOPA Arterial Cannulae': 'EOPA',
+    'Select 3D II Arterial Cannulae': 'Select 3D II',
+    'Select Series Angled Tip Arterial Cannulae': 'Select Series · Angled Tip'
+  };
+  return shortNames[model] || model.replace(/ — (?:[^—]*, )?Wire-reinforced Tubing$/i, '');
+}
+
+function getPressureDropTargetFlowDisplayName(entry) {
+  return getPressureDropTargetFlowModelLabel(entry.model).replace('Avalon Elite · Dual-lumen ECMO', 'Avalon Elite');
+}
+
+function getPressureDropTargetFlowModelOptions(entries) {
+  const models = [...new Set(entries.map(entry => entry.model).filter(Boolean))];
+  const names = models.map(getPressureDropTargetFlowModelLabel);
+  return models.map((model, index) => ({ value: model,
+    label: names.indexOf(names[index]) === names.lastIndexOf(names[index]) ? names[index] : model,
+    searchText: `${[...new Set(entries.filter(entry => entry.model === model).map(entry => entry.manufacturer))].join(' ')} ${model} ${names[index]}`
+  })).sort((left, right) => left.label.localeCompare(right.label, undefined, { numeric: true }));
 }
 
 function getPressureDropTargetFlowKey(entry) {
@@ -6956,11 +7015,17 @@ function parsePressureDropTargetFlow(value) {
 }
 
 function getPressureDropTargetFlowResult(entry, flow) {
-  const comparison = getPressureDropComparisonResult(entry, flow);
+  const series = getPressureDropTargetFlowSeries(entry);
+  if (!series) return { series: null, interpolationResult: { state: 'unavailable', value: null },
+    inRange: false, magnitude: null, isHighPressure: false, rangeText: '—',
+    warningText: 'Drainage series cannot be identified unambiguously.',
+    unavailableReason: 'Drainage series not identified' };
+  const comparison = getPressureDropComparisonResult({ ...entry, pressureSeries: [series], points: series.points }, flow);
   const result = comparison.seriesResults[0];
   const inRange = hasValidPressureDropEstimate([result.interpolationResult]);
   return { ...result, inRange, magnitude: inRange ? Math.abs(result.interpolationResult.value) : null,
-    isHighPressure: comparison.isHighPressure, warningText: comparison.warningText };
+    isHighPressure: comparison.isHighPressure, warningText: comparison.warningText,
+    lumenLabel: series.id === 'drainage' ? 'Drainage ΔP' : '' };
 }
 
 function getPressureDropComparisonFr(entry) {
@@ -6999,6 +7064,7 @@ function updatePressureDropTargetFlowSelection(selectedKeys, key, checked, eligi
 
 function getPressureDropTargetFlowValueText(result) {
   if (result.inRange) return `${result.magnitude.toFixed(1)} mmHg`;
+  if (result.unavailableReason) return 'Not comparable';
   if (result.interpolationResult.state === 'out_of_range') return 'Out of source range';
   if (result.interpolationResult.state === 'no_points') return 'No digitized curve';
   return 'Enter a positive target flow';
@@ -7018,8 +7084,12 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     const result = getPressureDropTargetFlowResult(entry, flow);
     const key = getPressureDropTargetFlowKey(entry);
     const identity = getPressureDropTargetFlowIdentity(entry, catalogEntries);
-    series.push({ ...result.series, id: encodeURIComponent(key), colorIndex: index, displayLabel: `${index + 1} · ${entry.manufacturer} · ${identity}` });
-    estimates.push(result.interpolationResult);
+    const configuration = classifyPressureDropComparisonEntry(entry).configuration;
+    if (result.series) {
+      series.push({ ...result.series, id: encodeURIComponent(key), colorIndex: index,
+        displayLabel: `${index + 1} · ${entry.manufacturer} · ${entry.model} · ${identity}${result.lumenLabel ? ' · Drainage' : ''}` });
+      estimates.push(result.interpolationResult);
+    }
     const item = document.createElement('li');
     item.className = 'flex min-w-0 flex-wrap items-center gap-2 py-2';
     item.dataset.productKey = key;
@@ -7032,18 +7102,20 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     rank.textContent = `${index + 1}.`;
     const name = document.createElement('span');
     name.className = 'min-w-0 flex-1 break-words';
-    name.textContent = `${entry.manufacturer} · ${entry.model}`;
+    name.textContent = `${entry.manufacturer} · ${getPressureDropTargetFlowDisplayName(entry)}`;
     const size = document.createElement('span');
     size.className = 'shrink-0 text-slate-500 dark:text-slate-400';
-    size.textContent = identity;
+    size.textContent = `${identity}${configuration === 'Dual-lumen VV ECMO' ? ' · Dual-lumen VV ECMO' : ''}`;
     const value = document.createElement('span');
     value.className = `shrink-0 tabular-nums font-semibold ${result.isHighPressure && result.inRange ? 'text-amber-700 dark:text-amber-300' : 'text-primary-900 dark:text-white'}`;
-    value.textContent = result.inRange ? `${result.magnitude.toFixed(1)} mmHg` : 'Out of range';
+    value.textContent = result.inRange ? `${result.lumenLabel ? 'Drainage ' : ''}${result.magnitude.toFixed(1)} mmHg`
+      : result.unavailableReason || 'Out of range';
     if (result.inRange) value.title = `Signed pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
     if (result.isHighPressure && result.inRange) value.setAttribute('aria-label', `${value.textContent}. ${result.warningText}`);
     const status = document.createElement('span');
     status.className = 'shrink-0 rounded-full bg-slate-100 dark:bg-primary-800 px-2 py-0.5 text-[11px]';
-    status.textContent = result.inRange ? (result.interpolationResult.state === 'exact' ? 'Exact' : 'Interpolated') : 'Out of range';
+    status.textContent = result.unavailableReason ? 'Not comparable' : result.inRange
+      ? (result.interpolationResult.state === 'exact' ? 'Exact' : 'Interpolated') : 'Out of range';
     const sourceUrl = String(entry.sourceUrl || '').trim();
     const source = /^https?:\/\//i.test(sourceUrl) ? document.createElement('a') : null;
     if (source) {
@@ -7120,14 +7192,17 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
     label.append(checkbox, labelText);
     selectCell.appendChild(label);
     row.appendChild(selectCell);
-    const values = [entry.manufacturer, entry.model, identity,
+    const configuration = classifyPressureDropComparisonEntry(entry).configuration;
+    const values = [entry.manufacturer, getPressureDropTargetFlowDisplayName(entry),
+      `${identity}${configuration === 'Dual-lumen VV ECMO' ? ' · Dual-lumen VV ECMO' : ''}`,
       getPressureDropTargetFlowValueText(result),
-      result.inRange ? (result.interpolationResult.state === 'exact' ? 'Exact' : 'Interpolated') : 'Out of range'];
+      result.unavailableReason || (result.inRange ? (result.interpolationResult.state === 'exact' ? 'Exact' : 'Interpolated') : 'Out of range')];
     values.forEach((value, index) => {
       const cell = document.createElement('td');
       cell.className = 'block break-words py-1 md:table-cell md:p-2 md:align-top';
       if (index === 1 || index === 3) cell.className += ' font-semibold text-primary-900 dark:text-white';
       cell.textContent = value;
+      if (index === 1) cell.title = entry.model;
       if (index === 1) {
         const details = document.createElement('details');
         details.className = 'mt-1 font-normal';
@@ -7148,6 +7223,7 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
         cell.setAttribute('aria-label', `${value}. ${result.warningText}`);
         cell.title = result.warningText;
       }
+      if (index === 3 && result.lumenLabel) cell.setAttribute('aria-label', `${result.lumenLabel}: ${value}`);
       if (index === 4) cell.title = `Source range: ${result.rangeText}`;
       row.appendChild(cell);
     });
@@ -7168,6 +7244,7 @@ function initPressureDropTargetFlowComparison(entries, onStatus) {
   };
   if (Object.values(controls).some(control => !control)) return null;
   let selectedKeys = [], showRawPoints = false;
+  const modelCombobox = createPressureDropSearchableSelect(controls.model, 'Family / model');
   const getFilters = () => ({ category: controls.category.value, location: controls.location.value,
     manufacturer: controls.manufacturer.value, model: controls.model.value });
   const getEligibleKeys = () => new Set(getPressureDropTargetFlowMatches(entries, { category: controls.category.value }).map(getPressureDropTargetFlowKey));
@@ -7180,7 +7257,8 @@ function initPressureDropTargetFlowComparison(entries, onStatus) {
     const locationEntries = getPressureDropTargetFlowMatches(entries, { category: filters.category, location: filters.location });
     setPressureDropSelectOptionPairs(controls.manufacturer, getUniquePressureDropOptionPairs(locationEntries, entry => entry.manufacturer), 'All manufacturers');
     const manufacturerEntries = getPressureDropTargetFlowMatches(entries, { ...getFilters(), model: '' });
-    setPressureDropSelectOptionPairs(controls.model, getUniquePressureDropOptionPairs(manufacturerEntries, entry => entry.model), 'All families / models');
+    setPressureDropSelectOptionPairs(controls.model, getPressureDropTargetFlowModelOptions(manufacturerEntries), 'All families / models');
+    modelCombobox?.refresh();
   };
   const render = () => {
     const focusedProductKey = document.activeElement?.dataset.productKey;

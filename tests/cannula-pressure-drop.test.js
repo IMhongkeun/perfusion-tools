@@ -322,8 +322,8 @@ assert(
   mainJs.includes('function createPressureDropSearchableSelect') &&
   mainJs.includes("panel.style.maxWidth = 'min(520px, calc(100vw - 32px))';") &&
   mainJs.includes("panel.style.maxHeight = '320px';") &&
-  mainJs.includes("item.className = `block w-full overflow-hidden text-ellipsis whitespace-nowrap"),
-  'Model/cannula lookup should use a constrained searchable combobox with truncating one-line options.'
+  mainJs.includes("item.className = `block w-full min-w-0 break-words whitespace-normal"),
+  'Model/cannula lookup should use a constrained searchable combobox with wrapping options.'
 );
 assert(
   mainJs.includes("selectNode.dispatchEvent(new Event('change', { bubbles: true }))") &&
@@ -348,9 +348,8 @@ const pressureDropSizeRange = `${Math.min(...pressureDropFrenchSizes)}–${Math.
 assert(
   pressureDropPageHtml.includes('.pressure-drop-combobox-panel') &&
   pressureDropPageHtml.includes('width: calc(100vw - 32px) !important;') &&
-  pressureDropPageHtml.includes('text-overflow: ellipsis;') &&
-  pressureDropPageHtml.includes('white-space: nowrap;'),
-  'Pressure-drop combobox CSS should prevent horizontal overflow and truncate long selected/option labels.'
+  pressureDropPageHtml.includes('overflow-wrap: anywhere;'),
+  'Pressure-drop combobox CSS should prevent horizontal overflow and wrap long options.'
 );
 assert(
   pressureDropPageHtml.includes('<title>Cannula Pressure Drop Calculator | CPB &amp; Perfusion Flow Resistance</title>') &&
@@ -1431,11 +1430,12 @@ const targetRuntime = vm.runInNewContext([
   `; ({ classifyPressureDropComparisonEntry, getPressureDropTargetFlowKey, getPressureDropTargetFlowMatches,
     parsePressureDropTargetFlow, getPressureDropTargetFlowResult, getPressureDropTargetFlowRows,
     getPressureDropComparisonFr, updatePressureDropTargetFlowSelection, createPressureDropTargetFlowChart,
-    getPressureDropTargetFlowIdentity, createPressureDropTargetFlowTable,
+    getPressureDropTargetFlowIdentity, getPressureDropTargetFlowSeries, getPressureDropTargetFlowModelOptions, createPressureDropTargetFlowTable,
     initPressureDropTargetFlowComparison, isPressureDropAnalyticsReady, drawPressureDropSeriesChart })`
 ].join('\n'), {
   document: targetTestDocument,
-  el: id => targetNodes[id], isElementVisible: node => Boolean(node && !node.classList.contains('hidden'))
+  el: id => targetNodes[id], isElementVisible: node => Boolean(node && !node.classList.contains('hidden')),
+  createPressureDropSearchableSelect: () => ({ refresh: () => {} })
 });
 const classifyComparison = targetRuntime.classifyPressureDropComparisonEntry;
 const classificationCounts = {};
@@ -1444,20 +1444,36 @@ pressureDropData.forEach(entry => {
   const group = `${classification.category}/${classification.location}`;
   classificationCounts[group] = (classificationCounts[group] || 0) + 1;
 });
-assert.deepStrictEqual(classificationCounts, {
-  'venous/femoral': 19, 'arterial/femoral': 24, 'arterial/central': 13,
-  'venous/other': 79, 'specialty/other': 35, 'arterial/other': 13, 'venous/jugular': 6
-}, 'Catalog audit must not silently infer anatomy or admit specialty devices');
-assert(avalonProducts.every(entry => !classifyComparison(entry).eligible), 'Both Avalon lumens stay outside standard comparison');
+assert.strictEqual(Object.values(classificationCounts).reduce((sum, count) => sum + count, 0), pressureDropData.length);
+assert.strictEqual(classificationCounts['venous/jugular'],
+  pressureDropData.filter(entry => entry.category === 'jugular venous').length);
+assert(pressureDropData.filter(entry => classifyComparison(entry).category === 'specialty')
+  .every(entry => /cardioplegia|aortic root/i.test(entry.category)));
+assert(avalonProducts.every(entry => classifyComparison(entry).eligible && classifyComparison(entry).category === 'venous' && classifyComparison(entry).location === 'jugular' && classifyComparison(entry).configuration === 'Dual-lumen VV ECMO'));
 assert.strictEqual(classifyComparison({ category: 'arterial cardioplegia', model: 'Ambiguous' }).eligible, false);
 assert.strictEqual(classifyComparison({ category: 'arterial', model: 'EOPA Central', connectionSite: '1/4 in' }).location, 'other');
+const verifiedCentralModels = ['EOPA 3D Arterial Cannulae', 'Select 3D II Arterial Cannulae'];
 const eopaEntries = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' && /EOPA/.test(entry.model));
 assert.strictEqual(eopaEntries.length, 6);
-assert(eopaEntries.every(entry => classifyComparison(entry).eligible && classifyComparison(entry).location === 'other'));
-assert(eopaEntries.every(entry => targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'arterial', location: 'other' }).includes(entry)));
-assert(eopaEntries.every(entry => !targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'arterial', location: 'central' }).includes(entry)), 'Undocumented sites must not be presented as central');
+assert.strictEqual(targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'arterial', location: 'central', manufacturer: 'Medtronic' })
+  .filter(entry => verifiedCentralModels.includes(entry.model)).length, 5);
+assert(eopaEntries.every(entry => classifyComparison(entry).eligible));
+assert(eopaEntries.filter(entry => /3D/.test(entry.model)).every(entry => classifyComparison(entry).location === 'central'));
+assert(eopaEntries.filter(entry => !/3D/.test(entry.model)).every(entry => classifyComparison(entry).location === 'other'));
+assert(eopaEntries.filter(entry => !/3D/.test(entry.model)).every(entry => targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'arterial', location: 'other' }).includes(entry)));
+assert(eopaEntries.filter(entry => !/3D/.test(entry.model)).every(entry => !targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'arterial', location: 'central' }).includes(entry)), 'Undocumented sites must not be presented as central');
 assert.strictEqual(classifyComparison({ category: 'venous', model: 'Bi-caval' }).location, 'other');
 assert.strictEqual(classifyComparison({ category: 'venous', connectionSite: 'Right atrium' }).location, 'central');
+assert.strictEqual(classifyComparison({ category: 'femoral arterial' }).location, 'femoral');
+assert.strictEqual(classifyComparison({ category: 'femoral venous' }).location, 'femoral');
+assert.strictEqual(classifyComparison({ category: 'jugular venous' }).location, 'jugular');
+assert.strictEqual(classifyComparison({ category: 'arterial', connectionSite: '3/8 in' }).location, 'other');
+for (const model of verifiedCentralModels) {
+  const family = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' && entry.model === model);
+  assert(family.length > 0 && family.every(entry => classifyComparison(entry).location === 'central'));
+}
+assert(pressureDropData.filter(entry => entry.model === 'Select Series Angled Tip Arterial Cannulae')
+  .every(entry => classifyComparison(entry).location === 'other'));
 assert.strictEqual(classifyComparison({ category: 'femoral venous', connectionSite: 'Jugular venous' }).location, 'jugular', 'Explicit anatomical site takes precedence');
 assert.strictEqual(classifyComparison({ category: 'arterial', connectionSite: 'Femoral venous' }).eligible, false, 'Conflicting type/site metadata is ambiguous');
 assert.strictEqual(classifyComparison({ category: 'arterial', connectionSite: 'Aortic root' }).eligible, false);
@@ -1523,6 +1539,65 @@ assert.strictEqual(new Set(Array.from(actualFemoralRows, row => row.entry.manufa
 const filteredFamily = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { ...arterialFilters, manufacturer: 'Medtronic', model: nextGenModels[0] });
 assert.strictEqual(filteredFamily.length, 6);
 assert.strictEqual(targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { ...arterialFilters, manufacturer: 'LivaNova', model: nextGenModels[0] }).length, 0);
+
+// All seven real Avalon SKUs retain both original series, but target-flow uses Drainage only.
+const targetAvalonCodes = new Set(avalonProducts.map(entry => entry.cannulaOrderCode));
+assert.strictEqual(targetAvalonCodes.size, 7);
+const avalonRows = targetRuntime.getPressureDropTargetFlowRows(pressureDropData,
+  { category: 'venous', location: 'jugular', manufacturer: 'Getinge / Maquet', model: avalonModel }, 1);
+assert.strictEqual(avalonRows.length, 7);
+for (const row of avalonRows) {
+  const original = row.entry.pressureSeries;
+  assert.deepStrictEqual(original.map(series => series.id), ['infusion', 'drainage']);
+  assert.strictEqual(targetRuntime.getPressureDropTargetFlowSeries(row.entry), original[1]);
+  assert.strictEqual(row.result.series, original[1]);
+  assert.strictEqual(row.result.lumenLabel, 'Drainage ΔP');
+  assert.strictEqual(row.result.interpolationResult.value,
+    interpolatePressureDrop(original[1].points, 1).value);
+  assert.notStrictEqual(row.result.interpolationResult.value,
+    interpolatePressureDrop(original[0].points, 1).value);
+  assert(targetAvalonCodes.has(row.entry.cannulaOrderCode));
+}
+assert.strictEqual(targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'arterial' })
+  .filter(entry => avalonProducts.includes(entry)).length, 0);
+for (const location of ['central', 'femoral']) {
+  assert.strictEqual(targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location })
+    .filter(entry => avalonProducts.includes(entry)).length, 0);
+}
+assert.strictEqual(targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous' })
+  .filter(entry => avalonProducts.includes(entry)).length, 7);
+const ambiguousAvalon = { ...avalonProducts[0], pressureSeries: [avalonProducts[0].pressureSeries[0]] };
+assert.strictEqual(targetRuntime.getPressureDropTargetFlowSeries(ambiguousAvalon), null);
+assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(ambiguousAvalon, 1).unavailableReason, 'Drainage series not identified');
+const mislabeledAvalon = { ...avalonProducts[0], pressureSeries: avalonProducts[0].pressureSeries.map(series =>
+  series.id === 'drainage' ? { ...series, semanticType: 'infusion' } : series) };
+assert.strictEqual(targetRuntime.getPressureDropTargetFlowSeries(mislabeledAvalon), null);
+const reorderedAvalon = { ...avalonProducts[0], pressureSeries: [...avalonProducts[0].pressureSeries].reverse() };
+assert.strictEqual(targetRuntime.getPressureDropTargetFlowSeries(reorderedAvalon).id, 'drainage');
+const unavailableRow = { entry: ambiguousAvalon, key: 'ambiguous', identity: ambiguousAvalon.size,
+  result: targetRuntime.getPressureDropTargetFlowResult(ambiguousAvalon, 1) };
+const unavailableTable = targetRuntime.createPressureDropTargetFlowTable([unavailableRow], [], () => {});
+assert(unavailableTable.textContent.includes('Not comparable') && unavailableTable.textContent.includes('Drainage series not identified'));
+const unavailableChart = targetRuntime.createPressureDropTargetFlowChart([ambiguousAvalon], 1, false, () => {}, () => {});
+assert(unavailableChart.textContent.includes('Drainage series not identified'));
+assert(!pressureDescendants(unavailableChart, node => node.tagName === 'svg')[0].innerHTML.includes('Infusion'));
+const outsideAvalon = targetRuntime.getPressureDropTargetFlowResult(avalonProducts[0], 100);
+assert.strictEqual(outsideAvalon.interpolationResult.state, 'out_of_range');
+assert.strictEqual(outsideAvalon.magnitude, null);
+const avalonTable = targetRuntime.createPressureDropTargetFlowTable(avalonRows.slice(0, 1), [], () => {});
+assert(avalonTable.textContent.includes('Dual-lumen VV ECMO'));
+assert(pressureDescendants(avalonTable, node => node.attributes['aria-label']?.includes('Drainage ΔP')).length);
+const avalonChart = targetRuntime.createPressureDropTargetFlowChart([avalonProducts[0]], 1, false, () => {}, () => {}, pressureDropData);
+assert(avalonChart.textContent.includes('Drainage') && avalonChart.textContent.includes('Dual-lumen VV ECMO'));
+assert(!pressureDescendants(avalonChart, node => node.tagName === 'svg')[0].innerHTML.includes('Infusion'));
+const modelOptions = targetRuntime.getPressureDropTargetFlowModelOptions(pressureDropData.filter(entry => entry.manufacturer === 'Getinge / Maquet'));
+assert(modelOptions.some(option => option.value === avalonModel && option.label === 'Avalon Elite · Dual-lumen ECMO'));
+const collisionOptions = targetRuntime.getPressureDropTargetFlowModelOptions([
+  { manufacturer: 'LivaNova', model: 'Same Family — Curved Tip, Wire-reinforced Tubing' },
+  { manufacturer: 'LivaNova', model: 'Same Family — Straight Tip, Wire-reinforced Tubing' }
+]);
+assert.strictEqual(new Set(collisionOptions.map(option => option.value)).size, 2);
+assert.strictEqual(new Set(collisionOptions.map(option => option.label)).size, 2, 'Short labels must not merge distinct models');
 
 const dlpModel = 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip';
 const dlpVariants = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' && entry.model === dlpModel && entry.size === '18 Fr / 6.0 mm');
@@ -1632,6 +1707,24 @@ assert.strictEqual(pressureDescendants(targetNodes['pressure-drop-target-chart']
 targetNodes['pressure-drop-target-model'].value = 'not a product'; controller.refresh();
 assert(targetNodes['pressure-drop-target-results'].textContent.includes('No matching cannulas'));
 assert.strictEqual(targetNodes['pressure-drop-target-view'].dataset.analyticsReady, 'false');
+// Recover from an invalid family and exercise the full Venous → Jugular → Getinge → Avalon cascade.
+targetNodes['pressure-drop-target-model'].value = '';
+targetNodes['pressure-drop-target-category'].value = 'venous'; targetNodes['pressure-drop-target-category'].dispatch('change');
+locationInput.value = 'jugular'; locationInput.dispatch('change');
+manufacturerInput.value = 'Getinge / Maquet'; manufacturerInput.dispatch('change');
+familyInput.value = avalonModel; familyInput.dispatch('change');
+targetFlowInput.value = '1'; targetFlowInput.dispatch('input');
+assert.strictEqual(currentRows().length, 7);
+assert.strictEqual(targetFlowInput.value, '1');
+assert(currentRows().every(row => row.textContent.includes('Dual-lumen VV ECMO')));
+const firstAvalonBox = rowCheckbox(currentRows()[0]); firstAvalonBox.checked = true; firstAvalonBox.dispatch('change');
+assert.strictEqual(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'li').length, 1);
+manufacturerInput.value = ''; manufacturerInput.dispatch('change');
+assert.strictEqual(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'li').length, 1);
+targetNodes['pressure-drop-target-category'].value = 'arterial'; targetNodes['pressure-drop-target-category'].dispatch('change');
+assert.strictEqual(familyInput.value, '');
+assert.strictEqual(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'li').length, 0);
+assert.strictEqual(targetFlowInput.value, '1');
 
 const overlay = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[0], targetFixtures[1]], 4.5, true, () => {}, () => {});
 const overlaySvg = pressureDescendants(overlay, node => node.tagName === 'svg')[0];
@@ -1686,6 +1779,78 @@ assert.strictEqual(targetRuntime.isPressureDropAnalyticsReady('target', readyTar
 readyTarget.className = 'hidden';
 assert.strictEqual(targetRuntime.isPressureDropAnalyticsReady('target', readyTarget, readyTarget), false);
 console.log('Target-flow classification, interpolation, filtering, selection, chart and readiness regressions passed.');
+
+// Run the production combobox against a small DOM model: canonical values,
+// search aliases, keyboard selection/dismissal and mobile panel placement.
+class ComboNode {
+  constructor(tag = 'div') {
+    this.tagName = tag; this.children = []; this.dataset = {}; this.style = {};
+    this.attributes = {}; this.listeners = {}; this.value = ''; this.className = '';
+    this.classList = {
+      add: name => { this.className += ` ${name}`; },
+      remove: name => { this.className = this.className.split(' ').filter(item => item !== name).join(' '); },
+      contains: name => this.className.split(' ').includes(name),
+      toggle: (name, active) => { this.classList[active ? 'add' : 'remove'](name); }
+    };
+  }
+  append(...nodes) { this.children.push(...nodes); }
+  appendChild(node) { this.append(node); }
+  setAttribute(name, value) { this.attributes[name] = String(value); }
+  addEventListener(name, fn) { this.listeners[name] = fn; }
+  dispatch(name, event = {}) { this.listeners[name]?.({ preventDefault() {}, ...event }); }
+  dispatchEvent(event) { this.dispatch(event.type, event); }
+  insertAdjacentElement(_position, node) { this.wrapper = node; }
+  getBoundingClientRect() { return { left: 280, top: 170, bottom: 210 }; }
+  contains(node) { return node === this || this.children.some(child => child.contains(node)); }
+  focus() { comboDocument.activeElement = this; }
+  scrollIntoView() {}
+  querySelectorAll(selector) { assert.strictEqual(selector, '[role="option"]'); return this.children.filter(node => node.attributes.role === 'option'); }
+  get options() { return this.children; }
+  set innerHTML(value) { this.children = []; }
+  get textContent() { return this.text || ''; }
+  set textContent(value) { this.text = String(value); }
+}
+const comboDocument = { activeElement: null, handlers: {}, documentElement: { clientWidth: 320, clientHeight: 600 },
+  createElement: tag => new ComboNode(tag), addEventListener(name, fn) { this.handlers[name] = fn; } };
+const comboWindow = { innerWidth: 320, innerHeight: 600, handlers: {}, addEventListener(name, fn) { this.handlers[name] = fn; } };
+const comboSelect = new ComboNode('select'); comboSelect.id = 'pressure-drop-target-model';
+const longModel = 'Single Stage Right Angle Lighthouse Tip Venous Return Cannulae — Right Angle Lighthouse Tip, Wire-reinforced Tubing';
+for (const [value, label, searchText] of [
+  ['', 'All families / models', ''],
+  [avalonModel, 'Avalon Elite · Dual-lumen ECMO', `Getinge / Maquet ${avalonModel} Avalon Elite`],
+  [longModel, longModel, `LivaNova ${longModel}`]
+]) {
+  const option = new ComboNode('option'); option.value = value; option.textContent = label; option.dataset.searchText = searchText;
+  comboSelect.appendChild(option);
+}
+let comboChanges = 0; comboSelect.addEventListener('change', () => { comboChanges += 1; });
+const comboFactory = vm.runInNewContext(`${pressureProductionFunction('createPressureDropSearchableSelect')}; createPressureDropSearchableSelect`, {
+  document: comboDocument, window: comboWindow, Event: class { constructor(type) { this.type = type; } }, setTimeout: fn => fn()
+});
+const combo = comboFactory(comboSelect, 'Family / model');
+assert(combo && comboFactory(comboSelect, 'Family / model') === null, 'A second component cannot attach to the same select');
+combo.open();
+assert.strictEqual(combo.panel.style.left, '16px');
+assert.strictEqual(combo.panel.style.right, '16px');
+assert.strictEqual(combo.panel.style.width, '100%');
+combo.search.value = 'getinge'; combo.search.dispatch('input');
+assert.strictEqual(combo.list.children.length, 1, 'Manufacturer alias finds the Avalon family');
+combo.search.dispatch('keydown', { key: 'ArrowDown' });
+combo.search.dispatch('keydown', { key: 'Enter' });
+assert.strictEqual(comboSelect.value, avalonModel, 'Compact display label preserves canonical model identity');
+assert.strictEqual(comboChanges, 1);
+assert.strictEqual(comboDocument.activeElement, combo.button);
+combo.open(); combo.search.value = 'LivaNova'; combo.search.dispatch('input');
+assert.strictEqual(combo.list.children.length, 1);
+assert(combo.list.children[0].className.includes('whitespace-normal'), 'Long option wraps');
+combo.search.dispatch('keydown', { key: 'Escape' });
+assert(combo.panel.classList.contains('hidden'));
+combo.open(); comboDocument.handlers.mousedown({ target: new ComboNode('outside') });
+assert(combo.panel.classList.contains('hidden'), 'Outside click closes the menu');
+comboWindow.innerWidth = 390; comboWindow.innerHeight = 250;
+combo.open();
+assert(Number.parseFloat(combo.panel.style.top) >= 16, 'Low viewport positions menu within visible bounds');
+console.log('Searchable target model selector keyboard, search, dismissal and containment regressions passed.');
 
 const switchStart = mainJs.indexOf('    const setPressureDropView = (view) => {');
 const switchSource = mainJs.slice(switchStart, mainJs.indexOf('\n    [', switchStart));
