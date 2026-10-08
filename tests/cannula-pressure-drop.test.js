@@ -1493,6 +1493,7 @@ const targetRuntime = vm.runInNewContext([
   `; ({ classifyPressureDropComparisonEntry, getPressureDropTargetFlowKey, getPressureDropTargetFlowMatches,
     parsePressureDropTargetFlow, getPressureDropTargetFlowResult, getPressureDropTargetFlowRows,
     getPressureDropComparisonFr, updatePressureDropTargetFlowSelection, createPressureDropTargetFlowChart,
+    getPressureDropTargetFlowIdentity, createPressureDropTargetFlowTable,
     initPressureDropTargetFlowComparison, isPressureDropAnalyticsReady, drawPressureDropSeriesChart })`
 ].join('\n'), {
   document: targetTestDocument,
@@ -1546,6 +1547,24 @@ for (const [flow, expected] of [[1, 10], [5, 90]]) {
 for (const flow of [0.99, 5.01]) assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(targetFixtures[0], flow).inRange, false);
 const signedResult = targetRuntime.getPressureDropTargetFlowResult(targetFixtures[3], 4.5);
 assert.strictEqual(signedResult.interpolationResult.value, -80); assert.strictEqual(signedResult.magnitude, 80);
+const highArterial = { ...targetFixtures[0], model: 'High arterial source', points: [{ flow: 1, pressureDrop: 20 }, { flow: 5, pressureDrop: 120 }] };
+const highResult = targetRuntime.getPressureDropTargetFlowResult(highArterial, 5);
+assert.strictEqual(highResult.isHighPressure, true);
+assert(highResult.warningText.includes('High pressure drop warning (>100 mmHg).'));
+const lowerResult = targetRuntime.getPressureDropTargetFlowResult(highArterial, 4);
+assert.strictEqual(lowerResult.isHighPressure, false);
+const venousHighMagnitude = { ...highArterial, category: 'venous', points: [{ flow: 1, pressureDrop: -20 }, { flow: 5, pressureDrop: -120 }] };
+assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(venousHighMagnitude, 5).isHighPressure, false);
+const outOfRangeHigh = targetRuntime.getPressureDropTargetFlowResult(highArterial, 6);
+assert.strictEqual(outOfRangeHigh.isHighPressure, false);
+assert.strictEqual(outOfRangeHigh.magnitude, null);
+const warningRows = [highArterial, venousHighMagnitude].map(entry => ({
+  entry, key: targetRuntime.getPressureDropTargetFlowKey(entry), identity: entry.size,
+  result: targetRuntime.getPressureDropTargetFlowResult(entry, 5)
+}));
+const warningTableRows = pressureDescendants(targetRuntime.createPressureDropTargetFlowTable(warningRows, [], () => {}), node => node.tagName === 'tr');
+assert(warningTableRows[0].textContent.includes('High pressure drop warning (>100 mmHg).'), 'Arterial warning renders in desktop/mobile row');
+assert(!warningTableRows[1].textContent.includes('High pressure drop warning'), 'Venous results retain their own semantics');
 assert.deepStrictEqual(Array.from(targetRuntime.getPressureDropTargetFlowRows(targetFixtures, arterialFilters, 3, 'size'), row => row.entry.size), ['15 Fr', '19 Fr', '21 Fr']);
 assert.deepStrictEqual(Array.from(targetRuntime.getPressureDropTargetFlowRows(targetFixtures, arterialFilters, 3, 'manufacturer'), row => row.entry.manufacturer), ['Getinge / Maquet', 'LivaNova', 'Medtronic']);
 assert.deepStrictEqual(Array.from(targetRuntime.getPressureDropTargetFlowRows(targetFixtures, arterialFilters, 3, 'model'), row => row.entry.model), ['A', 'B', 'C']);
@@ -1555,6 +1574,35 @@ assert.strictEqual(new Set(Array.from(actualFemoralRows, row => row.entry.manufa
 const filteredFamily = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { ...arterialFilters, manufacturer: 'Medtronic', model: nextGenModels[0] });
 assert.strictEqual(filteredFamily.length, 6);
 assert.strictEqual(targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { ...arterialFilters, manufacturer: 'LivaNova', model: nextGenModels[0] }).length, 0);
+
+const dlpModel = 'DLP Single Stage Venous Cannulae with Right Angle Metal Tip';
+const dlpVariants = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' && entry.model === dlpModel && entry.size === '18 Fr / 6.0 mm');
+assert.deepStrictEqual(new Set(dlpVariants.map(entry => entry.cannulaOrderCode)), new Set(['69318', '67318']));
+const dlpRows = targetRuntime.getPressureDropTargetFlowRows(pressureDropData, { category: 'venous', manufacturer: 'Medtronic', model: dlpModel }, 2)
+  .filter(row => dlpVariants.includes(row.entry));
+assert.strictEqual(dlpRows.length, 2);
+assert.notStrictEqual(dlpRows[0].key, dlpRows[1].key, 'Variants must retain separate stable selection keys');
+for (const row of dlpRows) {
+  assert(row.identity.includes(row.entry.cannulaOrderCode));
+  assert(row.identity.includes(row.entry.connectorSize));
+}
+let variantSelection = [];
+for (const row of dlpRows) variantSelection = targetRuntime.updatePressureDropTargetFlowSelection(variantSelection, row.key, true, new Set(dlpRows.map(item => item.key)));
+assert.strictEqual(variantSelection.length, 2);
+const dlpTableRows = pressureDescendants(targetRuntime.createPressureDropTargetFlowTable(dlpRows, variantSelection, () => {}), node => node.tagName === 'tr');
+for (const [index, row] of dlpRows.entries()) {
+  assert(dlpTableRows[index].textContent.includes(row.entry.cannulaOrderCode), 'Desktop table and mobile card show catalog code');
+  assert(dlpTableRows[index].textContent.includes(row.entry.connectorSize), 'Desktop table and mobile card show connector');
+  assert(rowCheckbox(dlpTableRows[index]).attributes['aria-label'].includes(row.entry.cannulaOrderCode));
+}
+const dlpOverlay = targetRuntime.createPressureDropTargetFlowChart(dlpVariants, 2, false, () => {}, () => {}, pressureDropData);
+const dlpSvg = pressureDescendants(dlpOverlay, node => node.tagName === 'svg')[0];
+assert.strictEqual((dlpSvg.innerHTML.match(/data-series-id=/g) || []).length, 2);
+for (const variant of dlpVariants) {
+  assert(dlpOverlay.textContent.includes(variant.cannulaOrderCode) && dlpOverlay.textContent.includes(variant.connectorSize), 'External legend identifies variant');
+  assert(dlpSvg.innerHTML.includes(variant.cannulaOrderCode), 'SVG tooltip identifies variant');
+  assert(pressureDescendants(dlpOverlay, node => node.tagName === 'button').some(node => node.attributes['aria-label']?.includes(variant.cannulaOrderCode)), 'Removal control identifies variant');
+}
 
 // Hard-coded cross-manufacturer catalog regressions at the same target flow.
 const actualNextGen19 = actualFemoralRows.find(row => row.entry.model === nextGenModels[0] && row.entry.size === '19 Fr');
@@ -1686,3 +1734,102 @@ for (const mode of ['target', 'single', 'compare', 'target']) {
 }
 assert.deepStrictEqual(switchRenders, ['target', 'single', 'compare', 'target']);
 console.log('Pressure-drop mode switching and inactive readiness regressions passed.');
+
+// Execute the production feedback resolver with the active view and its real
+// readiness contract. The feedback card itself remains unique across modes.
+const feedbackNodes = Object.fromEntries([
+  'cannula-pressure-drop-page', 'pressure-drop-target-view', 'pressure-drop-single-view',
+  'pressure-drop-compare-view', 'pressure-drop-target-results', 'pressure-drop-results',
+  'pressure-drop-compare-results'
+].map(id => [id, new PressureTestNode()]));
+const feedbackVisible = node => Boolean(node && !node.classList.contains('hidden'));
+const feedbackContextSource = mainJs.slice(mainJs.indexOf('const FEEDBACK_RESULT_CONTEXTS ='), mainJs.indexOf('const FEEDBACK_STORAGE_KEY'));
+const feedbackRuntime = vm.runInNewContext([
+  pressureProductionFunction('resolvePressureDropFeedbackContext'),
+  feedbackContextSource,
+  pressureProductionFunction('resolveFeedbackResultContext'),
+  '; ({ resolveFeedbackResultContext })'
+].join('\n'), {
+  el: id => feedbackNodes[id],
+  isElementVisible: feedbackVisible,
+  isPressureDropAnalyticsReady: targetRuntime.isPressureDropAnalyticsReady,
+  isFeedbackResultReady: () => false,
+  isPositiveNumericResult: () => false,
+  isLbmFeedbackReady: () => false,
+  isZScoreFeedbackReady: () => false,
+  resolveTimeFeedbackContext: () => null,
+  resolveHctFeedbackContext: () => null,
+  resolveUnitConverterFeedbackContext: () => null,
+  document: { querySelector: () => null }
+});
+for (const [mode, viewId, resultId] of [
+  ['target', 'pressure-drop-target-view', 'pressure-drop-target-results'],
+  ['single', 'pressure-drop-single-view', 'pressure-drop-results'],
+  ['compare', 'pressure-drop-compare-view', 'pressure-drop-compare-results']
+]) {
+  feedbackNodes['cannula-pressure-drop-page'].dataset.pressureDropView = mode;
+  for (const panelId of ['pressure-drop-target-view', 'pressure-drop-single-view', 'pressure-drop-compare-view']) {
+    feedbackNodes[panelId].className = panelId === viewId ? '' : 'hidden';
+    feedbackNodes[panelId].dataset.analyticsReady = panelId === viewId ? 'false' : 'true';
+  }
+  let context = feedbackRuntime.resolveFeedbackResultContext('/cannula-pressure-drop/');
+  assert.strictEqual(context.insertAfter, feedbackNodes[viewId]);
+  assert.strictEqual(context.readinessTarget, feedbackNodes[resultId]);
+  assert.strictEqual(context.isReady(), false, `${mode} filter-only/out-of-range-only result is not feedback-ready`);
+  feedbackNodes[viewId].dataset.analyticsReady = 'true';
+  assert.strictEqual(context.isReady(), true, `${mode} visible, in-range result can show feedback`);
+  feedbackNodes[resultId].className = 'hidden';
+  assert.strictEqual(context.isReady(), false, `${mode} hidden result cannot show feedback`);
+  feedbackNodes[resultId].className = '';
+  feedbackNodes[viewId].className = 'hidden';
+  assert.strictEqual(context.isReady(), false, `${mode} hidden view cannot show feedback`);
+  feedbackNodes[viewId].className = '';
+}
+// An old view's ready flag must never make the active target view ready.
+feedbackNodes['cannula-pressure-drop-page'].dataset.pressureDropView = 'target';
+feedbackNodes['pressure-drop-target-view'].dataset.analyticsReady = 'false';
+feedbackNodes['pressure-drop-single-view'].dataset.analyticsReady = 'true';
+feedbackNodes['pressure-drop-target-view'].className = '';
+feedbackNodes['pressure-drop-single-view'].className = 'hidden';
+assert.strictEqual(feedbackRuntime.resolveFeedbackResultContext('/cannula-pressure-drop/').isReady(), false);
+
+let existingFeedbackCard = null;
+let insertedFeedbackCards = 0;
+const feedbackEventHandlers = {};
+const feedbackTimers = [];
+for (const id of ['pressure-drop-target-view', 'pressure-drop-single-view', 'pressure-drop-compare-view']) {
+  feedbackNodes[id].insertAdjacentHTML = () => { insertedFeedbackCards += 1; existingFeedbackCard = new PressureTestNode(); };
+}
+const feedbackRoot = { addEventListener: (type, handler) => { feedbackEventHandlers[type] = handler; } };
+const initFeedbackRuntime = vm.runInNewContext(`${pressureProductionFunction('initFeedbackCard')}; initFeedbackCard`, {
+  window: { location: { pathname: '/cannula-pressure-drop/' } },
+  location: { hostname: 'example.com' },
+  normalizeFeedbackPath: path => path,
+  FEEDBACK_CALCULATOR_ROUTES: { '/cannula-pressure-drop/': 'cannula_pressure_drop' },
+  FEEDBACK_MIN_DWELL_MS: 0,
+  resolveFeedbackResultContext: feedbackRuntime.resolveFeedbackResultContext,
+  document: { querySelector: selector => selector === '.feedback-card' ? existingFeedbackCard : selector === 'main' ? feedbackRoot : null },
+  setTimeout: handler => { feedbackTimers.push(handler); },
+  canShowFeedbackPrompt: () => true,
+  getFeedbackCardMarkup: () => '<section class="feedback-card"></section>',
+  getFeedbackPromptId: () => 'prompt',
+  bindFeedbackCard: () => {}
+});
+initFeedbackRuntime();
+const feedbackInteraction = { isTrusted: true, target: { closest: () => ({}) } };
+feedbackNodes['pressure-drop-target-view'].dataset.analyticsReady = 'false';
+feedbackEventHandlers.input(feedbackInteraction);
+feedbackTimers.splice(0).forEach(callback => callback());
+assert.strictEqual(insertedFeedbackCards, 0, 'Filter-only target results cannot trigger a prompt');
+feedbackNodes['pressure-drop-target-view'].dataset.analyticsReady = 'true';
+feedbackEventHandlers.input(feedbackInteraction);
+feedbackTimers.splice(0).forEach(callback => callback());
+assert.strictEqual(insertedFeedbackCards, 1);
+feedbackNodes['cannula-pressure-drop-page'].dataset.pressureDropView = 'single';
+feedbackNodes['pressure-drop-target-view'].className = 'hidden';
+feedbackNodes['pressure-drop-single-view'].className = '';
+feedbackNodes['pressure-drop-single-view'].dataset.analyticsReady = 'true';
+feedbackEventHandlers.change(feedbackInteraction);
+feedbackTimers.splice(0).forEach(callback => callback());
+assert.strictEqual(insertedFeedbackCards, 1, 'An existing card must not be duplicated after a view switch');
+console.log('Pressure-drop active-view feedback anchoring, readiness and single-card regressions passed.');

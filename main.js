@@ -7091,6 +7091,15 @@ function getPressureDropTargetFlowKey(entry) {
   return JSON.stringify([entry.manufacturer, entry.category, entry.model, getPressureDropSizeOptionValue(entry)]);
 }
 
+function getPressureDropTargetFlowIdentity(entry, catalogEntries) {
+  const size = entry.size || 'Unknown size';
+  const hasSameSizeVariant = catalogEntries.some(other => other !== entry &&
+    other.manufacturer === entry.manufacturer && other.model === entry.model && other.size === entry.size);
+  if (!hasSameSizeVariant) return size;
+  const variant = [entry.cannulaOrderCode, entry.connectorSize || entry.connectionSite].filter(Boolean).join(' · ');
+  return variant ? `${size} · ${variant}` : size;
+}
+
 function getPressureDropTargetFlowMatches(entries, filters) {
   return entries.filter(entry => {
     const classification = classifyPressureDropComparisonEntry(entry);
@@ -7111,9 +7120,11 @@ function parsePressureDropTargetFlow(value) {
 }
 
 function getPressureDropTargetFlowResult(entry, flow) {
-  const result = getPressureDropComparisonResult(entry, flow).seriesResults[0];
+  const comparison = getPressureDropComparisonResult(entry, flow);
+  const result = comparison.seriesResults[0];
   const inRange = hasValidPressureDropEstimate([result.interpolationResult]);
-  return { ...result, inRange, magnitude: inRange ? Math.abs(result.interpolationResult.value) : null };
+  return { ...result, inRange, magnitude: inRange ? Math.abs(result.interpolationResult.value) : null,
+    isHighPressure: comparison.isHighPressure, warningText: comparison.warningText };
 }
 
 function getPressureDropComparisonFr(entry) {
@@ -7127,7 +7138,8 @@ function getPressureDropComparisonFr(entry) {
 
 function getPressureDropTargetFlowRows(entries, filters, flow, sort = 'pressure') {
   return getPressureDropTargetFlowMatches(entries, filters).map(entry => ({
-    entry, key: getPressureDropTargetFlowKey(entry), result: getPressureDropTargetFlowResult(entry, flow)
+    entry, key: getPressureDropTargetFlowKey(entry), identity: getPressureDropTargetFlowIdentity(entry, entries),
+    result: getPressureDropTargetFlowResult(entry, flow)
   })).sort((left, right) => {
     if (left.result.inRange !== right.result.inRange) return left.result.inRange ? -1 : 1;
     let difference = 0;
@@ -7156,7 +7168,7 @@ function getPressureDropTargetFlowValueText(result) {
   return 'Enter a positive target flow';
 }
 
-function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPointsChange, onRemove) {
+function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPointsChange, onRemove, catalogEntries = entries) {
   const panel = document.createElement('article');
   panel.className = 'min-w-0 rounded-xl border border-slate-200 dark:border-primary-800 p-4 space-y-3';
   const heading = document.createElement('h3');
@@ -7169,7 +7181,8 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
   entries.forEach((entry, index) => {
     const result = getPressureDropTargetFlowResult(entry, flow);
     const key = getPressureDropTargetFlowKey(entry);
-    series.push({ ...result.series, id: encodeURIComponent(key), colorIndex: index, displayLabel: `${index + 1} · ${entry.manufacturer} · ${entry.size}` });
+    const identity = getPressureDropTargetFlowIdentity(entry, catalogEntries);
+    series.push({ ...result.series, id: encodeURIComponent(key), colorIndex: index, displayLabel: `${index + 1} · ${entry.manufacturer} · ${identity}` });
     estimates.push(result.interpolationResult);
     const item = document.createElement('li');
     item.className = 'flex min-w-0 items-start gap-2';
@@ -7181,12 +7194,12 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     const text = document.createElement('span');
     text.className = 'min-w-0 flex-1 break-words';
     const signedText = result.inRange ? `; signed pressure ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg` : '';
-    text.textContent = `${index + 1}. ${entry.manufacturer} · ${entry.model} · ${entry.size} — ${getPressureDropTargetFlowValueText(result)}${signedText}`;
+    text.textContent = `${index + 1}. ${entry.manufacturer} · ${entry.model} · ${identity} — ${getPressureDropTargetFlowValueText(result)}${signedText}`;
     const remove = document.createElement('button');
     remove.type = 'button';
     remove.className = 'min-h-10 shrink-0 rounded px-2 text-accent-700 dark:text-accent-300 focus:ring-2 focus:ring-accent-500';
     remove.textContent = 'Remove';
-    remove.setAttribute('aria-label', `Remove ${entry.manufacturer} ${entry.model} ${entry.size} from chart`);
+    remove.setAttribute('aria-label', `Remove ${entry.manufacturer} ${entry.model} ${identity} from chart`);
     remove.addEventListener('click', () => onRemove(key));
     item.append(swatch, text, remove);
     legend.appendChild(item);
@@ -7226,7 +7239,7 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
   table.appendChild(head);
   const body = document.createElement('tbody');
   body.className = 'block space-y-3 md:table-row-group md:space-y-0';
-  rows.forEach(({ entry, key, result }) => {
+  rows.forEach(({ entry, key, identity, result }) => {
     const row = document.createElement('tr');
     row.className = 'block rounded-lg border border-slate-200 dark:border-primary-800 p-3 md:table-row md:border-0';
     row.dataset.productKey = key;
@@ -7240,7 +7253,7 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
     checkbox.checked = selectedKeys.includes(key);
     checkbox.disabled = !checkbox.checked && selectedKeys.length >= PRESSURE_DROP_PRODUCT_COLORS.length;
     checkbox.className = 'h-4 w-4 accent-sky-600 focus:ring-2 focus:ring-accent-500';
-    checkbox.setAttribute('aria-label', `Select ${entry.manufacturer} ${entry.model} ${entry.size} for chart comparison`);
+    checkbox.setAttribute('aria-label', `Select ${entry.manufacturer} ${entry.model} ${identity} for chart comparison`);
     checkbox.addEventListener('change', () => onSelect(key, checkbox.checked));
     const labelText = document.createElement('span');
     labelText.className = 'md:sr-only';
@@ -7248,7 +7261,7 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
     label.append(checkbox, labelText);
     selectCell.appendChild(label);
     row.appendChild(selectCell);
-    const values = [entry.manufacturer, entry.model, entry.size,
+    const values = [entry.manufacturer, entry.model, identity,
       getPressureDropTargetFlowValueText(result),
       `${result.inRange ? result.statusText + '. ' : ''}Available: ${result.rangeText}`];
     values.forEach((value, index) => {
@@ -7270,6 +7283,12 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
         signed.className = 'mt-1 font-normal';
         signed.textContent = `Signed drainage pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
         cell.appendChild(signed);
+      }
+      if (index === 3 && result.isHighPressure) {
+        const warning = document.createElement('p');
+        warning.className = 'mt-1 font-semibold text-amber-700 dark:text-amber-300';
+        warning.textContent = result.warningText;
+        cell.appendChild(warning);
       }
       row.appendChild(cell);
     });
@@ -7329,7 +7348,7 @@ function initPressureDropTargetFlowComparison(entries, onStatus) {
     controls.chart.innerHTML = '';
     const selectedEntries = selectedKeys.map(key => entries.find(entry => getPressureDropTargetFlowKey(entry) === key));
     if (selectedEntries.length) controls.chart.appendChild(createPressureDropTargetFlowChart(selectedEntries, flow, showRawPoints,
-      checked => { showRawPoints = checked; render(); }, key => { selectedKeys = selectedKeys.filter(selected => selected !== key); render(); }));
+      checked => { showRawPoints = checked; render(); }, key => { selectedKeys = selectedKeys.filter(selected => selected !== key); render(); }, entries));
     else {
       const prompt = document.createElement('p');
       prompt.className = 'text-xs text-slate-500 dark:text-slate-400';
@@ -8889,7 +8908,7 @@ const FEEDBACK_RESULT_CONTEXTS = {
   '/gdp/': { insertAfter: '[data-feedback-result-anchor="gdp-primary"]', readinessTarget: '#current-do2i' },
   '/heparin/': { insertAfter: '#hep2-results', readinessTarget: '#hep2-results' },
   '/priming-volume/': { insertAfter: '[data-feedback-result-anchor="priming-primary"]', readinessTarget: '#priming-builder-total', isReady: () => isPositiveNumericResult(el('priming-builder-total')) },
-  '/cannula-pressure-drop/': { insertAfter: '#pressure-drop-results', readinessTarget: '#pressure-drop-results' },
+  '/cannula-pressure-drop/': { resolve: resolvePressureDropFeedbackContext },
   '/timecalc/': { resolve: resolveTimeFeedbackContext },
   '/lbm/': { insertAfter: '[data-feedback-result-anchor="lbm-primary"]', readinessTarget: '#lbm_result', isReady: isLbmFeedbackReady },
   '/predicted-hct/': { resolve: resolveHctFeedbackContext },
@@ -9022,6 +9041,23 @@ function resolveTimeFeedbackContext() {
   // shared stable anchor so it remains visible when the user switches workflows.
   const insertAfter = el('time-feedback-anchor');
   return { insertAfter, readinessTarget, isReady: isTimeFeedbackReady };
+}
+
+function resolvePressureDropFeedbackContext() {
+  const page = el('cannula-pressure-drop-page');
+  const activeView = page?.dataset.pressureDropView;
+  const viewId = activeView === 'target' ? 'pressure-drop-target-view'
+    : activeView === 'compare' ? 'pressure-drop-compare-view' : 'pressure-drop-single-view';
+  const resultId = activeView === 'target' ? 'pressure-drop-target-results'
+    : activeView === 'compare' ? 'pressure-drop-compare-results' : 'pressure-drop-results';
+  const insertAfter = el(viewId);
+  const readinessTarget = el(resultId);
+  // Place the one feedback card beside the active view, outside its rerendered
+  // contents. This keeps an existing card visible when the user switches modes.
+  return { insertAfter, readinessTarget, isReady: () =>
+    isElementVisible(insertAfter) && isElementVisible(readinessTarget) &&
+    isPressureDropAnalyticsReady(activeView, el('pressure-drop-single-view'),
+      el('pressure-drop-compare-view'), el('pressure-drop-target-view')) };
 }
 
 function isLbmFeedbackReady() {
