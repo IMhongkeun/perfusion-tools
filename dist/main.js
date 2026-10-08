@@ -1451,6 +1451,13 @@ function drawPressureDropSeriesChart(svgNode, pressureSeries, targetFlow, estima
   svgNode.dataset.curveMode = options.curveMode || 'linear';
   svgNode.dataset.legendRows = String(legendLayout.rowCount);
   svgNode.dataset.plotTop = String(padding.top);
+  svgNode.dataset.plotLeft = String(padding.left);
+  svgNode.dataset.plotRight = String(plotRight);
+  svgNode.dataset.plotBottom = String(plotBottom);
+  svgNode.dataset.minFlow = String(minFlow);
+  svgNode.dataset.maxFlow = String(maxFlow);
+  svgNode.dataset.minDrop = String(minDrop);
+  svgNode.dataset.pressureRange = String(pressureRange);
   svgNode.innerHTML = `${xGridlines}${yGridlines}${zeroLine}<line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${plotBottom}" stroke="currentColor" stroke-opacity="0.35" />${traces}${targetLine}${targetMarkers}${legend}${xLabels}${yLabels}<text x="${plotRight}" y="${height - 8}" font-size="9" text-anchor="end" fill="currentColor" opacity="0.65">Flow [L/min]</text><text x="14" y="${plotMiddleY.toFixed(1)}" transform="rotate(-90 14 ${plotMiddleY.toFixed(1)})" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.65">Pressure drop [mmHg]</text>`;
 }
 
@@ -6438,8 +6445,7 @@ function createPressureDropSearchableSelect(selectNode, placeholder, onChange) {
   button.append(label, icon);
 
   const panel = document.createElement('div');
-  panel.className = 'pressure-drop-combobox-panel absolute z-30 mt-1 hidden rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 shadow-xl p-2';
-  panel.style.maxWidth = 'min(520px, calc(100vw - 32px))';
+  panel.className = 'pressure-drop-combobox-panel absolute z-30 hidden rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 shadow-xl p-2';
   panel.style.width = '100%';
   panel.style.maxHeight = '320px';
   panel.style.overflow = 'hidden';
@@ -6469,33 +6475,33 @@ function createPressureDropSearchableSelect(selectNode, placeholder, onChange) {
     highlightedIndex = -1;
   };
   const updatePanelPosition = () => {
+    if (panel.classList.contains('hidden')) return;
     const rect = wrapper.getBoundingClientRect();
-    const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
-    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
-    const below = viewportHeight - rect.bottom - 16;
-    const above = rect.top - 20;
+    const viewport = window.visualViewport;
+    const viewportTop = viewport?.offsetTop || 0;
+    const viewportHeight = viewport?.height || window.innerHeight || document.documentElement.clientHeight || 0;
+    const viewportBottom = viewportTop + viewportHeight;
+    const below = viewportBottom - rect.bottom - 8;
+    const above = rect.top - viewportTop - 8;
     const openAbove = below < 160 && above > below;
-    const availableHeight = Math.max(100, Math.min(320, openAbove ? above : below));
+    const availableHeight = Math.max(56, Math.min(320, openAbove ? above : below));
     panel.style.maxHeight = `${availableHeight}px`;
     list.style.maxHeight = `${Math.max(56, availableHeight - 60)}px`;
-    if (viewportWidth <= 768) {
-      panel.style.top = `${Math.max(16, openAbove ? rect.top - availableHeight - 4 : rect.bottom + 4)}px`;
-      panel.style.left = '16px';
-      panel.style.right = '16px';
-      panel.style.bottom = 'auto';
-      return;
-    }
+    // The panel is absolute inside the wrapper at every width. Viewport rects
+    // only choose its direction; they are never assigned as local CSS offsets.
     panel.style.top = openAbove ? 'auto' : '100%';
     panel.style.bottom = openAbove ? '100%' : 'auto';
     panel.style.left = '0';
     panel.style.right = 'auto';
+    panel.style.marginTop = openAbove ? '0' : '4px';
+    panel.style.marginBottom = openAbove ? '4px' : '0';
   };
   const selectValue = (value) => {
     selectNode.value = value;
     selectNode.dispatchEvent(new Event('change', { bubbles: true }));
     if (typeof onChange === 'function') onChange(value);
     close();
-    button.focus();
+    button.focus({ preventScroll: true });
   };
   const renderOptions = () => {
     const query = search.value.trim().toLowerCase();
@@ -6526,17 +6532,24 @@ function createPressureDropSearchableSelect(selectNode, placeholder, onChange) {
     highlightedIndex = (nextIndex + visibleOptions.length) % visibleOptions.length;
     Array.from(list.querySelectorAll('[role="option"]')).forEach((item, index) => {
       item.classList.toggle('bg-accent-500/20', index === highlightedIndex);
-      if (index === highlightedIndex) item.scrollIntoView({ block: 'nearest' });
+      if (index === highlightedIndex) {
+        const itemTop = item.offsetTop - list.offsetTop;
+        if (itemTop < list.scrollTop) list.scrollTop = itemTop;
+        else if (itemTop + item.offsetHeight > list.scrollTop + list.clientHeight) {
+          list.scrollTop = itemTop + item.offsetHeight - list.clientHeight;
+        }
+      }
     });
   };
-  const open = () => {
+  const open = (focusSearch = false) => {
     if (selectNode.disabled) return;
-    updatePanelPosition();
     search.value = '';
     renderOptions();
     panel.classList.remove('hidden');
     button.setAttribute('aria-expanded', 'true');
-    setTimeout(() => search.focus(), 0);
+    updatePanelPosition();
+    // Touch opening must not summon the keyboard and scroll the document.
+    if (focusSearch) search.focus({ preventScroll: true });
   };
   const refresh = () => {
     options = Array.from(selectNode.options).map(option => ({ value: option.value,
@@ -6550,20 +6563,23 @@ function createPressureDropSearchableSelect(selectNode, placeholder, onChange) {
     renderOptions();
   };
 
-  button.addEventListener('click', () => panel.classList.contains('hidden') ? open() : close());
+  button.addEventListener('click', () => panel.classList.contains('hidden') ? open(false) : close());
   search.addEventListener('input', () => { highlightedIndex = -1; renderOptions(); });
   search.addEventListener('keydown', event => {
     if (event.key === 'ArrowDown') { event.preventDefault(); highlight(highlightedIndex + 1); }
     else if (event.key === 'ArrowUp') { event.preventDefault(); highlight(highlightedIndex - 1); }
     else if (event.key === 'Enter') { event.preventDefault(); if (visibleOptions[highlightedIndex]) selectValue(visibleOptions[highlightedIndex].value); }
-    else if (event.key === 'Escape') { event.preventDefault(); close(); button.focus(); }
+    else if (event.key === 'Escape') { event.preventDefault(); close(); button.focus({ preventScroll: true }); }
   });
   button.addEventListener('keydown', event => {
-    if (['ArrowDown', 'Enter', ' '].includes(event.key)) { event.preventDefault(); open(); }
+    if (['ArrowDown', 'Enter', ' '].includes(event.key)) { event.preventDefault(); open(true); }
     else if (event.key === 'Escape') close();
   });
   document.addEventListener('mousedown', event => { if (!wrapper.contains(event.target)) close(); });
   window.addEventListener('resize', updatePanelPosition);
+  window.addEventListener('scroll', updatePanelPosition, { passive: true });
+  window.visualViewport?.addEventListener('resize', updatePanelPosition);
+  window.visualViewport?.addEventListener('scroll', updatePanelPosition);
 
   refresh();
   return { refresh, close, open, panel, button, search, list };
@@ -6995,6 +7011,32 @@ function getPressureDropTargetFlowIdentity(entry, catalogEntries) {
   return variant ? `${size} · ${variant}` : size;
 }
 
+function appendPressureDropSizeLabel(node, identity) {
+  const [size, ...details] = String(identity).split(' · ');
+  const parts = size.split(/\s*\/\s*(?=\d+(?:\.\d+)?\s*(?:Fr|mm)\b)/i);
+  if (parts.length === 1) { node.textContent = identity; return; }
+  parts.forEach((part, index) => {
+    if (index) node.appendChild(document.createTextNode(' / '));
+    const segment = document.createElement('span');
+    segment.className = 'inline-block whitespace-nowrap';
+    segment.textContent = part;
+    node.appendChild(segment);
+  });
+  if (details.length) node.appendChild(document.createTextNode(` · ${details.join(' · ')}`));
+}
+
+function searchPressureDropCatalog(entries, query) {
+  const terms = String(query).trim().toLowerCase().split(/\s+/).filter(Boolean);
+  if (!terms.length) return [];
+  return entries.filter(entry => {
+    const classification = classifyPressureDropComparisonEntry(entry);
+    const searchable = [entry.manufacturer, entry.model, getPressureDropTargetFlowModelLabel(entry.model || ''),
+      entry.size, entry.cannulaOrderCode, entry.connectorSize, entry.connectionSite,
+      classification.configuration, getPressureDropProductFamily(entry)].filter(Boolean).join(' ').toLowerCase();
+    return terms.every(term => searchable.includes(term));
+  });
+}
+
 function getPressureDropTargetFlowMatches(entries, filters) {
   return entries.filter(entry => {
     const classification = classifyPressureDropComparisonEntry(entry);
@@ -7070,7 +7112,88 @@ function getPressureDropTargetFlowValueText(result) {
   return 'Enter a positive target flow';
 }
 
-function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPointsChange, onRemove, catalogEntries = entries) {
+function getPressureDropExploredFlow(clientX, rect, dataset) {
+  const left = Number(dataset.plotLeft), right = Number(dataset.plotRight);
+  const min = Number(dataset.minFlow), max = Number(dataset.maxFlow);
+  if (!(rect.width > 0) || !(right > left) || !(max > min)) return min;
+  const x = ((clientX - rect.left) / rect.width) * 420;
+  const fraction = Math.max(0, Math.min(1, (x - left) / (right - left)));
+  const rawFlow = min + fraction * (max - min);
+  return Math.max(min, Math.min(max, Math.round((rawFlow + Number.EPSILON) * 10) / 10));
+}
+
+function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCommitFlow) {
+  if (!series.length || !Number.isFinite(Number(svg.dataset.minFlow))) return;
+  const minimum = Number(svg.dataset.minFlow), maximum = Number(svg.dataset.maxFlow);
+  const left = Number(svg.dataset.plotLeft), right = Number(svg.dataset.plotRight);
+  const top = Number(svg.dataset.plotTop), bottom = Number(svg.dataset.plotBottom);
+  const minDrop = Number(svg.dataset.minDrop), pressureRange = Number(svg.dataset.pressureRange);
+  const overlay = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  overlay.setAttribute('aria-hidden', 'true');
+  const guide = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  guide.setAttribute('stroke', 'currentColor'); guide.setAttribute('stroke-dasharray', '3 3');
+  guide.setAttribute('stroke-width', '1.5'); guide.setAttribute('y1', top); guide.setAttribute('y2', bottom);
+  overlay.appendChild(guide);
+  const markers = series.map((item, index) => {
+    const marker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    marker.setAttribute('r', '4'); marker.setAttribute('fill', PRESSURE_DROP_PRODUCT_COLORS[item.colorIndex ?? index]);
+    marker.setAttribute('stroke', 'white'); marker.setAttribute('stroke-width', '1.5');
+    overlay.appendChild(marker); return marker;
+  });
+  svg.appendChild(overlay);
+  const controls = document.createElement('div');
+  controls.className = 'min-w-0 space-y-2 rounded-lg bg-slate-50 dark:bg-primary-800 p-3 text-xs';
+  const readout = document.createElement('p');
+  readout.className = 'font-semibold tabular-nums';
+  const estimates = document.createElement('div');
+  estimates.className = 'space-y-1';
+  const items = series.map(item => {
+    const row = document.createElement('p'); row.className = 'min-w-0 break-words';
+    estimates.appendChild(row); return row;
+  });
+  const slider = document.createElement('input');
+  slider.type = 'range'; slider.step = '0.1';
+  slider.min = String(Math.ceil(minimum * 10) / 10);
+  slider.max = String(Math.floor(maximum * 10) / 10);
+  slider.className = 'w-full accent-sky-600';
+  slider.setAttribute('aria-label', 'Explore flow in 0.1 L/min steps');
+  const commit = document.createElement('button');
+  commit.type = 'button'; commit.className = 'rounded-lg border border-slate-300 dark:border-primary-600 px-2 py-1 text-accent-700 dark:text-accent-300';
+  commit.textContent = 'Use as target flow';
+  let exploredFlow = null;
+  const update = flow => {
+    exploredFlow = flow;
+    const x = left + ((flow - minimum) / Math.max(maximum - minimum, 0.0001)) * (right - left);
+    guide.setAttribute('x1', x); guide.setAttribute('x2', x);
+    readout.textContent = `Exploring ${flow.toFixed(1)} L/min · target ${Number.isFinite(committedFlow) ? `${committedFlow} L/min` : 'not set'}`;
+    series.forEach((item, index) => {
+      const result = interpolatePressureDrop(item.points, flow);
+      const valid = hasValidPressureDropEstimate([result]);
+      markers[index].style.display = valid ? '' : 'none';
+      if (valid) {
+        const y = bottom - ((result.value - minDrop) / pressureRange) * (bottom - top);
+        markers[index].setAttribute('cx', x); markers[index].setAttribute('cy', y);
+      }
+      items[index].textContent = `${item.exploreLabel || item.displayLabel || item.label}: ${valid ? `${Math.abs(result.value).toFixed(1)} mmHg (${result.state}; signed ${formatSignedPressureDrop(result.value)} mmHg)` : 'Out of range'}`;
+    });
+    if (Number(slider.min) <= Number(slider.max)) slider.value = String(Math.max(Number(slider.min), Math.min(Number(slider.max), flow)));
+  };
+  svg.style.touchAction = 'pan-y';
+  const explorePointer = event => update(getPressureDropExploredFlow(event.clientX, svg.getBoundingClientRect(), svg.dataset));
+  svg.addEventListener('pointermove', explorePointer);
+  svg.addEventListener('pointerdown', explorePointer);
+  slider.addEventListener('input', () => update(Number(slider.value)));
+  commit.addEventListener('click', () => { if (exploredFlow !== null) onCommitFlow?.(exploredFlow); });
+  if (Number(slider.min) <= Number(slider.max)) {
+    controls.append(readout, estimates, slider, commit);
+  } else controls.append(readout, estimates, commit);
+  panel.appendChild(controls);
+  update(Number.isFinite(committedFlow) && committedFlow >= minimum && committedFlow <= maximum
+    ? getPressureDropExploredFlow(left + ((committedFlow - minimum) / Math.max(maximum - minimum, 0.0001)) * (right - left), { left: 0, width: 420 }, svg.dataset)
+    : minimum);
+}
+
+function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPointsChange, onRemove, catalogEntries = entries, onCommitFlow) {
   const panel = document.createElement('article');
   panel.className = 'min-w-0 rounded-xl border border-slate-200 dark:border-primary-800 p-4 space-y-3';
   const heading = document.createElement('h3');
@@ -7087,7 +7210,8 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     const configuration = classifyPressureDropComparisonEntry(entry).configuration;
     if (result.series) {
       series.push({ ...result.series, id: encodeURIComponent(key), colorIndex: index,
-        displayLabel: `${index + 1} · ${entry.manufacturer} · ${entry.model} · ${identity}${result.lumenLabel ? ' · Drainage' : ''}` });
+        displayLabel: `${index + 1} · ${entry.manufacturer} · ${entry.model} · ${identity}${result.lumenLabel ? ' · Drainage' : ''}`,
+        exploreLabel: `${index + 1}. ${entry.manufacturer} · ${getPressureDropTargetFlowDisplayName(entry)} · ${identity}${result.lumenLabel ? ' · Drainage' : ''}` });
       estimates.push(result.interpolationResult);
     }
     const item = document.createElement('li');
@@ -7104,8 +7228,9 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     name.className = 'min-w-0 flex-1 break-words';
     name.textContent = `${entry.manufacturer} · ${getPressureDropTargetFlowDisplayName(entry)}`;
     const size = document.createElement('span');
-    size.className = 'shrink-0 text-slate-500 dark:text-slate-400';
-    size.textContent = `${identity}${configuration === 'Dual-lumen VV ECMO' ? ' · Dual-lumen VV ECMO' : ''}`;
+    size.className = 'min-w-0 break-words text-slate-500 dark:text-slate-400';
+    appendPressureDropSizeLabel(size, identity);
+    if (configuration === 'Dual-lumen VV ECMO') size.appendChild(document.createTextNode(' · Dual-lumen VV ECMO'));
     const value = document.createElement('span');
     value.className = `shrink-0 tabular-nums font-semibold ${result.isHighPressure && result.inRange ? 'text-amber-700 dark:text-amber-300' : 'text-primary-900 dark:text-white'}`;
     value.textContent = result.inRange ? `${result.lumenLabel ? 'Drainage ' : ''}${result.magnitude.toFixed(1)} mmHg`
@@ -7143,6 +7268,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
   // Full product names wrap in the HTML legend, avoiding overlap in the SVG.
   drawPressureDropSeriesChart(svg, series, flow, estimates, { curveMode: 'linear', showRawPoints, showLegend: false, showTargetFlowLine: true });
   panel.append(svg, legend);
+  attachPressureDropChartExplorer(panel, svg, series, flow, onCommitFlow);
   const note = document.createElement('p');
   note.className = 'text-xs text-slate-500 dark:text-slate-400';
   note.textContent = 'Curves retain signed source pressures and end at digitized endpoints. Selections remain across manufacturer and family filters.';
@@ -7201,7 +7327,10 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
       const cell = document.createElement('td');
       cell.className = 'block break-words py-1 md:table-cell md:p-2 md:align-top';
       if (index === 1 || index === 3) cell.className += ' font-semibold text-primary-900 dark:text-white';
-      cell.textContent = value;
+      if (index === 2) {
+        appendPressureDropSizeLabel(cell, identity);
+        if (configuration === 'Dual-lumen VV ECMO') cell.appendChild(document.createTextNode(' · Dual-lumen VV ECMO'));
+      } else cell.textContent = value;
       if (index === 1) cell.title = entry.model;
       if (index === 1) {
         const details = document.createElement('details');
@@ -7233,14 +7362,15 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
   return table;
 }
 
-function initPressureDropTargetFlowComparison(entries, onStatus) {
+function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup) {
   const controls = {
     view: el('pressure-drop-target-view'), flow: el('pressure-drop-target-flow'),
     category: el('pressure-drop-target-category'), location: el('pressure-drop-target-location'),
     manufacturer: el('pressure-drop-target-manufacturer'), model: el('pressure-drop-target-model'),
     sort: el('pressure-drop-target-sort'), results: el('pressure-drop-target-results'),
     summary: el('pressure-drop-target-summary'), chart: el('pressure-drop-target-chart'),
-    locationNote: el('pressure-drop-target-location-note')
+    locationNote: el('pressure-drop-target-location-note'),
+    search: el('pressure-drop-catalog-search'), matches: el('pressure-drop-catalog-matches')
   };
   if (Object.values(controls).some(control => !control)) return null;
   let selectedKeys = [], showRawPoints = false;
@@ -7291,7 +7421,8 @@ function initPressureDropTargetFlowComparison(entries, onStatus) {
     controls.chart.innerHTML = '';
     const selectedEntries = selectedKeys.map(key => entries.find(entry => getPressureDropTargetFlowKey(entry) === key));
     if (selectedEntries.length) controls.chart.appendChild(createPressureDropTargetFlowChart(selectedEntries, flow, showRawPoints,
-      checked => { showRawPoints = checked; render(); }, key => { selectedKeys = selectedKeys.filter(selected => selected !== key); render(); }, entries));
+      checked => { showRawPoints = checked; render(); }, key => { selectedKeys = selectedKeys.filter(selected => selected !== key); render(); }, entries,
+      explored => { controls.flow.value = explored.toFixed(1); render(); }));
     else {
       const prompt = document.createElement('p');
       prompt.className = 'text-xs text-slate-500 dark:text-slate-400';
@@ -7300,12 +7431,67 @@ function initPressureDropTargetFlowComparison(entries, onStatus) {
     }
     if (!controls.view.classList.contains('hidden')) onStatus(`${rows.length} matching cannulas · ${selectedKeys.length}/4 chart selections`);
   };
+  const selectSearchEntry = entry => {
+    const classification = classifyPressureDropComparisonEntry(entry);
+    controls.search.value = '';
+    controls.matches.classList.add('hidden');
+    controls.matches.innerHTML = '';
+    if (!classification.eligible || !getPressureDropTargetFlowSeries(entry)) { onSingleLookup?.(entry); return; }
+    controls.category.value = classification.category;
+    refreshOptions();
+    controls.location.value = classification.location;
+    refreshOptions();
+    controls.manufacturer.value = entry.manufacturer;
+    refreshOptions();
+    controls.model.value = entry.model;
+    modelCombobox?.refresh();
+    const key = getPressureDropTargetFlowKey(entry);
+    selectedKeys = updatePressureDropTargetFlowSelection(selectedKeys, key, true, getEligibleKeys());
+    render();
+    Array.from(controls.results.querySelectorAll('[data-product-key]')).find(row => row.dataset.productKey === key)
+      ?.scrollIntoView?.({ block: 'nearest' });
+  };
+  const renderSearch = () => {
+    const query = controls.search.value.trim();
+    controls.matches.innerHTML = '';
+    controls.matches.classList.toggle('hidden', !query);
+    if (!query) return;
+    const matches = searchPressureDropCatalog(entries, query);
+    matches.slice(0, 50).forEach(entry => {
+      const choice = document.createElement('button');
+      choice.type = 'button';
+      choice.setAttribute('role', 'option');
+      choice.className = 'block w-full min-w-0 border-b border-slate-100 dark:border-primary-800 px-3 py-2 text-left text-xs hover:bg-slate-100 dark:hover:bg-primary-800 focus:bg-slate-100';
+      choice.dataset.productKey = getPressureDropTargetFlowKey(entry);
+      choice.textContent = `${entry.manufacturer} · ${getPressureDropTargetFlowDisplayName(entry)} · ${getPressureDropTargetFlowIdentity(entry, entries)}${classifyPressureDropComparisonEntry(entry).eligible ? '' : ' · Single lookup'}`;
+      choice.addEventListener('click', () => selectSearchEntry(entry));
+      choice.addEventListener('keydown', event => {
+        if (event.key === 'Escape') { event.preventDefault(); controls.search.value = ''; renderSearch(); controls.search.focus({ preventScroll: true }); }
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault();
+          const choices = Array.from(controls.matches.children);
+          choices[(choices.indexOf(choice) + (event.key === 'ArrowDown' ? 1 : -1) + choices.length) % choices.length]?.focus();
+        }
+      });
+      controls.matches.appendChild(choice);
+    });
+    if (!matches.length) {
+      const empty = document.createElement('p'); empty.className = 'p-3 text-xs text-slate-500';
+      empty.textContent = 'No matching cannulas'; controls.matches.appendChild(empty);
+    }
+  };
+  controls.search.addEventListener('input', renderSearch);
+  controls.search.addEventListener('keydown', event => {
+    if (event.key === 'Escape') { controls.search.value = ''; renderSearch(); }
+    if (event.key === 'ArrowDown') { event.preventDefault(); controls.matches.children[0]?.focus?.(); }
+    if (event.key === 'Enter') controls.matches.children[0]?.dispatchEvent?.(new Event('click'));
+  });
   [controls.category, controls.location, controls.manufacturer, controls.model].forEach(select => select.addEventListener('change', () => { refreshOptions(); render(); }));
   controls.flow.addEventListener('input', render);
   controls.sort.addEventListener('change', render);
   refreshOptions();
   render();
-  return { refresh: render };
+  return { refresh: render, selectSearchEntry };
 }
 
 async function initCannulaPressureDropPage() {
@@ -7345,7 +7531,9 @@ async function initCannulaPressureDropPage() {
     const singleTab = el('pressure-drop-single-tab');
     const targetView = el('pressure-drop-target-view');
     const targetTab = el('pressure-drop-target-tab');
-    const targetComparison = initPressureDropTargetFlowComparison(entries, text => { status.textContent = text; });
+    const targetComparison = initPressureDropTargetFlowComparison(entries, text => { status.textContent = text; }, entry => {
+      setPressureDropView('single'); selectEntry(entry);
+    });
     let activePressureDropView = 'single';
     let showRawPressureDropPoints = false;
     const resetButton = el('pressure-drop-page-reset');

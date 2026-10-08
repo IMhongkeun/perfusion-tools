@@ -320,7 +320,7 @@ assert(
 
 assert(
   mainJs.includes('function createPressureDropSearchableSelect') &&
-  mainJs.includes("panel.style.maxWidth = 'min(520px, calc(100vw - 32px))';") &&
+  mainJs.includes("panel.style.width = '100%';") &&
   mainJs.includes("panel.style.maxHeight = '320px';") &&
   mainJs.includes("item.className = `block w-full min-w-0 break-words whitespace-normal"),
   'Model/cannula lookup should use a constrained searchable combobox with wrapping options.'
@@ -347,7 +347,7 @@ const pressureDropFrenchSizes = pressureDropData.flatMap(entry => (
 const pressureDropSizeRange = `${Math.min(...pressureDropFrenchSizes)}–${Math.max(...pressureDropFrenchSizes)} Fr`;
 assert(
   pressureDropPageHtml.includes('.pressure-drop-combobox-panel') &&
-  pressureDropPageHtml.includes('width: calc(100vw - 32px) !important;') &&
+  pressureDropPageHtml.includes('.pressure-drop-combobox-panel { min-width: 0; }') &&
   pressureDropPageHtml.includes('overflow-wrap: anywhere;'),
   'Pressure-drop combobox CSS should prevent horizontal overflow and wrap long options.'
 );
@@ -1391,9 +1391,12 @@ class PressureTestNode {
   appendChild(node) { this.append(node); return node; }
   setAttribute(name, value) { this.attributes[name] = String(value); }
   addEventListener(name, callback) { this.listeners[name] = callback; }
-  dispatch(name) { this.listeners[name]?.(); }
+  dispatch(name, event = {}) { this.listeners[name]?.({ key: '', preventDefault() {}, ...event }); }
+  dispatchEvent(event) { this.dispatch(event.type, event); }
   focus() { targetTestDocument.activeElement = this; }
+  getBoundingClientRect() { return { left: 0, width: 420 }; }
   querySelectorAll(selector) {
+    if (selector === '[data-product-key]') return pressureDescendants(this, node => Boolean(node.dataset.productKey));
     assert.strictEqual(selector, 'input[type="checkbox"]');
     return pressureDescendants(this, node => node.type === 'checkbox');
   }
@@ -1407,11 +1410,14 @@ function pressureDescendants(node, predicate) {
 }
 const targetNodes = Object.fromEntries(['view', 'flow', 'category', 'location', 'manufacturer', 'model', 'sort', 'results', 'summary', 'chart', 'location-note']
   .map(name => [`pressure-drop-target-${name}`, new PressureTestNode()]));
+targetNodes['pressure-drop-catalog-search'] = new PressureTestNode('input');
+targetNodes['pressure-drop-catalog-matches'] = new PressureTestNode();
 targetNodes['pressure-drop-target-category'].value = 'arterial';
 targetNodes['pressure-drop-target-sort'].value = 'pressure';
 const targetTestDocument = {
   createElement: tag => new PressureTestNode(tag),
-  createElementNS: (_, tag) => new PressureTestNode(tag)
+  createElementNS: (_, tag) => new PressureTestNode(tag),
+  createTextNode: text => { const node = new PressureTestNode('#text'); node.textContent = text; return node; }
 };
 const targetFunctionNames = [
   'normalizePressureDropFilterLabel', 'getPressureDropGroupLabel', 'getPressureDropCategoryFilterValue',
@@ -1419,7 +1425,7 @@ const targetFunctionNames = [
   'getPressureDropComparisonResult', 'hasValidPressureDropEstimate', 'isPressureDropAnalyticsReady',
   'parsePressureDropFlowInput', 'getPressureDropResultStateText', 'getPressureDropResultValueText',
   'formatPressureDropFlowValue', 'getPressureDropRangeText', 'formatSignedPressureDrop',
-  'buildPressureDropAxisTicks', 'formatPressureDropAxisTick', 'getPressureDropSourceNode',
+  'buildPressureDropAxisTicks', 'formatPressureDropAxisTick', 'getPressureDropSourceNode', 'getPressureDropProductFamily',
   'getUniquePressureDropOptionPairs', 'setPressureDropSelectOptionPairs', 'createPressureDropRawPointsToggle'
 ];
 const targetRuntime = vm.runInNewContext([
@@ -1431,11 +1437,13 @@ const targetRuntime = vm.runInNewContext([
     parsePressureDropTargetFlow, getPressureDropTargetFlowResult, getPressureDropTargetFlowRows,
     getPressureDropComparisonFr, updatePressureDropTargetFlowSelection, createPressureDropTargetFlowChart,
     getPressureDropTargetFlowIdentity, getPressureDropTargetFlowSeries, getPressureDropTargetFlowModelOptions, createPressureDropTargetFlowTable,
-    initPressureDropTargetFlowComparison, isPressureDropAnalyticsReady, drawPressureDropSeriesChart })`
+    initPressureDropTargetFlowComparison, isPressureDropAnalyticsReady, drawPressureDropSeriesChart,
+    searchPressureDropCatalog, getPressureDropExploredFlow })`
 ].join('\n'), {
   document: targetTestDocument,
   el: id => targetNodes[id], isElementVisible: node => Boolean(node && !node.classList.contains('hidden')),
-  createPressureDropSearchableSelect: () => ({ refresh: () => {} })
+  createPressureDropSearchableSelect: () => ({ refresh: () => {} }),
+  Event: class { constructor(type) { this.type = type; } }
 });
 const classifyComparison = targetRuntime.classifyPressureDropComparisonEntry;
 const classificationCounts = {};
@@ -1627,6 +1635,25 @@ for (const variant of dlpVariants) {
   assert(dlpSvg.innerHTML.includes(variant.cannulaOrderCode), 'SVG tooltip identifies variant');
   assert(pressureDescendants(dlpOverlay, node => node.tagName === 'button').some(node => node.attributes['aria-label']?.includes(variant.cannulaOrderCode)), 'Removal control identifies variant');
 }
+const rap = pressureDropData.find(entry => /RAP FV/.test(entry.model) && /23 Fr distal \/ 25 Fr proximal/.test(entry.size));
+assert(rap, 'Real RAP catalog size remains available');
+const rapRow = targetRuntime.getPressureDropTargetFlowRows([rap], { category: 'venous' }, 2)[0];
+const rapTable = targetRuntime.createPressureDropTargetFlowTable([rapRow], [], () => {});
+const rapSegments = pressureDescendants(rapTable, node => node.className.includes('whitespace-nowrap'));
+assert.deepStrictEqual(rapSegments.map(node => node.textContent), ['23 Fr distal', '25 Fr proximal']);
+assert(/23 Fr distal\s*\/\s*25 Fr proximal/.test(rapTable.textContent));
+const rapLegend = targetRuntime.createPressureDropTargetFlowChart([rap], 2, false, () => {}, () => {});
+assert.deepStrictEqual(pressureDescendants(rapLegend, node => node.className.includes('whitespace-nowrap')).map(node => node.textContent), ['23 Fr distal', '25 Fr proximal']);
+assert.strictEqual(targetRuntime.searchPressureDropCatalog(pressureDropData, '' ).length, 0);
+assert.strictEqual(targetRuntime.searchPressureDropCatalog(pressureDropData, 'unfindable-model-123').length, 0);
+assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'EOPA').some(entry => /EOPA/.test(entry.model)));
+assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'Avalon').some(entry => entry.model === avalonModel));
+assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'RAP 23 Fr').some(entry => entry === rap));
+assert.deepStrictEqual(new Set(targetRuntime.searchPressureDropCatalog(pressureDropData, '67318').map(entry => entry.cannulaOrderCode)), new Set(['67318']));
+assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'Medtronic').length > 1);
+assert.strictEqual(targetRuntime.getPressureDropExploredFlow(58, { left: 0, width: 420 }, { plotLeft: '58', plotRight: '402', minFlow: '1', maxFlow: '5' }), 1);
+assert.strictEqual(targetRuntime.getPressureDropExploredFlow(402, { left: 0, width: 420 }, { plotLeft: '58', plotRight: '402', minFlow: '1', maxFlow: '5' }), 5);
+assert.strictEqual(targetRuntime.getPressureDropExploredFlow(230, { left: 100, width: 420 }, { plotLeft: '58', plotRight: '402', minFlow: '1', maxFlow: '5' }), 1.8, 'Page offset is converted through SVG bounds');
 
 // Hard-coded cross-manufacturer catalog regressions at the same target flow.
 const actualNextGen19 = actualFemoralRows.find(row => row.entry.model === nextGenModels[0] && row.entry.size === '19 Fr');
@@ -1726,8 +1753,59 @@ assert.strictEqual(familyInput.value, '');
 assert.strictEqual(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'li').length, 0);
 assert.strictEqual(targetFlowInput.value, '1');
 
+let specialtySelection = null;
+const searchController = targetRuntime.initPressureDropTargetFlowComparison(pressureDropData, () => {}, entry => { specialtySelection = entry; });
+const catalogSearch = targetNodes['pressure-drop-catalog-search'];
+const catalogMatches = targetNodes['pressure-drop-catalog-matches'];
+catalogSearch.value = 'EOPA'; catalogSearch.dispatch('input');
+assert(catalogMatches.children.some(item => item.textContent.includes('EOPA')));
+assert(!catalogMatches.classList.contains('hidden'));
+const eopa = pressureDropData.find(entry => entry.model === 'EOPA Arterial Cannulae');
+searchController.selectSearchEntry(eopa);
+assert.strictEqual(targetNodes['pressure-drop-target-category'].value, 'arterial');
+assert.strictEqual(targetNodes['pressure-drop-target-location'].value, 'other');
+assert.strictEqual(targetNodes['pressure-drop-target-manufacturer'].value, 'Medtronic');
+assert.strictEqual(targetNodes['pressure-drop-target-model'].value, eopa.model);
+assert.strictEqual(targetFlowInput.value, '1', 'Search keeps the committed target flow');
+assert(currentRows().some(row => row.dataset.productKey === targetRuntime.getPressureDropTargetFlowKey(eopa)));
+assert(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'li')
+  .some(item => item.dataset.productKey === targetRuntime.getPressureDropTargetFlowKey(eopa)));
+catalogSearch.value = '67318'; catalogSearch.dispatch('input');
+assert.strictEqual(catalogMatches.children.length, 1, 'Order-code search returns the exact connector variant');
+catalogMatches.children[0].dispatch('click');
+assert.strictEqual(targetNodes['pressure-drop-target-category'].value, 'venous');
+assert(currentRows().some(row => row.dataset.productKey === targetRuntime.getPressureDropTargetFlowKey(dlpVariants.find(entry => entry.cannulaOrderCode === '67318'))));
+catalogSearch.value = 'no-such-cannula'; catalogSearch.dispatch('input');
+assert.strictEqual(catalogMatches.textContent.trim(), 'No matching cannulas');
+catalogSearch.dispatch('keydown', { key: 'Escape' });
+assert(catalogMatches.classList.contains('hidden'));
+const specialty = pressureDropData.find(entry => classifyComparison(entry).category === 'specialty');
+assert(specialty);
+searchController.selectSearchEntry(specialty);
+assert.strictEqual(specialtySelection, specialty, 'Specialty uses the existing Single Lookup route');
+assert.strictEqual(targetFlowInput.value, '1');
+
 const overlay = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[0], targetFixtures[1]], 4.5, true, () => {}, () => {});
 const overlaySvg = pressureDescendants(overlay, node => node.tagName === 'svg')[0];
+let committedExploration = null;
+const exploringChart = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[0], targetFixtures[2]], 4.5, false,
+  () => {}, () => {}, targetFixtures, value => { committedExploration = value; });
+const exploringSvg = pressureDescendants(exploringChart, node => node.tagName === 'svg')[0];
+const chartReadout = pressureDescendants(exploringChart, node => node.textContent.startsWith('Exploring '))[0];
+const chartSlider = pressureDescendants(exploringChart, node => node.type === 'range')[0];
+assert(chartSlider && chartSlider.attributes['aria-label'].includes('0.1 L/min'));
+assert.strictEqual(exploringSvg.dataset.minFlow, '0');
+exploringSvg.dispatch('pointermove', { clientX: 58 + 344 * (4.1 / 5) });
+assert(chartReadout.textContent.includes('Exploring 4.1 L/min · target 4.5 L/min'));
+assert(exploringChart.textContent.includes('Out of range'), 'Each curve keeps its own source domain');
+assert.strictEqual(committedExploration, null, 'Pointer movement does not commit a target');
+chartSlider.value = '4.0'; chartSlider.dispatch('input');
+assert(exploringChart.textContent.includes('(exact; signed +70.0 mmHg)'), 'Keyboard slider resolves exact source points');
+assert(exploringChart.textContent.includes('(interpolated; signed +70.0 mmHg)'), 'Other series interpolates independently');
+const useFlow = pressureDescendants(exploringChart, node => node.textContent === 'Use as target flow')[0];
+useFlow.dispatch('click'); assert.strictEqual(committedExploration, 4);
+const avalonExploration = targetRuntime.createPressureDropTargetFlowChart([avalonProducts[0]], 1, false, () => {}, () => {});
+assert(avalonExploration.textContent.includes('Drainage') && !avalonExploration.textContent.includes('Infusion'));
 assert(overlaySvg.innerHTML.includes('data-target-flow-line="true"'));
 assert.strictEqual((overlaySvg.innerHTML.match(/data-series-id=/g) || []).length, 2);
 assert(overlaySvg.innerHTML.includes('Signed pressure: +80.0 mmHg') && overlaySvg.innerHTML.includes('Signed pressure: +45.0 mmHg'));
@@ -1802,7 +1880,7 @@ class ComboNode {
   insertAdjacentElement(_position, node) { this.wrapper = node; }
   getBoundingClientRect() { return { left: 280, top: 170, bottom: 210 }; }
   contains(node) { return node === this || this.children.some(child => child.contains(node)); }
-  focus() { comboDocument.activeElement = this; }
+  focus(options) { comboDocument.activeElement = this; this.focusOptions = options; }
   scrollIntoView() {}
   querySelectorAll(selector) { assert.strictEqual(selector, '[role="option"]'); return this.children.filter(node => node.attributes.role === 'option'); }
   get options() { return this.children; }
@@ -1812,7 +1890,8 @@ class ComboNode {
 }
 const comboDocument = { activeElement: null, handlers: {}, documentElement: { clientWidth: 320, clientHeight: 600 },
   createElement: tag => new ComboNode(tag), addEventListener(name, fn) { this.handlers[name] = fn; } };
-const comboWindow = { innerWidth: 320, innerHeight: 600, handlers: {}, addEventListener(name, fn) { this.handlers[name] = fn; } };
+const visualViewport = { offsetTop: 0, height: 600, handlers: {}, addEventListener(name, fn) { this.handlers[name] = fn; } };
+const comboWindow = { innerWidth: 320, innerHeight: 600, visualViewport, handlers: {}, addEventListener(name, fn) { this.handlers[name] = fn; } };
 const comboSelect = new ComboNode('select'); comboSelect.id = 'pressure-drop-target-model';
 const longModel = 'Single Stage Right Angle Lighthouse Tip Venous Return Cannulae — Right Angle Lighthouse Tip, Wire-reinforced Tubing';
 for (const [value, label, searchText] of [
@@ -1830,9 +1909,11 @@ const comboFactory = vm.runInNewContext(`${pressureProductionFunction('createPre
 const combo = comboFactory(comboSelect, 'Family / model');
 assert(combo && comboFactory(comboSelect, 'Family / model') === null, 'A second component cannot attach to the same select');
 combo.open();
-assert.strictEqual(combo.panel.style.left, '16px');
-assert.strictEqual(combo.panel.style.right, '16px');
+assert.strictEqual(combo.panel.style.left, '0');
+assert.strictEqual(combo.panel.style.top, '100%');
+assert.strictEqual(combo.panel.style.right, 'auto');
 assert.strictEqual(combo.panel.style.width, '100%');
+assert.strictEqual(comboDocument.activeElement, null, 'Touch opening must not autofocus and scroll the page');
 combo.search.value = 'getinge'; combo.search.dispatch('input');
 assert.strictEqual(combo.list.children.length, 1, 'Manufacturer alias finds the Avalon family');
 combo.search.dispatch('keydown', { key: 'ArrowDown' });
@@ -1840,6 +1921,7 @@ combo.search.dispatch('keydown', { key: 'Enter' });
 assert.strictEqual(comboSelect.value, avalonModel, 'Compact display label preserves canonical model identity');
 assert.strictEqual(comboChanges, 1);
 assert.strictEqual(comboDocument.activeElement, combo.button);
+assert.strictEqual(combo.button.focusOptions.preventScroll, true);
 combo.open(); combo.search.value = 'LivaNova'; combo.search.dispatch('input');
 assert.strictEqual(combo.list.children.length, 1);
 assert(combo.list.children[0].className.includes('whitespace-normal'), 'Long option wraps');
@@ -1847,9 +1929,26 @@ combo.search.dispatch('keydown', { key: 'Escape' });
 assert(combo.panel.classList.contains('hidden'));
 combo.open(); comboDocument.handlers.mousedown({ target: new ComboNode('outside') });
 assert(combo.panel.classList.contains('hidden'), 'Outside click closes the menu');
-comboWindow.innerWidth = 390; comboWindow.innerHeight = 250;
+comboWindow.innerWidth = 390; comboWindow.innerHeight = 250; visualViewport.height = 250;
 combo.open();
-assert(Number.parseFloat(combo.panel.style.top) >= 16, 'Low viewport positions menu within visible bounds');
+assert.strictEqual(combo.panel.style.top, 'auto');
+assert.strictEqual(combo.panel.style.bottom, '100%', 'Low viewport anchors above the same field');
+comboWindow.handlers.scroll();
+assert.strictEqual(combo.panel.style.bottom, '100%');
+comboWindow.innerWidth = 320; comboWindow.innerHeight = 600;
+visualViewport.height = 600;
+comboWindow.handlers.resize();
+assert.strictEqual(combo.panel.style.top, '100%', 'Resize restores a below-field anchor');
+visualViewport.height = 250; visualViewport.handlers.resize();
+assert.strictEqual(combo.panel.style.bottom, '100%', 'Keyboard viewport resize repositions above field');
+visualViewport.offsetTop = 100; visualViewport.handlers.scroll();
+assert.strictEqual(combo.panel.style.top, '100%', 'Visual viewport scroll recalculates the local field anchor');
+visualViewport.offsetTop = 0; visualViewport.height = 600;
+combo.close(); combo.button.dispatch('keydown', { key: 'Enter' });
+assert.strictEqual(comboDocument.activeElement, combo.search, 'Keyboard opening focuses search without scrolling');
+assert.strictEqual(combo.search.focusOptions.preventScroll, true);
+combo.close(); combo.open(); combo.close(); combo.open();
+assert.strictEqual(combo.panel.style.top, '100%', 'Repeated open/close cycles recalculate placement');
 console.log('Searchable target model selector keyboard, search, dismissal and containment regressions passed.');
 
 const switchStart = mainJs.indexOf('    const setPressureDropView = (view) => {');
