@@ -7296,7 +7296,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
       estimates.push(result.interpolationResult);
     }
     const item = document.createElement('li');
-    item.className = 'flex min-w-0 flex-wrap items-center gap-2 py-2';
+    item.className = 'grid min-w-0 grid-cols-1 gap-x-3 gap-y-2 py-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center';
     item.dataset.productKey = key;
     const swatch = document.createElement('span');
     swatch.className = 'h-2 w-3 shrink-0 rounded';
@@ -7314,8 +7314,8 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     if (configuration === 'Dual-lumen VV ECMO') size.appendChild(document.createTextNode(' · Dual-lumen VV ECMO'));
     const value = document.createElement('span');
     value.className = `shrink-0 tabular-nums font-semibold ${result.isHighPressure && result.inRange ? 'text-amber-700 dark:text-amber-300' : 'text-primary-900 dark:text-white'}`;
-    value.textContent = result.inRange ? `${result.lumenLabel ? 'Drainage ' : ''}${result.magnitude.toFixed(1)} mmHg`
-      : result.unavailableReason || 'Out of range';
+    value.textContent = result.inRange ? `Target: ${result.lumenLabel ? 'Drainage ' : ''}${result.magnitude.toFixed(1)} mmHg`
+      : `Target: ${result.unavailableReason || 'Out of range'}`;
     if (result.inRange) value.title = `Signed pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
     if (result.isHighPressure && result.inRange) value.setAttribute('aria-label', `${value.textContent}. ${result.warningText}`);
     const limitLabel = getPressureDropManufacturerLimitLabel(result.manufacturerLimit);
@@ -7346,9 +7346,15 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     remove.textContent = '×';
     remove.setAttribute('aria-label', `Remove ${entry.manufacturer} ${entry.model} ${identity} from chart`);
     remove.addEventListener('click', () => onRemove(key));
-    item.append(swatch, rank, name, size, value, explored, status);
-    if (source) item.appendChild(source);
-    item.appendChild(remove);
+    const identityGroup = document.createElement('div');
+    identityGroup.className = 'flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1';
+    identityGroup.append(swatch, rank, name, size);
+    const valuesGroup = document.createElement('div');
+    valuesGroup.className = 'flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:justify-end';
+    valuesGroup.append(value, explored, status);
+    if (source) valuesGroup.appendChild(source);
+    valuesGroup.appendChild(remove);
+    item.append(identityGroup, valuesGroup);
     legend.appendChild(item);
   });
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -7364,7 +7370,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
   attachPressureDropChartExplorer(panel, svg, series, flow, onCommitFlow, exploreControls, exploredCells);
   const note = document.createElement('p');
   note.className = 'text-xs text-slate-500 dark:text-slate-400';
-  note.textContent = 'In-range means within the digitized curve, not necessarily within a manufacturer maximum flow. Curve endpoints are not approved flow limits; check each product source.';
+  note.textContent = 'In-range refers to the digitized curve, not a manufacturer-approved maximum. If no manufacturer maximum is shown, it has not been verified; see product documentation.';
   if (!estimates.some(estimate => hasValidPressureDropEstimate([estimate]))) {
     note.textContent += ' No selected curve has an in-range estimate at this target flow.';
   }
