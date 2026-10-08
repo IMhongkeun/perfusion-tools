@@ -1432,7 +1432,7 @@ const targetRuntime = vm.runInNewContext([
   mainJs.slice(mainJs.indexOf('function normalizePressureDropKey'), mainJs.indexOf('function fitPressureDropPowerLaw')),
   chartRendererSource,
   ...targetFunctionNames.map(pressureProductionFunction),
-  mainJs.slice(mainJs.indexOf('const PRESSURE_DROP_CENTRAL_VENOUS_MODELS'), mainJs.indexOf('async function initCannulaPressureDropPage')),
+  mainJs.slice(mainJs.indexOf('const PRESSURE_DROP_CENTRAL_VENOUS_SKUS'), mainJs.indexOf('async function initCannulaPressureDropPage')),
   `; ({ classifyPressureDropComparisonEntry, getPressureDropTargetFlowKey, getPressureDropTargetFlowMatches,
     parsePressureDropTargetFlow, getPressureDropTargetFlowResult, getPressureDropTargetFlowRows,
     getPressureDropComparisonFr, updatePressureDropTargetFlowSelection, createPressureDropTargetFlowChart,
