@@ -404,48 +404,16 @@
     </aside>
 
     <main class="p-4 md:p-8 max-w-4xl mx-auto w-full space-y-8">
-      <section id="cannula-pressure-drop-page" class="animate-in fade-in duration-300 space-y-6">
-        <header class="space-y-3">
-          <p class="text-xs uppercase tracking-[0.18em] text-accent-600 dark:text-accent-400 font-semibold">CPB / perfusion pressure-flow reference</p>
+      <section id="cannula-pressure-drop-page" class="animate-in fade-in duration-300 space-y-4">
+        <header class="space-y-1">
           <h1 id="page-heading" class="text-2xl md:text-3xl font-bold text-primary-900 dark:text-white">Cannula Pressure Drop Calculator</h1>
-          <p id="page-subtitle" class="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">Estimate pressure drop across perfusion cannulas using manufacturer pressure-flow curve data and linear interpolation within the available flow range, with model-specific limitations for flow resistance reference.</p>
-          <div class="flex flex-wrap gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300" aria-label="Cannula pressure-drop feature support">
-            <span class="inline-flex rounded-full border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 px-2.5 py-1">Pressure-flow curves</span>
-            <span class="inline-flex rounded-full border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 px-2.5 py-1">Manufacturer data</span>
-            <span class="inline-flex rounded-full border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 px-2.5 py-1">Linear interpolation</span>
-            <span class="inline-flex rounded-full border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 px-2.5 py-1">Arterial &amp; venous cannulas</span>
-          </div>
+          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">Compare cannula pressure drop at your target flow using manufacturer curves.</p>
         </header>
 
-        <section class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900 shadow-card dark:shadow-none overflow-hidden">
-          <div class="p-5 md:p-6 space-y-4 border-b border-slate-100 dark:border-primary-800 bg-slate-50/60 dark:bg-primary-800/30">
-            <h2 class="text-lg font-semibold text-primary-900 dark:text-white">Manufacturer pressure-flow reference</h2>
-            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Use this cannula pressure drop calculator as a manufacturer pressure-flow data reference and interpolation aid for arterial, venous, femoral, and aortic perfusion cannulas. It highlights flow resistance trends and model-specific limitations without selecting a cannula or defining a universal safe pressure threshold.</p>
-          </div>
-          <div class="p-5 md:p-6 grid gap-4 md:grid-cols-3">
-            <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 p-4 space-y-2">
-              <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">How to use</p>
-              <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Filter, then compare</h3>
-              <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-300">Start with manufacturer, model, category/type, size, optional connection site, then enter flow and review source notes, available flow range, and model-specific pressure-drop limitations.</p>
-            </div>
-            <div class="rounded-xl border border-amber-200 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-500/10 p-4 space-y-2">
-              <p class="text-xs uppercase tracking-wider text-amber-700 dark:text-amber-300">Clinical limitation</p>
-              <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Reference only</h3>
-              <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-300">Manufacturer pressure-drop curves are usually generated under controlled test conditions. Intraoperative and ECMO circuit pressures may differ.</p>
-            </div>
-            <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/50 p-4 space-y-2">
-              <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Source context</p>
-              <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Digitized manufacturer curve</h3>
-              <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-300">Some rows are based on digitized manufacturer-published curves; use digitized points as practical references, not absolute device guarantees.</p>
-            </div>
-          </div>
-        </section>
-
-        <section id="pressure-drop-reference-root" class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900 shadow-card dark:shadow-none p-5 md:p-6 space-y-5" aria-live="polite">
+        <section id="pressure-drop-reference-root" class="rounded-2xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900 shadow-card dark:shadow-none p-3 sm:p-5 md:p-6 space-y-4" aria-live="polite">
           <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <h2 class="text-lg font-semibold text-primary-900 dark:text-white">Interactive pressure-flow comparison</h2>
-              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Enter a target flow to compare cannulas across manufacturers, or use Single lookup for a specific product.</p>
+              <h2 class="text-base font-semibold text-primary-900 dark:text-white">Pressure-flow reference</h2>
             </div>
             <span id="pressure-drop-result-status" class="inline-flex w-fit rounded-full border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1 text-xs font-semibold text-slate-600 dark:text-slate-300">Preparing lookup</span>
           </div>
@@ -483,8 +451,7 @@
                   <select id="pressure-drop-target-sort" class="w-full min-w-0 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"><option value="pressure">Lowest ΔP magnitude</option><option value="size">Size ascending (Fr)</option><option value="manufacturer">Manufacturer</option><option value="model">Family / model</option></select>
                 </div>
               </div>
-              <p class="text-xs text-slate-500 dark:text-slate-400">Compare hydraulic performance using pressure-drop magnitude (|ΔP|). Manufacturer test media and conditions differ; these curves are not standardized bench comparisons and do not establish clinical suitability, vessel adequacy or actual venous drainage.</p>
-              <p class="text-xs text-slate-500 dark:text-slate-400">Other / Unspecified includes records without a documented insertion site. Avalon Elite is a distinct dual-lumen VV ECMO device under Venous / Jugular; comparison uses its drainage curve only. Its infusion curve remains in Single lookup.</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Manufacturer curve estimates only · Not a clinical suitability rating. <a href="#pressure-drop-methodology" class="text-accent-700 dark:text-accent-300 underline">Methodology &amp; limits</a></p>
               <div class="min-w-0">
                 <label for="pressure-drop-catalog-search" class="block text-xs font-semibold text-slate-600 dark:text-slate-300">Search all cannulas</label>
                 <div class="relative mt-1"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="absolute left-3 top-2.5 h-4 w-4 text-slate-500"><circle cx="11" cy="11" r="7" /><path d="m16 16 5 5" /></svg><input id="pressure-drop-catalog-search" type="search" autocomplete="off" placeholder="Model, code or size" aria-controls="pressure-drop-catalog-matches" class="w-full min-w-0 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 pl-9 pr-3 py-2 text-sm dark:text-white focus:ring-2 focus:ring-accent-500" /></div>
@@ -527,7 +494,7 @@
             </div>
             <div class="flex flex-wrap items-center gap-3">
               <button id="pressure-drop-page-reset" type="button" class="inline-flex min-h-10 items-center justify-center rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">Reset lookup</button>
-              <p class="text-xs text-slate-500 dark:text-slate-400">Flow estimates use linear interpolation between available manufacturer curve points; values outside the curve range are not extrapolated.</p>
+              <a href="#pressure-drop-methodology" class="text-xs text-slate-500 dark:text-slate-400 underline">How estimates are calculated</a>
             </div>
           </div>
 
@@ -564,7 +531,7 @@
           </div>
         </section>
 
-        <section class="calculator-lower-section">
+        <section id="pressure-drop-methodology" class="calculator-lower-section">
           <h2 class="calculator-lower-title">Methodology</h2>
           <div class="calculator-lower-panel space-y-2">
             <p>Pressure-drop estimates are calculated from available manufacturer pressure-flow curves or tables when available, including pressure-flow charts, pressure-drop tables, and product documents for CPB and ECMO cannulae.</p>
