@@ -7391,22 +7391,24 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
   table.className = 'block w-full text-xs md:table md:table-fixed text-slate-600 dark:text-slate-300';
   const caption = document.createElement('caption');
   caption.className = 'sr-only';
-  caption.textContent = 'Hydraulic comparison at target flow. Pressure-drop magnitudes do not establish clinical suitability.';
+  caption.textContent = 'Manufacturer cannula pressure-drop reference. Lower pressure drop alone does not establish clinical suitability.';
   table.appendChild(caption);
   const head = document.createElement('thead');
   head.className = 'hidden md:table-header-group';
-  head.innerHTML = '<tr><th class="w-16 p-2 text-left">Chart</th><th class="p-2 text-left">Manufacturer</th><th class="w-1/3 p-2 text-left">Family / model</th><th class="p-2 text-left">Size</th><th class="p-2 text-left">ΔP magnitude</th><th class="p-2 text-left">Source range / status</th></tr>';
+  head.innerHTML = '<tr><th class="w-14 p-2 text-left">Chart</th><th class="w-1/2 p-2 text-left">Cannula</th><th class="p-2 text-right">ΔP magnitude</th><th class="w-24 p-2 text-left">Details</th></tr>';
   table.appendChild(head);
   const body = document.createElement('tbody');
-  body.className = 'block space-y-3 md:table-row-group md:space-y-0';
+  body.className = 'block space-y-2 md:table-row-group md:space-y-0';
+
   rows.forEach(({ entry, key, identity, result }) => {
     const row = document.createElement('tr');
-    row.className = 'block rounded-lg border border-slate-200 dark:border-primary-800 p-3 md:table-row md:border-0';
+    row.className = 'grid min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-2 gap-y-1 rounded-lg border border-slate-200 dark:border-primary-800 p-3 md:table-row md:border-0 md:p-0';
     row.dataset.productKey = key;
+
     const selectCell = document.createElement('td');
-    selectCell.className = 'block md:table-cell md:p-2 md:align-top';
+    selectCell.className = 'col-start-1 row-start-1 row-span-2 md:table-cell md:p-2 md:align-top';
     const label = document.createElement('label');
-    label.className = 'inline-flex min-h-10 items-center gap-2 cursor-pointer';
+    label.className = 'inline-flex min-h-9 min-w-9 items-start pt-1 cursor-pointer md:items-center md:pt-0';
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.dataset.productKey = key;
@@ -7416,56 +7418,113 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
     checkbox.setAttribute('aria-label', `Select ${entry.manufacturer} ${entry.model} ${identity} for chart comparison`);
     checkbox.addEventListener('change', () => onSelect(key, checkbox.checked));
     const labelText = document.createElement('span');
-    labelText.className = 'md:sr-only';
+    labelText.className = 'sr-only';
     labelText.textContent = 'Compare curve';
     label.append(checkbox, labelText);
     selectCell.appendChild(label);
     row.appendChild(selectCell);
+
     const configuration = classifyPressureDropComparisonEntry(entry).configuration;
-    const values = [entry.manufacturer, getPressureDropTargetFlowDisplayName(entry),
-      `${identity}${configuration === 'Dual-lumen VV ECMO' ? ' · Dual-lumen VV ECMO' : ''}`,
-      getPressureDropTargetFlowValueText(result),
-      result.unavailableReason || (result.inRange ? (result.interpolationResult.state === 'exact' ? 'Exact' : 'Interpolated') : 'Out of range')];
-    values.forEach((value, index) => {
-      const cell = document.createElement('td');
-      cell.className = 'block break-words py-1 md:table-cell md:p-2 md:align-top';
-      if (index === 1 || index === 3) cell.className += ' font-semibold text-primary-900 dark:text-white';
-      if (index === 2) {
-        appendPressureDropSizeLabel(cell, identity);
-        if (configuration === 'Dual-lumen VV ECMO') cell.appendChild(document.createTextNode(' · Dual-lumen VV ECMO'));
-      } else cell.textContent = value;
-      if (index === 1) cell.title = entry.model;
-      if (index === 1) {
-        const details = document.createElement('details');
-        details.className = 'mt-1 font-normal';
-        const summary = document.createElement('summary');
-        summary.className = 'min-h-8 cursor-pointer text-accent-700 dark:text-accent-300';
-        summary.textContent = 'Source / test conditions';
-        details.append(summary, getPressureDropSourceNode(entry, true, { showMissingPublicLinkNote: true }));
-        cell.appendChild(details);
-      }
-      if (index === 3 && result.inRange && result.interpolationResult.value < 0) {
-        const signed = document.createElement('p');
-        signed.className = 'mt-1 font-normal';
-        signed.textContent = `Signed drainage pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
-        cell.appendChild(signed);
-      }
-      if (index === 3 && result.isHighPressure && result.inRange) {
-        cell.className += ' text-amber-700 dark:text-amber-300';
-        cell.setAttribute('aria-label', `${value}. ${result.warningText}`);
-        cell.title = result.warningText;
-      }
-      if (index === 3 && result.lumenLabel) cell.setAttribute('aria-label', `${result.lumenLabel}: ${value}`);
-      if (index === 3 && result.aboveVerifiedManufacturerMax) {
-        const warning = document.createElement('p');
-        warning.className = 'mt-1 text-xs font-semibold text-amber-700 dark:text-amber-300';
-        warning.textContent = getPressureDropManufacturerLimitLabel(result.manufacturerLimit);
-        warning.title = result.manufacturerLimit.source;
-        cell.appendChild(warning);
-      }
-      if (index === 4) cell.title = `Source range: ${result.rangeText}`;
-      row.appendChild(cell);
-    });
+    const identityCell = document.createElement('td');
+    identityCell.className = 'col-start-2 row-start-1 min-w-0 md:table-cell md:p-2 md:align-top';
+    const meta = document.createElement('div');
+    meta.className = 'text-xs text-slate-500 dark:text-slate-400';
+    meta.appendChild(document.createTextNode(`${entry.manufacturer} · `));
+    appendPressureDropSizeLabel(meta, entry.size || 'Size unavailable');
+    const name = document.createElement('p');
+    name.className = 'mt-0.5 break-words text-sm font-semibold text-primary-900 dark:text-white';
+    name.textContent = getPressureDropTargetFlowDisplayName(entry);
+    name.title = entry.model;
+    identityCell.append(meta, name);
+    if (configuration === 'Dual-lumen VV ECMO') {
+      const config = document.createElement('span');
+      config.className = 'text-[11px] text-slate-500 dark:text-slate-400';
+      config.textContent = 'Dual-lumen VV ECMO · Drainage';
+      identityCell.appendChild(config);
+    }
+    // Only expose the SKU in collapsed rows when multiple otherwise-identical
+    // sizes/models could not be distinguished without it.
+    if (identity !== entry.size && entry.cannulaOrderCode) {
+      const variant = document.createElement('span');
+      variant.className = 'block text-[11px] text-slate-500 dark:text-slate-400';
+      variant.textContent = `Variant ${entry.cannulaOrderCode}`;
+      identityCell.appendChild(variant);
+    }
+    row.appendChild(identityCell);
+
+    const valueCell = document.createElement('td');
+    valueCell.className = 'col-start-3 row-start-1 min-w-[78px] text-right md:table-cell md:p-2 md:align-top';
+    const value = document.createElement('div');
+    value.className = `tabular-nums text-sm font-bold ${result.isHighPressure && result.inRange ? 'text-amber-700 dark:text-amber-300' : 'text-primary-900 dark:text-white'}`;
+    value.textContent = getPressureDropTargetFlowValueText(result);
+    if (result.inRange) value.title = `Signed pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
+    if (result.isHighPressure && result.inRange) {
+      value.setAttribute('aria-label', `${value.textContent}. ${result.warningText}`);
+    }
+    if (result.lumenLabel) value.setAttribute('aria-label', `${result.lumenLabel}: ${value.textContent}`);
+    const limitLabel = getPressureDropManufacturerLimitLabel(result.manufacturerLimit);
+    if (limitLabel || (result.isHighPressure && result.inRange)) {
+      const flag = document.createElement('span');
+      flag.className = 'mt-1 inline-block text-[11px] font-semibold text-amber-700 dark:text-amber-300';
+      flag.textContent = limitLabel ? '⚠ Flow caution' : '⚠ High ΔP';
+      flag.title = limitLabel || result.warningText;
+      flag.setAttribute('aria-label', limitLabel || result.warningText);
+      valueCell.appendChild(value);
+      valueCell.appendChild(flag);
+    } else valueCell.appendChild(value);
+    row.appendChild(valueCell);
+
+    const detailsCell = document.createElement('td');
+    detailsCell.className = 'col-span-3 min-w-0 md:table-cell md:p-2 md:align-top';
+    const details = document.createElement('details');
+    details.className = 'min-w-0 text-xs';
+    const summary = document.createElement('summary');
+    summary.className = 'cursor-pointer text-accent-700 dark:text-accent-300';
+    summary.textContent = 'Details';
+    const detailBody = document.createElement('div');
+    detailBody.className = 'mt-2 space-y-2 break-words text-slate-600 dark:text-slate-300';
+    const status = document.createElement('p');
+    status.textContent = `Source range: ${result.rangeText || '—'} · ${result.unavailableReason ? 'Not comparable' : result.inRange ? (result.interpolationResult.state === 'exact' ? 'Exact source point' : 'Interpolated') : 'Out of range'}`;
+    detailBody.appendChild(status);
+    if (result.unavailableReason) {
+      const reason = document.createElement('p');
+      reason.textContent = result.unavailableReason;
+      detailBody.appendChild(reason);
+    }
+    if (result.inRange && result.interpolationResult.value < 0) {
+      const signed = document.createElement('p');
+      signed.textContent = `Signed drainage pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
+      detailBody.appendChild(signed);
+    }
+    if (result.isHighPressure && result.inRange) {
+      const caution = document.createElement('p');
+      caution.className = 'text-amber-700 dark:text-amber-300';
+      caution.textContent = 'High arterial pressure drop (>100 mmHg).';
+      detailBody.appendChild(caution);
+    }
+    if (limitLabel) {
+      const caution = document.createElement('p');
+      caution.className = 'text-amber-700 dark:text-amber-300';
+      caution.textContent = `${limitLabel}. This limit is verified for the specified SKU only; other connector variants are unverified.`;
+      detailBody.appendChild(caution);
+      const link = document.createElement('a');
+      link.href = result.manufacturerLimit.source;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.className = 'text-accent-700 dark:text-accent-300 underline';
+      link.textContent = 'Manufacturer maximum-flow source ↗';
+      detailBody.appendChild(link);
+    }
+    if (entry.cannulaOrderCode) {
+      const catalogCode = document.createElement('p');
+      catalogCode.textContent = `Order code: ${entry.cannulaOrderCode}`;
+      detailBody.appendChild(catalogCode);
+    }
+    detailBody.appendChild(getPressureDropSourceNode(entry, true, { showMissingPublicLinkNote: true }));
+    details.append(summary, detailBody);
+    detailsCell.appendChild(details);
+    row.appendChild(detailsCell);
+
     body.appendChild(row);
   });
   table.appendChild(body);
