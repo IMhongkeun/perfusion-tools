@@ -7388,25 +7388,29 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
 
 function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
   const table = document.createElement('table');
-  table.className = 'block w-full text-xs md:table md:table-fixed text-slate-600 dark:text-slate-300';
+  table.className = 'block w-full text-xs text-slate-600 dark:text-slate-300';
   const caption = document.createElement('caption');
   caption.className = 'sr-only';
   caption.textContent = 'Manufacturer cannula pressure-drop reference. Lower pressure drop alone does not establish clinical suitability.';
   table.appendChild(caption);
   const head = document.createElement('thead');
-  head.className = 'hidden md:table-header-group';
-  head.innerHTML = '<tr><th class="w-14 p-2 text-left">Chart</th><th class="w-1/2 p-2 text-left">Cannula</th><th class="p-2 text-right">ΔP magnitude</th><th class="w-24 p-2 text-left">Details</th></tr>';
+  head.className = 'sr-only';
+  head.innerHTML = '<tr><th>Cannula pressure-drop comparison</th></tr>';
   table.appendChild(head);
   const body = document.createElement('tbody');
-  body.className = 'block space-y-2 md:table-row-group md:space-y-0';
+  body.className = 'block w-full space-y-2';
 
   rows.forEach(({ entry, key, identity, result }) => {
     const row = document.createElement('tr');
-    row.className = 'grid min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-2 gap-y-1 rounded-lg border border-slate-200 dark:border-primary-800 p-3 md:table-row md:border-0 md:p-0';
+    row.className = 'block w-full rounded-lg border border-slate-200 dark:border-primary-800';
+    const cell = document.createElement('td');
+    cell.className = 'block w-full min-w-0 p-3';
+    const summaryGrid = document.createElement('div');
+    summaryGrid.className = 'grid w-full min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-2 gap-y-1';
     row.dataset.productKey = key;
 
-    const selectCell = document.createElement('td');
-    selectCell.className = 'col-start-1 row-start-1 row-span-2 md:table-cell md:p-2 md:align-top';
+    const selectCell = document.createElement('div');
+    selectCell.className = 'col-start-1 row-start-1 row-span-2';
     const label = document.createElement('label');
     label.className = 'inline-flex min-h-9 min-w-9 items-start pt-1 cursor-pointer md:items-center md:pt-0';
     const checkbox = document.createElement('input');
@@ -7422,11 +7426,11 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
     labelText.textContent = 'Compare curve';
     label.append(checkbox, labelText);
     selectCell.appendChild(label);
-    row.appendChild(selectCell);
+    summaryGrid.appendChild(selectCell);
 
     const configuration = classifyPressureDropComparisonEntry(entry).configuration;
-    const identityCell = document.createElement('td');
-    identityCell.className = 'col-start-2 row-start-1 min-w-0 md:table-cell md:p-2 md:align-top';
+    const identityCell = document.createElement('div');
+    identityCell.className = 'col-start-2 row-start-1 min-w-0';
     const meta = document.createElement('div');
     meta.className = 'text-xs text-slate-500 dark:text-slate-400';
     const sizeText = document.createElement('span');
@@ -7451,10 +7455,10 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
       variant.textContent = `Variant ${entry.cannulaOrderCode}`;
       identityCell.appendChild(variant);
     }
-    row.appendChild(identityCell);
+    summaryGrid.appendChild(identityCell);
 
-    const valueCell = document.createElement('td');
-    valueCell.className = 'col-start-3 row-start-1 min-w-[78px] text-right md:table-cell md:p-2 md:align-top';
+    const valueCell = document.createElement('div');
+    valueCell.className = 'col-start-3 row-start-1 min-w-[78px] text-right';
     const value = document.createElement('div');
     value.className = `tabular-nums text-sm font-bold ${result.isHighPressure && result.inRange ? 'text-amber-700 dark:text-amber-300' : 'text-primary-900 dark:text-white'}`;
     value.textContent = getPressureDropTargetFlowValueText(result);
@@ -7473,10 +7477,10 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
       valueCell.appendChild(value);
       valueCell.appendChild(flag);
     } else valueCell.appendChild(value);
-    row.appendChild(valueCell);
+    summaryGrid.appendChild(valueCell);
 
-    const detailsCell = document.createElement('td');
-    detailsCell.className = 'col-span-3 min-w-0 md:table-cell md:p-2 md:align-top';
+    const detailsCell = document.createElement('div');
+    detailsCell.className = 'min-w-0 pt-2';
     const details = document.createElement('details');
     details.className = 'min-w-0 text-xs';
     const summary = document.createElement('summary');
@@ -7524,8 +7528,8 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
     detailBody.appendChild(getPressureDropSourceNode(entry, true, { showMissingPublicLinkNote: true }));
     details.append(summary, detailBody);
     detailsCell.appendChild(details);
-    row.appendChild(detailsCell);
-
+    cell.append(summaryGrid, detailsCell);
+    row.appendChild(cell);
     body.appendChild(row);
   });
   table.appendChild(body);
