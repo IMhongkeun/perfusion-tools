@@ -6917,12 +6917,8 @@ function isPressureDropAnalyticsReady(activeView, singleView, targetView) {
 // https://www.livanova.com/cannulae/en-us/adult/venous-return-cannulae/triple-stage/rts-11029
 // Medtronic's family-level indication (including straight, right-angle and
 // malleable DLP single-stage forms): https://www.accessdata.fda.gov/cdrh_docs/pdf12/K120988.pdf
-// Exact SKU-level central/peripheral access mappings. These are non-clinical
-// display classifications and do not alter pressure-flow data or product approval.
-const PRESSURE_DROP_CENTRAL_VENOUS_SKUS = new Set([
-  'V122-24', 'V122-28', 'V122-32', 'V122-34', 'V122-36',
-  'V900-01', 'V900-02', 'V152-32', 'V152-36'
-]);
+// Exact SKU-level peripheral access mapping. These are non-clinical display
+// classifications and do not alter pressure-flow data or product approval.
 const PRESSURE_DROP_FEMORAL_VENOUS_SKUS = new Set([
   'PVS 1938', 'PVS 2138', 'PVS 2338', 'PVS 2538'
 ]);
@@ -6939,6 +6935,9 @@ const PRESSURE_DROP_CENTRAL_VENOUS_MODELS = {
     'DLP Single Stage Venous Cannulae with Right Angle Metal Tip'
   ])
 };
+// LivaNova V122/V900/V152 bullet-tip pages state only a generic major-vessel
+// indication. Without SKU-level SVC, IVC or RA access evidence, those products
+// remain Other / Unspecified rather than receiving a central anatomy claim.
 
 // Standard comparison classification uses exact catalog metadata and vetted
 // model mappings, not broad arterial/venous substrings or tip-shape guesses.
@@ -6986,8 +6985,7 @@ function classifyPressureDropComparisonEntry(entry) {
   const documentedCentral = entry.manufacturer === 'Medtronic' && type === 'arterial' &&
     centralArterialFamilies.has(entry.model) && !site;
   const documentedCentralVenous = type === 'venous' &&
-    (PRESSURE_DROP_CENTRAL_VENOUS_MODELS[entry.manufacturer]?.has(entry.model) ||
-      (entry.manufacturer === 'LivaNova' && PRESSURE_DROP_CENTRAL_VENOUS_SKUS.has(entry.cannulaOrderCode)));
+    PRESSURE_DROP_CENTRAL_VENOUS_MODELS[entry.manufacturer]?.has(entry.model);
   // Getinge HLS PVS 38 cm is the short peripheral/femoral venous family;
   // match exact submitted order codes, not all similarly named HLS devices.
   const documentedFemoralVenous = type === 'venous' && entry.manufacturer === 'Getinge / Maquet' &&
@@ -7045,12 +7043,18 @@ function getPressureDropTargetFlowKey(entry) {
 }
 
 function getPressureDropTargetFlowIdentity(entry, catalogEntries) {
-  const size = entry.size || 'Unknown size';
+  const size = getPressureDropComparisonSizeLabel(entry);
   const hasSameSizeVariant = catalogEntries.some(other => other !== entry &&
     other.manufacturer === entry.manufacturer && other.model === entry.model && other.size === entry.size);
   if (!hasSameSizeVariant) return size;
   const variant = [entry.cannulaOrderCode, entry.connectorSize || entry.connectionSite].filter(Boolean).join(' · ');
   return variant ? `${size} · ${variant}` : size;
+}
+
+function getPressureDropComparisonSizeLabel(entry) {
+  const size = entry.size || 'Unknown size';
+  const frenchSize = getPressureDropComparisonFr(entry);
+  return Number.isFinite(frenchSize) && !/\bFr\b/i.test(size) ? `${size} · ${frenchSize} Fr` : size;
 }
 
 function appendPressureDropSizeLabel(node, identity) {
@@ -7472,7 +7476,8 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
     const meta = document.createElement('div');
     meta.className = 'text-xs text-slate-500 dark:text-slate-400';
     const sizeText = document.createElement('span');
-    appendPressureDropSizeLabel(sizeText, entry.size || 'Size unavailable');
+    const displaySize = getPressureDropComparisonSizeLabel(entry);
+    appendPressureDropSizeLabel(sizeText, displaySize);
     meta.append(document.createTextNode(`${entry.manufacturer} · `), sizeText);
     const name = document.createElement('p');
     name.className = 'mt-0.5 break-words text-sm font-semibold text-primary-900 dark:text-white';
@@ -7487,7 +7492,7 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
     }
     // Only expose the SKU in collapsed rows when multiple otherwise-identical
     // sizes/models could not be distinguished without it.
-    if (identity !== entry.size && entry.cannulaOrderCode) {
+    if (identity !== displaySize && entry.cannulaOrderCode) {
       const variant = document.createElement('span');
       variant.className = 'block text-[11px] text-slate-500 dark:text-slate-400';
       variant.textContent = `Variant ${entry.cannulaOrderCode}`;
@@ -7599,7 +7604,10 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
     manufacturer: controls.manufacturer.value, model: controls.model.value });
   const getEligibleKeys = () => {
     const available = activeSearchQuery
-      ? searchPressureDropCatalog(entries, activeSearchQuery).filter(entry => classifyPressureDropComparisonEntry(entry).eligible)
+      ? searchPressureDropCatalog(entries, activeSearchQuery).filter(entry => {
+        const classification = classifyPressureDropComparisonEntry(entry);
+        return classification.eligible && classification.category === controls.category.value;
+      })
       : getPressureDropTargetFlowMatches(entries, { category: controls.category.value });
     // Search narrows the result list without clearing explicitly selected
     // graph curves from other families or manufacturers.
@@ -7622,28 +7630,9 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
     const flow = parsePressureDropTargetFlow(controls.flow.value);
     const searchedEntries = activeSearchQuery ? searchPressureDropCatalog(entries, activeSearchQuery) : null;
     const rows = searchedEntries
-      ? ['arterial', 'venous'].flatMap(category =>
-        getPressureDropTargetFlowRows(searchedEntries, { category }, flow, controls.sort.value)
-          .map(row => ({ ...row, identity: getPressureDropTargetFlowIdentity(row.entry, entries) })))
+      ? getPressureDropTargetFlowRows(searchedEntries, { category: controls.category.value }, flow, controls.sort.value)
+        .map(row => ({ ...row, identity: getPressureDropTargetFlowIdentity(row.entry, entries) }))
       : getPressureDropTargetFlowRows(entries, getFilters(), flow, controls.sort.value);
-    if (searchedEntries) {
-      rows.sort((left, right) => {
-        if (controls.sort.value === 'pressure' && left.result.inRange !== right.result.inRange) return left.result.inRange ? -1 : 1;
-        if (controls.sort.value === 'pressure' && left.result.inRange && right.result.inRange) {
-          if (left.result.aboveVerifiedManufacturerMax !== right.result.aboveVerifiedManufacturerMax)
-            return left.result.aboveVerifiedManufacturerMax ? 1 : -1;
-          const difference = left.result.magnitude - right.result.magnitude;
-          if (difference) return difference;
-        }
-        if (controls.sort.value === 'size') {
-          const difference = getPressureDropComparisonFr(left.entry) - getPressureDropComparisonFr(right.entry);
-          if (difference) return difference;
-        }
-        const field = controls.sort.value === 'manufacturer' ? 'manufacturer' : 'model';
-        return left.entry[field].localeCompare(right.entry[field], undefined, { numeric: true })
-          || left.key.localeCompare(right.key, undefined, { numeric: true });
-      });
-    }
     const unspecified = getPressureDropTargetFlowMatches(entries, { category: controls.category.value, location: 'other' })
       .filter(entry => !controls.manufacturer.value || entry.manufacturer === controls.manufacturer.value);
     controls.locationNote.textContent = !activeSearchQuery && controls.location.value && controls.location.value !== 'other' && unspecified.length
@@ -7655,13 +7644,13 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
     controls.flow.setAttribute('aria-invalid', String(Boolean(controls.flow.value.trim()) && !Number.isFinite(flow)));
     controls.results.innerHTML = '';
     controls.summary.textContent = activeSearchQuery
-      ? `Search: "${activeSearchQuery}" · ${rows.length} comparable cannulas${Number.isFinite(flow) ? ` · ${rows.filter(row => row.result.inRange).length} in-range at ${flow} L/min` : ''}`
+      ? `Search: "${activeSearchQuery}" · ${controls.category.value === 'arterial' ? 'Arterial' : 'Venous'} · ${rows.length} comparable cannulas${Number.isFinite(flow) ? ` · ${rows.filter(row => row.result.inRange).length} in-range at ${flow} L/min` : ''}`
       : Number.isFinite(flow) ? `Target flow: ${flow} L/min · ${rows.filter(row => row.result.inRange).length} in-range curve estimates · ${rows.length} matching cannulas`
         : 'Enter a positive target flow in L/min to estimate pressure drop.';
     const message = document.createElement('p');
     message.className = 'text-sm text-slate-600 dark:text-slate-300';
     if (!rows.length) message.textContent = activeSearchQuery
-      ? 'No standard arterial/venous comparison results. Select an individual Specialty cannula in the search suggestions for Single Lookup.'
+      ? `No ${controls.category.value} comparison results. Choose a search suggestion to open one product, or change Cannula category.`
       : 'No matching cannulas. Broaden location, manufacturer or family filters.';
     else if (Number.isFinite(flow) && !rows.some(row => row.result.inRange)) message.textContent = 'No in-range estimates at this flow. Source ranges remain visible below; estimates are never extrapolated.';
     if (message.textContent) controls.results.appendChild(message);
@@ -7765,8 +7754,14 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
     if (event.key === 'Enter') {
       event.preventDefault();
       activeSearchQuery = controls.search.value.trim();
-      controls.matches.classList.add('hidden');
-      controls.matches.innerHTML = '';
+      const hasActiveCategoryMatch = searchPressureDropCatalog(entries, activeSearchQuery).some(entry => {
+        const classification = classifyPressureDropComparisonEntry(entry);
+        return classification.eligible && classification.category === controls.category.value;
+      });
+      if (hasActiveCategoryMatch) {
+        controls.matches.classList.add('hidden');
+        controls.matches.innerHTML = '';
+      } else renderSearch();
       render();
     }
   });

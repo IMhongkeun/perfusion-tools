@@ -1438,10 +1438,10 @@ const targetRuntime = vm.runInNewContext([
   mainJs.slice(mainJs.indexOf('function normalizePressureDropKey'), mainJs.indexOf('function fitPressureDropPowerLaw')),
   chartRendererSource,
   ...targetFunctionNames.map(pressureProductionFunction),
-  mainJs.slice(mainJs.indexOf('const PRESSURE_DROP_CENTRAL_VENOUS_SKUS'), mainJs.indexOf('async function initCannulaPressureDropPage')),
+  mainJs.slice(mainJs.indexOf('const PRESSURE_DROP_FEMORAL_VENOUS_SKUS'), mainJs.indexOf('async function initCannulaPressureDropPage')),
   `; ({ classifyPressureDropComparisonEntry, getPressureDropTargetFlowKey, getPressureDropTargetFlowMatches,
     parsePressureDropTargetFlow, getPressureDropTargetFlowResult, getPressureDropTargetFlowRows,
-    getPressureDropComparisonFr, updatePressureDropTargetFlowSelection, createPressureDropTargetFlowChart,
+    getPressureDropComparisonFr, getPressureDropComparisonSizeLabel, updatePressureDropTargetFlowSelection, createPressureDropTargetFlowChart,
     getPressureDropTargetFlowIdentity, getPressureDropTargetFlowSeries, getPressureDropTargetFlowModelOptions, createPressureDropTargetFlowTable,
     initPressureDropTargetFlowComparison, isPressureDropAnalyticsReady, drawPressureDropSeriesChart,
     searchPressureDropCatalog, getPressureDropExploredFlow, getPressureDropManufacturerFlowLimit,
@@ -1474,12 +1474,11 @@ const documentedCentralVenousModels = {
     'DLP Single Stage Venous Cannulae with Right Angle Metal Tip'
   ]
 };
-const newlyCentralSkus = new Set(['V122-24', 'V122-28', 'V122-32', 'V122-34', 'V122-36',
+const nonspecificVenousSkus = new Set(['V122-24', 'V122-28', 'V122-32', 'V122-34', 'V122-36',
   'V900-01', 'V900-02', 'V152-32', 'V152-36']);
 const newlyFemoralSkus = new Set(['PVS 1938', 'PVS 2138', 'PVS 2338', 'PVS 2538']);
 const documentedCentralVenous = pressureDropData.filter(entry =>
-  documentedCentralVenousModels[entry.manufacturer]?.includes(entry.model) ||
-  (entry.manufacturer === 'LivaNova' && newlyCentralSkus.has(entry.cannulaOrderCode)));
+  documentedCentralVenousModels[entry.manufacturer]?.includes(entry.model));
 const centralVenous = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'central' });
 assert(documentedCentralVenous.length > 0);
 assert.deepStrictEqual(new Set(centralVenous), new Set(documentedCentralVenous), 'Only documented central families enter the Central filter');
@@ -1501,8 +1500,10 @@ const femoralOnly = pressureDropData.filter(entry => /Femoral/i.test(entry.model
 assert(femoralOnly.length > 0 && femoralOnly.every(entry => !centralVenous.includes(entry)));
 assert(avalonProducts.every(entry => !centralVenous.includes(entry) && classifyComparison(entry).location === 'jugular'));
 const unspecifiedVenous = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'other' });
-assert.strictEqual(unspecifiedVenous.length, 0, 'Reviewed remaining venous SKUs have documented access mapping');
-assert([...newlyCentralSkus].every(code => centralVenous.some(entry => entry.cannulaOrderCode === code)));
+assert.strictEqual(unspecifiedVenous.length, nonspecificVenousSkus.size,
+  'Generic major-vessel indications do not establish a Central / RA insertion site.');
+assert([...nonspecificVenousSkus].every(code => unspecifiedVenous.some(entry => entry.cannulaOrderCode === code)));
+assert([...nonspecificVenousSkus].every(code => !centralVenous.some(entry => entry.cannulaOrderCode === code)));
 const femoralVenous = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'femoral' });
 assert([...newlyFemoralSkus].every(code => femoralVenous.some(entry => entry.cannulaOrderCode === code)));
 assert([...newlyFemoralSkus].every(code => !centralVenous.some(entry => entry.cannulaOrderCode === code)));
@@ -1773,9 +1774,14 @@ assert.deepStrictEqual(new Set(targetRuntime.searchPressureDropCatalog(pressureD
 assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'Medtronic').length > 1);
 const pvl29 = pressureDropData.find(entry => entry.cannulaOrderCode === 'PVL 2955');
 assert(pvl29 && targetRuntime.getPressureDropComparisonFr(pvl29) === 29);
+assert.strictEqual(targetRuntime.getPressureDropComparisonSizeLabel(pvl29), 'PVL 2955 · 29 Fr');
 assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'PVL 29 Fr').includes(pvl29),
   'Catalog search includes French sizes derived from verified notes, not only the raw size code.');
 assert(targetRuntime.searchPressureDropCatalog(pressureDropData, '29 Fr').includes(pvl29));
+const pvlRow = targetRuntime.getPressureDropTargetFlowRows([pvl29], { category: 'venous' }, 2)[0];
+const pvlTable = targetRuntime.createPressureDropTargetFlowTable([pvlRow], [], () => {});
+assert(pvlTable.textContent.includes('PVL 2955 · 29 Fr'), 'Comparison rows show catalog code and derived French size together.');
+assert(!pvlTable.textContent.includes('Variant PVL 2955'), 'Derived size text must not be mistaken for a connector variant.');
 assert.strictEqual(targetRuntime.getPressureDropExploredFlow(58, { left: 0, width: 420 }, { plotLeft: '58', plotRight: '402', minFlow: '1', maxFlow: '5' }), 1);
 assert.strictEqual(targetRuntime.getPressureDropExploredFlow(402, { left: 0, width: 420 }, { plotLeft: '58', plotRight: '402', minFlow: '1', maxFlow: '5' }), 5);
 assert.strictEqual(targetRuntime.getPressureDropExploredFlow(230, { left: 100, width: 420 }, { plotLeft: '58', plotRight: '402', minFlow: '1', maxFlow: '5' }), 1.8, 'Page offset is converted through SVG bounds');
@@ -1893,6 +1899,13 @@ const catalogMatches = targetNodes['pressure-drop-catalog-matches'];
 catalogSearch.value = 'Medtronic'; catalogSearch.dispatch('input');
 assert.strictEqual(catalogMatches.children.length, pressureDropData.filter(entry => entry.manufacturer === 'Medtronic').length,
   'Broad manufacturer search must not silently truncate the suggestion list at 50.');
+catalogSearch.dispatch('keydown', { key: 'Enter' });
+const matchingMedtronicArterial = targetRuntime.searchPressureDropCatalog(pressureDropData, 'Medtronic')
+  .filter(entry => classifyComparison(entry).eligible && classifyComparison(entry).category === 'arterial');
+assert.deepStrictEqual(new Set(currentRows().map(row => row.dataset.productKey)),
+  new Set(matchingMedtronicArterial.map(targetRuntime.getPressureDropTargetFlowKey)),
+  'Enter applies the visible cannula category so arterial and venous pressure drops are not mixed.');
+assert(targetNodes['pressure-drop-target-summary'].textContent.includes('Arterial'));
 catalogSearch.value = 'EOPA'; catalogSearch.dispatch('input');
 assert(catalogMatches.children.some(item => item.textContent.includes('EOPA')));
 assert(!catalogMatches.classList.contains('hidden'));
@@ -1936,7 +1949,13 @@ catalogSearch.dispatch('keydown', { key: 'Escape' });
 assert(catalogMatches.classList.contains('hidden'));
 const specialty = pressureDropData.find(entry => classifyComparison(entry).category === 'specialty');
 assert(specialty);
-searchController.selectSearchEntry(specialty);
+catalogSearch.value = specialty.cannulaOrderCode; catalogSearch.dispatch('input');
+catalogSearch.dispatch('keydown', { key: 'Enter' });
+assert.strictEqual(currentRows().length, 0, 'Specialty-only Enter search has no standard comparison rows.');
+assert(!catalogMatches.classList.contains('hidden'), 'Specialty suggestions remain available after Enter.');
+const specialtyChoice = catalogMatches.children.find(item => item.dataset.productKey === targetRuntime.getPressureDropTargetFlowKey(specialty));
+assert(specialtyChoice, 'The matching Specialty cannula remains directly selectable.');
+specialtyChoice.dispatch('click');
 assert.strictEqual(specialtySelection, specialty, 'Specialty uses the existing Single Lookup route');
 assert.strictEqual(targetFlowInput.value, '1');
 targetNodes['pressure-drop-target-category'].value = 'venous'; targetNodes['pressure-drop-target-category'].dispatch('change');
