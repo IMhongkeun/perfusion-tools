@@ -7556,6 +7556,11 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
       catalogCode.textContent = `Order code: ${entry.cannulaOrderCode}`;
       detailBody.appendChild(catalogCode);
     }
+    if (entry.connectorSize) {
+      const connector = document.createElement('p');
+      connector.textContent = `Connector: ${entry.connectorSize}`;
+      detailBody.appendChild(connector);
+    }
     detailBody.appendChild(getPressureDropSourceNode(entry, true, { showMissingPublicLinkNote: true }));
     details.append(summary, detailBody);
     detailsCell.appendChild(details);
