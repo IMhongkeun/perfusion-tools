@@ -7074,6 +7074,7 @@ function searchPressureDropCatalog(entries, query) {
     const classification = classifyPressureDropComparisonEntry(entry);
     const searchable = [entry.manufacturer, entry.model, getPressureDropTargetFlowModelLabel(entry.model || ''),
       entry.size, entry.cannulaOrderCode, entry.connectorSize, entry.connectionSite,
+      Number.isFinite(getPressureDropComparisonFr(entry)) ? `${getPressureDropComparisonFr(entry)} Fr` : '',
       classification.configuration, getPressureDropProductFamily(entry)].filter(Boolean).join(' ').toLowerCase();
     return terms.every(term => searchable.includes(term));
   });
@@ -7163,7 +7164,7 @@ function getPressureDropTargetFlowRows(entries, filters, flow, sort = 'pressure'
     entry, key: getPressureDropTargetFlowKey(entry), identity: getPressureDropTargetFlowIdentity(entry, entries),
     result: getPressureDropTargetFlowResult(entry, flow)
   })).sort((left, right) => {
-    if (left.result.inRange !== right.result.inRange) return left.result.inRange ? -1 : 1;
+    if (sort === 'pressure' && left.result.inRange !== right.result.inRange) return left.result.inRange ? -1 : 1;
     // A verified above-limit curve estimate must not be an unqualified
     // lower-ΔP recommendation, even though interpolation remains available.
     if (sort === 'pressure' && left.result.inRange &&
@@ -7231,8 +7232,8 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
   readout.className = 'min-w-0 flex-1 font-semibold tabular-nums text-primary-900 dark:text-white';
   const slider = document.createElement('input');
   slider.type = 'range'; slider.step = '0.1';
-  slider.min = String(Math.ceil(minimum * 10) / 10);
-  slider.max = String(Math.floor(maximum * 10) / 10);
+  slider.min = String(Math.max(0.1, Math.ceil((minimum - 1e-10) * 10) / 10));
+  slider.max = String(Math.floor((maximum + 1e-10) * 10) / 10);
   slider.className = 'order-last w-full accent-sky-600';
   slider.setAttribute('aria-label', 'Explore flow in 0.1 L/min steps');
   const commit = document.createElement('button');
@@ -7240,7 +7241,8 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
   commit.className = 'shrink-0 rounded-lg border border-slate-300 dark:border-primary-600 px-2 py-1 text-accent-700 dark:text-accent-300';
   commit.textContent = 'Use as target flow';
   controls.append(readout, commit);
-  if (Number(slider.min) <= Number(slider.max)) controls.appendChild(slider);
+  const canExploreOnSlider = Number(slider.min) <= Number(slider.max);
+  if (canExploreOnSlider) controls.appendChild(slider);
   let exploredFlow = null;
   let pinnedFlow = false;
   let touchDragging = false;
@@ -7267,7 +7269,11 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
         cell.classList.toggle('dark:text-amber-300', Boolean(limitText));
       }
     });
-    if (Number(slider.min) <= Number(slider.max)) slider.value = String(Math.max(Number(slider.min), Math.min(Number(slider.max), flow)));
+    if (canExploreOnSlider) slider.value = String(Math.max(Number(slider.min), Math.min(Number(slider.max), flow)));
+    commit.disabled = !Number.isFinite(flow) || flow <= 0 || !canExploreOnSlider ||
+      Math.abs(flow * 10 - Math.round(flow * 10)) > 1e-8 ||
+      !series.some(item => hasValidPressureDropEstimate([interpolatePressureDrop(item.points, flow)]));
+    commit.setAttribute('aria-disabled', String(commit.disabled));
   };
   svg.style.touchAction = 'pan-y';
   const flowAtPointer = event => getPressureDropExploredFlow(event.clientX, svg.getBoundingClientRect(), svg.dataset);
@@ -7294,10 +7300,13 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
     pinnedFlow = true;
     update(Number(slider.value));
   });
-  commit.addEventListener('click', () => { if (exploredFlow !== null) onCommitFlow?.(exploredFlow); });
-  update(Number.isFinite(committedFlow) && committedFlow >= minimum && committedFlow <= maximum
-    ? getPressureDropExploredFlow(left + ((committedFlow - minimum) / Math.max(maximum - minimum, 0.0001)) * (right - left), { left: 0, width: 420 }, svg.dataset)
-    : minimum);
+  commit.addEventListener('click', event => {
+    if (!commit.disabled && exploredFlow !== null) onCommitFlow?.(exploredFlow, event.isTrusted === true);
+  });
+  const initialFlow = Number.isFinite(committedFlow) && committedFlow > 0
+    ? Math.max(Number(slider.min), Math.min(Number(slider.max), Math.round(committedFlow * 10) / 10))
+    : Number(slider.min);
+  update(canExploreOnSlider ? initialFlow : minimum);
 }
 
 function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPointsChange, onRemove, catalogEntries = entries, onCommitFlow) {
@@ -7604,7 +7613,7 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
       : getPressureDropTargetFlowRows(entries, getFilters(), flow, controls.sort.value);
     if (searchedEntries) {
       rows.sort((left, right) => {
-        if (left.result.inRange !== right.result.inRange) return left.result.inRange ? -1 : 1;
+        if (controls.sort.value === 'pressure' && left.result.inRange !== right.result.inRange) return left.result.inRange ? -1 : 1;
         if (controls.sort.value === 'pressure' && left.result.inRange && right.result.inRange) {
           if (left.result.aboveVerifiedManufacturerMax !== right.result.aboveVerifiedManufacturerMax)
             return left.result.aboveVerifiedManufacturerMax ? 1 : -1;
@@ -7653,7 +7662,18 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
     const selectedEntries = selectedKeys.map(key => entries.find(entry => getPressureDropTargetFlowKey(entry) === key));
     if (selectedEntries.length) controls.chart.appendChild(createPressureDropTargetFlowChart(selectedEntries, flow, showRawPoints,
       checked => { showRawPoints = checked; render(); }, key => { selectedKeys = selectedKeys.filter(selected => selected !== key); render(); }, entries,
-      explored => { controls.flow.value = explored.toFixed(1); render(); }));
+      (explored, trustedClick) => {
+        controls.flow.value = explored.toFixed(1);
+        // The actual button click supplies trust; a dispatched input alone does
+        // not qualify as a trusted analytics interaction.
+        if (typeof window !== 'undefined') {
+          window.perfusionCalculatorAnalytics?.start('cannula_pressure_drop', undefined, trustedClick);
+        }
+        controls.flow.dispatchEvent(new Event('input', { bubbles: true }));
+        if (controls.view.dataset.analyticsReady === 'true' && typeof window !== 'undefined') {
+          window.perfusionCalculatorAnalytics?.complete('cannula_pressure_drop');
+        }
+      }));
     else {
       const prompt = document.createElement('p');
       prompt.className = 'text-xs text-slate-500 dark:text-slate-400';
@@ -7689,7 +7709,7 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
     controls.matches.classList.toggle('hidden', !query);
     if (!query) return;
     const matches = searchPressureDropCatalog(entries, query);
-    matches.slice(0, 50).forEach(entry => {
+    matches.forEach(entry => {
       const choice = document.createElement('button');
       choice.type = 'button';
       choice.setAttribute('role', 'option');
@@ -7736,6 +7756,7 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
     }
   });
   [controls.category, controls.location, controls.manufacturer, controls.model].forEach(select => select.addEventListener('change', () => {
+    if (select === controls.category) controls.location.value = '';
     activeSearchQuery = '';
     controls.search.value = '';
     controls.matches.innerHTML = '';
@@ -7787,6 +7808,8 @@ async function initCannulaPressureDropPage() {
     const targetView = el('pressure-drop-target-view');
     const targetTab = el('pressure-drop-target-tab');
     const targetComparison = initPressureDropTargetFlowComparison(entries, text => { status.textContent = text; }, entry => {
+      const activeTargetFlow = parsePressureDropTargetFlow(el('pressure-drop-target-flow')?.value);
+      if (controls.flowInput) controls.flowInput.value = Number.isFinite(activeTargetFlow) ? String(activeTargetFlow) : '';
       setPressureDropView('single'); selectEntry(entry);
     });
     let activePressureDropView = 'single';
