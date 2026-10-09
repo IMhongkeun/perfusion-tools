@@ -7569,11 +7569,13 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
     search: el('pressure-drop-catalog-search'), matches: el('pressure-drop-catalog-matches')
   };
   if (Object.values(controls).some(control => !control)) return null;
-  let selectedKeys = [], showRawPoints = false;
+  let selectedKeys = [], showRawPoints = false, activeSearchQuery = '';
   const modelCombobox = createPressureDropSearchableSelect(controls.model, 'Family / model');
   const getFilters = () => ({ category: controls.category.value, location: controls.location.value,
     manufacturer: controls.manufacturer.value, model: controls.model.value });
-  const getEligibleKeys = () => new Set(getPressureDropTargetFlowMatches(entries, { category: controls.category.value }).map(getPressureDropTargetFlowKey));
+  const getEligibleKeys = () => new Set((activeSearchQuery
+    ? searchPressureDropCatalog(entries, activeSearchQuery).filter(entry => classifyPressureDropComparisonEntry(entry).eligible)
+    : getPressureDropTargetFlowMatches(entries, { category: controls.category.value })).map(getPressureDropTargetFlowKey));
   const refreshOptions = () => {
     const locations = controls.category.value === 'arterial'
       ? [{ value: 'central', label: 'Central / Aortic' }, { value: 'femoral', label: 'Femoral' }]
@@ -7589,10 +7591,33 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
   const render = () => {
     const focusedProductKey = document.activeElement?.dataset.productKey;
     const flow = parsePressureDropTargetFlow(controls.flow.value);
-    const rows = getPressureDropTargetFlowRows(entries, getFilters(), flow, controls.sort.value);
+    const searchedEntries = activeSearchQuery ? searchPressureDropCatalog(entries, activeSearchQuery) : null;
+    const rows = searchedEntries
+      ? ['arterial', 'venous'].flatMap(category =>
+        getPressureDropTargetFlowRows(searchedEntries, { category }, flow, controls.sort.value)
+          .map(row => ({ ...row, identity: getPressureDropTargetFlowIdentity(row.entry, entries) })))
+      : getPressureDropTargetFlowRows(entries, getFilters(), flow, controls.sort.value);
+    if (searchedEntries) {
+      rows.sort((left, right) => {
+        if (left.result.inRange !== right.result.inRange) return left.result.inRange ? -1 : 1;
+        if (controls.sort.value === 'pressure' && left.result.inRange && right.result.inRange) {
+          if (left.result.aboveVerifiedManufacturerMax !== right.result.aboveVerifiedManufacturerMax)
+            return left.result.aboveVerifiedManufacturerMax ? 1 : -1;
+          const difference = left.result.magnitude - right.result.magnitude;
+          if (difference) return difference;
+        }
+        if (controls.sort.value === 'size') {
+          const difference = getPressureDropComparisonFr(left.entry) - getPressureDropComparisonFr(right.entry);
+          if (difference) return difference;
+        }
+        const field = controls.sort.value === 'manufacturer' ? 'manufacturer' : 'model';
+        return left.entry[field].localeCompare(right.entry[field], undefined, { numeric: true })
+          || left.key.localeCompare(right.key, undefined, { numeric: true });
+      });
+    }
     const unspecified = getPressureDropTargetFlowMatches(entries, { category: controls.category.value, location: 'other' })
       .filter(entry => !controls.manufacturer.value || entry.manufacturer === controls.manufacturer.value);
-    controls.locationNote.textContent = controls.location.value && controls.location.value !== 'other' && unspecified.length
+    controls.locationNote.textContent = !activeSearchQuery && controls.location.value && controls.location.value !== 'other' && unspecified.length
       ? `${unspecified.length} ${controls.category.value} products have no documented insertion site (including ${unspecified.some(entry => /EOPA/i.test(entry.model)) ? 'EOPA' : 'other models'}). Choose Other / Unspecified or All locations to see them.`
       : '';
     const eligibleKeys = getEligibleKeys();
@@ -7600,10 +7625,15 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
     controls.view.dataset.analyticsReady = String(rows.some(row => row.result.inRange));
     controls.flow.setAttribute('aria-invalid', String(Boolean(controls.flow.value.trim()) && !Number.isFinite(flow)));
     controls.results.innerHTML = '';
-    controls.summary.textContent = Number.isFinite(flow) ? `Target flow: ${flow} L/min · ${rows.filter(row => row.result.inRange).length} in-range curve estimates · ${rows.length} matching cannulas` : 'Enter a positive target flow in L/min to estimate pressure drop.';
+    controls.summary.textContent = activeSearchQuery
+      ? `Search: "${activeSearchQuery}" · ${rows.length} comparable cannulas${Number.isFinite(flow) ? ` · ${rows.filter(row => row.result.inRange).length} in-range at ${flow} L/min` : ''}`
+      : Number.isFinite(flow) ? `Target flow: ${flow} L/min · ${rows.filter(row => row.result.inRange).length} in-range curve estimates · ${rows.length} matching cannulas`
+        : 'Enter a positive target flow in L/min to estimate pressure drop.';
     const message = document.createElement('p');
     message.className = 'text-sm text-slate-600 dark:text-slate-300';
-    if (!rows.length) message.textContent = 'No matching cannulas. Broaden location, manufacturer or family filters.';
+    if (!rows.length) message.textContent = activeSearchQuery
+      ? 'No standard arterial/venous comparison results. Select an individual Specialty cannula in the search suggestions for Single Lookup.'
+      : 'No matching cannulas. Broaden location, manufacturer or family filters.';
     else if (Number.isFinite(flow) && !rows.some(row => row.result.inRange)) message.textContent = 'No in-range estimates at this flow. Source ranges remain visible below; estimates are never extrapolated.';
     if (message.textContent) controls.results.appendChild(message);
     if (rows.length) controls.results.appendChild(createPressureDropTargetFlowTable(rows, selectedKeys, (key, checked) => {
@@ -7629,6 +7659,7 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
   };
   const selectSearchEntry = entry => {
     const classification = classifyPressureDropComparisonEntry(entry);
+    activeSearchQuery = '';
     controls.search.value = '';
     controls.matches.classList.add('hidden');
     controls.matches.innerHTML = '';
@@ -7676,13 +7707,36 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
       empty.textContent = 'No matching cannulas'; controls.matches.appendChild(empty);
     }
   };
-  controls.search.addEventListener('input', renderSearch);
-  controls.search.addEventListener('keydown', event => {
-    if (event.key === 'Escape') { controls.search.value = ''; renderSearch(); }
-    if (event.key === 'ArrowDown') { event.preventDefault(); controls.matches.children[0]?.focus?.(); }
-    if (event.key === 'Enter') controls.matches.children[0]?.dispatchEvent?.(new Event('click'));
+  controls.search.addEventListener('input', () => {
+    if (activeSearchQuery) {
+      activeSearchQuery = '';
+      render();
+    }
+    renderSearch();
   });
-  [controls.category, controls.location, controls.manufacturer, controls.model].forEach(select => select.addEventListener('change', () => { refreshOptions(); render(); }));
+  controls.search.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      activeSearchQuery = '';
+      controls.search.value = '';
+      renderSearch();
+      render();
+    }
+    if (event.key === 'ArrowDown') { event.preventDefault(); controls.matches.children[0]?.focus?.(); }
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      activeSearchQuery = controls.search.value.trim();
+      controls.matches.classList.add('hidden');
+      controls.matches.innerHTML = '';
+      render();
+    }
+  });
+  [controls.category, controls.location, controls.manufacturer, controls.model].forEach(select => select.addEventListener('change', () => {
+    activeSearchQuery = '';
+    controls.search.value = '';
+    controls.matches.innerHTML = '';
+    controls.matches.classList.add('hidden');
+    refreshOptions(); render();
+  }));
   controls.flow.addEventListener('input', render);
   controls.sort.addEventListener('change', render);
   refreshOptions();
