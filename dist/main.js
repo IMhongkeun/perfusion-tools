@@ -7520,7 +7520,10 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
     const detailBody = document.createElement('div');
     detailBody.className = 'mt-2 space-y-2 break-words text-slate-600 dark:text-slate-300';
     const status = document.createElement('p');
-    status.textContent = `Source range: ${result.rangeText || '—'} · ${result.unavailableReason ? 'Not comparable' : result.inRange ? (result.interpolationResult.state === 'exact' ? 'Exact source point' : 'Interpolated') : 'Out of range'}`;
+    const statusText = result.inRange
+      ? (result.interpolationResult.state === 'exact' ? 'Exact source point' : 'Interpolated')
+      : (result.interpolationResult.state === 'out_of_range' ? 'Out of range' : getPressureDropTargetFlowValueText(result));
+    status.textContent = `Source range: ${result.rangeText || '—'} · ${statusText}`;
     detailBody.appendChild(status);
     if (result.unavailableReason) {
       const reason = document.createElement('p');

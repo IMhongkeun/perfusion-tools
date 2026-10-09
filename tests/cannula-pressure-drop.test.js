@@ -1597,6 +1597,22 @@ assert.strictEqual(fixtureRows[0].result.interpolationResult.value, 45);
 assert.strictEqual(fixtureRows[1].result.interpolationResult.value, 80);
 assert.strictEqual(fixtureRows[2].result.interpolationResult.state, 'out_of_range');
 assert.strictEqual(fixtureRows[2].result.magnitude, null, 'Out-of-range products get no substituted endpoint');
+for (const [entry, flow, expectedStatus] of [
+  [targetFixtures[0], NaN, 'Enter a positive target flow'],
+  [{ ...targetFixtures[0], points: [] }, 3, 'No digitized curve'],
+  [targetFixtures[0], 6, 'Out of range'],
+  [targetFixtures[0], 1, 'Exact source point'],
+  [targetFixtures[0], 3, 'Interpolated']
+]) {
+  const table = targetRuntime.createPressureDropTargetFlowTable([{
+    entry, key: targetRuntime.getPressureDropTargetFlowKey(entry), identity: entry.size,
+    result: targetRuntime.getPressureDropTargetFlowResult(entry, flow)
+  }], [], () => {});
+  const details = pressureDescendants(table, node => node.tagName === 'details')[0];
+  const sourceStatus = pressureDescendants(details, node => node.tagName === 'p' && node.textContent.startsWith('Source range:'))[0];
+  assert(sourceStatus.textContent.endsWith(` · ${expectedStatus}`),
+    `Expanded Details must distinguish ${expectedStatus} from a range violation.`);
+}
 for (const [flow, expected] of [[1, 10], [5, 90]]) {
   const result = targetRuntime.getPressureDropTargetFlowResult(targetFixtures[0], flow);
   assert.strictEqual(result.interpolationResult.state, 'exact'); assert.strictEqual(result.magnitude, expected);
