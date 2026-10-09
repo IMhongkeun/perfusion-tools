@@ -7242,11 +7242,13 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
   controls.append(readout, commit);
   if (Number(slider.min) <= Number(slider.max)) controls.appendChild(slider);
   let exploredFlow = null;
+  let pinnedFlow = false;
+  let touchDragging = false;
   const update = flow => {
     exploredFlow = flow;
     const x = left + ((flow - minimum) / Math.max(maximum - minimum, 0.0001)) * (right - left);
     guide.setAttribute('x1', x); guide.setAttribute('x2', x);
-    readout.textContent = `Target: ${Number.isFinite(committedFlow) ? `${committedFlow} L/min` : 'not set'} · Exploring: ${flow.toFixed(1)} L/min`;
+    readout.textContent = `Target: ${Number.isFinite(committedFlow) ? `${committedFlow} L/min` : 'not set'} · ${pinnedFlow ? 'Pinned' : 'Exploring'}: ${flow.toFixed(1)} L/min`;
     series.forEach((item, index) => {
       const result = interpolatePressureDrop(item.points, flow);
       const valid = hasValidPressureDropEstimate([result]);
@@ -7268,10 +7270,30 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
     if (Number(slider.min) <= Number(slider.max)) slider.value = String(Math.max(Number(slider.min), Math.min(Number(slider.max), flow)));
   };
   svg.style.touchAction = 'pan-y';
-  const explorePointer = event => update(getPressureDropExploredFlow(event.clientX, svg.getBoundingClientRect(), svg.dataset));
-  svg.addEventListener('pointermove', explorePointer);
-  svg.addEventListener('pointerdown', explorePointer);
-  slider.addEventListener('input', () => update(Number(slider.value)));
+  const flowAtPointer = event => getPressureDropExploredFlow(event.clientX, svg.getBoundingClientRect(), svg.dataset);
+  // Hover previews values; a desktop click pins the flow so moving the
+  // pointer to "Use as target flow" cannot inadvertently change the choice.
+  svg.addEventListener('pointermove', event => {
+    if (!pinnedFlow || touchDragging) update(flowAtPointer(event));
+  });
+  svg.addEventListener('pointerdown', event => {
+    touchDragging = event.pointerType === 'touch';
+    pinnedFlow = !touchDragging;
+    update(flowAtPointer(event));
+  });
+  svg.addEventListener('pointerup', event => {
+    if (touchDragging) {
+      touchDragging = false;
+      pinnedFlow = true;
+      update(flowAtPointer(event));
+    }
+  });
+  svg.addEventListener('pointercancel', () => { touchDragging = false; });
+  // Slider remains the accessible 0.1 L/min control and pins its selection.
+  slider.addEventListener('input', () => {
+    pinnedFlow = true;
+    update(Number(slider.value));
+  });
   commit.addEventListener('click', () => { if (exploredFlow !== null) onCommitFlow?.(exploredFlow); });
   update(Number.isFinite(committedFlow) && committedFlow >= minimum && committedFlow <= maximum
     ? getPressureDropExploredFlow(left + ((committedFlow - minimum) / Math.max(maximum - minimum, 0.0001)) * (right - left), { left: 0, width: 420 }, svg.dataset)
