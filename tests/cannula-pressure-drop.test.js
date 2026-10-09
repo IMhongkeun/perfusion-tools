@@ -376,7 +376,7 @@ assert(
   pressureDropPageHtml.includes('available manufacturer pressure-flow curves or tables') &&
   pressureDropPageHtml.includes('linear interpolation between adjacent source points') &&
   pressureDropPageHtml.includes('Compare at Target Flow applies one shared flow') &&
-  pressureDropPageHtml.includes('Manufacturer pressure-drop curves') &&
+  pressureDropPageHtml.includes('The dataset includes manufacturer pressure-flow information') &&
   pressureDropPageHtml.includes('Methodology') &&
   pressureDropPageHtml.includes('Clinical interpretation'),
   'Clinical source, interpolation, and comparison limitations must remain documented below the calculator.'
