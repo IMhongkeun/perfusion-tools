@@ -370,7 +370,9 @@ assert(heroStart >= 0 && calculatorStart > heroStart &&
   pressureDropPageHtml.slice(heroStart, calculatorStart).includes('Compare cannula pressure drop at your target flow') &&
   !pressureDropPageHtml.slice(heroStart, calculatorStart).includes('Manufacturer pressure-flow reference</h2>') &&
   !pressureDropPageHtml.includes('Filter, then compare') &&
-  pressureDropPageHtml.includes('href="#pressure-drop-methodology"'),
+  pressureDropPageHtml.includes('href="#pressure-drop-methodology"') &&
+  pressureDropPageHtml.indexOf('id="pressure-drop-catalog-search"') <
+    pressureDropPageHtml.indexOf('id="pressure-drop-target-flow"'),
   'The calculator should follow a short heading without the redundant introductory cards.');
 assert(
   pressureDropPageHtml.includes('available manufacturer pressure-flow curves or tables') &&
