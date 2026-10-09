@@ -1629,6 +1629,9 @@ assert(!warningTableRows[0].textContent.includes('High pressure drop warning'), 
 assert(pressureDescendants(warningTableRows[0], node => node.attributes['aria-label']?.includes('High pressure drop warning')).length, 'Warning remains available to assistive technology');
 assert(!warningTableRows[1].textContent.includes('High pressure drop warning'), 'Venous results retain their own semantics');
 assert.deepStrictEqual(Array.from(targetRuntime.getPressureDropTargetFlowRows(targetFixtures, arterialFilters, 3, 'size'), row => row.entry.size), ['15 Fr', '19 Fr', '21 Fr']);
+const fullFemoralSizeSort = targetRuntime.getPressureDropTargetFlowRows(pressureDropData, arterialFilters, 4.5, 'size');
+assert(fullFemoralSizeSort.every((row, index) => !index || targetRuntime.getPressureDropComparisonFr(fullFemoralSizeSort[index - 1].entry) <=
+  targetRuntime.getPressureDropComparisonFr(row.entry)), 'Size ascending must be globally ordered, including Out of range entries.');
 assert.deepStrictEqual(Array.from(targetRuntime.getPressureDropTargetFlowRows(targetFixtures, arterialFilters, 3, 'manufacturer'), row => row.entry.manufacturer), ['Getinge / Maquet', 'LivaNova', 'Medtronic']);
 assert.deepStrictEqual(Array.from(targetRuntime.getPressureDropTargetFlowRows(targetFixtures, arterialFilters, 3, 'model'), row => row.entry.model), ['A', 'B', 'C']);
 const actualFemoralRows = targetRuntime.getPressureDropTargetFlowRows(pressureDropData, arterialFilters, 4.5);
@@ -1752,6 +1755,11 @@ assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'Avalon').some(
 assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'RAP 23 Fr').some(entry => entry === rap));
 assert.deepStrictEqual(new Set(targetRuntime.searchPressureDropCatalog(pressureDropData, '67318').map(entry => entry.cannulaOrderCode)), new Set(['67318']));
 assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'Medtronic').length > 1);
+const pvl29 = pressureDropData.find(entry => entry.cannulaOrderCode === 'PVL 2955');
+assert(pvl29 && targetRuntime.getPressureDropComparisonFr(pvl29) === 29);
+assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'PVL 29 Fr').includes(pvl29),
+  'Catalog search includes French sizes derived from verified notes, not only the raw size code.');
+assert(targetRuntime.searchPressureDropCatalog(pressureDropData, '29 Fr').includes(pvl29));
 assert.strictEqual(targetRuntime.getPressureDropExploredFlow(58, { left: 0, width: 420 }, { plotLeft: '58', plotRight: '402', minFlow: '1', maxFlow: '5' }), 1);
 assert.strictEqual(targetRuntime.getPressureDropExploredFlow(402, { left: 0, width: 420 }, { plotLeft: '58', plotRight: '402', minFlow: '1', maxFlow: '5' }), 5);
 assert.strictEqual(targetRuntime.getPressureDropExploredFlow(230, { left: 100, width: 420 }, { plotLeft: '58', plotRight: '402', minFlow: '1', maxFlow: '5' }), 1.8, 'Page offset is converted through SVG bounds');
@@ -1822,15 +1830,23 @@ assert.strictEqual(familyInput.value, '', 'Invalid family resets on manufacturer
 assert.strictEqual(targetFlowInput.value, '4.5');
 manufacturerInput.value = ''; manufacturerInput.dispatch('change');
 assert.strictEqual(currentRows().length, 24);
-const removeButton = pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'button')[0];
+const removeButton = pressureDescendants(targetNodes['pressure-drop-target-chart'],
+  node => node.tagName === 'button' && node.attributes['aria-label']?.startsWith('Remove '))[0];
+assert(removeButton, 'Chart remove-curve control must be selected explicitly, not the raw-points toggle');
 removeButton.dispatch('click');
 assert.strictEqual(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'li').length, 3);
 targetFlowInput.value = '100000'; targetFlowInput.dispatch('input');
 assert.strictEqual(currentRows().length, 24, 'Out-of-range-only results retain all products');
 assert.strictEqual(targetNodes['pressure-drop-target-view'].dataset.analyticsReady, 'false');
 assert(targetNodes['pressure-drop-target-results'].textContent.includes('No in-range estimates'));
+targetNodes['pressure-drop-target-location'].value = 'central'; locationInput.dispatch('change');
 targetNodes['pressure-drop-target-category'].value = 'venous'; targetNodes['pressure-drop-target-category'].dispatch('change');
-assert.strictEqual(currentRows().length, 19);
+assert.strictEqual(locationInput.value, '', 'Category changes must reset semantically different Central locations.');
+assert.strictEqual(currentRows().length, targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous' }).length,
+  'Switching category starts from all valid venous locations.');
+locationInput.value = 'femoral'; locationInput.dispatch('change');
+assert.strictEqual(currentRows().length, targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'femoral' }).length);
+assert.strictEqual(currentRows().length, 23, 'Four PVS products join the original 19 femoral venous entries.');
 assert.strictEqual(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'li').length, 0, 'Category switch clears incompatible curves');
 targetNodes['pressure-drop-target-model'].value = 'not a product'; controller.refresh();
 assert(targetNodes['pressure-drop-target-results'].textContent.includes('No matching cannulas'));
@@ -1858,6 +1874,9 @@ let specialtySelection = null;
 const searchController = targetRuntime.initPressureDropTargetFlowComparison(pressureDropData, () => {}, entry => { specialtySelection = entry; });
 const catalogSearch = targetNodes['pressure-drop-catalog-search'];
 const catalogMatches = targetNodes['pressure-drop-catalog-matches'];
+catalogSearch.value = 'Medtronic'; catalogSearch.dispatch('input');
+assert.strictEqual(catalogMatches.children.length, pressureDropData.filter(entry => entry.manufacturer === 'Medtronic').length,
+  'Broad manufacturer search must not silently truncate the suggestion list at 50.');
 catalogSearch.value = 'EOPA'; catalogSearch.dispatch('input');
 assert(catalogMatches.children.some(item => item.textContent.includes('EOPA')));
 assert(!catalogMatches.classList.contains('hidden'));
@@ -1943,6 +1962,13 @@ const exploringChart = targetRuntime.createPressureDropTargetFlowChart([targetFi
 const exploringSvg = pressureDescendants(exploringChart, node => node.tagName === 'svg')[0];
 const chartReadout = pressureDescendants(exploringChart, node => node.textContent.startsWith('Target: '))[0];
 const chartSlider = pressureDescendants(exploringChart, node => node.type === 'range')[0];
+const blankTargetChart = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[0]], NaN, false, () => {}, () => {});
+const blankSlider = pressureDescendants(blankTargetChart, node => node.type === 'range')[0];
+const blankCommit = pressureDescendants(blankTargetChart,
+  node => node.tagName === 'button' && node.textContent === 'Use as target flow')[0];
+assert(blankSlider && Number(blankSlider.min) > 0, 'Explorer must start at a positive tenth-step when the target input is blank.');
+assert(blankCommit && (!blankCommit.disabled || Number(blankSlider.min) > 0),
+  'The commit control must not accept a zero or negative flow.');
 assert(chartSlider && chartSlider.attributes['aria-label'].includes('0.1 L/min'));
 assert.strictEqual(exploringSvg.dataset.minFlow, '0');
 exploringSvg.dispatch('pointermove', { clientX: 58 + 344 * (4.1 / 5) });
