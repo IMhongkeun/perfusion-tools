@@ -1438,7 +1438,7 @@ const targetRuntime = vm.runInNewContext([
   mainJs.slice(mainJs.indexOf('function normalizePressureDropKey'), mainJs.indexOf('function fitPressureDropPowerLaw')),
   chartRendererSource,
   ...targetFunctionNames.map(pressureProductionFunction),
-  mainJs.slice(mainJs.indexOf('const PRESSURE_DROP_FEMORAL_VENOUS_SKUS'), mainJs.indexOf('async function initCannulaPressureDropPage')),
+  mainJs.slice(mainJs.indexOf('const PRESSURE_DROP_CENTRAL_VENOUS_SKUS'), mainJs.indexOf('async function initCannulaPressureDropPage')),
   `; ({ classifyPressureDropComparisonEntry, getPressureDropTargetFlowKey, getPressureDropTargetFlowMatches,
     parsePressureDropTargetFlow, getPressureDropTargetFlowResult, getPressureDropTargetFlowRows,
     getPressureDropComparisonFr, getPressureDropComparisonSizeLabel, updatePressureDropTargetFlowSelection, createPressureDropTargetFlowChart,
@@ -1474,11 +1474,12 @@ const documentedCentralVenousModels = {
     'DLP Single Stage Venous Cannulae with Right Angle Metal Tip'
   ]
 };
-const nonspecificVenousSkus = new Set(['V122-24', 'V122-28', 'V122-32', 'V122-34', 'V122-36',
+const operationalCentralVenousSkus = new Set(['V122-24', 'V122-28', 'V122-32', 'V122-34', 'V122-36',
   'V900-01', 'V900-02', 'V152-32', 'V152-36']);
 const newlyFemoralSkus = new Set(['PVS 1938', 'PVS 2138', 'PVS 2338', 'PVS 2538']);
 const documentedCentralVenous = pressureDropData.filter(entry =>
-  documentedCentralVenousModels[entry.manufacturer]?.includes(entry.model));
+  documentedCentralVenousModels[entry.manufacturer]?.includes(entry.model) ||
+    (entry.manufacturer === 'LivaNova' && operationalCentralVenousSkus.has(entry.cannulaOrderCode)));
 const centralVenous = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'central' });
 assert(documentedCentralVenous.length > 0);
 assert.deepStrictEqual(new Set(centralVenous), new Set(documentedCentralVenous), 'Only documented central families enter the Central filter');
@@ -1494,16 +1495,18 @@ assert(centralVenous.some(entry => entry.cannulaOrderCode === '66124'), 'Straigh
 assert.strictEqual(classifyComparison({ ...centralVenous.find(entry => entry.cannulaOrderCode === '66124'),
   category: 'femoral venous', connectionSite: 'Femoral venous' }).location, 'femoral',
   'A SKU with explicit femoral access would override the family mapping');
+assert.strictEqual(classifyComparison({ ...centralVenous.find(entry => entry.cannulaOrderCode === 'V122-24'),
+  category: 'femoral venous', connectionSite: 'Femoral venous' }).location, 'femoral',
+  'Explicit femoral metadata overrides the operational central SKU mapping');
 assert(centralVenous.some(entry => entry.cannulaOrderCode?.includes('RDS-61137')), 'Dual-stage RA/caval family');
 assert(centralVenous.some(entry => entry.cannulaOrderCode?.includes('RTS-11029')), 'Triple-stage RA/caval family');
 const femoralOnly = pressureDropData.filter(entry => /Femoral/i.test(entry.model));
 assert(femoralOnly.length > 0 && femoralOnly.every(entry => !centralVenous.includes(entry)));
 assert(avalonProducts.every(entry => !centralVenous.includes(entry) && classifyComparison(entry).location === 'jugular'));
 const unspecifiedVenous = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'other' });
-assert.strictEqual(unspecifiedVenous.length, nonspecificVenousSkus.size,
-  'Generic major-vessel indications do not establish a Central / RA insertion site.');
-assert([...nonspecificVenousSkus].every(code => unspecifiedVenous.some(entry => entry.cannulaOrderCode === code)));
-assert([...nonspecificVenousSkus].every(code => !centralVenous.some(entry => entry.cannulaOrderCode === code)));
+assert.strictEqual(unspecifiedVenous.length, 0, 'All non-femoral conventional venous cannulas are classified as Central.');
+assert([...operationalCentralVenousSkus].every(code => centralVenous.some(entry => entry.cannulaOrderCode === code)));
+assert([...operationalCentralVenousSkus].every(code => !unspecifiedVenous.some(entry => entry.cannulaOrderCode === code)));
 const femoralVenous = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'femoral' });
 assert([...newlyFemoralSkus].every(code => femoralVenous.some(entry => entry.cannulaOrderCode === code)));
 assert([...newlyFemoralSkus].every(code => !centralVenous.some(entry => entry.cannulaOrderCode === code)));

@@ -6917,8 +6917,15 @@ function isPressureDropAnalyticsReady(activeView, singleView, targetView) {
 // https://www.livanova.com/cannulae/en-us/adult/venous-return-cannulae/triple-stage/rts-11029
 // Medtronic's family-level indication (including straight, right-angle and
 // malleable DLP single-stage forms): https://www.accessdata.fda.gov/cdrh_docs/pdf12/K120988.pdf
-// Exact SKU-level peripheral access mapping. These are non-clinical display
-// classifications and do not alter pressure-flow data or product approval.
+// Perfusionist-confirmed operational classification: these conventional
+// single-stage bullet-tip cannulas are used for central CPB venous drainage.
+// Explicit femoral or jugular metadata still takes precedence below.
+const PRESSURE_DROP_CENTRAL_VENOUS_SKUS = new Set([
+  'V122-24', 'V122-28', 'V122-32', 'V122-34', 'V122-36',
+  'V900-01', 'V900-02', 'V152-32', 'V152-36'
+]);
+// Exact SKU-level peripheral access mapping. These display classifications do
+// not alter pressure-flow data or product approval.
 const PRESSURE_DROP_FEMORAL_VENOUS_SKUS = new Set([
   'PVS 1938', 'PVS 2138', 'PVS 2338', 'PVS 2538'
 ]);
@@ -6935,10 +6942,6 @@ const PRESSURE_DROP_CENTRAL_VENOUS_MODELS = {
     'DLP Single Stage Venous Cannulae with Right Angle Metal Tip'
   ])
 };
-// LivaNova V122/V900/V152 bullet-tip pages state only a generic major-vessel
-// indication. Without SKU-level SVC, IVC or RA access evidence, those products
-// remain Other / Unspecified rather than receiving a central anatomy claim.
-
 // Standard comparison classification uses exact catalog metadata and vetted
 // model mappings, not broad arterial/venous substrings or tip-shape guesses.
 function classifyPressureDropComparisonEntry(entry) {
@@ -6985,7 +6988,8 @@ function classifyPressureDropComparisonEntry(entry) {
   const documentedCentral = entry.manufacturer === 'Medtronic' && type === 'arterial' &&
     centralArterialFamilies.has(entry.model) && !site;
   const documentedCentralVenous = type === 'venous' &&
-    PRESSURE_DROP_CENTRAL_VENOUS_MODELS[entry.manufacturer]?.has(entry.model);
+    (PRESSURE_DROP_CENTRAL_VENOUS_MODELS[entry.manufacturer]?.has(entry.model) ||
+      (entry.manufacturer === 'LivaNova' && PRESSURE_DROP_CENTRAL_VENOUS_SKUS.has(entry.cannulaOrderCode)));
   // Getinge HLS PVS 38 cm is the short peripheral/femoral venous family;
   // match exact submitted order codes, not all similarly named HLS devices.
   const documentedFemoralVenous = type === 'venous' && entry.manufacturer === 'Getinge / Maquet' &&
