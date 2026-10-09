@@ -7573,9 +7573,14 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
   const modelCombobox = createPressureDropSearchableSelect(controls.model, 'Family / model');
   const getFilters = () => ({ category: controls.category.value, location: controls.location.value,
     manufacturer: controls.manufacturer.value, model: controls.model.value });
-  const getEligibleKeys = () => new Set((activeSearchQuery
-    ? searchPressureDropCatalog(entries, activeSearchQuery).filter(entry => classifyPressureDropComparisonEntry(entry).eligible)
-    : getPressureDropTargetFlowMatches(entries, { category: controls.category.value })).map(getPressureDropTargetFlowKey));
+  const getEligibleKeys = () => {
+    const available = activeSearchQuery
+      ? searchPressureDropCatalog(entries, activeSearchQuery).filter(entry => classifyPressureDropComparisonEntry(entry).eligible)
+      : getPressureDropTargetFlowMatches(entries, { category: controls.category.value });
+    // Search narrows the result list without clearing explicitly selected
+    // graph curves from other families or manufacturers.
+    return new Set([...(activeSearchQuery ? selectedKeys : []), ...available.map(getPressureDropTargetFlowKey)]);
+  };
   const refreshOptions = () => {
     const locations = controls.category.value === 'arterial'
       ? [{ value: 'central', label: 'Central / Aortic' }, { value: 'femoral', label: 'Femoral' }]
