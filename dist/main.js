@@ -7429,8 +7429,9 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
     identityCell.className = 'col-start-2 row-start-1 min-w-0 md:table-cell md:p-2 md:align-top';
     const meta = document.createElement('div');
     meta.className = 'text-xs text-slate-500 dark:text-slate-400';
-    meta.appendChild(document.createTextNode(`${entry.manufacturer} · `));
-    appendPressureDropSizeLabel(meta, entry.size || 'Size unavailable');
+    const sizeText = document.createElement('span');
+    appendPressureDropSizeLabel(sizeText, entry.size || 'Size unavailable');
+    meta.append(document.createTextNode(`${entry.manufacturer} · `), sizeText);
     const name = document.createElement('p');
     name.className = 'mt-0.5 break-words text-sm font-semibold text-primary-900 dark:text-white';
     name.textContent = getPressureDropTargetFlowDisplayName(entry);
