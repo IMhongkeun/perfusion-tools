@@ -1570,6 +1570,17 @@ assert.strictEqual(targetRuntime.getPressureDropManufacturerFlowLimit(pressureDr
 const maxFlowResult = targetRuntime.getPressureDropTargetFlowResult(maxFlowEntry, 8.3);
 assert(maxFlowResult.inRange && maxFlowResult.aboveVerifiedManufacturerMax);
 assert(Math.abs(maxFlowResult.magnitude - 41.8) < 0.1, 'Existing interpolation is unchanged');
+const compactLimited = targetRuntime.createPressureDropTargetFlowTable([{
+  entry: maxFlowEntry, key: targetRuntime.getPressureDropTargetFlowKey(maxFlowEntry),
+  identity: maxFlowEntry.size, result: maxFlowResult
+}], [], () => {});
+assert(/LivaNova\s*·\s*24 Fr/.test(compactLimited.textContent),
+  'Compact rows retain manufacturer and size without overwriting the manufacturer label');
+assert(compactLimited.textContent.includes('⚠ Flow caution') && compactLimited.textContent.includes('A292-80C'),
+  'Compact status stays concise while SKU-specific flow evidence remains in details');
+const compactLimitedDetails = pressureDescendants(compactLimited, node => node.tagName === 'details');
+assert.strictEqual(compactLimitedDetails.length, 1);
+assert(!compactLimitedDetails[0].open, 'Manufacturer evidence is collapsed by default');
 assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(maxFlowEntry, 9.1).interpolationResult.state, 'out_of_range');
 const targetFixtures = [
   { manufacturer: 'Medtronic', model: 'A', category: 'femoral arterial', size: '19 Fr', points: [{ flow: 1, pressureDrop: 10 }, { flow: 5, pressureDrop: 90 }] },
