@@ -1883,6 +1883,13 @@ assert.strictEqual(targetFlowInput.value, '1', 'Search keeps the committed targe
 assert(currentRows().some(row => row.dataset.productKey === targetRuntime.getPressureDropTargetFlowKey(eopa)));
 assert(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'li')
   .some(item => item.dataset.productKey === targetRuntime.getPressureDropTargetFlowKey(eopa)));
+catalogSearch.value = 'EOPA 3D'; catalogSearch.dispatch('input'); catalogSearch.dispatch('keydown', { key: 'Enter' });
+assert(currentRows().every(row => row.textContent.includes('EOPA 3D')),
+  'Entering a narrower search must replace only the displayed result list.');
+assert(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'li')
+  .some(item => item.dataset.productKey === targetRuntime.getPressureDropTargetFlowKey(eopa)),
+  'Search must preserve explicitly selected curves from another family.');
+catalogSearch.dispatch('keydown', { key: 'Escape' });
 catalogSearch.value = '67318'; catalogSearch.dispatch('input');
 assert.strictEqual(catalogMatches.children.length, 1, 'Order-code search returns the exact connector variant');
 catalogMatches.children[0].dispatch('click');
