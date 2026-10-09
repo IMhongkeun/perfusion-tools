@@ -364,18 +364,22 @@ assert(
   !pressureDropPageHtml.includes('pressure-drop-compare-'),
   'Only target-flow comparison and single lookup remain; location fallback has a visible note.'
 );
+const heroStart = pressureDropPageHtml.indexOf('id="page-heading"');
+const calculatorStart = pressureDropPageHtml.indexOf('id="pressure-drop-reference-root"');
+assert(heroStart >= 0 && calculatorStart > heroStart &&
+  pressureDropPageHtml.slice(heroStart, calculatorStart).includes('Compare cannula pressure drop at your target flow') &&
+  !pressureDropPageHtml.slice(heroStart, calculatorStart).includes('Manufacturer pressure-flow reference</h2>') &&
+  !pressureDropPageHtml.includes('Filter, then compare') &&
+  pressureDropPageHtml.includes('href="#pressure-drop-methodology"'),
+  'The calculator should follow a short heading without the redundant introductory cards.');
 assert(
-  pressureDropPageHtml.includes('manufacturer pressure-flow curve data') &&
-  pressureDropPageHtml.includes('flow resistance') &&
-  pressureDropPageHtml.includes('model-specific limitations') &&
-  pressureDropPageHtml.includes('Pressure-flow curves') &&
-  pressureDropPageHtml.includes('Manufacturer data') &&
-  pressureDropPageHtml.includes('Linear interpolation') &&
-  pressureDropPageHtml.includes('Arterial &amp; venous cannulas') &&
   pressureDropPageHtml.includes('available manufacturer pressure-flow curves or tables') &&
   pressureDropPageHtml.includes('linear interpolation between adjacent source points') &&
-  pressureDropPageHtml.includes('Compare at Target Flow applies one shared flow'),
-  'Cannula pressure-drop methodology should explain manufacturer source data, linear interpolation, and shared-flow Compare sizes behavior.'
+  pressureDropPageHtml.includes('Compare at Target Flow applies one shared flow') &&
+  pressureDropPageHtml.includes('Manufacturer pressure-drop curves') &&
+  pressureDropPageHtml.includes('Methodology') &&
+  pressureDropPageHtml.includes('Clinical interpretation'),
+  'Clinical source, interpolation, and comparison limitations must remain documented below the calculator.'
 );
 assert(
   pressureDropPageHtml.includes('blood viscosity, hematocrit, temperature, cannula position') &&
@@ -1712,6 +1716,14 @@ const rap = pressureDropData.find(entry => /RAP FV/.test(entry.model) && /23 Fr 
 assert(rap, 'Real RAP catalog size remains available');
 const rapRow = targetRuntime.getPressureDropTargetFlowRows([rap], { category: 'venous' }, 2)[0];
 const rapTable = targetRuntime.createPressureDropTargetFlowTable([rapRow], [], () => {});
+const compactRows = pressureDescendants(rapTable, node => node.tagName === 'tr');
+assert.strictEqual(compactRows.length, 1);
+assert(compactRows[0].className.includes('grid-cols-'), 'Mobile card should use a compact responsive grid.');
+const collapsedSource = pressureDescendants(compactRows[0], node => node.tagName === 'details');
+assert.strictEqual(collapsedSource.length, 1, 'Source and metadata should be collapsed under one Details control.');
+assert(!collapsedSource[0].open, 'Technical details must not be expanded by default.');
+assert(pressureDescendants(compactRows[0], node => node.tagName === 'summary').some(node => node.textContent === 'Details'));
+assert(!compactRows[0].textContent.includes('Compare curve  Compare curve'), 'Avoid repeated visible compare labels.');
 const rapSegments = pressureDescendants(rapTable, node => node.className.includes('whitespace-nowrap'));
 assert.deepStrictEqual(rapSegments.map(node => node.textContent), ['23 Fr distal', '25 Fr proximal']);
 assert(/23 Fr distal\s*\/\s*25 Fr proximal/.test(rapTable.textContent));
