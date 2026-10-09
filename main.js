@@ -7198,6 +7198,14 @@ function getPressureDropTargetFlowValueText(result) {
   return 'Enter a positive target flow';
 }
 
+function getPressureDropTargetFlowStatusText(result) {
+  if (result.unavailableReason) return 'Not comparable';
+  if (result.inRange) return result.interpolationResult.state === 'exact' ? 'Exact' : 'Interpolated';
+  if (result.interpolationResult.state === 'out_of_range') return 'Out of range';
+  if (result.interpolationResult.state === 'no_points') return 'No curve';
+  return 'Enter flow';
+}
+
 function getPressureDropExploredFlow(clientX, rect, dataset) {
   const left = Number(dataset.plotLeft), right = Number(dataset.plotRight);
   const min = Number(dataset.minFlow), max = Number(dataset.maxFlow);
@@ -7350,7 +7358,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     const value = document.createElement('span');
     value.className = `shrink-0 tabular-nums font-semibold ${result.isHighPressure && result.inRange ? 'text-amber-700 dark:text-amber-300' : 'text-primary-900 dark:text-white'}`;
     value.textContent = result.inRange ? `Target: ${result.lumenLabel ? 'Drainage ' : ''}${result.magnitude.toFixed(1)} mmHg`
-      : `Target: ${result.unavailableReason || 'Out of range'}`;
+      : `Target: ${result.unavailableReason || getPressureDropTargetFlowValueText(result)}`;
     if (result.inRange) value.title = `Signed pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
     if (result.isHighPressure && result.inRange) value.setAttribute('aria-label', `${value.textContent}. ${result.warningText}`);
     const limitLabel = getPressureDropManufacturerLimitLabel(result.manufacturerLimit);
@@ -7364,8 +7372,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     if (result.series) exploredCells.push(explored);
     const status = document.createElement('span');
     status.className = 'shrink-0 rounded-full bg-slate-100 dark:bg-primary-800 px-2 py-0.5 text-[11px]';
-    status.textContent = limitLabel ? 'Above verified SKU max' : result.unavailableReason ? 'Not comparable' : result.inRange
-      ? (result.interpolationResult.state === 'exact' ? 'Exact' : 'Interpolated') : 'Out of range';
+    status.textContent = limitLabel ? 'Above verified SKU max' : getPressureDropTargetFlowStatusText(result);
     if (limitLabel) { status.title = limitLabel; status.className += ' text-amber-700 dark:text-amber-300'; }
     const sourceUrl = String(entry.sourceUrl || '').trim();
     const source = /^https?:\/\//i.test(sourceUrl) ? document.createElement('a') : null;

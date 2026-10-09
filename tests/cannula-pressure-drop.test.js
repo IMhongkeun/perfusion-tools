@@ -1979,9 +1979,13 @@ const exploringSvg = pressureDescendants(exploringChart, node => node.tagName ==
 const chartReadout = pressureDescendants(exploringChart, node => node.textContent.startsWith('Target: '))[0];
 const chartSlider = pressureDescendants(exploringChart, node => node.type === 'range')[0];
 const blankTargetChart = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[0]], NaN, false, () => {}, () => {});
+const blankTargetItem = pressureDescendants(blankTargetChart, node => node.tagName === 'li')[0];
 const blankSlider = pressureDescendants(blankTargetChart, node => node.type === 'range')[0];
 const blankCommit = pressureDescendants(blankTargetChart,
   node => node.tagName === 'button' && node.textContent === 'Use as target flow')[0];
+assert(blankTargetItem.textContent.includes('Target: Enter a positive target flow'));
+assert(blankTargetItem.textContent.includes('Enter flow'));
+assert(!blankTargetItem.textContent.includes('Out of range'), 'An unset target must not be labeled as a source-range violation.');
 assert(blankSlider && Number(blankSlider.min) > 0, 'Explorer must start at a positive tenth-step when the target input is blank.');
 assert(blankCommit && (!blankCommit.disabled || Number(blankSlider.min) > 0),
   'The commit control must not accept a zero or negative flow.');
@@ -2041,6 +2045,11 @@ const outOfRangeOverlay = targetRuntime.createPressureDropTargetFlowChart([highA
 const outOfRangeItem = pressureDescendants(outOfRangeOverlay, node => node.tagName === 'li')[0];
 assert(outOfRangeItem.textContent.includes('Out of range'));
 assert(!pressureDescendants(outOfRangeItem, node => node.className.includes('text-amber-700')).length);
+const noCurveOverlay = targetRuntime.createPressureDropTargetFlowChart([{ ...highArterial, points: [] }], 5, false, () => {}, () => {});
+const noCurveItem = pressureDescendants(noCurveOverlay, node => node.tagName === 'li')[0];
+assert(noCurveItem.textContent.includes('Target: No digitized curve'));
+assert(noCurveItem.textContent.includes('No curve'));
+assert(!noCurveItem.textContent.includes('Out of range'), 'Missing curve data must remain distinct from a range violation.');
 
 const signedOverlay = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[3]], 4.5, false, () => {}, () => {});
 assert(!signedOverlay.textContent.includes('signed pressure'));
