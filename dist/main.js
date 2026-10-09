@@ -7374,7 +7374,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
   attachPressureDropChartExplorer(panel, svg, series, flow, onCommitFlow, exploreControls, exploredCells);
   const note = document.createElement('p');
   note.className = 'text-xs text-slate-500 dark:text-slate-400';
-  note.textContent = 'In-range refers to the digitized curve, not a manufacturer-approved maximum. If no manufacturer maximum is shown, it has not been verified; see product documentation.';
+  note.textContent = 'Digitized curve range ≠ manufacturer max flow. Check the product source.';
   if (!estimates.some(estimate => hasValidPressureDropEstimate([estimate]))) {
     note.textContent += ' No selected curve has an in-range estimate at this target flow.';
   }
