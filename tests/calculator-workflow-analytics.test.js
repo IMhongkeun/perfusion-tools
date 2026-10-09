@@ -13,17 +13,17 @@ function sourceBetween(start, end) {
   return mainJs.slice(startIndex, endIndex);
 }
 
-const pressureSource = sourceBetween('function hasValidPressureDropEstimate', 'function createPressureDropComparisonChart');
+const pressureSource = sourceBetween('function hasValidPressureDropEstimate', '// Standard comparison classification');
 const pressureRuntime = vm.runInNewContext(`${pressureSource}; ({ hasValidPressureDropEstimate, isPressureDropAnalyticsReady })`, { isElementVisible: element => Boolean(element?.visible) });
 assert.strictEqual(pressureRuntime.hasValidPressureDropEstimate([{ state: 'invalid' }]), false, 'Filter/reference-only state must not complete.');
 assert.strictEqual(pressureRuntime.hasValidPressureDropEstimate([{ state: 'out_of_range' }]), false, 'Out-of-range state must not complete.');
 assert.strictEqual(pressureRuntime.hasValidPressureDropEstimate([{ state: 'exact' }]), true, 'Exact pressure estimate must complete.');
 assert.strictEqual(pressureRuntime.hasValidPressureDropEstimate([{ state: 'interpolated' }]), true, 'Interpolated pressure estimate must complete.');
 const readySingle = { visible: true, dataset: { analyticsReady: 'true' } };
-const readyCompare = { visible: true, dataset: { analyticsReady: 'true' } };
+const readyTarget = { visible: true, dataset: { analyticsReady: 'true' } };
 assert.strictEqual(pressureRuntime.isPressureDropAnalyticsReady('single', readySingle, { visible: false, dataset: { analyticsReady: 'true' } }), true);
-assert.strictEqual(pressureRuntime.isPressureDropAnalyticsReady('compare', { visible: false, dataset: { analyticsReady: 'true' } }, readyCompare), true, 'Active comparison result must complete independently of hidden single results.');
-assert.strictEqual(pressureRuntime.isPressureDropAnalyticsReady('compare', readySingle, { visible: false, dataset: { analyticsReady: 'true' } }), false, 'Hidden inactive result views must not complete.');
+assert.strictEqual(pressureRuntime.isPressureDropAnalyticsReady('target', { visible: false, dataset: { analyticsReady: 'true' } }, readyTarget), true, 'Active target-flow result must complete independently of hidden single results.');
+assert.strictEqual(pressureRuntime.isPressureDropAnalyticsReady('target', readySingle, { visible: false, dataset: { analyticsReady: 'true' } }), false, 'Hidden inactive result views must not complete.');
 
 const transplantSource = sourceBetween('function createDefaultTransplantState', 'function transplantClockIcon');
 const transplantRuntime = vm.runInNewContext(`${transplantSource}; ({ createDefaultTransplantState, hasCompletedTransplantInterval })`, {});

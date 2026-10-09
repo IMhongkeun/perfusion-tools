@@ -1397,7 +1397,7 @@ function drawPressureDropSeriesChart(svgNode, pressureSeries, targetFlow, estima
     .filter(item => item.points.length);
   if (!svgNode || !renderedSeries.length) return;
   const width = 420; const height = 200;
-  const legendLayout = getPressureDropLegendLayout(renderedSeries.length);
+  const legendLayout = getPressureDropLegendLayout(options.showLegend === false ? 0 : renderedSeries.length);
   const padding = { left: 58, right: 18, top: legendLayout.topPadding, bottom: 42 };
   const allPoints = renderedSeries.flatMap(item => item.points);
   const minFlow = Math.min(...allPoints.map(point => point.flow));
@@ -1438,17 +1438,27 @@ function drawPressureDropSeriesChart(svgNode, pressureSeries, targetFlow, estima
     const displayLabel = item.displayLabel || item.label;
     return `<circle data-series-id="${item.id || item.originalIndex}" cx="${scaleX(targetFlow).toFixed(1)}" cy="${scaleY(item.estimate.value).toFixed(1)}" r="4" fill="${color}" stroke="white" stroke-width="1.5"><title>${displayLabel}; Target flow: ${targetFlow.toFixed(2)} L/min; Signed pressure: ${formatSignedPressureDrop(item.estimate.value)} mmHg</title></circle>`;
   }).join('');
-  const legend = renderedSeries.map((item, index) => {
+  const legend = options.showLegend === false ? '' : renderedSeries.map((item, index) => {
     const position = legendLayout.positions[index];
     return `<g data-legend-index="${index}" transform="translate(${position.x} ${position.y})"><line x1="0" y1="0" x2="18" y2="0" stroke="${getColor(item, index)}" stroke-width="2.5"${item.lineStyle === 'dashed' ? ' stroke-dasharray="7 4"' : ''}/><text x="23" y="3" font-size="8" fill="currentColor">${item.displayLabel || item.label}</text></g>`;
   }).join('');
+  const targetLine = options.showTargetFlowLine && Number.isFinite(targetFlow) && targetFlow >= minFlow && targetFlow <= maxFlow
+    ? `<line data-target-flow-line="true" x1="${scaleX(targetFlow).toFixed(1)}" y1="${padding.top}" x2="${scaleX(targetFlow).toFixed(1)}" y2="${plotBottom}" stroke="currentColor" stroke-opacity="0.6" stroke-dasharray="4 3"><title>Target flow: ${targetFlow.toFixed(2)} L/min</title></line>`
+    : '';
   svgNode.dataset.includesNegativePressure = String(rawMinDrop < 0);
   svgNode.dataset.includesPositivePressure = String(rawMaxDrop > 0);
   svgNode.dataset.zeroReferenceLine = String(crossesZero);
   svgNode.dataset.curveMode = options.curveMode || 'linear';
   svgNode.dataset.legendRows = String(legendLayout.rowCount);
   svgNode.dataset.plotTop = String(padding.top);
-  svgNode.innerHTML = `${xGridlines}${yGridlines}${zeroLine}<line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${plotBottom}" stroke="currentColor" stroke-opacity="0.35" />${traces}${targetMarkers}${legend}${xLabels}${yLabels}<text x="${plotRight}" y="${height - 8}" font-size="9" text-anchor="end" fill="currentColor" opacity="0.65">Flow [L/min]</text><text x="14" y="${plotMiddleY.toFixed(1)}" transform="rotate(-90 14 ${plotMiddleY.toFixed(1)})" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.65">Pressure drop [mmHg]</text>`;
+  svgNode.dataset.plotLeft = String(padding.left);
+  svgNode.dataset.plotRight = String(plotRight);
+  svgNode.dataset.plotBottom = String(plotBottom);
+  svgNode.dataset.minFlow = String(minFlow);
+  svgNode.dataset.maxFlow = String(maxFlow);
+  svgNode.dataset.minDrop = String(minDrop);
+  svgNode.dataset.pressureRange = String(pressureRange);
+  svgNode.innerHTML = `${xGridlines}${yGridlines}${zeroLine}<line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${plotBottom}" stroke="currentColor" stroke-opacity="0.35" />${traces}${targetLine}${targetMarkers}${legend}${xLabels}${yLabels}<text x="${plotRight}" y="${height - 8}" font-size="9" text-anchor="end" fill="currentColor" opacity="0.65">Flow [L/min]</text><text x="14" y="${plotMiddleY.toFixed(1)}" transform="rotate(-90 14 ${plotMiddleY.toFixed(1)})" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.65">Pressure drop [mmHg]</text>`;
 }
 
 function drawPressureDropChart(svgNode, points, targetFlow, estimatedPressureDrop, options = {}) {
@@ -6403,6 +6413,7 @@ function setPressureDropSelectOptionPairs(selectNode, optionPairs, placeholder) 
     const node = document.createElement('option');
     node.value = option.value;
     node.textContent = option.label;
+    if (option.searchText) node.dataset.searchText = option.searchText;
     selectNode.appendChild(node);
   });
   selectNode.value = optionPairs.some(option => option.value === currentValue) ? currentValue : '';
@@ -6418,14 +6429,15 @@ function createPressureDropSearchableSelect(selectNode, placeholder, onChange) {
   selectNode.tabIndex = -1;
 
   const wrapper = document.createElement('div');
-  wrapper.className = 'pressure-drop-combobox relative';
+  wrapper.className = 'pressure-drop-combobox relative min-w-0 w-full';
   const button = document.createElement('button');
   button.type = 'button';
-  button.className = 'flex w-full items-center justify-between gap-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-left text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white disabled:opacity-60';
+  button.className = 'flex min-w-0 w-full items-center justify-between gap-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-left text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white disabled:opacity-60';
   button.setAttribute('aria-haspopup', 'listbox');
   button.setAttribute('aria-expanded', 'false');
+  button.setAttribute('aria-label', placeholder);
   const label = document.createElement('span');
-  label.className = 'min-w-0 flex-1 truncate';
+  label.className = 'min-w-0 flex-1 break-words line-clamp-2';
   const icon = document.createElement('span');
   icon.className = 'flex-shrink-0 text-slate-400 dark:text-slate-500';
   icon.setAttribute('aria-hidden', 'true');
@@ -6433,9 +6445,8 @@ function createPressureDropSearchableSelect(selectNode, placeholder, onChange) {
   button.append(label, icon);
 
   const panel = document.createElement('div');
-  panel.className = 'pressure-drop-combobox-panel absolute z-30 mt-1 hidden rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 shadow-xl p-2';
-  panel.style.maxWidth = 'min(520px, calc(100vw - 32px))';
-  panel.style.width = 'min(520px, calc(100vw - 32px))';
+  panel.className = 'pressure-drop-combobox-panel absolute z-30 hidden rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 shadow-xl p-2';
+  panel.style.width = '100%';
   panel.style.maxHeight = '320px';
   panel.style.overflow = 'hidden';
 
@@ -6448,6 +6459,8 @@ function createPressureDropSearchableSelect(selectNode, placeholder, onChange) {
   const list = document.createElement('div');
   list.className = 'max-h-[260px] overflow-y-auto overflow-x-hidden pr-1';
   list.setAttribute('role', 'listbox');
+  list.id = `${selectNode.id}-options`;
+  search.setAttribute('aria-controls', list.id);
   panel.append(search, list);
   wrapper.append(button, panel);
   selectNode.insertAdjacentElement('afterend', wrapper);
@@ -6462,38 +6475,42 @@ function createPressureDropSearchableSelect(selectNode, placeholder, onChange) {
     highlightedIndex = -1;
   };
   const updatePanelPosition = () => {
+    if (panel.classList.contains('hidden')) return;
     const rect = wrapper.getBoundingClientRect();
-    const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
-    if (viewportWidth <= 768) {
-      panel.style.top = `${Math.max(rect.bottom + 4, 16)}px`;
-      panel.style.left = '16px';
-      panel.style.right = '16px';
-      return;
-    }
-    panel.style.top = '';
-    if (viewportWidth && rect.left + 520 > viewportWidth - 16) {
-      panel.style.left = 'auto';
-      panel.style.right = '0';
-    } else {
-      panel.style.left = '0';
-      panel.style.right = 'auto';
-    }
+    const viewport = window.visualViewport;
+    const viewportTop = viewport?.offsetTop || 0;
+    const viewportHeight = viewport?.height || window.innerHeight || document.documentElement.clientHeight || 0;
+    const viewportBottom = viewportTop + viewportHeight;
+    const below = viewportBottom - rect.bottom - 8;
+    const above = rect.top - viewportTop - 8;
+    const openAbove = below < 160 && above > below;
+    const availableHeight = Math.max(56, Math.min(320, openAbove ? above : below));
+    panel.style.maxHeight = `${availableHeight}px`;
+    list.style.maxHeight = `${Math.max(56, availableHeight - 60)}px`;
+    // The panel is absolute inside the wrapper at every width. Viewport rects
+    // only choose its direction; they are never assigned as local CSS offsets.
+    panel.style.top = openAbove ? 'auto' : '100%';
+    panel.style.bottom = openAbove ? '100%' : 'auto';
+    panel.style.left = '0';
+    panel.style.right = 'auto';
+    panel.style.marginTop = openAbove ? '0' : '4px';
+    panel.style.marginBottom = openAbove ? '4px' : '0';
   };
   const selectValue = (value) => {
     selectNode.value = value;
     selectNode.dispatchEvent(new Event('change', { bubbles: true }));
     if (typeof onChange === 'function') onChange(value);
     close();
-    button.focus();
+    button.focus({ preventScroll: true });
   };
   const renderOptions = () => {
     const query = search.value.trim().toLowerCase();
-    visibleOptions = options.filter(option => !query || option.label.toLowerCase().includes(query));
+    visibleOptions = options.filter(option => !query || option.searchText.toLowerCase().includes(query));
     list.innerHTML = '';
     visibleOptions.forEach((option, index) => {
       const item = document.createElement('button');
       item.type = 'button';
-      item.className = `block w-full overflow-hidden text-ellipsis whitespace-nowrap rounded-lg px-3 py-2 text-left text-sm ${option.value === selectNode.value ? 'bg-accent-500/10 text-accent-700 dark:text-accent-300' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-primary-800'}`;
+      item.className = `block w-full min-w-0 break-words whitespace-normal rounded-lg px-3 py-2 text-left text-sm ${option.value === selectNode.value ? 'bg-accent-500/10 text-accent-700 dark:text-accent-300' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-primary-800'}`;
       item.setAttribute('role', 'option');
       item.setAttribute('aria-selected', option.value === selectNode.value ? 'true' : 'false');
       item.title = option.label;
@@ -6515,41 +6532,54 @@ function createPressureDropSearchableSelect(selectNode, placeholder, onChange) {
     highlightedIndex = (nextIndex + visibleOptions.length) % visibleOptions.length;
     Array.from(list.querySelectorAll('[role="option"]')).forEach((item, index) => {
       item.classList.toggle('bg-accent-500/20', index === highlightedIndex);
-      if (index === highlightedIndex) item.scrollIntoView({ block: 'nearest' });
+      if (index === highlightedIndex) {
+        const itemTop = item.offsetTop - list.offsetTop;
+        if (itemTop < list.scrollTop) list.scrollTop = itemTop;
+        else if (itemTop + item.offsetHeight > list.scrollTop + list.clientHeight) {
+          list.scrollTop = itemTop + item.offsetHeight - list.clientHeight;
+        }
+      }
     });
   };
-  const open = () => {
+  const open = (focusSearch = false) => {
     if (selectNode.disabled) return;
-    updatePanelPosition();
     search.value = '';
     renderOptions();
     panel.classList.remove('hidden');
     button.setAttribute('aria-expanded', 'true');
-    setTimeout(() => search.focus(), 0);
+    updatePanelPosition();
+    // Touch opening must not summon the keyboard and scroll the document.
+    if (focusSearch) search.focus({ preventScroll: true });
   };
   const refresh = () => {
-    options = Array.from(selectNode.options).map(option => ({ value: option.value, label: option.textContent || option.value }));
+    options = Array.from(selectNode.options).map(option => ({ value: option.value,
+      label: option.textContent || option.value,
+      searchText: option.dataset.searchText || `${option.textContent || ''} ${option.value}` }));
     const selected = options.find(option => option.value === selectNode.value);
     label.textContent = selected?.label || placeholder;
     label.title = selected?.label || placeholder;
+    button.setAttribute('aria-label', `${placeholder}: ${selected?.label || placeholder}`);
     button.disabled = selectNode.disabled;
     renderOptions();
   };
 
-  button.addEventListener('click', () => panel.classList.contains('hidden') ? open() : close());
+  button.addEventListener('click', () => panel.classList.contains('hidden') ? open(false) : close());
   search.addEventListener('input', () => { highlightedIndex = -1; renderOptions(); });
   search.addEventListener('keydown', event => {
     if (event.key === 'ArrowDown') { event.preventDefault(); highlight(highlightedIndex + 1); }
     else if (event.key === 'ArrowUp') { event.preventDefault(); highlight(highlightedIndex - 1); }
     else if (event.key === 'Enter') { event.preventDefault(); if (visibleOptions[highlightedIndex]) selectValue(visibleOptions[highlightedIndex].value); }
-    else if (event.key === 'Escape') { event.preventDefault(); close(); button.focus(); }
+    else if (event.key === 'Escape') { event.preventDefault(); close(); button.focus({ preventScroll: true }); }
   });
   button.addEventListener('keydown', event => {
-    if (['ArrowDown', 'Enter', ' '].includes(event.key)) { event.preventDefault(); open(); }
+    if (['ArrowDown', 'Enter', ' '].includes(event.key)) { event.preventDefault(); open(true); }
     else if (event.key === 'Escape') close();
   });
   document.addEventListener('mousedown', event => { if (!wrapper.contains(event.target)) close(); });
   window.addEventListener('resize', updatePanelPosition);
+  window.addEventListener('scroll', updatePanelPosition, { passive: true });
+  window.visualViewport?.addEventListener('resize', updatePanelPosition);
+  window.visualViewport?.addEventListener('scroll', updatePanelPosition);
 
   refresh();
   return { refresh, close, open, panel, button, search, list };
@@ -6831,22 +6861,6 @@ function createPressureDropAvailableDatasetsDetails(entries, onSelect) {
   return details;
 }
 
-function getPressureDropComparisonKey(entry) {
-  return [
-    entry.lookupId,
-    entry.manufacturer,
-    getPressureDropCategoryFilterValue(entry.category),
-    entry.model,
-    getPressureDropSizeOptionValue(entry),
-    getPressureDropConnectionOptionValue(entry)
-  ].filter(Boolean).join('||');
-}
-
-function getPressureDropComparisonSizeLabel(entry) {
-  if (entry.size) return entry.size;
-  return entry.cannulaOrderCode || 'Unknown size';
-}
-
 function shouldApplyPressureDropHighWarning(entry) {
   const noteText = normalizePressureDropFilterLabel([
     entry?.notes,
@@ -6890,157 +6904,885 @@ function hasValidPressureDropEstimate(interpolationResults) {
   return interpolationResults.some(result => result?.state === 'exact' || result?.state === 'interpolated');
 }
 
-function isPressureDropAnalyticsReady(activeView, singleView, compareView) {
-  const view = activeView === 'compare' ? compareView : singleView;
+function isPressureDropAnalyticsReady(activeView, singleView, targetView) {
+  const view = activeView === 'target' ? targetView : singleView;
   return isElementVisible(view) && view?.dataset.analyticsReady === 'true';
 }
 
-function createPressureDropComparisonChart(selectedEntries, flowValue, showRawPoints, onRawPointsChange) {
+// These exact catalog families have manufacturer-documented central venous
+// drainage indications. The mapping describes access in the comparison UI;
+// the source records, pressures and product identities remain unchanged.
+// LivaNova: https://www.livanova.com/cannulae/en-us/adult/venous-return-cannulae/single-stage/right-angle-lighthouse-tip-wire-reinforced-tubing/rv-41026
+// https://www.livanova.com/cannulae/en-us/adult/venous-return-cannulae/dual-stage/wire-reinforced-tubing/rds-61137
+// https://www.livanova.com/cannulae/en-us/adult/venous-return-cannulae/triple-stage/rts-11029
+// Medtronic's family-level indication (including straight, right-angle and
+// malleable DLP single-stage forms): https://www.accessdata.fda.gov/cdrh_docs/pdf12/K120988.pdf
+// Exact SKU-level central/peripheral access mappings. These are non-clinical
+// display classifications and do not alter pressure-flow data or product approval.
+const PRESSURE_DROP_CENTRAL_VENOUS_SKUS = new Set([
+  'V122-24', 'V122-28', 'V122-32', 'V122-34', 'V122-36',
+  'V900-01', 'V900-02', 'V152-32', 'V152-36'
+]);
+const PRESSURE_DROP_FEMORAL_VENOUS_SKUS = new Set([
+  'PVS 1938', 'PVS 2138', 'PVS 2338', 'PVS 2538'
+]);
+const PRESSURE_DROP_CENTRAL_VENOUS_MODELS = {
+  LivaNova: new Set([
+    'Single Stage Right Angle Lighthouse Tip Venous Return Cannulae — Right Angle Lighthouse Tip, Wire-reinforced Tubing',
+    'Dual Stage Venous Return Cannulae — Wire-reinforced Tubing',
+    'Triple Stage Venous Return — Wire-reinforced Tubing'
+  ]),
+  Medtronic: new Set([
+    'DLP Single Stage Venous Cannulae',
+    'DLP Malleable Single Stage Venous Cannulae',
+    'DLP Right Angle Single Stage Venous Cannulae',
+    'DLP Single Stage Venous Cannulae with Right Angle Metal Tip'
+  ])
+};
+
+// Standard comparison classification uses exact catalog metadata and vetted
+// model mappings, not broad arterial/venous substrings or tip-shape guesses.
+function classifyPressureDropComparisonEntry(entry) {
+  const category = normalizePressureDropFilterLabel(entry.category);
+  const site = normalizePressureDropFilterLabel(entry.connectionSite);
+  const model = normalizePressureDropFilterLabel(entry.model);
+  const isAvalon = entry.manufacturer === 'Getinge / Maquet' && model === 'avalon elite bi-caval dual-lumen catheter';
+  const specialtyCategories = new Set(['aortic root / cardioplegia', 'cardioplegia', 'vent']);
+  const specialtySites = new Set(['aortic root', 'coronary ostia perfusion', 'retrograde cardioplegia / coronary sinus']);
+  if (specialtyCategories.has(category) || specialtySites.has(site)) {
+    const configuration = site === 'coronary ostia perfusion' ? 'Coronary ostial perfusion'
+      : site === 'retrograde cardioplegia / coronary sinus' ? 'Retrograde cardioplegia'
+        : category === 'vent' ? 'Vent' : 'Antegrade cardioplegia';
+    return { eligible: false, category: 'specialty', location: 'other', configuration };
+  }
+  const arterialCategories = new Set(['arterial', 'adult arterial', 'femoral arterial']);
+  const venousCategories = new Set(['venous', 'adult venous', 'femoral venous', 'femoral bi-caval venous', 'jugular venous']);
+  const type = arterialCategories.has(category) ? 'arterial' : venousCategories.has(category) ? 'venous' : 'unknown';
+  if (type === 'unknown') return { eligible: false, category: type, location: 'other' };
+  const anatomicalSites = {
+    'femoral arterial': { category: 'arterial', location: 'femoral' },
+    'femoral venous': { category: 'venous', location: 'femoral' },
+    'aortic arch': { category: 'arterial', location: 'central' },
+    'aorta': { category: 'arterial', location: 'central' },
+    'right atrial': { category: 'venous', location: 'central' },
+    'right atrium': { category: 'venous', location: 'central' },
+    'jugular venous': { category: 'venous', location: 'jugular' }
+  };
+  const explicitSite = anatomicalSites[site];
+  if (explicitSite && explicitSite.category !== type) {
+    return { eligible: false, category: 'unknown', location: 'other' };
+  }
+  // Specific anatomy recorded in category is usable when connectionSite is absent
+  // or non-anatomical. Bi-caval alone is a design, not an insertion site.
+  const categoryLocations = {
+    'femoral arterial': 'femoral', 'femoral venous': 'femoral',
+    'femoral bi-caval venous': 'femoral', 'jugular venous': 'jugular'
+  };
+  // Medtronic documents ascending-aorta perfusion for these exact families:
+  // https://www.medtronic.com/se-sv/healthcare-professionals/products/cardiovascular/cannulae/adult-extracorporeal-circuit/indications-safety-warnings.html
+  // https://www.medtronic.com/en-us/healthcare-professionals/products/cardiovascular/cannulae/arterial-cannulae/select-3d-ii-arterial-cannula.html
+  // EOPA (without 3D) and Select Angled Tip retain an unspecified site.
+  const centralArterialFamilies = new Set(['EOPA 3D Arterial Cannulae', 'Select 3D II Arterial Cannulae']);
+  const documentedCentral = entry.manufacturer === 'Medtronic' && type === 'arterial' &&
+    centralArterialFamilies.has(entry.model) && !site;
+  const documentedCentralVenous = type === 'venous' &&
+    (PRESSURE_DROP_CENTRAL_VENOUS_MODELS[entry.manufacturer]?.has(entry.model) ||
+      (entry.manufacturer === 'LivaNova' && PRESSURE_DROP_CENTRAL_VENOUS_SKUS.has(entry.cannulaOrderCode)));
+  // Getinge HLS PVS 38 cm is the short peripheral/femoral venous family;
+  // match exact submitted order codes, not all similarly named HLS devices.
+  const documentedFemoralVenous = type === 'venous' && entry.manufacturer === 'Getinge / Maquet' &&
+    entry.model === 'HLS Venous Cannula' && PRESSURE_DROP_FEMORAL_VENOUS_SKUS.has(entry.cannulaOrderCode);
+  const location = explicitSite?.location || categoryLocations[category] ||
+    (documentedFemoralVenous ? 'femoral' : (documentedCentral || documentedCentralVenous ? 'central' : 'other'));
+  return { eligible: true, category: type, location,
+    configuration: isAvalon ? 'Dual-lumen VV ECMO' : type === 'arterial' ? 'Standard arterial perfusion' : 'Standard venous drainage' };
+}
+
+function getPressureDropTargetFlowSeries(entry) {
+  const series = getPressureDropSeries(entry);
+  const classification = classifyPressureDropComparisonEntry(entry);
+  if (classification.configuration !== 'Dual-lumen VV ECMO') return series.length === 1 ? series[0] : null;
+  // Getinge documents jugular access, separate bicaval drainage and RA return:
+  // https://www.getinge.com/anz/products/avalon-elite-catheter/
+  // Require explicit, matching series metadata; never infer lumen by position/sign.
+  const drainage = series.filter(item => item.id === 'drainage' && item.semanticType === 'drainage' && item.label === 'Drainage');
+  const infusion = series.filter(item => item.id === 'infusion' && item.semanticType === 'infusion' && item.label === 'Infusion');
+  return drainage.length === 1 && infusion.length === 1 && series.length === 2 ? drainage[0] : null;
+}
+
+function getPressureDropTargetFlowModelLabel(model) {
+  const shortNames = {
+    'Avalon Elite Bi-Caval Dual-Lumen Catheter': 'Avalon Elite · Dual-lumen ECMO',
+    'EOPA 3D Arterial Cannulae': 'EOPA 3D',
+    'EOPA Arterial Cannulae': 'EOPA',
+    'Select 3D II Arterial Cannulae': 'Select 3D II',
+    'Select Series Angled Tip Arterial Cannulae': 'Select Series · Angled Tip',
+    'Optiflow Aortic Arch Cannulae — Curved Tip, Wire-reinforced Tubing': 'Optiflow Aortic Arch · Curved Tip',
+    'Optiflow Aortic Arch Cannulae — Straight Tip, Wire-reinforced Tubing': 'Optiflow Aortic Arch · Straight Tip',
+    'Aortic Arch Cannulae — Curved Tip with Suture Flange, Wire-reinforced Tubing': 'Aortic Arch · Curved Tip',
+    'Aortic Arch Cannulae — Straight Tip with Suture Collar, Wire-reinforced Tubing': 'Aortic Arch · Straight Tip'
+  };
+  return shortNames[model] || model.replace(/ — (?:[^—]*, )?Wire-reinforced Tubing$/i, '');
+}
+
+function getPressureDropTargetFlowDisplayName(entry) {
+  return getPressureDropTargetFlowModelLabel(entry.model).replace('Avalon Elite · Dual-lumen ECMO', 'Avalon Elite');
+}
+
+function getPressureDropTargetFlowModelOptions(entries) {
+  const models = [...new Set(entries.map(entry => entry.model).filter(Boolean))];
+  const names = models.map(getPressureDropTargetFlowModelLabel);
+  return models.map((model, index) => ({ value: model,
+    label: names.indexOf(names[index]) === names.lastIndexOf(names[index]) ? names[index] : model,
+    searchText: `${[...new Set(entries.filter(entry => entry.model === model).map(entry => entry.manufacturer))].join(' ')} ${model} ${names[index]}`
+  })).sort((left, right) => left.label.localeCompare(right.label, undefined, { numeric: true }));
+}
+
+function getPressureDropTargetFlowKey(entry) {
+  // Independent of row position, lookupId, filtering and sorting; includes catalog
+  // codes/connector variants so equal Fr labels cannot select another product.
+  return JSON.stringify([entry.manufacturer, entry.category, entry.model, getPressureDropSizeOptionValue(entry)]);
+}
+
+function getPressureDropTargetFlowIdentity(entry, catalogEntries) {
+  const size = entry.size || 'Unknown size';
+  const hasSameSizeVariant = catalogEntries.some(other => other !== entry &&
+    other.manufacturer === entry.manufacturer && other.model === entry.model && other.size === entry.size);
+  if (!hasSameSizeVariant) return size;
+  const variant = [entry.cannulaOrderCode, entry.connectorSize || entry.connectionSite].filter(Boolean).join(' · ');
+  return variant ? `${size} · ${variant}` : size;
+}
+
+function appendPressureDropSizeLabel(node, identity) {
+  const [size, ...details] = String(identity).split(' · ');
+  const parts = size.split(/\s*\/\s*(?=\d+(?:\.\d+)?\s*(?:Fr|mm)\b)/i);
+  if (parts.length === 1) { node.textContent = identity; return; }
+  parts.forEach((part, index) => {
+    if (index) node.appendChild(document.createTextNode(' / '));
+    const segment = document.createElement('span');
+    segment.className = 'inline-block whitespace-nowrap';
+    segment.textContent = part;
+    node.appendChild(segment);
+  });
+  if (details.length) node.appendChild(document.createTextNode(` · ${details.join(' · ')}`));
+}
+
+function searchPressureDropCatalog(entries, query) {
+  const terms = String(query).trim().toLowerCase().split(/\s+/).filter(Boolean);
+  if (!terms.length) return [];
+  return entries.filter(entry => {
+    const classification = classifyPressureDropComparisonEntry(entry);
+    const searchable = [entry.manufacturer, entry.model, getPressureDropTargetFlowModelLabel(entry.model || ''),
+      entry.size, entry.cannulaOrderCode, entry.connectorSize, entry.connectionSite,
+      Number.isFinite(getPressureDropComparisonFr(entry)) ? `${getPressureDropComparisonFr(entry)} Fr` : '',
+      classification.configuration, getPressureDropProductFamily(entry)].filter(Boolean).join(' ').toLowerCase();
+    return terms.every(term => searchable.includes(term));
+  });
+}
+
+function getPressureDropTargetFlowMatches(entries, filters) {
+  return entries.filter(entry => {
+    const classification = classifyPressureDropComparisonEntry(entry);
+    return classification.eligible && classification.category === filters.category &&
+      (!filters.location || classification.location === filters.location) &&
+      (!filters.manufacturer || entry.manufacturer === filters.manufacturer) &&
+      (!filters.model || entry.model === filters.model);
+  });
+}
+
+function parsePressureDropTargetFlow(value) {
+  const text = String(value ?? '').trim().replace(',', '.');
+  // Keep decimal/comma entry conventions without accepting parseFloat's partial
+  // numbers (e.g. "4.5junk"). Positive finite flows have no imposed maximum.
+  if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(text)) return NaN;
+  const flow = parsePressureDropFlowInput(text);
+  return flow > 0 ? flow : NaN;
+}
+
+// Manufacturer-stated maximum flow is NOT the endpoint of the digitized
+// hydraulic curve. Verify limits per SKU; never infer an entire model family.
+// Repository Optiflow rows combine connector variants, so these limits are
+// explicitly identified as verified for SKU C ONLY (other variants unknown).
+const PRESSURE_DROP_VERIFIED_FLOW_LIMITS = [
+  {
+    manufacturer: 'LivaNova', model: 'Optiflow Aortic Arch Cannulae — Straight Tip, Wire-reinforced Tubing',
+    size: '24 Fr', verifiedSku: 'A292-80C', maxFlowLMin: 8,
+    source: 'https://www.livanova.com/cannulae/en-us/adult/arterial-cannulae/optiflow-arterial/straight-tip-wire-reinforced-tubing/a292-80c'
+  },
+  {
+    manufacturer: 'LivaNova', model: 'Optiflow Aortic Arch Cannulae — Curved Tip, Wire-reinforced Tubing',
+    size: '24 Fr', verifiedSku: 'A282-80C', maxFlowLMin: 8,
+    source: 'https://www.livanova.com/cannulae/en-us/adult/arterial-cannulae/optiflow-arterial/curved-tip-wire-reinforced-tubing/a282-80c'
+  }
+];
+
+function getPressureDropManufacturerFlowLimit(entry, flow) {
+  const verified = PRESSURE_DROP_VERIFIED_FLOW_LIMITS.find(item =>
+    entry.manufacturer === item.manufacturer && entry.model === item.model &&
+    entry.size === item.size && String(entry.cannulaOrderCode || '').includes(item.verifiedSku));
+  if (!verified) return null;
+  const skuCodes = String(entry.cannulaOrderCode || '').match(/A\d{3}-\d{2}[A-Z]/g) || [];
+  return {
+    ...verified,
+    partialSkuCoverage: new Set(skuCodes).size > 1,
+    aboveVerifiedLimit: Number.isFinite(flow) && flow > verified.maxFlowLMin
+  };
+}
+
+function getPressureDropManufacturerLimitLabel(limit) {
+  if (!limit?.aboveVerifiedLimit) return '';
+  return `Above verified SKU max (${limit.maxFlowLMin.toFixed(1)} L/min; ${limit.verifiedSku}${limit.partialSkuCoverage ? ' only; other variants unverified' : ''})`;
+}
+
+function getPressureDropTargetFlowResult(entry, flow) {
+  const series = getPressureDropTargetFlowSeries(entry);
+  if (!series) return { series: null, interpolationResult: { state: 'unavailable', value: null },
+    inRange: false, magnitude: null, isHighPressure: false, rangeText: '—',
+    warningText: 'Drainage series cannot be identified unambiguously.',
+    unavailableReason: 'Drainage series not identified' };
+  const comparison = getPressureDropComparisonResult({ ...entry, pressureSeries: [series], points: series.points }, flow);
+  const result = comparison.seriesResults[0];
+  const inRange = hasValidPressureDropEstimate([result.interpolationResult]);
+  const manufacturerLimit = getPressureDropManufacturerFlowLimit(entry, flow);
+  return { ...result, inRange, magnitude: inRange ? Math.abs(result.interpolationResult.value) : null,
+    isHighPressure: comparison.isHighPressure, warningText: comparison.warningText,
+    manufacturerLimit, aboveVerifiedManufacturerMax: Boolean(manufacturerLimit?.aboveVerifiedLimit),
+    lumenLabel: series.id === 'drainage' ? 'Drainage ΔP' : '' };
+}
+
+function getPressureDropComparisonFr(entry) {
+  if (Number.isFinite(entry.outerDiameterFr)) return entry.outerDiameterFr;
+  const sizeMatch = String(entry.size || '').match(/(\d+(?:\.\d+)?)\s*Fr\b/i);
+  if (sizeMatch) return Number(sizeMatch[1]);
+  // Older HLS PVL rows store only a catalog code; its Fr is explicitly in notes.
+  const notesMatch = String(entry.notes || '').match(/(\d+(?:\.\d+)?)\s*Fr\b/i);
+  return notesMatch ? Number(notesMatch[1]) : Infinity;
+}
+
+function getPressureDropTargetFlowRows(entries, filters, flow, sort = 'pressure') {
+  return getPressureDropTargetFlowMatches(entries, filters).map(entry => ({
+    entry, key: getPressureDropTargetFlowKey(entry), identity: getPressureDropTargetFlowIdentity(entry, entries),
+    result: getPressureDropTargetFlowResult(entry, flow)
+  })).sort((left, right) => {
+    if (sort === 'pressure' && left.result.inRange !== right.result.inRange) return left.result.inRange ? -1 : 1;
+    // A verified above-limit curve estimate must not be an unqualified
+    // lower-ΔP recommendation, even though interpolation remains available.
+    if (sort === 'pressure' && left.result.inRange &&
+        left.result.aboveVerifiedManufacturerMax !== right.result.aboveVerifiedManufacturerMax) {
+      return left.result.aboveVerifiedManufacturerMax ? 1 : -1;
+    }
+    let difference = 0;
+    if (sort === 'pressure' && left.result.inRange) difference = left.result.magnitude - right.result.magnitude;
+    if (sort === 'size') {
+      const leftFr = getPressureDropComparisonFr(left.entry), rightFr = getPressureDropComparisonFr(right.entry);
+      difference = leftFr === rightFr ? 0 : leftFr < rightFr ? -1 : 1;
+    }
+    if (sort === 'manufacturer') difference = left.entry.manufacturer.localeCompare(right.entry.manufacturer);
+    if (sort === 'model') difference = left.entry.model.localeCompare(right.entry.model);
+    return difference || left.key.localeCompare(right.key, undefined, { numeric: true });
+  });
+}
+
+function updatePressureDropTargetFlowSelection(selectedKeys, key, checked, eligibleKeys) {
+  const retained = selectedKeys.filter(selectedKey => eligibleKeys.has(selectedKey));
+  if (!checked) return retained.filter(selectedKey => selectedKey !== key);
+  if (!eligibleKeys.has(key) || retained.includes(key) || retained.length >= PRESSURE_DROP_PRODUCT_COLORS.length) return retained;
+  return [...retained, key];
+}
+
+function getPressureDropTargetFlowValueText(result) {
+  if (result.inRange) return `${result.magnitude.toFixed(1)} mmHg`;
+  if (result.unavailableReason) return 'Not comparable';
+  if (result.interpolationResult.state === 'out_of_range') return 'Out of source range';
+  if (result.interpolationResult.state === 'no_points') return 'No digitized curve';
+  return 'Enter a positive target flow';
+}
+
+function getPressureDropTargetFlowStatusText(result) {
+  if (result.unavailableReason) return 'Not comparable';
+  if (result.inRange) return result.interpolationResult.state === 'exact' ? 'Exact' : 'Interpolated';
+  if (result.interpolationResult.state === 'out_of_range') return 'Out of range';
+  if (result.interpolationResult.state === 'no_points') return 'No curve';
+  return 'Enter flow';
+}
+
+function getPressureDropExploredFlow(clientX, rect, dataset) {
+  const left = Number(dataset.plotLeft), right = Number(dataset.plotRight);
+  const min = Number(dataset.minFlow), max = Number(dataset.maxFlow);
+  if (!(rect.width > 0) || !(right > left) || !(max > min)) return min;
+  const x = ((clientX - rect.left) / rect.width) * 420;
+  const fraction = Math.max(0, Math.min(1, (x - left) / (right - left)));
+  const rawFlow = min + fraction * (max - min);
+  return Math.max(min, Math.min(max, Math.round((rawFlow + Number.EPSILON) * 10) / 10));
+}
+
+function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCommitFlow, controls, exploredCells) {
+  if (!series.length || !Number.isFinite(Number(svg.dataset.minFlow))) return;
+  const minimum = Number(svg.dataset.minFlow), maximum = Number(svg.dataset.maxFlow);
+  const left = Number(svg.dataset.plotLeft), right = Number(svg.dataset.plotRight);
+  const top = Number(svg.dataset.plotTop), bottom = Number(svg.dataset.plotBottom);
+  const minDrop = Number(svg.dataset.minDrop), pressureRange = Number(svg.dataset.pressureRange);
+  const overlay = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  overlay.setAttribute('aria-hidden', 'true');
+  const guide = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  guide.setAttribute('stroke', 'currentColor'); guide.setAttribute('stroke-dasharray', '3 3');
+  guide.setAttribute('stroke-width', '1.5'); guide.setAttribute('y1', top); guide.setAttribute('y2', bottom);
+  overlay.appendChild(guide);
+  const markers = series.map((item, index) => {
+    const marker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    marker.setAttribute('r', '4'); marker.setAttribute('fill', PRESSURE_DROP_PRODUCT_COLORS[item.colorIndex ?? index]);
+    marker.setAttribute('stroke', 'white'); marker.setAttribute('stroke-width', '1.5');
+    overlay.appendChild(marker); return marker;
+  });
+  svg.appendChild(overlay);
+  controls.className = 'flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-xs text-slate-600 dark:text-slate-300';
+  const readout = document.createElement('p');
+  readout.className = 'min-w-0 flex-1 font-semibold tabular-nums text-primary-900 dark:text-white';
+  const slider = document.createElement('input');
+  slider.type = 'range'; slider.step = '0.1';
+  slider.min = String(Math.max(0.1, Math.ceil((minimum - 1e-10) * 10) / 10));
+  slider.max = String(Math.floor((maximum + 1e-10) * 10) / 10);
+  slider.className = 'order-last w-full accent-sky-600';
+  slider.setAttribute('aria-label', 'Explore flow in 0.1 L/min steps');
+  const commit = document.createElement('button');
+  commit.type = 'button';
+  commit.className = 'shrink-0 rounded-lg border border-slate-300 dark:border-primary-600 px-2 py-1 text-accent-700 dark:text-accent-300';
+  commit.textContent = 'Use as target flow';
+  controls.append(readout, commit);
+  const canExploreOnSlider = Number(slider.min) <= Number(slider.max);
+  if (canExploreOnSlider) controls.appendChild(slider);
+  let exploredFlow = null;
+  let pinnedFlow = false;
+  let touchDragging = false;
+  const update = flow => {
+    exploredFlow = flow;
+    const x = left + ((flow - minimum) / Math.max(maximum - minimum, 0.0001)) * (right - left);
+    guide.setAttribute('x1', x); guide.setAttribute('x2', x);
+    readout.textContent = `Target: ${Number.isFinite(committedFlow) ? `${committedFlow} L/min` : 'not set'} · ${pinnedFlow ? 'Pinned' : 'Exploring'}: ${flow.toFixed(1)} L/min`;
+    series.forEach((item, index) => {
+      const result = interpolatePressureDrop(item.points, flow);
+      const valid = hasValidPressureDropEstimate([result]);
+      markers[index].style.display = valid ? '' : 'none';
+      if (valid) {
+        const y = bottom - ((result.value - minDrop) / pressureRange) * (bottom - top);
+        markers[index].setAttribute('cx', x); markers[index].setAttribute('cy', y);
+      }
+      const cell = exploredCells[index];
+      if (cell) {
+        const limit = getPressureDropManufacturerFlowLimit(item.entry, flow);
+        const limitText = getPressureDropManufacturerLimitLabel(limit);
+        cell.textContent = `Explore: ${valid ? `${Math.abs(result.value).toFixed(1)} mmHg` : 'Out of range'}${limitText ? ` · ${limitText}` : ''}`;
+        cell.title = valid ? `Signed pressure: ${formatSignedPressureDrop(result.value)} mmHg${limitText ? `; ${limitText}. Source: ${limit.source}` : ''}` : '';
+        cell.classList.toggle('text-amber-700', Boolean(limitText));
+        cell.classList.toggle('dark:text-amber-300', Boolean(limitText));
+      }
+    });
+    if (canExploreOnSlider) slider.value = String(Math.max(Number(slider.min), Math.min(Number(slider.max), flow)));
+    commit.disabled = !Number.isFinite(flow) || flow <= 0 || !canExploreOnSlider ||
+      Math.abs(flow * 10 - Math.round(flow * 10)) > 1e-8 ||
+      !series.some(item => hasValidPressureDropEstimate([interpolatePressureDrop(item.points, flow)]));
+    commit.setAttribute('aria-disabled', String(commit.disabled));
+  };
+  svg.style.touchAction = 'pan-y';
+  const flowAtPointer = event => getPressureDropExploredFlow(event.clientX, svg.getBoundingClientRect(), svg.dataset);
+  // Hover previews values; a desktop click pins the flow so moving the
+  // pointer to "Use as target flow" cannot inadvertently change the choice.
+  svg.addEventListener('pointermove', event => {
+    if (!pinnedFlow || touchDragging) update(flowAtPointer(event));
+  });
+  svg.addEventListener('pointerdown', event => {
+    touchDragging = event.pointerType === 'touch';
+    pinnedFlow = !touchDragging;
+    update(flowAtPointer(event));
+  });
+  svg.addEventListener('pointerup', event => {
+    if (touchDragging) {
+      touchDragging = false;
+      pinnedFlow = true;
+      update(flowAtPointer(event));
+    }
+  });
+  svg.addEventListener('pointercancel', () => { touchDragging = false; });
+  // Slider remains the accessible 0.1 L/min control and pins its selection.
+  slider.addEventListener('input', () => {
+    pinnedFlow = true;
+    update(Number(slider.value));
+  });
+  commit.addEventListener('click', event => {
+    if (!commit.disabled && exploredFlow !== null) onCommitFlow?.(exploredFlow, event.isTrusted === true);
+  });
+  const initialFlow = Number.isFinite(committedFlow) && committedFlow > 0
+    ? Math.max(Number(slider.min), Math.min(Number(slider.max), Math.round(committedFlow * 10) / 10))
+    : Number(slider.min);
+  update(canExploreOnSlider ? initialFlow : minimum);
+}
+
+function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPointsChange, onRemove, catalogEntries = entries, onCommitFlow) {
   const panel = document.createElement('article');
-  panel.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-3';
-  const title = document.createElement('div');
-  title.innerHTML = '<h3 class="text-sm font-semibold text-primary-900 dark:text-white">Selected pressure-flow curves</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Digitized manufacturer points are connected with straight line segments. Each size uses one color; solid and dashed lines identify Infusion and Drainage.</p>';
-  title.appendChild(createPressureDropRawPointsToggle(showRawPoints, onRawPointsChange, 'pressure-drop-compare-show-raw-points'));
+  panel.className = 'min-w-0 rounded-xl border border-slate-200 dark:border-primary-800 p-4 space-y-3';
+  const heading = document.createElement('h3');
+  heading.className = 'text-sm font-semibold text-primary-900 dark:text-white';
+  heading.textContent = 'Selected pressure-flow curves';
+  panel.append(heading, createPressureDropRawPointsToggle(showRawPoints, onRawPointsChange, 'pressure-drop-target-raw-points'));
+  const series = [], estimates = [], exploredCells = [];
+  const legend = document.createElement('ol');
+  legend.className = 'divide-y divide-slate-100 dark:divide-primary-800 text-xs text-slate-600 dark:text-slate-300';
+  entries.forEach((entry, index) => {
+    const result = getPressureDropTargetFlowResult(entry, flow);
+    const key = getPressureDropTargetFlowKey(entry);
+    const identity = getPressureDropTargetFlowIdentity(entry, catalogEntries);
+    const configuration = classifyPressureDropComparisonEntry(entry).configuration;
+    if (result.series) {
+      series.push({ ...result.series, entry, id: encodeURIComponent(key), colorIndex: index,
+        displayLabel: `${index + 1} · ${entry.manufacturer} · ${entry.model} · ${identity}${result.lumenLabel ? ' · Drainage' : ''}`,
+        exploreLabel: `${index + 1}. ${entry.manufacturer} · ${getPressureDropTargetFlowDisplayName(entry)} · ${identity}${result.lumenLabel ? ' · Drainage' : ''}` });
+      estimates.push(result.interpolationResult);
+    }
+    const item = document.createElement('li');
+    item.className = 'grid min-w-0 grid-cols-1 gap-x-3 gap-y-2 py-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center';
+    item.dataset.productKey = key;
+    const swatch = document.createElement('span');
+    swatch.className = 'h-2 w-3 shrink-0 rounded';
+    swatch.style.backgroundColor = PRESSURE_DROP_PRODUCT_COLORS[index];
+    swatch.setAttribute('aria-hidden', 'true');
+    const rank = document.createElement('span');
+    rank.className = 'shrink-0 tabular-nums text-slate-500 dark:text-slate-400';
+    rank.textContent = `${index + 1}.`;
+    const name = document.createElement('span');
+    name.className = 'min-w-0 flex-1 break-words';
+    name.textContent = `${entry.manufacturer} · ${getPressureDropTargetFlowDisplayName(entry)}`;
+    const size = document.createElement('span');
+    size.className = 'min-w-0 break-words text-slate-500 dark:text-slate-400';
+    appendPressureDropSizeLabel(size, identity);
+    if (configuration === 'Dual-lumen VV ECMO') size.appendChild(document.createTextNode(' · Dual-lumen VV ECMO'));
+    const value = document.createElement('span');
+    value.className = `shrink-0 tabular-nums font-semibold ${result.isHighPressure && result.inRange ? 'text-amber-700 dark:text-amber-300' : 'text-primary-900 dark:text-white'}`;
+    value.textContent = result.inRange ? `Target: ${result.lumenLabel ? 'Drainage ' : ''}${result.magnitude.toFixed(1)} mmHg`
+      : `Target: ${result.unavailableReason || getPressureDropTargetFlowValueText(result)}`;
+    if (result.inRange) value.title = `Signed pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
+    if (result.isHighPressure && result.inRange) value.setAttribute('aria-label', `${value.textContent}. ${result.warningText}`);
+    const limitLabel = getPressureDropManufacturerLimitLabel(result.manufacturerLimit);
+    if (limitLabel) {
+      value.className += ' text-amber-700 dark:text-amber-300';
+      value.title = `${value.title ? value.title + ' · ' : ''}${limitLabel}. Source: ${result.manufacturerLimit.source}`;
+    }
+    const explored = document.createElement('span');
+    explored.className = 'min-w-0 text-xs tabular-nums text-sky-700 dark:text-sky-300';
+    explored.textContent = 'Explore: —';
+    if (result.series) exploredCells.push(explored);
+    const status = document.createElement('span');
+    status.className = 'shrink-0 rounded-full bg-slate-100 dark:bg-primary-800 px-2 py-0.5 text-[11px]';
+    status.textContent = limitLabel ? 'Above verified SKU max' : getPressureDropTargetFlowStatusText(result);
+    if (limitLabel) { status.title = limitLabel; status.className += ' text-amber-700 dark:text-amber-300'; }
+    const sourceUrl = String(entry.sourceUrl || '').trim();
+    const source = /^https?:\/\//i.test(sourceUrl) ? document.createElement('a') : null;
+    if (source) {
+      source.href = sourceUrl; source.target = '_blank'; source.rel = 'noopener noreferrer';
+      source.className = 'shrink-0 text-accent-700 dark:text-accent-300 underline';
+      source.textContent = '↗';
+      source.setAttribute('aria-label', `Open catalog source for ${entry.manufacturer} ${entry.model} ${identity}`);
+    }
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-lg text-slate-500 dark:text-slate-300 hover:text-rose-600 focus:ring-2 focus:ring-accent-500';
+    remove.textContent = '×';
+    remove.setAttribute('aria-label', `Remove ${entry.manufacturer} ${entry.model} ${identity} from chart`);
+    remove.addEventListener('click', () => onRemove(key));
+    const identityGroup = document.createElement('div');
+    identityGroup.className = 'flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1';
+    identityGroup.append(swatch, rank, name, size);
+    const valuesGroup = document.createElement('div');
+    valuesGroup.className = 'flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:justify-end';
+    valuesGroup.append(value, explored, status);
+    if (source) valuesGroup.appendChild(source);
+    valuesGroup.appendChild(remove);
+    item.append(identityGroup, valuesGroup);
+    legend.appendChild(item);
+  });
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('viewBox', '0 0 420 200');
   svg.setAttribute('role', 'img');
-  const chartSeries = [];
-  const estimates = [];
-  selectedEntries.forEach((entry, productIndex) => {
-    getPressureDropSeries(entry).forEach(series => {
-      chartSeries.push({
-        ...series,
-        colorIndex: productIndex,
-        displayLabel: `${entry.size || entry.model} — ${series.label}`
-      });
-      const result = interpolatePressureDrop(series.points, flowValue);
-      estimates.push(result);
-    });
-  });
-  svg.setAttribute('aria-label', chartSeries.map((series, index) => `${series.displayLabel}: ${getPressureDropResultStateText(estimates[index])}`).join(', '));
+  svg.setAttribute('aria-label', 'Selected manufacturer pressure-flow curves. Product identities and target estimates are listed below.');
   svg.classList.add('block', 'w-full', 'h-auto', 'text-slate-500', 'dark:text-slate-300');
-  drawPressureDropSeriesChart(svg, chartSeries, flowValue, estimates, { curveMode: 'linear', showRawPoints });
-  panel.append(title, svg);
+  // Full product names wrap in the HTML legend, avoiding overlap in the SVG.
+  drawPressureDropSeriesChart(svg, series, flow, estimates, { curveMode: 'linear', showRawPoints, showLegend: false, showTargetFlowLine: true });
+  const exploreControls = document.createElement('div');
+  panel.appendChild(exploreControls);
+  panel.append(svg, legend);
+  attachPressureDropChartExplorer(panel, svg, series, flow, onCommitFlow, exploreControls, exploredCells);
+  const note = document.createElement('p');
+  note.className = 'text-xs text-slate-500 dark:text-slate-400';
+  note.textContent = 'Digitized curve range ≠ manufacturer max flow. Check the product source.';
+  if (!estimates.some(estimate => hasValidPressureDropEstimate([estimate]))) {
+    note.textContent += ' No selected curve has an in-range estimate at this target flow.';
+  }
+  const points = series.flatMap(item => getValidPressureDropPoints(item.points));
+  if (Number.isFinite(flow) && points.length && (flow < Math.min(...points.map(point => point.flow)) || flow > Math.max(...points.map(point => point.flow)))) {
+    note.textContent += ' Target flow is outside the plotted source ranges; the reference line is outside the chart.';
+  }
+  panel.appendChild(note);
   return panel;
 }
 
-function createPressureDropComparisonTable(selectedEntries, flowValue, onRemove) {
-  const wrap = document.createElement('div');
-  wrap.className = 'hidden md:block overflow-x-auto rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30';
+function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
   const table = document.createElement('table');
-  table.className = 'min-w-full text-sm';
+  table.className = 'block w-full text-xs text-slate-600 dark:text-slate-300';
+  const caption = document.createElement('caption');
+  caption.className = 'sr-only';
+  caption.textContent = 'Manufacturer cannula pressure-drop reference. Lower pressure drop alone does not establish clinical suitability.';
+  table.appendChild(caption);
   const head = document.createElement('thead');
-  const headRow = document.createElement('tr');
-  headRow.className = 'border-b border-slate-200 dark:border-primary-800';
-  headRow.innerHTML = '<th class="w-40 p-3 text-left text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Field</th>';
-  selectedEntries.forEach(entry => {
-    const th = document.createElement('th');
-    th.className = 'min-w-44 p-3 text-left align-top';
-    const removeButton = document.createElement('button');
-    removeButton.type = 'button';
-    removeButton.className = 'ml-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 dark:border-primary-700 text-base leading-none text-slate-500 dark:text-slate-300 hover:border-rose-300 hover:text-rose-600 dark:hover:border-rose-500/60 dark:hover:text-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500';
-    removeButton.textContent = '×';
-    removeButton.setAttribute('aria-label', `Remove ${getPressureDropComparisonSizeLabel(entry)} from comparison`);
-    removeButton.addEventListener('click', () => onRemove(getPressureDropComparisonKey(entry)));
-    const headerTop = document.createElement('div');
-    headerTop.className = 'flex items-start justify-between gap-2';
-    const label = document.createElement('div');
-    label.className = 'min-w-0 font-semibold text-primary-900 dark:text-white';
-    label.textContent = getPressureDropComparisonSizeLabel(entry);
-    headerTop.append(label, removeButton);
-    th.append(headerTop);
-    headRow.appendChild(th);
-  });
-  head.appendChild(headRow);
+  head.className = 'sr-only';
+  head.innerHTML = '<tr><th>Cannula pressure-drop comparison</th></tr>';
   table.appendChild(head);
-
   const body = document.createElement('tbody');
-  const rows = [
-    ['Manufacturer', entry => entry.manufacturer || '—'],
-    ['Category / type', entry => getPressureDropGroupLabel(entry.category)],
-    ['Model / family', entry => entry.model || '—'],
-    ['Size / code label', entry => getPressureDropComparisonSizeLabel(entry)],
-    ['ΔP at target flow', entry => getPressureDropComparisonResult(entry, flowValue).valueText, true],
-    ['Manufacturer chart flow range', entry => getPressureDropComparisonResult(entry, flowValue).rangeText],
-    ['Data status / source quality', entry => formatPressureDropDataStatus(entry.dataStatus)],
-    ['Warning / status', entry => getPressureDropComparisonResult(entry, flowValue).warningText]
-  ];
-  rows.forEach(([label, getter, isAccent]) => {
-    const tr = document.createElement('tr');
-    tr.className = `border-b border-slate-100 dark:border-primary-800/70 last:border-0 ${isAccent ? 'bg-accent-500/10 dark:bg-accent-500/15' : ''}`;
-    const th = document.createElement('th');
-    th.className = 'p-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400';
-    th.textContent = label;
-    tr.appendChild(th);
-    selectedEntries.forEach(entry => {
-      const result = getPressureDropComparisonResult(entry, flowValue);
-      const td = document.createElement('td');
-      td.className = `whitespace-pre-line p-3 align-top ${isAccent ? 'font-bold text-primary-900 dark:text-white' : 'text-slate-700 dark:text-slate-200'} ${result.isOutOfRange || result.isHighPressure ? 'text-amber-700 dark:text-amber-300' : ''}`;
-      td.textContent = getter(entry);
-      tr.appendChild(td);
-    });
-    body.appendChild(tr);
+  body.className = 'block w-full space-y-2';
+
+  rows.forEach(({ entry, key, identity, result }) => {
+    const row = document.createElement('tr');
+    row.className = 'block w-full rounded-lg border border-slate-200 dark:border-primary-800';
+    const cell = document.createElement('td');
+    cell.className = 'block w-full min-w-0 p-3';
+    const summaryGrid = document.createElement('div');
+    summaryGrid.className = 'grid w-full min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-2 gap-y-1';
+    row.dataset.productKey = key;
+
+    const selectCell = document.createElement('div');
+    selectCell.className = 'col-start-1 row-start-1 row-span-2';
+    const label = document.createElement('label');
+    label.className = 'inline-flex min-h-9 min-w-9 items-start pt-1 cursor-pointer md:items-center md:pt-0';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.dataset.productKey = key;
+    checkbox.checked = selectedKeys.includes(key);
+    checkbox.disabled = !checkbox.checked && selectedKeys.length >= PRESSURE_DROP_PRODUCT_COLORS.length;
+    checkbox.className = 'h-4 w-4 accent-sky-600 focus:ring-2 focus:ring-accent-500';
+    checkbox.setAttribute('aria-label', `Select ${entry.manufacturer} ${entry.model} ${identity} for chart comparison`);
+    checkbox.addEventListener('change', () => onSelect(key, checkbox.checked));
+    const labelText = document.createElement('span');
+    labelText.className = 'sr-only';
+    labelText.textContent = 'Compare curve';
+    label.append(checkbox, labelText);
+    selectCell.appendChild(label);
+    summaryGrid.appendChild(selectCell);
+
+    const configuration = classifyPressureDropComparisonEntry(entry).configuration;
+    const identityCell = document.createElement('div');
+    identityCell.className = 'col-start-2 row-start-1 min-w-0';
+    const meta = document.createElement('div');
+    meta.className = 'text-xs text-slate-500 dark:text-slate-400';
+    const sizeText = document.createElement('span');
+    appendPressureDropSizeLabel(sizeText, entry.size || 'Size unavailable');
+    meta.append(document.createTextNode(`${entry.manufacturer} · `), sizeText);
+    const name = document.createElement('p');
+    name.className = 'mt-0.5 break-words text-sm font-semibold text-primary-900 dark:text-white';
+    name.textContent = getPressureDropTargetFlowDisplayName(entry);
+    name.title = entry.model;
+    identityCell.append(meta, name);
+    if (configuration === 'Dual-lumen VV ECMO') {
+      const config = document.createElement('span');
+      config.className = 'text-[11px] text-slate-500 dark:text-slate-400';
+      config.textContent = 'Dual-lumen VV ECMO · Drainage';
+      identityCell.appendChild(config);
+    }
+    // Only expose the SKU in collapsed rows when multiple otherwise-identical
+    // sizes/models could not be distinguished without it.
+    if (identity !== entry.size && entry.cannulaOrderCode) {
+      const variant = document.createElement('span');
+      variant.className = 'block text-[11px] text-slate-500 dark:text-slate-400';
+      variant.textContent = `Variant ${entry.cannulaOrderCode}`;
+      identityCell.appendChild(variant);
+    }
+    summaryGrid.appendChild(identityCell);
+
+    const valueCell = document.createElement('div');
+    valueCell.className = 'col-start-3 row-start-1 min-w-[78px] text-right';
+    const value = document.createElement('div');
+    value.className = `tabular-nums text-sm font-bold ${result.isHighPressure && result.inRange ? 'text-amber-700 dark:text-amber-300' : 'text-primary-900 dark:text-white'}`;
+    value.textContent = getPressureDropTargetFlowValueText(result);
+    if (result.inRange) value.title = `Signed pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
+    if (result.isHighPressure && result.inRange) {
+      value.setAttribute('aria-label', `${value.textContent}. ${result.warningText}`);
+    }
+    if (result.lumenLabel) value.setAttribute('aria-label', `${result.lumenLabel}: ${value.textContent}`);
+    const limitLabel = getPressureDropManufacturerLimitLabel(result.manufacturerLimit);
+    if (limitLabel || (result.isHighPressure && result.inRange)) {
+      const flag = document.createElement('span');
+      flag.className = 'mt-1 inline-block text-[11px] font-semibold text-amber-700 dark:text-amber-300';
+      flag.textContent = limitLabel ? '⚠ Flow caution' : '⚠ High ΔP';
+      flag.title = limitLabel || result.warningText;
+      flag.setAttribute('aria-label', limitLabel || result.warningText);
+      valueCell.appendChild(value);
+      valueCell.appendChild(flag);
+    } else valueCell.appendChild(value);
+    summaryGrid.appendChild(valueCell);
+
+    const detailsCell = document.createElement('div');
+    detailsCell.className = 'min-w-0 pt-2';
+    const details = document.createElement('details');
+    details.className = 'min-w-0 text-xs';
+    const summary = document.createElement('summary');
+    summary.className = 'cursor-pointer text-accent-700 dark:text-accent-300';
+    summary.textContent = 'Details';
+    const detailBody = document.createElement('div');
+    detailBody.className = 'mt-2 space-y-2 break-words text-slate-600 dark:text-slate-300';
+    const status = document.createElement('p');
+    const statusText = result.inRange
+      ? (result.interpolationResult.state === 'exact' ? 'Exact source point' : 'Interpolated')
+      : (result.interpolationResult.state === 'out_of_range' ? 'Out of range' : getPressureDropTargetFlowValueText(result));
+    status.textContent = `Source range: ${result.rangeText || '—'} · ${statusText}`;
+    detailBody.appendChild(status);
+    if (result.unavailableReason) {
+      const reason = document.createElement('p');
+      reason.textContent = result.unavailableReason;
+      detailBody.appendChild(reason);
+    }
+    if (result.inRange && result.interpolationResult.value < 0) {
+      const signed = document.createElement('p');
+      signed.textContent = `Signed drainage pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
+      detailBody.appendChild(signed);
+    }
+    if (result.isHighPressure && result.inRange) {
+      const caution = document.createElement('p');
+      caution.className = 'text-amber-700 dark:text-amber-300';
+      caution.textContent = 'High arterial pressure drop (>100 mmHg).';
+      detailBody.appendChild(caution);
+    }
+    if (limitLabel) {
+      const caution = document.createElement('p');
+      caution.className = 'text-amber-700 dark:text-amber-300';
+      caution.textContent = `${limitLabel}. This limit is verified for the specified SKU only; other connector variants are unverified.`;
+      detailBody.appendChild(caution);
+      const link = document.createElement('a');
+      link.href = result.manufacturerLimit.source;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.className = 'text-accent-700 dark:text-accent-300 underline';
+      link.textContent = 'Manufacturer maximum-flow source ↗';
+      detailBody.appendChild(link);
+    }
+    if (entry.cannulaOrderCode) {
+      const catalogCode = document.createElement('p');
+      catalogCode.textContent = `Order code: ${entry.cannulaOrderCode}`;
+      detailBody.appendChild(catalogCode);
+    }
+    if (entry.connectorSize) {
+      const connector = document.createElement('p');
+      connector.textContent = `Connector: ${entry.connectorSize}`;
+      detailBody.appendChild(connector);
+    }
+    detailBody.appendChild(getPressureDropSourceNode(entry, true, { showMissingPublicLinkNote: true }));
+    details.append(summary, detailBody);
+    detailsCell.appendChild(details);
+    cell.append(summaryGrid, detailsCell);
+    row.appendChild(cell);
+    body.appendChild(row);
   });
   table.appendChild(body);
-  wrap.appendChild(table);
-  return wrap;
+  return table;
 }
 
-function createPressureDropComparisonCards(selectedEntries, flowValue, onRemove) {
-  const stack = document.createElement('div');
-  stack.className = 'grid gap-3 md:hidden';
-  selectedEntries.forEach(entry => {
-    const result = getPressureDropComparisonResult(entry, flowValue);
-    const card = document.createElement('article');
-    card.className = 'rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-3';
-    const header = document.createElement('div');
-    header.className = 'flex items-start justify-between gap-3';
-    const title = document.createElement('div');
-    const primaryTitle = document.createElement('h3');
-    primaryTitle.className = 'text-sm font-semibold text-primary-900 dark:text-white';
-    primaryTitle.textContent = getPressureDropComparisonSizeLabel(entry);
-    const scopeText = document.createElement('p');
-    scopeText.className = 'mt-1 text-xs text-slate-500 dark:text-slate-400';
-    scopeText.textContent = `${entry.manufacturer || '—'} · ${getPressureDropGroupLabel(entry.category)}`;
-    title.append(primaryTitle, scopeText);
-    const removeButton = document.createElement('button');
-    removeButton.type = 'button';
-    removeButton.className = 'inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-slate-200 dark:border-primary-700 text-lg leading-none text-slate-500 dark:text-slate-300 hover:border-rose-300 hover:text-rose-600 dark:hover:border-rose-500/60 dark:hover:text-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500';
-    removeButton.textContent = '×';
-    removeButton.setAttribute('aria-label', `Remove ${getPressureDropComparisonSizeLabel(entry)} from comparison`);
-    removeButton.addEventListener('click', () => onRemove(getPressureDropComparisonKey(entry)));
-    header.append(title, removeButton);
-    const value = document.createElement('div');
-    value.className = `rounded-lg border p-3 ${result.isOutOfRange || result.isHighPressure ? 'border-amber-300 dark:border-amber-500/50 bg-amber-50 dark:bg-amber-500/10' : 'border-accent-500/25 bg-accent-500/10 dark:bg-accent-500/15'}`;
-    const valueLabel = document.createElement('p');
-    valueLabel.className = 'text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400';
-    valueLabel.textContent = 'ΔP at target flow';
-    const lumenRows = document.createElement('div');
-    lumenRows.className = 'mt-2 grid gap-2';
-    result.seriesResults.forEach(item => {
-      const lumenRow = document.createElement('div');
-      lumenRow.className = 'min-w-0 rounded-md bg-white/60 dark:bg-primary-900/40 p-2';
-      lumenRow.innerHTML = `<p class="text-xs font-semibold text-slate-600 dark:text-slate-300">${item.series.label}</p><p class="break-words text-lg font-bold text-primary-900 dark:text-white">${item.valueText}</p><p class="text-xs text-slate-500 dark:text-slate-400">${item.statusText}</p>`;
-      lumenRows.appendChild(lumenRow);
+function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup) {
+  const controls = {
+    view: el('pressure-drop-target-view'), flow: el('pressure-drop-target-flow'),
+    category: el('pressure-drop-target-category'), location: el('pressure-drop-target-location'),
+    manufacturer: el('pressure-drop-target-manufacturer'), model: el('pressure-drop-target-model'),
+    sort: el('pressure-drop-target-sort'), results: el('pressure-drop-target-results'),
+    summary: el('pressure-drop-target-summary'), chart: el('pressure-drop-target-chart'),
+    locationNote: el('pressure-drop-target-location-note'),
+    search: el('pressure-drop-catalog-search'), matches: el('pressure-drop-catalog-matches')
+  };
+  if (Object.values(controls).some(control => !control)) return null;
+  let selectedKeys = [], showRawPoints = false, activeSearchQuery = '';
+  const modelCombobox = createPressureDropSearchableSelect(controls.model, 'Family / model');
+  const getFilters = () => ({ category: controls.category.value, location: controls.location.value,
+    manufacturer: controls.manufacturer.value, model: controls.model.value });
+  const getEligibleKeys = () => {
+    const available = activeSearchQuery
+      ? searchPressureDropCatalog(entries, activeSearchQuery).filter(entry => classifyPressureDropComparisonEntry(entry).eligible)
+      : getPressureDropTargetFlowMatches(entries, { category: controls.category.value });
+    // Search narrows the result list without clearing explicitly selected
+    // graph curves from other families or manufacturers.
+    return new Set([...(activeSearchQuery ? selectedKeys : []), ...available.map(getPressureDropTargetFlowKey)]);
+  };
+  const refreshOptions = () => {
+    const locations = controls.category.value === 'arterial'
+      ? [{ value: 'central', label: 'Central / Aortic' }, { value: 'femoral', label: 'Femoral' }]
+      : [{ value: 'femoral', label: 'Femoral' }, { value: 'central', label: 'Central (RA / SVC / IVC)' }, { value: 'jugular', label: 'Jugular' }];
+    setPressureDropSelectOptionPairs(controls.location, [...locations, { value: 'other', label: 'Other / Unspecified' }], 'All locations');
+    const filters = getFilters();
+    const locationEntries = getPressureDropTargetFlowMatches(entries, { category: filters.category, location: filters.location });
+    setPressureDropSelectOptionPairs(controls.manufacturer, getUniquePressureDropOptionPairs(locationEntries, entry => entry.manufacturer), 'All manufacturers');
+    const manufacturerEntries = getPressureDropTargetFlowMatches(entries, { ...getFilters(), model: '' });
+    setPressureDropSelectOptionPairs(controls.model, getPressureDropTargetFlowModelOptions(manufacturerEntries), 'All families / models');
+    modelCombobox?.refresh();
+  };
+  const render = () => {
+    const focusedProductKey = document.activeElement?.dataset.productKey;
+    const flow = parsePressureDropTargetFlow(controls.flow.value);
+    const searchedEntries = activeSearchQuery ? searchPressureDropCatalog(entries, activeSearchQuery) : null;
+    const rows = searchedEntries
+      ? ['arterial', 'venous'].flatMap(category =>
+        getPressureDropTargetFlowRows(searchedEntries, { category }, flow, controls.sort.value)
+          .map(row => ({ ...row, identity: getPressureDropTargetFlowIdentity(row.entry, entries) })))
+      : getPressureDropTargetFlowRows(entries, getFilters(), flow, controls.sort.value);
+    if (searchedEntries) {
+      rows.sort((left, right) => {
+        if (controls.sort.value === 'pressure' && left.result.inRange !== right.result.inRange) return left.result.inRange ? -1 : 1;
+        if (controls.sort.value === 'pressure' && left.result.inRange && right.result.inRange) {
+          if (left.result.aboveVerifiedManufacturerMax !== right.result.aboveVerifiedManufacturerMax)
+            return left.result.aboveVerifiedManufacturerMax ? 1 : -1;
+          const difference = left.result.magnitude - right.result.magnitude;
+          if (difference) return difference;
+        }
+        if (controls.sort.value === 'size') {
+          const difference = getPressureDropComparisonFr(left.entry) - getPressureDropComparisonFr(right.entry);
+          if (difference) return difference;
+        }
+        const field = controls.sort.value === 'manufacturer' ? 'manufacturer' : 'model';
+        return left.entry[field].localeCompare(right.entry[field], undefined, { numeric: true })
+          || left.key.localeCompare(right.key, undefined, { numeric: true });
+      });
+    }
+    const unspecified = getPressureDropTargetFlowMatches(entries, { category: controls.category.value, location: 'other' })
+      .filter(entry => !controls.manufacturer.value || entry.manufacturer === controls.manufacturer.value);
+    controls.locationNote.textContent = !activeSearchQuery && controls.location.value && controls.location.value !== 'other' && unspecified.length
+      ? `${unspecified.length} ${controls.category.value} products have no documented insertion site (including ${unspecified.some(entry => /EOPA/i.test(entry.model)) ? 'EOPA' : 'other models'}). Choose Other / Unspecified or All locations to see them.`
+      : '';
+    const eligibleKeys = getEligibleKeys();
+    selectedKeys = selectedKeys.filter(key => eligibleKeys.has(key));
+    controls.view.dataset.analyticsReady = String(rows.some(row => row.result.inRange));
+    controls.flow.setAttribute('aria-invalid', String(Boolean(controls.flow.value.trim()) && !Number.isFinite(flow)));
+    controls.results.innerHTML = '';
+    controls.summary.textContent = activeSearchQuery
+      ? `Search: "${activeSearchQuery}" · ${rows.length} comparable cannulas${Number.isFinite(flow) ? ` · ${rows.filter(row => row.result.inRange).length} in-range at ${flow} L/min` : ''}`
+      : Number.isFinite(flow) ? `Target flow: ${flow} L/min · ${rows.filter(row => row.result.inRange).length} in-range curve estimates · ${rows.length} matching cannulas`
+        : 'Enter a positive target flow in L/min to estimate pressure drop.';
+    const message = document.createElement('p');
+    message.className = 'text-sm text-slate-600 dark:text-slate-300';
+    if (!rows.length) message.textContent = activeSearchQuery
+      ? 'No standard arterial/venous comparison results. Select an individual Specialty cannula in the search suggestions for Single Lookup.'
+      : 'No matching cannulas. Broaden location, manufacturer or family filters.';
+    else if (Number.isFinite(flow) && !rows.some(row => row.result.inRange)) message.textContent = 'No in-range estimates at this flow. Source ranges remain visible below; estimates are never extrapolated.';
+    if (message.textContent) controls.results.appendChild(message);
+    if (rows.length) controls.results.appendChild(createPressureDropTargetFlowTable(rows, selectedKeys, (key, checked) => {
+      selectedKeys = updatePressureDropTargetFlowSelection(selectedKeys, key, checked, getEligibleKeys());
+      render();
+    }));
+    if (focusedProductKey) {
+      Array.from(controls.results.querySelectorAll('input[type="checkbox"]'))
+        .find(input => input.dataset.productKey === focusedProductKey)?.focus();
+    }
+    controls.chart.innerHTML = '';
+    const selectedEntries = selectedKeys.map(key => entries.find(entry => getPressureDropTargetFlowKey(entry) === key));
+    if (selectedEntries.length) controls.chart.appendChild(createPressureDropTargetFlowChart(selectedEntries, flow, showRawPoints,
+      checked => { showRawPoints = checked; render(); }, key => { selectedKeys = selectedKeys.filter(selected => selected !== key); render(); }, entries,
+      (explored, trustedClick) => {
+        controls.flow.value = explored.toFixed(1);
+        // The actual button click supplies trust; a dispatched input alone does
+        // not qualify as a trusted analytics interaction.
+        if (typeof window !== 'undefined') {
+          window.perfusionCalculatorAnalytics?.start('cannula_pressure_drop', undefined, trustedClick);
+        }
+        controls.flow.dispatchEvent(new Event('input', { bubbles: true }));
+        if (controls.view.dataset.analyticsReady === 'true' && typeof window !== 'undefined') {
+          window.perfusionCalculatorAnalytics?.complete('cannula_pressure_drop');
+        }
+      }));
+    else {
+      const prompt = document.createElement('p');
+      prompt.className = 'text-xs text-slate-500 dark:text-slate-400';
+      prompt.textContent = 'Select up to four cannulas to overlay their pressure-flow curves.';
+      controls.chart.appendChild(prompt);
+    }
+    if (!controls.view.classList.contains('hidden')) onStatus(`${rows.length} matching cannulas · ${selectedKeys.length}/4 chart selections`);
+  };
+  const selectSearchEntry = entry => {
+    const classification = classifyPressureDropComparisonEntry(entry);
+    activeSearchQuery = '';
+    controls.search.value = '';
+    controls.matches.classList.add('hidden');
+    controls.matches.innerHTML = '';
+    if (!classification.eligible || !getPressureDropTargetFlowSeries(entry)) { onSingleLookup?.(entry); return; }
+    controls.category.value = classification.category;
+    refreshOptions();
+    controls.location.value = classification.location;
+    refreshOptions();
+    controls.manufacturer.value = entry.manufacturer;
+    refreshOptions();
+    controls.model.value = entry.model;
+    modelCombobox?.refresh();
+    const key = getPressureDropTargetFlowKey(entry);
+    selectedKeys = updatePressureDropTargetFlowSelection(selectedKeys, key, true, getEligibleKeys());
+    render();
+    Array.from(controls.results.querySelectorAll('[data-product-key]')).find(row => row.dataset.productKey === key)
+      ?.scrollIntoView?.({ block: 'nearest' });
+  };
+  const renderSearch = () => {
+    const query = controls.search.value.trim();
+    controls.matches.innerHTML = '';
+    controls.matches.classList.toggle('hidden', !query);
+    if (!query) return;
+    const matches = searchPressureDropCatalog(entries, query);
+    matches.forEach(entry => {
+      const choice = document.createElement('button');
+      choice.type = 'button';
+      choice.setAttribute('role', 'option');
+      choice.className = 'block w-full min-w-0 border-b border-slate-100 dark:border-primary-800 px-3 py-2 text-left text-xs hover:bg-slate-100 dark:hover:bg-primary-800 focus:bg-slate-100';
+      choice.dataset.productKey = getPressureDropTargetFlowKey(entry);
+      choice.textContent = `${entry.manufacturer} · ${getPressureDropTargetFlowDisplayName(entry)} · ${getPressureDropTargetFlowIdentity(entry, entries)}${classifyPressureDropComparisonEntry(entry).eligible ? '' : ' · Single lookup'}`;
+      choice.addEventListener('click', () => selectSearchEntry(entry));
+      choice.addEventListener('keydown', event => {
+        if (event.key === 'Escape') { event.preventDefault(); controls.search.value = ''; renderSearch(); controls.search.focus({ preventScroll: true }); }
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault();
+          const choices = Array.from(controls.matches.children);
+          choices[(choices.indexOf(choice) + (event.key === 'ArrowDown' ? 1 : -1) + choices.length) % choices.length]?.focus();
+        }
+      });
+      controls.matches.appendChild(choice);
     });
-    value.append(valueLabel, lumenRows);
-    const details = document.createElement('dl');
-    details.className = 'grid gap-2 text-xs';
-    [
-      ['Model / family', entry.model || '—'],
-      ['Manufacturer chart flow range', result.rangeText],
-      ['Data status / source quality', formatPressureDropDataStatus(entry.dataStatus)],
-      ['Warning / status', result.warningText]
-    ].forEach(([term, description]) => {
-      const row = document.createElement('div');
-      row.className = 'rounded-lg bg-slate-50 dark:bg-primary-800/60 p-2';
-      row.innerHTML = `<dt class="text-slate-500 dark:text-slate-400">${term}</dt><dd class="mt-1 font-medium text-slate-700 dark:text-slate-200">${description}</dd>`;
-      details.appendChild(row);
-    });
-    card.append(header, value, details);
-    stack.appendChild(card);
+    if (!matches.length) {
+      const empty = document.createElement('p'); empty.className = 'p-3 text-xs text-slate-500';
+      empty.textContent = 'No matching cannulas'; controls.matches.appendChild(empty);
+    }
+  };
+  controls.search.addEventListener('input', () => {
+    if (activeSearchQuery) {
+      activeSearchQuery = '';
+      render();
+    }
+    renderSearch();
   });
-  return stack;
+  controls.search.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      activeSearchQuery = '';
+      controls.search.value = '';
+      renderSearch();
+      render();
+    }
+    if (event.key === 'ArrowDown') { event.preventDefault(); controls.matches.children[0]?.focus?.(); }
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      activeSearchQuery = controls.search.value.trim();
+      controls.matches.classList.add('hidden');
+      controls.matches.innerHTML = '';
+      render();
+    }
+  });
+  [controls.category, controls.location, controls.manufacturer, controls.model].forEach(select => select.addEventListener('change', () => {
+    if (select === controls.category) controls.location.value = '';
+    activeSearchQuery = '';
+    controls.search.value = '';
+    controls.matches.innerHTML = '';
+    controls.matches.classList.add('hidden');
+    refreshOptions(); render();
+  }));
+  controls.flow.addEventListener('input', render);
+  controls.sort.addEventListener('change', render);
+  refreshOptions();
+  render();
+  return { refresh: render, selectSearchEntry };
 }
 
 async function initCannulaPressureDropPage() {
@@ -7076,23 +7818,16 @@ async function initCannulaPressureDropPage() {
       flowInput: el('pressure-drop-page-flow'),
       connectionWrap: el('pressure-drop-page-connection-wrap')
     };
-    const compareControls = {
-      singleTab: el('pressure-drop-single-tab'),
-      compareTab: el('pressure-drop-compare-tab'),
-      singleView: el('pressure-drop-single-view'),
-      compareView: el('pressure-drop-compare-view'),
-      flowInput: el('pressure-drop-compare-flow'),
-      manufacturerSelect: el('pressure-drop-compare-manufacturer'),
-      categorySelect: el('pressure-drop-compare-category'),
-      modelSelect: el('pressure-drop-compare-model'),
-      sizeSelect: el('pressure-drop-compare-size'),
-      addButton: el('pressure-drop-compare-add'),
-      clearButton: el('pressure-drop-compare-clear'),
-      scopeLock: el('pressure-drop-compare-scope-lock'),
-      results: el('pressure-drop-compare-results')
-    };
+    const singleView = el('pressure-drop-single-view');
+    const singleTab = el('pressure-drop-single-tab');
+    const targetView = el('pressure-drop-target-view');
+    const targetTab = el('pressure-drop-target-tab');
+    const targetComparison = initPressureDropTargetFlowComparison(entries, text => { status.textContent = text; }, entry => {
+      const activeTargetFlow = parsePressureDropTargetFlow(el('pressure-drop-target-flow')?.value);
+      if (controls.flowInput) controls.flowInput.value = Number.isFinite(activeTargetFlow) ? String(activeTargetFlow) : '';
+      setPressureDropView('single'); selectEntry(entry);
+    });
     let activePressureDropView = 'single';
-    let selectedComparisonKeys = [];
     let showRawPressureDropPoints = false;
     const resetButton = el('pressure-drop-page-reset');
     const modelCombobox = createPressureDropSearchableSelect(controls.modelSelect, 'Select model / cannula');
@@ -7186,7 +7921,7 @@ async function initCannulaPressureDropPage() {
       const flowInputValue = controls.flowInput?.value || '';
       const flowValue = parsePressureDropFlowInput(flowInputValue);
       results.innerHTML = '';
-      if (compareControls.singleView) compareControls.singleView.dataset.analyticsReady = 'false';
+      if (singleView) singleView.dataset.analyticsReady = 'false';
 
       if (!entries.length) {
         status.textContent = 'No pressure-drop references loaded';
@@ -7214,149 +7949,27 @@ async function initCannulaPressureDropPage() {
         showRawPressureDropPoints,
         checked => { showRawPressureDropPoints = checked; render(); }
       ));
-      if (compareControls.singleView) {
+      if (singleView) {
         const estimates = getPressureDropSeries(selectedEntry).map(series => interpolatePressureDrop(series.points, flowValue));
-        compareControls.singleView.dataset.analyticsReady = String(hasValidPressureDropEstimate(estimates));
+        singleView.dataset.analyticsReady = String(hasValidPressureDropEstimate(estimates));
       }
       results.appendChild(createPressureDropAvailableDatasetsDetails(entries, selectEntry));
       setState({});
       if (focusResultFlow) requestAnimationFrame(focusResultFlowInput);
     };
 
-    const hasCompleteComparisonScope = () => Boolean(
-      compareControls.manufacturerSelect?.value &&
-      compareControls.categorySelect?.value &&
-      compareControls.modelSelect?.value
-    );
-
-    const getComparisonScopeEntries = () => {
-      if (!hasCompleteComparisonScope()) return [];
-      return getPressureDropLookupMatches(entries, {
-        manufacturer: compareControls.manufacturerSelect.value,
-        category: compareControls.categorySelect.value,
-        model: compareControls.modelSelect.value
-      });
-    };
-
-    const canAddComparisonSize = () => (
-      selectedComparisonKeys.length < 4 &&
-      Number.isFinite(parsePressureDropFlowInput(compareControls.flowInput?.value || '')) &&
-      hasCompleteComparisonScope() &&
-      Boolean(compareControls.sizeSelect?.value)
-    );
-
-    const renderCompare = () => {
-      if (!compareControls.results) return;
-      const flowValue = parsePressureDropFlowInput(compareControls.flowInput?.value || '');
-      const selectedEntries = entries.filter(entry => selectedComparisonKeys.includes(getPressureDropComparisonKey(entry)));
-      compareControls.results.innerHTML = '';
-      if (compareControls.compareView) compareControls.compareView.dataset.analyticsReady = 'false';
-      if (selectedEntries.length === 0) {
-        const emptyState = document.createElement('div');
-        emptyState.className = 'rounded-xl border border-dashed border-slate-300 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/40 p-5 text-sm text-slate-600 dark:text-slate-300';
-        emptyState.innerHTML = '<h3 class="text-base font-semibold text-primary-900 dark:text-white">Add at least one size to compare.</h3><p class="mt-2">Choose a manufacturer, category/type, and model family, then add a size from that same family.</p>';
-        compareControls.results.appendChild(emptyState);
-      } else {
-        const hasValidComparison = selectedEntries.length >= 2 && selectedEntries.some(entry => (
-          hasValidPressureDropEstimate(getPressureDropSeries(entry).map(series => interpolatePressureDrop(series.points, flowValue)))
-        ));
-        if (compareControls.compareView) compareControls.compareView.dataset.analyticsReady = String(hasValidComparison);
-        if (selectedEntries.length === 1) {
-          const helper = document.createElement('p');
-          helper.className = 'rounded-lg border border-accent-500/20 bg-accent-500/10 dark:bg-accent-500/15 px-3 py-2 text-xs font-medium text-accent-700 dark:text-accent-300';
-          helper.textContent = 'Add one more size to compare.';
-          compareControls.results.appendChild(helper);
-        }
-        if (selectedEntries.some(entry => getPressureDropSeries(entry).length > 1)) {
-          compareControls.results.appendChild(createPressureDropComparisonChart(
-            selectedEntries,
-            flowValue,
-            showRawPressureDropPoints,
-            checked => { showRawPressureDropPoints = checked; renderCompare(); }
-          ));
-        }
-        compareControls.results.appendChild(createPressureDropComparisonTable(selectedEntries, flowValue, removeKey => {
-          selectedComparisonKeys = selectedComparisonKeys.filter(key => key !== removeKey);
-          populateCompareOptions('');
-          renderCompare();
-        }));
-        compareControls.results.appendChild(createPressureDropComparisonCards(selectedEntries, flowValue, removeKey => {
-          selectedComparisonKeys = selectedComparisonKeys.filter(key => key !== removeKey);
-          populateCompareOptions('');
-          renderCompare();
-        }));
-      }
-      if (compareControls.addButton) {
-        compareControls.addButton.disabled = !canAddComparisonSize();
-        compareControls.addButton.textContent = selectedComparisonKeys.length >= 4 ? 'Maximum 4 selected' : 'Add size';
-      }
-    };
-
-    const populateCompareOptions = (changedLevel = '') => {
-      let hasSelectedComparisonItems = selectedComparisonKeys.length > 0;
-      if (changedLevel === 'manufacturer') {
-        if (compareControls.categorySelect) compareControls.categorySelect.value = '';
-        if (compareControls.modelSelect) compareControls.modelSelect.value = '';
-        if (compareControls.sizeSelect) compareControls.sizeSelect.value = '';
-      } else if (changedLevel === 'category') {
-        if (compareControls.modelSelect) compareControls.modelSelect.value = '';
-        if (compareControls.sizeSelect) compareControls.sizeSelect.value = '';
-      } else if (changedLevel === 'model') {
-        if (compareControls.sizeSelect) compareControls.sizeSelect.value = '';
-      }
-
-      setPressureDropSelectOptionPairs(compareControls.manufacturerSelect, getUniquePressureDropOptionPairs(entries, entry => entry.manufacturer), 'Select manufacturer');
-      const manufacturerValue = compareControls.manufacturerSelect?.value || '';
-      const categoryEntries = manufacturerValue ? getPressureDropLookupMatches(entries, { manufacturer: manufacturerValue }) : [];
-      setPressureDropSelectOptionPairs(compareControls.categorySelect, getUniquePressureDropCategoryOptionPairs(categoryEntries), manufacturerValue ? 'Select type' : 'Select manufacturer first');
-      const categoryValue = compareControls.categorySelect?.value || '';
-      const modelEntries = manufacturerValue && categoryValue ? getPressureDropLookupMatches(entries, { manufacturer: manufacturerValue, category: categoryValue }) : [];
-      setPressureDropSelectOptionPairs(compareControls.modelSelect, getUniquePressureDropOptionPairs(modelEntries, entry => entry.model), categoryValue ? 'Select model / family' : 'Select type first');
-      const scopeComplete = hasCompleteComparisonScope();
-      const scopeEntries = scopeComplete ? getComparisonScopeEntries() : [];
-      const selectedSet = new Set(selectedComparisonKeys);
-      const availableSizeOptions = scopeEntries
-        .filter(entry => !selectedSet.has(getPressureDropComparisonKey(entry)))
-        .map(entry => ({ value: getPressureDropComparisonKey(entry), label: getPressureDropComparisonSizeLabel(entry) }))
-        .sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true }));
-      setPressureDropSelectOptionPairs(
-        compareControls.sizeSelect,
-        availableSizeOptions,
-        scopeComplete ? (availableSizeOptions.length ? 'Select size to add' : 'No sizes available for this selection') : 'Select manufacturer, type, and model first'
-      );
-      if (scopeComplete) {
-        const validScopeKeys = new Set(scopeEntries.map(getPressureDropComparisonKey));
-        selectedComparisonKeys = selectedComparisonKeys.filter(key => validScopeKeys.has(key));
-      }
-      hasSelectedComparisonItems = selectedComparisonKeys.length > 0;
-      if (compareControls.manufacturerSelect) compareControls.manufacturerSelect.disabled = hasSelectedComparisonItems;
-      if (compareControls.categorySelect) compareControls.categorySelect.disabled = hasSelectedComparisonItems || !manufacturerValue;
-      if (compareControls.modelSelect) compareControls.modelSelect.disabled = hasSelectedComparisonItems || !categoryValue;
-      if (compareControls.scopeLock) compareControls.scopeLock.classList.toggle('hidden', !hasSelectedComparisonItems);
-      if (compareControls.addButton) compareControls.addButton.disabled = !canAddComparisonSize();
-    };
-
     const setPressureDropView = (view) => {
-      activePressureDropView = view === 'compare' ? 'compare' : 'single';
+      activePressureDropView = view === 'target' ? 'target' : 'single';
       page.dataset.pressureDropView = activePressureDropView;
-      const isCompare = activePressureDropView === 'compare';
-      compareControls.singleView?.classList.toggle('hidden', isCompare);
-      compareControls.compareView?.classList.toggle('hidden', !isCompare);
-      compareControls.singleTab?.classList.toggle('bg-white', !isCompare);
-      compareControls.singleTab?.classList.toggle('dark:bg-primary-900', !isCompare);
-      compareControls.singleTab?.classList.toggle('text-accent-700', !isCompare);
-      compareControls.singleTab?.classList.toggle('dark:text-accent-300', !isCompare);
-      compareControls.compareTab?.classList.toggle('bg-white', isCompare);
-      compareControls.compareTab?.classList.toggle('dark:bg-primary-900', isCompare);
-      compareControls.compareTab?.classList.toggle('text-accent-700', isCompare);
-      compareControls.compareTab?.classList.toggle('dark:text-accent-300', isCompare);
-      status.textContent = isCompare ? `${selectedComparisonKeys.length} selected for size comparison` : status.textContent;
-      if (isCompare) {
-        populateCompareOptions('');
-        renderCompare();
-      } else {
-        render();
-      }
+      [['single', singleView, singleTab], ['target', targetView, targetTab]].forEach(([name, panel, button]) => {
+        const active = name === activePressureDropView;
+        panel?.classList.toggle('hidden', !active);
+        if (!active && panel) panel.dataset.analyticsReady = 'false';
+        button?.setAttribute('aria-pressed', String(active));
+        ['bg-white', 'dark:bg-primary-900', 'text-accent-700', 'dark:text-accent-300'].forEach(style => button?.classList.toggle(style, active));
+      });
+      if (activePressureDropView === 'target') targetComparison?.refresh();
+      else render();
     };
 
     [
@@ -7374,37 +7987,12 @@ async function initCannulaPressureDropPage() {
       populateLookupOptions('manufacturer');
       render();
     });
-    [
-      ['manufacturer', compareControls.manufacturerSelect],
-      ['category', compareControls.categorySelect],
-      ['model', compareControls.modelSelect]
-    ].forEach(([level, select]) => {
-      if (select) select.addEventListener('change', () => { populateCompareOptions(level); renderCompare(); status.textContent = `${selectedComparisonKeys.length} selected for size comparison`; });
-    });
-    if (compareControls.sizeSelect) compareControls.sizeSelect.addEventListener('change', renderCompare);
-    if (compareControls.flowInput) compareControls.flowInput.addEventListener('input', renderCompare);
-    if (compareControls.addButton) compareControls.addButton.addEventListener('click', () => {
-      const key = compareControls.sizeSelect?.value || '';
-      if (!canAddComparisonSize() || selectedComparisonKeys.includes(key)) return;
-      selectedComparisonKeys.push(key);
-      if (compareControls.sizeSelect) compareControls.sizeSelect.value = '';
-      populateCompareOptions('');
-      renderCompare();
-      status.textContent = `${selectedComparisonKeys.length} selected for size comparison`;
-    });
-    if (compareControls.clearButton) compareControls.clearButton.addEventListener('click', () => {
-      selectedComparisonKeys = [];
-      if (compareControls.sizeSelect) compareControls.sizeSelect.value = '';
-      populateCompareOptions('');
-      renderCompare();
-      status.textContent = '0 selected for size comparison';
-    });
-    compareControls.singleTab?.addEventListener('click', () => setPressureDropView('single'));
-    compareControls.compareTab?.addEventListener('click', () => setPressureDropView('compare'));
+    targetTab?.addEventListener('click', () => setPressureDropView('target'));
+    singleTab?.addEventListener('click', () => setPressureDropView('single'));
 
     populateLookupOptions('');
-    populateCompareOptions('');
     render();
+    setPressureDropView('target');
   } catch (err) {
     console.error('Failed to render cannula pressure drop page', err);
     setState({ isError: true });
@@ -8581,7 +9169,7 @@ const FEEDBACK_RESULT_CONTEXTS = {
   '/gdp/': { insertAfter: '[data-feedback-result-anchor="gdp-primary"]', readinessTarget: '#current-do2i' },
   '/heparin/': { insertAfter: '#hep2-results', readinessTarget: '#hep2-results' },
   '/priming-volume/': { insertAfter: '[data-feedback-result-anchor="priming-primary"]', readinessTarget: '#priming-builder-total', isReady: () => isPositiveNumericResult(el('priming-builder-total')) },
-  '/cannula-pressure-drop/': { insertAfter: '#pressure-drop-results', readinessTarget: '#pressure-drop-results' },
+  '/cannula-pressure-drop/': { resolve: resolvePressureDropFeedbackContext },
   '/timecalc/': { resolve: resolveTimeFeedbackContext },
   '/lbm/': { insertAfter: '[data-feedback-result-anchor="lbm-primary"]', readinessTarget: '#lbm_result', isReady: isLbmFeedbackReady },
   '/predicted-hct/': { resolve: resolveHctFeedbackContext },
@@ -8716,6 +9304,20 @@ function resolveTimeFeedbackContext() {
   return { insertAfter, readinessTarget, isReady: isTimeFeedbackReady };
 }
 
+function resolvePressureDropFeedbackContext() {
+  const page = el('cannula-pressure-drop-page');
+  const activeView = page?.dataset.pressureDropView;
+  const viewId = activeView === 'target' ? 'pressure-drop-target-view' : 'pressure-drop-single-view';
+  const resultId = activeView === 'target' ? 'pressure-drop-target-results' : 'pressure-drop-results';
+  const insertAfter = el(viewId);
+  const readinessTarget = el(resultId);
+  // Place the one feedback card beside the active view, outside its rerendered
+  // contents. This keeps an existing card visible when the user switches modes.
+  return { insertAfter, readinessTarget, isReady: () =>
+    isElementVisible(insertAfter) && isElementVisible(readinessTarget) &&
+    isPressureDropAnalyticsReady(activeView, el('pressure-drop-single-view'), el('pressure-drop-target-view')) };
+}
+
 function isLbmFeedbackReady() {
   const height = Number(el('lbm_h_cm')?.value || 0);
   const weight = Number(el('lbm_w_kg')?.value || 0);
@@ -8772,7 +9374,7 @@ function resolveCalculatorAnalyticsResultContext(pagePath) {
     return { isReady: () => isPressureDropAnalyticsReady(
       page?.dataset.pressureDropView,
       el('pressure-drop-single-view'),
-      el('pressure-drop-compare-view')
+      el('pressure-drop-target-view')
     ) };
   }
   if (pagePath === '/timecalc/' && timeLiveMode === 'transplant') {
@@ -8801,7 +9403,7 @@ function initCalculatorAnalytics() {
   const calculationButtonSelector = [
     '.time-start-now', '.time-end-now', '.time-live-start', '.time-live-stop',
     '[data-transplant-now]', '#priming-add-tubing-item', '#priming-add-oxygenator-item',
-    '#phn-calc-bsa-btn', '#phn-use-bsa-btn', '[data-tubing-inch]', '#pressure-drop-compare-add'
+    '#phn-calc-bsa-btn', '#phn-use-bsa-btn', '[data-tubing-inch]'
   ].join(',');
 
   function isCalculationInteraction(event) {
