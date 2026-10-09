@@ -1731,7 +1731,10 @@ const rapRow = targetRuntime.getPressureDropTargetFlowRows([rap], { category: 'v
 const rapTable = targetRuntime.createPressureDropTargetFlowTable([rapRow], [], () => {});
 const compactRows = pressureDescendants(rapTable, node => node.tagName === 'tr');
 assert.strictEqual(compactRows.length, 1);
-assert(compactRows[0].className.includes('grid-cols-'), 'Mobile card should use a compact responsive grid.');
+assert(pressureDescendants(compactRows[0], node => node.className.includes('grid-cols-')).length === 1,
+  'The card uses one responsive summary grid with full-width expandable details.');
+assert(pressureDescendants(compactRows[0], node => node.tagName === 'td').length === 1,
+  'Desktop details must not be confined to a narrow rightmost table cell.');
 const collapsedSource = pressureDescendants(compactRows[0], node => node.tagName === 'details');
 assert.strictEqual(collapsedSource.length, 1, 'Source and metadata should be collapsed under one Details control.');
 assert(!collapsedSource[0].open, 'Technical details must not be expanded by default.');
@@ -1858,6 +1861,18 @@ const catalogMatches = targetNodes['pressure-drop-catalog-matches'];
 catalogSearch.value = 'EOPA'; catalogSearch.dispatch('input');
 assert(catalogMatches.children.some(item => item.textContent.includes('EOPA')));
 assert(!catalogMatches.classList.contains('hidden'));
+const matchingEopa = targetRuntime.searchPressureDropCatalog(pressureDropData, 'EOPA')
+  .filter(entry => classifyComparison(entry).eligible);
+catalogSearch.dispatch('keydown', { key: 'Enter' });
+assert(catalogMatches.classList.contains('hidden'), 'Enter dismisses autocomplete suggestions.');
+assert.strictEqual(currentRows().length, matchingEopa.length, 'Enter lists all EOPA catalog matches, not just the first suggestion.');
+assert.deepStrictEqual(new Set(currentRows().map(row => row.dataset.productKey)),
+  new Set(matchingEopa.map(targetRuntime.getPressureDropTargetFlowKey)),
+  'The full search result list is independent of the currently selected anatomical location.');
+assert(targetNodes['pressure-drop-target-summary'].textContent.includes('Search: "EOPA"'));
+assert.strictEqual(targetFlowInput.value, '1', 'Enter search must preserve target-flow input.');
+assert.strictEqual(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'li').length, 0,
+  'Enter search should not automatically select a single curve.');
 const eopa = pressureDropData.find(entry => entry.model === 'EOPA Arterial Cannulae');
 searchController.selectSearchEntry(eopa);
 assert.strictEqual(targetNodes['pressure-drop-target-category'].value, 'arterial');
@@ -1927,6 +1942,17 @@ exploringSvg.dispatch('pointermove', { clientX: 58 + 344 * (4.1 / 5) });
 assert(chartReadout.textContent.includes('Target: 4.5 L/min · Exploring: 4.1 L/min'));
 assert(exploringChart.textContent.includes('Out of range'), 'Each curve keeps its own source domain');
 assert.strictEqual(committedExploration, null, 'Pointer movement does not commit a target');
+exploringSvg.dispatch('pointerdown', { pointerType: 'mouse', clientX: 58 + 344 * (3.2 / 5) });
+assert(chartReadout.textContent.includes('Pinned: 3.2 L/min'), 'Click pins the selected chart flow.');
+exploringSvg.dispatch('pointermove', { pointerType: 'mouse', clientX: 58 + 344 * (4.4 / 5) });
+assert(chartReadout.textContent.includes('Pinned: 3.2 L/min'), 'Moving toward the Apply button must not change pinned flow.');
+const usePinnedFlow = pressureDescendants(exploringChart, node => node.textContent === 'Use as target flow')[0];
+usePinnedFlow.dispatch('click');
+assert.strictEqual(committedExploration, 3.2, 'Apply uses the pinned flow, not the last mouse position.');
+exploringSvg.dispatch('pointerdown', { pointerType: 'touch', clientX: 58 + 344 * (3.6 / 5) });
+exploringSvg.dispatch('pointermove', { pointerType: 'touch', clientX: 58 + 344 * (3.8 / 5) });
+exploringSvg.dispatch('pointerup', { pointerType: 'touch', clientX: 58 + 344 * (3.8 / 5) });
+assert(chartReadout.textContent.includes('Pinned: 3.8 L/min'), 'Touch release pins the final dragged flow.');
 chartSlider.value = '4.0'; chartSlider.dispatch('input');
 assert(exploringChart.textContent.includes('Explore: 70.0 mmHg'), 'Keyboard slider resolves exact source points');
 assert(pressureDescendants(exploringChart, node => node.title?.includes('Signed pressure: +70.0 mmHg')).length >= 2,
