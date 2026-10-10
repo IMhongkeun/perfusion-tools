@@ -7076,9 +7076,18 @@ function appendPressureDropSizeLabel(node, identity) {
 }
 
 function searchPressureDropCatalog(entries, query) {
-  const terms = String(query).trim().toLowerCase().split(/\s+/).filter(Boolean);
-  if (!terms.length) return [];
+  const frenchSizes = [];
+  const textQuery = String(query).trim().toLowerCase().replace(/(^|[^\w.])(\d+(?:\.\d+)?)\s*fr\b/g,
+    (match, prefix, size) => {
+      frenchSizes.push(Number(size));
+      return prefix;
+    });
+  const terms = textQuery.split(/\s+/).filter(Boolean);
+  if (!terms.length && !frenchSizes.length) return [];
   return entries.filter(entry => {
+    // Match documented nominal Fr exactly, not numeric text in lengths or order codes.
+    if (frenchSizes.some(size => getPressureDropComparisonFr(entry) !== size)) return false;
+    if (!terms.length) return true;
     const classification = classifyPressureDropComparisonEntry(entry);
     const searchable = [entry.manufacturer, entry.model, getPressureDropTargetFlowModelLabel(entry.model || ''),
       entry.size, entry.cannulaOrderCode, entry.connectorSize, entry.connectionSite,
