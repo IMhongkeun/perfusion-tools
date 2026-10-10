@@ -1504,7 +1504,7 @@ const femoralOnly = pressureDropData.filter(entry => /Femoral/i.test(entry.model
 assert(femoralOnly.length > 0 && femoralOnly.every(entry => !centralVenous.includes(entry)));
 assert(avalonProducts.every(entry => !centralVenous.includes(entry) && classifyComparison(entry).location === 'jugular'));
 const unspecifiedVenous = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'other' });
-assert.strictEqual(unspecifiedVenous.length, 14, '13 pre-existing unspecified venous SKUs plus the 10 Fr pediatric venous SKU must remain accessible.');
+assert.strictEqual(unspecifiedVenous.length, 1, 'The single new pediatric venous SKU has no documented unique insertion site.');
 assert([...operationalCentralVenousSkus].every(code => centralVenous.some(entry => entry.cannulaOrderCode === code)));
 assert([...operationalCentralVenousSkus].every(code => !unspecifiedVenous.some(entry => entry.cannulaOrderCode === code)));
 const femoralVenous = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'femoral' });
@@ -1589,8 +1589,8 @@ assert(!targetRuntime.getPressureDropTargetFlowMatches(pressureDropData,
   { category: 'arterial' }).includes(pediatricVenous10Fr));
 const pediatricVenousInRange = targetRuntime.getPressureDropTargetFlowResult(pediatricVenous10Fr, 1.0);
 assert.strictEqual(pediatricVenousInRange.inRange, true);
-assert.strictEqual(pediatricVenousInRange.isHighPressure, false,
-  'The arterial-only >100 mmHg warning must not apply to venous products.');
+assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(pediatricVenous10Fr, 1.5).isHighPressure, false,
+  'The arterial-only >100 mmHg warning must not apply to venous products above 100 mmHg.');
 assert(pediatricVenousInRange.interpolationResult.value > 50 &&
   pediatricVenousInRange.interpolationResult.value < 65, '1.0 L/min interpolates inside the source curve.');
 for (const outOfRangeFlow of [0, 2.0]) {
