@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "updatedAt": "2026-07-28",
+  "updatedAt": "2026-10-10",
   "items": [
     {
       "manufacturer": "LivaNova",
@@ -19361,6 +19361,1090 @@
         }
       ],
       "notes": "Bio-Medicus Multi-stage femoral venous cannula with insertion kit. 25 Fr (8.3 mm), 30 in (76.2 cm) overall length, 23.6 in (60 cm) tip length, non-vented 3/8 in connector. Order code 96880-025."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "Bio-Medicus NextGen Pediatric Venous Cannula",
+      "category": "femoral venous",
+      "size": "8 Fr",
+      "outerDiameterFr": 8,
+      "outerDiameterMm": 2.7,
+      "overallLengthCm": 22.9,
+      "tipLengthCm": 10,
+      "wallThicknessMm": 0.38,
+      "connectorSize": "1/4 in (non-vented)",
+      "cannulaOrderCode": "96830-108",
+      "cartonQuantity": 1,
+      "sourceLabel": "Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Pediatric Arterial and Venous Cannulae, page 25 (Venous graph)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "User-supplied digitized points from the manufacturer-published Bio-Medicus NextGen Pediatric Venous 8 Fr pressure-loss graph (Medtronic Cannula Catalog 2020, printed page 25; water flow in L/min, pressure loss magnitude in mmHg). The 40 CSV coordinates were sorted by ascending flow and rounded to 0.001 L/min and 0.1 mmHg; all source points were retained without smoothing or curve fitting. Positive source pressure-loss magnitudes must not be interpreted as signed drainage suction pressures. No synthetic (0,0) anchor was added. Do not extrapolate outside the digitized source range (0.023–1.061 L/min).",
+      "referenceFlowRangeLabel": "0.023–1.061",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0.023 to 1.061 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0.023,
+          "pressureDrop": 0.5
+        },
+        {
+          "flow": 0.066,
+          "pressureDrop": 0.8
+        },
+        {
+          "flow": 0.109,
+          "pressureDrop": 2
+        },
+        {
+          "flow": 0.137,
+          "pressureDrop": 3.6
+        },
+        {
+          "flow": 0.169,
+          "pressureDrop": 5.6
+        },
+        {
+          "flow": 0.206,
+          "pressureDrop": 8.5
+        },
+        {
+          "flow": 0.246,
+          "pressureDrop": 12.1
+        },
+        {
+          "flow": 0.279,
+          "pressureDrop": 15.6
+        },
+        {
+          "flow": 0.322,
+          "pressureDrop": 20.8
+        },
+        {
+          "flow": 0.365,
+          "pressureDrop": 25.9
+        },
+        {
+          "flow": 0.406,
+          "pressureDrop": 32
+        },
+        {
+          "flow": 0.443,
+          "pressureDrop": 38
+        },
+        {
+          "flow": 0.481,
+          "pressureDrop": 44.4
+        },
+        {
+          "flow": 0.511,
+          "pressureDrop": 49.6
+        },
+        {
+          "flow": 0.542,
+          "pressureDrop": 55.4
+        },
+        {
+          "flow": 0.573,
+          "pressureDrop": 61.7
+        },
+        {
+          "flow": 0.602,
+          "pressureDrop": 67.3
+        },
+        {
+          "flow": 0.629,
+          "pressureDrop": 73.1
+        },
+        {
+          "flow": 0.662,
+          "pressureDrop": 81
+        },
+        {
+          "flow": 0.685,
+          "pressureDrop": 86.3
+        },
+        {
+          "flow": 0.711,
+          "pressureDrop": 92.3
+        },
+        {
+          "flow": 0.737,
+          "pressureDrop": 98.4
+        },
+        {
+          "flow": 0.76,
+          "pressureDrop": 104.4
+        },
+        {
+          "flow": 0.779,
+          "pressureDrop": 109.5
+        },
+        {
+          "flow": 0.802,
+          "pressureDrop": 116
+        },
+        {
+          "flow": 0.817,
+          "pressureDrop": 120.2
+        },
+        {
+          "flow": 0.832,
+          "pressureDrop": 123.8
+        },
+        {
+          "flow": 0.849,
+          "pressureDrop": 128.7
+        },
+        {
+          "flow": 0.87,
+          "pressureDrop": 135.1
+        },
+        {
+          "flow": 0.892,
+          "pressureDrop": 141.9
+        },
+        {
+          "flow": 0.913,
+          "pressureDrop": 147.9
+        },
+        {
+          "flow": 0.934,
+          "pressureDrop": 154.1
+        },
+        {
+          "flow": 0.955,
+          "pressureDrop": 160.9
+        },
+        {
+          "flow": 0.972,
+          "pressureDrop": 166.5
+        },
+        {
+          "flow": 0.991,
+          "pressureDrop": 172.7
+        },
+        {
+          "flow": 1.007,
+          "pressureDrop": 178.2
+        },
+        {
+          "flow": 1.021,
+          "pressureDrop": 182.7
+        },
+        {
+          "flow": 1.033,
+          "pressureDrop": 187.1
+        },
+        {
+          "flow": 1.046,
+          "pressureDrop": 191.2
+        },
+        {
+          "flow": 1.061,
+          "pressureDrop": 196.4
+        }
+      ],
+      "notes": "Bio-Medicus NextGen pediatric venous 8 Fr cannula, catalog 96830-108. Size 8 Fr (2.7 mm outer diameter), 22.9 cm overall length, 10.0 cm tip length, 0.38 mm wall thickness, 1/4 in (0.64 cm) non-vented connector; 1 per carton. Catalog section: Femoral Cannulae. Manufacturer graph reports water-flow pressure-loss magnitude, not measured venous inlet pressure or applied reservoir vacuum. Separate from pediatric arterial code 96820-108."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "Bio-Medicus NextGen Pediatric Arterial Cannula",
+      "category": "femoral arterial",
+      "size": "8 Fr",
+      "outerDiameterFr": 8,
+      "outerDiameterMm": 2.7,
+      "overallLengthCm": 22.9,
+      "tipLengthCm": 10,
+      "wallThicknessMm": 0.38,
+      "connectorSize": "1/4 in (non-vented)",
+      "cannulaOrderCode": "96820-108",
+      "cartonQuantity": 1,
+      "sourceLabel": "Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Pediatric Arterial and Venous Cannulae, page 24 (Arterial graph)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "User-supplied digitized points from the manufacturer-published Bio-Medicus NextGen Pediatric Arterial 8 Fr pressure-loss graph (catalog page 24, flow in L/min of water, pressure loss in mmHg). The original CSV coordinates were sorted by ascending flow and rounded to 0.001 L/min and 0.1 mmHg, preserving all 39 distinct points without smoothing or fitting. No synthetic (0,0) anchor was added. Do not extrapolate outside the digitized source range (0.011–0.904 L/min).",
+      "referenceFlowRangeLabel": "0.011–0.904",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0.011 to 0.904 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0.011,
+          "pressureDrop": 1.5
+        },
+        {
+          "flow": 0.048,
+          "pressureDrop": 3
+        },
+        {
+          "flow": 0.086,
+          "pressureDrop": 5
+        },
+        {
+          "flow": 0.123,
+          "pressureDrop": 7.9
+        },
+        {
+          "flow": 0.161,
+          "pressureDrop": 11.2
+        },
+        {
+          "flow": 0.197,
+          "pressureDrop": 14.8
+        },
+        {
+          "flow": 0.235,
+          "pressureDrop": 19
+        },
+        {
+          "flow": 0.273,
+          "pressureDrop": 23.2
+        },
+        {
+          "flow": 0.309,
+          "pressureDrop": 27.8
+        },
+        {
+          "flow": 0.343,
+          "pressureDrop": 32.8
+        },
+        {
+          "flow": 0.375,
+          "pressureDrop": 38
+        },
+        {
+          "flow": 0.408,
+          "pressureDrop": 43.2
+        },
+        {
+          "flow": 0.439,
+          "pressureDrop": 48.8
+        },
+        {
+          "flow": 0.468,
+          "pressureDrop": 54.2
+        },
+        {
+          "flow": 0.491,
+          "pressureDrop": 59.4
+        },
+        {
+          "flow": 0.517,
+          "pressureDrop": 64.7
+        },
+        {
+          "flow": 0.539,
+          "pressureDrop": 69.7
+        },
+        {
+          "flow": 0.565,
+          "pressureDrop": 75.1
+        },
+        {
+          "flow": 0.58,
+          "pressureDrop": 80.3
+        },
+        {
+          "flow": 0.603,
+          "pressureDrop": 85.8
+        },
+        {
+          "flow": 0.626,
+          "pressureDrop": 91.8
+        },
+        {
+          "flow": 0.645,
+          "pressureDrop": 97.2
+        },
+        {
+          "flow": 0.662,
+          "pressureDrop": 102.2
+        },
+        {
+          "flow": 0.678,
+          "pressureDrop": 106.9
+        },
+        {
+          "flow": 0.7,
+          "pressureDrop": 113.2
+        },
+        {
+          "flow": 0.72,
+          "pressureDrop": 119.8
+        },
+        {
+          "flow": 0.74,
+          "pressureDrop": 126.4
+        },
+        {
+          "flow": 0.754,
+          "pressureDrop": 132
+        },
+        {
+          "flow": 0.773,
+          "pressureDrop": 139.3
+        },
+        {
+          "flow": 0.784,
+          "pressureDrop": 144.4
+        },
+        {
+          "flow": 0.803,
+          "pressureDrop": 150.3
+        },
+        {
+          "flow": 0.817,
+          "pressureDrop": 156.4
+        },
+        {
+          "flow": 0.829,
+          "pressureDrop": 161.6
+        },
+        {
+          "flow": 0.844,
+          "pressureDrop": 168.3
+        },
+        {
+          "flow": 0.855,
+          "pressureDrop": 173.1
+        },
+        {
+          "flow": 0.869,
+          "pressureDrop": 179.7
+        },
+        {
+          "flow": 0.885,
+          "pressureDrop": 187.7
+        },
+        {
+          "flow": 0.895,
+          "pressureDrop": 193.7
+        },
+        {
+          "flow": 0.904,
+          "pressureDrop": 197.9
+        }
+      ],
+      "notes": "Medtronic Bio-Medicus NextGen pediatric arterial cannula, 8 Fr (2.7 mm OD), overall length 22.9 cm, tip length 10.0 cm, non-vented 1/4 in (0.64 cm) connector. Manufacturer lists 0.38 mm wall thickness. Listed under Femoral Cannulae in the 2020 catalog. Cannula code 96820-108. Distinct from pediatric venous code 96830-108 and adult NextGen arterial/jugular devices."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "Bio-Medicus NextGen Pediatric Arterial Cannula",
+      "category": "femoral arterial",
+      "size": "10 Fr",
+      "outerDiameterFr": 10,
+      "outerDiameterMm": 3.3,
+      "overallLengthCm": 22.9,
+      "tipLengthCm": 10.5,
+      "wallThicknessMm": 0.38,
+      "connectorSize": "1/4 in (non-vented)",
+      "cannulaOrderCode": "96820-110",
+      "cartonQuantity": 1,
+      "sourceLabel": "Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Pediatric Arterial and Venous Cannulae, page 24 (Arterial graph)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "User-supplied digitized points from the manufacturer-published Bio-Medicus NextGen Pediatric Arterial 10 Fr pressure-loss graph (Medtronic Cannula Catalog 2020, printed page 24; flow in L/min of water, pressure loss in mmHg). The original 54 CSV coordinates were sorted by ascending flow and rounded to 0.001 L/min and 0.1 mmHg, preserving all distinct points without smoothing or curve fitting. No synthetic (0,0) anchor was added. Do not extrapolate beyond the digitized source range (0.011–1.789 L/min).",
+      "referenceFlowRangeLabel": "0.011–1.789",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0.011 to 1.789 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0.011,
+          "pressureDrop": 1.5
+        },
+        {
+          "flow": 0.05,
+          "pressureDrop": 2.7
+        },
+        {
+          "flow": 0.086,
+          "pressureDrop": 3.9
+        },
+        {
+          "flow": 0.125,
+          "pressureDrop": 5.1
+        },
+        {
+          "flow": 0.167,
+          "pressureDrop": 7
+        },
+        {
+          "flow": 0.198,
+          "pressureDrop": 8.2
+        },
+        {
+          "flow": 0.235,
+          "pressureDrop": 9.7
+        },
+        {
+          "flow": 0.273,
+          "pressureDrop": 11.7
+        },
+        {
+          "flow": 0.31,
+          "pressureDrop": 13.6
+        },
+        {
+          "flow": 0.348,
+          "pressureDrop": 15.7
+        },
+        {
+          "flow": 0.385,
+          "pressureDrop": 17.7
+        },
+        {
+          "flow": 0.423,
+          "pressureDrop": 20.2
+        },
+        {
+          "flow": 0.46,
+          "pressureDrop": 22.4
+        },
+        {
+          "flow": 0.5,
+          "pressureDrop": 24.9
+        },
+        {
+          "flow": 0.535,
+          "pressureDrop": 27.3
+        },
+        {
+          "flow": 0.573,
+          "pressureDrop": 30.1
+        },
+        {
+          "flow": 0.61,
+          "pressureDrop": 32.9
+        },
+        {
+          "flow": 0.648,
+          "pressureDrop": 35.8
+        },
+        {
+          "flow": 0.685,
+          "pressureDrop": 38.9
+        },
+        {
+          "flow": 0.724,
+          "pressureDrop": 42.2
+        },
+        {
+          "flow": 0.763,
+          "pressureDrop": 45.6
+        },
+        {
+          "flow": 0.796,
+          "pressureDrop": 48.1
+        },
+        {
+          "flow": 0.835,
+          "pressureDrop": 52
+        },
+        {
+          "flow": 0.872,
+          "pressureDrop": 55.5
+        },
+        {
+          "flow": 0.905,
+          "pressureDrop": 58.8
+        },
+        {
+          "flow": 0.934,
+          "pressureDrop": 61.9
+        },
+        {
+          "flow": 0.975,
+          "pressureDrop": 66.2
+        },
+        {
+          "flow": 1.005,
+          "pressureDrop": 69.8
+        },
+        {
+          "flow": 1.043,
+          "pressureDrop": 73.8
+        },
+        {
+          "flow": 1.08,
+          "pressureDrop": 78.2
+        },
+        {
+          "flow": 1.118,
+          "pressureDrop": 82.6
+        },
+        {
+          "flow": 1.154,
+          "pressureDrop": 87.1
+        },
+        {
+          "flow": 1.189,
+          "pressureDrop": 91.7
+        },
+        {
+          "flow": 1.227,
+          "pressureDrop": 96.7
+        },
+        {
+          "flow": 1.261,
+          "pressureDrop": 101.4
+        },
+        {
+          "flow": 1.3,
+          "pressureDrop": 106.8
+        },
+        {
+          "flow": 1.329,
+          "pressureDrop": 111.3
+        },
+        {
+          "flow": 1.364,
+          "pressureDrop": 116.8
+        },
+        {
+          "flow": 1.399,
+          "pressureDrop": 121.5
+        },
+        {
+          "flow": 1.433,
+          "pressureDrop": 127.1
+        },
+        {
+          "flow": 1.462,
+          "pressureDrop": 132.4
+        },
+        {
+          "flow": 1.494,
+          "pressureDrop": 138
+        },
+        {
+          "flow": 1.525,
+          "pressureDrop": 143.1
+        },
+        {
+          "flow": 1.553,
+          "pressureDrop": 148.2
+        },
+        {
+          "flow": 1.58,
+          "pressureDrop": 153.3
+        },
+        {
+          "flow": 1.607,
+          "pressureDrop": 158.6
+        },
+        {
+          "flow": 1.636,
+          "pressureDrop": 164.5
+        },
+        {
+          "flow": 1.66,
+          "pressureDrop": 169
+        },
+        {
+          "flow": 1.684,
+          "pressureDrop": 173.8
+        },
+        {
+          "flow": 1.708,
+          "pressureDrop": 179
+        },
+        {
+          "flow": 1.731,
+          "pressureDrop": 183.6
+        },
+        {
+          "flow": 1.747,
+          "pressureDrop": 187.9
+        },
+        {
+          "flow": 1.77,
+          "pressureDrop": 192.6
+        },
+        {
+          "flow": 1.789,
+          "pressureDrop": 196.9
+        }
+      ],
+      "notes": "Medtronic Bio-Medicus NextGen pediatric arterial cannula, 10 Fr (3.3 mm OD), overall length 22.9 cm, tip length 10.5 cm, non-vented 1/4 in (0.64 cm) connector. Manufacturer lists 0.38 mm wall thickness. Listed in Femoral Cannulae in the 2020 catalog. Cannula code 96820-110. Distinct from the pediatric venous 96830-110 model and adult NextGen arterial/jugular devices."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "Bio-Medicus NextGen Pediatric Arterial Cannula",
+      "category": "femoral arterial",
+      "size": "12 Fr",
+      "outerDiameterFr": 12,
+      "outerDiameterMm": 4,
+      "overallLengthCm": 22.9,
+      "tipLengthCm": 11,
+      "wallThicknessMm": 0.38,
+      "connectorSize": "1/4 in (non-vented)",
+      "cannulaOrderCode": "96820-112",
+      "cartonQuantity": 1,
+      "sourceLabel": "Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Pediatric Arterial and Venous Cannulae, page 24 (Arterial graph)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "User-supplied digitized points from the manufacturer-published Bio-Medicus NextGen Pediatric Arterial 12 Fr pressure-loss graph (Medtronic Cannula Catalog 2020, printed page 24; flow in L/min of water, pressure loss in mmHg). The original 54 CSV coordinates were sorted by ascending flow and rounded to 0.001 L/min and 0.1 mmHg, preserving all distinct points without smoothing or curve fitting. No synthetic (0,0) anchor was added. Do not extrapolate beyond the digitized source range (0.011–1.991 L/min).",
+      "referenceFlowRangeLabel": "0.011–1.991",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0.011 to 1.991 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0.011,
+          "pressureDrop": 1.7
+        },
+        {
+          "flow": 0.056,
+          "pressureDrop": 1.9
+        },
+        {
+          "flow": 0.092,
+          "pressureDrop": 2.3
+        },
+        {
+          "flow": 0.133,
+          "pressureDrop": 2.7
+        },
+        {
+          "flow": 0.164,
+          "pressureDrop": 3.1
+        },
+        {
+          "flow": 0.205,
+          "pressureDrop": 3.5
+        },
+        {
+          "flow": 0.235,
+          "pressureDrop": 4
+        },
+        {
+          "flow": 0.273,
+          "pressureDrop": 5
+        },
+        {
+          "flow": 0.31,
+          "pressureDrop": 5.8
+        },
+        {
+          "flow": 0.348,
+          "pressureDrop": 6.7
+        },
+        {
+          "flow": 0.385,
+          "pressureDrop": 7.5
+        },
+        {
+          "flow": 0.423,
+          "pressureDrop": 8.4
+        },
+        {
+          "flow": 0.46,
+          "pressureDrop": 9.4
+        },
+        {
+          "flow": 0.496,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 0.535,
+          "pressureDrop": 11.4
+        },
+        {
+          "flow": 0.572,
+          "pressureDrop": 12.5
+        },
+        {
+          "flow": 0.61,
+          "pressureDrop": 13.7
+        },
+        {
+          "flow": 0.647,
+          "pressureDrop": 14.8
+        },
+        {
+          "flow": 0.685,
+          "pressureDrop": 16.1
+        },
+        {
+          "flow": 0.723,
+          "pressureDrop": 17.3
+        },
+        {
+          "flow": 0.76,
+          "pressureDrop": 18.7
+        },
+        {
+          "flow": 0.797,
+          "pressureDrop": 20.5
+        },
+        {
+          "flow": 0.835,
+          "pressureDrop": 21.8
+        },
+        {
+          "flow": 0.872,
+          "pressureDrop": 23
+        },
+        {
+          "flow": 0.909,
+          "pressureDrop": 24.2
+        },
+        {
+          "flow": 0.947,
+          "pressureDrop": 26
+        },
+        {
+          "flow": 0.984,
+          "pressureDrop": 27.9
+        },
+        {
+          "flow": 1.022,
+          "pressureDrop": 29.4
+        },
+        {
+          "flow": 1.059,
+          "pressureDrop": 31.2
+        },
+        {
+          "flow": 1.097,
+          "pressureDrop": 33
+        },
+        {
+          "flow": 1.134,
+          "pressureDrop": 34.8
+        },
+        {
+          "flow": 1.173,
+          "pressureDrop": 36.9
+        },
+        {
+          "flow": 1.206,
+          "pressureDrop": 38.9
+        },
+        {
+          "flow": 1.245,
+          "pressureDrop": 40.6
+        },
+        {
+          "flow": 1.284,
+          "pressureDrop": 42.8
+        },
+        {
+          "flow": 1.321,
+          "pressureDrop": 44.5
+        },
+        {
+          "flow": 1.359,
+          "pressureDrop": 47.1
+        },
+        {
+          "flow": 1.396,
+          "pressureDrop": 49.4
+        },
+        {
+          "flow": 1.434,
+          "pressureDrop": 51.8
+        },
+        {
+          "flow": 1.471,
+          "pressureDrop": 54.2
+        },
+        {
+          "flow": 1.51,
+          "pressureDrop": 57
+        },
+        {
+          "flow": 1.546,
+          "pressureDrop": 59.6
+        },
+        {
+          "flow": 1.584,
+          "pressureDrop": 61.8
+        },
+        {
+          "flow": 1.621,
+          "pressureDrop": 64.4
+        },
+        {
+          "flow": 1.659,
+          "pressureDrop": 67.2
+        },
+        {
+          "flow": 1.696,
+          "pressureDrop": 70
+        },
+        {
+          "flow": 1.735,
+          "pressureDrop": 72.4
+        },
+        {
+          "flow": 1.771,
+          "pressureDrop": 76
+        },
+        {
+          "flow": 1.809,
+          "pressureDrop": 79.2
+        },
+        {
+          "flow": 1.846,
+          "pressureDrop": 82.1
+        },
+        {
+          "flow": 1.883,
+          "pressureDrop": 85.4
+        },
+        {
+          "flow": 1.921,
+          "pressureDrop": 88.8
+        },
+        {
+          "flow": 1.958,
+          "pressureDrop": 92.2
+        },
+        {
+          "flow": 1.991,
+          "pressureDrop": 95.2
+        }
+      ],
+      "notes": "Medtronic Bio-Medicus NextGen pediatric arterial cannula, 12 Fr (4.0 mm OD), overall length 22.9 cm, tip length 11.0 cm, non-vented 1/4 in (0.64 cm) connector. Manufacturer lists 0.38 mm wall thickness. Listed in Femoral Cannulae in the 2020 catalog. Cannula code 96820-112. Distinct from the pediatric venous 96830-112 model and adult NextGen arterial/jugular devices."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "Bio-Medicus NextGen Pediatric Arterial Cannula",
+      "category": "femoral arterial",
+      "size": "14 Fr",
+      "outerDiameterFr": 14,
+      "outerDiameterMm": 4.7,
+      "overallLengthCm": 22.9,
+      "tipLengthCm": 11.5,
+      "wallThicknessMm": 0.38,
+      "connectorSize": "1/4 in (non-vented)",
+      "cannulaOrderCode": "96820-114",
+      "cartonQuantity": 1,
+      "sourceLabel": "Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Pediatric Arterial and Venous Cannulae, page 24 (Arterial graph)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "User-supplied digitized points from the manufacturer-published Bio-Medicus NextGen Pediatric Arterial 14 Fr pressure-loss graph (Medtronic Cannula Catalog 2020, printed page 24; flow in L/min of water, pressure loss in mmHg). The 54 original CSV coordinates were sorted by ascending flow and rounded to 0.001 L/min and 0.1 mmHg. All distinct source points were preserved without smoothing or curve fitting, including a 0.1 mmHg low-flow dip between 0.094 and 0.125 L/min likely attributable to curve digitization uncertainty. No synthetic (0,0) anchor was added. Do not extrapolate beyond the digitized source range (0.017–1.994 L/min).",
+      "referenceFlowRangeLabel": "0.017–1.994",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0.017 to 1.994 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0.017,
+          "pressureDrop": 1.2
+        },
+        {
+          "flow": 0.056,
+          "pressureDrop": 1.2
+        },
+        {
+          "flow": 0.094,
+          "pressureDrop": 1.2
+        },
+        {
+          "flow": 0.125,
+          "pressureDrop": 1.1
+        },
+        {
+          "flow": 0.166,
+          "pressureDrop": 1.1
+        },
+        {
+          "flow": 0.205,
+          "pressureDrop": 1.1
+        },
+        {
+          "flow": 0.241,
+          "pressureDrop": 1.1
+        },
+        {
+          "flow": 0.283,
+          "pressureDrop": 1.1
+        },
+        {
+          "flow": 0.316,
+          "pressureDrop": 1.5
+        },
+        {
+          "flow": 0.351,
+          "pressureDrop": 2
+        },
+        {
+          "flow": 0.389,
+          "pressureDrop": 2.3
+        },
+        {
+          "flow": 0.426,
+          "pressureDrop": 2.7
+        },
+        {
+          "flow": 0.463,
+          "pressureDrop": 3.1
+        },
+        {
+          "flow": 0.501,
+          "pressureDrop": 3.7
+        },
+        {
+          "flow": 0.538,
+          "pressureDrop": 4.1
+        },
+        {
+          "flow": 0.576,
+          "pressureDrop": 4.6
+        },
+        {
+          "flow": 0.613,
+          "pressureDrop": 5.2
+        },
+        {
+          "flow": 0.651,
+          "pressureDrop": 5.8
+        },
+        {
+          "flow": 0.688,
+          "pressureDrop": 6.4
+        },
+        {
+          "flow": 0.725,
+          "pressureDrop": 7.2
+        },
+        {
+          "flow": 0.763,
+          "pressureDrop": 7.9
+        },
+        {
+          "flow": 0.8,
+          "pressureDrop": 8.6
+        },
+        {
+          "flow": 0.838,
+          "pressureDrop": 9.4
+        },
+        {
+          "flow": 0.875,
+          "pressureDrop": 10.3
+        },
+        {
+          "flow": 0.913,
+          "pressureDrop": 11.2
+        },
+        {
+          "flow": 0.95,
+          "pressureDrop": 12
+        },
+        {
+          "flow": 0.988,
+          "pressureDrop": 13
+        },
+        {
+          "flow": 1.025,
+          "pressureDrop": 13.9
+        },
+        {
+          "flow": 1.062,
+          "pressureDrop": 14.9
+        },
+        {
+          "flow": 1.1,
+          "pressureDrop": 15.9
+        },
+        {
+          "flow": 1.137,
+          "pressureDrop": 16.9
+        },
+        {
+          "flow": 1.175,
+          "pressureDrop": 18
+        },
+        {
+          "flow": 1.212,
+          "pressureDrop": 19.1
+        },
+        {
+          "flow": 1.25,
+          "pressureDrop": 20.3
+        },
+        {
+          "flow": 1.287,
+          "pressureDrop": 21.5
+        },
+        {
+          "flow": 1.325,
+          "pressureDrop": 22.7
+        },
+        {
+          "flow": 1.362,
+          "pressureDrop": 23.7
+        },
+        {
+          "flow": 1.399,
+          "pressureDrop": 24.7
+        },
+        {
+          "flow": 1.437,
+          "pressureDrop": 26.3
+        },
+        {
+          "flow": 1.476,
+          "pressureDrop": 27.9
+        },
+        {
+          "flow": 1.51,
+          "pressureDrop": 29.1
+        },
+        {
+          "flow": 1.549,
+          "pressureDrop": 30.6
+        },
+        {
+          "flow": 1.587,
+          "pressureDrop": 32
+        },
+        {
+          "flow": 1.624,
+          "pressureDrop": 33.4
+        },
+        {
+          "flow": 1.662,
+          "pressureDrop": 34.8
+        },
+        {
+          "flow": 1.699,
+          "pressureDrop": 36.4
+        },
+        {
+          "flow": 1.736,
+          "pressureDrop": 38
+        },
+        {
+          "flow": 1.774,
+          "pressureDrop": 39.5
+        },
+        {
+          "flow": 1.811,
+          "pressureDrop": 41.2
+        },
+        {
+          "flow": 1.849,
+          "pressureDrop": 42.7
+        },
+        {
+          "flow": 1.886,
+          "pressureDrop": 44.1
+        },
+        {
+          "flow": 1.924,
+          "pressureDrop": 46.1
+        },
+        {
+          "flow": 1.961,
+          "pressureDrop": 47.8
+        },
+        {
+          "flow": 1.994,
+          "pressureDrop": 49.3
+        }
+      ],
+      "notes": "Medtronic Bio-Medicus NextGen pediatric arterial cannula, 14 Fr (4.7 mm OD), overall length 22.9 cm, tip length 11.5 cm, non-vented 1/4 in (0.64 cm) connector. Manufacturer lists 0.38 mm wall thickness. Listed in Femoral Cannulae in the 2020 catalog. Cannula code 96820-114. Distinct from the pediatric venous 96830-114 model and adult NextGen arterial/jugular devices."
     },
     {
       "manufacturer": "Medtronic",

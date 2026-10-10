@@ -286,6 +286,185 @@ for (const fr of [21, 23, 25]) {
   assert.strictEqual(matchingSizes.length, 2, `${fr} Fr PVS and PVL products must remain distinct.`);
   assert.notStrictEqual(matchingSizes[0][0], matchingSizes[1][0]);
 }
+// Medtronic catalog page 24; the supplied CSV contains only the arterial 8 Fr curve.
+const pediatric8Entries = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' &&
+  entry.model === 'Bio-Medicus NextGen Pediatric Arterial Cannula' && entry.size === '8 Fr');
+assert.strictEqual(pediatric8Entries.length, 1, 'Preserve one documented pediatric arterial 8 Fr dataset.');
+const pediatric8 = pediatric8Entries[0];
+assert.strictEqual(pediatric8.category, 'femoral arterial');
+assert.strictEqual(pediatric8.size, '8 Fr');
+assert.strictEqual(pediatric8.cannulaOrderCode, '96820-108');
+assert.strictEqual(pediatric8.outerDiameterFr, 8);
+assert.strictEqual(pediatric8.outerDiameterMm, 2.7);
+assert.strictEqual(pediatric8.overallLengthCm, 22.9);
+assert.strictEqual(pediatric8.tipLengthCm, 10);
+assert.strictEqual(pediatric8.connectorSize, '1/4 in (non-vented)');
+assert.strictEqual(pediatric8.testMedium, 'Water');
+assert.strictEqual(pediatric8.dataStatus, 'digitized-curve');
+assert(pediatric8.sourceLabel.includes('page 24') && pediatric8.sourceUrl.endsWith('cannulae-us-product-catalog.pdf'));
+assert(pediatric8.digitizationNote.includes('No synthetic (0,0) anchor was added.'));
+assert.strictEqual(pediatric8.points.length, 39);
+assert.deepStrictEqual(pediatric8.points[0], { flow: 0.011, pressureDrop: 1.5 });
+assert.deepStrictEqual(pediatric8.points.at(-1), { flow: 0.904, pressureDrop: 197.9 });
+assert(pediatric8.points.some(point => point.flow === 0.491 && point.pressureDrop === 59.4));
+assert(!pediatric8.points.some(point => point.flow === 0));
+for (let index = 1; index < pediatric8.points.length; index++) {
+  const prior = pediatric8.points[index - 1], next = pediatric8.points[index];
+  assert(next.flow > prior.flow && next.pressureDrop >= prior.pressureDrop);
+  assert(Math.abs(next.flow * 1000 - Math.round(next.flow * 1000)) < 1e-8);
+  assert(Math.abs(next.pressureDrop * 10 - Math.round(next.pressureDrop * 10)) < 1e-8);
+}
+assert.strictEqual(pediatric8.referenceFlowRangeLabel, '0.011–0.904');
+assert(pediatric8.outOfRangeMessage.includes('0.904 L/min'));
+
+// Medtronic catalog p.24 / user-supplied 10 Fr arterial curve.
+const pediatric10Entries = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' &&
+  entry.model === 'Bio-Medicus NextGen Pediatric Arterial Cannula' && entry.size === '10 Fr');
+assert.strictEqual(pediatric10Entries.length, 1, '10 Fr pediatric arterial SKU must be unique.');
+const pediatric10 = pediatric10Entries[0];
+assert.strictEqual(pediatric10.category, 'femoral arterial');
+assert.strictEqual(pediatric10.size, '10 Fr');
+assert.strictEqual(pediatric10.cannulaOrderCode, '96820-110');
+assert.strictEqual(pediatric10.outerDiameterFr, 10);
+assert.strictEqual(pediatric10.outerDiameterMm, 3.3);
+assert.strictEqual(pediatric10.overallLengthCm, 22.9);
+assert.strictEqual(pediatric10.tipLengthCm, 10.5);
+assert.strictEqual(pediatric10.wallThicknessMm, 0.38);
+assert.strictEqual(pediatric10.connectorSize, '1/4 in (non-vented)');
+assert.strictEqual(pediatric10.testMedium, 'Water');
+assert.strictEqual(pediatric10.dataStatus, 'digitized-curve');
+assert.strictEqual(pediatric10.sourceUrl, pediatric8.sourceUrl);
+assert(pediatric10.sourceLabel.includes('page 24'));
+assert(pediatric10.digitizationNote.includes('No synthetic (0,0) anchor was added.'));
+assert.strictEqual(pediatric10.points.length, 54);
+assert.deepStrictEqual(pediatric10.points[0], { flow: 0.011, pressureDrop: 1.5 });
+assert.deepStrictEqual(pediatric10.points.at(-1), { flow: 1.789, pressureDrop: 196.9 });
+assert(pediatric10.points.some(point => point.flow === 0.975 && point.pressureDrop === 66.2));
+assert(!pediatric10.points.some(point => point.flow === 0));
+assert.strictEqual(pediatric10.referenceFlowRangeLabel, '0.011–1.789');
+assert(pediatric10.outOfRangeMessage.includes('1.789 L/min'));
+assert(Math.abs(pediatric10.points.reduce((sum, point) => sum + point.flow, 0) - 52.274) < 1e-9);
+assert(Math.abs(pediatric10.points.reduce((sum, point) => sum + point.pressureDrop, 0) - 4345.3) < 1e-9);
+for (let index = 1; index < pediatric10.points.length; index++) {
+  const prior = pediatric10.points[index - 1], next = pediatric10.points[index];
+  assert(next.flow > prior.flow && next.pressureDrop >= prior.pressureDrop,
+    '10 Fr flow must strictly increase and pressure drop must not reverse.');
+  assert(Math.abs(next.flow * 1000 - Math.round(next.flow * 1000)) < 1e-8);
+  assert(Math.abs(next.pressureDrop * 10 - Math.round(next.pressureDrop * 10)) < 1e-8);
+}
+
+// Catalog p.24: second user-supplied NextGen Pediatric Arterial curve (12 Fr).
+const pediatric12Entries = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' &&
+  entry.model === 'Bio-Medicus NextGen Pediatric Arterial Cannula' && entry.size === '12 Fr');
+assert.strictEqual(pediatric12Entries.length, 1, 'The pediatric 12 Fr arterial SKU must not be duplicated.');
+const pediatric12 = pediatric12Entries[0];
+assert.strictEqual(pediatric12.category, 'femoral arterial');
+assert.strictEqual(pediatric12.cannulaOrderCode, '96820-112');
+assert.strictEqual(pediatric12.outerDiameterFr, 12);
+assert.strictEqual(pediatric12.outerDiameterMm, 4);
+assert.strictEqual(pediatric12.overallLengthCm, 22.9);
+assert.strictEqual(pediatric12.tipLengthCm, 11);
+assert.strictEqual(pediatric12.connectorSize, '1/4 in (non-vented)');
+assert.strictEqual(pediatric12.testMedium, 'Water');
+assert.strictEqual(pediatric12.dataStatus, 'digitized-curve');
+assert.strictEqual(pediatric12.sourceUrl, pediatric8.sourceUrl);
+assert(pediatric12.sourceLabel.includes('page 24'));
+assert.strictEqual(pediatric12.points.length, 54);
+assert.deepStrictEqual(pediatric12.points[0], { flow: 0.011, pressureDrop: 1.7 });
+assert.deepStrictEqual(pediatric12.points.at(-1), { flow: 1.991, pressureDrop: 95.2 });
+assert(pediatric12.points.some(point => point.flow === 1.173 && point.pressureDrop === 36.9));
+assert(pediatric12.digitizationNote.includes('No synthetic (0,0) anchor was added.'));
+assert(!pediatric12.points.some(point => point.flow === 0));
+assert.strictEqual(pediatric12.referenceFlowRangeLabel, '0.011–1.991');
+assert(pediatric12.outOfRangeMessage.includes('1.991 L/min'));
+for (let index = 1; index < pediatric12.points.length; index++) {
+  const previous = pediatric12.points[index - 1], current = pediatric12.points[index];
+  assert(current.flow > previous.flow && current.pressureDrop >= previous.pressureDrop,
+    'Pediatric 12 Fr must have strictly increasing flow and nondecreasing pressure loss.');
+  assert(Math.abs(current.flow * 1000 - Math.round(current.flow * 1000)) < 1e-8);
+  assert(Math.abs(current.pressureDrop * 10 - Math.round(current.pressureDrop * 10)) < 1e-8);
+}
+// Catalog p.24: pediatric 14 Fr arterial curve, including the unmodified tiny low-flow dip.
+const pediatric14Entries = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' &&
+  entry.model === 'Bio-Medicus NextGen Pediatric Arterial Cannula' && entry.size === '14 Fr');
+assert.strictEqual(pediatric14Entries.length, 1, 'Only one documented 14 Fr pediatric arterial cannula dataset.');
+const pediatric14 = pediatric14Entries[0];
+assert.strictEqual(pediatric14.category, 'femoral arterial');
+assert.strictEqual(pediatric14.cannulaOrderCode, '96820-114');
+assert.strictEqual(pediatric14.outerDiameterFr, 14);
+assert.strictEqual(pediatric14.outerDiameterMm, 4.7);
+assert.strictEqual(pediatric14.overallLengthCm, 22.9);
+assert.strictEqual(pediatric14.tipLengthCm, 11.5);
+assert.strictEqual(pediatric14.wallThicknessMm, 0.38);
+assert.strictEqual(pediatric14.connectorSize, '1/4 in (non-vented)');
+assert.strictEqual(pediatric14.testMedium, 'Water');
+assert.strictEqual(pediatric14.dataStatus, 'digitized-curve');
+assert.strictEqual(pediatric14.sourceUrl, pediatric8.sourceUrl);
+assert(pediatric14.sourceLabel.includes('page 24'));
+assert.strictEqual(pediatric14.points.length, 54);
+assert.deepStrictEqual(pediatric14.points[0], { flow: 0.017, pressureDrop: 1.2 });
+assert.deepStrictEqual(pediatric14.points.at(-1), { flow: 1.994, pressureDrop: 49.3 });
+assert(pediatric14.points.some(point => point.flow === 0.094 && point.pressureDrop === 1.2));
+assert(pediatric14.points.some(point => point.flow === 0.125 && point.pressureDrop === 1.1),
+  'Preserve source 0.1 mmHg low-flow decrease; do not silently smooth digitization noise.');
+assert(pediatric14.digitizationNote.includes('low-flow dip'));
+assert(pediatric14.digitizationNote.includes('No synthetic (0,0) anchor was added.'));
+assert(!pediatric14.points.some(point => point.flow === 0));
+assert.strictEqual(pediatric14.referenceFlowRangeLabel, '0.017–1.994');
+assert(pediatric14.outOfRangeMessage.includes('1.994 L/min'));
+assert(Math.abs(pediatric14.points.reduce((sum, point) => sum + point.flow, 0) - 54.364) < 1e-9);
+assert(Math.abs(pediatric14.points.reduce((sum, point) => sum + point.pressureDrop, 0) - 940.9) < 1e-9);
+for (let index = 1; index < pediatric14.points.length; index++) {
+  const prior = pediatric14.points[index - 1], next = pediatric14.points[index];
+  assert(next.flow > prior.flow, 'Digitized source flow coordinates must be unique and strictly increasing.');
+  assert(prior.pressureDrop - next.pressureDrop <= 0.1 + 1e-8,
+    'Flag any pressure reversal larger than the explicitly preserved 0.1 mmHg source variation.');
+  assert(Math.abs(next.flow * 1000 - Math.round(next.flow * 1000)) < 1e-8);
+  assert(Math.abs(next.pressureDrop * 10 - Math.round(next.pressureDrop * 10)) < 1e-8);
+}
+
+assert.deepStrictEqual(new Set(pressureDropData.filter(entry =>
+  entry.model === 'Bio-Medicus NextGen Pediatric Arterial Cannula').map(entry => entry.cannulaOrderCode)),
+  new Set(['96820-108', '96820-110', '96820-112', '96820-114']),
+  'All four documented pediatric arterial codes must be unique and no pediatric venous curves fabricated.');
+
+// Pediatric venous source is separate from all four pediatric arterial models.
+const pediatricVenous8Entries = pressureDropData.filter(item => item.manufacturer === 'Medtronic' &&
+  item.model === 'Bio-Medicus NextGen Pediatric Venous Cannula');
+assert.strictEqual(pediatricVenous8Entries.length, 1, 'Only the provided pediatric venous 8 Fr curve is available.');
+const pediatricVenous8 = pediatricVenous8Entries[0];
+assert.strictEqual(pediatricVenous8.category, 'femoral venous');
+assert.strictEqual(pediatricVenous8.size, '8 Fr');
+assert.strictEqual(pediatricVenous8.cannulaOrderCode, '96830-108');
+assert.notStrictEqual(pediatricVenous8.cannulaOrderCode, pediatric8.cannulaOrderCode);
+assert.strictEqual(pediatricVenous8.outerDiameterFr, 8);
+assert.strictEqual(pediatricVenous8.outerDiameterMm, 2.7);
+assert.strictEqual(pediatricVenous8.overallLengthCm, 22.9);
+assert.strictEqual(pediatricVenous8.tipLengthCm, 10);
+assert.strictEqual(pediatricVenous8.wallThicknessMm, 0.38);
+assert.strictEqual(pediatricVenous8.connectorSize, '1/4 in (non-vented)');
+assert.strictEqual(pediatricVenous8.testMedium, 'Water');
+assert.strictEqual(pediatricVenous8.dataStatus, 'digitized-curve');
+assert.strictEqual(pediatricVenous8.sourceUrl, pediatric8.sourceUrl);
+assert(pediatricVenous8.sourceLabel.includes('page 25') && pediatricVenous8.sourceLabel.includes('Venous graph'));
+assert(pediatricVenous8.digitizationNote.includes('pressure-loss magnitudes'));
+assert(pediatricVenous8.digitizationNote.includes('No synthetic (0,0) anchor was added.'));
+assert.strictEqual(pediatricVenous8.points.length, 40);
+assert.deepStrictEqual(pediatricVenous8.points[0], { flow: 0.023, pressureDrop: 0.5 });
+assert.deepStrictEqual(pediatricVenous8.points.at(-1), { flow: 1.061, pressureDrop: 196.4 });
+assert(pediatricVenous8.points.some(point => point.flow === 0.481 && point.pressureDrop === 44.4));
+assert(!pediatricVenous8.points.some(point => point.flow === 0));
+assert.strictEqual(pediatricVenous8.referenceFlowRangeLabel, '0.023–1.061');
+assert(pediatricVenous8.outOfRangeMessage.includes('1.061 L/min'));
+assert(Math.abs(pediatricVenous8.points.reduce((s,pt) => s+pt.flow, 0) - 25.438)<1e-8);
+assert(Math.abs(pediatricVenous8.points.reduce((s,pt) => s+pt.pressureDrop, 0) - 3592.2)<1e-8);
+for (let index=1; index<pediatricVenous8.points.length; index++) {
+  const prev=pediatricVenous8.points[index-1], next=pediatricVenous8.points[index];
+  assert(next.flow>prev.flow && next.pressureDrop>=prev.pressureDrop);
+  assert(Math.abs(next.flow*1000-Math.round(next.flow*1000))<1e-8);
+  assert(Math.abs(next.pressureDrop*10-Math.round(next.pressureDrop*10))<1e-8);
+}
+
 const nextGenSizes = ['15 Fr', '17 Fr', '19 Fr', '21 Fr', '23 Fr', '25 Fr'];
 for (const model of nextGenModels) {
   for (const size of nextGenSizes) {
@@ -1462,6 +1641,46 @@ pressureDropData.forEach(entry => {
 assert.strictEqual(Object.values(classificationCounts).reduce((sum, count) => sum + count, 0), pressureDropData.length);
 assert.strictEqual(classificationCounts['venous/jugular'],
   pressureDropData.filter(entry => entry.category === 'jugular venous').length);
+const pediatricClassification = targetRuntime.classifyPressureDropComparisonEntry(pediatric8);
+assert.strictEqual(pediatricClassification.eligible, true);
+assert.strictEqual(pediatricClassification.category, 'arterial');
+assert.strictEqual(pediatricClassification.location, 'femoral');
+assert(targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'arterial', location: 'femoral' }).includes(pediatric8));
+assert(!targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous' }).includes(pediatric8));
+assert(targetRuntime.searchPressureDropCatalog(pressureDropData, '8Fr Medtronic').includes(pediatric8));
+const pediatric12Classification = targetRuntime.classifyPressureDropComparisonEntry(pediatric12);
+assert.strictEqual(pediatric12Classification.eligible, true);
+assert.strictEqual(pediatric12Classification.category, 'arterial');
+assert.strictEqual(pediatric12Classification.location, 'femoral');
+assert(targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'arterial', location: 'femoral' }).includes(pediatric12));
+assert(!targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous' }).includes(pediatric12));
+assert(targetRuntime.searchPressureDropCatalog(pressureDropData, '12Fr Medtronic').includes(pediatric12));
+const pediatric10Classification = targetRuntime.classifyPressureDropComparisonEntry(pediatric10);
+assert.strictEqual(pediatric10Classification.eligible, true);
+assert.strictEqual(pediatric10Classification.category, 'arterial');
+assert.strictEqual(pediatric10Classification.location, 'femoral');
+assert(targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'arterial', location: 'femoral' }).includes(pediatric10));
+assert(!targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous' }).includes(pediatric10));
+assert(targetRuntime.searchPressureDropCatalog(pressureDropData, '10Fr Medtronic').includes(pediatric10));
+assert(targetRuntime.searchPressureDropCatalog(pressureDropData, '96820-110').includes(pediatric10));
+const pediatric14Classification = targetRuntime.classifyPressureDropComparisonEntry(pediatric14);
+assert.strictEqual(pediatric14Classification.eligible, true);
+assert.strictEqual(pediatric14Classification.category, 'arterial');
+assert.strictEqual(pediatric14Classification.location, 'femoral');
+assert(targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'arterial', location: 'femoral' }).includes(pediatric14));
+assert(!targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous' }).includes(pediatric14));
+assert(targetRuntime.searchPressureDropCatalog(pressureDropData, '14Fr Medtronic').includes(pediatric14));
+assert(targetRuntime.searchPressureDropCatalog(pressureDropData, '96820-114').includes(pediatric14));
+const pediatricVenousClassification = targetRuntime.classifyPressureDropComparisonEntry(pediatricVenous8);
+assert.strictEqual(pediatricVenousClassification.eligible, true);
+assert.strictEqual(pediatricVenousClassification.category, 'venous');
+assert.strictEqual(pediatricVenousClassification.location, 'femoral');
+assert(targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'femoral' }).includes(pediatricVenous8));
+assert(!targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'arterial' }).includes(pediatricVenous8));
+assert(targetRuntime.searchPressureDropCatalog(pressureDropData, '8Fr Medtronic').includes(pediatricVenous8));
+assert(targetRuntime.searchPressureDropCatalog(pressureDropData, '96830-108').includes(pediatricVenous8));
+assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'Venous 8Fr Medtronic').includes(pediatricVenous8));
+
 const documentedCentralVenousModels = {
   LivaNova: [
     'Single Stage Right Angle Lighthouse Tip Venous Return Cannulae — Right Angle Lighthouse Tip, Wire-reinforced Tubing',
@@ -1546,7 +1765,7 @@ assert(pressureDropData.filter(entry => entry.model === 'Select Series Angled Ti
 assert.strictEqual(classifyComparison({ category: 'femoral venous', connectionSite: 'Jugular venous' }).location, 'jugular', 'Explicit anatomical site takes precedence');
 assert.strictEqual(classifyComparison({ category: 'arterial', connectionSite: 'Femoral venous' }).eligible, false, 'Conflicting type/site metadata is ambiguous');
 assert.strictEqual(classifyComparison({ category: 'arterial', connectionSite: 'Aortic root' }).eligible, false);
-assert.strictEqual(new Set(pressureDropData.map(targetRuntime.getPressureDropTargetFlowKey)).size, 189);
+assert.strictEqual(new Set(pressureDropData.map(targetRuntime.getPressureDropTargetFlowKey)).size, 194);
 const aorticArch24 = pressureDropData.filter(entry => entry.manufacturer === 'LivaNova' &&
   entry.size === '24 Fr' && entry.model.startsWith('Aortic Arch Cannulae —'));
 assert.strictEqual(aorticArch24.length, 2);
@@ -1655,7 +1874,7 @@ assert(fullFemoralSizeSort.every((row, index) => !index || targetRuntime.getPres
 assert.deepStrictEqual(Array.from(targetRuntime.getPressureDropTargetFlowRows(targetFixtures, arterialFilters, 3, 'manufacturer'), row => row.entry.manufacturer), ['Getinge / Maquet', 'LivaNova', 'Medtronic']);
 assert.deepStrictEqual(Array.from(targetRuntime.getPressureDropTargetFlowRows(targetFixtures, arterialFilters, 3, 'model'), row => row.entry.model), ['A', 'B', 'C']);
 const actualFemoralRows = targetRuntime.getPressureDropTargetFlowRows(pressureDropData, arterialFilters, 4.5);
-assert.strictEqual(actualFemoralRows.length, 24);
+assert.strictEqual(actualFemoralRows.length, 28);
 assert.strictEqual(new Set(Array.from(actualFemoralRows, row => row.entry.manufacturer)).size, 3);
 const filteredFamily = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { ...arterialFilters, manufacturer: 'Medtronic', model: nextGenModels[0] });
 assert.strictEqual(filteredFamily.length, 6);
@@ -1819,6 +2038,60 @@ assert.strictEqual(targetRuntime.getPressureDropExploredFlow(402, { left: 0, wid
 assert.strictEqual(targetRuntime.getPressureDropExploredFlow(230, { left: 100, width: 420 }, { plotLeft: '58', plotRight: '402', minFlow: '1', maxFlow: '5' }), 1.8, 'Page offset is converted through SVG bounds');
 
 // Hard-coded cross-manufacturer catalog regressions at the same target flow.
+const pediatricAt05 = targetRuntime.getPressureDropTargetFlowResult(pediatric8, 0.5);
+assert(pediatricAt05.inRange, '8 Fr source curve must interpolate at 0.5 L/min.');
+assert(Math.abs(pediatricAt05.interpolationResult.value -
+  (59.4 + (64.7 - 59.4) * (0.5 - 0.491) / (0.517 - 0.491))) < 1e-8);
+for (const flow of [0.01, 0.905]) {
+  const result = targetRuntime.getPressureDropTargetFlowResult(pediatric8, flow);
+  assert(!result.inRange && result.interpolationResult.state === 'out_of_range',
+    'Do not extrapolate beyond pediatric digitized manufacturer curve endpoints.');
+}
+
+const pediatric12At12 = targetRuntime.getPressureDropTargetFlowResult(pediatric12, 1.2);
+assert(pediatric12At12.inRange);
+assert(Math.abs(pediatric12At12.interpolationResult.value -
+  (36.9 + (38.9 - 36.9) * (1.2 - 1.173) / (1.206 - 1.173))) < 1e-8);
+for (const flow of [0.01, 1.992]) {
+  const result = targetRuntime.getPressureDropTargetFlowResult(pediatric12, flow);
+  assert(!result.inRange && result.interpolationResult.state === 'out_of_range',
+    'No extrapolation outside the pediatric 12 Fr digitized source range.');
+}
+
+const pediatric10At1 = targetRuntime.getPressureDropTargetFlowResult(pediatric10, 1.0);
+assert(pediatric10At1.inRange);
+assert(Math.abs(pediatric10At1.interpolationResult.value -
+  (66.2 + (69.8 - 66.2) * (1.0 - 0.975) / (1.005 - 0.975))) < 1e-8);
+for (const flow of [0.01, 1.79]) {
+  const result = targetRuntime.getPressureDropTargetFlowResult(pediatric10, flow);
+  assert(!result.inRange && result.interpolationResult.state === 'out_of_range',
+    'No extrapolation outside pediatric arterial 10 Fr digitized source range.');
+}
+
+const pediatric14At1 = targetRuntime.getPressureDropTargetFlowResult(pediatric14, 1.0);
+assert(pediatric14At1.inRange);
+assert(Math.abs(pediatric14At1.interpolationResult.value -
+  (13.0 + (13.9 - 13.0) * (1.0 - 0.988) / (1.025 - 0.988))) < 1e-8);
+for (const flow of [0.016, 1.995]) {
+  const result = targetRuntime.getPressureDropTargetFlowResult(pediatric14, flow);
+  assert(!result.inRange && result.interpolationResult.state === 'out_of_range',
+    'Do not extrapolate beyond pediatric arterial 14 Fr curve endpoints.');
+}
+
+const pediatricVenousAt05 = targetRuntime.getPressureDropTargetFlowResult(pediatricVenous8, 0.5);
+assert(pediatricVenousAt05.inRange);
+assert(Math.abs(pediatricVenousAt05.interpolationResult.value -
+  (44.4+(49.6-44.4)*(0.5-0.481)/(0.511-0.481)))<1e-8);
+const pediatricVenousAt1 = targetRuntime.getPressureDropTargetFlowResult(pediatricVenous8, 1.0);
+assert(pediatricVenousAt1.inRange && pediatricVenousAt1.interpolationResult.value>100);
+assert.strictEqual(pediatricVenousAt1.isHighPressure, false,
+  'Venous magnitude must not trigger arterial-only >100 mmHg warning.');
+for(const flow of [0.022, 1.062]) {
+  const result = targetRuntime.getPressureDropTargetFlowResult(pediatricVenous8, flow);
+  assert(!result.inRange && result.interpolationResult.state === 'out_of_range',
+    'Do not extrapolate outside the pediatric venous manufacturer curve.');
+}
+
 const actualNextGen19 = actualFemoralRows.find(row => row.entry.model === nextGenModels[0] && row.entry.size === '19 Fr');
 const actualHls19 = actualFemoralRows.find(row => row.entry.cannulaOrderCode === 'PAS 1915');
 // Independently calculated from (4.36,64.7)/(4.52,69.4) and
@@ -1857,7 +2130,7 @@ locationInput.value = 'femoral'; locationInput.dispatch('change');
 function currentRows() { return pressureDescendants(targetNodes['pressure-drop-target-results'], node => node.tagName === 'tr'); }
 function rowCheckbox(row) { return pressureDescendants(row, node => node.type === 'checkbox')[0]; }
 const initialKeys = currentRows().map(row => row.dataset.productKey);
-assert.strictEqual(initialKeys.length, 24);
+assert.strictEqual(initialKeys.length, 28);
 assert(currentRows().some(row => row.textContent.includes('Out of range')));
 for (const row of currentRows().slice(0, 4)) {
   const box = rowCheckbox(row);
@@ -1883,14 +2156,14 @@ manufacturerInput.value = 'Getinge / Maquet'; manufacturerInput.dispatch('change
 assert.strictEqual(familyInput.value, '', 'Invalid family resets on manufacturer changes');
 assert.strictEqual(targetFlowInput.value, '4.5');
 manufacturerInput.value = ''; manufacturerInput.dispatch('change');
-assert.strictEqual(currentRows().length, 24);
+assert.strictEqual(currentRows().length, 28);
 const removeButton = pressureDescendants(targetNodes['pressure-drop-target-chart'],
   node => node.tagName === 'button' && node.attributes['aria-label']?.startsWith('Remove '))[0];
 assert(removeButton, 'Chart remove-curve control must be selected explicitly, not the raw-points toggle');
 removeButton.dispatch('click');
 assert.strictEqual(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'li').length, 3);
 targetFlowInput.value = '100000'; targetFlowInput.dispatch('input');
-assert.strictEqual(currentRows().length, 24, 'Out-of-range-only results retain all products');
+assert.strictEqual(currentRows().length, 28, 'Out-of-range-only results retain all products');
 assert.strictEqual(targetNodes['pressure-drop-target-view'].dataset.analyticsReady, 'false');
 assert(targetNodes['pressure-drop-target-results'].textContent.includes('No in-range estimates'));
 targetNodes['pressure-drop-target-location'].value = 'central'; locationInput.dispatch('change');
@@ -1900,7 +2173,7 @@ assert.strictEqual(currentRows().length, targetRuntime.getPressureDropTargetFlow
   'Switching category starts from all valid venous locations.');
 locationInput.value = 'femoral'; locationInput.dispatch('change');
 assert.strictEqual(currentRows().length, targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'femoral' }).length);
-assert.strictEqual(currentRows().length, 23, 'Four PVS products join the original 19 femoral venous entries.');
+assert.strictEqual(currentRows().length, 24, 'Four PVS products plus one pediatric venous 8 Fr join the original 19 femoral venous entries.');
 assert.strictEqual(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'li').length, 0, 'Category switch clears incompatible curves');
 targetNodes['pressure-drop-target-model'].value = 'not a product'; controller.refresh();
 assert(targetNodes['pressure-drop-target-results'].textContent.includes('No matching cannulas'));
