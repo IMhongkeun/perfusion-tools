@@ -1504,7 +1504,7 @@ const femoralOnly = pressureDropData.filter(entry => /Femoral/i.test(entry.model
 assert(femoralOnly.length > 0 && femoralOnly.every(entry => !centralVenous.includes(entry)));
 assert(avalonProducts.every(entry => !centralVenous.includes(entry) && classifyComparison(entry).location === 'jugular'));
 const unspecifiedVenous = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'other' });
-assert.strictEqual(unspecifiedVenous.length, 1, 'The single new pediatric venous SKU has no documented unique insertion site.');
+assert.strictEqual(unspecifiedVenous.length, 3, 'Three pediatric venous sizes have no documented unique insertion site.');
 assert([...operationalCentralVenousSkus].every(code => centralVenous.some(entry => entry.cannulaOrderCode === code)));
 assert([...operationalCentralVenousSkus].every(code => !unspecifiedVenous.some(entry => entry.cannulaOrderCode === code)));
 const femoralVenous = targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'venous', location: 'femoral' });
@@ -1546,7 +1546,7 @@ assert(pressureDropData.filter(entry => entry.model === 'Select Series Angled Ti
 assert.strictEqual(classifyComparison({ category: 'femoral venous', connectionSite: 'Jugular venous' }).location, 'jugular', 'Explicit anatomical site takes precedence');
 assert.strictEqual(classifyComparison({ category: 'arterial', connectionSite: 'Femoral venous' }).eligible, false, 'Conflicting type/site metadata is ambiguous');
 assert.strictEqual(classifyComparison({ category: 'arterial', connectionSite: 'Aortic root' }).eligible, false);
-assert.strictEqual(new Set(pressureDropData.map(targetRuntime.getPressureDropTargetFlowKey)).size, 190);
+assert.strictEqual(new Set(pressureDropData.map(targetRuntime.getPressureDropTargetFlowKey)).size, 192);
 
 const pediatricVenousEntries = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' &&
   entry.cannulaOrderCode === '96830-110');
@@ -1597,6 +1597,85 @@ for (const outOfRangeFlow of [0, 2.0]) {
   const result = targetRuntime.getPressureDropTargetFlowResult(pediatricVenous10Fr, outOfRangeFlow);
   assert.strictEqual(result.inRange, false, 'Never extrapolate the pediatric 10 Fr venous curve.');
 }
+
+// Manufacturer-verified Bio-Medicus NextGen pediatric venous models 12/14 Fr:
+// https://www.medtronic.com/en-us/healthcare-professionals/products/cardiovascular/cannulae/femoral-cannulae/bio-medicus-nextgen-cannula.html
+const pediatricVenousExpectations = [
+  { size: '12 Fr', code: '96830-112', od: 4.0, tipLength: 11.0, fingerprint: 1873948369,
+    finalFlow: 2.009643887777716, finalPressure: 82.61839396019215,
+    midFlow: 1.3033074898252923, midPressure: 37.36375155386821 },
+  { size: '14 Fr', code: '96830-114', od: 4.7, tipLength: 11.5, fingerprint: 3836037931,
+    finalFlow: 2.0064031565831373, finalPressure: 47.580645161290334,
+    midFlow: 1.3030868269924363, midPressure: 21.939419537223216 }
+];
+const pediatricCurveFingerprint = points => {
+  const normalized = points.map(point =>
+    `${Math.round(point.flow * 1e9)},${Math.round(point.pressureDrop * 1e9)};`).join('');
+  let hash = 2166136261;
+  for (const character of normalized) hash = Math.imul(hash ^ character.charCodeAt(0), 16777619) >>> 0;
+  return hash;
+};
+for (const expected of pediatricVenousExpectations) {
+  const matches = pressureDropData.filter(entry =>
+    entry.manufacturer === 'Medtronic' && entry.cannulaOrderCode === expected.code);
+  assert.strictEqual(matches.length, 1, `${expected.size} pediatric venous cannula exists exactly once`);
+  const entry = matches[0];
+  assert.strictEqual(entry.model, 'Bio-Medicus NextGen Pediatric Venous Cannula');
+  assert.strictEqual(entry.category, 'venous');
+  assert.strictEqual(entry.size, expected.size);
+  assert.strictEqual(entry.outerDiameterFr, parseInt(expected.size, 10));
+  assert.strictEqual(entry.outerDiameterMm, expected.od);
+  assert.strictEqual(entry.overallLengthCm, 22.9);
+  assert.strictEqual(entry.tipLengthCm, expected.tipLength);
+  assert.strictEqual(entry.connectorSize, 'Non-vented 1/4 in (0.64 cm)');
+  assert.strictEqual(entry.testMedium, 'Water at room temperature');
+  assert.strictEqual(entry.points.length, 48);
+  assert.strictEqual(pediatricCurveFingerprint(entry.points), expected.fingerprint,
+    `${expected.size} pressure-flow coordinates must remain consistent with the supplied CSV to 9 decimal places`);
+  assert.strictEqual(entry.points[0].flow, 0.023234579063918626);
+  assert.strictEqual(entry.points[0].pressureDrop, 0.52915512764514);
+  assert.strictEqual(entry.points[30].flow, expected.midFlow);
+  assert.strictEqual(entry.points[30].pressureDrop, expected.midPressure);
+  assert.strictEqual(entry.points.at(-1).flow, expected.finalFlow);
+  assert.strictEqual(entry.points.at(-1).pressureDrop, expected.finalPressure);
+  assert(entry.points.every(point => Number.isFinite(point.flow) && Number.isFinite(point.pressureDrop)));
+  assert(!entry.points.some(point => point.flow === 0), 'Do not add a synthetic zero-flow anchor.');
+  entry.points.forEach((point, index) => {
+    if (index === 0) return;
+    assert(point.flow > entry.points[index - 1].flow, 'Digitized flow coordinates must strictly increase.');
+    assert(point.pressureDrop >= entry.points[index - 1].pressureDrop, 'Pressure loss must not reverse.');
+  });
+  const classification = classifyComparison(entry);
+  assert.strictEqual(classification.eligible, true);
+  assert.strictEqual(classification.category, 'venous');
+  assert.strictEqual(classification.location, 'other');
+  assert(unspecifiedVenous.includes(entry));
+  assert(!targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: 'arterial' }).includes(entry));
+  for (const location of ['central', 'femoral', 'jugular']) {
+    assert(!targetRuntime.getPressureDropTargetFlowMatches(pressureDropData,
+      { category: 'venous', location }).includes(entry), 'Unsupported insertion site must not be inferred.');
+  }
+  const atOne = targetRuntime.getPressureDropTargetFlowResult(entry, 1.0);
+  assert.strictEqual(atOne.inRange, true);
+  assert.strictEqual(atOne.isHighPressure, false);
+  assert.strictEqual(atOne.interpolationResult.state, 'interpolated');
+  assert(atOne.interpolationResult.value > 0);
+  for (const outside of [0, 2.1]) {
+    const result = targetRuntime.getPressureDropTargetFlowResult(entry, outside);
+    assert.strictEqual(result.inRange, false, 'Outside the source range, do not extrapolate.');
+    assert.strictEqual(result.interpolationResult.state, 'out_of_range');
+  }
+}
+const pediatricVenousFamily = pressureDropData.filter(entry =>
+  entry.manufacturer === 'Medtronic' && entry.model === 'Bio-Medicus NextGen Pediatric Venous Cannula');
+assert.deepStrictEqual(new Set(pediatricVenousFamily.map(entry => entry.size)),
+  new Set(['10 Fr', '12 Fr', '14 Fr']));
+assert.strictEqual(pediatricVenousFamily.length, 3);
+assert.strictEqual(new Set(pediatricVenousFamily.map(targetRuntime.getPressureDropTargetFlowKey)).size, 3);
+assert.strictEqual(targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, {
+  category: 'venous', location: 'other', manufacturer: 'Medtronic',
+  model: 'Bio-Medicus NextGen Pediatric Venous Cannula'
+}).length, 3);
 
 const aorticArch24 = pressureDropData.filter(entry => entry.manufacturer === 'LivaNova' &&
   entry.size === '24 Fr' && entry.model.startsWith('Aortic Arch Cannulae —'));
