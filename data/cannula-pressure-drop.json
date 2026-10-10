@@ -19546,6 +19546,246 @@
       "manufacturer": "Medtronic",
       "model": "Bio-Medicus NextGen Pediatric Arterial Cannula",
       "category": "femoral arterial",
+      "size": "10 Fr",
+      "outerDiameterFr": 10,
+      "outerDiameterMm": 3.3,
+      "overallLengthCm": 22.9,
+      "tipLengthCm": 10.5,
+      "wallThicknessMm": 0.38,
+      "connectorSize": "1/4 in (non-vented)",
+      "cannulaOrderCode": "96820-110",
+      "cartonQuantity": 1,
+      "sourceLabel": "Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Pediatric Arterial and Venous Cannulae, page 24 (Arterial graph)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "User-supplied digitized points from the manufacturer-published Bio-Medicus NextGen Pediatric Arterial 10 Fr pressure-loss graph (Medtronic Cannula Catalog 2020, printed page 24; flow in L/min of water, pressure loss in mmHg). The original 54 CSV coordinates were sorted by ascending flow and rounded to 0.001 L/min and 0.1 mmHg, preserving all distinct points without smoothing or curve fitting. No synthetic (0,0) anchor was added. Do not extrapolate beyond the digitized source range (0.011–1.789 L/min).",
+      "referenceFlowRangeLabel": "0.011–1.789",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0.011 to 1.789 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0.011,
+          "pressureDrop": 1.5
+        },
+        {
+          "flow": 0.05,
+          "pressureDrop": 2.7
+        },
+        {
+          "flow": 0.086,
+          "pressureDrop": 3.9
+        },
+        {
+          "flow": 0.125,
+          "pressureDrop": 5.1
+        },
+        {
+          "flow": 0.167,
+          "pressureDrop": 7
+        },
+        {
+          "flow": 0.198,
+          "pressureDrop": 8.2
+        },
+        {
+          "flow": 0.235,
+          "pressureDrop": 9.7
+        },
+        {
+          "flow": 0.273,
+          "pressureDrop": 11.7
+        },
+        {
+          "flow": 0.31,
+          "pressureDrop": 13.6
+        },
+        {
+          "flow": 0.348,
+          "pressureDrop": 15.7
+        },
+        {
+          "flow": 0.385,
+          "pressureDrop": 17.7
+        },
+        {
+          "flow": 0.423,
+          "pressureDrop": 20.2
+        },
+        {
+          "flow": 0.46,
+          "pressureDrop": 22.4
+        },
+        {
+          "flow": 0.5,
+          "pressureDrop": 24.9
+        },
+        {
+          "flow": 0.535,
+          "pressureDrop": 27.3
+        },
+        {
+          "flow": 0.573,
+          "pressureDrop": 30.1
+        },
+        {
+          "flow": 0.61,
+          "pressureDrop": 32.9
+        },
+        {
+          "flow": 0.648,
+          "pressureDrop": 35.8
+        },
+        {
+          "flow": 0.685,
+          "pressureDrop": 38.9
+        },
+        {
+          "flow": 0.724,
+          "pressureDrop": 42.2
+        },
+        {
+          "flow": 0.763,
+          "pressureDrop": 45.6
+        },
+        {
+          "flow": 0.796,
+          "pressureDrop": 48.1
+        },
+        {
+          "flow": 0.835,
+          "pressureDrop": 52
+        },
+        {
+          "flow": 0.872,
+          "pressureDrop": 55.5
+        },
+        {
+          "flow": 0.905,
+          "pressureDrop": 58.8
+        },
+        {
+          "flow": 0.934,
+          "pressureDrop": 61.9
+        },
+        {
+          "flow": 0.975,
+          "pressureDrop": 66.2
+        },
+        {
+          "flow": 1.005,
+          "pressureDrop": 69.8
+        },
+        {
+          "flow": 1.043,
+          "pressureDrop": 73.8
+        },
+        {
+          "flow": 1.08,
+          "pressureDrop": 78.2
+        },
+        {
+          "flow": 1.118,
+          "pressureDrop": 82.6
+        },
+        {
+          "flow": 1.154,
+          "pressureDrop": 87.1
+        },
+        {
+          "flow": 1.189,
+          "pressureDrop": 91.7
+        },
+        {
+          "flow": 1.227,
+          "pressureDrop": 96.7
+        },
+        {
+          "flow": 1.261,
+          "pressureDrop": 101.4
+        },
+        {
+          "flow": 1.3,
+          "pressureDrop": 106.8
+        },
+        {
+          "flow": 1.329,
+          "pressureDrop": 111.3
+        },
+        {
+          "flow": 1.364,
+          "pressureDrop": 116.8
+        },
+        {
+          "flow": 1.399,
+          "pressureDrop": 121.5
+        },
+        {
+          "flow": 1.433,
+          "pressureDrop": 127.1
+        },
+        {
+          "flow": 1.462,
+          "pressureDrop": 132.4
+        },
+        {
+          "flow": 1.494,
+          "pressureDrop": 138
+        },
+        {
+          "flow": 1.525,
+          "pressureDrop": 143.1
+        },
+        {
+          "flow": 1.553,
+          "pressureDrop": 148.2
+        },
+        {
+          "flow": 1.58,
+          "pressureDrop": 153.3
+        },
+        {
+          "flow": 1.607,
+          "pressureDrop": 158.6
+        },
+        {
+          "flow": 1.636,
+          "pressureDrop": 164.5
+        },
+        {
+          "flow": 1.66,
+          "pressureDrop": 169
+        },
+        {
+          "flow": 1.684,
+          "pressureDrop": 173.8
+        },
+        {
+          "flow": 1.708,
+          "pressureDrop": 179
+        },
+        {
+          "flow": 1.731,
+          "pressureDrop": 183.6
+        },
+        {
+          "flow": 1.747,
+          "pressureDrop": 187.9
+        },
+        {
+          "flow": 1.77,
+          "pressureDrop": 192.6
+        },
+        {
+          "flow": 1.789,
+          "pressureDrop": 196.9
+        }
+      ],
+      "notes": "Medtronic Bio-Medicus NextGen pediatric arterial cannula, 10 Fr (3.3 mm OD), overall length 22.9 cm, tip length 10.5 cm, non-vented 1/4 in (0.64 cm) connector. Manufacturer lists 0.38 mm wall thickness. Listed in Femoral Cannulae in the 2020 catalog. Cannula code 96820-110. Distinct from the pediatric venous 96830-110 model and adult NextGen arterial/jugular devices."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "Bio-Medicus NextGen Pediatric Arterial Cannula",
+      "category": "femoral arterial",
       "size": "12 Fr",
       "outerDiameterFr": 12,
       "outerDiameterMm": 4,
