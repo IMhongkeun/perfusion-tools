@@ -25272,6 +25272,438 @@
         }
       ],
       "notes": "Medtronic Bio-Medicus NextGen pediatric venous cannula; 10 Fr (3.3 mm OD). Cannula order code 96830-110; overall length 22.9 cm; tip length 10.5 cm; non-vented 1/4 in (0.64 cm) connector; one unit per carton. Source curve is pediatric venous (not pediatric arterial), with pressure LOSS plotted as a positive magnitude (mmHg) against flow (L/min of water at room temperature). Insertion site is not uniquely specified in the source; do not infer femoral, jugular or central cannulation from the catalog section alone. This curve is for one 10 Fr pediatric venous SKU; do not use it for 8/12/14 Fr or arterial cannulae. No synthetic zero-flow anchor. Only interpolate between original supplied points; do not extrapolate or directly equate water-bench pressure loss with patient-specific blood drainage pressure."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "Bio-Medicus NextGen Pediatric Venous Cannula",
+      "category": "venous",
+      "size": "12 Fr",
+      "outerDiameterFr": 12,
+      "outerDiameterMm": 4,
+      "overallLengthCm": 22.9,
+      "tipLengthCm": 11,
+      "connectorSize": "Non-vented 1/4 in (0.64 cm)",
+      "cannulaOrderCodeLabel": "Cannula order code",
+      "cannulaOrderCode": "96830-112",
+      "cartonQuantity": "1 per carton",
+      "sourceLabel": "Medtronic Bio-Medicus NextGen Cannula Portfolio Brochure — Pediatric venous 12 Fr pressure drop vs. flow",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/bio-medicus-next-gen-portfolio-brochure.pdf",
+      "testMedium": "Water at room temperature",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "User-provided WebPlotDigitizer-style CSV of the manufacturer-published Bio-Medicus NextGen pediatric venous 12 Fr pressure-loss curve. The original 48 finite source coordinates are preserved at supplied numeric precision and sorted by increasing flow; no smoothing, interpolation of source points, or synthetic (0,0) anchor was added. Manufacturer graph test medium: water at room temperature. Do not extrapolate outside 0.023234579063918626–2.009643887777716 L/min.",
+      "referenceFlowRangeLabel": "0.023–2.010",
+      "outOfRangeMessage": "Target flow is outside the provided digitized source range (approximately 0.023 to 2.010 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.023234579063918626,
+          "pressureDrop": 0.52915512764514
+        },
+        {
+          "flow": 0.06588930872395932,
+          "pressureDrop": 0.7526961713646472
+        },
+        {
+          "flow": 0.10855007907346631,
+          "pressureDrop": 1.3984814087765187
+        },
+        {
+          "flow": 0.15120551940285598,
+          "pressureDrop": 1.6716982399892402
+        },
+        {
+          "flow": 0.19386486841366507,
+          "pressureDrop": 2.2181319024146546
+        },
+        {
+          "flow": 0.2403779592966912,
+          "pressureDrop": 2.4193548387096655
+        },
+        {
+          "flow": 0.28330795145138227,
+          "pressureDrop": 3.225806451612897
+        },
+        {
+          "flow": 0.32909340532558035,
+          "pressureDrop": 3.6290322580645125
+        },
+        {
+          "flow": 0.3663067054317229,
+          "pressureDrop": 4.838709677419359
+        },
+        {
+          "flow": 0.40638123586690683,
+          "pressureDrop": 6.048387096774178
+        },
+        {
+          "flow": 0.4550336886796807,
+          "pressureDrop": 6.854838709677409
+        },
+        {
+          "flow": 0.49250198690447194,
+          "pressureDrop": 7.558279057935891
+        },
+        {
+          "flow": 0.5351681938744988,
+          "pressureDrop": 8.584084069670865
+        },
+        {
+          "flow": 0.5778354668485488,
+          "pressureDrop": 9.684402762645732
+        },
+        {
+          "flow": 0.6205041966947642,
+          "pressureDrop": 10.88655681998165
+        },
+        {
+          "flow": 0.6631738504111335,
+          "pressureDrop": 12.153289401058771
+        },
+        {
+          "flow": 0.7058435041275026,
+          "pressureDrop": 13.420021982135893
+        },
+        {
+          "flow": 0.7485145791825696,
+          "pressureDrop": 14.786106138199472
+        },
+        {
+          "flow": 0.7911845882336135,
+          "pressureDrop": 16.077676613023215
+        },
+        {
+          "flow": 0.8338577952967274,
+          "pressureDrop": 17.592788131566408
+        },
+        {
+          "flow": 0.8765370430493076,
+          "pressureDrop": 19.530143843801994
+        },
+        {
+          "flow": 0.9192078338366352,
+          "pressureDrop": 20.876357684868253
+        },
+        {
+          "flow": 0.9618788378247674,
+          "pressureDrop": 22.23747426218256
+        },
+        {
+          "flow": 1.0045503392814439,
+          "pressureDrop": 23.63336389074206
+        },
+        {
+          "flow": 1.0472287342308055,
+          "pressureDrop": 25.51110865798583
+        },
+        {
+          "flow": 1.089907697715646,
+          "pressureDrop": 27.428594055224096
+        },
+        {
+          "flow": 1.132585879464203,
+          "pressureDrop": 29.291436086219875
+        },
+        {
+          "flow": 1.1752654825514577,
+          "pressureDrop": 31.253629692202082
+        },
+        {
+          "flow": 1.217945440973387,
+          "pressureDrop": 33.24066119193091
+        },
+        {
+          "flow": 1.2590089819610768,
+          "pressureDrop": 35.169737606250976
+        },
+        {
+          "flow": 1.3033074898252923,
+          "pressureDrop": 37.36375155386821
+        },
+        {
+          "flow": 1.3459939864052324,
+          "pressureDrop": 39.80780029853466
+        },
+        {
+          "flow": 1.3886741580279662,
+          "pressureDrop": 41.80973453451145
+        },
+        {
+          "flow": 1.4313524108434579,
+          "pressureDrop": 43.67754414425656
+        },
+        {
+          "flow": 1.474042176502403,
+          "pressureDrop": 46.350101511391784
+        },
+        {
+          "flow": 1.5151093715149955,
+          "pressureDrop": 48.534594266406174
+        },
+        {
+          "flow": 1.5594188651428973,
+          "pressureDrop": 51.496513095689465
+        },
+        {
+          "flow": 1.6021084176010376,
+          "pressureDrop": 54.15416772657679
+        },
+        {
+          "flow": 1.644800883803509,
+          "pressureDrop": 57.0154930861863
+        },
+        {
+          "flow": 1.6874940132973726,
+          "pressureDrop": 59.92318251412277
+        },
+        {
+          "flow": 1.730180012408768,
+          "pressureDrop": 62.33245820754402
+        },
+        {
+          "flow": 1.7728724312332826,
+          "pressureDrop": 65.19047184798725
+        },
+        {
+          "flow": 1.8155682612706723,
+          "pressureDrop": 68.28692926839801
+        },
+        {
+          "flow": 1.8582649204223023,
+          "pressureDrop": 71.4413417742175
+        },
+        {
+          "flow": 1.9009615795739323,
+          "pressureDrop": 74.59575428003703
+        },
+        {
+          "flow": 1.9436622184739167,
+          "pressureDrop": 78.02835119581854
+        },
+        {
+          "flow": 1.9863605832319846,
+          "pressureDrop": 81.30198559162181
+        },
+        {
+          "flow": 2.009643887777716,
+          "pressureDrop": 82.61839396019215
+        }
+      ],
+      "notes": "Medtronic Bio-Medicus NextGen pediatric venous cannula; 12 Fr (4.0 mm OD). Cannula order code 96830-112; overall length 22.9 cm; tip length 11.0 cm; non-vented 1/4 in (0.64 cm) connector; one unit per carton. Source curve is pediatric venous (not pediatric arterial), with pressure LOSS plotted as a positive magnitude (mmHg) against flow (L/min of water at room temperature). Insertion site is not uniquely specified in the source; do not infer femoral, jugular or central cannulation from the catalog section alone. This curve is for one 12 Fr pediatric venous SKU; do not use it for other sizes or arterial cannulae. No synthetic zero-flow anchor. Only interpolate between original supplied points; do not extrapolate or directly equate water-bench pressure loss with patient-specific blood drainage pressure."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "Bio-Medicus NextGen Pediatric Venous Cannula",
+      "category": "venous",
+      "size": "14 Fr",
+      "outerDiameterFr": 14,
+      "outerDiameterMm": 4.7,
+      "overallLengthCm": 22.9,
+      "tipLengthCm": 11.5,
+      "connectorSize": "Non-vented 1/4 in (0.64 cm)",
+      "cannulaOrderCodeLabel": "Cannula order code",
+      "cannulaOrderCode": "96830-114",
+      "cartonQuantity": "1 per carton",
+      "sourceLabel": "Medtronic Bio-Medicus NextGen Cannula Portfolio Brochure — Pediatric venous 14 Fr pressure drop vs. flow",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/bio-medicus-next-gen-portfolio-brochure.pdf",
+      "testMedium": "Water at room temperature",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "User-provided WebPlotDigitizer-style CSV of the manufacturer-published Bio-Medicus NextGen pediatric venous 14 Fr pressure-loss curve. The original 48 finite source coordinates are preserved at supplied numeric precision and sorted by increasing flow; no smoothing, interpolation of source points, or synthetic (0,0) anchor was added. Manufacturer graph test medium: water at room temperature. Do not extrapolate outside 0.023234579063918626–2.0064031565831373 L/min.",
+      "referenceFlowRangeLabel": "0.023–2.006",
+      "outOfRangeMessage": "Target flow is outside the provided digitized source range (approximately 0.023 to 2.006 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.023234579063918626,
+          "pressureDrop": 0.52915512764514
+        },
+        {
+          "flow": 0.07154229544510593,
+          "pressureDrop": 0.8064516129032029
+        },
+        {
+          "flow": 0.1173335179288385,
+          "pressureDrop": 1.6129032258064342
+        },
+        {
+          "flow": 0.16025774147399519,
+          "pressureDrop": 2.01612903225805
+        },
+        {
+          "flow": 0.20317619640961748,
+          "pressureDrop": 2.01612903225805
+        },
+        {
+          "flow": 0.2403779592966912,
+          "pressureDrop": 2.4193548387096655
+        },
+        {
+          "flow": 0.2833021828418479,
+          "pressureDrop": 2.8225806451613096
+        },
+        {
+          "flow": 0.3290876367160461,
+          "pressureDrop": 3.225806451612897
+        },
+        {
+          "flow": 0.36342240066454395,
+          "pressureDrop": 3.225806451612897
+        },
+        {
+          "flow": 0.41206908486778354,
+          "pressureDrop": 3.6290322580645125
+        },
+        {
+          "flow": 0.4521378466934331,
+          "pressureDrop": 4.435483870967744
+        },
+        {
+          "flow": 0.492195071300014,
+          "pressureDrop": 4.435483870967744
+        },
+        {
+          "flow": 0.5351223201680224,
+          "pressureDrop": 5.377511986983507
+        },
+        {
+          "flow": 0.5777801767731987,
+          "pressureDrop": 5.819626495673134
+        },
+        {
+          "flow": 0.6204409471227057,
+          "pressureDrop": 6.465411733085006
+        },
+        {
+          "flow": 0.6631027834762362,
+          "pressureDrop": 7.185710651736713
+        },
+        {
+          "flow": 0.7057653304991156,
+          "pressureDrop": 7.9556853578816344
+        },
+        {
+          "flow": 0.748426456183297,
+          "pressureDrop": 8.626308489040099
+        },
+        {
+          "flow": 0.7910911352142234,
+          "pressureDrop": 9.545310557664664
+        },
+        {
+          "flow": 0.8337540375717774,
+          "pressureDrop": 10.340123157556235
+        },
+        {
+          "flow": 0.8764187166027035,
+          "pressureDrop": 11.2591252261808
+        },
+        {
+          "flow": 0.919082684964281,
+          "pressureDrop": 12.12845150731215
+        },
+        {
+          "flow": 0.9617477193298818,
+          "pressureDrop": 13.072291469683364
+        },
+        {
+          "flow": 1.0044113323567847,
+          "pressureDrop": 13.916779857068093
+        },
+        {
+          "flow": 1.0470792093997816,
+          "pressureDrop": 15.059322969412165
+        },
+        {
+          "flow": 1.0897456651040802,
+          "pressureDrop": 16.10251450676978
+        },
+        {
+          "flow": 1.132413542147077,
+          "pressureDrop": 17.24505761911388
+        },
+        {
+          "flow": 1.1750807085207247,
+          "pressureDrop": 18.337924943964737
+        },
+        {
+          "flow": 1.2177485855637213,
+          "pressureDrop": 19.48046805630881
+        },
+        {
+          "flow": 1.260419873819593,
+          "pressureDrop": 20.86145494862035
+        },
+        {
+          "flow": 1.3030868269924363,
+          "pressureDrop": 21.939419537223216
+        },
+        {
+          "flow": 1.345753993366084,
+          "pressureDrop": 23.032286862074073
+        },
+        {
+          "flow": 1.3884185657966082,
+          "pressureDrop": 23.94383756257463
+        },
+        {
+          "flow": 1.431092732263343,
+          "pressureDrop": 25.526011394233734
+        },
+        {
+          "flow": 1.47376757386596,
+          "pressureDrop": 27.155377224011374
+        },
+        {
+          "flow": 1.5164382935863523,
+          "pressureDrop": 28.496623486328332
+        },
+        {
+          "flow": 1.5591115006494665,
+          "pressureDrop": 30.011735004871582
+        },
+        {
+          "flow": 1.6017825757045334,
+          "pressureDrop": 31.377819160935132
+        },
+        {
+          "flow": 1.644456848771671,
+          "pressureDrop": 32.96744436071819
+        },
+        {
+          "flow": 1.6871311218388085,
+          "pressureDrop": 34.55706956050125
+        },
+        {
+          "flow": 1.729806105575295,
+          "pressureDrop": 36.19637054777755
+        },
+        {
+          "flow": 1.7724796679730834,
+          "pressureDrop": 37.73631996006736
+        },
+        {
+          "flow": 1.8151550070442444,
+          "pressureDrop": 39.400458841090256
+        },
+        {
+          "flow": 1.8578321227887777,
+          "pressureDrop": 41.1887871908462
+        },
+        {
+          "flow": 1.900504477048673,
+          "pressureDrop": 42.644287764397575
+        },
+        {
+          "flow": 1.9431771155763078,
+          "pressureDrop": 44.119658652946214
+        },
+        {
+          "flow": 1.9858626172191591,
+          "pressureDrop": 46.49416129512218
+        },
+        {
+          "flow": 2.0064031565831373,
+          "pressureDrop": 47.580645161290334
+        }
+      ],
+      "notes": "Medtronic Bio-Medicus NextGen pediatric venous cannula; 14 Fr (4.7 mm OD). Cannula order code 96830-114; overall length 22.9 cm; tip length 11.5 cm; non-vented 1/4 in (0.64 cm) connector; one unit per carton. Source curve is pediatric venous (not pediatric arterial), with pressure LOSS plotted as a positive magnitude (mmHg) against flow (L/min of water at room temperature). Insertion site is not uniquely specified in the source; do not infer femoral, jugular or central cannulation from the catalog section alone. This curve is for one 14 Fr pediatric venous SKU; do not use it for other sizes or arterial cannulae. No synthetic zero-flow anchor. Only interpolate between original supplied points; do not extrapolate or directly equate water-bench pressure loss with patient-specific blood drainage pressure."
     }
   ]
 }
