@@ -470,15 +470,32 @@ assert(
 );
 
 const medtronicCatalogUrl = 'https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf';
+const medtronicNextGenBrochureUrl = 'https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/bio-medicus-next-gen-portfolio-brochure.pdf';
+const allowedMedtronicSourceUrls = new Set([medtronicCatalogUrl, medtronicNextGenBrochureUrl]);
+
 const medtronicEntries = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic');
 assert(medtronicEntries.length > 0, 'Medtronic pressure-drop entries should remain available.');
 assert(
-  medtronicEntries.every(entry => entry.sourceUrl === medtronicCatalogUrl),
-  'Every Medtronic pressure-drop entry should link to the public Medtronic Cannula Catalog PDF because individual cannula PDF links are unavailable.'
+  medtronicEntries.every(entry => allowedMedtronicSourceUrls.has(entry.sourceUrl)),
+  'Every Medtronic pressure-drop entry must link to an authorized manufacturer catalog or brochure PDF.'
 );
 assert(
   medtronicEntries.every(entry => entry.sourceUrl !== 'Uploaded Medtronic Cannula Catalog 2020' && entry.sourceUrl !== ''),
   'Medtronic source URLs should not use upload placeholders or blank links.'
+);
+
+const nextGenPediatricVenousEntries = medtronicEntries.filter(entry => entry.model === 'Bio-Medicus NextGen Pediatric Venous Cannula');
+assert.strictEqual(nextGenPediatricVenousEntries.length, 3, 'Bio-Medicus NextGen Pediatric Venous Cannulae must have 3 entries (10, 12, 14 Fr).');
+assert(
+  nextGenPediatricVenousEntries.every(entry => entry.sourceUrl === medtronicNextGenBrochureUrl),
+  'Bio-Medicus NextGen Pediatric Venous Cannulae must link to the official Bio-Medicus NextGen portfolio brochure PDF.'
+);
+
+const standardCatalogMedtronicEntries = medtronicEntries.filter(entry => entry.model !== 'Bio-Medicus NextGen Pediatric Venous Cannula');
+assert.strictEqual(standardCatalogMedtronicEntries.length, 100, 'All standard Medtronic cannula models must have 100 entries.');
+assert(
+  standardCatalogMedtronicEntries.every(entry => entry.sourceUrl === medtronicCatalogUrl),
+  'Standard Medtronic pressure-drop entries must link to the public Medtronic Cannula Catalog PDF.'
 );
 assert(
   !/<meta\s+name=["'](?:robots|googlebot)["'][^>]*noindex/i.test(pressureDropPageHtml),
@@ -1629,6 +1646,8 @@ for (const expected of pediatricVenousExpectations) {
   assert.strictEqual(entry.tipLengthCm, expected.tipLength);
   assert.strictEqual(entry.connectorSize, 'Non-vented 1/4 in (0.64 cm)');
   assert.strictEqual(entry.testMedium, 'Water at room temperature');
+  assert.strictEqual(entry.sourceUrl, medtronicNextGenBrochureUrl,
+    `${expected.size} must link to the official Bio-Medicus NextGen portfolio brochure PDF.`);
   assert.strictEqual(entry.points.length, 48);
   assert.strictEqual(pediatricCurveFingerprint(entry.points), expected.fingerprint,
     `${expected.size} pressure-flow coordinates must remain consistent with the supplied CSV to 9 decimal places`);
