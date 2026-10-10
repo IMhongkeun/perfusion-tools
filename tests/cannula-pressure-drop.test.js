@@ -1775,6 +1775,35 @@ assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'Avalon').some(
 assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'RAP 23 Fr').some(entry => entry === rap));
 assert.deepStrictEqual(new Set(targetRuntime.searchPressureDropCatalog(pressureDropData, '67318').map(entry => entry.cannulaOrderCode)), new Set(['67318']));
 assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'Medtronic').length > 1);
+
+// Explicit French-size searches must match nominal Fr, never unrelated lengths or codes.
+const exact15FrEntries = targetRuntime.searchPressureDropCatalog(pressureDropData, '15Fr');
+assert(exact15FrEntries.length > 0, '15Fr must match documented 15 Fr cannulas.');
+const exact15FrKeys = new Set(exact15FrEntries.map(targetRuntime.getPressureDropTargetFlowKey));
+for (const spelling of ['15 Fr', '15fr', '15 FR', '15   Fr']) {
+  const keys = new Set(targetRuntime.searchPressureDropCatalog(pressureDropData, spelling).map(targetRuntime.getPressureDropTargetFlowKey));
+  assert.deepStrictEqual(keys, exact15FrKeys, `${spelling} must be equivalent to 15Fr.`);
+}
+assert(exact15FrEntries.every(entry => targetRuntime.getPressureDropComparisonFr(entry) === 15),
+  'Fr searches must compare the nominal French size rather than arbitrary catalog text.');
+const pas1315 = pressureDropData.find(entry => entry.cannulaOrderCode === 'PAS 1315');
+assert(pas1315 && pas1315.size.includes('13 Fr') && pas1315.size.includes('15 cm'),
+  'Preserve the real 13 Fr / 15 cm HLS regression fixture.');
+assert(!exact15FrEntries.includes(pas1315), '15Fr must not include a 13 Fr cannula just because its length is 15 cm.');
+assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'PAS 1315').includes(pas1315),
+  'Order-code search must still locate PAS 1315.');
+assert(targetRuntime.searchPressureDropCatalog(pressureDropData, '15').includes(pas1315),
+  'Bare-number queries must preserve legacy text-search behavior.');
+const sizeCollisionFixtures = ['13 Fr / 15 cm', '15 Fr', '115 Fr', '150 Fr', '15.5 Fr'].map((size, index) => ({
+  manufacturer: 'Test manufacturer', model: `Size fixture ${index}`, category: 'femoral arterial', size
+}));
+assert.deepStrictEqual(Array.from(targetRuntime.searchPressureDropCatalog(sizeCollisionFixtures, '15Fr')), [sizeCollisionFixtures[1]],
+  '15Fr must not match a different Fr, a decimal size, or an unrelated 15 cm length.');
+const medtronic15 = targetRuntime.searchPressureDropCatalog(pressureDropData, 'Medtronic 15Fr');
+assert(medtronic15.length > 0, 'A size query must combine with manufacturer text.');
+assert.deepStrictEqual(new Set(medtronic15.map(targetRuntime.getPressureDropTargetFlowKey)),
+  new Set(targetRuntime.searchPressureDropCatalog(pressureDropData, '15 Fr Medtronic').map(targetRuntime.getPressureDropTargetFlowKey)),
+  'Mixed model/manufacturer and Fr queries must be order-independent.');
 const pvl29 = pressureDropData.find(entry => entry.cannulaOrderCode === 'PVL 2955');
 assert(pvl29 && targetRuntime.getPressureDropComparisonFr(pvl29) === 29);
 assert.strictEqual(targetRuntime.getPressureDropComparisonSizeLabel(pvl29), 'PVL 2955 · 29 Fr');
@@ -1924,6 +1953,36 @@ assert(targetNodes['pressure-drop-target-summary'].textContent.includes('Search:
 assert.strictEqual(targetFlowInput.value, '1', 'Enter search must preserve target-flow input.');
 assert.strictEqual(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'li').length, 0,
   'Enter search should not automatically select a single curve.');
+
+// Search suggestions and Enter-to-filter must share exact French-size matching.
+const eligible15FrArterial = exact15FrEntries.filter(entry => {
+  const classification = classifyComparison(entry);
+  return classification.eligible && classification.category === 'arterial';
+});
+for (const spelling of ['15Fr', '15 Fr']) {
+  catalogSearch.value = spelling; catalogSearch.dispatch('input');
+  assert.deepStrictEqual(new Set(catalogMatches.children.map(node => node.dataset.productKey)), exact15FrKeys,
+    `Autocomplete must show the exact same 15 Fr products for "${spelling}".`);
+  assert(!catalogMatches.children.some(node => node.dataset.productKey === targetRuntime.getPressureDropTargetFlowKey(pas1315)),
+    'Autocomplete must exclude the 13 Fr HLS cannula with 15 cm length.');
+  catalogSearch.dispatch('keydown', { key: 'Enter' });
+  assert.deepStrictEqual(new Set(currentRows().map(row => row.dataset.productKey)),
+    new Set(eligible15FrArterial.map(targetRuntime.getPressureDropTargetFlowKey)),
+    `Enter-to-filter must use exact 15 Fr and the active arterial category for "${spelling}".`);
+}
+for (const spelling of ['Medtronic 15Fr', '15 Fr Medtronic']) {
+  catalogSearch.value = spelling; catalogSearch.dispatch('input');
+  assert.deepStrictEqual(new Set(catalogMatches.children.map(node => node.dataset.productKey)),
+    new Set(medtronic15.map(targetRuntime.getPressureDropTargetFlowKey)),
+    'Combined Fr/manufacturer query suggestions must be consistent.');
+  catalogSearch.dispatch('keydown', { key: 'Enter' });
+  assert.deepStrictEqual(new Set(currentRows().map(row => row.dataset.productKey)),
+    new Set(medtronic15.filter(entry => {
+      const classification = classifyComparison(entry);
+      return classification.eligible && classification.category === 'arterial';
+    }).map(targetRuntime.getPressureDropTargetFlowKey)),
+    'Combined size/manufacturer search must also work in committed comparison rows.');
+}
 const eopa = pressureDropData.find(entry => entry.model === 'EOPA Arterial Cannulae');
 searchController.selectSearchEntry(eopa);
 assert.strictEqual(targetNodes['pressure-drop-target-category'].value, 'arterial');
