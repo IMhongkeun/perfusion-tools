@@ -7461,11 +7461,11 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
     const cell = document.createElement('td');
     cell.className = 'block w-full min-w-0 p-3';
     const summaryGrid = document.createElement('div');
-    summaryGrid.className = 'grid w-full min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-2 gap-y-1';
+    summaryGrid.className = 'grid w-full min-w-0 grid-cols-[auto_minmax(0,1fr)] items-start gap-x-2 gap-y-1 lg:grid-cols-[auto_minmax(0,1fr)_auto]';
     row.dataset.productKey = key;
 
     const selectCell = document.createElement('div');
-    selectCell.className = 'col-start-1 row-start-1 row-span-2';
+    selectCell.className = 'col-start-1 row-start-1 row-span-2 lg:row-span-1';
     const label = document.createElement('label');
     label.className = 'inline-flex min-h-9 min-w-9 items-start pt-1 cursor-pointer md:items-center md:pt-0';
     const checkbox = document.createElement('input');
@@ -7503,37 +7503,33 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
       config.textContent = 'Dual-lumen VV ECMO · Drainage';
       identityCell.appendChild(config);
     }
-    // Only expose the SKU in collapsed rows when multiple otherwise-identical
-    // sizes/models could not be distinguished without it.
-    if (identity !== displaySize && entry.cannulaOrderCode) {
-      const variant = document.createElement('span');
-      variant.className = 'block text-[11px] text-slate-500 dark:text-slate-400';
-      variant.textContent = `Variant ${entry.cannulaOrderCode}`;
-      identityCell.appendChild(variant);
-    }
     summaryGrid.appendChild(identityCell);
 
-    const valueCell = document.createElement('div');
-    valueCell.className = 'col-start-3 row-start-1 min-w-[78px] text-right';
-    const value = document.createElement('div');
-    value.className = `tabular-nums text-sm font-bold ${result.isHighPressure && result.inRange ? 'text-amber-700 dark:text-amber-300' : 'text-primary-900 dark:text-white'}`;
-    value.textContent = getPressureDropTargetFlowValueText(result);
-    if (result.inRange) value.title = `Signed pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
-    if (result.isHighPressure && result.inRange) {
-      value.setAttribute('aria-label', `${value.textContent}. ${result.warningText}`);
-    }
-    if (result.lumenLabel) value.setAttribute('aria-label', `${result.lumenLabel}: ${value.textContent}`);
+    const valueText = getPressureDropTargetFlowValueText(result);
     const limitLabel = getPressureDropManufacturerLimitLabel(result.manufacturerLimit);
-    if (limitLabel || (result.isHighPressure && result.inRange)) {
-      const flag = document.createElement('span');
-      flag.className = 'mt-1 inline-block text-[11px] font-semibold text-amber-700 dark:text-amber-300';
-      flag.textContent = limitLabel ? '⚠ Flow caution' : '⚠ High ΔP';
-      flag.title = limitLabel || result.warningText;
-      flag.setAttribute('aria-label', limitLabel || result.warningText);
-      valueCell.appendChild(value);
-      valueCell.appendChild(flag);
-    } else valueCell.appendChild(value);
-    summaryGrid.appendChild(valueCell);
+    // The shared summary prompts for an unset target flow; avoid repeating it in every card.
+    if (valueText !== 'Enter a positive target flow') {
+      const valueCell = document.createElement('div');
+      valueCell.className = 'col-start-2 row-start-2 min-w-0 text-left lg:col-start-3 lg:row-start-1 lg:min-w-[78px] lg:text-right';
+      const value = document.createElement('div');
+      value.className = `tabular-nums text-sm font-bold ${result.isHighPressure && result.inRange ? 'text-amber-700 dark:text-amber-300' : 'text-primary-900 dark:text-white'}`;
+      value.textContent = valueText;
+      if (result.inRange) value.title = `Signed pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
+      if (result.isHighPressure && result.inRange) {
+        value.setAttribute('aria-label', `${value.textContent}. ${result.warningText}`);
+      }
+      if (result.lumenLabel) value.setAttribute('aria-label', `${result.lumenLabel}: ${value.textContent}`);
+      if (limitLabel || (result.isHighPressure && result.inRange)) {
+        const flag = document.createElement('span');
+        flag.className = 'mt-1 inline-block text-[11px] font-semibold text-amber-700 dark:text-amber-300';
+        flag.textContent = limitLabel ? '⚠ Flow caution' : '⚠ High ΔP';
+        flag.title = limitLabel || result.warningText;
+        flag.setAttribute('aria-label', limitLabel || result.warningText);
+        valueCell.appendChild(value);
+        valueCell.appendChild(flag);
+      } else valueCell.appendChild(value);
+      summaryGrid.appendChild(valueCell);
+    }
 
     const detailsCell = document.createElement('div');
     detailsCell.className = 'min-w-0 pt-2';
@@ -7657,9 +7653,9 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
     controls.flow.setAttribute('aria-invalid', String(Boolean(controls.flow.value.trim()) && !Number.isFinite(flow)));
     controls.results.innerHTML = '';
     controls.summary.textContent = activeSearchQuery
-      ? `Search: "${activeSearchQuery}" · ${controls.category.value === 'arterial' ? 'Arterial' : 'Venous'} · ${rows.length} comparable cannulas${Number.isFinite(flow) ? ` · ${rows.filter(row => row.result.inRange).length} in-range at ${flow} L/min` : ''}`
+      ? `Search: "${activeSearchQuery}" · ${controls.category.value === 'arterial' ? 'Arterial' : 'Venous'} · ${rows.length} comparable cannulas${Number.isFinite(flow) ? ` · ${rows.filter(row => row.result.inRange).length} in-range at ${flow} L/min` : ' · Enter a target flow to calculate ΔP.'}`
       : Number.isFinite(flow) ? `Target flow: ${flow} L/min · ${rows.filter(row => row.result.inRange).length} in-range curve estimates · ${rows.length} matching cannulas`
-        : 'Enter a positive target flow in L/min to estimate pressure drop.';
+        : 'Enter a target flow to calculate ΔP.';
     const message = document.createElement('p');
     message.className = 'text-sm text-slate-600 dark:text-slate-300';
     if (!rows.length) message.textContent = activeSearchQuery

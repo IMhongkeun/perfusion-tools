@@ -1977,6 +1977,18 @@ assert(compactLimited.textContent.includes('⚠ Flow caution') && compactLimited
 const compactLimitedDetails = pressureDescendants(compactLimited, node => node.tagName === 'details');
 assert.strictEqual(compactLimitedDetails.length, 1);
 assert(!compactLimitedDetails[0].open, 'Manufacturer evidence is collapsed by default');
+const responsiveGrid = pressureDescendants(compactLimited, node =>
+  node.className?.includes('grid-cols-'))[0];
+assert(responsiveGrid.className.includes('grid-cols-[auto_minmax(0,1fr)]'),
+  'Mobile cards must use two columns so long names can take the available width');
+assert(responsiveGrid.className.includes('lg:grid-cols-[auto_minmax(0,1fr)_auto]'),
+  'A third value column is introduced only for wider layouts');
+const responsiveValue = pressureDescendants(compactLimited, node =>
+  node.className?.includes('lg:col-start-3'))[0];
+assert(responsiveValue.className.includes('col-start-2 row-start-2') &&
+  responsiveValue.className.includes('lg:row-start-1'),
+  'Results sit below product names on mobile and move right on wide layouts');
+
 assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(maxFlowEntry, 9.1).interpolationResult.state, 'out_of_range');
 const targetFixtures = [
   { manufacturer: 'Medtronic', model: 'A', category: 'femoral arterial', size: '19 Fr', points: [{ flow: 1, pressureDrop: 10 }, { flow: 5, pressureDrop: 90 }] },
@@ -1984,6 +1996,16 @@ const targetFixtures = [
   { manufacturer: 'LivaNova', model: 'C', category: 'femoral arterial', size: '15 Fr', points: [{ flow: 0, pressureDrop: 0 }, { flow: 4, pressureDrop: 70 }] },
   { manufacturer: 'Medtronic', model: 'D', category: 'venous', size: '23 Fr', points: [{ flow: 1, pressureDrop: -10 }, { flow: 5, pressureDrop: -90 }] }
 ];
+const pendingEntry = targetFixtures[0];
+const pendingCard = targetRuntime.createPressureDropTargetFlowTable([{
+  entry: pendingEntry, key: targetRuntime.getPressureDropTargetFlowKey(pendingEntry),
+  identity: pendingEntry.size, result: targetRuntime.getPressureDropTargetFlowResult(pendingEntry, NaN)
+}], [], () => {});
+const pendingSummary = pressureDescendants(pendingCard, node => node.className?.includes('grid-cols-'))[0];
+assert(!pendingSummary.textContent.includes('Enter a positive target flow'),
+  'Unset-flow instructions belong once in the workflow summary, not in every collapsed card');
+assert(pressureDescendants(pendingCard, node => node.tagName === 'details')[0].textContent.includes('Enter a positive target flow'),
+  'Expanded details retain the explicit unset-flow status');
 const arterialFilters = { category: 'arterial', location: 'femoral' };
 const fixtureRows = targetRuntime.getPressureDropTargetFlowRows(targetFixtures, arterialFilters, 4.5);
 assert.deepStrictEqual(Array.from(fixtureRows, row => row.entry.manufacturer), ['Getinge / Maquet', 'Medtronic', 'LivaNova']);
@@ -2126,9 +2148,17 @@ for (const row of dlpRows) variantSelection = targetRuntime.updatePressureDropTa
 assert.strictEqual(variantSelection.length, 2);
 const dlpTableRows = pressureDescendants(targetRuntime.createPressureDropTargetFlowTable(dlpRows, variantSelection, () => {}), node => node.tagName === 'tr');
 for (const [index, row] of dlpRows.entries()) {
-  assert(dlpTableRows[index].textContent.includes(row.entry.cannulaOrderCode), 'Desktop table and mobile card show catalog code');
-  assert(dlpTableRows[index].textContent.includes(row.entry.connectorSize), 'Desktop table and mobile card show connector');
-  assert(rowCheckbox(dlpTableRows[index]).attributes['aria-label'].includes(row.entry.cannulaOrderCode));
+  const collapsedIdentity = pressureDescendants(dlpTableRows[index], node =>
+    node.className?.includes('col-start-2 row-start-1'))[0];
+  assert(!collapsedIdentity.textContent.includes(`Variant ${row.entry.cannulaOrderCode}`),
+    'Collapsed card omits repeated Variant/order-code label');
+  const productDetails = pressureDescendants(dlpTableRows[index], node => node.tagName === 'details')[0];
+  assert(productDetails.textContent.includes(`Order code: ${row.entry.cannulaOrderCode}`),
+    'Each distinct product retains its own order code inside Details');
+  assert(productDetails.textContent.includes(row.entry.connectorSize),
+    'Connector-specific details remain available');
+  assert(rowCheckbox(dlpTableRows[index]).attributes['aria-label'].includes(row.entry.cannulaOrderCode),
+    'Accessible comparison selection remains SKU-specific');
 }
 const dlpOverlay = targetRuntime.createPressureDropTargetFlowChart(dlpVariants, 2, false, () => {}, () => {}, pressureDropData);
 const dlpSvg = pressureDescendants(dlpOverlay, node => node.tagName === 'svg')[0];
