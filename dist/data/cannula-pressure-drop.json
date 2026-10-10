@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "updatedAt": "2026-07-28",
+  "updatedAt": "2026-10-10",
   "items": [
     {
       "manufacturer": "LivaNova",
@@ -19361,6 +19361,186 @@
         }
       ],
       "notes": "Bio-Medicus Multi-stage femoral venous cannula with insertion kit. 25 Fr (8.3 mm), 30 in (76.2 cm) overall length, 23.6 in (60 cm) tip length, non-vented 3/8 in connector. Order code 96880-025."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "Bio-Medicus NextGen Pediatric Arterial Cannula",
+      "category": "femoral arterial",
+      "size": "8 Fr",
+      "outerDiameterFr": 8,
+      "outerDiameterMm": 2.7,
+      "overallLengthCm": 22.9,
+      "tipLengthCm": 10,
+      "wallThicknessMm": 0.38,
+      "connectorSize": "1/4 in (non-vented)",
+      "cannulaOrderCode": "96820-108",
+      "cartonQuantity": 1,
+      "sourceLabel": "Medtronic Cannula Catalog 2020 — Bio-Medicus NextGen Pediatric Arterial and Venous Cannulae, page 24 (Arterial graph)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "User-supplied digitized points from the manufacturer-published Bio-Medicus NextGen Pediatric Arterial 8 Fr pressure-loss graph (catalog page 24, flow in L/min of water, pressure loss in mmHg). The original CSV coordinates were sorted by ascending flow and rounded to 0.001 L/min and 0.1 mmHg, preserving all 39 distinct points without smoothing or fitting. No synthetic (0,0) anchor was added. Do not extrapolate outside the digitized source range (0.011–0.904 L/min).",
+      "referenceFlowRangeLabel": "0.011–0.904",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0.011 to 0.904 L/min). Pressure drop is not estimated.",
+      "points": [
+        {
+          "flow": 0.011,
+          "pressureDrop": 1.5
+        },
+        {
+          "flow": 0.048,
+          "pressureDrop": 3
+        },
+        {
+          "flow": 0.086,
+          "pressureDrop": 5
+        },
+        {
+          "flow": 0.123,
+          "pressureDrop": 7.9
+        },
+        {
+          "flow": 0.161,
+          "pressureDrop": 11.2
+        },
+        {
+          "flow": 0.197,
+          "pressureDrop": 14.8
+        },
+        {
+          "flow": 0.235,
+          "pressureDrop": 19
+        },
+        {
+          "flow": 0.273,
+          "pressureDrop": 23.2
+        },
+        {
+          "flow": 0.309,
+          "pressureDrop": 27.8
+        },
+        {
+          "flow": 0.343,
+          "pressureDrop": 32.8
+        },
+        {
+          "flow": 0.375,
+          "pressureDrop": 38
+        },
+        {
+          "flow": 0.408,
+          "pressureDrop": 43.2
+        },
+        {
+          "flow": 0.439,
+          "pressureDrop": 48.8
+        },
+        {
+          "flow": 0.468,
+          "pressureDrop": 54.2
+        },
+        {
+          "flow": 0.491,
+          "pressureDrop": 59.4
+        },
+        {
+          "flow": 0.517,
+          "pressureDrop": 64.7
+        },
+        {
+          "flow": 0.539,
+          "pressureDrop": 69.7
+        },
+        {
+          "flow": 0.565,
+          "pressureDrop": 75.1
+        },
+        {
+          "flow": 0.58,
+          "pressureDrop": 80.3
+        },
+        {
+          "flow": 0.603,
+          "pressureDrop": 85.8
+        },
+        {
+          "flow": 0.626,
+          "pressureDrop": 91.8
+        },
+        {
+          "flow": 0.645,
+          "pressureDrop": 97.2
+        },
+        {
+          "flow": 0.662,
+          "pressureDrop": 102.2
+        },
+        {
+          "flow": 0.678,
+          "pressureDrop": 106.9
+        },
+        {
+          "flow": 0.7,
+          "pressureDrop": 113.2
+        },
+        {
+          "flow": 0.72,
+          "pressureDrop": 119.8
+        },
+        {
+          "flow": 0.74,
+          "pressureDrop": 126.4
+        },
+        {
+          "flow": 0.754,
+          "pressureDrop": 132
+        },
+        {
+          "flow": 0.773,
+          "pressureDrop": 139.3
+        },
+        {
+          "flow": 0.784,
+          "pressureDrop": 144.4
+        },
+        {
+          "flow": 0.803,
+          "pressureDrop": 150.3
+        },
+        {
+          "flow": 0.817,
+          "pressureDrop": 156.4
+        },
+        {
+          "flow": 0.829,
+          "pressureDrop": 161.6
+        },
+        {
+          "flow": 0.844,
+          "pressureDrop": 168.3
+        },
+        {
+          "flow": 0.855,
+          "pressureDrop": 173.1
+        },
+        {
+          "flow": 0.869,
+          "pressureDrop": 179.7
+        },
+        {
+          "flow": 0.885,
+          "pressureDrop": 187.7
+        },
+        {
+          "flow": 0.895,
+          "pressureDrop": 193.7
+        },
+        {
+          "flow": 0.904,
+          "pressureDrop": 197.9
+        }
+      ],
+      "notes": "Medtronic Bio-Medicus NextGen pediatric arterial cannula, 8 Fr (2.7 mm OD), overall length 22.9 cm, tip length 10.0 cm, non-vented 1/4 in (0.64 cm) connector. Manufacturer lists 0.38 mm wall thickness. Listed under Femoral Cannulae in the 2020 catalog. Cannula code 96820-108. Distinct from pediatric venous code 96830-108 and adult NextGen arterial/jugular devices."
     },
     {
       "manufacturer": "Medtronic",
