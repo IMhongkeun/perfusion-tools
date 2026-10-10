@@ -7506,6 +7506,7 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
     summaryGrid.appendChild(identityCell);
 
     const valueText = getPressureDropTargetFlowValueText(result);
+    const limitLabel = getPressureDropManufacturerLimitLabel(result.manufacturerLimit);
     // The shared summary prompts for an unset target flow; avoid repeating it in every card.
     if (valueText !== 'Enter a positive target flow') {
       const valueCell = document.createElement('div');
@@ -7518,7 +7519,6 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
         value.setAttribute('aria-label', `${value.textContent}. ${result.warningText}`);
       }
       if (result.lumenLabel) value.setAttribute('aria-label', `${result.lumenLabel}: ${value.textContent}`);
-      const limitLabel = getPressureDropManufacturerLimitLabel(result.manufacturerLimit);
       if (limitLabel || (result.isHighPressure && result.inRange)) {
         const flag = document.createElement('span');
         flag.className = 'mt-1 inline-block text-[11px] font-semibold text-amber-700 dark:text-amber-300';
