@@ -155,7 +155,7 @@ const CALCULATOR_REGISTRY = [
   { path: '/predicted-hct/', category: 'blood', icon: 'Hct', title: 'Predicted Hematocrit', description: 'Post-prime dilutional Hct for CPB planning.' },
   { path: '/priming-volume/', category: 'blood', icon: 'mL', title: 'Priming Volume Calculator', description: 'Tubing prime volume from inner diameter and length.' },
   { path: '/heparin/', category: 'anticoagulation', icon: 'ACT', title: 'Heparin Calculator', description: 'Adult CPB heparin and protamine planning support.' },
-  { path: '/cannula-pressure-drop/', category: 'circuit', icon: 'ΔP', title: 'Cannula Pressure Drop', description: 'Browse 190 manufacturer pressure-flow datasets for cannula selection.' },
+  { path: '/cannula-pressure-drop/', category: 'circuit', icon: 'ΔP', title: 'Cannula Pressure Drop', description: 'Browse 192 manufacturer pressure-flow datasets for cannula selection.' },
   { path: '/quick-reference/', category: 'circuit', icon: 'CPB', title: 'Quick Reference', description: 'Concise CPB and ECMO clinical reference tables.' },
   { path: '/timecalc/', category: 'time', icon: 'min', title: 'Time Calculator', description: 'Elapsed bypass, cross-clamp, and case intervals.' },
   { path: '/unit-converter/', category: 'time', icon: '↔', title: 'Unit Converter', description: 'Common perfusion pressure, flow, and blood-gas units.' },
