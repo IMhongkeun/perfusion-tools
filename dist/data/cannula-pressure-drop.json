@@ -25044,6 +25044,234 @@
         }
       ],
       "notes": "Aortic root cannula / with vent line dataset; do not categorize as femoral arterial or femoral venous. Product/family: Aortic Root Cannula. Model/description: with Vent Line. Type/site: Aortic root. Displayed cannula tip size: 16 Ga / 5 Fr. Source graph label: 18Ga. Insertion needle: 18 Ga - Pink. Without vent line catalog number: AR-11016. With vent line catalog number: AR-11116. Primary catalog number for this with vent line dataset: AR-11116. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula with Vent Line pressure-flow graph. Source range: 0.107 to 0.40 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula with Vent Line 18Ga curve. The graph label refers to insertion needle gauge, not cannula-tip gauge. The manufacturer x-axis is labeled 0.1–0.6 L/min; supplied coordinates use the already corrected 0.1–0.6 calibration. No synthetic zero-flow anchor was added. Do not extrapolate below 0.107 or above 0.40 L/min."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "Bio-Medicus NextGen Pediatric Venous Cannula",
+      "category": "venous",
+      "size": "10 Fr",
+      "outerDiameterFr": 10,
+      "outerDiameterMm": 3.3,
+      "overallLengthCm": 22.9,
+      "tipLengthCm": 10.5,
+      "connectorSize": "Non-vented 1/4 in (0.64 cm)",
+      "cannulaOrderCodeLabel": "Cannula order code",
+      "cannulaOrderCode": "96830-110",
+      "cartonQuantity": "1 per carton",
+      "sourceLabel": "Medtronic Bio-Medicus NextGen Cannula Portfolio Brochure — Pediatric venous 10 Fr pressure drop vs. flow",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/bio-medicus-next-gen-portfolio-brochure.pdf",
+      "testMedium": "Water at room temperature",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "User-provided WebPlotDigitizer-style CSV of the manufacturer-published Bio-Medicus NextGen pediatric venous 10 Fr pressure-loss curve. The original 51 finite source coordinates are preserved at supplied numeric precision and sorted by increasing flow; no smoothing, interpolation of source points, or synthetic (0,0) anchor was added. Manufacturer graph test medium: water at room temperature. Do not extrapolate outside 0.023234579063918626–1.9312900918362639 L/min.",
+      "referenceFlowRangeLabel": "0.023–1.931",
+      "outOfRangeMessage": "Target flow is outside the provided digitized source range (approximately 0.023 to 1.931 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.023234579063918626,
+          "pressureDrop": 0.52915512764514
+        },
+        {
+          "flow": 0.06588930872395932,
+          "pressureDrop": 0.7526961713646472
+        },
+        {
+          "flow": 0.11447228759979694,
+          "pressureDrop": 1.6129032258064342
+        },
+        {
+          "flow": 0.16025774147399519,
+          "pressureDrop": 2.01612903225805
+        },
+        {
+          "flow": 0.2031877336286862,
+          "pressureDrop": 2.8225806451613096
+        },
+        {
+          "flow": 0.23654162882352392,
+          "pressureDrop": 3.9816223584239765
+        },
+        {
+          "flow": 0.27921345008140747,
+          "pressureDrop": 5.39986609135542
+        },
+        {
+          "flow": 0.3218940836392182,
+          "pressureDrop": 7.434089589202841
+        },
+        {
+          "flow": 0.3645736867264731,
+          "pressureDrop": 9.39628319518502
+        },
+        {
+          "flow": 0.4072543558177513,
+          "pressureDrop": 11.432990482407092
+        },
+        {
+          "flow": 0.44993893359044884,
+          "pressureDrop": 13.742914600841829
+        },
+        {
+          "flow": 0.49197715759025545,
+          "pressureDrop": 16.044559421361043
+        },
+        {
+          "flow": 0.5353230842591075,
+          "pressureDrop": 19.410921953818274
+        },
+        {
+          "flow": 0.5780091544374377,
+          "pressureDrop": 21.825165225988826
+        },
+        {
+          "flow": 0.6207003414350809,
+          "pressureDrop": 24.59707416811051
+        },
+        {
+          "flow": 0.6633980665907344,
+          "pressureDrop": 27.826000355169867
+        },
+        {
+          "flow": 0.706097213085086,
+          "pressureDrop": 31.154278117215625
+        },
+        {
+          "flow": 0.7478257629160774,
+          "pressureDrop": 34.395623251148294
+        },
+        {
+          "flow": 0.7915060713581106,
+          "pressureDrop": 38.54934701537306
+        },
+        {
+          "flow": 0.8342087475102287,
+          "pressureDrop": 42.12434785530186
+        },
+        {
+          "flow": 0.8769170853281603,
+          "pressureDrop": 46.09509913559333
+        },
+        {
+          "flow": 0.9196288343589669,
+          "pressureDrop": 50.30429419585218
+        },
+        {
+          "flow": 0.9623429049096468,
+          "pressureDrop": 54.67576349525558
+        },
+        {
+          "flow": 1.0037649627912415,
+          "pressureDrop": 59.0792460799324
+        },
+        {
+          "flow": 1.0477715434795511,
+          "pressureDrop": 63.453475145307664
+        },
+        {
+          "flow": 1.0904971979406193,
+          "pressureDrop": 68.63465978085057
+        },
+        {
+          "flow": 1.1332205071928358,
+          "pressureDrop": 73.65191431766584
+        },
+        {
+          "flow": 1.1759477961934066,
+          "pressureDrop": 78.94735326444317
+        },
+        {
+          "flow": 1.2186724557173865,
+          "pressureDrop": 84.05899179749555
+        },
+        {
+          "flow": 1.2597845294993666,
+          "pressureDrop": 89.38051053270681
+        },
+        {
+          "flow": 1.3041369594004355,
+          "pressureDrop": 95.34367485637216
+        },
+        {
+          "flow": 1.346868322905274,
+          "pressureDrop": 100.92392165144392
+        },
+        {
+          "flow": 1.3871245435125303,
+          "pressureDrop": 105.96601408200583
+        },
+        {
+          "flow": 1.4265155241874121,
+          "pressureDrop": 112.12581173116519
+        },
+        {
+          "flow": 1.4653759326629094,
+          "pressureDrop": 118.15739853831823
+        },
+        {
+          "flow": 1.503698327215697,
+          "pressureDrop": 123.54059804300023
+        },
+        {
+          "flow": 1.5430903840470214,
+          "pressureDrop": 129.77561902750645
+        },
+        {
+          "flow": 1.5800111807171118,
+          "pressureDrop": 135.74388891821974
+        },
+        {
+          "flow": 1.6169265486630084,
+          "pressureDrop": 141.3326909878042
+        },
+        {
+          "flow": 1.653851384303899,
+          "pressureDrop": 147.58328493743727
+        },
+        {
+          "flow": 1.6888323458153587,
+          "pressureDrop": 153.47262552135578
+        },
+        {
+          "flow": 1.7104042641561683,
+          "pressureDrop": 157.25806451612902
+        },
+        {
+          "flow": 1.7304847939452679,
+          "pressureDrop": 160.88709677419354
+        },
+        {
+          "flow": 1.753426554063409,
+          "pressureDrop": 164.51612903225805
+        },
+        {
+          "flow": 1.7735013152429746,
+          "pressureDrop": 167.74193548387095
+        },
+        {
+          "flow": 1.7937847849043178,
+          "pressureDrop": 171.80851063829786
+        },
+        {
+          "flow": 1.8194021413078592,
+          "pressureDrop": 176.20967741935482
+        },
+        {
+          "flow": 1.8452166689741112,
+          "pressureDrop": 180.64516129032256
+        },
+        {
+          "flow": 1.8653087359822795,
+          "pressureDrop": 185.0806451612903
+        },
+        {
+          "flow": 1.8929213774774911,
+          "pressureDrop": 190.1633691462964
+        },
+        {
+          "flow": 1.9312900918362639,
+          "pressureDrop": 197.1774193548387
+        }
+      ],
+      "notes": "Medtronic Bio-Medicus NextGen pediatric venous cannula; 10 Fr (3.3 mm OD). Cannula order code 96830-110; overall length 22.9 cm; tip length 10.5 cm; non-vented 1/4 in (0.64 cm) connector; one unit per carton. Source curve is pediatric venous (not pediatric arterial), with pressure LOSS plotted as a positive magnitude (mmHg) against flow (L/min of water at room temperature). Insertion site is not uniquely specified in the source; do not infer femoral, jugular or central cannulation from the catalog section alone. This curve is for one 10 Fr pediatric venous SKU; do not use it for 8/12/14 Fr or arterial cannulae. No synthetic zero-flow anchor. Only interpolate between original supplied points; do not extrapolate or directly equate water-bench pressure loss with patient-specific blood drainage pressure."
     }
   ]
 }
