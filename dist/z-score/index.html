@@ -491,6 +491,7 @@
               </div>
               <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-white/80 dark:bg-primary-950/30 px-3 py-2 text-xs text-slate-600 dark:text-slate-300 space-y-1">
                 <p id="phn-model-range-note">PHN / Lopez: Developed from healthy, non-obese pediatric subjects up to 18 years. Use caution when applying to patients outside typical pediatric body size ranges.</p>
+                <p id="phn-structure-definition" class="text-slate-500 dark:text-slate-400"></p>
                 <p id="phn-model-consistency-note" class="text-slate-500 dark:text-slate-400">Z-scores and expected sizes may differ between models. Use the same model consistently for serial follow-up.</p>
               </div>
               <div>
@@ -567,7 +568,8 @@
               <h2 class="calculator-lower-title">About this pediatric echo Z-score calculator</h2>
               <div class="calculator-lower-panel">
                 <p>This pediatric echocardiography Z-score calculator estimates expected cardiac structure size from <a href="/bsa/" class="text-accent-600 dark:text-accent-400 hover:underline">body surface area</a> and calculates optional measured-value Z-scores. It supports PHN / Lopez 2017 and Detroit / Pettersen 2008 reference models. Users can select a model, choose a supported structure, enter a target Z-score, and view the corresponding expected size in millimeters. A measured value can also be entered to calculate a forward Z-score using the selected model.</p>
-              <p>Use this pediatric echo Z-score calculator for BSA-adjusted Z-score review, cardiac structure size planning, PHN Lopez Z-score checks, Detroit Pettersen Z-score checks, expected size by Z-score, and measured-value Z-score education. For quick clinical context, see the <a href="/quick-reference/" class="text-accent-600 dark:text-accent-400 hover:underline">Quick Reference</a> page.</p>
+                <p>The PHN / Lopez reference model supports 25 linear cardiac structures organized into 5 clinical groups: Heart valves (Aortic annulus, Mitral valve AP and lateral, Tricuspid valve AP and lateral, Pulmonary valve short-axis and long-axis), Aorta and aortic arch (Aortic root, Sinotubular junction, Ascending aorta, Proximal aortic arch, Distal aortic arch, Aortic isthmus), Coronary arteries (LMCA, Proximal LAD, Proximal RCA), Pulmonary arteries (Main pulmonary artery, Left pulmonary artery, Right pulmonary artery), and Left ventricular dimensions (LVEDD, LVESD, LVPWT, LVST, LVEDL endocardial, and LVEDL epicardial). The Detroit / Pettersen 2008 model supports 21 pediatric cardiac dimensions.</p>
+                <p>Use this pediatric echo Z-score calculator for BSA-adjusted Z-score review, cardiac structure size planning, PHN Lopez Z-score checks, Detroit Pettersen Z-score checks, expected size by Z-score, and measured-value Z-score education. For quick clinical context, see the <a href="/quick-reference/" class="text-accent-600 dark:text-accent-400 hover:underline">Quick Reference</a> page.</p>
               </div>
             </section>
 
@@ -577,6 +579,13 @@
                 <div>
                   <h3 class="text-sm font-semibold text-primary-900 dark:text-white">PHN / Lopez 2017</h3>
                   <p class="mt-1">PHN / Lopez 2017 uses BSA-adjusted reference equations for common pediatric echocardiographic measurements. The calculator applies the selected structure’s coefficients to estimate expected size at a given BSA and target Z-score. The measured-value Z-score is calculated by comparing the user-entered measurement with the model-predicted mean and dispersion.</p>
+                  <div class="calculator-formula-block">
+                    <p>indexedValue = measuredNative / BSA^alpha</p>
+                    <p>z = (indexedValue - Mean) / SD</p>
+                    <p>targetNative = (Mean + targetZ × SD) × BSA^alpha</p>
+                  </div>
+                  <p class="mt-2">The original PHN reference model used Haycock BSA. Results may differ when another BSA formula is selected.</p>
+                  <p class="mt-1">Native units and display conversion: Most PHN linear structures use centimeters (cm) natively, while coronary artery dimensions (LMCA, LAD, RCA) use millimeters (mm) natively. All user inputs and displayed expected sizes are presented in millimeters (mm) for clinical workflow convenience. Native centimeter measurements are converted to and from millimeters (1 cm = 10 mm), whereas coronary artery values are calculated directly in native millimeters without unit scaling.</p>
                 </div>
                 <div>
                   <h3 class="text-sm font-semibold text-primary-900 dark:text-white">Detroit / Pettersen 2008</h3>
