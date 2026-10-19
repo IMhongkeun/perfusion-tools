@@ -576,6 +576,60 @@ function testPhnBrowserDomInteraction() {
   assert(elements['phn-debug-output'].textContent.includes('N/A (indexed model only)'), 'LVESD regression must be labeled as N/A (indexed model only)');
   assert(elements['phn-debug-output'].textContent.includes('inverse z0 (mm): 2.950000'), 'LMCA must be labeled with native mm in debug panel');
   assert(elements['phn-debug-output'].textContent.includes('regression ref: 2.930792 mm'), 'LMCA regression reference must have mm unit');
+
+  // F. Structure changes clear measured value and Z-score while preserving BSA and target Z (LMCA -> ROOT and LVEDD -> LVESD)
+  // Switch back to PHN model
+  elements['phn-model-select'].value = 'phnLopez';
+  elements['phn-model-select'].dispatch('change');
+
+  // Setup LMCA with BSA 1.0, targetZ 1.5, measured 3.5 mm
+  elements['phn-bsa-input'].value = '1.0';
+  elements['phn-bsa-input'].dispatch('input');
+  elements['phn-target-z'].value = '1.5';
+  elements['phn-target-z'].dispatch('input');
+  elements['phn-structure-select'].value = 'LMCA';
+  elements['phn-structure-select'].dispatch('change');
+  elements['phn-measured-mm'].value = '3.5';
+  elements['phn-measured-mm'].dispatch('input');
+  assert(elements['phn-measured-z'].innerHTML.includes('0.96'), 'LMCA measured Z must be calculated');
+
+  // BSA change must NOT clear measured input
+  elements['phn-bsa-input'].value = '1.2';
+  elements['phn-bsa-input'].dispatch('input');
+  assert.strictEqual(elements['phn-measured-mm'].value, '3.5', 'BSA change must preserve measured value');
+  assert(!elements['phn-measured-z'].innerHTML.includes('—'), 'Measured Z must recalculate for new BSA');
+
+  // Target Z change must NOT clear measured input
+  elements['phn-target-z'].value = '2.0';
+  elements['phn-target-z'].dispatch('input');
+  assert.strictEqual(elements['phn-measured-mm'].value, '3.5', 'Target Z change must preserve measured value');
+
+  // Transition 1: LMCA -> ROOT
+  elements['phn-structure-select'].value = 'ROOT';
+  elements['phn-structure-select'].dispatch('change');
+  assert.strictEqual(elements['phn-measured-mm'].value, '', 'Changing from LMCA to ROOT must clear measured-value input');
+  assert(elements['phn-measured-z'].innerHTML.includes('—'), 'Changing from LMCA to ROOT must clear calculated Z-score to —');
+  assert(elements['phn-structure-definition'].textContent.includes('mid-systole (inner-edge to inner-edge)'), 'ROOT reference note must update');
+  assert.strictEqual(elements['phn-expected-zero'].textContent, '22.6 mm', 'Expected z0 must update for ROOT at BSA 1.2');
+  assert.strictEqual(elements['phn-bsa-input'].value, '1.2', 'BSA input must be preserved across structure change');
+  assert.strictEqual(elements['phn-target-z'].value, '2.0', 'Target Z input must be preserved across structure change');
+
+  // Enter measurement for LVEDD
+  elements['phn-structure-select'].value = 'LVEDD';
+  elements['phn-structure-select'].dispatch('change');
+  assert.strictEqual(elements['phn-measured-mm'].value, '', 'Selecting LVEDD must clear measured input');
+  elements['phn-measured-mm'].value = '42.0';
+  elements['phn-measured-mm'].dispatch('input');
+  assert(!elements['phn-measured-z'].innerHTML.includes('—'), 'LVEDD Z-score must be calculated');
+
+  // Transition 2: LVEDD -> LVESD
+  elements['phn-structure-select'].value = 'LVESD';
+  elements['phn-structure-select'].dispatch('change');
+  assert.strictEqual(elements['phn-measured-mm'].value, '', 'Changing from LVEDD to LVESD must clear measured-value input');
+  assert(elements['phn-measured-z'].innerHTML.includes('—'), 'Changing from LVEDD to LVESD must clear calculated Z-score to —');
+  assert(elements['phn-structure-definition'].textContent.includes('Lopez et al. JASE 2021 Table 3'), 'LVESD 2021 reference note must update');
+  assert.strictEqual(elements['phn-bsa-input'].value, '1.2', 'BSA input must be preserved across LVEDD->LVESD');
+  assert.strictEqual(elements['phn-target-z'].value, '2.0', 'Target Z input must be preserved across LVEDD->LVESD');
 }
 
 run();

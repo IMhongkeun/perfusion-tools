@@ -9292,10 +9292,17 @@ function readPhnZScoreState() {
   const measuredInput = el('phn-measured-mm');
   const bsaInput = el('phn-bsa-input');
   const targetZ = targetInput && targetInput.value !== '' ? Number(targetInput.value) : 0;
+  const currentStructure = structureSelect ? structureSelect.value : null;
+
+  if (phnZScoreState.selectedStructure && currentStructure && phnZScoreState.selectedStructure !== currentStructure) {
+    if (measuredInput) measuredInput.value = '';
+    phnZScoreState.measuredMm = null;
+  }
+
   const measuredMm = measuredInput && measuredInput.value !== '' ? Number(measuredInput.value) : null;
   phnZScoreState = {
     selectedModel: selected ? selected.key : PHN_DEFAULT_MODEL_KEY,
-    selectedStructure: structureSelect ? structureSelect.value : null,
+    selectedStructure: currentStructure,
     targetZ,
     measuredMm,
     bsa: bsaInput && bsaInput.value !== '' ? Number(bsaInput.value) : null
@@ -10223,6 +10230,14 @@ window.addEventListener('DOMContentLoaded', () => {
             if (measuredInput) measuredInput.value = '';
             phnZScoreState.measuredMm = null;
             populatePhnStructureOptions(phnZScoreState.selectedStructure);
+          } else if (id === 'phn-structure-select') {
+            const structureSelect = el('phn-structure-select');
+            const currentStructure = structureSelect ? structureSelect.value : null;
+            if (phnZScoreState.selectedStructure && currentStructure && phnZScoreState.selectedStructure !== currentStructure) {
+              const measuredInput = el('phn-measured-mm');
+              if (measuredInput) measuredInput.value = '';
+              phnZScoreState.measuredMm = null;
+            }
           }
           updatePhnModelComparison();
         });
