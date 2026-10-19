@@ -8323,7 +8323,7 @@ const PHN_STRUCTURES = {
     sd: 0.18,
     unit: 'cm',
     displayUnit: 'mm',
-    referenceNote: 'Aortic root maximal sinuses of Valsalva diameter measured in parasternal long-axis view at end-diastole.'
+    referenceNote: 'Aortic root maximal sinuses of Valsalva diameter measured in parasternal long-axis view in mid-systole (inner-edge to inner-edge).'
   },
   STJ: {
     label: 'Sinotubular junction',
@@ -8333,7 +8333,7 @@ const PHN_STRUCTURES = {
     sd: 0.16,
     unit: 'cm',
     displayUnit: 'mm',
-    referenceNote: 'Sinotubular junction diameter measured at transition between sinuses and tubular ascending aorta in end-diastole.'
+    referenceNote: 'Sinotubular junction diameter measured at transition between sinuses and tubular ascending aorta in mid-systole (inner-edge to inner-edge).'
   },
   AAO: {
     label: 'Ascending aorta',
@@ -8343,7 +8343,7 @@ const PHN_STRUCTURES = {
     sd: 0.18,
     unit: 'cm',
     displayUnit: 'mm',
-    referenceNote: 'Ascending aortic tubular diameter measured distal to STJ from high parasternal or suprasternal view in end-diastole.'
+    referenceNote: 'Ascending aortic tubular diameter measured distal to STJ from high parasternal or suprasternal view in mid-systole (inner-edge to inner-edge).'
   },
   ARCH_PROX: {
     label: 'Proximal aortic arch',
@@ -8353,7 +8353,7 @@ const PHN_STRUCTURES = {
     sd: 0.23,
     unit: 'cm',
     displayUnit: 'mm',
-    referenceNote: 'Proximal transverse aortic arch diameter measured between innominate and left common carotid artery branches.'
+    referenceNote: 'Proximal transverse aortic arch diameter measured between innominate and left common carotid artery branches (inner-edge to inner-edge).'
   },
   ARCH_DIST: {
     label: 'Distal aortic arch',
@@ -8363,7 +8363,7 @@ const PHN_STRUCTURES = {
     sd: 0.19,
     unit: 'cm',
     displayUnit: 'mm',
-    referenceNote: 'Distal transverse aortic arch diameter measured between left common carotid and left subclavian artery branches.'
+    referenceNote: 'Distal transverse aortic arch diameter measured between left common carotid and left subclavian artery branches (inner-edge to inner-edge).'
   },
   ISTH: {
     label: 'Aortic isthmus',
@@ -8373,7 +8373,7 @@ const PHN_STRUCTURES = {
     sd: 0.18,
     unit: 'cm',
     displayUnit: 'mm',
-    referenceNote: 'Aortic isthmus diameter measured immediately distal to the origin of the left subclavian artery.'
+    referenceNote: 'Aortic isthmus diameter measured immediately distal to the origin of the left subclavian artery (inner-edge to inner-edge).'
   },
 
   // C. Coronary arteries (native unit mm)
@@ -8520,7 +8520,7 @@ const PHN_REGRESSION = {
   LVST: { alpha: 0.4, intercept: 0.008416262, slope: 0.566410942, unit: 'cm' },
   LVEDL: { alpha: 0.45, intercept: -0.079863429, slope: 6.410199218, unit: 'cm' },
   LVEDL_EPI: { alpha: 0.45, intercept: -0.067593474, slope: 6.950057220, unit: 'cm' },
-  LVESD: { alpha: 0.5, intercept: 0.257530334, slope: 2.361910336, unit: 'cm' }
+  LVESD: null
 };
 
 const PHN_BSA_LIMITS = {
@@ -8701,7 +8701,11 @@ function calculatePhnTargetMm(bsa, targetZ, coeff) {
   const bsaPowAlpha = Math.pow(bsaValue, coeff.alpha);
   // PHN reverse formula: target = (mean + targetZ × sd) × BSA^alpha
   const targetNative = (coeff.mean + zValue * coeff.sd) * bsaPowAlpha;
-  return coeff.unit === 'mm' ? targetNative : cmToMm(targetNative);
+  const targetMm = coeff.unit === 'mm' ? targetNative : cmToMm(targetNative);
+  if (targetNative <= 0 || targetMm <= 0) {
+    throw new RangeError('Predicted dimension is non-positive or out of physical range.');
+  }
+  return targetMm;
 }
 
 function calculatePettersenMeanLn(bsa, coeff) {
@@ -8821,11 +8825,27 @@ function calculateModelTargetMm(modelKey, structureKey, bsa, targetZ) {
 }
 
 function calculateModelExpectedSizes(modelKey, structureKey, bsa, targetZ) {
+  const safeModelTargetMm = (z) => {
+    try {
+      return calculateModelTargetMm(modelKey, structureKey, bsa, z);
+    } catch (err) {
+      if (err instanceof RangeError && (err.message.includes('non-positive') || err.message.includes('physical range'))) {
+        return null;
+      }
+      throw err;
+    }
+  };
+
+  const targetMm = safeModelTargetMm(targetZ);
+  const zNeg2Mm = safeModelTargetMm(-2);
+
   return {
-    zNeg2Mm: calculateModelTargetMm(modelKey, structureKey, bsa, -2),
+    zNeg2Mm,
+    zNeg2OutOfRange: zNeg2Mm === null,
     z0Mm: calculateModelTargetMm(modelKey, structureKey, bsa, 0),
     zPos2Mm: calculateModelTargetMm(modelKey, structureKey, bsa, 2),
-    targetMm: calculateModelTargetMm(modelKey, structureKey, bsa, targetZ)
+    targetMm,
+    targetOutOfRange: targetMm === null
   };
 }
 
@@ -8847,6 +8867,9 @@ function calculateModelMeasuredZScore(modelKey, structureKey, measuredMm, bsa) {
 }
 
 function calculateRegressionReferenceCm(bsa, regressionCoeff) {
+  if (!regressionCoeff || !Number.isFinite(regressionCoeff.intercept) || !Number.isFinite(regressionCoeff.slope)) {
+    return null;
+  }
   const bsaValue = validateZScorePositiveNumber(bsa, 'BSA');
   return regressionCoeff.intercept + regressionCoeff.slope * Math.pow(bsaValue, regressionCoeff.alpha);
 }
@@ -8978,18 +9001,25 @@ function renderPhnRows(rows) {
   resultsEl.innerHTML = '';
 
   rows.forEach((row) => {
-    const zNeg2DisplayMm = window.PhnCalculator.clampToDisplayMm(row.range.zNeg2Mm);
-    const line = document.createElement('div');
-    line.className = 'grid grid-cols-4 gap-2 px-3 py-2 text-sm items-center';
-    const zNeg2DisplayText = window.PhnCalculator.formatMm(zNeg2DisplayMm).replace(/\s*mm$/i, '');
+    const isZNeg2OutOfRange = row.range.zNeg2Mm <= 0;
+    const zNeg2DisplayText = isZNeg2OutOfRange
+      ? 'Out of range'
+      : window.PhnCalculator.formatMm(window.PhnCalculator.clampToDisplayMm(row.range.zNeg2Mm)).replace(/\s*mm$/i, '');
     const z0DisplayText = window.PhnCalculator.formatMm(row.range.z0Mm).replace(/\s*mm$/i, '');
     const zPos2DisplayText = window.PhnCalculator.formatMm(row.range.zPos2Mm).replace(/\s*mm$/i, '');
+
+    const zNeg2Html = isZNeg2OutOfRange
+      ? '<span class="text-xs text-amber-600 dark:text-amber-400 font-medium">Out of range</span>'
+      : `<span class="result-number">${zNeg2DisplayText}</span>
+        <span class="result-unit text-sm">mm</span>`;
+
+    const line = document.createElement('div');
+    line.className = 'grid grid-cols-4 gap-2 px-3 py-2 text-sm items-center';
 
     line.innerHTML = `
       <div class="text-primary-900 dark:text-white font-medium text-xs leading-tight">${row.coeff.label}</div>
       <div class="flex items-baseline justify-center gap-1 text-primary-900 dark:text-slate-100">
-        <span class="result-number">${zNeg2DisplayText}</span>
-        <span class="result-unit text-sm">mm</span>
+        ${zNeg2Html}
       </div>
       <div class="flex items-baseline justify-center gap-1 font-semibold text-emerald-600 dark:text-emerald-300">
         <span class="result-number">${z0DisplayText}</span>
@@ -9014,14 +9044,20 @@ function updatePhnDebugPanel(bsaValue, rows) {
   if (!isDevMode) return;
 
   const lines = rows.map((row) => {
-    const regression = window.PhnCalculator.calculateRegressionReferenceCm(
-      bsaValue,
-      window.PhnCalculator.PHN_REGRESSION[row.key]
-    );
+    const regCoeff = window.PhnCalculator.PHN_REGRESSION ? window.PhnCalculator.PHN_REGRESSION[row.key] : null;
+    const regression = regCoeff
+      ? window.PhnCalculator.calculateRegressionReferenceCm(bsaValue, regCoeff)
+      : null;
+    const regUnit = regCoeff ? regCoeff.unit : (row.coeff.unit || 'cm');
+    const regressionText = regression !== null && Number.isFinite(regression)
+      ? `${regression.toFixed(6)} ${regUnit}`
+      : 'N/A (indexed model only)';
+    const inverseUnit = row.coeff.unit || 'cm';
+    const inverseZ0 = row.range.z0Native != null ? row.range.z0Native : row.range.z0Cm;
     return `${row.coeff.label}
   BSA^alpha: ${row.range.bsaPowAlpha.toFixed(6)}
-  inverse z0 (cm): ${row.range.z0Cm.toFixed(6)}
-  regression ref (cm): ${regression.toFixed(6)}
+  inverse z0 (${inverseUnit}): ${inverseZ0.toFixed(6)}
+  regression ref: ${regressionText}
 `;
   });
 
@@ -9150,7 +9186,8 @@ function setPhnExpectedOutputs(text) {
 }
 
 function formatPhnSizeMm(valueMm) {
-  if (!Number.isFinite(valueMm)) return '—';
+  if (valueMm == null || !Number.isFinite(valueMm)) return '—';
+  if (valueMm <= 0) return formatPhnOutOfRangeText();
   return `${window.PhnCalculator.clampToDisplayMm(valueMm).toFixed(1)} mm`;
 }
 
@@ -9305,10 +9342,10 @@ function updatePhnModelComparison() {
 
   try {
     const expected = window.PhnCalculator.calculateModelExpectedSizes(state.selectedModel, state.selectedStructure, state.bsa, state.targetZ);
-    setPhnText('phn-expected-neg2', formatPhnSizeMm(expected.zNeg2Mm));
+    setPhnText('phn-expected-neg2', expected.zNeg2OutOfRange ? formatPhnOutOfRangeText() : formatPhnSizeMm(expected.zNeg2Mm));
     setPhnText('phn-expected-zero', formatPhnSizeMm(expected.z0Mm));
     setPhnText('phn-expected-pos2', formatPhnSizeMm(expected.zPos2Mm));
-    setPhnText('phn-expected-target', formatPhnSizeMm(expected.targetMm));
+    setPhnText('phn-expected-target', expected.targetOutOfRange ? formatPhnOutOfRangeText() : formatPhnSizeMm(expected.targetMm));
     setPhnError('');
   } catch (error) {
     setPhnError(error.message || 'Unable to compute expected size.');
@@ -10181,7 +10218,12 @@ window.addEventListener('DOMContentLoaded', () => {
       if (node) node.addEventListener('input', updatePhnModelComparison);
       if (node && node.tagName === 'SELECT') {
         node.addEventListener('change', () => {
-          if (id === 'phn-model-select') populatePhnStructureOptions(phnZScoreState.selectedStructure);
+          if (id === 'phn-model-select') {
+            const measuredInput = el('phn-measured-mm');
+            if (measuredInput) measuredInput.value = '';
+            phnZScoreState.measuredMm = null;
+            populatePhnStructureOptions(phnZScoreState.selectedStructure);
+          }
           updatePhnModelComparison();
         });
       }

@@ -128,7 +128,7 @@ const PHN_STRUCTURES = {
     sd: 0.18,
     unit: 'cm',
     displayUnit: 'mm',
-    referenceNote: 'Aortic root maximal sinuses of Valsalva diameter measured in parasternal long-axis view at end-diastole.'
+    referenceNote: 'Aortic root maximal sinuses of Valsalva diameter measured in parasternal long-axis view in mid-systole (inner-edge to inner-edge).'
   },
   STJ: {
     label: 'Sinotubular junction',
@@ -138,7 +138,7 @@ const PHN_STRUCTURES = {
     sd: 0.16,
     unit: 'cm',
     displayUnit: 'mm',
-    referenceNote: 'Sinotubular junction diameter measured at transition between sinuses and tubular ascending aorta in end-diastole.'
+    referenceNote: 'Sinotubular junction diameter measured at transition between sinuses and tubular ascending aorta in mid-systole (inner-edge to inner-edge).'
   },
   AAO: {
     label: 'Ascending aorta',
@@ -148,7 +148,7 @@ const PHN_STRUCTURES = {
     sd: 0.18,
     unit: 'cm',
     displayUnit: 'mm',
-    referenceNote: 'Ascending aortic tubular diameter measured distal to STJ from high parasternal or suprasternal view in end-diastole.'
+    referenceNote: 'Ascending aortic tubular diameter measured distal to STJ from high parasternal or suprasternal view in mid-systole (inner-edge to inner-edge).'
   },
   ARCH_PROX: {
     label: 'Proximal aortic arch',
@@ -158,7 +158,7 @@ const PHN_STRUCTURES = {
     sd: 0.23,
     unit: 'cm',
     displayUnit: 'mm',
-    referenceNote: 'Proximal transverse aortic arch diameter measured between innominate and left common carotid artery branches.'
+    referenceNote: 'Proximal transverse aortic arch diameter measured between innominate and left common carotid artery branches (inner-edge to inner-edge).'
   },
   ARCH_DIST: {
     label: 'Distal aortic arch',
@@ -168,7 +168,7 @@ const PHN_STRUCTURES = {
     sd: 0.19,
     unit: 'cm',
     displayUnit: 'mm',
-    referenceNote: 'Distal transverse aortic arch diameter measured between left common carotid and left subclavian artery branches.'
+    referenceNote: 'Distal transverse aortic arch diameter measured between left common carotid and left subclavian artery branches (inner-edge to inner-edge).'
   },
   ISTH: {
     label: 'Aortic isthmus',
@@ -178,7 +178,7 @@ const PHN_STRUCTURES = {
     sd: 0.18,
     unit: 'cm',
     displayUnit: 'mm',
-    referenceNote: 'Aortic isthmus diameter measured immediately distal to the origin of the left subclavian artery.'
+    referenceNote: 'Aortic isthmus diameter measured immediately distal to the origin of the left subclavian artery (inner-edge to inner-edge).'
   },
 
   // C. Coronary arteries (native unit mm)
@@ -325,7 +325,7 @@ const PHN_REGRESSION = {
   LVST: { alpha: 0.4, intercept: 0.008416262, slope: 0.566410942, unit: 'cm' },
   LVEDL: { alpha: 0.45, intercept: -0.079863429, slope: 6.410199218, unit: 'cm' },
   LVEDL_EPI: { alpha: 0.45, intercept: -0.067593474, slope: 6.950057220, unit: 'cm' },
-  LVESD: { alpha: 0.5, intercept: 0.257530334, slope: 2.361910336, unit: 'cm' }
+  LVESD: null
 };
 
 const PHN_BSA_LIMITS = {

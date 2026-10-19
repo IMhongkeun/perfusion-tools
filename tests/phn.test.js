@@ -376,9 +376,206 @@ function run() {
   assert.throws(() => phn.calculateModelExpectedSizes('detroitPettersen2008', 'IVSD', NaN, 0));
   assert.throws(() => phn.calculateModelExpectedSizes('detroitPettersen2008', 'IVSD', Infinity, 0));
 
+  // 25) Clinical measurement notes & citation provenance
+  ['ROOT', 'STJ', 'AAO'].forEach((aortaKey) => {
+    const note = phn.PHN_STRUCTURES[aortaKey].referenceNote;
+    assert(note.includes('mid-systole'), `${aortaKey} note must specify mid-systole per PHN protocol`);
+    assert(note.includes('inner-edge to inner-edge'), `${aortaKey} note must specify inner-edge to inner-edge`);
+    assert(!note.includes('end-diastole'), `${aortaKey} note must not claim adult end-diastole convention`);
+  });
+  ['ARCH_PROX', 'ARCH_DIST', 'ISTH'].forEach((archKey) => {
+    const note = phn.PHN_STRUCTURES[archKey].referenceNote;
+    assert(note.includes('inner-edge to inner-edge'), `${archKey} note must specify inner-edge to inner-edge`);
+  });
+  assert(phn.PHN_STRUCTURES.LVESD.referenceNote.includes('Lopez et al. JASE 2021 Table 3'), 'LVESD note must attribute 2021 PHN model');
+  ['LMCA', 'LAD', 'RCA'].forEach((coronaryKey) => {
+    const note = phn.PHN_STRUCTURES[coronaryKey].referenceNote;
+    assert(note.includes('native unit: mm'), `${coronaryKey} note must state native unit: mm`);
+  });
+
+  // 26) Regression coefficients & provenance (published Lopez 2017 Table 2 vs Lopez 2021 Table 3)
+  assert.strictEqual(phn.PHN_REGRESSION.LVESD, null, 'LVESD in PHN_REGRESSION must be null because Lopez 2021 Table 3 published only the indexed Z-score model');
+  assert.strictEqual(mainJsApi.PHN_REGRESSION.LVESD, null, 'main.js LVESD in PHN_REGRESSION must be null');
+  assert.strictEqual(phn.calculateRegressionReferenceCm(1.0, phn.PHN_REGRESSION.LVESD), null, 'calculateRegressionReferenceCm must return null when regressionCoeff is null');
+  assert.strictEqual(phn.calculateRegressionReferenceCm(1.0, null), null, 'calculateRegressionReferenceCm must return null on null input');
+  assert.strictEqual(mainJsApi.calculateRegressionReferenceCm(1.0, null), null, 'main.js calculateRegressionReferenceCm must return null on null input');
+
+  // Verify that all other 24 structures in PHN_REGRESSION have valid numeric coefficients
+  phn.PHN_STRUCTURE_ORDER.filter((k) => k !== 'LVESD').forEach((key) => {
+    const reg = phn.PHN_REGRESSION[key];
+    assert(reg, `PHN_REGRESSION should have entry for ${key}`);
+    assert(Number.isFinite(reg.alpha), `${key} regression alpha must be finite`);
+    assert(Number.isFinite(reg.intercept), `${key} regression intercept must be finite`);
+    assert(Number.isFinite(reg.slope), `${key} regression slope must be finite`);
+    const regVal = phn.calculateRegressionReferenceCm(1.0, reg);
+    assert(Number.isFinite(regVal), `${key} calculateRegressionReferenceCm must return finite number`);
+  });
+
+  // 27) Nonphysical predicted size rejection
+  // LVPWT at BSA 1.0 m2 with target Z = -10 produces (0.57 + (-10 * 0.09)) * 10 = -3.3 mm
+  assert.throws(
+    () => phn.calculatePhnTargetMm(1.0, -10, phn.PHN_STRUCTURES.LVPWT),
+    (err) => err instanceof RangeError && err.message.includes('non-positive or out of physical range'),
+    'calculatePhnTargetMm must throw RangeError when predicted dimension is non-positive'
+  );
+  assert.throws(
+    () => mainJsApi.calculatePhnTargetMm(1.0, -10, mainJsApi.PHN_STRUCTURES.LVPWT),
+    (err) => err instanceof RangeError && err.message.includes('non-positive or out of physical range'),
+    'mainJsApi.calculatePhnTargetMm must throw RangeError when predicted dimension is non-positive'
+  );
+
+  const lvpwtExpected = phn.calculateModelExpectedSizes('phnLopez', 'LVPWT', 1.0, -10);
+  assert.strictEqual(lvpwtExpected.targetMm, null, 'calculateModelExpectedSizes should set targetMm to null on RangeError');
+  assert.strictEqual(lvpwtExpected.targetOutOfRange, true, 'calculateModelExpectedSizes should flag targetOutOfRange');
+  assert.strictEqual(lvpwtExpected.zNeg2OutOfRange, false, 'zNeg2 is within physical range for LVPWT');
+  assert(nearlyEqual(lvpwtExpected.zNeg2Mm, 3.9, 1e-9), 'zNeg2Mm remains valid for LVPWT');
+  assert(nearlyEqual(lvpwtExpected.z0Mm, 5.7, 1e-9), 'z0Mm remains valid for LVPWT');
+  assert(nearlyEqual(lvpwtExpected.zPos2Mm, 7.5, 1e-9), 'zPos2Mm remains valid for LVPWT');
+
+  // Valid negative Z-score must calculate properly without throwing
+  const lvpwtValidNeg = phn.calculatePhnTargetMm(1.0, -1.5, phn.PHN_STRUCTURES.LVPWT);
+  assert(nearlyEqual(lvpwtValidNeg, (0.57 - 1.5 * 0.09) * 10, 1e-9), 'Valid negative Z-score produces correct positive dimension');
+  assert(lvpwtValidNeg > 0, 'Predicted size must be positive');
+
+  // clampToDisplayMm checks
+  assert.strictEqual(phn.clampToDisplayMm(5.0), 5.0);
+  assert.strictEqual(phn.clampToDisplayMm(-2.0), 0);
+
+  // 28) DOM & runtime browser interaction tests
+  testPhnBrowserDomInteraction();
+
   console.log('PHN snapshots (mm):');
   console.log(JSON.stringify(snapshots, null, 2));
   console.log('All PHN tests passed.');
+}
+
+function testPhnBrowserDomInteraction() {
+  const mainJsSource = fs.readFileSync(path.join(__dirname, '..', 'main.js'), 'utf8');
+
+  const elements = {};
+  function makeEl(id, tagName = 'div') {
+    const listeners = {};
+    const el = {
+      id,
+      tagName: tagName.toUpperCase(),
+      value: '',
+      textContent: '',
+      innerHTML: '',
+      classList: {
+        _classes: new Set(),
+        add(c) { this._classes.add(c); },
+        remove(c) { this._classes.delete(c); },
+        toggle(c, force) {
+          if (force !== undefined) {
+            force ? this.add(c) : this.remove(c);
+          } else {
+            this._classes.has(c) ? this.remove(c) : this.add(c);
+          }
+        },
+        contains(c) { return this._classes.has(c); }
+      },
+      children: [],
+      appendChild(child) { this.children.push(child); return child; },
+      addEventListener(event, fn) {
+        if (!listeners[event]) listeners[event] = [];
+        listeners[event].push(fn);
+      },
+      dispatch(event) {
+        (listeners[event] || []).forEach((fn) => fn({ target: el }));
+      }
+    };
+    elements[id] = el;
+    return el;
+  }
+
+  [
+    'phn-error', 'phn-warnings', 'phn-results', 'phn-results-wrapper', 'phn-debug-panel', 'phn-debug-output',
+    'phn-bsa-display', 'phn-bsa-input', 'phn-model-range-note', 'phn-model-consistency-note',
+    'phn-model-bsa-warning', 'phn-structure-definition', 'phn-result-model', 'phn-result-structure',
+    'phn-result-bsa', 'phn-target-z-label', 'phn-expected-neg2', 'phn-expected-zero', 'phn-expected-pos2',
+    'phn-expected-target', 'phn-measured-z', 'phn-measured-help', 'phn-height-cm', 'phn-weight-kg',
+    'phn-bsa-method', 'phn-calculated-bsa', 'phn-calc-bsa-btn', 'phn-use-bsa-btn'
+  ].forEach((id) => makeEl(id));
+
+  makeEl('phn-model-select', 'select');
+  makeEl('phn-structure-select', 'select');
+  makeEl('phn-target-z', 'input');
+  makeEl('phn-measured-mm', 'input');
+
+  const context = {
+    window: { location: { hostname: 'localhost' } },
+    document: {
+      getElementById: (id) => elements[id] || null,
+      createElement: (tag) => makeEl('anon_' + Math.random(), tag),
+      addEventListener: () => {}
+    },
+    el: (id) => elements[id] || null,
+    hasPhnEchoCalculator: true,
+    computeBSA: () => 1.0,
+    Math, Number, String, Boolean, Error, RangeError, console
+  };
+  context.window.window = context.window;
+  context.window.document = context.document;
+
+  const start = mainJsSource.indexOf('const PHN_STRUCTURE_ORDER =');
+  const end = mainJsSource.indexOf('function getActivePath()');
+  const regStart = mainJsSource.indexOf('if (hasPhnEchoCalculator) {');
+  const regEnd = mainJsSource.indexOf('if (hasHctCalculator) {');
+  assert(start >= 0 && end > start && regStart > 0 && regEnd > regStart, 'PHN blocks must be extractable');
+
+  vm.runInNewContext(
+    mainJsSource.slice(start, end) + '\n' + mainJsSource.slice(regStart, regEnd),
+    context
+  );
+
+  // A. Option population check: exactly 25 structures grouped into 5 groups
+  assert.strictEqual(elements['phn-model-select'].children.length, 2, 'Should populate 2 reference models');
+  assert.strictEqual(elements['phn-structure-select'].children.length, 5, 'PHN should have 5 optgroups');
+  const totalOptions = elements['phn-structure-select'].children.reduce((acc, grp) => acc + grp.children.length, 0);
+  assert.strictEqual(totalOptions, 25, 'Total PHN options across groups must be exactly 25');
+
+  // B. Structure selection and definition updates
+  elements['phn-bsa-input'].value = '1.0';
+  elements['phn-bsa-input'].dispatch('input');
+
+  elements['phn-structure-select'].value = 'ROOT';
+  elements['phn-structure-select'].dispatch('input');
+  assert(elements['phn-structure-definition'].textContent.includes('mid-systole (inner-edge to inner-edge)'), 'ROOT definition note in DOM must specify mid-systole');
+
+  elements['phn-structure-select'].value = 'LMCA';
+  elements['phn-structure-select'].dispatch('input');
+  assert(elements['phn-structure-definition'].textContent.includes('native unit: mm'), 'LMCA definition note in DOM must specify native mm');
+
+  elements['phn-structure-select'].value = 'LVESD';
+  elements['phn-structure-select'].dispatch('input');
+  assert(elements['phn-structure-definition'].textContent.includes('2021 PHN model (Lopez et al. JASE 2021 Table 3)'), 'LVESD definition note in DOM must cite 2021 paper');
+
+  // C. Nonphysical target Z UI behavior
+  elements['phn-structure-select'].value = 'LVPWT';
+  elements['phn-target-z'].value = '-10';
+  elements['phn-target-z'].dispatch('input');
+  assert.strictEqual(elements['phn-expected-target'].textContent, 'Out of range', 'Nonphysical predicted dimension must display Out of range');
+  assert.strictEqual(elements['phn-expected-zero'].textContent, '5.7 mm', 'Z=0 expected size remains valid');
+  assert.strictEqual(elements['phn-error'].textContent, '', 'Expected size out-of-range should not throw unhandled error');
+
+  // D. Model switching: clears measured value input to prevent cross-model contamination
+  elements['phn-measured-mm'].value = '15.0';
+  elements['phn-measured-mm'].dispatch('input');
+  assert(elements['phn-measured-z'].innerHTML.includes('Calculated Z-score:'), 'Measured Z must be calculated before model switch');
+  assert(!elements['phn-measured-z'].innerHTML.includes('—'), 'Measured Z must have a value before switch');
+
+  // Switch to Detroit model
+  elements['phn-model-select'].value = 'detroitPettersen2008';
+  elements['phn-model-select'].dispatch('change');
+  assert.strictEqual(elements['phn-measured-mm'].value, '', 'phn-measured-mm input must be cleared on model switch');
+  assert(elements['phn-measured-z'].innerHTML.includes('—'), 'phn-measured-z must reset to — after model switch');
+  assert.strictEqual(elements['phn-result-model'].textContent, 'Detroit / Pettersen 2008');
+
+  // E. Debug panel output in localhost dev mode
+  assert(!elements['phn-debug-panel'].classList.contains('hidden'), 'Debug panel must be visible in localhost dev mode');
+  assert(elements['phn-debug-output'].textContent.includes('N/A (indexed model only)'), 'LVESD regression must be labeled as N/A (indexed model only)');
+  assert(elements['phn-debug-output'].textContent.includes('inverse z0 (mm): 2.950000'), 'LMCA must be labeled with native mm in debug panel');
+  assert(elements['phn-debug-output'].textContent.includes('regression ref: 2.930792 mm'), 'LMCA regression reference must have mm unit');
 }
 
 run();
