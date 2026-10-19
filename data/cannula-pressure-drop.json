@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "updatedAt": "2026-07-28",
+  "updatedAt": "2026-10-10",
   "items": [
     {
       "manufacturer": "LivaNova",
@@ -25044,6 +25044,3430 @@
         }
       ],
       "notes": "Aortic root cannula / with vent line dataset; do not categorize as femoral arterial or femoral venous. Product/family: Aortic Root Cannula. Model/description: with Vent Line. Type/site: Aortic root. Displayed cannula tip size: 16 Ga / 5 Fr. Source graph label: 18Ga. Insertion needle: 18 Ga - Pink. Without vent line catalog number: AR-11016. With vent line catalog number: AR-11116. Primary catalog number for this with vent line dataset: AR-11116. Effective length: 15 cm. Quantity per box: 10. Available coated: no. Source description: LivaNova Aortic Root Cannula with Vent Line pressure-flow graph. Source range: 0.107 to 0.40 L/min. Extrapolation: false. Source curve digitized from the Aortic Root Cannula with Vent Line 18Ga curve. The graph label refers to insertion needle gauge, not cannula-tip gauge. The manufacturer x-axis is labeled 0.1–0.6 L/min; supplied coordinates use the already corrected 0.1–0.6 calibration. No synthetic zero-flow anchor was added. Do not extrapolate below 0.107 or above 0.40 L/min."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "Bio-Medicus NextGen Pediatric Venous Cannula",
+      "category": "venous",
+      "size": "10 Fr",
+      "outerDiameterFr": 10,
+      "outerDiameterMm": 3.3,
+      "overallLengthCm": 22.9,
+      "tipLengthCm": 10.5,
+      "connectorSize": "Non-vented 1/4 in (0.64 cm)",
+      "cannulaOrderCodeLabel": "Cannula order code",
+      "cannulaOrderCode": "96830-110",
+      "cartonQuantity": "1 per carton",
+      "sourceLabel": "Medtronic Bio-Medicus NextGen Cannula Portfolio Brochure — Pediatric venous 10 Fr pressure drop vs. flow",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/bio-medicus-next-gen-portfolio-brochure.pdf",
+      "testMedium": "Water at room temperature",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "User-provided WebPlotDigitizer-style CSV of the manufacturer-published Bio-Medicus NextGen pediatric venous 10 Fr pressure-loss curve. The original 51 finite source coordinates are preserved at supplied numeric precision and sorted by increasing flow; no smoothing, interpolation of source points, or synthetic (0,0) anchor was added. Manufacturer graph test medium: water at room temperature. Do not extrapolate outside 0.023234579063918626–1.9312900918362639 L/min.",
+      "referenceFlowRangeLabel": "0.023–1.931",
+      "outOfRangeMessage": "Target flow is outside the provided digitized source range (approximately 0.023 to 1.931 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.023234579063918626,
+          "pressureDrop": 0.52915512764514
+        },
+        {
+          "flow": 0.06588930872395932,
+          "pressureDrop": 0.7526961713646472
+        },
+        {
+          "flow": 0.11447228759979694,
+          "pressureDrop": 1.6129032258064342
+        },
+        {
+          "flow": 0.16025774147399519,
+          "pressureDrop": 2.01612903225805
+        },
+        {
+          "flow": 0.2031877336286862,
+          "pressureDrop": 2.8225806451613096
+        },
+        {
+          "flow": 0.23654162882352392,
+          "pressureDrop": 3.9816223584239765
+        },
+        {
+          "flow": 0.27921345008140747,
+          "pressureDrop": 5.39986609135542
+        },
+        {
+          "flow": 0.3218940836392182,
+          "pressureDrop": 7.434089589202841
+        },
+        {
+          "flow": 0.3645736867264731,
+          "pressureDrop": 9.39628319518502
+        },
+        {
+          "flow": 0.4072543558177513,
+          "pressureDrop": 11.432990482407092
+        },
+        {
+          "flow": 0.44993893359044884,
+          "pressureDrop": 13.742914600841829
+        },
+        {
+          "flow": 0.49197715759025545,
+          "pressureDrop": 16.044559421361043
+        },
+        {
+          "flow": 0.5353230842591075,
+          "pressureDrop": 19.410921953818274
+        },
+        {
+          "flow": 0.5780091544374377,
+          "pressureDrop": 21.825165225988826
+        },
+        {
+          "flow": 0.6207003414350809,
+          "pressureDrop": 24.59707416811051
+        },
+        {
+          "flow": 0.6633980665907344,
+          "pressureDrop": 27.826000355169867
+        },
+        {
+          "flow": 0.706097213085086,
+          "pressureDrop": 31.154278117215625
+        },
+        {
+          "flow": 0.7478257629160774,
+          "pressureDrop": 34.395623251148294
+        },
+        {
+          "flow": 0.7915060713581106,
+          "pressureDrop": 38.54934701537306
+        },
+        {
+          "flow": 0.8342087475102287,
+          "pressureDrop": 42.12434785530186
+        },
+        {
+          "flow": 0.8769170853281603,
+          "pressureDrop": 46.09509913559333
+        },
+        {
+          "flow": 0.9196288343589669,
+          "pressureDrop": 50.30429419585218
+        },
+        {
+          "flow": 0.9623429049096468,
+          "pressureDrop": 54.67576349525558
+        },
+        {
+          "flow": 1.0037649627912415,
+          "pressureDrop": 59.0792460799324
+        },
+        {
+          "flow": 1.0477715434795511,
+          "pressureDrop": 63.453475145307664
+        },
+        {
+          "flow": 1.0904971979406193,
+          "pressureDrop": 68.63465978085057
+        },
+        {
+          "flow": 1.1332205071928358,
+          "pressureDrop": 73.65191431766584
+        },
+        {
+          "flow": 1.1759477961934068,
+          "pressureDrop": 78.94735326444317
+        },
+        {
+          "flow": 1.2186724557173865,
+          "pressureDrop": 84.05899179749555
+        },
+        {
+          "flow": 1.2597845294993666,
+          "pressureDrop": 89.38051053270681
+        },
+        {
+          "flow": 1.3041369594004355,
+          "pressureDrop": 95.34367485637216
+        },
+        {
+          "flow": 1.346868322905274,
+          "pressureDrop": 100.92392165144392
+        },
+        {
+          "flow": 1.3871245435125303,
+          "pressureDrop": 105.96601408200583
+        },
+        {
+          "flow": 1.4265155241874121,
+          "pressureDrop": 112.12581173116519
+        },
+        {
+          "flow": 1.4653759326629094,
+          "pressureDrop": 118.15739853831823
+        },
+        {
+          "flow": 1.503698327215697,
+          "pressureDrop": 123.54059804300023
+        },
+        {
+          "flow": 1.5430903840470214,
+          "pressureDrop": 129.77561902750645
+        },
+        {
+          "flow": 1.5800111807171118,
+          "pressureDrop": 135.74388891821974
+        },
+        {
+          "flow": 1.6169265486630084,
+          "pressureDrop": 141.3326909878042
+        },
+        {
+          "flow": 1.653851384303899,
+          "pressureDrop": 147.58328493743727
+        },
+        {
+          "flow": 1.6888323458153587,
+          "pressureDrop": 153.47262552135578
+        },
+        {
+          "flow": 1.7104042641561683,
+          "pressureDrop": 157.25806451612902
+        },
+        {
+          "flow": 1.7304847939452679,
+          "pressureDrop": 160.88709677419354
+        },
+        {
+          "flow": 1.753426554063409,
+          "pressureDrop": 164.51612903225805
+        },
+        {
+          "flow": 1.7735013152429746,
+          "pressureDrop": 167.74193548387095
+        },
+        {
+          "flow": 1.7937847849043178,
+          "pressureDrop": 171.80851063829786
+        },
+        {
+          "flow": 1.8194021413078592,
+          "pressureDrop": 176.20967741935482
+        },
+        {
+          "flow": 1.8452166689741112,
+          "pressureDrop": 180.64516129032256
+        },
+        {
+          "flow": 1.8653087359822795,
+          "pressureDrop": 185.0806451612903
+        },
+        {
+          "flow": 1.8929213774774911,
+          "pressureDrop": 190.1633691462964
+        },
+        {
+          "flow": 1.9312900918362639,
+          "pressureDrop": 197.1774193548387
+        }
+      ],
+      "notes": "Medtronic Bio-Medicus NextGen pediatric venous cannula; 10 Fr (3.3 mm OD). Cannula order code 96830-110; overall length 22.9 cm; tip length 10.5 cm; non-vented 1/4 in (0.64 cm) connector; one unit per carton. Source curve is pediatric venous (not pediatric arterial), with pressure LOSS plotted as a positive magnitude (mmHg) against flow (L/min of water at room temperature). Insertion site is not uniquely specified in the source; do not infer femoral, jugular or central cannulation from the catalog section alone. This curve is for one 10 Fr pediatric venous SKU; do not use it for 8/12/14 Fr or arterial cannulae. No synthetic zero-flow anchor. Only interpolate between original supplied points; do not extrapolate or directly equate water-bench pressure loss with patient-specific blood drainage pressure."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "Bio-Medicus NextGen Pediatric Venous Cannula",
+      "category": "venous",
+      "size": "12 Fr",
+      "outerDiameterFr": 12,
+      "outerDiameterMm": 4,
+      "overallLengthCm": 22.9,
+      "tipLengthCm": 11,
+      "connectorSize": "Non-vented 1/4 in (0.64 cm)",
+      "cannulaOrderCodeLabel": "Cannula order code",
+      "cannulaOrderCode": "96830-112",
+      "cartonQuantity": "1 per carton",
+      "sourceLabel": "Medtronic Bio-Medicus NextGen Cannula Portfolio Brochure — Pediatric venous 12 Fr pressure drop vs. flow",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/bio-medicus-next-gen-portfolio-brochure.pdf",
+      "testMedium": "Water at room temperature",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "User-provided WebPlotDigitizer-style CSV of the manufacturer-published Bio-Medicus NextGen pediatric venous 12 Fr pressure-loss curve. The original 48 finite source coordinates are preserved at supplied numeric precision and sorted by increasing flow; no smoothing, interpolation of source points, or synthetic (0,0) anchor was added. Manufacturer graph test medium: water at room temperature. Do not extrapolate outside 0.023234579063918626–2.009643887777716 L/min.",
+      "referenceFlowRangeLabel": "0.023–2.010",
+      "outOfRangeMessage": "Target flow is outside the provided digitized source range (approximately 0.023 to 2.010 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.023234579063918626,
+          "pressureDrop": 0.52915512764514
+        },
+        {
+          "flow": 0.06588930872395932,
+          "pressureDrop": 0.7526961713646472
+        },
+        {
+          "flow": 0.10855007907346631,
+          "pressureDrop": 1.3984814087765187
+        },
+        {
+          "flow": 0.15120551940285598,
+          "pressureDrop": 1.6716982399892402
+        },
+        {
+          "flow": 0.19386486841366507,
+          "pressureDrop": 2.2181319024146546
+        },
+        {
+          "flow": 0.2403779592966912,
+          "pressureDrop": 2.4193548387096655
+        },
+        {
+          "flow": 0.28330795145138227,
+          "pressureDrop": 3.225806451612897
+        },
+        {
+          "flow": 0.32909340532558035,
+          "pressureDrop": 3.6290322580645125
+        },
+        {
+          "flow": 0.3663067054317229,
+          "pressureDrop": 4.838709677419359
+        },
+        {
+          "flow": 0.40638123586690683,
+          "pressureDrop": 6.048387096774178
+        },
+        {
+          "flow": 0.4550336886796807,
+          "pressureDrop": 6.854838709677409
+        },
+        {
+          "flow": 0.49250198690447194,
+          "pressureDrop": 7.558279057935891
+        },
+        {
+          "flow": 0.5351681938744988,
+          "pressureDrop": 8.584084069670865
+        },
+        {
+          "flow": 0.5778354668485488,
+          "pressureDrop": 9.684402762645732
+        },
+        {
+          "flow": 0.6205041966947642,
+          "pressureDrop": 10.88655681998165
+        },
+        {
+          "flow": 0.6631738504111335,
+          "pressureDrop": 12.153289401058771
+        },
+        {
+          "flow": 0.7058435041275026,
+          "pressureDrop": 13.420021982135893
+        },
+        {
+          "flow": 0.7485145791825696,
+          "pressureDrop": 14.786106138199472
+        },
+        {
+          "flow": 0.7911845882336135,
+          "pressureDrop": 16.077676613023215
+        },
+        {
+          "flow": 0.8338577952967274,
+          "pressureDrop": 17.592788131566408
+        },
+        {
+          "flow": 0.8765370430493076,
+          "pressureDrop": 19.530143843801994
+        },
+        {
+          "flow": 0.9192078338366352,
+          "pressureDrop": 20.876357684868253
+        },
+        {
+          "flow": 0.9618788378247674,
+          "pressureDrop": 22.23747426218256
+        },
+        {
+          "flow": 1.0045503392814439,
+          "pressureDrop": 23.63336389074206
+        },
+        {
+          "flow": 1.0472287342308055,
+          "pressureDrop": 25.51110865798583
+        },
+        {
+          "flow": 1.089907697715646,
+          "pressureDrop": 27.428594055224096
+        },
+        {
+          "flow": 1.132585879464203,
+          "pressureDrop": 29.291436086219875
+        },
+        {
+          "flow": 1.1752654825514577,
+          "pressureDrop": 31.253629692202082
+        },
+        {
+          "flow": 1.217945440973387,
+          "pressureDrop": 33.24066119193091
+        },
+        {
+          "flow": 1.2590089819610768,
+          "pressureDrop": 35.169737606250976
+        },
+        {
+          "flow": 1.3033074898252923,
+          "pressureDrop": 37.36375155386821
+        },
+        {
+          "flow": 1.3459939864052324,
+          "pressureDrop": 39.80780029853466
+        },
+        {
+          "flow": 1.3886741580279662,
+          "pressureDrop": 41.80973453451145
+        },
+        {
+          "flow": 1.4313524108434579,
+          "pressureDrop": 43.67754414425656
+        },
+        {
+          "flow": 1.474042176502403,
+          "pressureDrop": 46.350101511391784
+        },
+        {
+          "flow": 1.5151093715149955,
+          "pressureDrop": 48.534594266406174
+        },
+        {
+          "flow": 1.5594188651428973,
+          "pressureDrop": 51.496513095689465
+        },
+        {
+          "flow": 1.6021084176010376,
+          "pressureDrop": 54.15416772657679
+        },
+        {
+          "flow": 1.644800883803509,
+          "pressureDrop": 57.0154930861863
+        },
+        {
+          "flow": 1.6874940132973726,
+          "pressureDrop": 59.92318251412277
+        },
+        {
+          "flow": 1.730180012408768,
+          "pressureDrop": 62.33245820754402
+        },
+        {
+          "flow": 1.7728724312332826,
+          "pressureDrop": 65.19047184798725
+        },
+        {
+          "flow": 1.8155682612706723,
+          "pressureDrop": 68.28692926839801
+        },
+        {
+          "flow": 1.8582649204223023,
+          "pressureDrop": 71.4413417742175
+        },
+        {
+          "flow": 1.9009615795739323,
+          "pressureDrop": 74.59575428003703
+        },
+        {
+          "flow": 1.9436622184739167,
+          "pressureDrop": 78.02835119581854
+        },
+        {
+          "flow": 1.9863605832319846,
+          "pressureDrop": 81.30198559162181
+        },
+        {
+          "flow": 2.009643887777716,
+          "pressureDrop": 82.61839396019215
+        }
+      ],
+      "notes": "Medtronic Bio-Medicus NextGen pediatric venous cannula; 12 Fr (4.0 mm OD). Cannula order code 96830-112; overall length 22.9 cm; tip length 11.0 cm; non-vented 1/4 in (0.64 cm) connector; one unit per carton. Source curve is pediatric venous (not pediatric arterial), with pressure LOSS plotted as a positive magnitude (mmHg) against flow (L/min of water at room temperature). Insertion site is not uniquely specified in the source; do not infer femoral, jugular or central cannulation from the catalog section alone. This curve is for one 12 Fr pediatric venous SKU; do not use it for other sizes or arterial cannulae. No synthetic zero-flow anchor. Only interpolate between original supplied points; do not extrapolate or directly equate water-bench pressure loss with patient-specific blood drainage pressure."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "Bio-Medicus NextGen Pediatric Venous Cannula",
+      "category": "venous",
+      "size": "14 Fr",
+      "outerDiameterFr": 14,
+      "outerDiameterMm": 4.7,
+      "overallLengthCm": 22.9,
+      "tipLengthCm": 11.5,
+      "connectorSize": "Non-vented 1/4 in (0.64 cm)",
+      "cannulaOrderCodeLabel": "Cannula order code",
+      "cannulaOrderCode": "96830-114",
+      "cartonQuantity": "1 per carton",
+      "sourceLabel": "Medtronic Bio-Medicus NextGen Cannula Portfolio Brochure — Pediatric venous 14 Fr pressure drop vs. flow",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/bio-medicus-next-gen-portfolio-brochure.pdf",
+      "testMedium": "Water at room temperature",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "User-provided WebPlotDigitizer-style CSV of the manufacturer-published Bio-Medicus NextGen pediatric venous 14 Fr pressure-loss curve. The original 48 finite source coordinates are preserved at supplied numeric precision and sorted by increasing flow; no smoothing, interpolation of source points, or synthetic (0,0) anchor was added. Manufacturer graph test medium: water at room temperature. Do not extrapolate outside 0.023234579063918626–2.0064031565831373 L/min.",
+      "referenceFlowRangeLabel": "0.023–2.006",
+      "outOfRangeMessage": "Target flow is outside the provided digitized source range (approximately 0.023 to 2.006 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.023234579063918626,
+          "pressureDrop": 0.52915512764514
+        },
+        {
+          "flow": 0.07154229544510593,
+          "pressureDrop": 0.8064516129032029
+        },
+        {
+          "flow": 0.1173335179288385,
+          "pressureDrop": 1.6129032258064342
+        },
+        {
+          "flow": 0.16025774147399519,
+          "pressureDrop": 2.01612903225805
+        },
+        {
+          "flow": 0.20317619640961748,
+          "pressureDrop": 2.01612903225805
+        },
+        {
+          "flow": 0.2403779592966912,
+          "pressureDrop": 2.4193548387096655
+        },
+        {
+          "flow": 0.2833021828418479,
+          "pressureDrop": 2.8225806451613096
+        },
+        {
+          "flow": 0.3290876367160461,
+          "pressureDrop": 3.225806451612897
+        },
+        {
+          "flow": 0.36342240066454395,
+          "pressureDrop": 3.225806451612897
+        },
+        {
+          "flow": 0.41206908486778354,
+          "pressureDrop": 3.6290322580645125
+        },
+        {
+          "flow": 0.4521378466934331,
+          "pressureDrop": 4.435483870967744
+        },
+        {
+          "flow": 0.492195071300014,
+          "pressureDrop": 4.435483870967744
+        },
+        {
+          "flow": 0.5351223201680224,
+          "pressureDrop": 5.377511986983507
+        },
+        {
+          "flow": 0.5777801767731987,
+          "pressureDrop": 5.819626495673134
+        },
+        {
+          "flow": 0.6204409471227057,
+          "pressureDrop": 6.465411733085006
+        },
+        {
+          "flow": 0.6631027834762362,
+          "pressureDrop": 7.185710651736713
+        },
+        {
+          "flow": 0.7057653304991156,
+          "pressureDrop": 7.9556853578816344
+        },
+        {
+          "flow": 0.748426456183297,
+          "pressureDrop": 8.626308489040099
+        },
+        {
+          "flow": 0.7910911352142234,
+          "pressureDrop": 9.545310557664664
+        },
+        {
+          "flow": 0.8337540375717774,
+          "pressureDrop": 10.340123157556235
+        },
+        {
+          "flow": 0.8764187166027035,
+          "pressureDrop": 11.2591252261808
+        },
+        {
+          "flow": 0.919082684964281,
+          "pressureDrop": 12.12845150731215
+        },
+        {
+          "flow": 0.9617477193298818,
+          "pressureDrop": 13.072291469683364
+        },
+        {
+          "flow": 1.0044113323567847,
+          "pressureDrop": 13.916779857068093
+        },
+        {
+          "flow": 1.0470792093997816,
+          "pressureDrop": 15.059322969412165
+        },
+        {
+          "flow": 1.0897456651040802,
+          "pressureDrop": 16.10251450676978
+        },
+        {
+          "flow": 1.132413542147077,
+          "pressureDrop": 17.24505761911388
+        },
+        {
+          "flow": 1.1750807085207247,
+          "pressureDrop": 18.337924943964737
+        },
+        {
+          "flow": 1.2177485855637213,
+          "pressureDrop": 19.48046805630881
+        },
+        {
+          "flow": 1.260419873819593,
+          "pressureDrop": 20.86145494862035
+        },
+        {
+          "flow": 1.3030868269924363,
+          "pressureDrop": 21.939419537223216
+        },
+        {
+          "flow": 1.345753993366084,
+          "pressureDrop": 23.032286862074073
+        },
+        {
+          "flow": 1.3884185657966082,
+          "pressureDrop": 23.94383756257463
+        },
+        {
+          "flow": 1.431092732263343,
+          "pressureDrop": 25.526011394233734
+        },
+        {
+          "flow": 1.47376757386596,
+          "pressureDrop": 27.155377224011374
+        },
+        {
+          "flow": 1.5164382935863523,
+          "pressureDrop": 28.496623486328332
+        },
+        {
+          "flow": 1.5591115006494665,
+          "pressureDrop": 30.011735004871582
+        },
+        {
+          "flow": 1.6017825757045334,
+          "pressureDrop": 31.377819160935132
+        },
+        {
+          "flow": 1.644456848771671,
+          "pressureDrop": 32.96744436071819
+        },
+        {
+          "flow": 1.6871311218388085,
+          "pressureDrop": 34.55706956050125
+        },
+        {
+          "flow": 1.729806105575295,
+          "pressureDrop": 36.19637054777755
+        },
+        {
+          "flow": 1.7724796679730834,
+          "pressureDrop": 37.73631996006736
+        },
+        {
+          "flow": 1.8151550070442444,
+          "pressureDrop": 39.400458841090256
+        },
+        {
+          "flow": 1.8578321227887777,
+          "pressureDrop": 41.1887871908462
+        },
+        {
+          "flow": 1.900504477048673,
+          "pressureDrop": 42.644287764397575
+        },
+        {
+          "flow": 1.9431771155763078,
+          "pressureDrop": 44.119658652946214
+        },
+        {
+          "flow": 1.9858626172191591,
+          "pressureDrop": 46.49416129512218
+        },
+        {
+          "flow": 2.0064031565831373,
+          "pressureDrop": 47.580645161290334
+        }
+      ],
+      "notes": "Medtronic Bio-Medicus NextGen pediatric venous cannula; 14 Fr (4.7 mm OD). Cannula order code 96830-114; overall length 22.9 cm; tip length 11.5 cm; non-vented 1/4 in (0.64 cm) connector; one unit per carton. Source curve is pediatric venous (not pediatric arterial), with pressure LOSS plotted as a positive magnitude (mmHg) against flow (L/min of water at room temperature). Insertion site is not uniquely specified in the source; do not infer femoral, jugular or central cannulation from the catalog section alone. This curve is for one 14 Fr pediatric venous SKU; do not use it for other sizes or arterial cannulae. No synthetic zero-flow anchor. Only interpolate between original supplied points; do not extrapolate or directly equate water-bench pressure loss with patient-specific blood drainage pressure."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "6 Fr",
+      "outerDiameterFr": 6,
+      "outerDiameterMm": 2,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Vented 1/4 in (0.64 cm) connector (blue hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77006",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (6 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 22 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 6 Fr size-level chart is reused for each of four connector/order-code variations because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.03786591925712013–0.41956854085272655 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.038–0.420",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.038 to 0.420 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.03786591925712013,
+          "pressureDrop": 2.243644187758292
+        },
+        {
+          "flow": 0.08211596172357183,
+          "pressureDrop": 7.182492497593557
+        },
+        {
+          "flow": 0.12006681388369855,
+          "pressureDrop": 12.122048581620504
+        },
+        {
+          "flow": 0.14544759639884497,
+          "pressureDrop": 17.96189343751766
+        },
+        {
+          "flow": 0.16452918860766663,
+          "pressureDrop": 23.802446067606553
+        },
+        {
+          "flow": 0.19143969064749933,
+          "pressureDrop": 29.16565970164018
+        },
+        {
+          "flow": 0.2152624426702905,
+          "pressureDrop": 34.58326255591413
+        },
+        {
+          "flow": 0.22803068908895296,
+          "pressureDrop": 39.975086348451384
+        },
+        {
+          "flow": 0.24711228129777485,
+          "pressureDrop": 45.81563897854028
+        },
+        {
+          "flow": 0.25989468320027176,
+          "pressureDrop": 51.65689938282088
+        },
+        {
+          "flow": 0.28530377668308704,
+          "pressureDrop": 58.395617462204825
+        },
+        {
+          "flow": 0.2917869882792594,
+          "pressureDrop": 64.23758564067717
+        },
+        {
+          "flow": 0.3108827359719155,
+          "pressureDrop": 70.52757488250947
+        },
+        {
+          "flow": 0.323650982390578,
+          "pressureDrop": 75.9193986750467
+        },
+        {
+          "flow": 0.3364050733254065,
+          "pressureDrop": 80.86178585584054
+        },
+        {
+          "flow": 0.34784811037806085,
+          "pressureDrop": 85.38424242838106
+        },
+        {
+          "flow": 0.36198403261423473,
+          "pressureDrop": 92.99374327614515
+        },
+        {
+          "flow": 0.37844523136604824,
+          "pressureDrop": 99.85790917386316
+        },
+        {
+          "flow": 0.387548836419229,
+          "pressureDrop": 104.67626408470639
+        },
+        {
+          "flow": 0.3940037370477323,
+          "pressureDrop": 109.61935903969196
+        },
+        {
+          "flow": 0.40680029443406385,
+          "pressureDrop": 115.91005605571597
+        },
+        {
+          "flow": 0.41956854085272655,
+          "pressureDrop": 121.3018798482532
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 6 Fr (2.0 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Vented 1/4 in (0.64 cm) (blue hub), order code 77006; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 6 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all four listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "6 Fr",
+      "outerDiameterFr": 6,
+      "outerDiameterMm": 2,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Non-vented 1/4 in (0.64 cm) connector (blue hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77106",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (6 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 22 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 6 Fr size-level chart is reused for each of four connector/order-code variations because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.03786591925712013–0.41956854085272655 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.038–0.420",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.038 to 0.420 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.03786591925712013,
+          "pressureDrop": 2.243644187758292
+        },
+        {
+          "flow": 0.08211596172357183,
+          "pressureDrop": 7.182492497593557
+        },
+        {
+          "flow": 0.12006681388369855,
+          "pressureDrop": 12.122048581620504
+        },
+        {
+          "flow": 0.14544759639884497,
+          "pressureDrop": 17.96189343751766
+        },
+        {
+          "flow": 0.16452918860766663,
+          "pressureDrop": 23.802446067606553
+        },
+        {
+          "flow": 0.19143969064749933,
+          "pressureDrop": 29.16565970164018
+        },
+        {
+          "flow": 0.2152624426702905,
+          "pressureDrop": 34.58326255591413
+        },
+        {
+          "flow": 0.22803068908895296,
+          "pressureDrop": 39.975086348451384
+        },
+        {
+          "flow": 0.24711228129777485,
+          "pressureDrop": 45.81563897854028
+        },
+        {
+          "flow": 0.25989468320027176,
+          "pressureDrop": 51.65689938282088
+        },
+        {
+          "flow": 0.28530377668308704,
+          "pressureDrop": 58.395617462204825
+        },
+        {
+          "flow": 0.2917869882792594,
+          "pressureDrop": 64.23758564067717
+        },
+        {
+          "flow": 0.3108827359719155,
+          "pressureDrop": 70.52757488250947
+        },
+        {
+          "flow": 0.323650982390578,
+          "pressureDrop": 75.9193986750467
+        },
+        {
+          "flow": 0.3364050733254065,
+          "pressureDrop": 80.86178585584054
+        },
+        {
+          "flow": 0.34784811037806085,
+          "pressureDrop": 85.38424242838106
+        },
+        {
+          "flow": 0.36198403261423473,
+          "pressureDrop": 92.99374327614515
+        },
+        {
+          "flow": 0.37844523136604824,
+          "pressureDrop": 99.85790917386316
+        },
+        {
+          "flow": 0.387548836419229,
+          "pressureDrop": 104.67626408470639
+        },
+        {
+          "flow": 0.3940037370477323,
+          "pressureDrop": 109.61935903969196
+        },
+        {
+          "flow": 0.40680029443406385,
+          "pressureDrop": 115.91005605571597
+        },
+        {
+          "flow": 0.41956854085272655,
+          "pressureDrop": 121.3018798482532
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 6 Fr (2.0 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Non-vented 1/4 in (0.64 cm) (blue hub), order code 77106; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 6 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all four listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "6 Fr",
+      "outerDiameterFr": 6,
+      "outerDiameterMm": 2,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Vented 3/16 in (0.48 cm) connector (grey hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77206",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (6 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 22 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 6 Fr size-level chart is reused for each of four connector/order-code variations because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.03786591925712013–0.41956854085272655 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.038–0.420",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.038 to 0.420 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.03786591925712013,
+          "pressureDrop": 2.243644187758292
+        },
+        {
+          "flow": 0.08211596172357183,
+          "pressureDrop": 7.182492497593557
+        },
+        {
+          "flow": 0.12006681388369855,
+          "pressureDrop": 12.122048581620504
+        },
+        {
+          "flow": 0.14544759639884497,
+          "pressureDrop": 17.96189343751766
+        },
+        {
+          "flow": 0.16452918860766663,
+          "pressureDrop": 23.802446067606553
+        },
+        {
+          "flow": 0.19143969064749933,
+          "pressureDrop": 29.16565970164018
+        },
+        {
+          "flow": 0.2152624426702905,
+          "pressureDrop": 34.58326255591413
+        },
+        {
+          "flow": 0.22803068908895296,
+          "pressureDrop": 39.975086348451384
+        },
+        {
+          "flow": 0.24711228129777485,
+          "pressureDrop": 45.81563897854028
+        },
+        {
+          "flow": 0.25989468320027176,
+          "pressureDrop": 51.65689938282088
+        },
+        {
+          "flow": 0.28530377668308704,
+          "pressureDrop": 58.395617462204825
+        },
+        {
+          "flow": 0.2917869882792594,
+          "pressureDrop": 64.23758564067717
+        },
+        {
+          "flow": 0.3108827359719155,
+          "pressureDrop": 70.52757488250947
+        },
+        {
+          "flow": 0.323650982390578,
+          "pressureDrop": 75.9193986750467
+        },
+        {
+          "flow": 0.3364050733254065,
+          "pressureDrop": 80.86178585584054
+        },
+        {
+          "flow": 0.34784811037806085,
+          "pressureDrop": 85.38424242838106
+        },
+        {
+          "flow": 0.36198403261423473,
+          "pressureDrop": 92.99374327614515
+        },
+        {
+          "flow": 0.37844523136604824,
+          "pressureDrop": 99.85790917386316
+        },
+        {
+          "flow": 0.387548836419229,
+          "pressureDrop": 104.67626408470639
+        },
+        {
+          "flow": 0.3940037370477323,
+          "pressureDrop": 109.61935903969196
+        },
+        {
+          "flow": 0.40680029443406385,
+          "pressureDrop": 115.91005605571597
+        },
+        {
+          "flow": 0.41956854085272655,
+          "pressureDrop": 121.3018798482532
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 6 Fr (2.0 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Vented 3/16 in (0.48 cm) (grey hub), order code 77206; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 6 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all four listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "6 Fr",
+      "outerDiameterFr": 6,
+      "outerDiameterMm": 2,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Non-vented 3/16 in (0.48 cm) connector (grey hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77306",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (6 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 22 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 6 Fr size-level chart is reused for each of four connector/order-code variations because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.03786591925712013–0.41956854085272655 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.038–0.420",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.038 to 0.420 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.03786591925712013,
+          "pressureDrop": 2.243644187758292
+        },
+        {
+          "flow": 0.08211596172357183,
+          "pressureDrop": 7.182492497593557
+        },
+        {
+          "flow": 0.12006681388369855,
+          "pressureDrop": 12.122048581620504
+        },
+        {
+          "flow": 0.14544759639884497,
+          "pressureDrop": 17.96189343751766
+        },
+        {
+          "flow": 0.16452918860766663,
+          "pressureDrop": 23.802446067606553
+        },
+        {
+          "flow": 0.19143969064749933,
+          "pressureDrop": 29.16565970164018
+        },
+        {
+          "flow": 0.2152624426702905,
+          "pressureDrop": 34.58326255591413
+        },
+        {
+          "flow": 0.22803068908895296,
+          "pressureDrop": 39.975086348451384
+        },
+        {
+          "flow": 0.24711228129777485,
+          "pressureDrop": 45.81563897854028
+        },
+        {
+          "flow": 0.25989468320027176,
+          "pressureDrop": 51.65689938282088
+        },
+        {
+          "flow": 0.28530377668308704,
+          "pressureDrop": 58.395617462204825
+        },
+        {
+          "flow": 0.2917869882792594,
+          "pressureDrop": 64.23758564067717
+        },
+        {
+          "flow": 0.3108827359719155,
+          "pressureDrop": 70.52757488250947
+        },
+        {
+          "flow": 0.323650982390578,
+          "pressureDrop": 75.9193986750467
+        },
+        {
+          "flow": 0.3364050733254065,
+          "pressureDrop": 80.86178585584054
+        },
+        {
+          "flow": 0.34784811037806085,
+          "pressureDrop": 85.38424242838106
+        },
+        {
+          "flow": 0.36198403261423473,
+          "pressureDrop": 92.99374327614515
+        },
+        {
+          "flow": 0.37844523136604824,
+          "pressureDrop": 99.85790917386316
+        },
+        {
+          "flow": 0.387548836419229,
+          "pressureDrop": 104.67626408470639
+        },
+        {
+          "flow": 0.3940037370477323,
+          "pressureDrop": 109.61935903969196
+        },
+        {
+          "flow": 0.40680029443406385,
+          "pressureDrop": 115.91005605571597
+        },
+        {
+          "flow": 0.41956854085272655,
+          "pressureDrop": 121.3018798482532
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 6 Fr (2.0 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Non-vented 3/16 in (0.48 cm) (grey hub), order code 77306; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 6 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all four listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "8 Fr",
+      "outerDiameterFr": 8,
+      "outerDiameterMm": 2.7,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Vented 1/4 in (0.64 cm) connector (blue hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77008",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (8 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 34 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 8 Fr size-level chart is reused for each of four connector/order-code variations because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.069376026272578–1.0201432534964046 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.069–1.020",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.069 to 1.020 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.069376026272578,
+          "pressureDrop": 2.689541928543065
+        },
+        {
+          "flow": 0.13876620802899053,
+          "pressureDrop": 5.827812694637885
+        },
+        {
+          "flow": 0.18298793952777315,
+          "pressureDrop": 9.867787780986305
+        },
+        {
+          "flow": 0.22722382651039008,
+          "pressureDrop": 14.357199479078162
+        },
+        {
+          "flow": 0.27778721476700086,
+          "pressureDrop": 19.744776626465068
+        },
+        {
+          "flow": 0.32205141271728666,
+          "pressureDrop": 25.133061548043685
+        },
+        {
+          "flow": 0.3657678859161899,
+          "pressureDrop": 30.216512748898197
+        },
+        {
+          "flow": 0.4042664628276995,
+          "pressureDrop": 35.46090255364922
+        },
+        {
+          "flow": 0.4381832154942653,
+          "pressureDrop": 40.961015797519934
+        },
+        {
+          "flow": 0.4738972878092973,
+          "pressureDrop": 46.23959571938164
+        },
+        {
+          "flow": 0.5040431760751551,
+          "pressureDrop": 51.612754190521144
+        },
+        {
+          "flow": 0.5372147670007361,
+          "pressureDrop": 56.56956004756242
+        },
+        {
+          "flow": 0.5699178612045563,
+          "pressureDrop": 62.73199699875289
+        },
+        {
+          "flow": 0.6068880584338374,
+          "pressureDrop": 68.69656304852498
+        },
+        {
+          "flow": 0.6292784060726029,
+          "pressureDrop": 75.06748751400966
+        },
+        {
+          "flow": 0.6576779344317991,
+          "pressureDrop": 81.2751259838061
+        },
+        {
+          "flow": 0.675498763849256,
+          "pressureDrop": 86.2824398875642
+        },
+        {
+          "flow": 0.6957986523979391,
+          "pressureDrop": 91.60792140875374
+        },
+        {
+          "flow": 0.7151519729899141,
+          "pressureDrop": 97.03062407331373
+        },
+        {
+          "flow": 0.7339193703640792,
+          "pressureDrop": 101.94071683370136
+        },
+        {
+          "flow": 0.7548149984962467,
+          "pressureDrop": 108.09047786921697
+        },
+        {
+          "flow": 0.7720825547817225,
+          "pressureDrop": 113.62182209387915
+        },
+        {
+          "flow": 0.7944878403682529,
+          "pressureDrop": 119.46200127527392
+        },
+        {
+          "flow": 0.8165307740218561,
+          "pressureDrop": 124.85278296812183
+        },
+        {
+          "flow": 0.8341754067887708,
+          "pressureDrop": 131.30102909656142
+        },
+        {
+          "flow": 0.8547081139233339,
+          "pressureDrop": 136.983324840043
+        },
+        {
+          "flow": 0.8738580650264514,
+          "pressureDrop": 142.9842221127721
+        },
+        {
+          "flow": 0.8928712983409772,
+          "pressureDrop": 148.6644301002208
+        },
+        {
+          "flow": 0.9135603559954804,
+          "pressureDrop": 155.29075434929018
+        },
+        {
+          "flow": 0.9373761395164488,
+          "pressureDrop": 161.69313742143706
+        },
+        {
+          "flow": 0.9532577387816723,
+          "pressureDrop": 167.4414517807314
+        },
+        {
+          "flow": 0.9755393239340922,
+          "pressureDrop": 173.37424268161485
+        },
+        {
+          "flow": 0.9962509663429542,
+          "pressureDrop": 180.21512031876728
+        },
+        {
+          "flow": 1.0201432534964046,
+          "pressureDrop": 189.5490062850348
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 8 Fr (2.7 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Vented 1/4 in (0.64 cm) (blue hub), order code 77008; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 8 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all four listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "8 Fr",
+      "outerDiameterFr": 8,
+      "outerDiameterMm": 2.7,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Non-vented 1/4 in (0.64 cm) connector (blue hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77108",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (8 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 34 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 8 Fr size-level chart is reused for each of four connector/order-code variations because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.069376026272578–1.0201432534964046 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.069–1.020",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.069 to 1.020 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.069376026272578,
+          "pressureDrop": 2.689541928543065
+        },
+        {
+          "flow": 0.13876620802899053,
+          "pressureDrop": 5.827812694637885
+        },
+        {
+          "flow": 0.18298793952777315,
+          "pressureDrop": 9.867787780986305
+        },
+        {
+          "flow": 0.22722382651039008,
+          "pressureDrop": 14.357199479078162
+        },
+        {
+          "flow": 0.27778721476700086,
+          "pressureDrop": 19.744776626465068
+        },
+        {
+          "flow": 0.32205141271728666,
+          "pressureDrop": 25.133061548043685
+        },
+        {
+          "flow": 0.3657678859161899,
+          "pressureDrop": 30.216512748898197
+        },
+        {
+          "flow": 0.4042664628276995,
+          "pressureDrop": 35.46090255364922
+        },
+        {
+          "flow": 0.4381832154942653,
+          "pressureDrop": 40.961015797519934
+        },
+        {
+          "flow": 0.4738972878092973,
+          "pressureDrop": 46.23959571938164
+        },
+        {
+          "flow": 0.5040431760751551,
+          "pressureDrop": 51.612754190521144
+        },
+        {
+          "flow": 0.5372147670007361,
+          "pressureDrop": 56.56956004756242
+        },
+        {
+          "flow": 0.5699178612045563,
+          "pressureDrop": 62.73199699875289
+        },
+        {
+          "flow": 0.6068880584338374,
+          "pressureDrop": 68.69656304852498
+        },
+        {
+          "flow": 0.6292784060726029,
+          "pressureDrop": 75.06748751400966
+        },
+        {
+          "flow": 0.6576779344317991,
+          "pressureDrop": 81.2751259838061
+        },
+        {
+          "flow": 0.675498763849256,
+          "pressureDrop": 86.2824398875642
+        },
+        {
+          "flow": 0.6957986523979391,
+          "pressureDrop": 91.60792140875374
+        },
+        {
+          "flow": 0.7151519729899141,
+          "pressureDrop": 97.03062407331373
+        },
+        {
+          "flow": 0.7339193703640792,
+          "pressureDrop": 101.94071683370136
+        },
+        {
+          "flow": 0.7548149984962467,
+          "pressureDrop": 108.09047786921697
+        },
+        {
+          "flow": 0.7720825547817225,
+          "pressureDrop": 113.62182209387915
+        },
+        {
+          "flow": 0.7944878403682529,
+          "pressureDrop": 119.46200127527392
+        },
+        {
+          "flow": 0.8165307740218561,
+          "pressureDrop": 124.85278296812183
+        },
+        {
+          "flow": 0.8341754067887708,
+          "pressureDrop": 131.30102909656142
+        },
+        {
+          "flow": 0.8547081139233339,
+          "pressureDrop": 136.983324840043
+        },
+        {
+          "flow": 0.8738580650264514,
+          "pressureDrop": 142.9842221127721
+        },
+        {
+          "flow": 0.8928712983409772,
+          "pressureDrop": 148.6644301002208
+        },
+        {
+          "flow": 0.9135603559954804,
+          "pressureDrop": 155.29075434929018
+        },
+        {
+          "flow": 0.9373761395164488,
+          "pressureDrop": 161.69313742143706
+        },
+        {
+          "flow": 0.9532577387816723,
+          "pressureDrop": 167.4414517807314
+        },
+        {
+          "flow": 0.9755393239340922,
+          "pressureDrop": 173.37424268161485
+        },
+        {
+          "flow": 0.9962509663429542,
+          "pressureDrop": 180.21512031876728
+        },
+        {
+          "flow": 1.0201432534964046,
+          "pressureDrop": 189.5490062850348
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 8 Fr (2.7 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Non-vented 1/4 in (0.64 cm) (blue hub), order code 77108; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 8 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all four listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "8 Fr",
+      "outerDiameterFr": 8,
+      "outerDiameterMm": 2.7,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Vented 3/16 in (0.48 cm) connector (grey hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77208",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (8 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 34 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 8 Fr size-level chart is reused for each of four connector/order-code variations because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.069376026272578–1.0201432534964046 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.069–1.020",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.069 to 1.020 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.069376026272578,
+          "pressureDrop": 2.689541928543065
+        },
+        {
+          "flow": 0.13876620802899053,
+          "pressureDrop": 5.827812694637885
+        },
+        {
+          "flow": 0.18298793952777315,
+          "pressureDrop": 9.867787780986305
+        },
+        {
+          "flow": 0.22722382651039008,
+          "pressureDrop": 14.357199479078162
+        },
+        {
+          "flow": 0.27778721476700086,
+          "pressureDrop": 19.744776626465068
+        },
+        {
+          "flow": 0.32205141271728666,
+          "pressureDrop": 25.133061548043685
+        },
+        {
+          "flow": 0.3657678859161899,
+          "pressureDrop": 30.216512748898197
+        },
+        {
+          "flow": 0.4042664628276995,
+          "pressureDrop": 35.46090255364922
+        },
+        {
+          "flow": 0.4381832154942653,
+          "pressureDrop": 40.961015797519934
+        },
+        {
+          "flow": 0.4738972878092973,
+          "pressureDrop": 46.23959571938164
+        },
+        {
+          "flow": 0.5040431760751551,
+          "pressureDrop": 51.612754190521144
+        },
+        {
+          "flow": 0.5372147670007361,
+          "pressureDrop": 56.56956004756242
+        },
+        {
+          "flow": 0.5699178612045563,
+          "pressureDrop": 62.73199699875289
+        },
+        {
+          "flow": 0.6068880584338374,
+          "pressureDrop": 68.69656304852498
+        },
+        {
+          "flow": 0.6292784060726029,
+          "pressureDrop": 75.06748751400966
+        },
+        {
+          "flow": 0.6576779344317991,
+          "pressureDrop": 81.2751259838061
+        },
+        {
+          "flow": 0.675498763849256,
+          "pressureDrop": 86.2824398875642
+        },
+        {
+          "flow": 0.6957986523979391,
+          "pressureDrop": 91.60792140875374
+        },
+        {
+          "flow": 0.7151519729899141,
+          "pressureDrop": 97.03062407331373
+        },
+        {
+          "flow": 0.7339193703640792,
+          "pressureDrop": 101.94071683370136
+        },
+        {
+          "flow": 0.7548149984962467,
+          "pressureDrop": 108.09047786921697
+        },
+        {
+          "flow": 0.7720825547817225,
+          "pressureDrop": 113.62182209387915
+        },
+        {
+          "flow": 0.7944878403682529,
+          "pressureDrop": 119.46200127527392
+        },
+        {
+          "flow": 0.8165307740218561,
+          "pressureDrop": 124.85278296812183
+        },
+        {
+          "flow": 0.8341754067887708,
+          "pressureDrop": 131.30102909656142
+        },
+        {
+          "flow": 0.8547081139233339,
+          "pressureDrop": 136.983324840043
+        },
+        {
+          "flow": 0.8738580650264514,
+          "pressureDrop": 142.9842221127721
+        },
+        {
+          "flow": 0.8928712983409772,
+          "pressureDrop": 148.6644301002208
+        },
+        {
+          "flow": 0.9135603559954804,
+          "pressureDrop": 155.29075434929018
+        },
+        {
+          "flow": 0.9373761395164488,
+          "pressureDrop": 161.69313742143706
+        },
+        {
+          "flow": 0.9532577387816723,
+          "pressureDrop": 167.4414517807314
+        },
+        {
+          "flow": 0.9755393239340922,
+          "pressureDrop": 173.37424268161485
+        },
+        {
+          "flow": 0.9962509663429542,
+          "pressureDrop": 180.21512031876728
+        },
+        {
+          "flow": 1.0201432534964046,
+          "pressureDrop": 189.5490062850348
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 8 Fr (2.7 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Vented 3/16 in (0.48 cm) (grey hub), order code 77208; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 8 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all four listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "8 Fr",
+      "outerDiameterFr": 8,
+      "outerDiameterMm": 2.7,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Non-vented 3/16 in (0.48 cm) connector (grey hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77308",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (8 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 34 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 8 Fr size-level chart is reused for each of four connector/order-code variations because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.069376026272578–1.0201432534964046 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.069–1.020",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.069 to 1.020 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.069376026272578,
+          "pressureDrop": 2.689541928543065
+        },
+        {
+          "flow": 0.13876620802899053,
+          "pressureDrop": 5.827812694637885
+        },
+        {
+          "flow": 0.18298793952777315,
+          "pressureDrop": 9.867787780986305
+        },
+        {
+          "flow": 0.22722382651039008,
+          "pressureDrop": 14.357199479078162
+        },
+        {
+          "flow": 0.27778721476700086,
+          "pressureDrop": 19.744776626465068
+        },
+        {
+          "flow": 0.32205141271728666,
+          "pressureDrop": 25.133061548043685
+        },
+        {
+          "flow": 0.3657678859161899,
+          "pressureDrop": 30.216512748898197
+        },
+        {
+          "flow": 0.4042664628276995,
+          "pressureDrop": 35.46090255364922
+        },
+        {
+          "flow": 0.4381832154942653,
+          "pressureDrop": 40.961015797519934
+        },
+        {
+          "flow": 0.4738972878092973,
+          "pressureDrop": 46.23959571938164
+        },
+        {
+          "flow": 0.5040431760751551,
+          "pressureDrop": 51.612754190521144
+        },
+        {
+          "flow": 0.5372147670007361,
+          "pressureDrop": 56.56956004756242
+        },
+        {
+          "flow": 0.5699178612045563,
+          "pressureDrop": 62.73199699875289
+        },
+        {
+          "flow": 0.6068880584338374,
+          "pressureDrop": 68.69656304852498
+        },
+        {
+          "flow": 0.6292784060726029,
+          "pressureDrop": 75.06748751400966
+        },
+        {
+          "flow": 0.6576779344317991,
+          "pressureDrop": 81.2751259838061
+        },
+        {
+          "flow": 0.675498763849256,
+          "pressureDrop": 86.2824398875642
+        },
+        {
+          "flow": 0.6957986523979391,
+          "pressureDrop": 91.60792140875374
+        },
+        {
+          "flow": 0.7151519729899141,
+          "pressureDrop": 97.03062407331373
+        },
+        {
+          "flow": 0.7339193703640792,
+          "pressureDrop": 101.94071683370136
+        },
+        {
+          "flow": 0.7548149984962467,
+          "pressureDrop": 108.09047786921697
+        },
+        {
+          "flow": 0.7720825547817225,
+          "pressureDrop": 113.62182209387915
+        },
+        {
+          "flow": 0.7944878403682529,
+          "pressureDrop": 119.46200127527392
+        },
+        {
+          "flow": 0.8165307740218561,
+          "pressureDrop": 124.85278296812183
+        },
+        {
+          "flow": 0.8341754067887708,
+          "pressureDrop": 131.30102909656142
+        },
+        {
+          "flow": 0.8547081139233339,
+          "pressureDrop": 136.983324840043
+        },
+        {
+          "flow": 0.8738580650264514,
+          "pressureDrop": 142.9842221127721
+        },
+        {
+          "flow": 0.8928712983409772,
+          "pressureDrop": 148.6644301002208
+        },
+        {
+          "flow": 0.9135603559954804,
+          "pressureDrop": 155.29075434929018
+        },
+        {
+          "flow": 0.9373761395164488,
+          "pressureDrop": 161.69313742143706
+        },
+        {
+          "flow": 0.9532577387816723,
+          "pressureDrop": 167.4414517807314
+        },
+        {
+          "flow": 0.9755393239340922,
+          "pressureDrop": 173.37424268161485
+        },
+        {
+          "flow": 0.9962509663429542,
+          "pressureDrop": 180.21512031876728
+        },
+        {
+          "flow": 1.0201432534964046,
+          "pressureDrop": 189.5490062850348
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 8 Fr (2.7 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Non-vented 3/16 in (0.48 cm) (grey hub), order code 77308; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 8 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all four listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "10 Fr",
+      "outerDiameterFr": 10,
+      "outerDiameterMm": 3.3,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Vented 1/4 in (0.64 cm) connector (blue hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77010",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (10 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 33 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 10 Fr size-level chart is reused for each of four connector/order-code variations because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.15757884604495787–1.750934261933073 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.158–1.751",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.158 to 1.751 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.15757884604495787,
+          "pressureDrop": 3.12906970160239
+        },
+        {
+          "flow": 0.25215163354283443,
+          "pressureDrop": 5.815072759186876
+        },
+        {
+          "flow": 0.35306607779853927,
+          "pressureDrop": 9.84867787780982
+        },
+        {
+          "flow": 0.44141045240926324,
+          "pressureDrop": 14.782571768303
+        },
+        {
+          "flow": 0.5151235120955902,
+          "pressureDrop": 19.33920559928123
+        },
+        {
+          "flow": 0.5802757488250949,
+          "pressureDrop": 23.75573297095292
+        },
+        {
+          "flow": 0.6408985289393574,
+          "pressureDrop": 27.9259865234103
+        },
+        {
+          "flow": 0.7002717852896212,
+          "pressureDrop": 33.629890719664786
+        },
+        {
+          "flow": 0.7634052431912122,
+          "pressureDrop": 38.117179095181456
+        },
+        {
+          "flow": 0.8202678217541477,
+          "pressureDrop": 43.504048468376624
+        },
+        {
+          "flow": 0.8771304003170828,
+          "pressureDrop": 48.89091784157179
+        },
+        {
+          "flow": 0.9403346356378461,
+          "pressureDrop": 55.62538927580542
+        },
+        {
+          "flow": 0.9909404903459602,
+          "pressureDrop": 62.36127625842249
+        },
+        {
+          "flow": 1.041546345054074,
+          "pressureDrop": 69.09716324103957
+        },
+        {
+          "flow": 1.0921663552460223,
+          "pressureDrop": 76.2824868354
+        },
+        {
+          "flow": 1.1427863654379709,
+          "pressureDrop": 83.46781042976048
+        },
+        {
+          "flow": 1.1996914104524095,
+          "pressureDrop": 90.20298963818581
+        },
+        {
+          "flow": 1.243983919370364,
+          "pressureDrop": 96.49014778325122
+        },
+        {
+          "flow": 1.2756638921918348,
+          "pressureDrop": 102.32928486495668
+        },
+        {
+          "flow": 1.3136430553196305,
+          "pressureDrop": 108.1677141724704
+        },
+        {
+          "flow": 1.3579355642375859,
+          "pressureDrop": 114.4548723175358
+        },
+        {
+          "flow": 1.3896155370590568,
+          "pressureDrop": 120.29400939924125
+        },
+        {
+          "flow": 1.4339080459770117,
+          "pressureDrop": 126.58116754430665
+        },
+        {
+          "flow": 1.4719013645886418,
+          "pressureDrop": 132.86903346356377
+        },
+        {
+          "flow": 1.5035954928939472,
+          "pressureDrop": 139.15760715701262
+        },
+        {
+          "flow": 1.535332087650756,
+          "pressureDrop": 146.79449068569164
+        },
+        {
+          "flow": 1.579667063020214,
+          "pressureDrop": 154.4299586659872
+        },
+        {
+          "flow": 1.6113895022931883,
+          "pressureDrop": 161.6174055829228
+        },
+        {
+          "flow": 1.643111941566163,
+          "pressureDrop": 168.80485249985844
+        },
+        {
+          "flow": 1.6684644131136404,
+          "pressureDrop": 173.74582413226884
+        },
+        {
+          "flow": 1.6938310401449521,
+          "pressureDrop": 179.1362323764226
+        },
+        {
+          "flow": 1.7192401336277672,
+          "pressureDrop": 185.87495045580658
+        },
+        {
+          "flow": 1.750934261933073,
+          "pressureDrop": 192.1635241492554
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 10 Fr (3.3 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Vented 1/4 in (0.64 cm) (blue hub), order code 77010; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 10 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all four listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "10 Fr",
+      "outerDiameterFr": 10,
+      "outerDiameterMm": 3.3,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Non-vented 1/4 in (0.64 cm) connector (blue hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77110",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (10 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 33 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 10 Fr size-level chart is reused for each of four connector/order-code variations because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.15757884604495787–1.750934261933073 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.158–1.751",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.158 to 1.751 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.15757884604495787,
+          "pressureDrop": 3.12906970160239
+        },
+        {
+          "flow": 0.25215163354283443,
+          "pressureDrop": 5.815072759186876
+        },
+        {
+          "flow": 0.35306607779853927,
+          "pressureDrop": 9.84867787780982
+        },
+        {
+          "flow": 0.44141045240926324,
+          "pressureDrop": 14.782571768303
+        },
+        {
+          "flow": 0.5151235120955902,
+          "pressureDrop": 19.33920559928123
+        },
+        {
+          "flow": 0.5802757488250949,
+          "pressureDrop": 23.75573297095292
+        },
+        {
+          "flow": 0.6408985289393574,
+          "pressureDrop": 27.9259865234103
+        },
+        {
+          "flow": 0.7002717852896212,
+          "pressureDrop": 33.629890719664786
+        },
+        {
+          "flow": 0.7634052431912122,
+          "pressureDrop": 38.117179095181456
+        },
+        {
+          "flow": 0.8202678217541477,
+          "pressureDrop": 43.504048468376624
+        },
+        {
+          "flow": 0.8771304003170828,
+          "pressureDrop": 48.89091784157179
+        },
+        {
+          "flow": 0.9403346356378461,
+          "pressureDrop": 55.62538927580542
+        },
+        {
+          "flow": 0.9909404903459602,
+          "pressureDrop": 62.36127625842249
+        },
+        {
+          "flow": 1.041546345054074,
+          "pressureDrop": 69.09716324103957
+        },
+        {
+          "flow": 1.0921663552460223,
+          "pressureDrop": 76.2824868354
+        },
+        {
+          "flow": 1.1427863654379709,
+          "pressureDrop": 83.46781042976048
+        },
+        {
+          "flow": 1.1996914104524095,
+          "pressureDrop": 90.20298963818581
+        },
+        {
+          "flow": 1.243983919370364,
+          "pressureDrop": 96.49014778325122
+        },
+        {
+          "flow": 1.2756638921918348,
+          "pressureDrop": 102.32928486495668
+        },
+        {
+          "flow": 1.3136430553196305,
+          "pressureDrop": 108.1677141724704
+        },
+        {
+          "flow": 1.3579355642375859,
+          "pressureDrop": 114.4548723175358
+        },
+        {
+          "flow": 1.3896155370590568,
+          "pressureDrop": 120.29400939924125
+        },
+        {
+          "flow": 1.4339080459770117,
+          "pressureDrop": 126.58116754430665
+        },
+        {
+          "flow": 1.4719013645886418,
+          "pressureDrop": 132.86903346356377
+        },
+        {
+          "flow": 1.5035954928939472,
+          "pressureDrop": 139.15760715701262
+        },
+        {
+          "flow": 1.535332087650756,
+          "pressureDrop": 146.79449068569164
+        },
+        {
+          "flow": 1.579667063020214,
+          "pressureDrop": 154.4299586659872
+        },
+        {
+          "flow": 1.6113895022931883,
+          "pressureDrop": 161.6174055829228
+        },
+        {
+          "flow": 1.643111941566163,
+          "pressureDrop": 168.80485249985844
+        },
+        {
+          "flow": 1.6684644131136404,
+          "pressureDrop": 173.74582413226884
+        },
+        {
+          "flow": 1.6938310401449521,
+          "pressureDrop": 179.1362323764226
+        },
+        {
+          "flow": 1.7192401336277672,
+          "pressureDrop": 185.87495045580658
+        },
+        {
+          "flow": 1.750934261933073,
+          "pressureDrop": 192.1635241492554
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 10 Fr (3.3 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Non-vented 1/4 in (0.64 cm) (blue hub), order code 77110; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 10 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all four listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "10 Fr",
+      "outerDiameterFr": 10,
+      "outerDiameterMm": 3.3,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Vented 3/16 in (0.48 cm) connector (grey hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77210",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (10 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 33 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 10 Fr size-level chart is reused for each of four connector/order-code variations because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.15757884604495787–1.750934261933073 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.158–1.751",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.158 to 1.751 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.15757884604495787,
+          "pressureDrop": 3.12906970160239
+        },
+        {
+          "flow": 0.25215163354283443,
+          "pressureDrop": 5.815072759186876
+        },
+        {
+          "flow": 0.35306607779853927,
+          "pressureDrop": 9.84867787780982
+        },
+        {
+          "flow": 0.44141045240926324,
+          "pressureDrop": 14.782571768303
+        },
+        {
+          "flow": 0.5151235120955902,
+          "pressureDrop": 19.33920559928123
+        },
+        {
+          "flow": 0.5802757488250949,
+          "pressureDrop": 23.75573297095292
+        },
+        {
+          "flow": 0.6408985289393574,
+          "pressureDrop": 27.9259865234103
+        },
+        {
+          "flow": 0.7002717852896212,
+          "pressureDrop": 33.629890719664786
+        },
+        {
+          "flow": 0.7634052431912122,
+          "pressureDrop": 38.117179095181456
+        },
+        {
+          "flow": 0.8202678217541477,
+          "pressureDrop": 43.504048468376624
+        },
+        {
+          "flow": 0.8771304003170828,
+          "pressureDrop": 48.89091784157179
+        },
+        {
+          "flow": 0.9403346356378461,
+          "pressureDrop": 55.62538927580542
+        },
+        {
+          "flow": 0.9909404903459602,
+          "pressureDrop": 62.36127625842249
+        },
+        {
+          "flow": 1.041546345054074,
+          "pressureDrop": 69.09716324103957
+        },
+        {
+          "flow": 1.0921663552460223,
+          "pressureDrop": 76.2824868354
+        },
+        {
+          "flow": 1.1427863654379709,
+          "pressureDrop": 83.46781042976048
+        },
+        {
+          "flow": 1.1996914104524095,
+          "pressureDrop": 90.20298963818581
+        },
+        {
+          "flow": 1.243983919370364,
+          "pressureDrop": 96.49014778325122
+        },
+        {
+          "flow": 1.2756638921918348,
+          "pressureDrop": 102.32928486495668
+        },
+        {
+          "flow": 1.3136430553196305,
+          "pressureDrop": 108.1677141724704
+        },
+        {
+          "flow": 1.3579355642375859,
+          "pressureDrop": 114.4548723175358
+        },
+        {
+          "flow": 1.3896155370590568,
+          "pressureDrop": 120.29400939924125
+        },
+        {
+          "flow": 1.4339080459770117,
+          "pressureDrop": 126.58116754430665
+        },
+        {
+          "flow": 1.4719013645886418,
+          "pressureDrop": 132.86903346356377
+        },
+        {
+          "flow": 1.5035954928939472,
+          "pressureDrop": 139.15760715701262
+        },
+        {
+          "flow": 1.535332087650756,
+          "pressureDrop": 146.79449068569164
+        },
+        {
+          "flow": 1.579667063020214,
+          "pressureDrop": 154.4299586659872
+        },
+        {
+          "flow": 1.6113895022931883,
+          "pressureDrop": 161.6174055829228
+        },
+        {
+          "flow": 1.643111941566163,
+          "pressureDrop": 168.80485249985844
+        },
+        {
+          "flow": 1.6684644131136404,
+          "pressureDrop": 173.74582413226884
+        },
+        {
+          "flow": 1.6938310401449521,
+          "pressureDrop": 179.1362323764226
+        },
+        {
+          "flow": 1.7192401336277672,
+          "pressureDrop": 185.87495045580658
+        },
+        {
+          "flow": 1.750934261933073,
+          "pressureDrop": 192.1635241492554
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 10 Fr (3.3 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Vented 3/16 in (0.48 cm) (grey hub), order code 77210; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 10 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all four listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "10 Fr",
+      "outerDiameterFr": 10,
+      "outerDiameterMm": 3.3,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Non-vented 3/16 in (0.48 cm) connector (grey hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77310",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (10 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 33 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 10 Fr size-level chart is reused for each of four connector/order-code variations because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.15757884604495787–1.750934261933073 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.158–1.751",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.158 to 1.751 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.15757884604495787,
+          "pressureDrop": 3.12906970160239
+        },
+        {
+          "flow": 0.25215163354283443,
+          "pressureDrop": 5.815072759186876
+        },
+        {
+          "flow": 0.35306607779853927,
+          "pressureDrop": 9.84867787780982
+        },
+        {
+          "flow": 0.44141045240926324,
+          "pressureDrop": 14.782571768303
+        },
+        {
+          "flow": 0.5151235120955902,
+          "pressureDrop": 19.33920559928123
+        },
+        {
+          "flow": 0.5802757488250949,
+          "pressureDrop": 23.75573297095292
+        },
+        {
+          "flow": 0.6408985289393574,
+          "pressureDrop": 27.9259865234103
+        },
+        {
+          "flow": 0.7002717852896212,
+          "pressureDrop": 33.629890719664786
+        },
+        {
+          "flow": 0.7634052431912122,
+          "pressureDrop": 38.117179095181456
+        },
+        {
+          "flow": 0.8202678217541477,
+          "pressureDrop": 43.504048468376624
+        },
+        {
+          "flow": 0.8771304003170828,
+          "pressureDrop": 48.89091784157179
+        },
+        {
+          "flow": 0.9403346356378461,
+          "pressureDrop": 55.62538927580542
+        },
+        {
+          "flow": 0.9909404903459602,
+          "pressureDrop": 62.36127625842249
+        },
+        {
+          "flow": 1.041546345054074,
+          "pressureDrop": 69.09716324103957
+        },
+        {
+          "flow": 1.0921663552460223,
+          "pressureDrop": 76.2824868354
+        },
+        {
+          "flow": 1.1427863654379709,
+          "pressureDrop": 83.46781042976048
+        },
+        {
+          "flow": 1.1996914104524095,
+          "pressureDrop": 90.20298963818581
+        },
+        {
+          "flow": 1.243983919370364,
+          "pressureDrop": 96.49014778325122
+        },
+        {
+          "flow": 1.2756638921918348,
+          "pressureDrop": 102.32928486495668
+        },
+        {
+          "flow": 1.3136430553196305,
+          "pressureDrop": 108.1677141724704
+        },
+        {
+          "flow": 1.3579355642375859,
+          "pressureDrop": 114.4548723175358
+        },
+        {
+          "flow": 1.3896155370590568,
+          "pressureDrop": 120.29400939924125
+        },
+        {
+          "flow": 1.4339080459770117,
+          "pressureDrop": 126.58116754430665
+        },
+        {
+          "flow": 1.4719013645886418,
+          "pressureDrop": 132.86903346356377
+        },
+        {
+          "flow": 1.5035954928939472,
+          "pressureDrop": 139.15760715701262
+        },
+        {
+          "flow": 1.535332087650756,
+          "pressureDrop": 146.79449068569164
+        },
+        {
+          "flow": 1.579667063020214,
+          "pressureDrop": 154.4299586659872
+        },
+        {
+          "flow": 1.6113895022931883,
+          "pressureDrop": 161.6174055829228
+        },
+        {
+          "flow": 1.643111941566163,
+          "pressureDrop": 168.80485249985844
+        },
+        {
+          "flow": 1.6684644131136404,
+          "pressureDrop": 173.74582413226884
+        },
+        {
+          "flow": 1.6938310401449521,
+          "pressureDrop": 179.1362323764226
+        },
+        {
+          "flow": 1.7192401336277672,
+          "pressureDrop": 185.87495045580658
+        },
+        {
+          "flow": 1.750934261933073,
+          "pressureDrop": 192.1635241492554
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 10 Fr (3.3 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Non-vented 3/16 in (0.48 cm) (grey hub), order code 77310; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 10 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all four listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "12 Fr",
+      "outerDiameterFr": 12,
+      "outerDiameterMm": 4,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Vented 1/4 in (0.64 cm) connector (blue hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77012",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (12 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 26 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 12 Fr size-level chart is reused for each catalog-listed connector/order-code variant because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.09626657802264904–2.929095181473303 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.096–2.929",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.096 to 2.929 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.09626657802264904,
+          "pressureDrop": 3.1982283350065472
+        },
+        {
+          "flow": 0.24043111708951725,
+          "pressureDrop": 3.5379215975242744
+        },
+        {
+          "flow": 0.3907196647981428,
+          "pressureDrop": 5.35006511522559
+        },
+        {
+          "flow": 0.5231159051016365,
+          "pressureDrop": 8.930694751146575
+        },
+        {
+          "flow": 0.6731942827675654,
+          "pressureDrop": 13.115165543889105
+        },
+        {
+          "flow": 0.817548491229769,
+          "pressureDrop": 19.476862108308552
+        },
+        {
+          "flow": 0.9645688239624031,
+          "pressureDrop": 25.060868580488062
+        },
+        {
+          "flow": 1.0996872384969976,
+          "pressureDrop": 31.653444626734824
+        },
+        {
+          "flow": 1.2375254103544784,
+          "pressureDrop": 39.171179996217774
+        },
+        {
+          "flow": 1.3809948474038842,
+          "pressureDrop": 46.58711284751709
+        },
+        {
+          "flow": 1.5263353820437695,
+          "pressureDrop": 55.11893691010141
+        },
+        {
+          "flow": 1.670775171366714,
+          "pressureDrop": 64.19782580304272
+        },
+        {
+          "flow": 1.808689710087155,
+          "pressureDrop": 74.14020907151692
+        },
+        {
+          "flow": 1.9413902861797805,
+          "pressureDrop": 84.9714397108696
+        },
+        {
+          "flow": 2.050251967612253,
+          "pressureDrop": 95.50067946322403
+        },
+        {
+          "flow": 2.1639488137704546,
+          "pressureDrop": 105.37554498612761
+        },
+        {
+          "flow": 2.255542209803334,
+          "pressureDrop": 114.97340671849138
+        },
+        {
+          "flow": 2.366159900345394,
+          "pressureDrop": 125.57754374044504
+        },
+        {
+          "flow": 2.459346263377034,
+          "pressureDrop": 136.5058765276795
+        },
+        {
+          "flow": 2.5448555730109366,
+          "pressureDrop": 146.90384433877995
+        },
+        {
+          "flow": 2.623816665571217,
+          "pressureDrop": 157.43612106737186
+        },
+        {
+          "flow": 2.6961809500477867,
+          "pressureDrop": 166.55994214319432
+        },
+        {
+          "flow": 2.773492437414978,
+          "pressureDrop": 176.72730424246254
+        },
+        {
+          "flow": 2.8215276598154126,
+          "pressureDrop": 183.5039069135383
+        },
+        {
+          "flow": 2.878446860313685,
+          "pressureDrop": 190.68852273370703
+        },
+        {
+          "flow": 2.929095181473303,
+          "pressureDrop": 198.77271955155427
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 12 Fr (4.0 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Vented 1/4 in (0.64 cm) (blue hub), order code 77012; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 12 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all manufacturer-listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "12 Fr",
+      "outerDiameterFr": 12,
+      "outerDiameterMm": 4,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Non-vented 1/4 in (0.64 cm) connector (blue hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77112",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (12 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 26 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 12 Fr size-level chart is reused for each catalog-listed connector/order-code variant because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.09626657802264904–2.929095181473303 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.096–2.929",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.096 to 2.929 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.09626657802264904,
+          "pressureDrop": 3.1982283350065472
+        },
+        {
+          "flow": 0.24043111708951725,
+          "pressureDrop": 3.5379215975242744
+        },
+        {
+          "flow": 0.3907196647981428,
+          "pressureDrop": 5.35006511522559
+        },
+        {
+          "flow": 0.5231159051016365,
+          "pressureDrop": 8.930694751146575
+        },
+        {
+          "flow": 0.6731942827675654,
+          "pressureDrop": 13.115165543889105
+        },
+        {
+          "flow": 0.817548491229769,
+          "pressureDrop": 19.476862108308552
+        },
+        {
+          "flow": 0.9645688239624031,
+          "pressureDrop": 25.060868580488062
+        },
+        {
+          "flow": 1.0996872384969976,
+          "pressureDrop": 31.653444626734824
+        },
+        {
+          "flow": 1.2375254103544784,
+          "pressureDrop": 39.171179996217774
+        },
+        {
+          "flow": 1.3809948474038842,
+          "pressureDrop": 46.58711284751709
+        },
+        {
+          "flow": 1.5263353820437695,
+          "pressureDrop": 55.11893691010141
+        },
+        {
+          "flow": 1.670775171366714,
+          "pressureDrop": 64.19782580304272
+        },
+        {
+          "flow": 1.808689710087155,
+          "pressureDrop": 74.14020907151692
+        },
+        {
+          "flow": 1.9413902861797805,
+          "pressureDrop": 84.9714397108696
+        },
+        {
+          "flow": 2.050251967612253,
+          "pressureDrop": 95.50067946322403
+        },
+        {
+          "flow": 2.1639488137704546,
+          "pressureDrop": 105.37554498612761
+        },
+        {
+          "flow": 2.255542209803334,
+          "pressureDrop": 114.97340671849138
+        },
+        {
+          "flow": 2.366159900345394,
+          "pressureDrop": 125.57754374044504
+        },
+        {
+          "flow": 2.459346263377034,
+          "pressureDrop": 136.5058765276795
+        },
+        {
+          "flow": 2.5448555730109366,
+          "pressureDrop": 146.90384433877995
+        },
+        {
+          "flow": 2.623816665571217,
+          "pressureDrop": 157.43612106737186
+        },
+        {
+          "flow": 2.6961809500477867,
+          "pressureDrop": 166.55994214319432
+        },
+        {
+          "flow": 2.773492437414978,
+          "pressureDrop": 176.72730424246254
+        },
+        {
+          "flow": 2.8215276598154126,
+          "pressureDrop": 183.5039069135383
+        },
+        {
+          "flow": 2.878446860313685,
+          "pressureDrop": 190.68852273370703
+        },
+        {
+          "flow": 2.929095181473303,
+          "pressureDrop": 198.77271955155427
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 12 Fr (4.0 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Non-vented 1/4 in (0.64 cm) (blue hub), order code 77112; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 12 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all manufacturer-listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "12 Fr",
+      "outerDiameterFr": 12,
+      "outerDiameterMm": 4,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Vented 3/16 in (0.48 cm) connector (grey hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77212",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (12 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 26 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 12 Fr size-level chart is reused for each catalog-listed connector/order-code variant because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.09626657802264904–2.929095181473303 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.096–2.929",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.096 to 2.929 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.09626657802264904,
+          "pressureDrop": 3.1982283350065472
+        },
+        {
+          "flow": 0.24043111708951725,
+          "pressureDrop": 3.5379215975242744
+        },
+        {
+          "flow": 0.3907196647981428,
+          "pressureDrop": 5.35006511522559
+        },
+        {
+          "flow": 0.5231159051016365,
+          "pressureDrop": 8.930694751146575
+        },
+        {
+          "flow": 0.6731942827675654,
+          "pressureDrop": 13.115165543889105
+        },
+        {
+          "flow": 0.817548491229769,
+          "pressureDrop": 19.476862108308552
+        },
+        {
+          "flow": 0.9645688239624031,
+          "pressureDrop": 25.060868580488062
+        },
+        {
+          "flow": 1.0996872384969976,
+          "pressureDrop": 31.653444626734824
+        },
+        {
+          "flow": 1.2375254103544784,
+          "pressureDrop": 39.171179996217774
+        },
+        {
+          "flow": 1.3809948474038842,
+          "pressureDrop": 46.58711284751709
+        },
+        {
+          "flow": 1.5263353820437695,
+          "pressureDrop": 55.11893691010141
+        },
+        {
+          "flow": 1.670775171366714,
+          "pressureDrop": 64.19782580304272
+        },
+        {
+          "flow": 1.808689710087155,
+          "pressureDrop": 74.14020907151692
+        },
+        {
+          "flow": 1.9413902861797805,
+          "pressureDrop": 84.9714397108696
+        },
+        {
+          "flow": 2.050251967612253,
+          "pressureDrop": 95.50067946322403
+        },
+        {
+          "flow": 2.1639488137704546,
+          "pressureDrop": 105.37554498612761
+        },
+        {
+          "flow": 2.255542209803334,
+          "pressureDrop": 114.97340671849138
+        },
+        {
+          "flow": 2.366159900345394,
+          "pressureDrop": 125.57754374044504
+        },
+        {
+          "flow": 2.459346263377034,
+          "pressureDrop": 136.5058765276795
+        },
+        {
+          "flow": 2.5448555730109366,
+          "pressureDrop": 146.90384433877995
+        },
+        {
+          "flow": 2.623816665571217,
+          "pressureDrop": 157.43612106737186
+        },
+        {
+          "flow": 2.6961809500477867,
+          "pressureDrop": 166.55994214319432
+        },
+        {
+          "flow": 2.773492437414978,
+          "pressureDrop": 176.72730424246254
+        },
+        {
+          "flow": 2.8215276598154126,
+          "pressureDrop": 183.5039069135383
+        },
+        {
+          "flow": 2.878446860313685,
+          "pressureDrop": 190.68852273370703
+        },
+        {
+          "flow": 2.929095181473303,
+          "pressureDrop": 198.77271955155427
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 12 Fr (4.0 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Vented 3/16 in (0.48 cm) (grey hub), order code 77212; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 12 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all manufacturer-listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "12 Fr",
+      "outerDiameterFr": 12,
+      "outerDiameterMm": 4,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Non-vented 3/16 in (0.48 cm) connector (grey hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77312",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (12 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 26 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 12 Fr size-level chart is reused for each catalog-listed connector/order-code variant because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.09626657802264904–2.929095181473303 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.096–2.929",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.096 to 2.929 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.09626657802264904,
+          "pressureDrop": 3.1982283350065472
+        },
+        {
+          "flow": 0.24043111708951725,
+          "pressureDrop": 3.5379215975242744
+        },
+        {
+          "flow": 0.3907196647981428,
+          "pressureDrop": 5.35006511522559
+        },
+        {
+          "flow": 0.5231159051016365,
+          "pressureDrop": 8.930694751146575
+        },
+        {
+          "flow": 0.6731942827675654,
+          "pressureDrop": 13.115165543889105
+        },
+        {
+          "flow": 0.817548491229769,
+          "pressureDrop": 19.476862108308552
+        },
+        {
+          "flow": 0.9645688239624031,
+          "pressureDrop": 25.060868580488062
+        },
+        {
+          "flow": 1.0996872384969976,
+          "pressureDrop": 31.653444626734824
+        },
+        {
+          "flow": 1.2375254103544784,
+          "pressureDrop": 39.171179996217774
+        },
+        {
+          "flow": 1.3809948474038842,
+          "pressureDrop": 46.58711284751709
+        },
+        {
+          "flow": 1.5263353820437695,
+          "pressureDrop": 55.11893691010141
+        },
+        {
+          "flow": 1.670775171366714,
+          "pressureDrop": 64.19782580304272
+        },
+        {
+          "flow": 1.808689710087155,
+          "pressureDrop": 74.14020907151692
+        },
+        {
+          "flow": 1.9413902861797805,
+          "pressureDrop": 84.9714397108696
+        },
+        {
+          "flow": 2.050251967612253,
+          "pressureDrop": 95.50067946322403
+        },
+        {
+          "flow": 2.1639488137704546,
+          "pressureDrop": 105.37554498612761
+        },
+        {
+          "flow": 2.255542209803334,
+          "pressureDrop": 114.97340671849138
+        },
+        {
+          "flow": 2.366159900345394,
+          "pressureDrop": 125.57754374044504
+        },
+        {
+          "flow": 2.459346263377034,
+          "pressureDrop": 136.5058765276795
+        },
+        {
+          "flow": 2.5448555730109366,
+          "pressureDrop": 146.90384433877995
+        },
+        {
+          "flow": 2.623816665571217,
+          "pressureDrop": 157.43612106737186
+        },
+        {
+          "flow": 2.6961809500477867,
+          "pressureDrop": 166.55994214319432
+        },
+        {
+          "flow": 2.773492437414978,
+          "pressureDrop": 176.72730424246254
+        },
+        {
+          "flow": 2.8215276598154126,
+          "pressureDrop": 183.5039069135383
+        },
+        {
+          "flow": 2.878446860313685,
+          "pressureDrop": 190.68852273370703
+        },
+        {
+          "flow": 2.929095181473303,
+          "pressureDrop": 198.77271955155427
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 12 Fr (4.0 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Non-vented 3/16 in (0.48 cm) (grey hub), order code 77312; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 12 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all manufacturer-listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "14 Fr",
+      "outerDiameterFr": 14,
+      "outerDiameterMm": 4.7,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Vented 1/4 in (0.64 cm) connector (blue hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77014",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (14 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 30 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 14 Fr size-level chart is reused for each catalog-listed connector/order-code variant because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.08314189313990428–3.999886756129324 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.083–4.000",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.083 to 4.000 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.08314189313990428,
+          "pressureDrop": 2.5698853179107175
+        },
+        {
+          "flow": 0.2273089404794303,
+          "pressureDrop": 2.9892162373085966
+        },
+        {
+          "flow": 0.37148297401166985,
+          "pressureDrop": 3.6303587753614295
+        },
+        {
+          "flow": 0.5355868863597759,
+          "pressureDrop": 4.884349697072594
+        },
+        {
+          "flow": 0.6805673517920843,
+          "pressureDrop": 8.014127172866722
+        },
+        {
+          "flow": 0.8192344714342337,
+          "pressureDrop": 10.695175811109209
+        },
+        {
+          "flow": 0.9516024007700583,
+          "pressureDrop": 13.37693222354335
+        },
+        {
+          "flow": 1.1028962119925259,
+          "pressureDrop": 16.955438536889176
+        },
+        {
+          "flow": 1.2369310740327537,
+          "pressureDrop": 20.30100178145696
+        },
+        {
+          "flow": 1.381210901215054,
+          "pressureDrop": 24.301092708938995
+        },
+        {
+          "flow": 1.5255322248522494,
+          "pressureDrop": 29.618696079343522
+        },
+        {
+          "flow": 1.6893012853179323,
+          "pressureDrop": 35.316516618537975
+        },
+        {
+          "flow": 1.8141815651032362,
+          "pressureDrop": 40.466404827075564
+        },
+        {
+          "flow": 1.9585222983725599,
+          "pressureDrop": 46.400264017556765
+        },
+        {
+          "flow": 2.10292059124061,
+          "pressureDrop": 54.16164046757558
+        },
+        {
+          "flow": 2.24731754551334,
+          "pressureDrop": 61.88051651620984
+        },
+        {
+          "flow": 2.3917345787158584,
+          "pressureDrop": 70.236898585613
+        },
+        {
+          "flow": 2.536175706634122,
+          "pressureDrop": 79.35828787993893
+        },
+        {
+          "flow": 2.6770546093087755,
+          "pressureDrop": 88.85549896509119
+        },
+        {
+          "flow": 2.793584734726233,
+          "pressureDrop": 96.31603533208764
+        },
+        {
+          "flow": 2.9324924975935676,
+          "pressureDrop": 106.63750636996771
+        },
+        {
+          "flow": 3.0587311024290815,
+          "pressureDrop": 114.71320989751429
+        },
+        {
+          "flow": 3.186292848080502,
+          "pressureDrop": 124.59762930500985
+        },
+        {
+          "flow": 3.317686473247273,
+          "pressureDrop": 135.54120824950297
+        },
+        {
+          "flow": 3.442511379159543,
+          "pressureDrop": 145.96815186856657
+        },
+        {
+          "flow": 3.5607882238135162,
+          "pressureDrop": 156.53435154179064
+        },
+        {
+          "flow": 3.679069431296679,
+          "pressureDrop": 167.2390710417497
+        },
+        {
+          "flow": 3.803933471786769,
+          "pressureDrop": 178.90853750662606
+        },
+        {
+          "flow": 3.913963691255098,
+          "pressureDrop": 187.6946387918871
+        },
+        {
+          "flow": 3.999886756129324,
+          "pressureDrop": 196.4052148802446
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 14 Fr (4.7 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Vented 1/4 in (0.64 cm) (blue hub), order code 77014; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 14 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all manufacturer-listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "14 Fr",
+      "outerDiameterFr": 14,
+      "outerDiameterMm": 4.7,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Non-vented 1/4 in (0.64 cm) connector (blue hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77114",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (14 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 30 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 14 Fr size-level chart is reused for each catalog-listed connector/order-code variant because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.08314189313990428–3.999886756129324 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.083–4.000",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.083 to 4.000 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.08314189313990428,
+          "pressureDrop": 2.5698853179107175
+        },
+        {
+          "flow": 0.2273089404794303,
+          "pressureDrop": 2.9892162373085966
+        },
+        {
+          "flow": 0.37148297401166985,
+          "pressureDrop": 3.6303587753614295
+        },
+        {
+          "flow": 0.5355868863597759,
+          "pressureDrop": 4.884349697072594
+        },
+        {
+          "flow": 0.6805673517920843,
+          "pressureDrop": 8.014127172866722
+        },
+        {
+          "flow": 0.8192344714342337,
+          "pressureDrop": 10.695175811109209
+        },
+        {
+          "flow": 0.9516024007700583,
+          "pressureDrop": 13.37693222354335
+        },
+        {
+          "flow": 1.1028962119925259,
+          "pressureDrop": 16.955438536889176
+        },
+        {
+          "flow": 1.2369310740327537,
+          "pressureDrop": 20.30100178145696
+        },
+        {
+          "flow": 1.381210901215054,
+          "pressureDrop": 24.301092708938995
+        },
+        {
+          "flow": 1.5255322248522494,
+          "pressureDrop": 29.618696079343522
+        },
+        {
+          "flow": 1.6893012853179323,
+          "pressureDrop": 35.316516618537975
+        },
+        {
+          "flow": 1.8141815651032362,
+          "pressureDrop": 40.466404827075564
+        },
+        {
+          "flow": 1.9585222983725599,
+          "pressureDrop": 46.400264017556765
+        },
+        {
+          "flow": 2.10292059124061,
+          "pressureDrop": 54.16164046757558
+        },
+        {
+          "flow": 2.24731754551334,
+          "pressureDrop": 61.88051651620984
+        },
+        {
+          "flow": 2.3917345787158584,
+          "pressureDrop": 70.236898585613
+        },
+        {
+          "flow": 2.536175706634122,
+          "pressureDrop": 79.35828787993893
+        },
+        {
+          "flow": 2.6770546093087755,
+          "pressureDrop": 88.85549896509119
+        },
+        {
+          "flow": 2.793584734726233,
+          "pressureDrop": 96.31603533208764
+        },
+        {
+          "flow": 2.9324924975935676,
+          "pressureDrop": 106.63750636996771
+        },
+        {
+          "flow": 3.0587311024290815,
+          "pressureDrop": 114.71320989751429
+        },
+        {
+          "flow": 3.186292848080502,
+          "pressureDrop": 124.59762930500985
+        },
+        {
+          "flow": 3.317686473247273,
+          "pressureDrop": 135.54120824950297
+        },
+        {
+          "flow": 3.442511379159543,
+          "pressureDrop": 145.96815186856657
+        },
+        {
+          "flow": 3.5607882238135162,
+          "pressureDrop": 156.53435154179064
+        },
+        {
+          "flow": 3.679069431296679,
+          "pressureDrop": 167.2390710417497
+        },
+        {
+          "flow": 3.803933471786769,
+          "pressureDrop": 178.90853750662606
+        },
+        {
+          "flow": 3.913963691255098,
+          "pressureDrop": 187.6946387918871
+        },
+        {
+          "flow": 3.999886756129324,
+          "pressureDrop": 196.4052148802446
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 14 Fr (4.7 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Non-vented 1/4 in (0.64 cm) (blue hub), order code 77114; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 14 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all manufacturer-listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "16 Fr",
+      "outerDiameterFr": 16,
+      "outerDiameterMm": 5.3,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Vented 1/4 in (0.64 cm) connector (blue hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77016",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (16 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 28 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 16 Fr size-level chart is reused for each catalog-listed connector/order-code variant because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.10084366683653245–3.9908697129267874 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.101–3.991",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.101 to 3.991 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.10084366683653245,
+          "pressureDrop": 1.7871298340976693
+        },
+        {
+          "flow": 0.2583375799784837,
+          "pressureDrop": 2.2188720910480413
+        },
+        {
+          "flow": 0.38433554158881167,
+          "pressureDrop": 2.654153218956992
+        },
+        {
+          "flow": 0.5418436102145971,
+          "pressureDrop": 3.5353320876507155
+        },
+        {
+          "flow": 0.6930666440178928,
+          "pressureDrop": 4.866655342279529
+        },
+        {
+          "flow": 0.8253921069022139,
+          "pressureDrop": 6.200101919483586
+        },
+        {
+          "flow": 0.9613457547994979,
+          "pressureDrop": 8.155558336643594
+        },
+        {
+          "flow": 1.1055492820486037,
+          "pressureDrop": 9.733126385203661
+        },
+        {
+          "flow": 1.2497762347157955,
+          "pressureDrop": 12.054451457994134
+        },
+        {
+          "flow": 1.3988873789706133,
+          "pressureDrop": 14.674990091161277
+        },
+        {
+          "flow": 1.5312411528226035,
+          "pressureDrop": 16.907309891852066
+        },
+        {
+          "flow": 1.6824999277675858,
+          "pressureDrop": 20.378439520672657
+        },
+        {
+          "flow": 1.8267549909364806,
+          "pressureDrop": 23.592273022539672
+        },
+        {
+          "flow": 1.9710395032023982,
+          "pressureDrop": 27.741115354867816
+        },
+        {
+          "flow": 2.115325354063635,
+          "pressureDrop": 31.932458088580546
+        },
+        {
+          "flow": 2.2596252601757234,
+          "pressureDrop": 36.57005503683155
+        },
+        {
+          "flow": 2.407593001528792,
+          "pressureDrop": 41.07850631334577
+        },
+        {
+          "flow": 2.546316743106279,
+          "pressureDrop": 45.557301398561805
+        },
+        {
+          "flow": 2.6925437188464567,
+          "pressureDrop": 51.07785150096885
+        },
+        {
+          "flow": 2.8368737433532276,
+          "pressureDrop": 56.67170748037327
+        },
+        {
+          "flow": 2.9812067127697,
+          "pressureDrop": 62.359064342823814
+        },
+        {
+          "flow": 3.125559225677833,
+          "pressureDrop": 68.66692706548946
+        },
+        {
+          "flow": 3.2699133449003486,
+          "pressureDrop": 75.02579026981658
+        },
+        {
+          "flow": 3.4142714799088227,
+          "pressureDrop": 81.51215467829752
+        },
+        {
+          "flow": 3.558636843332019,
+          "pressureDrop": 88.22802125425525
+        },
+        {
+          "flow": 3.706939018175642,
+          "pressureDrop": 95.31453485080118
+        },
+        {
+          "flow": 3.8520610384462937,
+          "pressureDrop": 102.9386784440292
+        },
+        {
+          "flow": 3.9908697129267874,
+          "pressureDrop": 110.11409319970556
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 16 Fr (5.3 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Vented 1/4 in (0.64 cm) (blue hub), order code 77016; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 16 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all manufacturer-listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "DLP Pediatric One-piece Arterial Cannula",
+      "category": "arterial",
+      "size": "16 Fr",
+      "outerDiameterFr": 16,
+      "outerDiameterMm": 5.3,
+      "overallLengthCm": 22.9,
+      "connectorSize": "Non-vented 1/4 in (0.64 cm) connector (blue hub)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "77116",
+      "cartonQuantity": "5 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog — DLP Pediatric One-piece Arterial Cannula pressure-loss chart (16 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis labeled L/min water; temperature not specified)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "Source is user-provided digitized coordinates from the Medtronic DLP Pediatric One-piece Arterial Cannula manufacturer graph. 28 finite points sorted by increasing flow without modifying their values, fitting a curve, smoothing, or adding an artificial (0,0) anchor. Manufacturer source chart is labeled L/min water. One 16 Fr size-level chart is reused for each catalog-listed connector/order-code variant because the source graph does not differentiate their curves; do not interpret these copies as independent connector-specific measurements. Use only measured digitized flow 0.10084366683653245–3.9908697129267874 L/min; no extrapolation.",
+      "referenceFlowRangeLabel": "0.101–3.991",
+      "outOfRangeMessage": "Target flow is outside the digitized source range (0.101 to 3.991 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.10084366683653245,
+          "pressureDrop": 1.7871298340976693
+        },
+        {
+          "flow": 0.2583375799784837,
+          "pressureDrop": 2.2188720910480413
+        },
+        {
+          "flow": 0.38433554158881167,
+          "pressureDrop": 2.654153218956992
+        },
+        {
+          "flow": 0.5418436102145971,
+          "pressureDrop": 3.5353320876507155
+        },
+        {
+          "flow": 0.6930666440178928,
+          "pressureDrop": 4.866655342279529
+        },
+        {
+          "flow": 0.8253921069022139,
+          "pressureDrop": 6.200101919483586
+        },
+        {
+          "flow": 0.9613457547994979,
+          "pressureDrop": 8.155558336643594
+        },
+        {
+          "flow": 1.1055492820486037,
+          "pressureDrop": 9.733126385203661
+        },
+        {
+          "flow": 1.2497762347157955,
+          "pressureDrop": 12.054451457994134
+        },
+        {
+          "flow": 1.3988873789706133,
+          "pressureDrop": 14.674990091161277
+        },
+        {
+          "flow": 1.5312411528226035,
+          "pressureDrop": 16.907309891852066
+        },
+        {
+          "flow": 1.6824999277675858,
+          "pressureDrop": 20.378439520672657
+        },
+        {
+          "flow": 1.8267549909364806,
+          "pressureDrop": 23.592273022539672
+        },
+        {
+          "flow": 1.9710395032023982,
+          "pressureDrop": 27.741115354867816
+        },
+        {
+          "flow": 2.115325354063635,
+          "pressureDrop": 31.932458088580546
+        },
+        {
+          "flow": 2.2596252601757234,
+          "pressureDrop": 36.57005503683155
+        },
+        {
+          "flow": 2.407593001528792,
+          "pressureDrop": 41.07850631334577
+        },
+        {
+          "flow": 2.546316743106279,
+          "pressureDrop": 45.557301398561805
+        },
+        {
+          "flow": 2.6925437188464567,
+          "pressureDrop": 51.07785150096885
+        },
+        {
+          "flow": 2.8368737433532276,
+          "pressureDrop": 56.67170748037327
+        },
+        {
+          "flow": 2.9812067127697,
+          "pressureDrop": 62.359064342823814
+        },
+        {
+          "flow": 3.125559225677833,
+          "pressureDrop": 68.66692706548946
+        },
+        {
+          "flow": 3.2699133449003486,
+          "pressureDrop": 75.02579026981658
+        },
+        {
+          "flow": 3.4142714799088227,
+          "pressureDrop": 81.51215467829752
+        },
+        {
+          "flow": 3.558636843332019,
+          "pressureDrop": 88.22802125425525
+        },
+        {
+          "flow": 3.706939018175642,
+          "pressureDrop": 95.31453485080118
+        },
+        {
+          "flow": 3.8520610384462937,
+          "pressureDrop": 102.9386784440292
+        },
+        {
+          "flow": 3.9908697129267874,
+          "pressureDrop": 110.11409319970556
+        }
+      ],
+      "notes": "DLP Pediatric One-piece ARTERIAL Cannula; 16 Fr (5.3 mm outside diameter), 9 in (22.9 cm) overall length. Manufacturer-listed configuration: Non-vented 1/4 in (0.64 cm) (blue hub), order code 77116; 5 per carton. This variant's pressure-flow reference is the generic manufacturer 16 Fr curve (water), not a measured pressure difference between connector variants; the same points are intentionally used for all manufacturer-listed connector configurations of this Fr size. Beveled tip, wire-wound kink-resistant one-piece body. No anatomical insertion site is established by this dataset; do not infer femoral or central from connector dimensions. This is ARTERIAL only, not venous, and the existing arterial-only >100 mmHg caution remains applicable. No synthetic (0,0) anchor, fitted curve, or extrapolation."
     }
   ]
 }
