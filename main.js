@@ -9064,6 +9064,8 @@ function route() {
   else if (path.includes('bsa')) { showSection('view-bsa'); key = 'bsa'; }
   else if (path.includes('do2i') || path.includes('gdp')) { showSection('view-do2i'); key = 'do2i'; }
   else if (path.includes('predicted-hct')) { showSection('view-hct'); key = 'predicted-hct'; }
+  else if (path.includes('adult-hct')) { key = 'adult-hct'; }
+  else if (path === '/hct' || path === '/hct/') { key = 'hct'; }
   else if (path.includes('lbm')) { showSection('view-lbm'); key = 'lbm'; }
   else if (path.includes('priming-volume')) { showSection('view-priming-volume'); key = 'priming-volume'; }
   else if (path.includes('heparin')) { showSection('view-heparin'); key = 'heparin'; }
@@ -9084,6 +9086,8 @@ function route() {
     'home': ['nav-home', 'side-home', 'mob-home'],
     'do2i': ['nav-do2i', 'side-do2i', 'mob-do2i'],
     'predicted-hct': ['nav-hct', 'side-hct', 'mob-hct'],
+    'adult-hct': ['nav-hct', 'side-hct', 'mob-hct'],
+    'hct': ['nav-hct', 'side-hct', 'mob-hct'],
     'bsa': ['nav-bsa', 'side-bsa', 'mob-bsa'],
     'phn-echo': ['nav-phn-echo', 'side-phn-echo', 'mob-phn-echo'],
     'lbm': ['nav-lbm', 'side-lbm', 'mob-lbm'],
