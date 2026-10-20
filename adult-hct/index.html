@@ -256,7 +256,9 @@
    desired=read('adult-desired-hct'), currentHct=read('adult-current-hct'),
    plannedRbc=read('adult-planned-rbc'), net=read('adult-net-change'),
    pumpTarget=read('adult-pump-target');
-  let baseVolume=null;
+  // On-pump volume estimates require weight and prime, but not pre-CPB Hct.
+  let baseVolume = Number.isFinite(weight) && weight > 0 && Number.isFinite(ebv) && ebv > 0 &&
+    Number.isFinite(prime) && prime >= 0 ? weight * ebv + prime : null;
   try {
    if(weight===null || pre===null) throw Error('Enter weight and Pre-CPB Hct.');
    const outcome=AdultHctCore.calculatePreCpb({weightKg:weight,ebvMlPerKg:ebv,preHctPercent:pre,
@@ -301,6 +303,12 @@
  update();
 })();
 </script>
- <script src="/main.js"></script>
+ <script>
+window.normalizeRoute = function(raw) {
+ const path = String(raw || '/').replace(/\\/+$/, '') || '/';
+ return path.startsWith('/') ? path : '/' + path;
+};
+</script>
+<script src="/main.js"></script>
 </body>
 </html>
