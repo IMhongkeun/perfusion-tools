@@ -68,7 +68,7 @@
       neededToTargetMl = Math.max(0, (target - currentFraction) * volume / productFraction);
       // The amount of HF required must not exceed the estimated available plasma.
       // This is a necessary, not sufficient, feasibility check.
-      targetReachable = neededToTargetMl * (1 - productFraction) <= volume * (1 - currentFraction);
+      targetReachable = neededToTargetMl * productFraction <= volume * (1 - currentFraction) + 1e-8;
     }
     if (predictedPercent > 100 + 1e-8) throw new RangeError('RBC addition is inconsistent with the estimated total volume.');
     return {
