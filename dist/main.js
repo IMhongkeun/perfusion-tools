@@ -152,7 +152,8 @@ const CALCULATOR_REGISTRY = [
   { path: '/gdp/', category: 'flow', icon: 'O₂', title: 'DO₂i / GDP Calculator', description: 'Indexed oxygen delivery and required pump-flow targets.' },
   { path: '/bsa/', category: 'flow', icon: 'BSA', title: 'BSA Calculator', description: 'Body surface area for indexed perfusion planning.' },
   { path: '/lbm/', category: 'flow', icon: 'LBM', title: 'Lean Body Mass Calculator', description: 'Lean body mass and dosing-weight references.' },
-  { path: '/predicted-hct/', category: 'blood', icon: 'Hct', title: 'Predicted Hematocrit', description: 'Post-prime dilutional Hct for CPB planning.' },
+  { path: '/adult-hct/', category: 'blood', icon: 'Hct', title: 'AHD — Adult CPB Hct Predict', description: 'Volume-neutral RBC prime substitution and matched HF/UF during adult CPB.' },
+  { path: '/predicted-hct/', category: 'blood', icon: 'Hct', title: 'PCS — Predicted Hematocrit', description: 'Existing Pre-CPB and On-pump hematocrit calculator.' },
   { path: '/priming-volume/', category: 'blood', icon: 'mL', title: 'Priming Volume Calculator', description: 'Tubing prime volume from inner diameter and length.' },
   { path: '/heparin/', category: 'anticoagulation', icon: 'ACT', title: 'Heparin Calculator', description: 'Adult CPB heparin and protamine planning support.' },
   { path: '/cannula-pressure-drop/', category: 'circuit', icon: 'ΔP', title: 'Cannula Pressure Drop', description: 'Browse 212 manufacturer pressure-flow datasets for cannula selection.' },
@@ -326,7 +327,7 @@ const TOP_NAV_ITEMS = [
   { path: '/lbm/', label: 'LBM' },
   { path: '/gdp/', label: 'GDP' },
   { path: '/heparin/', label: 'Heparin' },
-  { path: '/predicted-hct/', label: 'Predicted Hct' },
+  { path: '/hct/', label: 'Hct' },
   { path: '/z-score/', label: 'Z-score' },
   { path: '/priming-volume/', label: 'Priming Volume' },
   { path: '/timecalc/', label: 'Time' },
@@ -335,6 +336,26 @@ const TOP_NAV_ITEMS = [
   { path: '/unit-converter/', label: 'Unit Converter' },
   { path: '/info/', label: 'Info' },
 ];
+
+// Preserve the original PCS route while exposing the two Hct tools under Hct.
+// This applies to existing standalone pages without rewriting every copied sidebar.
+function initHctHierarchyNav() {
+  const sidebar = document.getElementById('desktop-sidebar');
+  if (sidebar && !sidebar.querySelector('a[href="/adult-hct/"]')) {
+    const parent = sidebar.querySelector('a[href="/predicted-hct/"]');
+    if (parent) {
+      parent.href = '/hct/';
+      parent.textContent = 'Hct';
+      const items = document.createElement('div');
+      items.className = 'pl-4 space-y-1';
+      items.innerHTML = '<a class="sidebar-link block rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-300" href="/adult-hct/">AHD — Adult CPB</a>' +
+        '<a class="sidebar-link block rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-300" href="/predicted-hct/">PCS — Predicted Hct</a>';
+      parent.insertAdjacentElement('afterend', items);
+    }
+  }
+  const mobileHct = document.querySelector('[data-mobile-calculator-nav] a[href="/predicted-hct/"]');
+  if (mobileHct) mobileHct.href = '/hct/';
+}
 
 function initStandaloneTopNav() {
   // The integrated homepage already ships its own full top nav.
@@ -9624,6 +9645,7 @@ window.addEventListener('DOMContentLoaded', () => {
   resetScrollToTop();
   setTimeout(resetScrollToTop, 10);
   initStandaloneTopNav();
+  initHctHierarchyNav();
   initMobileCalculatorNav();
   removeNestedBackToTopButtons();
   initBackToTopButton();
@@ -9665,6 +9687,8 @@ window.addEventListener('DOMContentLoaded', () => {
           '/gdp/',
           '/heparin/',
           '/predicted-hct/',
+          '/adult-hct/',
+          '/hct/',
           '/lbm/',
           '/timecalc/',
           '/z-score/',
@@ -9676,6 +9700,8 @@ window.addEventListener('DOMContentLoaded', () => {
           '/gdp',
           '/heparin',
           '/predicted-hct',
+          '/adult-hct',
+          '/hct',
           '/lbm',
           '/timecalc',
           '/z-score',
