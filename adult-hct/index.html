@@ -305,7 +305,8 @@
 </script>
  <script>
 window.normalizeRoute = function(raw) {
- const path = String(raw || '/').replace(/\\/+$/, '') || '/';
+ let path = String(raw || '/');
+ while (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
  return path.startsWith('/') ? path : '/' + path;
 };
 </script>
