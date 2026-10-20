@@ -23,6 +23,8 @@ https://www.perfusiontools.com/*  https://perfusiontools.com/:splat   301!
 /bsa          /bsa/          301
 /gdp          /gdp/          301
 /heparin      /heparin/      301
+/hct          /hct/          301
+/adult-hct    /adult-hct/    301
 /predicted-hct /predicted-hct/ 301
 /lbm          /lbm/          301
 /timecalc     /timecalc/     301
