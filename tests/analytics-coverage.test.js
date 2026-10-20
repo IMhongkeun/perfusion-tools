@@ -11,6 +11,8 @@ const standaloneRoutes = [
   '/',
   '/bsa/',
   '/gdp/',
+  '/hct/',
+  '/adult-hct/',
   '/predicted-hct/',
   '/priming-volume/',
   '/heparin/',
