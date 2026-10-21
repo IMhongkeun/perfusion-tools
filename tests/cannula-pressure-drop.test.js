@@ -1637,6 +1637,7 @@ const targetFunctionNames = [
   'parsePressureDropFlowInput', 'getPressureDropResultStateText', 'getPressureDropResultValueText',
   'formatPressureDropFlowValue', 'getPressureDropRangeText', 'formatSignedPressureDrop',
   'buildPressureDropAxisTicks', 'formatPressureDropAxisTick', 'getPressureDropSourceNode', 'getPressureDropProductFamily',
+  'getPressureDropDisplayEntries',
   'getUniquePressureDropOptionPairs', 'setPressureDropSelectOptionPairs', 'createPressureDropRawPointsToggle'
 ];
 const targetRuntime = vm.runInNewContext([
@@ -2028,6 +2029,67 @@ for (const expected of pediatricOnePieceExpectation) {
 assert.strictEqual(targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, {
   category: 'arterial', location: 'other', manufacturer: 'Medtronic', model: pediatricOnePieceModel
 }).length, 20);
+
+const groupedPediatricDisplay = targetRuntime.getPressureDropDisplayEntries(pressureDropData);
+assert.strictEqual(groupedPediatricDisplay.length, pressureDropData.length - 14,
+  'Only the 14 duplicate DLP connector-specific UI rows should be collapsed, not source SKUs.');
+assert.strictEqual(new Set(groupedPediatricDisplay.map(targetRuntime.getPressureDropTargetFlowKey)).size,
+  groupedPediatricDisplay.length, 'Display comparison rows must keep unique selection keys.');
+for (const [fr, expectedCount] of [[6, 4], [8, 4], [10, 4], [12, 4], [14, 2], [16, 2]]) {
+  const originals = pediatricOnePieceEntries.filter(entry => entry.size === fr + ' Fr');
+  const rows = groupedPediatricDisplay.filter(entry => entry.model === pediatricOnePieceModel && entry.size === fr + ' Fr');
+  assert.strictEqual(originals.length, expectedCount);
+  assert.strictEqual(rows.length, 1, fr + ' Fr must appear once in the visible list.');
+  const shared = rows[0];
+  assert.strictEqual(shared.sharedConnectorVariants.length, expectedCount);
+  assert.strictEqual(shared.connectorSize, '', 'A shared curve cannot imply one connector specification.');
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(shared.points)), originals[0].points,
+    'Grouping must leave manufacturer curve coordinates untouched.');
+  assert(shared.notes.includes('does not establish connector-specific pressure-loss measurements'));
+  for (const raw of originals) {
+    assert(shared.sharedConnectorVariants.some(variant =>
+      variant.code === raw.cannulaOrderCode && variant.connector === raw.connectorSize),
+    'All exact documented connector and code mappings must survive.');
+    const searchMatches = targetRuntime.searchPressureDropCatalog(groupedPediatricDisplay, raw.cannulaOrderCode);
+    assert.strictEqual(searchMatches.length, 1, 'Search for each original DLP SKU returns one grouped curve.');
+    assert.strictEqual(searchMatches[0], shared);
+    assert.strictEqual(targetRuntime.searchPressureDropCatalog(groupedPediatricDisplay,
+      raw.connectorSize.split(' connector')[0] + ' ' + fr + ' Fr').filter(entry => entry.model === pediatricOnePieceModel).length,
+    1, 'Connector specification must remain searchable within its Fr group.');
+  }
+  const rawAtFlow = targetRuntime.getPressureDropTargetFlowResult(originals[0],
+    (originals[0].points[0].flow + originals[0].points.at(-1).flow) / 2);
+  const sharedAtFlow = targetRuntime.getPressureDropTargetFlowResult(shared,
+    (originals[0].points[0].flow + originals[0].points.at(-1).flow) / 2);
+  assert.strictEqual(sharedAtFlow.magnitude, rawAtFlow.magnitude, 'No pressure estimate may change.');
+}
+assert.strictEqual(targetRuntime.getPressureDropTargetFlowRows(groupedPediatricDisplay, {
+  category: 'arterial', location: 'other', manufacturer: 'Medtronic', model: pediatricOnePieceModel
+}, 0.25).length, 6, 'Target-flow comparison shows only six Fr-level DLP curves.');
+assert.strictEqual(targetRuntime.searchPressureDropCatalog(groupedPediatricDisplay, '77008')[0].size,
+  '8 Fr', 'Searching an individual order code must still find the representative size.');
+assert.strictEqual(targetRuntime.getPressureDropDisplayEntries(groupedPediatricDisplay).length,
+  groupedPediatricDisplay.length, 'Display grouping is idempotent.');
+const curveMismatch = pressureDropData.map(entry => entry === pediatricOnePieceEntries.find(item =>
+  item.cannulaOrderCode === '77108')
+  ? { ...entry, points: entry.points.map((point, index) =>
+      index === 1 ? { ...point, pressureDrop: point.pressureDrop + 1 } : point) }
+  : entry);
+assert.strictEqual(targetRuntime.getPressureDropDisplayEntries(curveMismatch).filter(entry =>
+  entry.model === pediatricOnePieceModel && entry.size === '8 Fr').length, 4,
+  'Any connector-specific curve difference must prevent grouping of that Fr.');
+assert.strictEqual(groupedPediatricDisplay.filter(entry =>
+  /Bio-Medicus NextGen Pediatric/.test(entry.model)).length,
+  pressureDropData.filter(entry => /Bio-Medicus NextGen Pediatric/.test(entry.model)).length,
+  'Independent NextGen pediatric arterial and venous curves must never be grouped.');
+const sharedTable = targetRuntime.createPressureDropTargetFlowTable(targetRuntime.getPressureDropTargetFlowRows(
+  groupedPediatricDisplay, { category: 'arterial', location: 'other', manufacturer: 'Medtronic',
+    model: pediatricOnePieceModel }, 0.25), [], () => {});
+assert(sharedTable.textContent.includes('Shared 8 Fr curve') &&
+  sharedTable.textContent.includes('77008') && sharedTable.textContent.includes('77308') &&
+  sharedTable.textContent.includes('3/16 in'),
+  'Comparison must explain the shared curve and expose all relevant order codes/connectors.');
+
 assert.strictEqual(pressureDropData.filter(entry =>
   entry.model === 'Bio-Medicus NextGen Pediatric Venous Cannula').length, 4,
   'Existing NextGen venous curves must stay intact and distinct.');
