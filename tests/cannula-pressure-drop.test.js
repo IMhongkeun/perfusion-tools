@@ -774,6 +774,74 @@ function interpolatePressureDrop(points, targetFlow) {
   return { state: 'out_of_range', value: null, minFlow, maxFlow };
 }
 
+
+// Regression: Bio-Medicus Multi-stage 19 Fr (96880-019) must not reuse
+// the independently documented 21 Fr (96880-021) pressure-loss curve.
+const multiStageFemoralVenousModel = 'Bio-Medicus Multi-stage Femoral Venous Cannula with Insertion Kit';
+const multiStage19FrEntry = pressureDropData.filter(entry =>
+  entry.manufacturer === 'Medtronic' &&
+  entry.model === multiStageFemoralVenousModel &&
+  entry.cannulaOrderCode === '96880-019');
+const multiStage21FrEntry = pressureDropData.filter(entry =>
+  entry.manufacturer === 'Medtronic' &&
+  entry.model === multiStageFemoralVenousModel &&
+  entry.cannulaOrderCode === '96880-021');
+const multiStage25FrEntry = pressureDropData.filter(entry =>
+  entry.manufacturer === 'Medtronic' &&
+  entry.model === multiStageFemoralVenousModel &&
+  entry.cannulaOrderCode === '96880-025');
+assert.strictEqual(multiStage19FrEntry.length, 1);
+assert.strictEqual(multiStage21FrEntry.length, 1);
+assert.strictEqual(multiStage25FrEntry.length, 1);
+
+const multiStage19 = multiStage19FrEntry[0];
+const multiStage21 = multiStage21FrEntry[0];
+const multiStage25 = multiStage25FrEntry[0];
+assert.strictEqual(multiStage19.size, '19 Fr');
+assert.strictEqual(multiStage19.testMedium, 'Water');
+assert.strictEqual(multiStage19.dataStatus, 'digitized-curve');
+assert(multiStage19.sourceUrl.includes('cannulae-us-product-catalog.pdf'));
+assert(multiStage19.digitizationNote.includes('0.487–5.526 L/min'));
+assert(multiStage19.digitizationNote.includes('No smoothing, fitted curve, synthetic (0,0) point, or extrapolation.'));
+const multiStage19CsvPoints = [
+  [0.487, 2.7], [1.005, 8.7], [1.504, 16.8], [2.009, 28.5],
+  [2.521, 41.9], [3.008, 57.5], [3.520, 76.3], [4.014, 97.2],
+  [4.507, 121.4], [5.014, 148.9], [5.526, 180.3]
+];
+assert.deepStrictEqual(
+  multiStage19.points,
+  multiStage19CsvPoints.map(([flow, pressureDrop]) => ({ flow, pressureDrop })),
+  'Preserve all 11 independent 19 Fr digitized source coordinates after rounding.'
+);
+assert(!multiStage19.points.some(point => point.flow === 0 || point.flow === 6),
+  'Never introduce a synthetic origin or a 6 L/min extrapolated manufacturer point.');
+for (let i = 1; i < multiStage19.points.length; i += 1) {
+  assert(multiStage19.points[i].flow > multiStage19.points[i - 1].flow);
+  assert(multiStage19.points[i].pressureDrop > multiStage19.points[i - 1].pressureDrop);
+}
+assert.strictEqual(multiStage21.size, '21 Fr');
+assert.strictEqual(multiStage25.size, '25 Fr');
+assert.strictEqual(multiStage21.points.length, 12);
+assert.strictEqual(multiStage25.points.length, 12);
+assert.deepStrictEqual(multiStage21.points.at(-1), { flow: 6, pressureDrop: 120 });
+assert.deepStrictEqual(multiStage25.points.at(-1), { flow: 6, pressureDrop: 58 });
+assert.notDeepStrictEqual(multiStage19.points, multiStage21.points,
+  '19 Fr and 21 Fr must never share one digitized curve.');
+for (const flow of [3, 5]) {
+  const result19 = interpolatePressureDrop(multiStage19.points, flow);
+  const result21 = interpolatePressureDrop(multiStage21.points, flow);
+  assert(['exact', 'interpolated'].includes(result19.state));
+  assert(['exact', 'interpolated'].includes(result21.state));
+  assert(result19.value > result21.value,
+    '19 Fr must have a higher manufacturer water-flow pressure loss than 21 Fr at the same flow.');
+}
+assert.deepStrictEqual(interpolatePressureDrop(multiStage19.points, 6).state, 'out_of_range');
+assert.strictEqual(interpolatePressureDrop(multiStage19.points, 6).value, null);
+assert.strictEqual(interpolatePressureDrop(multiStage19.points, 0).state, 'out_of_range');
+assert.strictEqual(interpolatePressureDrop(multiStage19.points, 5.526).state, 'exact');
+assert.strictEqual(interpolatePressureDrop(multiStage21.points, 6).state, 'exact');
+console.log('Multi-stage femoral venous 19 Fr independent source curve regression passed.');
+
 const aorticRootCurves = [
   ['AR-11012', 'without Vent Line', '12 Ga / 9 Fr', '14Ga', '14 Ga - Green', 15, '0.106–0.60', 34],
   ['AR-11014', 'without Vent Line', '14 Ga / 7 Fr', '16Ga', '16 Ga - White', 15, '0.106–0.60', 34],
