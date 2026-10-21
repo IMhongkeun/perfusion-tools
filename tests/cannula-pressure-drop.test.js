@@ -1866,7 +1866,65 @@ assert(pressureDropData.filter(entry => entry.model === 'Select Series Angled Ti
 assert.strictEqual(classifyComparison({ category: 'femoral venous', connectionSite: 'Jugular venous' }).location, 'jugular', 'Explicit anatomical site takes precedence');
 assert.strictEqual(classifyComparison({ category: 'arterial', connectionSite: 'Femoral venous' }).eligible, false, 'Conflicting type/site metadata is ambiguous');
 assert.strictEqual(classifyComparison({ category: 'arterial', connectionSite: 'Aortic root' }).eligible, false);
-assert.strictEqual(new Set(pressureDropData.map(targetRuntime.getPressureDropTargetFlowKey)).size, 217);
+assert.strictEqual(new Set(pressureDropData.map(targetRuntime.getPressureDropTargetFlowKey)).size, 221);
+ 
+// Medtronic MC2 Two Stage — user-digitized standard-body size-level water curves.
+// Non-vented 1/2-inch connector SKUs only. Do not generate a curve for 91236C
+// (36/46 Fr), which was not supplied, or conflate the separate oval-body chart.
+const mc2TestSpecs = [
+  ['28/36 Fr', '91228C', '91228', '0.088–5.365', [0.088, 0.2], [3.126, 7.1], [5.365, 19.9], 'f18f452e9730355d14f266fe65614780e5de486300bbb8d4938b1f148106d04f'],
+  ['32/40 Fr', '91240C', '91240', '0.088–5.971', [0.088, 0.2], [3.124, 3.7], [5.971, 11.7], 'ba3a3bc68bfb740b009441538284d538202e509e3c3ac45c6f63722e8f6067c2'],
+  ['34/46 Fr', '91246C', '91246', '0.088–5.968', [0.088, 0.1], [3.122, 1.9], [5.968, 6.4], '674c248a78a8e547a5c3ecc7714fb49492f11d041559e9f125820c791bb531f7'],
+  ['36/51 Fr', '91251C', '91251', '0.088–5.975', [0.088, 0.1], [3.122, 1.8], [5.975, 5.8], 'f795ed62dfeadaad0f25c3a3c8b3313355aae85d9d0acc469441303d95d628d1']
+];
+const mc2Entries = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' &&
+  entry.model === 'MC2 Two Stage Venous Cannulae');
+assert.strictEqual(mc2Entries.length, 4);
+const mc2Digests = new Set();
+for (const [size, code, counterpart, range, first, middle, last, digest] of mc2TestSpecs) {
+  const item = mc2Entries.find(entry => entry.cannulaOrderCode === code);
+  assert(item, `Missing MC2 non-vented SKU ${code}`);
+  assert.strictEqual(item.size, size);
+  assert.strictEqual(item.category, 'venous');
+  assert.strictEqual(item.connectionSite, 'Right atrial');
+  assert.strictEqual(item.connectorSize, 'Non-vented 1/2 in (1.27 cm)');
+  assert.strictEqual(item.overallLengthCm, 38.1);
+  assert.strictEqual(item.cartonQuantity, '10 per carton');
+  assert.strictEqual(item.dataStatus, 'digitized-curve');
+  assert(item.sourceUrl.endsWith('cannulae-us-product-catalog.pdf'));
+  assert(item.sourceLabel.includes('MC2 Two Stage'));
+  assert(item.notes.includes(counterpart), 'Catalog connection-site counterpart must remain discoverable');
+  assert(item.digitizationNote.includes('not the separate Oval Body chart'));
+  assert(item.digitizationNote.includes('No fitted curve, smoothing, synthetic (0,0) anchor, or extrapolation'));
+  assert.strictEqual(item.referenceFlowRangeLabel, range);
+  assert.strictEqual(item.points.length, 32);
+  const point = pair => ({ flow: pair[0], pressureDrop: pair[1] });
+  assert.deepStrictEqual(item.points[0], point(first));
+  assert(item.points.some(p => p.flow === middle[0] && p.pressureDrop === middle[1]));
+  assert.deepStrictEqual(item.points[31], point(last));
+  assert(!item.points.some(p => p.flow === 0), 'Do not introduce an invented origin');
+  item.points.forEach((p, index) => {
+    if (!index) return;
+    assert(p.flow > item.points[index - 1].flow);
+    assert(p.pressureDrop >= item.points[index - 1].pressureDrop);
+  });
+  const actualDigest = require('crypto').createHash('sha256').update(JSON.stringify(item.points)).digest('hex');
+  assert.strictEqual(actualDigest, digest, `${code} must preserve the entire reviewed digitized curve`);
+  mc2Digests.add(actualDigest);
+  const classification = classifyComparison(item);
+  assert.strictEqual(classification.category, 'venous');
+  assert.strictEqual(classification.location, 'central');
+  assert(targetRuntime.searchPressureDropCatalog(pressureDropData, code).includes(item));
+  assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(item, first[0] - 0.001).inRange, false);
+  assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(item, last[0] + 0.001).inRange, false);
+  assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(item, last[0]).inRange, true);
+}
+assert.strictEqual(mc2Digests.size, 4, 'Different MC2 Fr pairs must not share an unrelated size curve');
+assert(!pressureDropData.some(entry => entry.cannulaOrderCode === '91236C'),
+  'Do not substitute another size curve for missing 36/46 Fr CSV');
+assert(!mc2Entries.some(entry => /^912(?:28|40|46|51)$/.test(entry.cannulaOrderCode)),
+  'Do not create duplicate vented connector-variant rows');
+
 
 const pediatricVenousEntries = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' &&
   entry.cannulaOrderCode === '96830-110');
