@@ -307,7 +307,7 @@ function run() {
   assert(pettersenMeanMm > pettersenNeg1);
 
   // 15) Missing model availability is explicit in the shared structure map
-  assert.strictEqual(phn.PEDIATRIC_STRUCTURES.IVSD.phnKey, null);
+  assert.strictEqual(phn.PEDIATRIC_STRUCTURES.RVDD.phnKey, null);
   assert.strictEqual(phn.PEDIATRIC_STRUCTURES.AOV_ANN.pettersenKey, 'AOV_ANN');
 
   // 16) Selected-model data only exposes supported structures per model
@@ -357,7 +357,8 @@ function run() {
   assert.strictEqual(phn.getEquivalentStructureKey('ANN', 'detroitPettersen2008'), 'AOV_ANN');
   assert.strictEqual(phn.getEquivalentStructureKey('AOV_ANN', 'phnLopez'), 'ANN');
   assert.strictEqual(phn.getEquivalentStructureKey('MPA', 'detroitPettersen2008'), 'MPA');
-  assert.strictEqual(phn.getEquivalentStructureKey('IVSD', 'phnLopez'), phn.PHN_STRUCTURE_ORDER[0]);
+  assert.strictEqual(phn.getEquivalentStructureKey('IVSD', 'phnLopez'), 'LVST');
+  assert.strictEqual(phn.getEquivalentStructureKey('RVDD', 'phnLopez'), phn.PHN_STRUCTURE_ORDER[0]);
   const mappedAnnKey = phn.getEquivalentStructureKey('ANN', 'detroitPettersen2008');
   const mappedAnnStructure = phn.zScoreModels.detroitPettersen2008.structures.find((item) => item.key === mappedAnnKey);
   assert.strictEqual(mappedAnnStructure.label, 'Aortic valve annulus');
