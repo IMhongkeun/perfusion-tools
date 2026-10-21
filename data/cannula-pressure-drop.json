@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "updatedAt": "2026-10-21",
+  "updatedAt": "2026-10-22",
   "items": [
     {
       "manufacturer": "LivaNova",
@@ -30152,6 +30152,203 @@
         }
       ],
       "notes": "MC2 two-stage central venous cannula with atrial basket and wirewound body. Diameter pair: 36/51 Fr (12.0/17.0 mm). Overall length: 15 in (38.1 cm). Non-vented 91251C: 1/2 in (1.27 cm) connector; 10 per carton. Corresponding catalog configuration 91251: 1/2 in (1.27 cm) connection. No independent connector-specific or vented performance curve supplied. Pressure loss is a positive manufacturer water-flow magnitude, not a signed measured clinical inlet pressure."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "MC2 Two Stage Venous Cannulae — Reduced Stage Body",
+      "category": "venous",
+      "size": "29/37 Fr",
+      "overallLengthIn": 15,
+      "overallLengthCm": 38.1,
+      "connectionSite": "Right atrial",
+      "connectorSize": "Non-vented 1/2 in (1.27 cm)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "91229C",
+      "cartonQuantity": "10 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog 2020, p. 40 — MC2 Two Stage Venous Cannulae standard-body pressure-loss chart (29/37 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis: Flow Rate, L/min of water)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "User-supplied older WebPlotDigitizer CSV for 29/37 Fr, MC2 Two Stage Venous Cannulae — Reduced Stage Body, from the manufacturer's standard-body pressure-loss chart. The original endpoint was digitized at 6.027 L/min, beyond the manufacturer's 6 L/min x-axis; its flow coordinate was normalized to 6.000 L/min (pressure retained). Points were sorted ascending, rounded to 0.001 L/min and 0.1 mmHg. Supported digitized interval: 0.475–6.000 L/min. No fitted curve, smoothing, extrapolation, or synthetic (0,0) origin. Size-level source chart does not establish connector- or vent-variant-specific performance.",
+      "referenceFlowRangeLabel": "0.475–6.000",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0.475 to 6.000 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.475,
+          "pressureDrop": 0.1
+        },
+        {
+          "flow": 0.999,
+          "pressureDrop": 0.7
+        },
+        {
+          "flow": 1.488,
+          "pressureDrop": 1.4
+        },
+        {
+          "flow": 2.005,
+          "pressureDrop": 2.3
+        },
+        {
+          "flow": 2.509,
+          "pressureDrop": 3.6
+        },
+        {
+          "flow": 3.005,
+          "pressureDrop": 5
+        },
+        {
+          "flow": 3.509,
+          "pressureDrop": 6.5
+        },
+        {
+          "flow": 4.012,
+          "pressureDrop": 8.3
+        },
+        {
+          "flow": 4.509,
+          "pressureDrop": 10.2
+        },
+        {
+          "flow": 5.013,
+          "pressureDrop": 12.5
+        },
+        {
+          "flow": 5.53,
+          "pressureDrop": 15.1
+        },
+        {
+          "flow": 6,
+          "pressureDrop": 17.6
+        }
+      ],
+      "notes": "Medtronic MC2 Two Stage Venous Cannulae; Reduced Stage Body; catalog size 29/37 Fr (9.7/12.3 mm); overall length 15 in (38.1 cm). Non-vented product code 91229C, connector Non-vented 1/2 in (1.27 cm), 10 per carton. Cataloged alternative vented body 91229 shares the size-level chart, not a separately published pressure-loss series. Reference curve comes from the standard (upper) MC2 chart, NOT the distinct Oval Body chart. Manufacturer pressure loss represents a positive water-flow magnitude, not a measured signed clinical venous inlet pressure."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "MC2 Two Stage Venous Cannulae — Thin-wall Body",
+      "category": "venous",
+      "size": "29/29 Fr",
+      "overallLengthIn": 15,
+      "overallLengthCm": 38.1,
+      "connectionSite": "Right atrial",
+      "connectorSize": "Non-vented 3/8 in (0.95 cm)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "91329C",
+      "cartonQuantity": "10 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog 2020, p. 40 — MC2 Two Stage Venous Cannulae standard-body pressure-loss chart (29/29 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis: Flow Rate, L/min of water)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "User-supplied older WebPlotDigitizer CSV for 29/29 Fr, MC2 Two Stage Venous Cannulae — Thin-wall Body, from the manufacturer's standard-body pressure-loss chart. All 9 originally digitized coordinates were retained at 0.001 L/min and 0.1 mmHg precision. Points were sorted ascending, rounded to 0.001 L/min and 0.1 mmHg. Supported digitized interval: 0.482–4.511 L/min. No fitted curve, smoothing, extrapolation, or synthetic (0,0) origin. Size-level source chart does not establish connector- or vent-variant-specific performance.",
+      "referenceFlowRangeLabel": "0.482–4.511",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (0.482 to 4.511 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 0.482,
+          "pressureDrop": 0.4
+        },
+        {
+          "flow": 0.992,
+          "pressureDrop": 1.2
+        },
+        {
+          "flow": 1.489,
+          "pressureDrop": 2.1
+        },
+        {
+          "flow": 2.006,
+          "pressureDrop": 3.7
+        },
+        {
+          "flow": 2.51,
+          "pressureDrop": 5.6
+        },
+        {
+          "flow": 2.999,
+          "pressureDrop": 8
+        },
+        {
+          "flow": 3.517,
+          "pressureDrop": 10.6
+        },
+        {
+          "flow": 4.007,
+          "pressureDrop": 13.6
+        },
+        {
+          "flow": 4.511,
+          "pressureDrop": 17.3
+        }
+      ],
+      "notes": "Medtronic MC2 Two Stage Venous Cannulae; Thin-wall Body; catalog size 29/29 Fr (9.7/9.7 mm); overall length 15 in (38.1 cm). Non-vented product code 91329C, connector Non-vented 3/8 in (0.95 cm), 10 per carton. Cataloged alternative vented body 91329 shares the size-level chart, not a separately published pressure-loss series. Reference curve comes from the standard (upper) MC2 chart, NOT the distinct Oval Body chart. Manufacturer pressure loss represents a positive water-flow magnitude, not a measured signed clinical venous inlet pressure."
+    },
+    {
+      "manufacturer": "Medtronic",
+      "model": "MC2 Two Stage Venous Cannulae — Oval Body",
+      "category": "venous",
+      "size": "36/46 Fr",
+      "overallLengthIn": 15,
+      "overallLengthCm": 38.1,
+      "connectionSite": "Right atrial",
+      "connectorSize": "Non-vented 1/2 in (1.27 cm)",
+      "cannulaOrderCodeLabel": "Order code",
+      "cannulaOrderCode": "91265C",
+      "cartonQuantity": "10 per carton",
+      "sourceLabel": "Medtronic Cannula Catalog 2020, p. 40 — MC2 Two Stage Venous Cannulae Oval Body pressure-loss chart (separate lower chart) (36/46 Fr)",
+      "sourceUrl": "https://www.medtronic.com/content/dam/medtronic-wide/public/united-states/products/cardiac-vascular/cardiovascular/cannulae/cannulae-us-product-catalog.pdf",
+      "testMedium": "Water (manufacturer graph x-axis: Flow Rate, L/min of water)",
+      "dataStatus": "digitized-curve",
+      "digitizationNote": "User-supplied older WebPlotDigitizer CSV for 36/46 Fr, MC2 Two Stage Venous Cannulae — Oval Body, from the manufacturer's Oval Body pressure-loss chart (separate lower chart). One original near-origin extraction point (0.489 L/min, -0.030 mmHg) was excluded as a small negative y-axis digitization artifact. The digitized 6.002 L/min endpoint was normalized to the chart's 6.000 L/min x-axis; its pressure was retained. Eleven remaining source points, no manufactured origin. Points were sorted ascending, rounded to 0.001 L/min and 0.1 mmHg. Supported digitized interval: 1.006–6.000 L/min. No fitted curve, smoothing, extrapolation, or synthetic (0,0) origin. Size-level source chart does not establish connector- or vent-variant-specific performance.",
+      "referenceFlowRangeLabel": "1.006–6.000",
+      "outOfRangeMessage": "Target flow is outside the digitized manufacturer source range (1.006 to 6.000 L/min). Pressure loss is not estimated.",
+      "points": [
+        {
+          "flow": 1.006,
+          "pressureDrop": 0.1
+        },
+        {
+          "flow": 1.495,
+          "pressureDrop": 0.3
+        },
+        {
+          "flow": 2.005,
+          "pressureDrop": 0.7
+        },
+        {
+          "flow": 2.508,
+          "pressureDrop": 1.1
+        },
+        {
+          "flow": 3.011,
+          "pressureDrop": 1.6
+        },
+        {
+          "flow": 3.514,
+          "pressureDrop": 2.2
+        },
+        {
+          "flow": 4.01,
+          "pressureDrop": 2.8
+        },
+        {
+          "flow": 4.5,
+          "pressureDrop": 3.6
+        },
+        {
+          "flow": 5.017,
+          "pressureDrop": 4.4
+        },
+        {
+          "flow": 5.513,
+          "pressureDrop": 5.3
+        },
+        {
+          "flow": 6,
+          "pressureDrop": 6.3
+        }
+      ],
+      "notes": "Medtronic MC2 Two Stage Venous Cannulae; Oval Body; catalog size 36/46 Fr (12.0/15.3 mm); overall length 15 in (38.1 cm). Non-vented product code 91265C, connector Non-vented 1/2 in (1.27 cm), 10 per carton. Cataloged alternative vented body 91265 shares the size-level chart, not a separately published pressure-loss series. Important: this is the separate Oval Body chart, NOT standard-body 36/46 Fr (91236C), whose curve remains unavailable. Manufacturer pressure loss represents a positive water-flow magnitude, not a measured signed clinical venous inlet pressure."
     }
   ]
 }
