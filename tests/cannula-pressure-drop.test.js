@@ -1866,7 +1866,7 @@ assert(pressureDropData.filter(entry => entry.model === 'Select Series Angled Ti
 assert.strictEqual(classifyComparison({ category: 'femoral venous', connectionSite: 'Jugular venous' }).location, 'jugular', 'Explicit anatomical site takes precedence');
 assert.strictEqual(classifyComparison({ category: 'arterial', connectionSite: 'Femoral venous' }).eligible, false, 'Conflicting type/site metadata is ambiguous');
 assert.strictEqual(classifyComparison({ category: 'arterial', connectionSite: 'Aortic root' }).eligible, false);
-assert.strictEqual(new Set(pressureDropData.map(targetRuntime.getPressureDropTargetFlowKey)).size, 221);
+assert.strictEqual(new Set(pressureDropData.map(targetRuntime.getPressureDropTargetFlowKey)).size, 224);
  
 // Medtronic MC2 Two Stage — user-digitized standard-body size-level water curves.
 // Non-vented 1/2-inch connector SKUs only. Do not generate a curve for 91236C
@@ -1925,6 +1925,69 @@ assert(!pressureDropData.some(entry => entry.cannulaOrderCode === '91236C'),
 assert(!mc2Entries.some(entry => /^912(?:28|40|46|51)$/.test(entry.cannulaOrderCode)),
   'Do not create duplicate vented connector-variant rows');
 
+
+// Manufacturer catalog p.40: standard (upper) and oval-body (lower) charts are independent.
+// Three separately digitized non-vented MC2 variants; no 36/46 standard or 32/40 oval curve was supplied.
+const mc2SpecialSpecs = [
+  { code: '91229C', size: '29/37 Fr', model: 'MC2 Two Stage Venous Cannulae — Reduced Stage Body',
+    connector: 'Non-vented 1/2 in (1.27 cm)', vented: '91229', count: 12, range: '0.475–6.000',
+    first: [0.475, 0.1], middle: [3.005, 5.0], last: [6, 17.6],
+    sha256: '6cdedd8be946c957329f38c8208504dd8978803da486488fdcea9a504471e6b7' },
+  { code: '91329C', size: '29/29 Fr', model: 'MC2 Two Stage Venous Cannulae — Thin-wall Body',
+    connector: 'Non-vented 3/8 in (0.95 cm)', vented: '91329', count: 9, range: '0.482–4.511',
+    first: [0.482, 0.4], middle: [2.51, 5.6], last: [4.511, 17.3],
+    sha256: 'b21947955e10e0061b5beadaca37902630704f4bb2fb7988ab47c1d4f5c2de1d' },
+  { code: '91265C', size: '36/46 Fr', model: 'MC2 Two Stage Venous Cannulae — Oval Body',
+    connector: 'Non-vented 1/2 in (1.27 cm)', vented: '91265', count: 11, range: '1.006–6.000',
+    first: [1.006, 0.1], middle: [3.514, 2.2], last: [6, 6.3],
+    sha256: 'c3cebcb4a6885df1b1bc052fb4f4101592623bee184d1f02785d0cb8edfa1fe2' }
+];
+const mc2SpecialEntries = pressureDropData.filter(entry => mc2SpecialSpecs.some(spec =>
+  entry.manufacturer === 'Medtronic' && entry.model === spec.model));
+assert.strictEqual(mc2SpecialEntries.length, 3);
+for (const spec of mc2SpecialSpecs) {
+  const entry = mc2SpecialEntries.find(item => item.cannulaOrderCode === spec.code);
+  assert(entry, `Missing separately digitized MC2 variant ${spec.code}`);
+  assert.strictEqual(entry.model, spec.model);
+  assert.strictEqual(entry.category, 'venous');
+  assert.strictEqual(entry.size, spec.size);
+  assert.strictEqual(entry.connectionSite, 'Right atrial');
+  assert.strictEqual(entry.overallLengthCm, 38.1);
+  assert.strictEqual(entry.connectorSize, spec.connector);
+  assert.strictEqual(entry.cartonQuantity, '10 per carton');
+  assert.strictEqual(entry.dataStatus, 'digitized-curve');
+  assert.strictEqual(entry.referenceFlowRangeLabel, spec.range);
+  assert(entry.sourceLabel.includes('p. 40'));
+  assert(entry.sourceUrl.endsWith('cannulae-us-product-catalog.pdf'));
+  assert(entry.notes.includes(spec.vented));
+  assert(entry.digitizationNote.includes('No fitted curve, smoothing, extrapolation, or synthetic (0,0) origin'));
+  assert.strictEqual(entry.points.length, spec.count);
+  assert.deepStrictEqual(entry.points[0], { flow: spec.first[0], pressureDrop: spec.first[1] });
+  assert(entry.points.some(p => p.flow === spec.middle[0] && p.pressureDrop === spec.middle[1]));
+  assert.deepStrictEqual(entry.points.at(-1), { flow: spec.last[0], pressureDrop: spec.last[1] });
+  assert(!entry.points.some(p => p.flow === 0 || p.pressureDrop < 0));
+  assert.strictEqual(require('crypto').createHash('sha256')
+    .update(JSON.stringify(entry.points)).digest('hex'), spec.sha256);
+  for (let i = 1; i < entry.points.length; i++) {
+    assert(entry.points[i].flow > entry.points[i - 1].flow);
+    assert(entry.points[i].pressureDrop >= entry.points[i - 1].pressureDrop);
+  }
+  const comparisonClass = classifyComparison(entry);
+  assert.strictEqual(comparisonClass.category, 'venous');
+  assert.strictEqual(comparisonClass.location, 'central');
+  assert(targetRuntime.searchPressureDropCatalog(pressureDropData, spec.code).includes(entry));
+  assert(!targetRuntime.getPressureDropTargetFlowResult(entry, spec.first[0] - 0.001).inRange);
+  assert(targetRuntime.getPressureDropTargetFlowResult(entry, spec.last[0]).inRange);
+  assert(!targetRuntime.getPressureDropTargetFlowResult(entry, spec.last[0] + 0.001).inRange);
+}
+const ovalMc2 = mc2SpecialEntries.find(entry => entry.cannulaOrderCode === '91265C');
+assert(ovalMc2.sourceLabel.includes('Oval Body') && ovalMc2.notes.includes('NOT standard-body'));
+assert(!pressureDropData.some(entry => entry.cannulaOrderCode === '91236C'),
+  'Unprovided standard-body 36/46 Fr curve must not be substituted with Oval Body 36/46 Fr.');
+assert(!pressureDropData.some(entry => entry.cannulaOrderCode === '91263C'),
+  'Unprovided oval-body 32/40 Fr curve must not be synthesized.');
+assert(!pressureDropData.some(entry => ['91229', '91329', '91265'].includes(entry.cannulaOrderCode)),
+  'Vented alternatives without independent pressure-flow curves must not create duplicate rows.');
 
 const pediatricVenousEntries = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' &&
   entry.cannulaOrderCode === '96830-110');
