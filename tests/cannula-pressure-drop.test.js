@@ -1719,7 +1719,7 @@ const targetRuntime = vm.runInNewContext([
     getPressureDropTargetFlowIdentity, getPressureDropTargetFlowSeries, getPressureDropTargetFlowModelOptions, createPressureDropTargetFlowTable,
     initPressureDropTargetFlowComparison, isPressureDropAnalyticsReady, drawPressureDropSeriesChart,
     searchPressureDropCatalog, getPressureDropExploredFlow, getPressureDropManufacturerFlowLimit,
-    getPressureDropManufacturerLimitLabel })`
+    getPressureDropManufacturerLimitLabel, getPressureDropDisplayEntries })`
 ].join('\n'), {
   document: targetTestDocument,
   el: id => targetNodes[id], isElementVisible: node => Boolean(node && !node.classList.contains('hidden')),
