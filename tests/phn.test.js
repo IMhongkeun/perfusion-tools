@@ -218,6 +218,35 @@ function run() {
   assert.strictEqual(phn.getEquivalentStructureKey('STJ', 'phnLopez'), 'STJ');
   assert.strictEqual(phn.getEquivalentStructureKey('STJ', 'detroitPettersen2008'), 'STJ');
 
+  // Review P1: TV_AP acquisition must use the published PHN parasternal long-axis view.
+  const correctTvApNote = 'Tricuspid valve anteroposterior diameter measured in parasternal long-axis view at maximal diastolic opening.';
+  assert.strictEqual(phn.PHN_STRUCTURES.TV_AP.referenceNote, correctTvApNote);
+  assert.strictEqual(mainJsApi.PHN_STRUCTURES.TV_AP.referenceNote, correctTvApNote);
+  assert(!phn.PHN_STRUCTURES.TV_AP.referenceNote.includes('RV inflow'));
+
+  // Review P2: keep anatomy stable when changing reference models.
+  // These map only structures with clearly corresponding anatomy; coefficients stay separate.
+  const newCrossModelEquivalences = [
+    ['SOV', 'ROOT'],
+    ['AORTIC_ISTHMUS', 'ISTH'],
+    ['DISTAL_ARCH', 'ARCH_DIST'],
+    ['LVIDD', 'LVEDD'],
+    ['LVIDS', 'LVESD'],
+    ['LVPWD', 'LVPWT'],
+    ['IVSD', 'LVST']
+  ];
+  for (const [detroitKey, phnKey] of newCrossModelEquivalences) {
+    assert.strictEqual(phn.PEDIATRIC_STRUCTURES[detroitKey].phnKey, phnKey,
+      `Cross-model anatomical mapping missing for ${detroitKey}.`);
+    assert.strictEqual(phn.getEquivalentStructureKey(phnKey, 'detroitPettersen2008'), detroitKey,
+      `PHN to Detroit must retain equivalent anatomy ${phnKey}.`);
+    assert.strictEqual(phn.getEquivalentStructureKey(detroitKey, 'phnLopez'), phnKey,
+      `Detroit to PHN must retain equivalent anatomy ${detroitKey}.`);
+    assert.strictEqual(mainJsApi.PEDIATRIC_STRUCTURES[detroitKey].phnKey, phnKey);
+    assert.strictEqual(mainJsApi.getEquivalentStructureKey(phnKey, 'detroitPettersen2008'), detroitKey);
+    assert.strictEqual(mainJsApi.getEquivalentStructureKey(detroitKey, 'phnLopez'), phnKey);
+  }
+
   // 8) Browser bundle (main.js) parity with lib/phn.js
   assert.strictEqual(mainJsApi.PHN_STRUCTURE_ORDER.length, 25);
   phn.PHN_STRUCTURE_ORDER.forEach((key) => {

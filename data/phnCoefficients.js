@@ -116,7 +116,7 @@ const PHN_STRUCTURES = {
     sd: 0.28,
     unit: 'cm',
     displayUnit: 'mm',
-    referenceNote: 'Tricuspid valve anteroposterior diameter measured in RV inflow view at maximal diastolic opening.'
+    referenceNote: 'Tricuspid valve anteroposterior diameter measured in parasternal long-axis view at maximal diastolic opening.'
   },
 
   // B. Aorta and aortic arch
@@ -360,18 +360,18 @@ const PEDIATRIC_STRUCTURE_ORDER = [
 
 const PEDIATRIC_STRUCTURES = {
   RVDD: { label: 'RVDd', phnKey: null, pettersenKey: 'RVDD' },
-  IVSD: { label: 'IVSd', phnKey: null, pettersenKey: 'IVSD' },
+  IVSD: { label: 'IVSd', phnKey: 'LVST', pettersenKey: 'IVSD' },
   IVSS: { label: 'IVSs', phnKey: null, pettersenKey: 'IVSS' },
-  LVIDD: { label: 'LVIDd', phnKey: null, pettersenKey: 'LVIDD' },
-  LVIDS: { label: 'LVIDs', phnKey: null, pettersenKey: 'LVIDS' },
-  LVPWD: { label: 'LVPWd', phnKey: null, pettersenKey: 'LVPWD' },
+  LVIDD: { label: 'LVIDd', phnKey: 'LVEDD', pettersenKey: 'LVIDD' },
+  LVIDS: { label: 'LVIDs', phnKey: 'LVESD', pettersenKey: 'LVIDS' },
+  LVPWD: { label: 'LVPWd', phnKey: 'LVPWT', pettersenKey: 'LVPWD' },
   LVPWS: { label: 'LVPWs', phnKey: null, pettersenKey: 'LVPWS' },
   AOV_ANN: { label: 'Aortic valve annulus', phnKey: 'ANN', pettersenKey: 'AOV_ANN' },
-  SOV: { label: 'Sinuses of Valsalva', phnKey: null, pettersenKey: 'SOV' },
+  SOV: { label: 'Sinuses of Valsalva', phnKey: 'ROOT', pettersenKey: 'SOV' },
   STJ: { label: 'Sinotubular junction', phnKey: 'STJ', pettersenKey: 'STJ' },
   TRANSVERSE_ARCH: { label: 'Transverse aortic arch', phnKey: null, pettersenKey: 'TRANSVERSE_ARCH' },
-  AORTIC_ISTHMUS: { label: 'Aortic isthmus', phnKey: null, pettersenKey: 'AORTIC_ISTHMUS' },
-  DISTAL_ARCH: { label: 'Distal aortic arch', phnKey: null, pettersenKey: 'DISTAL_ARCH' },
+  AORTIC_ISTHMUS: { label: 'Aortic isthmus', phnKey: 'ISTH', pettersenKey: 'AORTIC_ISTHMUS' },
+  DISTAL_ARCH: { label: 'Distal aortic arch', phnKey: 'ARCH_DIST', pettersenKey: 'DISTAL_ARCH' },
   AORTA_DIAPHRAGM: { label: 'Aorta at diaphragm', phnKey: null, pettersenKey: 'AORTA_DIAPHRAGM' },
   PV_ANN: { label: 'Pulmonary valve annulus', phnKey: null, pettersenKey: 'PV_ANN' },
   MPA: { label: 'Main pulmonary artery', phnKey: 'MPA', pettersenKey: 'MPA' },

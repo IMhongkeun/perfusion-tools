@@ -155,7 +155,7 @@ const CALCULATOR_REGISTRY = [
   { path: '/predicted-hct/', category: 'blood', icon: 'Hct', title: 'Predicted Hematocrit', description: 'Post-prime dilutional Hct for CPB planning.' },
   { path: '/priming-volume/', category: 'blood', icon: 'mL', title: 'Priming Volume Calculator', description: 'Tubing prime volume from inner diameter and length.' },
   { path: '/heparin/', category: 'anticoagulation', icon: 'ACT', title: 'Heparin Calculator', description: 'Adult CPB heparin and protamine planning support.' },
-  { path: '/cannula-pressure-drop/', category: 'circuit', icon: 'ΔP', title: 'Cannula Pressure Drop', description: 'Browse 212 manufacturer pressure-flow datasets for cannula selection.' },
+  { path: '/cannula-pressure-drop/', category: 'circuit', icon: 'ΔP', title: 'Cannula Pressure Drop', description: 'Browse 217 manufacturer pressure-flow datasets for cannula selection.' },
   { path: '/quick-reference/', category: 'circuit', icon: 'CPB', title: 'Quick Reference', description: 'Concise CPB and ECMO clinical reference tables.' },
   { path: '/timecalc/', category: 'time', icon: 'min', title: 'Time Calculator', description: 'Elapsed bypass, cross-clamp, and case intervals.' },
   { path: '/unit-converter/', category: 'time', icon: '↔', title: 'Unit Converter', description: 'Common perfusion pressure, flow, and blood-gas units.' },
@@ -6197,6 +6197,57 @@ function getCannulaPressureDropReferenceEntries(items = []) {
     .sort((a, b) => `${a.manufacturer} ${a.category || ''} ${a.model} ${a.size || ''} ${a.connectionSite || ''}`.localeCompare(`${b.manufacturer} ${b.category || ''} ${b.model} ${b.size || ''} ${b.connectionSite || ''}`));
 }
 
+
+function getPressureDropDisplayEntries(entries = []) {
+  // DLP Pediatric One-piece has one manufacturer pressure-flow curve per Fr,
+  // although connector/vent choices are cataloged as separate order codes.
+  // Keep every SKU in source data and collapse only verified identical curves
+  // in interactive display workflows, never unrelated pediatric products.
+  const groups = new Map();
+  entries.forEach(entry => {
+    if (entry.manufacturer !== 'Medtronic' ||
+        entry.model !== 'DLP Pediatric One-piece Arterial Cannula' ||
+        entry.category !== 'arterial' || !/^\d+ Fr$/.test(entry.size || '') ||
+        entry.sharedConnectorVariants) return;
+    const key = entry.size;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(entry);
+  });
+
+  const representatives = new Map();
+  const hiddenVariants = new Set();
+  groups.forEach(group => {
+    if (group.length < 2) return;
+    const reference = group[0];
+    const exactPoints = JSON.stringify(reference.points);
+    if (!Array.isArray(reference.points) || !reference.points.length ||
+        group.some(entry => !entry.cannulaOrderCode || !entry.connectorSize ||
+          entry.sourceUrl !== reference.sourceUrl ||
+          entry.sourceLabel !== reference.sourceLabel ||
+          entry.testMedium !== reference.testMedium ||
+          entry.referenceFlowRangeLabel !== reference.referenceFlowRangeLabel ||
+          JSON.stringify(entry.points) !== exactPoints) ||
+        new Set(group.map(entry => entry.cannulaOrderCode)).size !== group.length) return;
+
+    const variants = group.map(entry => ({
+      code: entry.cannulaOrderCode,
+      connector: entry.connectorSize
+    })).sort((left, right) => left.code.localeCompare(right.code, undefined, { numeric: true }));
+    representatives.set(reference, {
+      ...reference,
+      cannulaOrderCode: variants.map(variant => variant.code).join(' / '),
+      connectorSize: '',
+      sharedConnectorVariants: variants,
+      notes: 'One manufacturer-published ' + reference.size +
+        ' pressure-flow curve (water) is shared by these connector/order-code variants. ' +
+        'This does not establish connector-specific pressure-loss measurements or an anatomical cannulation site.'
+    });
+    group.slice(1).forEach(entry => hiddenVariants.add(entry));
+  });
+  return entries.filter(entry => !hiddenVariants.has(entry))
+    .map(entry => representatives.get(entry) || entry);
+}
+
 function getPressureDropOrderCodeText(entry) {
   return [
     entry.cannulaOrderCode ? `${entry.cannulaOrderCodeLabel || 'Order code'}: ${entry.cannulaOrderCode}` : '',
@@ -6213,6 +6264,7 @@ function getPressureDropEntrySearchText(entry) {
     entry.connectionSite,
     entry.connectorSize,
     entry.cannulaOrderCode,
+    ...(entry.sharedConnectorVariants || []).flatMap(variant => [variant.code, variant.connector]),
     entry.cannulaKitOrderCode,
     entry.sourceLabel,
     entry.sourceUrl,
@@ -6684,7 +6736,7 @@ function createPressureDropCandidateList(candidates, onSelect) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'text-left rounded-lg border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-800/50 p-3 hover:border-accent-500/50 transition-colors';
-    button.innerHTML = `<p class="text-sm font-semibold text-primary-900 dark:text-white">${entry.manufacturer} · ${entry.model}</p><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">${getPressureDropGroupLabel(entry.category)} · ${entry.size || 'Unknown size'}${entry.connectionSite ? ` · ${entry.connectionSite}` : ''} · ${getPressureDropFlowRange(entry)}${getPressureDropSeries(entry).length > 1 ? ' · Dual lumen · Infusion + Drainage' : ''}</p>`;
+    button.innerHTML = `<p class="text-sm font-semibold text-primary-900 dark:text-white">${entry.manufacturer} · ${entry.model}</p><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">${getPressureDropGroupLabel(entry.category)} · ${entry.size || 'Unknown size'}${entry.connectionSite ? ` · ${entry.connectionSite}` : ''} · ${getPressureDropFlowRange(entry)}${entry.sharedConnectorVariants?.length ? ` · Shared Fr-level curve · ${entry.sharedConnectorVariants.length} connector variants` : ''}${getPressureDropSeries(entry).length > 1 ? ' · Dual lumen · Infusion + Drainage' : ''}</p>`;
     button.addEventListener('click', () => onSelect(entry));
     list.appendChild(button);
   });
@@ -6786,8 +6838,10 @@ function createPressureDropSelectedSummary(entry) {
     entry.outerDiameterMm ? ['Outer diameter', `${entry.outerDiameterMm} mm`] : null,
     entry.insertableLength ? ['Insertable length', entry.insertableLength] : null,
     entry.connectorSize ? ['Connector size', entry.connectorSize] : null,
+    entry.sharedConnectorVariants?.length ? ['Curve reference', 'Shared Fr-level manufacturer curve (not connector-specific)'] : null,
+    entry.sharedConnectorVariants?.length ? ['Connector variants', entry.sharedConnectorVariants.map(variant => `${variant.code}: ${variant.connector}`).join('; ')] : null,
     entry.connectionSite ? ['Connection site', entry.connectionSite] : null,
-    orderCodeText && orderCodeText !== '—' ? ['Order code', orderCodeText] : null,
+    orderCodeText && orderCodeText !== '—' ? [entry.sharedConnectorVariants ? 'Order codes' : 'Order code', orderCodeText] : null,
     entry.sapCode ? ['SAP code', entry.sapCode] : null,
     entry.testMedium ? ['Test medium', entry.testMedium] : null,
     dataStatusText && dataStatusText !== '—' ? ['Data status', dataStatusText] : null,
@@ -6852,7 +6906,7 @@ function createPressureDropAvailableDatasetsDetails(entries, onSelect) {
     button.className = 'w-full text-left rounded-lg border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/70 p-3 hover:border-accent-500/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 transition-colors';
     const connectionText = entry.connectionSite ? ` · ${entry.connectionSite}` : '';
     const sourceText = entry.sourceLabel ? ` · ${entry.sourceLabel}` : '';
-    button.innerHTML = `<span class="block text-sm font-semibold text-primary-900 dark:text-white">${entry.manufacturer || 'Unknown manufacturer'} · ${entry.model || 'Unknown model'}</span><span class="mt-1 block text-xs text-slate-500 dark:text-slate-400">${getPressureDropGroupLabel(entry.category)} · ${entry.size || 'Unknown size'}${connectionText} · ${getPressureDropFlowRange(entry)}${sourceText}</span>`;
+    button.innerHTML = `<span class="block text-sm font-semibold text-primary-900 dark:text-white">${entry.manufacturer || 'Unknown manufacturer'} · ${entry.model || 'Unknown model'}</span><span class="mt-1 block text-xs text-slate-500 dark:text-slate-400">${getPressureDropGroupLabel(entry.category)} · ${entry.size || 'Unknown size'}${connectionText} · ${getPressureDropFlowRange(entry)}${entry.sharedConnectorVariants?.length ? ` · Shared Fr-level curve (${entry.sharedConnectorVariants.length} connector variants)` : ''}${sourceText}</span>`;
     button.addEventListener('click', () => onSelect(entry));
     list.appendChild(button);
   });
@@ -7089,8 +7143,9 @@ function searchPressureDropCatalog(entries, query) {
     if (frenchSizes.some(size => getPressureDropComparisonFr(entry) !== size)) return false;
     if (!terms.length) return true;
     const classification = classifyPressureDropComparisonEntry(entry);
+    const variantTerms = (entry.sharedConnectorVariants || []).flatMap(variant => [variant.code, variant.connector]);
     const searchable = [entry.manufacturer, entry.model, getPressureDropTargetFlowModelLabel(entry.model || ''),
-      entry.size, entry.cannulaOrderCode, entry.connectorSize, entry.connectionSite,
+      entry.size, entry.cannulaOrderCode, entry.connectorSize, ...variantTerms, entry.connectionSite,
       Number.isFinite(getPressureDropComparisonFr(entry)) ? `${getPressureDropComparisonFr(entry)} Fr` : '',
       classification.configuration, getPressureDropProductFamily(entry)].filter(Boolean).join(' ').toLowerCase();
     return terms.every(term => searchable.includes(term));
@@ -7497,6 +7552,12 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
     name.textContent = getPressureDropTargetFlowDisplayName(entry);
     name.title = entry.model;
     identityCell.append(meta, name);
+    if (entry.sharedConnectorVariants?.length) {
+      const shared = document.createElement('p');
+      shared.className = 'mt-1 text-[11px] text-slate-500 dark:text-slate-400';
+      shared.textContent = `Shared ${entry.size} curve · ${entry.sharedConnectorVariants.length} connector variants`;
+      identityCell.appendChild(shared);
+    }
     if (configuration === 'Dual-lumen VV ECMO') {
       const config = document.createElement('span');
       config.className = 'text-[11px] text-slate-500 dark:text-slate-400';
@@ -7575,15 +7636,26 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
       link.textContent = 'Manufacturer maximum-flow source ↗';
       detailBody.appendChild(link);
     }
-    if (entry.cannulaOrderCode) {
-      const catalogCode = document.createElement('p');
-      catalogCode.textContent = `Order code: ${entry.cannulaOrderCode}`;
-      detailBody.appendChild(catalogCode);
-    }
-    if (entry.connectorSize) {
-      const connector = document.createElement('p');
-      connector.textContent = `Connector: ${entry.connectorSize}`;
-      detailBody.appendChild(connector);
+    if (entry.sharedConnectorVariants?.length) {
+      const explanation = document.createElement('p');
+      explanation.textContent = 'One common manufacturer Fr-level pressure-flow curve; no independent connector-specific pressure-loss data.';
+      detailBody.appendChild(explanation);
+      entry.sharedConnectorVariants.forEach(variant => {
+        const connector = document.createElement('p');
+        connector.textContent = `${variant.code} — ${variant.connector}`;
+        detailBody.appendChild(connector);
+      });
+    } else {
+      if (entry.cannulaOrderCode) {
+        const catalogCode = document.createElement('p');
+        catalogCode.textContent = `Order code: ${entry.cannulaOrderCode}`;
+        detailBody.appendChild(catalogCode);
+      }
+      if (entry.connectorSize) {
+        const connector = document.createElement('p');
+        connector.textContent = `Connector: ${entry.connectorSize}`;
+        detailBody.appendChild(connector);
+      }
     }
     detailBody.appendChild(getPressureDropSourceNode(entry, true, { showMissingPublicLinkNote: true }));
     details.append(summary, detailBody);
@@ -7811,7 +7883,8 @@ async function initCannulaPressureDropPage() {
 
   try {
     setState({ isLoading: true });
-    const entries = getCannulaPressureDropReferenceEntries(await loadCannulaPressureDropData()).map((entry, index) => ({ ...entry, lookupId: `pressure-drop-entry-${index}` }));
+    const sourceEntries = getCannulaPressureDropReferenceEntries(await loadCannulaPressureDropData());
+    const entries = getPressureDropDisplayEntries(sourceEntries).map((entry, index) => ({ ...entry, lookupId: `pressure-drop-entry-${index}` }));
 
     const controls = {
       manufacturerSelect: el('pressure-drop-page-manufacturer'),
@@ -8311,7 +8384,7 @@ const PHN_STRUCTURES = {
     sd: 0.28,
     unit: 'cm',
     displayUnit: 'mm',
-    referenceNote: 'Tricuspid valve anteroposterior diameter measured in RV inflow view at maximal diastolic opening.'
+    referenceNote: 'Tricuspid valve anteroposterior diameter measured in parasternal long-axis view at maximal diastolic opening.'
   },
 
   // B. Aorta and aortic arch
@@ -8555,18 +8628,18 @@ const PEDIATRIC_STRUCTURE_ORDER = [
 
 const PEDIATRIC_STRUCTURES = {
   RVDD: { label: 'RVDd', phnKey: null, pettersenKey: 'RVDD' },
-  IVSD: { label: 'IVSd', phnKey: null, pettersenKey: 'IVSD' },
+  IVSD: { label: 'IVSd', phnKey: 'LVST', pettersenKey: 'IVSD' },
   IVSS: { label: 'IVSs', phnKey: null, pettersenKey: 'IVSS' },
-  LVIDD: { label: 'LVIDd', phnKey: null, pettersenKey: 'LVIDD' },
-  LVIDS: { label: 'LVIDs', phnKey: null, pettersenKey: 'LVIDS' },
-  LVPWD: { label: 'LVPWd', phnKey: null, pettersenKey: 'LVPWD' },
+  LVIDD: { label: 'LVIDd', phnKey: 'LVEDD', pettersenKey: 'LVIDD' },
+  LVIDS: { label: 'LVIDs', phnKey: 'LVESD', pettersenKey: 'LVIDS' },
+  LVPWD: { label: 'LVPWd', phnKey: 'LVPWT', pettersenKey: 'LVPWD' },
   LVPWS: { label: 'LVPWs', phnKey: null, pettersenKey: 'LVPWS' },
   AOV_ANN: { label: 'Aortic valve annulus', phnKey: 'ANN', pettersenKey: 'AOV_ANN' },
-  SOV: { label: 'Sinuses of Valsalva', phnKey: null, pettersenKey: 'SOV' },
+  SOV: { label: 'Sinuses of Valsalva', phnKey: 'ROOT', pettersenKey: 'SOV' },
   STJ: { label: 'Sinotubular junction', phnKey: 'STJ', pettersenKey: 'STJ' },
   TRANSVERSE_ARCH: { label: 'Transverse aortic arch', phnKey: null, pettersenKey: 'TRANSVERSE_ARCH' },
-  AORTIC_ISTHMUS: { label: 'Aortic isthmus', phnKey: null, pettersenKey: 'AORTIC_ISTHMUS' },
-  DISTAL_ARCH: { label: 'Distal aortic arch', phnKey: null, pettersenKey: 'DISTAL_ARCH' },
+  AORTIC_ISTHMUS: { label: 'Aortic isthmus', phnKey: 'ISTH', pettersenKey: 'AORTIC_ISTHMUS' },
+  DISTAL_ARCH: { label: 'Distal aortic arch', phnKey: 'ARCH_DIST', pettersenKey: 'DISTAL_ARCH' },
   AORTA_DIAPHRAGM: { label: 'Aorta at diaphragm', phnKey: null, pettersenKey: 'AORTA_DIAPHRAGM' },
   PV_ANN: { label: 'Pulmonary valve annulus', phnKey: null, pettersenKey: 'PV_ANN' },
   MPA: { label: 'Main pulmonary artery', phnKey: 'MPA', pettersenKey: 'MPA' },
