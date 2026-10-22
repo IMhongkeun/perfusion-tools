@@ -680,7 +680,7 @@ assert.strictEqual(
 const standardCatalogMedtronicEntries = medtronicEntries.filter(entry =>
   entry.model !== 'Bio-Medicus NextGen Pediatric Venous Cannula' || entry.size === '8 Fr'
 );
-assert.strictEqual(standardCatalogMedtronicEntries.length, 105, 'Standard Medtronic cannula catalog entries count.');
+assert.strictEqual(standardCatalogMedtronicEntries.length, 112, 'Standard Medtronic cannula catalog entries count.');
 assert(
   standardCatalogMedtronicEntries.every(entry => entry.sourceUrl === medtronicCatalogUrl),
   'Standard Medtronic pressure-drop entries must link to the public Medtronic Cannula Catalog PDF.'
@@ -3027,6 +3027,20 @@ const exploringChart = targetRuntime.createPressureDropTargetFlowChart([targetFi
 const exploringSvg = pressureDescendants(exploringChart, node => node.tagName === 'svg')[0];
 const chartReadout = pressureDescendants(exploringChart, node => node.textContent.startsWith('Target: '))[0];
 const chartSlider = pressureDescendants(exploringChart, node => node.type === 'range')[0];
+// Mobile regression: the Target occupies a full row so changing the Explore
+// result from single- to double-digit mmHg never moves Explore up/down.
+const exploringLegendItem = pressureDescendants(exploringChart, node => node.tagName === 'li')[0];
+const exploringTargetLabel = pressureDescendants(exploringLegendItem,
+  node => node.tagName === 'span' && node.textContent.startsWith('Target: '))[0];
+const exploringValueLabel = pressureDescendants(exploringLegendItem,
+  node => node.tagName === 'span' && node.textContent.startsWith('Explore: '))[0];
+assert(exploringTargetLabel?.className.split(/\\s+/).includes('basis-full'),
+  'Target estimate must always occupy its own complete legend row.');
+assert(exploringValueLabel?.className.split(/\\s+/).includes('whitespace-nowrap') &&
+  exploringValueLabel.className.split(/\\s+/).includes('shrink-0'),
+  'Explore must stay together at the start of the following legend row.');
+const stableExplorerClass = exploringValueLabel.className;
+
 const blankTargetChart = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[0]], NaN, false, () => {}, () => {});
 const blankTargetItem = pressureDescendants(blankTargetChart, node => node.tagName === 'li')[0];
 const blankSlider = pressureDescendants(blankTargetChart, node => node.type === 'range')[0];
@@ -3039,6 +3053,13 @@ assert(blankSlider && Number(blankSlider.min) > 0, 'Explorer must start at a pos
 assert(blankCommit && (!blankCommit.disabled || Number(blankSlider.min) > 0),
   'The commit control must not accept a zero or negative flow.');
 assert(chartSlider && chartSlider.attributes['aria-label'].includes('0.1 L/min'));
+chartSlider.value = '1.0'; chartSlider.dispatch('input');
+assert(exploringValueLabel.textContent.includes('Explore: 10.0 mmHg'));
+chartSlider.value = '1.1'; chartSlider.dispatch('input');
+assert(exploringValueLabel.textContent.includes('Explore: 12.0 mmHg'));
+assert.strictEqual(exploringValueLabel.className, stableExplorerClass,
+  'Explore must retain its single stable row and layout classes when digits change.');
+
 assert.strictEqual(exploringSvg.dataset.minFlow, '0');
 exploringSvg.dispatch('pointermove', { clientX: 58 + 344 * (4.1 / 5) });
 assert(chartReadout.textContent.includes('Target: 4.5 L/min · Exploring: 4.1 L/min'));
