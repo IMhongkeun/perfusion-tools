@@ -155,7 +155,7 @@ const CALCULATOR_REGISTRY = [
   { path: '/predicted-hct/', category: 'blood', icon: 'Hct', title: 'Predicted Hematocrit', description: 'Post-prime dilutional Hct for CPB planning.' },
   { path: '/priming-volume/', category: 'blood', icon: 'mL', title: 'Priming Volume Calculator', description: 'Tubing prime volume from inner diameter and length.' },
   { path: '/heparin/', category: 'anticoagulation', icon: 'ACT', title: 'Heparin Calculator', description: 'Adult CPB heparin and protamine planning support.' },
-  { path: '/cannula-pressure-drop/', category: 'circuit', icon: 'ΔP', title: 'Cannula Pressure Drop', description: 'Browse 217 manufacturer pressure-flow datasets for cannula selection.' },
+  { path: '/cannula-pressure-drop/', category: 'circuit', icon: 'ΔP', title: 'Cannula Pressure Drop', description: 'Browse 224 manufacturer pressure-flow datasets for cannula selection.' },
   { path: '/quick-reference/', category: 'circuit', icon: 'CPB', title: 'Quick Reference', description: 'Concise CPB and ECMO clinical reference tables.' },
   { path: '/timecalc/', category: 'time', icon: 'min', title: 'Time Calculator', description: 'Elapsed bypass, cross-clamp, and case intervals.' },
   { path: '/unit-converter/', category: 'time', icon: '↔', title: 'Unit Converter', description: 'Common perfusion pressure, flow, and blood-gas units.' },
@@ -7343,10 +7343,16 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
       if (cell) {
         const limit = getPressureDropManufacturerFlowLimit(item.entry, flow);
         const limitText = getPressureDropManufacturerLimitLabel(limit);
-        cell.textContent = `Explore: ${valid ? `${Math.abs(result.value).toFixed(1)} mmHg` : 'Out of range'}${limitText ? ` · ${limitText}` : ''}`;
-        cell.title = valid ? `Signed pressure: ${formatSignedPressureDrop(result.value)} mmHg${limitText ? `; ${limitText}. Source: ${limit.source}` : ''}` : '';
-        cell.classList.toggle('text-amber-700', Boolean(limitText));
-        cell.classList.toggle('dark:text-amber-300', Boolean(limitText));
+        // Keep only the numeric Explore value on one line; lengthy manufacturer
+        // warnings have a separate, wrapping row on narrow viewports.
+        cell.readout.textContent = `Explore: ${valid ? `${Math.abs(result.value).toFixed(1)} mmHg` : 'Out of range'}`;
+        cell.readout.title = valid ? `Signed pressure: ${formatSignedPressureDrop(result.value)} mmHg${limitText ? `; ${limitText}. Source: ${limit.source}` : ''}` : '';
+        cell.readout.classList.toggle('text-amber-700', Boolean(limitText));
+        cell.readout.classList.toggle('dark:text-amber-300', Boolean(limitText));
+        cell.warning.textContent = limitText;
+        cell.warning.classList.toggle('text-amber-700', Boolean(limitText));
+        cell.warning.classList.toggle('dark:text-amber-300', Boolean(limitText));
+        cell.warning.classList.toggle('hidden', !limitText);
       }
     });
     if (canExploreOnSlider) slider.value = String(Math.max(Number(slider.min), Math.min(Number(slider.max), flow)));
@@ -7428,7 +7434,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     appendPressureDropSizeLabel(size, identity);
     if (configuration === 'Dual-lumen VV ECMO') size.appendChild(document.createTextNode(' · Dual-lumen VV ECMO'));
     const value = document.createElement('span');
-    value.className = `shrink-0 tabular-nums font-semibold ${result.isHighPressure && result.inRange ? 'text-amber-700 dark:text-amber-300' : 'text-primary-900 dark:text-white'}`;
+    value.className = `basis-full min-w-0 tabular-nums font-semibold ${result.isHighPressure && result.inRange ? 'text-amber-700 dark:text-amber-300' : 'text-primary-900 dark:text-white'}`;
     value.textContent = result.inRange ? `Target: ${result.lumenLabel ? 'Drainage ' : ''}${result.magnitude.toFixed(1)} mmHg`
       : `Target: ${result.unavailableReason || getPressureDropTargetFlowValueText(result)}`;
     if (result.inRange) value.title = `Signed pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
@@ -7439,9 +7445,11 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
       value.title = `${value.title ? value.title + ' · ' : ''}${limitLabel}. Source: ${result.manufacturerLimit.source}`;
     }
     const explored = document.createElement('span');
-    explored.className = 'min-w-0 text-xs tabular-nums text-sky-700 dark:text-sky-300';
+    explored.className = 'shrink-0 whitespace-nowrap text-xs tabular-nums text-sky-700 dark:text-sky-300';
     explored.textContent = 'Explore: —';
-    if (result.series) exploredCells.push(explored);
+    const exploreWarning = document.createElement('span');
+    exploreWarning.className = 'hidden basis-full min-w-0 whitespace-normal break-words text-xs';
+    if (result.series) exploredCells.push({ readout: explored, warning: exploreWarning });
     const status = document.createElement('span');
     status.className = 'shrink-0 rounded-full bg-slate-100 dark:bg-primary-800 px-2 py-0.5 text-[11px]';
     status.textContent = limitLabel ? 'Above verified SKU max' : getPressureDropTargetFlowStatusText(result);
@@ -7465,7 +7473,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     identityGroup.append(swatch, rank, name, size);
     const valuesGroup = document.createElement('div');
     valuesGroup.className = 'flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:justify-end';
-    valuesGroup.append(value, explored, status);
+    valuesGroup.append(value, explored, exploreWarning, status);
     if (source) valuesGroup.appendChild(source);
     valuesGroup.appendChild(remove);
     item.append(identityGroup, valuesGroup);

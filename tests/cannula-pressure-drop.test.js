@@ -680,7 +680,7 @@ assert.strictEqual(
 const standardCatalogMedtronicEntries = medtronicEntries.filter(entry =>
   entry.model !== 'Bio-Medicus NextGen Pediatric Venous Cannula' || entry.size === '8 Fr'
 );
-assert.strictEqual(standardCatalogMedtronicEntries.length, 105, 'Standard Medtronic cannula catalog entries count.');
+assert.strictEqual(standardCatalogMedtronicEntries.length, 112, 'Standard Medtronic cannula catalog entries count.');
 assert(
   standardCatalogMedtronicEntries.every(entry => entry.sourceUrl === medtronicCatalogUrl),
   'Standard Medtronic pressure-drop entries must link to the public Medtronic Cannula Catalog PDF.'
@@ -1790,7 +1790,11 @@ const documentedCentralVenousModels = {
   Medtronic: [
     'DLP Single Stage Venous Cannulae', 'DLP Malleable Single Stage Venous Cannulae',
     'DLP Right Angle Single Stage Venous Cannulae',
-    'DLP Single Stage Venous Cannulae with Right Angle Metal Tip'
+    'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    'MC2 Two Stage Venous Cannulae',
+    'MC2 Two Stage Venous Cannulae — Reduced Stage Body',
+    'MC2 Two Stage Venous Cannulae — Thin-wall Body',
+    'MC2 Two Stage Venous Cannulae — Oval Body'
   ]
 };
 const operationalCentralVenousSkus = new Set(['V122-24', 'V122-28', 'V122-32', 'V122-34', 'V122-36',
@@ -1866,7 +1870,128 @@ assert(pressureDropData.filter(entry => entry.model === 'Select Series Angled Ti
 assert.strictEqual(classifyComparison({ category: 'femoral venous', connectionSite: 'Jugular venous' }).location, 'jugular', 'Explicit anatomical site takes precedence');
 assert.strictEqual(classifyComparison({ category: 'arterial', connectionSite: 'Femoral venous' }).eligible, false, 'Conflicting type/site metadata is ambiguous');
 assert.strictEqual(classifyComparison({ category: 'arterial', connectionSite: 'Aortic root' }).eligible, false);
-assert.strictEqual(new Set(pressureDropData.map(targetRuntime.getPressureDropTargetFlowKey)).size, 217);
+assert.strictEqual(new Set(pressureDropData.map(targetRuntime.getPressureDropTargetFlowKey)).size, 224);
+ 
+// Medtronic MC2 Two Stage — user-digitized standard-body size-level water curves.
+// Non-vented 1/2-inch connector SKUs only. Do not generate a curve for 91236C
+// (36/46 Fr), which was not supplied, or conflate the separate oval-body chart.
+const mc2TestSpecs = [
+  ['28/36 Fr', '91228C', '91228', '0.088–5.365', [0.088, 0.2], [3.126, 7.1], [5.365, 19.9], 'f18f452e9730355d14f266fe65614780e5de486300bbb8d4938b1f148106d04f'],
+  ['32/40 Fr', '91240C', '91240', '0.088–5.971', [0.088, 0.2], [3.124, 3.7], [5.971, 11.7], 'ba3a3bc68bfb740b009441538284d538202e509e3c3ac45c6f63722e8f6067c2'],
+  ['34/46 Fr', '91246C', '91246', '0.088–5.968', [0.088, 0.1], [3.122, 1.9], [5.968, 6.4], '674c248a78a8e547a5c3ecc7714fb49492f11d041559e9f125820c791bb531f7'],
+  ['36/51 Fr', '91251C', '91251', '0.088–5.975', [0.088, 0.1], [3.122, 1.8], [5.975, 5.8], 'f795ed62dfeadaad0f25c3a3c8b3313355aae85d9d0acc469441303d95d628d1']
+];
+const mc2Entries = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' &&
+  entry.model === 'MC2 Two Stage Venous Cannulae');
+assert.strictEqual(mc2Entries.length, 4);
+const mc2Digests = new Set();
+for (const [size, code, counterpart, range, first, middle, last, digest] of mc2TestSpecs) {
+  const item = mc2Entries.find(entry => entry.cannulaOrderCode === code);
+  assert(item, `Missing MC2 non-vented SKU ${code}`);
+  assert.strictEqual(item.size, size);
+  assert.strictEqual(item.category, 'venous');
+  assert.strictEqual(item.connectionSite, 'Right atrial');
+  assert.strictEqual(item.connectorSize, 'Non-vented 1/2 in (1.27 cm)');
+  assert.strictEqual(item.overallLengthCm, 38.1);
+  assert.strictEqual(item.cartonQuantity, '10 per carton');
+  assert.strictEqual(item.dataStatus, 'digitized-curve');
+  assert(item.sourceUrl.endsWith('cannulae-us-product-catalog.pdf'));
+  assert(item.sourceLabel.includes('MC2 Two Stage'));
+  assert(item.notes.includes(counterpart), 'Catalog connection-site counterpart must remain discoverable');
+  assert(item.digitizationNote.includes('not the separate Oval Body chart'));
+  assert(item.digitizationNote.includes('No fitted curve, smoothing, synthetic (0,0) anchor, or extrapolation'));
+  assert.strictEqual(item.referenceFlowRangeLabel, range);
+  assert.strictEqual(item.points.length, 32);
+  const point = pair => ({ flow: pair[0], pressureDrop: pair[1] });
+  assert.deepStrictEqual(item.points[0], point(first));
+  assert(item.points.some(p => p.flow === middle[0] && p.pressureDrop === middle[1]));
+  assert.deepStrictEqual(item.points[31], point(last));
+  assert(!item.points.some(p => p.flow === 0), 'Do not introduce an invented origin');
+  item.points.forEach((p, index) => {
+    if (!index) return;
+    assert(p.flow > item.points[index - 1].flow);
+    assert(p.pressureDrop >= item.points[index - 1].pressureDrop);
+  });
+  const actualDigest = require('crypto').createHash('sha256').update(JSON.stringify(item.points)).digest('hex');
+  assert.strictEqual(actualDigest, digest, `${code} must preserve the entire reviewed digitized curve`);
+  mc2Digests.add(actualDigest);
+  const classification = classifyComparison(item);
+  assert.strictEqual(classification.category, 'venous');
+  assert.strictEqual(classification.location, 'central');
+  assert(targetRuntime.searchPressureDropCatalog(pressureDropData, code).includes(item));
+  assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(item, first[0] - 0.001).inRange, false);
+  assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(item, last[0] + 0.001).inRange, false);
+  assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(item, last[0]).inRange, true);
+}
+assert.strictEqual(mc2Digests.size, 4, 'Different MC2 Fr pairs must not share an unrelated size curve');
+assert(!pressureDropData.some(entry => entry.cannulaOrderCode === '91236C'),
+  'Do not substitute another size curve for missing 36/46 Fr CSV');
+assert(!mc2Entries.some(entry => /^912(?:28|40|46|51)$/.test(entry.cannulaOrderCode)),
+  'Do not create duplicate vented connector-variant rows');
+
+
+// Manufacturer catalog p.40: standard (upper) and oval-body (lower) charts are independent.
+// Three separately digitized non-vented MC2 variants; no 36/46 standard or 32/40 oval curve was supplied.
+const mc2SpecialSpecs = [
+  { code: '91229C', size: '29/37 Fr', model: 'MC2 Two Stage Venous Cannulae — Reduced Stage Body',
+    connector: 'Non-vented 1/2 in (1.27 cm)', vented: '91229', count: 12, range: '0.475–6.000',
+    first: [0.475, 0.1], middle: [3.005, 5.0], last: [6, 17.6],
+    sha256: '6cdedd8be946c957329f38c8208504dd8978803da486488fdcea9a504471e6b7' },
+  { code: '91329C', size: '29/29 Fr', model: 'MC2 Two Stage Venous Cannulae — Thin-wall Body',
+    connector: 'Non-vented 3/8 in (0.95 cm)', vented: '91329', count: 9, range: '0.482–4.511',
+    first: [0.482, 0.4], middle: [2.51, 5.6], last: [4.511, 17.3],
+    sha256: 'b21947955e10e0061b5beadaca37902630704f4bb2fb7988ab47c1d4f5c2de1d' },
+  { code: '91265C', size: '36/46 Fr', model: 'MC2 Two Stage Venous Cannulae — Oval Body',
+    connector: 'Non-vented 1/2 in (1.27 cm)', vented: '91265', count: 11, range: '1.006–6.000',
+    first: [1.006, 0.1], middle: [3.514, 2.2], last: [6, 6.3],
+    sha256: 'c3cebcb4a6885df1b1bc052fb4f4101592623bee184d1f02785d0cb8edfa1fe2' }
+];
+const mc2SpecialEntries = pressureDropData.filter(entry => mc2SpecialSpecs.some(spec =>
+  entry.manufacturer === 'Medtronic' && entry.model === spec.model));
+assert.strictEqual(mc2SpecialEntries.length, 3);
+for (const spec of mc2SpecialSpecs) {
+  const entry = mc2SpecialEntries.find(item => item.cannulaOrderCode === spec.code);
+  assert(entry, `Missing separately digitized MC2 variant ${spec.code}`);
+  assert.strictEqual(entry.model, spec.model);
+  assert.strictEqual(entry.category, 'venous');
+  assert.strictEqual(entry.size, spec.size);
+  assert.strictEqual(entry.connectionSite, 'Right atrial');
+  assert.strictEqual(entry.overallLengthCm, 38.1);
+  assert.strictEqual(entry.connectorSize, spec.connector);
+  assert.strictEqual(entry.cartonQuantity, '10 per carton');
+  assert.strictEqual(entry.dataStatus, 'digitized-curve');
+  assert.strictEqual(entry.referenceFlowRangeLabel, spec.range);
+  assert(entry.sourceLabel.includes('p. 40'));
+  assert(entry.sourceUrl.endsWith('cannulae-us-product-catalog.pdf'));
+  assert(entry.notes.includes(spec.vented));
+  assert(entry.digitizationNote.includes('No fitted curve, smoothing, extrapolation, or synthetic (0,0) origin'));
+  assert.strictEqual(entry.points.length, spec.count);
+  assert.deepStrictEqual(entry.points[0], { flow: spec.first[0], pressureDrop: spec.first[1] });
+  assert(entry.points.some(p => p.flow === spec.middle[0] && p.pressureDrop === spec.middle[1]));
+  assert.deepStrictEqual(entry.points.at(-1), { flow: spec.last[0], pressureDrop: spec.last[1] });
+  assert(!entry.points.some(p => p.flow === 0 || p.pressureDrop < 0));
+  assert.strictEqual(require('crypto').createHash('sha256')
+    .update(JSON.stringify(entry.points)).digest('hex'), spec.sha256);
+  for (let i = 1; i < entry.points.length; i++) {
+    assert(entry.points[i].flow > entry.points[i - 1].flow);
+    assert(entry.points[i].pressureDrop >= entry.points[i - 1].pressureDrop);
+  }
+  const comparisonClass = classifyComparison(entry);
+  assert.strictEqual(comparisonClass.category, 'venous');
+  assert.strictEqual(comparisonClass.location, 'central');
+  assert(targetRuntime.searchPressureDropCatalog(pressureDropData, spec.code).includes(entry));
+  assert(!targetRuntime.getPressureDropTargetFlowResult(entry, spec.first[0] - 0.001).inRange);
+  assert(targetRuntime.getPressureDropTargetFlowResult(entry, spec.last[0]).inRange);
+  assert(!targetRuntime.getPressureDropTargetFlowResult(entry, spec.last[0] + 0.001).inRange);
+}
+const ovalMc2 = mc2SpecialEntries.find(entry => entry.cannulaOrderCode === '91265C');
+assert(ovalMc2.sourceLabel.includes('Oval Body') && ovalMc2.notes.includes('NOT standard-body'));
+assert(!pressureDropData.some(entry => entry.cannulaOrderCode === '91236C'),
+  'Unprovided standard-body 36/46 Fr curve must not be substituted with Oval Body 36/46 Fr.');
+assert(!pressureDropData.some(entry => entry.cannulaOrderCode === '91263C'),
+  'Unprovided oval-body 32/40 Fr curve must not be synthesized.');
+assert(!pressureDropData.some(entry => ['91229', '91329', '91265'].includes(entry.cannulaOrderCode)),
+  'Vented alternatives without independent pressure-flow curves must not create duplicate rows.');
 
 const pediatricVenousEntries = pressureDropData.filter(entry => entry.manufacturer === 'Medtronic' &&
   entry.cannulaOrderCode === '96830-110');
@@ -2553,11 +2678,16 @@ assert.strictEqual(collapsedSource.length, 1, 'Source and metadata should be col
 assert(!collapsedSource[0].open, 'Technical details must not be expanded by default.');
 assert(pressureDescendants(compactRows[0], node => node.tagName === 'summary').some(node => node.textContent === 'Details'));
 assert(!compactRows[0].textContent.includes('Compare curve  Compare curve'), 'Avoid repeated visible compare labels.');
-const rapSegments = pressureDescendants(rapTable, node => node.className.includes('whitespace-nowrap'));
+const rapSegments = pressureDescendants(rapTable, node =>
+  node.tagName === 'span' && node.className.split(' ').includes('inline-block') &&
+  node.className.split(' ').includes('whitespace-nowrap'));
 assert.deepStrictEqual(rapSegments.map(node => node.textContent), ['23 Fr distal', '25 Fr proximal']);
 assert(/23 Fr distal\s*\/\s*25 Fr proximal/.test(rapTable.textContent));
 const rapLegend = targetRuntime.createPressureDropTargetFlowChart([rap], 2, false, () => {}, () => {});
-assert.deepStrictEqual(pressureDescendants(rapLegend, node => node.className.includes('whitespace-nowrap')).map(node => node.textContent), ['23 Fr distal', '25 Fr proximal']);
+assert.deepStrictEqual(pressureDescendants(rapLegend, node =>
+  node.tagName === 'span' && node.className.split(' ').includes('inline-block') &&
+  node.className.split(' ').includes('whitespace-nowrap')).map(node => node.textContent),
+  ['23 Fr distal', '25 Fr proximal']);
 assert.strictEqual(targetRuntime.searchPressureDropCatalog(pressureDropData, '' ).length, 0);
 assert.strictEqual(targetRuntime.searchPressureDropCatalog(pressureDropData, 'unfindable-model-123').length, 0);
 assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'EOPA').some(entry => /EOPA/.test(entry.model)));
@@ -2906,6 +3036,24 @@ const exploringChart = targetRuntime.createPressureDropTargetFlowChart([targetFi
 const exploringSvg = pressureDescendants(exploringChart, node => node.tagName === 'svg')[0];
 const chartReadout = pressureDescendants(exploringChart, node => node.textContent.startsWith('Target: '))[0];
 const chartSlider = pressureDescendants(exploringChart, node => node.type === 'range')[0];
+// Use a separate chart for slider-only layout checks: input pins the flow,
+// which must not change the hover/pointer tests below.
+const layoutChart = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[0]], 4.5, false, () => {}, () => {});
+const layoutSlider = pressureDescendants(layoutChart, node => node.type === 'range')[0];
+// Mobile regression: the Target occupies a full row so changing the Explore
+// result from single- to double-digit mmHg never moves Explore up/down.
+const exploringLegendItem = pressureDescendants(layoutChart, node => node.tagName === 'li')[0];
+const exploringTargetLabel = pressureDescendants(exploringLegendItem,
+  node => node.tagName === 'span' && node.textContent.startsWith('Target: '))[0];
+const exploringValueLabel = pressureDescendants(exploringLegendItem,
+  node => node.tagName === 'span' && node.textContent.startsWith('Explore: '))[0];
+assert(exploringTargetLabel?.className.split(' ').includes('basis-full'),
+  'Target estimate must always occupy its own complete legend row.');
+assert(exploringValueLabel?.className.split(' ').includes('whitespace-nowrap') &&
+  exploringValueLabel.className.split(' ').includes('shrink-0'),
+  'Explore must stay together at the start of the following legend row.');
+const stableExplorerClass = exploringValueLabel.className;
+
 const blankTargetChart = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[0]], NaN, false, () => {}, () => {});
 const blankTargetItem = pressureDescendants(blankTargetChart, node => node.tagName === 'li')[0];
 const blankSlider = pressureDescendants(blankTargetChart, node => node.type === 'range')[0];
@@ -2918,6 +3066,48 @@ assert(blankSlider && Number(blankSlider.min) > 0, 'Explorer must start at a pos
 assert(blankCommit && (!blankCommit.disabled || Number(blankSlider.min) > 0),
   'The commit control must not accept a zero or negative flow.');
 assert(chartSlider && chartSlider.attributes['aria-label'].includes('0.1 L/min'));
+layoutSlider.value = '1.0'; layoutSlider.dispatch('input');
+assert(exploringValueLabel.textContent.includes('Explore: 10.0 mmHg'));
+layoutSlider.value = '1.1'; layoutSlider.dispatch('input');
+assert(exploringValueLabel.textContent.includes('Explore: 12.0 mmHg'));
+assert.strictEqual(exploringValueLabel.className, stableExplorerClass,
+  'Explore must retain its single stable row and layout classes when digits change.');
+
+const optiflowWarningEntry = pressureDropData.find(entry =>
+  entry.manufacturer === 'LivaNova' &&
+  entry.model === 'Optiflow Aortic Arch Cannulae — Straight Tip, Wire-reinforced Tubing' &&
+  entry.size === '24 Fr' && entry.cannulaOrderCode.includes('A292-80C'));
+assert(optiflowWarningEntry, 'The real Optiflow verified-flow-limit record must exist.');
+const warningChart = targetRuntime.createPressureDropTargetFlowChart([optiflowWarningEntry], 8.3, false,
+  () => {}, () => {});
+const warningSlider = pressureDescendants(warningChart, node => node.type === 'range')[0];
+warningSlider.value = '8.3'; warningSlider.dispatch('input');
+const warningReadout = pressureDescendants(warningChart,
+  node => node.tagName === 'span' && node.textContent.startsWith('Explore: '))[0];
+const warningMessage = pressureDescendants(warningChart,
+  node => node.tagName === 'span' && node.textContent.includes('Above verified SKU max'))[0];
+assert.strictEqual(warningReadout.textContent, 'Explore: 41.8 mmHg',
+  'The numeric Explore value must be isolated from the long manufacturer warning.');
+assert(warningReadout.className.split(' ').includes('whitespace-nowrap'));
+assert(warningMessage?.textContent.includes('other variants unverified'));
+assert(warningMessage.className.split(' ').includes('whitespace-normal') &&
+  warningMessage.className.split(' ').includes('break-words') &&
+  warningMessage.className.split(' ').includes('basis-full') &&
+  !warningMessage.className.split(' ').includes('hidden'),
+  'The full manufacturer-limit warning must wrap on its own line.');
+assert(!warningMessage.className.split(' ').includes('whitespace-nowrap') &&
+  !warningMessage.className.split(' ').includes('shrink-0'),
+  'Long warnings must not overflow on mobile.');
+assert(warningMessage.className.split(' ').includes('text-amber-700') &&
+  warningMessage.className.split(' ').includes('dark:text-amber-300'),
+  'Visible manufacturer-limit warnings must use warning styling.');
+warningSlider.value = '7.9'; warningSlider.dispatch('input');
+assert(warningMessage.className.split(' ').includes('hidden'),
+  'The manufacturer-limit warning should disappear below the verified flow limit.');
+assert(!warningMessage.className.split(' ').includes('text-amber-700') &&
+  !warningMessage.className.split(' ').includes('dark:text-amber-300'),
+  'Hidden manufacturer-limit warnings must not retain warning styling.');
+
 assert.strictEqual(exploringSvg.dataset.minFlow, '0');
 exploringSvg.dispatch('pointermove', { clientX: 58 + 344 * (4.1 / 5) });
 assert(chartReadout.textContent.includes('Target: 4.5 L/min · Exploring: 4.1 L/min'));
