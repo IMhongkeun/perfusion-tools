@@ -3036,9 +3036,13 @@ const exploringChart = targetRuntime.createPressureDropTargetFlowChart([targetFi
 const exploringSvg = pressureDescendants(exploringChart, node => node.tagName === 'svg')[0];
 const chartReadout = pressureDescendants(exploringChart, node => node.textContent.startsWith('Target: '))[0];
 const chartSlider = pressureDescendants(exploringChart, node => node.type === 'range')[0];
+// Use a separate chart for slider-only layout checks: input pins the flow,
+// which must not change the hover/pointer tests below.
+const layoutChart = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[0]], 4.5, false, () => {}, () => {});
+const layoutSlider = pressureDescendants(layoutChart, node => node.type === 'range')[0];
 // Mobile regression: the Target occupies a full row so changing the Explore
 // result from single- to double-digit mmHg never moves Explore up/down.
-const exploringLegendItem = pressureDescendants(exploringChart, node => node.tagName === 'li')[0];
+const exploringLegendItem = pressureDescendants(layoutChart, node => node.tagName === 'li')[0];
 const exploringTargetLabel = pressureDescendants(exploringLegendItem,
   node => node.tagName === 'span' && node.textContent.startsWith('Target: '))[0];
 const exploringValueLabel = pressureDescendants(exploringLegendItem,
@@ -3062,12 +3066,41 @@ assert(blankSlider && Number(blankSlider.min) > 0, 'Explorer must start at a pos
 assert(blankCommit && (!blankCommit.disabled || Number(blankSlider.min) > 0),
   'The commit control must not accept a zero or negative flow.');
 assert(chartSlider && chartSlider.attributes['aria-label'].includes('0.1 L/min'));
-chartSlider.value = '1.0'; chartSlider.dispatch('input');
+layoutSlider.value = '1.0'; layoutSlider.dispatch('input');
 assert(exploringValueLabel.textContent.includes('Explore: 10.0 mmHg'));
-chartSlider.value = '1.1'; chartSlider.dispatch('input');
+layoutSlider.value = '1.1'; layoutSlider.dispatch('input');
 assert(exploringValueLabel.textContent.includes('Explore: 12.0 mmHg'));
 assert.strictEqual(exploringValueLabel.className, stableExplorerClass,
   'Explore must retain its single stable row and layout classes when digits change.');
+
+const optiflowWarningEntry = pressureDropData.find(entry =>
+  entry.manufacturer === 'LivaNova' &&
+  entry.model === 'Optiflow Aortic Arch Cannulae — Straight Tip, Wire-reinforced Tubing' &&
+  entry.size === '24 Fr' && entry.cannulaOrderCode.includes('A292-80C'));
+assert(optiflowWarningEntry, 'The real Optiflow verified-flow-limit record must exist.');
+const warningChart = targetRuntime.createPressureDropTargetFlowChart([optiflowWarningEntry], 8.3, false,
+  () => {}, () => {});
+const warningSlider = pressureDescendants(warningChart, node => node.type === 'range')[0];
+warningSlider.value = '8.3'; warningSlider.dispatch('input');
+const warningReadout = pressureDescendants(warningChart,
+  node => node.tagName === 'span' && node.textContent.startsWith('Explore: '))[0];
+const warningMessage = pressureDescendants(warningChart,
+  node => node.tagName === 'span' && node.textContent.includes('Above verified SKU max'))[0];
+assert.strictEqual(warningReadout.textContent, 'Explore: 41.8 mmHg',
+  'The numeric Explore value must be isolated from the long manufacturer warning.');
+assert(warningReadout.className.split(' ').includes('whitespace-nowrap'));
+assert(warningMessage?.textContent.includes('other variants unverified'));
+assert(warningMessage.className.split(' ').includes('whitespace-normal') &&
+  warningMessage.className.split(' ').includes('break-words') &&
+  warningMessage.className.split(' ').includes('basis-full') &&
+  !warningMessage.className.split(' ').includes('hidden'),
+  'The full manufacturer-limit warning must wrap on its own line.');
+assert(!warningMessage.className.split(' ').includes('whitespace-nowrap') &&
+  !warningMessage.className.split(' ').includes('shrink-0'),
+  'Long warnings must not overflow on mobile.');
+warningSlider.value = '7.9'; warningSlider.dispatch('input');
+assert(warningMessage.className.split(' ').includes('hidden'),
+  'The manufacturer-limit warning should disappear below the verified flow limit.');
 
 assert.strictEqual(exploringSvg.dataset.minFlow, '0');
 exploringSvg.dispatch('pointermove', { clientX: 58 + 344 * (4.1 / 5) });
