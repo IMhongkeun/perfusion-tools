@@ -155,7 +155,7 @@ const CALCULATOR_REGISTRY = [
   { path: '/predicted-hct/', category: 'blood', icon: 'Hct', title: 'Predicted Hematocrit', description: 'Post-prime dilutional Hct for CPB planning.' },
   { path: '/priming-volume/', category: 'blood', icon: 'mL', title: 'Priming Volume Calculator', description: 'Tubing prime volume from inner diameter and length.' },
   { path: '/heparin/', category: 'anticoagulation', icon: 'ACT', title: 'Heparin Calculator', description: 'Adult CPB heparin and protamine planning support.' },
-  { path: '/cannula-pressure-drop/', category: 'circuit', icon: 'ΔP', title: 'Cannula Pressure Drop', description: 'Browse 217 manufacturer pressure-flow datasets for cannula selection.' },
+  { path: '/cannula-pressure-drop/', category: 'circuit', icon: 'ΔP', title: 'Cannula Pressure Drop', description: 'Browse 224 manufacturer pressure-flow datasets for cannula selection.' },
   { path: '/quick-reference/', category: 'circuit', icon: 'CPB', title: 'Quick Reference', description: 'Concise CPB and ECMO clinical reference tables.' },
   { path: '/timecalc/', category: 'time', icon: 'min', title: 'Time Calculator', description: 'Elapsed bypass, cross-clamp, and case intervals.' },
   { path: '/unit-converter/', category: 'time', icon: '↔', title: 'Unit Converter', description: 'Common perfusion pressure, flow, and blood-gas units.' },
@@ -7428,7 +7428,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     appendPressureDropSizeLabel(size, identity);
     if (configuration === 'Dual-lumen VV ECMO') size.appendChild(document.createTextNode(' · Dual-lumen VV ECMO'));
     const value = document.createElement('span');
-    value.className = `shrink-0 tabular-nums font-semibold ${result.isHighPressure && result.inRange ? 'text-amber-700 dark:text-amber-300' : 'text-primary-900 dark:text-white'}`;
+    value.className = `basis-full min-w-0 tabular-nums font-semibold ${result.isHighPressure && result.inRange ? 'text-amber-700 dark:text-amber-300' : 'text-primary-900 dark:text-white'}`;
     value.textContent = result.inRange ? `Target: ${result.lumenLabel ? 'Drainage ' : ''}${result.magnitude.toFixed(1)} mmHg`
       : `Target: ${result.unavailableReason || getPressureDropTargetFlowValueText(result)}`;
     if (result.inRange) value.title = `Signed pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
@@ -7439,7 +7439,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
       value.title = `${value.title ? value.title + ' · ' : ''}${limitLabel}. Source: ${result.manufacturerLimit.source}`;
     }
     const explored = document.createElement('span');
-    explored.className = 'min-w-0 text-xs tabular-nums text-sky-700 dark:text-sky-300';
+    explored.className = 'shrink-0 whitespace-nowrap text-xs tabular-nums text-sky-700 dark:text-sky-300';
     explored.textContent = 'Explore: —';
     if (result.series) exploredCells.push(explored);
     const status = document.createElement('span');
