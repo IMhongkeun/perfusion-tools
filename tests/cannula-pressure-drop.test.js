@@ -3034,10 +3034,10 @@ const exploringTargetLabel = pressureDescendants(exploringLegendItem,
   node => node.tagName === 'span' && node.textContent.startsWith('Target: '))[0];
 const exploringValueLabel = pressureDescendants(exploringLegendItem,
   node => node.tagName === 'span' && node.textContent.startsWith('Explore: '))[0];
-assert(exploringTargetLabel?.className.split(/\\s+/).includes('basis-full'),
+assert(exploringTargetLabel?.className.split(' ').includes('basis-full'),
   'Target estimate must always occupy its own complete legend row.');
-assert(exploringValueLabel?.className.split(/\\s+/).includes('whitespace-nowrap') &&
-  exploringValueLabel.className.split(/\\s+/).includes('shrink-0'),
+assert(exploringValueLabel?.className.split(' ').includes('whitespace-nowrap') &&
+  exploringValueLabel.className.split(' ').includes('shrink-0'),
   'Explore must stay together at the start of the following legend row.');
 const stableExplorerClass = exploringValueLabel.className;
 
