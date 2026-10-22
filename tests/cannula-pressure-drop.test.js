@@ -3098,9 +3098,15 @@ assert(warningMessage.className.split(' ').includes('whitespace-normal') &&
 assert(!warningMessage.className.split(' ').includes('whitespace-nowrap') &&
   !warningMessage.className.split(' ').includes('shrink-0'),
   'Long warnings must not overflow on mobile.');
+assert(warningMessage.className.split(' ').includes('text-amber-700') &&
+  warningMessage.className.split(' ').includes('dark:text-amber-300'),
+  'Visible manufacturer-limit warnings must use warning styling.');
 warningSlider.value = '7.9'; warningSlider.dispatch('input');
 assert(warningMessage.className.split(' ').includes('hidden'),
   'The manufacturer-limit warning should disappear below the verified flow limit.');
+assert(!warningMessage.className.split(' ').includes('text-amber-700') &&
+  !warningMessage.className.split(' ').includes('dark:text-amber-300'),
+  'Hidden manufacturer-limit warnings must not retain warning styling.');
 
 assert.strictEqual(exploringSvg.dataset.minFlow, '0');
 exploringSvg.dispatch('pointermove', { clientX: 58 + 344 * (4.1 / 5) });
