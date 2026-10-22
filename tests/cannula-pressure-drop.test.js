@@ -1790,7 +1790,11 @@ const documentedCentralVenousModels = {
   Medtronic: [
     'DLP Single Stage Venous Cannulae', 'DLP Malleable Single Stage Venous Cannulae',
     'DLP Right Angle Single Stage Venous Cannulae',
-    'DLP Single Stage Venous Cannulae with Right Angle Metal Tip'
+    'DLP Single Stage Venous Cannulae with Right Angle Metal Tip',
+    'MC2 Two Stage Venous Cannulae',
+    'MC2 Two Stage Venous Cannulae — Reduced Stage Body',
+    'MC2 Two Stage Venous Cannulae — Thin-wall Body',
+    'MC2 Two Stage Venous Cannulae — Oval Body'
   ]
 };
 const operationalCentralVenousSkus = new Set(['V122-24', 'V122-28', 'V122-32', 'V122-34', 'V122-36',
@@ -2674,11 +2678,16 @@ assert.strictEqual(collapsedSource.length, 1, 'Source and metadata should be col
 assert(!collapsedSource[0].open, 'Technical details must not be expanded by default.');
 assert(pressureDescendants(compactRows[0], node => node.tagName === 'summary').some(node => node.textContent === 'Details'));
 assert(!compactRows[0].textContent.includes('Compare curve  Compare curve'), 'Avoid repeated visible compare labels.');
-const rapSegments = pressureDescendants(rapTable, node => node.className.includes('whitespace-nowrap'));
+const rapSegments = pressureDescendants(rapTable, node =>
+  node.tagName === 'span' && node.className.split(' ').includes('inline-block') &&
+  node.className.split(' ').includes('whitespace-nowrap'));
 assert.deepStrictEqual(rapSegments.map(node => node.textContent), ['23 Fr distal', '25 Fr proximal']);
 assert(/23 Fr distal\s*\/\s*25 Fr proximal/.test(rapTable.textContent));
 const rapLegend = targetRuntime.createPressureDropTargetFlowChart([rap], 2, false, () => {}, () => {});
-assert.deepStrictEqual(pressureDescendants(rapLegend, node => node.className.includes('whitespace-nowrap')).map(node => node.textContent), ['23 Fr distal', '25 Fr proximal']);
+assert.deepStrictEqual(pressureDescendants(rapLegend, node =>
+  node.tagName === 'span' && node.className.split(' ').includes('inline-block') &&
+  node.className.split(' ').includes('whitespace-nowrap')).map(node => node.textContent),
+  ['23 Fr distal', '25 Fr proximal']);
 assert.strictEqual(targetRuntime.searchPressureDropCatalog(pressureDropData, '' ).length, 0);
 assert.strictEqual(targetRuntime.searchPressureDropCatalog(pressureDropData, 'unfindable-model-123').length, 0);
 assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'EOPA').some(entry => /EOPA/.test(entry.model)));
