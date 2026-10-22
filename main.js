@@ -7350,6 +7350,8 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
         cell.readout.classList.toggle('text-amber-700', Boolean(limitText));
         cell.readout.classList.toggle('dark:text-amber-300', Boolean(limitText));
         cell.warning.textContent = limitText;
+        cell.warning.classList.toggle('text-amber-700', Boolean(limitText));
+        cell.warning.classList.toggle('dark:text-amber-300', Boolean(limitText));
         cell.warning.classList.toggle('hidden', !limitText);
       }
     });
@@ -7446,7 +7448,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     explored.className = 'shrink-0 whitespace-nowrap text-xs tabular-nums text-sky-700 dark:text-sky-300';
     explored.textContent = 'Explore: —';
     const exploreWarning = document.createElement('span');
-    exploreWarning.className = 'hidden basis-full min-w-0 whitespace-normal break-words text-xs text-amber-700 dark:text-amber-300';
+    exploreWarning.className = 'hidden basis-full min-w-0 whitespace-normal break-words text-xs';
     if (result.series) exploredCells.push({ readout: explored, warning: exploreWarning });
     const status = document.createElement('span');
     status.className = 'shrink-0 rounded-full bg-slate-100 dark:bg-primary-800 px-2 py-0.5 text-[11px]';
