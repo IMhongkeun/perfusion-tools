@@ -7419,6 +7419,19 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
   update(canExploreOnSlider ? initialFlow : minimum);
 }
 
+// The compact chart legend shows only French sizes. Full product identity
+// remains available in selection controls, tooltips and catalog details.
+function getPressureDropChartFrLabel(entry) {
+  const size = String(entry.size || '');
+  const multiStage = size.match(/\b\d+(?:\.\d+)?(?:\s*\/\s*\d+(?:\.\d+)?)+\s*Fr\b/i);
+  if (multiStage) return multiStage[0].replace(/\s*\/\s*/g, '/').replace(/\s*Fr\b/i, ' Fr');
+  const sizedParts = [...size.matchAll(/\b(\d+(?:\.\d+)?)\s*Fr\b/gi)];
+  if (sizedParts.length > 1) return `${sizedParts.map(part => part[1]).join('/')} Fr`;
+  if (sizedParts.length === 1) return `${sizedParts[0][1]} Fr`;
+  const nominalFr = getPressureDropComparisonFr(entry);
+  return Number.isFinite(nominalFr) ? `${nominalFr} Fr` : '—';
+}
+
 function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPointsChange, onRemove, catalogEntries = entries, onCommitFlow, onReset) {
   const panel = document.createElement('article');
   panel.className = 'min-w-0 rounded-xl border border-slate-200 dark:border-primary-800 p-3 sm:p-4 space-y-3';
@@ -7444,12 +7457,12 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
   resultTable.setAttribute('role', 'table');
   resultTable.setAttribute('aria-label', 'Pressure at explored flow');
   resultTable.className = 'rounded-lg border border-slate-200 dark:border-primary-700 px-2 sm:px-3';
-  // Explicit columns keep names and French sizes stationary as values change.
+  // Fixed numeric columns and compact Fr labels avoid mobile wrapping.
   const rowColumns = 'grid min-w-0 grid-cols-[minmax(0,1fr)_2.5rem_4rem] sm:grid-cols-[minmax(0,1fr)_3rem_5rem] items-center gap-x-2';
   const tableHead = document.createElement('div');
   tableHead.className = rowColumns + ' border-b border-slate-200 dark:border-primary-700 py-2 text-[10px] font-semibold text-slate-500 dark:text-slate-400';
   tableHead.setAttribute('role', 'row');
-  [['Cannula · Fr', 'text-left'], ['Flow', 'text-right'], ['ΔP', 'text-right']].forEach(([label, alignment]) => {
+  [['Fr', 'text-left'], ['Flow', 'text-right'], ['ΔP', 'text-right']].forEach(([label, alignment]) => {
     const cell = document.createElement('span');
     cell.setAttribute('role', 'columnheader');
     cell.className = alignment;
@@ -7465,7 +7478,6 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     const result = getPressureDropTargetFlowResult(entry, flow);
     const key = getPressureDropTargetFlowKey(entry);
     const identity = getPressureDropTargetFlowIdentity(entry, catalogEntries);
-    const configuration = classifyPressureDropComparisonEntry(entry).configuration;
     if (result.series) {
       series.push({ ...result.series, entry, id: encodeURIComponent(key), colorIndex: index,
         displayLabel: `${index + 1} · ${entry.manufacturer} · ${entry.model} · ${identity}${result.lumenLabel ? ' · Drainage' : ''}`,
@@ -7477,17 +7489,13 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     item.setAttribute('role', 'row');
     item.dataset.productKey = key;
     const swatch = document.createElement('span');
-    swatch.className = 'mt-1 h-2 w-2 shrink-0 rounded-full';
+    swatch.className = 'h-2 w-2 shrink-0 rounded-full';
     swatch.style.backgroundColor = PRESSURE_DROP_PRODUCT_COLORS[index];
     swatch.setAttribute('aria-hidden', 'true');
-    const name = document.createElement('span');
-    name.className = 'min-w-0 break-words leading-relaxed';
-    name.textContent = getPressureDropTargetFlowDisplayName(entry);
-    name.title = `${entry.manufacturer} · ${entry.model}`;
-    const size = document.createElement('span');
-    size.className = 'inline-block max-w-full text-slate-500 dark:text-slate-400';
-    appendPressureDropSizeLabel(size, identity);
-    if (configuration === 'Dual-lumen VV ECMO') size.appendChild(document.createTextNode(' · Dual-lumen VV ECMO'));
+    const frLabel = document.createElement('span');
+    frLabel.className = 'shrink-0 whitespace-nowrap font-medium text-slate-700 dark:text-slate-200';
+    frLabel.textContent = getPressureDropChartFrLabel(entry);
+    frLabel.title = `${entry.manufacturer} · ${entry.model} · ${identity}${result.lumenLabel ? ' · Drainage' : ''}`;
     const value = document.createElement('span');
     value.className = `basis-full min-w-0 tabular-nums font-semibold ${result.isHighPressure && result.inRange ? 'text-amber-700 dark:text-amber-300' : 'text-primary-900 dark:text-white'}`;
     value.textContent = result.inRange ? `Target: ${result.lumenLabel ? 'Drainage ' : ''}${result.magnitude.toFixed(1)} mmHg`
@@ -7528,21 +7536,22 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     remove.setAttribute('aria-label', `Remove ${entry.manufacturer} ${entry.model} ${identity} from chart`);
     remove.addEventListener('click', () => onRemove(key));
     const identityGroup = document.createElement('div');
-    identityGroup.className = 'flex min-w-0 items-start gap-2';
+    identityGroup.className = 'flex min-w-0 items-center gap-2';
     identityGroup.setAttribute('role', 'cell');
-    const productName = document.createElement('span');
-    productName.className = 'min-w-0 break-words leading-relaxed';
-    productName.append(name, document.createTextNode(' · '), size);
-    if (result.lumenLabel) productName.appendChild(document.createTextNode(' · Drainage'));
+    const labelGroup = document.createElement('div');
+    labelGroup.className = 'min-w-0 flex-1';
+    const labelRow = document.createElement('div');
+    labelRow.className = 'flex min-w-0 items-center gap-1';
+    labelRow.appendChild(frLabel);
+    if (source) labelRow.appendChild(source);
+    labelRow.appendChild(remove);
     const limitNote = document.createElement('span');
     limitNote.className = `block min-w-0 whitespace-normal break-words text-[11px]${limitLabel ? ' text-amber-700 dark:text-amber-300' : ' hidden'}`;
     limitNote.textContent = limitLabel;
     if (result.series) limitCells.push(limitNote);
-    if (source) { source.className += ' ml-1'; productName.appendChild(source); }
-    productName.appendChild(remove);
-    productName.appendChild(limitNote);
-    identityGroup.append(swatch, productName);
-    identityGroup.title = `${entry.manufacturer} · ${value.textContent} · ${status.textContent}${limitLabel ? ` · ${limitLabel}` : ''}`;
+    labelGroup.append(labelRow, limitNote);
+    identityGroup.append(swatch, labelGroup);
+    identityGroup.title = `${entry.manufacturer} · ${entry.model} · ${identity} · ${value.textContent} · ${status.textContent}${limitLabel ? ` · ${limitLabel}` : ''}`;
     item.append(identityGroup, flowCell, explored);
     legend.appendChild(item);
   });
@@ -7551,7 +7560,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
   svg.setAttribute('role', 'img');
   svg.setAttribute('aria-label', 'Selected manufacturer pressure-flow curves. Product identities and target estimates are listed below.');
   svg.classList.add('block', 'w-full', 'h-auto', 'text-slate-500', 'dark:text-slate-300');
-  // Full product names wrap in the HTML legend, avoiding overlap in the SVG.
+  // Full product details remain in tooltips while the HTML legend stays compact.
   drawPressureDropSeriesChart(svg, series, flow, estimates, { curveMode: 'linear', showLegend: false, showTargetFlowLine: true });
   const exploreControls = document.createElement('div');
   panel.append(svg, exploreControls, resultTable);

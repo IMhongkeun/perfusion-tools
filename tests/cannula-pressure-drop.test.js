@@ -2618,7 +2618,9 @@ const avalonTable = targetRuntime.createPressureDropTargetFlowTable(avalonRows.s
 assert(avalonTable.textContent.includes('Dual-lumen VV ECMO'));
 assert(pressureDescendants(avalonTable, node => node.attributes['aria-label']?.includes('Drainage ΔP')).length);
 const avalonChart = targetRuntime.createPressureDropTargetFlowChart([avalonProducts[0]], 1, false, () => {}, () => {}, pressureDropData);
-assert(avalonChart.textContent.includes('Drainage') && avalonChart.textContent.includes('Dual-lumen VV ECMO'));
+assert(!avalonChart.textContent.includes('Dual-lumen VV ECMO'), 'Chart legend is Fr-only.');
+assert(pressureDescendants(avalonChart, node => node.tagName === 'button' &&
+  node.attributes['aria-label']?.includes('Avalon')).length, 'Avalon identity remains accessible.');
 assert(!pressureDescendants(avalonChart, node => node.tagName === 'svg')[0].innerHTML.includes('Infusion'));
 const modelOptions = targetRuntime.getPressureDropTargetFlowModelOptions(pressureDropData.filter(entry => entry.manufacturer === 'Getinge / Maquet'));
 assert(modelOptions.some(option => option.value === avalonModel && option.label === 'Avalon Elite · Dual-lumen ECMO'));
@@ -2661,7 +2663,8 @@ const dlpOverlay = targetRuntime.createPressureDropTargetFlowChart(dlpVariants, 
 const dlpSvg = pressureDescendants(dlpOverlay, node => node.tagName === 'svg')[0];
 assert.strictEqual((dlpSvg.innerHTML.match(/data-series-id=/g) || []).length, 2);
 for (const variant of dlpVariants) {
-  assert(dlpOverlay.textContent.includes(variant.cannulaOrderCode) && dlpOverlay.textContent.includes(variant.connectorSize), 'External legend identifies variant');
+  assert(!dlpOverlay.textContent.includes(variant.cannulaOrderCode) &&
+    !dlpOverlay.textContent.includes(variant.connectorSize), 'Compact legend hides order and connector codes.');
   assert(dlpSvg.innerHTML.includes(variant.cannulaOrderCode), 'SVG tooltip identifies variant');
   assert(pressureDescendants(dlpOverlay, node => node.tagName === 'button').some(node => node.attributes['aria-label']?.includes(variant.cannulaOrderCode)), 'Removal control identifies variant');
 }
@@ -2686,10 +2689,9 @@ const rapSegments = pressureDescendants(rapTable, node =>
 assert.deepStrictEqual(rapSegments.map(node => node.textContent), ['23 Fr distal', '25 Fr proximal']);
 assert(/23 Fr distal\s*\/\s*25 Fr proximal/.test(rapTable.textContent));
 const rapLegend = targetRuntime.createPressureDropTargetFlowChart([rap], 2, false, () => {}, () => {});
-assert.deepStrictEqual(pressureDescendants(rapLegend, node =>
-  node.tagName === 'span' && node.className.split(' ').includes('inline-block') &&
-  node.className.split(' ').includes('whitespace-nowrap')).map(node => node.textContent),
-  ['23 Fr distal', '25 Fr proximal']);
+assert(pressureDescendants(rapLegend, node => node.tagName === 'li')[0].textContent.includes('23/25 Fr'),
+  'Distal/proximal sizes remain identifiable without extra words.');
+assert(!rapLegend.textContent.includes('distal') && !rapLegend.textContent.includes('proximal'));
 assert.strictEqual(targetRuntime.searchPressureDropCatalog(pressureDropData, '' ).length, 0);
 assert.strictEqual(targetRuntime.searchPressureDropCatalog(pressureDropData, 'unfindable-model-123').length, 0);
 assert(targetRuntime.searchPressureDropCatalog(pressureDropData, 'EOPA').some(entry => /EOPA/.test(entry.model)));
@@ -2708,6 +2710,15 @@ for (const spelling of ['15 Fr', '15fr', '15 FR', '15   Fr']) {
 }
 assert(exact15FrEntries.every(entry => targetRuntime.getPressureDropComparisonFr(entry) === 15),
   'Fr searches must compare the nominal French size rather than arbitrary catalog text.');
+const hlsCompact = targetRuntime.createPressureDropTargetFlowChart(
+  pressureDropData.filter(entry => ['PAL 1923', 'PAL 2123'].includes(entry.cannulaOrderCode)),
+  4.1, false, () => {}, () => {}, pressureDropData);
+const hlsRows = pressureDescendants(hlsCompact, node => node.tagName === 'li');
+assert.deepStrictEqual(hlsRows.map(node => node.textContent.match(/\d+ Fr/)?.[0]), ['19 Fr', '21 Fr']);
+for (const row of hlsRows) {
+  assert(!/PAL 19|PAL 21|6\.3 mm|7\.0 mm|23 cm|HLS Arterial Cannula/.test(row.textContent),
+    'HLS legend must show Fr without SKU, length, mm or model.');
+}
 const pas1315 = pressureDropData.find(entry => entry.cannulaOrderCode === 'PAS 1315');
 assert(pas1315 && pas1315.size.includes('13 Fr') && pas1315.size.includes('15 cm'),
   'Preserve the real 13 Fr / 15 cm HLS regression fixture.');
@@ -3173,7 +3184,9 @@ assert(pressureDescendants(exploringChart, node => node.title?.includes('Signed 
 const useFlow = pressureDescendants(exploringChart, node => node.textContent === 'Use as target flow')[0];
 useFlow.dispatch('click'); assert.strictEqual(committedExploration, 4);
 const avalonExploration = targetRuntime.createPressureDropTargetFlowChart([avalonProducts[0]], 1, false, () => {}, () => {});
-assert(avalonExploration.textContent.includes('Drainage') && !avalonExploration.textContent.includes('Infusion'));
+assert(!avalonExploration.textContent.includes('Drainage') && !avalonExploration.textContent.includes('Infusion'));
+assert(pressureDescendants(avalonExploration, node => node.tagName === 'svg')[0].innerHTML.includes('Drainage'),
+  'Selected drainage series remains documented in the chart tooltip.');
 assert(overlaySvg.innerHTML.includes('data-target-flow-line="true"'));
 assert.strictEqual((overlaySvg.innerHTML.match(/data-series-id=/g) || []).length, 2);
 assert(overlaySvg.innerHTML.includes('Signed pressure: +80.0 mmHg') && overlaySvg.innerHTML.includes('Signed pressure: +45.0 mmHg'));
@@ -3186,8 +3199,8 @@ externalLegend.forEach(row => {
   assert(row.className.includes('grid-cols-[minmax(0,1fr)_2.5rem_4rem]'),
     'Flow and pressure reserve fixed column widths rather than resizing with their text.');
 });
-assert(externalLegend[0].textContent.includes('A') && externalLegend[0].textContent.includes('19 Fr'));
-assert(externalLegend[1].textContent.includes('B') && externalLegend[1].textContent.includes('21 Fr'));
+assert(externalLegend[0].textContent.includes('19 Fr') && !externalLegend[0].textContent.includes('A'));
+assert(externalLegend[1].textContent.includes('21 Fr') && !externalLegend[1].textContent.includes('B'));
 assert(pressureDescendants(externalLegend[0], node => node.title?.includes('Medtronic')).length);
 assert(pressureDescendants(externalLegend[1], node => node.title?.includes('Getinge / Maquet')).length);
 assert.strictEqual(externalLegend[0].dataset.productKey, targetRuntime.getPressureDropTargetFlowKey(targetFixtures[0]));
