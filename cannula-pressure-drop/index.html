@@ -87,6 +87,27 @@
     input[type=range]::-webkit-slider-thumb {
       -webkit-appearance: none;
     }
+    input.pressure-drop-flow-slider {
+      height: 28px;
+      cursor: pointer;
+      background: linear-gradient(#c5dcf5, #c5dcf5) center / 100% 2px no-repeat;
+    }
+    input.pressure-drop-flow-slider::-webkit-slider-thumb {
+      width: 16px;
+      height: 16px;
+      border: 2px solid white;
+      border-radius: 50%;
+      background: #2563eb;
+      box-shadow: 0 0 0 1px #2563eb;
+    }
+    input.pressure-drop-flow-slider::-moz-range-thumb {
+      width: 12px;
+      height: 12px;
+      border: 2px solid white;
+      border-radius: 50%;
+      background: #2563eb;
+      box-shadow: 0 0 0 1px #2563eb;
+    }
 
     /* Custom Scrollbar for desktop */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -461,8 +482,59 @@
             </div>
             <p id="pressure-drop-target-location-note" class="text-xs text-slate-600 dark:text-slate-300" role="status"></p>
             <p id="pressure-drop-target-summary" class="text-sm font-semibold text-primary-900 dark:text-white" role="status"></p>
-            <div id="pressure-drop-target-results" class="min-w-0 space-y-3"></div>
+            <p id="pressure-drop-list-hint" class="text-xs text-slate-500 dark:text-slate-400">Scroll the list to browse cannulas. Selected curves appear just below.</p>
+            <div id="pressure-drop-target-results" role="region" aria-label="Cannula selection list" aria-describedby="pressure-drop-list-hint" tabindex="0" class="min-w-0 max-h-72 sm:max-h-80 overflow-y-auto overscroll-y-contain space-y-3 rounded-lg pr-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500" style="scrollbar-gutter: stable;"></div>
             <div id="pressure-drop-target-chart" class="min-w-0 space-y-3"></div>
+            <section id="pressure-drop-interpretation" aria-labelledby="pressure-drop-interpretation-title" class="rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-3 sm:p-4 space-y-3">
+              <h3 id="pressure-drop-interpretation-title" class="text-sm font-semibold text-primary-900 dark:text-white">From cannula ΔP to circuit pressure</h3>
+              <div class="grid gap-3 lg:grid-cols-2">
+                <article class="min-w-0 rounded-lg bg-slate-50 dark:bg-primary-800/50 p-3 space-y-3">
+                  <h4 class="text-sm font-semibold text-accent-700 dark:text-accent-300">Arterial cannula</h4>
+                  <svg viewBox="0 0 320 92" role="img" aria-labelledby="arterial-pressure-diagram-title" class="block w-full text-accent-700 dark:text-accent-300">
+                    <title id="arterial-pressure-diagram-title">Blood flows from the arterial line pressure sensor through tubing and the cannula to the patient.</title>
+                    <path d="M22 42H292m-8-5 8 5-8 5" fill="none" stroke="currentColor" stroke-width="2" />
+                    <circle cx="22" cy="42" r="6" fill="currentColor" />
+                    <rect x="77" y="31" width="58" height="22" rx="7" fill="currentColor" fill-opacity=".12" stroke="currentColor" />
+                    <path d="M178 36h44l14 6-14 6h-44z" fill="currentColor" fill-opacity=".2" stroke="currentColor" />
+                    <text x="22" y="18" text-anchor="middle" font-size="11" fill="currentColor">Pressure</text>
+                    <text x="22" y="75" text-anchor="middle" font-size="11" fill="currentColor">sensor</text>
+                    <text x="106" y="75" text-anchor="middle" font-size="11" fill="currentColor">Tubing</text>
+                    <text x="203" y="75" text-anchor="middle" font-size="11" fill="currentColor">Cannula</text>
+                    <text x="291" y="75" text-anchor="middle" font-size="11" fill="currentColor">Patient</text>
+                  </svg>
+                  <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 px-3 py-2 text-xs leading-relaxed">
+                    <p class="font-semibold text-primary-900 dark:text-white">Estimated arterial line pressure ≈</p>
+                    <p class="mt-1 text-accent-700 dark:text-accent-300">Cannula ΔP + arterial tubing pressure loss + patient MAP</p>
+                  </div>
+                  <p class="text-xs leading-relaxed text-slate-500 dark:text-slate-400">Tubing-inlet pressure at patient level, after the oxygenator/filter. Add other downstream losses and correct for height differences.</p>
+                </article>
+                <article class="min-w-0 rounded-lg bg-slate-50 dark:bg-primary-800/50 p-3 space-y-3">
+                  <h4 class="text-sm font-semibold text-accent-700 dark:text-accent-300">Venous cannula</h4>
+                  <svg viewBox="0 0 320 112" role="img" aria-labelledby="venous-pressure-diagram-title" class="block w-full text-accent-700 dark:text-accent-300">
+                    <title id="venous-pressure-diagram-title">Blood drains from the patient through the venous cannula and tubing to a lower reservoir. The height difference provides drainage head.</title>
+                    <path d="M24 30h158q20 0 20 20v21h62m-8-5 8 5-8 5" fill="none" stroke="currentColor" stroke-width="2" />
+                    <circle cx="24" cy="30" r="6" fill="currentColor" />
+                    <path d="M119 24H82l-13 6 13 6h37z" fill="currentColor" fill-opacity=".2" stroke="currentColor" />
+                    <rect x="128" y="19" width="50" height="22" rx="7" fill="currentColor" fill-opacity=".12" stroke="currentColor" />
+                    <path d="M264 57v35h40V57m-37 23h34" fill="none" stroke="currentColor" stroke-width="2" />
+                    <path d="M232 30v50m-4-46 4-4 4 4m-8 42 4 4 4-4" fill="none" stroke="currentColor" stroke-dasharray="3 3" />
+                    <text x="26" y="13" text-anchor="middle" font-size="11" fill="currentColor">Patient</text>
+                    <text x="93" y="54" text-anchor="middle" font-size="11" fill="currentColor">Cannula</text>
+                    <text x="153" y="13" text-anchor="middle" font-size="11" fill="currentColor">Tubing</text>
+                    <text x="240" y="52" font-size="11" fill="currentColor">Δh</text>
+                    <text x="283" y="108" text-anchor="middle" font-size="11" fill="currentColor">Reservoir</text>
+                  </svg>
+                  <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 px-3 py-2 text-xs leading-relaxed">
+                    <p class="font-semibold text-primary-900 dark:text-white">Resistance to overcome</p>
+                    <p class="mt-1 text-accent-700 dark:text-accent-300">Cannula |ΔP| + venous tubing pressure loss</p>
+                    <p class="mt-2 font-semibold text-primary-900 dark:text-white">Balance against drainage head</p>
+                    <p class="mt-1 text-accent-700 dark:text-accent-300">CVP · patient-to-reservoir height (Δh) · assisted drainage</p>
+                  </div>
+                  <p class="text-xs leading-relaxed text-slate-500 dark:text-slate-400">Gravity and suction drive drainage against these losses. Cannula ΔP alone is not venous line pressure. CPB reservoir shown; ECMO depends on pump inlet conditions.</p>
+                </article>
+              </div>
+              <p class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">Conceptual guide at the same flow; manufacturer curves are reference estimates. <a href="https://www.aats.org/tsra-primer-cardiopulmonary-bypass-fundamentals" target="_blank" rel="noopener noreferrer" class="text-accent-700 dark:text-accent-300 underline">CPB fundamentals</a> · <a href="https://doi.org/10.1093/icvts/ivaf127" target="_blank" rel="noopener noreferrer" class="text-accent-700 dark:text-accent-300 underline">Venous pressure interpretation</a></p>
+            </section>
           </div>
 
           <div id="pressure-drop-single-view" class="space-y-5">

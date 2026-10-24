@@ -17,6 +17,7 @@ function sliceBetween(start, end) {
 
 function createElement(id, value = '') {
   const classes = new Set();
+  const listeners = {};
   return {
     id,
     value: String(value),
@@ -30,7 +31,8 @@ function createElement(id, value = '') {
       remove: (...names) => names.forEach((name) => classes.delete(name)),
       contains: (name) => classes.has(name)
     },
-    addEventListener() {}
+    addEventListener(type, callback) { (listeners[type] ||= []).push(callback); },
+    dispatch(type) { (listeners[type] || []).forEach(callback => callback()); }
   };
 }
 
@@ -63,7 +65,10 @@ ${sliceBetween('function calcCaO2', 'const UNIT_LABELS')}`;
   vm.runInContext(`${sharedMath}\n${domAndGdp}\nthis.api = {
     updateBSA, updateGDP, computeBSA, computeGdpResults, hasGdpCalculatorDom,
     setManualOverride(value) { bsaManualOverride = value; },
-    setLastChangedId(value) { lastChangedId = value; }
+    setLastChangedId(value) { lastChangedId = value; },
+    bindGdpInputs() {
+      ${sliceBetween('    // GDP event listeners', "    ['target-260', 'target-280', 'target-300', 'target-360'].forEach")}
+    }
   };`, context);
   return { api: context.api, elements };
 }
@@ -128,6 +133,45 @@ for (const missingId of requiredGdpIds) {
   assert.strictEqual(elements['cao2-result'].innerHTML, '13.71 <span class="text-xs font-medium text-slate-300">mL O₂/dL</span>');
   assert.strictEqual(elements['required-flow'].innerHTML, '3.72 <span class="text-xs font-medium text-slate-300">L/min</span>');
   assert.strictEqual(elements['current-do2i'].innerHTML, '339 <span class="text-xs font-medium text-slate-300">mL/min/m²</span>');
+}
+
+// Exercise the production input/change listeners, including manual-to-auto transitions.
+{
+  const elements = makeValidGdpElements();
+  elements.h_cm.value = '';
+  elements.w_kg.value = '';
+  const { api } = loadRuntime(elements);
+  api.bindGdpInputs();
+  elements.h_cm.value = '170'; elements.h_cm.dispatch('input');
+  assert.strictEqual(elements.bsa.value, '', 'One dimension alone must not produce a BSA.');
+  elements.w_kg.value = '70'; elements.w_kg.dispatch('input');
+  assert.strictEqual(elements.bsa.value, '1.82', 'Height and weight automatically fill BSA.');
+  for (const [method, expected] of [['DuBois', '1.81'], ['Haycock', '1.83'], ['Boyd', '1.83'], ['Mosteller', '1.82']]) {
+    elements['bsa-method'].value = method;
+    elements['bsa-method'].dispatch('change');
+    assert.strictEqual(elements.bsa.value, expected, `Changing to ${method} must refresh BSA.`);
+  }
+  elements.bsa.value = '2.10'; elements.bsa.dispatch('input');
+  assert.strictEqual(elements['current-do2i'].innerHTML, '294 <span class="text-xs font-medium text-slate-300">mL/min/m²</span>',
+    'DO2i uses the latest manual BSA of 2.10, not the 1.82 from height and weight.');
+  elements.bsa.value = '1.50'; elements.bsa.dispatch('change');
+  assert.strictEqual(elements['current-do2i'].innerHTML, '411 <span class="text-xs font-medium text-slate-300">mL/min/m²</span>',
+    'A committed manual BSA change refreshes DO2i immediately.');
+  elements.hb.dispatch('input');
+  assert.strictEqual(elements.bsa.value, '1.50', 'Other GDP inputs preserve a manually entered BSA.');
+  elements.bsa.value = ''; elements.bsa.dispatch('input');
+  assert.strictEqual(elements.bsa.value, '', 'An intentionally cleared BSA stays blank even with height and weight.');
+  assert.strictEqual(elements['current-do2i'].innerHTML, '—', 'Blank manual BSA must not reuse a previous value or height/weight estimate.');
+  assert(elements['gdp-warning'].textContent.includes('BSA'));
+  elements.flow.dispatch('change');
+  assert.strictEqual(elements.bsa.value, '', 'Other input changes must not silently refill a cleared manual BSA.');
+  elements.h_cm.value = '180'; elements.h_cm.dispatch('change');
+  assert.strictEqual(elements.bsa.value, '1.87', 'Committed dimension changes also refresh BSA.');
+  elements.w_kg.value = ''; elements.w_kg.dispatch('change');
+  assert.strictEqual(elements.bsa.value, '', 'Removing a dimension clears the stale automatic estimate.');
+  elements.h_cm.value = '';
+  elements.bsa.value = '1.90'; elements.bsa.dispatch('input');
+  assert.strictEqual(elements.bsa.value, '1.90', 'Manual BSA remains usable without height and weight.');
 }
 
 function idsFromHtml(relativePath) {

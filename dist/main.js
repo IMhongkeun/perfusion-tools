@@ -1369,7 +1369,7 @@ function formatSignedPressureDrop(value, decimals = 1) {
   return `${roundedValue > 0 ? '+' : ''}${roundedValue.toFixed(decimals)}`;
 }
 
-const PRESSURE_DROP_PRODUCT_COLORS = ['#0284c7', '#7c3aed', '#059669', '#dc2626'];
+const PRESSURE_DROP_PRODUCT_COLORS = ['#1e40af', '#2563eb', '#38a3e0', '#8ac9ed'];
 
 function getPressureDropLegendLayout(entryCount, columns = 2) {
   const safeEntryCount = Math.max(0, Math.floor(entryCount));
@@ -3684,14 +3684,14 @@ function buildTimeRowHtml(row, index) {
     <div class="time-row rounded-2xl border border-slate-100 dark:border-primary-800/60 bg-white/70 dark:bg-primary-900/40 p-3 space-y-3" data-row-id="${row.id}" data-time-event-type="${row.eventType}">
       <div class="flex items-center gap-2">
         <div class="text-[11px] text-slate-500 dark:text-slate-400">#${rowNumber}</div>
-        <input id="time-label-${row.id}" type="text" inputmode="text" value="${defaultLabel}" placeholder="${placeholder}" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+        <input id="time-label-${row.id}" type="text" inputmode="text" value="${defaultLabel}" placeholder="${placeholder}" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
         ${canRemove ? `<button type="button" class="time-remove-row rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-2 py-1 text-[11px] font-semibold text-slate-500 dark:text-slate-300 hover:border-rose-300 hover:text-rose-600" data-row-id="${row.id}">Remove</button>` : ''}
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         <div class="flex flex-col gap-1">
           <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
           <div class="flex items-center gap-2">
-            <input id="time-start-${row.id}" type="text" inputmode="numeric" placeholder="HH:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+            <input id="time-start-${row.id}" type="text" inputmode="numeric" placeholder="HH:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
             <button id="time-start-now-${row.id}" type="button" class="time-start-now p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500" data-row-id="${row.id}">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /></svg>
             </button>
@@ -3700,7 +3700,7 @@ function buildTimeRowHtml(row, index) {
         <div class="flex flex-col gap-1">
           <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
           <div class="flex items-center gap-2">
-            <input id="time-end-${row.id}" type="text" inputmode="numeric" placeholder="HH:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+            <input id="time-end-${row.id}" type="text" inputmode="numeric" placeholder="HH:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
             <button id="time-end-now-${row.id}" type="button" class="time-end-now p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500" data-row-id="${row.id}">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /></svg>
             </button>
@@ -6813,7 +6813,6 @@ function createPressureDropChartPanel(entry, flowValue, interpolationResults, sh
   const series = getPressureDropSeries(entry);
   const chartSeries = series.map(item => ({ ...item, colorIndex: 0 }));
   const header = document.createElement('div'); header.innerHTML = `<h3 class="text-sm font-semibold text-primary-900 dark:text-white">Pressure-flow curve</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Digitized manufacturer points are connected with straight line segments.</p>`;
-  header.appendChild(createPressureDropRawPointsToggle(showRawPoints, onRawPointsChange, 'pressure-drop-show-raw-points'));
   const svgWrap = document.createElement('div'); svgWrap.className = 'flex w-full items-center justify-center overflow-hidden rounded-lg bg-slate-50/60 dark:bg-primary-900/40 px-1 py-1 sm:px-2';
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('viewBox', '0 0 420 200'); svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', `${entry.manufacturer} ${entry.model} ${entry.size || ''} pressure-flow curves. ${series.map((item, index) => `${item.label}: ${getPressureDropResultStateText(interpolationResults[index])}`).join(' ')}`); svg.classList.add('block', 'w-full', 'h-auto', 'text-slate-500', 'dark:text-slate-300');
   const estimates = interpolationResults;
@@ -7288,7 +7287,7 @@ function getPressureDropExploredFlow(clientX, rect, dataset) {
   return Math.max(min, Math.min(max, Math.round((rawFlow + Number.EPSILON) * 10) / 10));
 }
 
-function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCommitFlow, controls, exploredCells) {
+function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCommitFlow, controls, exploredCells, flowCells = [], limitCells = []) {
   if (!series.length || !Number.isFinite(Number(svg.dataset.minFlow))) return;
   const minimum = Number(svg.dataset.minFlow), maximum = Number(svg.dataset.maxFlow);
   const left = Number(svg.dataset.plotLeft), right = Number(svg.dataset.plotRight);
@@ -7314,7 +7313,7 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
   slider.type = 'range'; slider.step = '0.1';
   slider.min = String(Math.max(0.1, Math.ceil((minimum - 1e-10) * 10) / 10));
   slider.max = String(Math.floor((maximum + 1e-10) * 10) / 10);
-  slider.className = 'order-last w-full accent-sky-600';
+  slider.className = 'pressure-drop-flow-slider order-last w-full accent-accent-600';
   slider.setAttribute('aria-label', 'Explore flow in 0.1 L/min steps');
   const commit = document.createElement('button');
   commit.type = 'button';
@@ -7326,11 +7325,15 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
   let exploredFlow = null;
   let pinnedFlow = false;
   let touchDragging = false;
+  let touchStartedPinned = false;
+  let touchStartX = 0;
+  let touchMoved = false;
   const update = flow => {
     exploredFlow = flow;
     const x = left + ((flow - minimum) / Math.max(maximum - minimum, 0.0001)) * (right - left);
     guide.setAttribute('x1', x); guide.setAttribute('x2', x);
-    readout.textContent = `Target: ${Number.isFinite(committedFlow) ? `${committedFlow} L/min` : 'not set'} · ${pinnedFlow ? 'Pinned' : 'Exploring'}: ${flow.toFixed(1)} L/min`;
+    readout.textContent = `Flow ${flow.toFixed(2)} L/min · ${pinnedFlow ? 'Pinned' : 'Exploring'}`;
+    readout.title = `Target: ${Number.isFinite(committedFlow) ? `${committedFlow} L/min` : 'not set'}`;
     series.forEach((item, index) => {
       const result = interpolatePressureDrop(item.points, flow);
       const valid = hasValidPressureDropEstimate([result]);
@@ -7343,16 +7346,21 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
       if (cell) {
         const limit = getPressureDropManufacturerFlowLimit(item.entry, flow);
         const limitText = getPressureDropManufacturerLimitLabel(limit);
-        // Keep only the numeric Explore value on one line; lengthy manufacturer
-        // warnings have a separate, wrapping row on narrow viewports.
-        cell.readout.textContent = `Explore: ${valid ? `${Math.abs(result.value).toFixed(1)} mmHg` : 'Out of range'}`;
-        cell.readout.title = valid ? `Signed pressure: ${formatSignedPressureDrop(result.value)} mmHg${limitText ? `; ${limitText}. Source: ${limit.source}` : ''}` : '';
-        cell.readout.classList.toggle('text-amber-700', Boolean(limitText));
-        cell.readout.classList.toggle('dark:text-amber-300', Boolean(limitText));
-        cell.warning.textContent = limitText;
-        cell.warning.classList.toggle('text-amber-700', Boolean(limitText));
-        cell.warning.classList.toggle('dark:text-amber-300', Boolean(limitText));
-        cell.warning.classList.toggle('hidden', !limitText);
+        cell.textContent = valid ? Math.abs(result.value).toFixed(1) : (result.state === 'no_points' ? 'No curve' : 'Out of range');
+        cell.setAttribute('aria-label', `Explore: ${cell.textContent}${valid ? ' mmHg' : ''}${limitText ? ` · ${limitText}` : ''}`);
+        if (flowCells[index]) flowCells[index].textContent = flow.toFixed(2);
+        if (limitCells[index]) {
+          limitCells[index].textContent = limitText;
+          limitCells[index].classList.toggle('text-amber-700', Boolean(limitText));
+          limitCells[index].classList.toggle('dark:text-amber-300', Boolean(limitText));
+          limitCells[index].classList.toggle('hidden', !limitText);
+        }
+        const isHighPressure = valid && shouldApplyPressureDropHighWarning(item.entry) && Math.abs(result.value) > 100;
+        cell.classList.toggle('font-semibold', valid);
+        cell.classList.toggle('whitespace-nowrap', valid);
+        cell.title = valid ? `Signed pressure: ${formatSignedPressureDrop(result.value)} mmHg${isHighPressure ? '; High pressure drop warning (>100 mmHg).' : ''}${limitText ? `; ${limitText}. Source: ${limit.source}` : ''}` : 'Outside the digitized source range; no extrapolation.';
+        cell.classList.toggle('text-amber-700', Boolean(limitText) || isHighPressure);
+        cell.classList.toggle('dark:text-amber-300', Boolean(limitText) || isHighPressure);
       }
     });
     if (canExploreOnSlider) slider.value = String(Math.max(Number(slider.min), Math.min(Number(slider.max), flow)));
@@ -7363,24 +7371,40 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
   };
   svg.style.touchAction = 'pan-y';
   const flowAtPointer = event => getPressureDropExploredFlow(event.clientX, svg.getBoundingClientRect(), svg.dataset);
-  // Hover previews values; a desktop click pins the flow so moving the
-  // pointer to "Use as target flow" cannot inadvertently change the choice.
+  // Click or tap toggles pinning. A touch drag pins its final flow, while
+  // unpinning restores hover exploration without committing a target.
   svg.addEventListener('pointermove', event => {
+    if (touchDragging && Math.abs(event.clientX - touchStartX) > 4) touchMoved = true;
     if (!pinnedFlow || touchDragging) update(flowAtPointer(event));
   });
   svg.addEventListener('pointerdown', event => {
+    if (event.button > 0) return;
     touchDragging = event.pointerType === 'touch';
-    pinnedFlow = !touchDragging;
+    if (touchDragging) {
+      touchStartedPinned = pinnedFlow;
+      touchStartX = event.clientX;
+      touchMoved = false;
+      pinnedFlow = false;
+    } else {
+      pinnedFlow = !pinnedFlow;
+    }
     update(flowAtPointer(event));
   });
   svg.addEventListener('pointerup', event => {
     if (touchDragging) {
       touchDragging = false;
-      pinnedFlow = true;
+      const dragged = touchMoved || Math.abs(event.clientX - touchStartX) > 4;
+      pinnedFlow = dragged || !touchStartedPinned;
       update(flowAtPointer(event));
     }
   });
-  svg.addEventListener('pointercancel', () => { touchDragging = false; });
+  svg.addEventListener('pointercancel', () => {
+    if (touchDragging) {
+      touchDragging = false;
+      pinnedFlow = touchStartedPinned;
+      update(exploredFlow);
+    }
+  });
   // Slider remains the accessible 0.1 L/min control and pins its selection.
   slider.addEventListener('input', () => {
     pinnedFlow = true;
@@ -7395,16 +7419,48 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
   update(canExploreOnSlider ? initialFlow : minimum);
 }
 
-function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPointsChange, onRemove, catalogEntries = entries, onCommitFlow) {
+function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPointsChange, onRemove, catalogEntries = entries, onCommitFlow, onReset) {
   const panel = document.createElement('article');
-  panel.className = 'min-w-0 rounded-xl border border-slate-200 dark:border-primary-800 p-4 space-y-3';
+  panel.className = 'min-w-0 rounded-xl border border-slate-200 dark:border-primary-800 p-3 sm:p-4 space-y-3';
   const heading = document.createElement('h3');
   heading.className = 'text-sm font-semibold text-primary-900 dark:text-white';
   heading.textContent = 'Selected pressure-flow curves';
-  panel.append(heading, createPressureDropRawPointsToggle(showRawPoints, onRawPointsChange, 'pressure-drop-target-raw-points'));
-  const series = [], estimates = [], exploredCells = [];
+  const header = document.createElement('div');
+  header.className = 'flex min-w-0 items-center justify-between gap-3';
+  header.appendChild(heading);
+  if (onReset) {
+    const reset = document.createElement('button');
+    reset.type = 'button';
+    reset.textContent = 'Reset';
+    reset.className = 'inline-flex min-h-9 shrink-0 items-center justify-center rounded-lg border border-slate-300 dark:border-primary-600 px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-300 hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500';
+    reset.setAttribute('aria-label', 'Reset selected cannulas');
+    reset.addEventListener('click', onReset);
+    header.appendChild(reset);
+  }
+  panel.appendChild(header);
+  const series = [], estimates = [], exploredCells = [], flowCells = [], limitCells = [];
   const legend = document.createElement('ol');
-  legend.className = 'divide-y divide-slate-100 dark:divide-primary-800 text-xs text-slate-600 dark:text-slate-300';
+  const resultTable = document.createElement('div');
+  resultTable.setAttribute('role', 'table');
+  resultTable.setAttribute('aria-label', 'Pressure at explored flow');
+  resultTable.className = 'rounded-lg border border-slate-200 dark:border-primary-700 px-2 sm:px-3';
+  // Explicit columns keep names and French sizes stationary as values change.
+  const rowColumns = 'grid min-w-0 grid-cols-[minmax(0,1fr)_2.5rem_4rem] sm:grid-cols-[minmax(0,1fr)_3rem_5rem] items-center gap-x-2';
+  const tableHead = document.createElement('div');
+  tableHead.className = rowColumns + ' border-b border-slate-200 dark:border-primary-700 py-2 text-[10px] font-semibold text-slate-500 dark:text-slate-400';
+  tableHead.setAttribute('role', 'row');
+  [['Cannula · Fr', 'text-left'], ['Flow', 'text-right'], ['ΔP', 'text-right']].forEach(([label, alignment]) => {
+    const cell = document.createElement('span');
+    cell.setAttribute('role', 'columnheader');
+    cell.className = alignment;
+    cell.textContent = label;
+    if (label === 'Flow') cell.title = 'Flow [L/min]';
+    if (label === 'ΔP') cell.title = 'Pressure drop magnitude [mmHg]';
+    tableHead.appendChild(cell);
+  });
+  legend.setAttribute('role', 'rowgroup');
+  legend.className = 'divide-y divide-slate-200 dark:divide-primary-800 text-xs text-slate-600 dark:text-slate-300';
+  resultTable.append(tableHead, legend);
   entries.forEach((entry, index) => {
     const result = getPressureDropTargetFlowResult(entry, flow);
     const key = getPressureDropTargetFlowKey(entry);
@@ -7417,20 +7473,19 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
       estimates.push(result.interpolationResult);
     }
     const item = document.createElement('li');
-    item.className = 'grid min-w-0 grid-cols-1 gap-x-3 gap-y-2 py-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center';
+    item.className = rowColumns + ' py-2';
+    item.setAttribute('role', 'row');
     item.dataset.productKey = key;
     const swatch = document.createElement('span');
-    swatch.className = 'h-2 w-3 shrink-0 rounded';
+    swatch.className = 'mt-1 h-2 w-2 shrink-0 rounded-full';
     swatch.style.backgroundColor = PRESSURE_DROP_PRODUCT_COLORS[index];
     swatch.setAttribute('aria-hidden', 'true');
-    const rank = document.createElement('span');
-    rank.className = 'shrink-0 tabular-nums text-slate-500 dark:text-slate-400';
-    rank.textContent = `${index + 1}.`;
     const name = document.createElement('span');
-    name.className = 'min-w-0 flex-1 break-words';
-    name.textContent = `${entry.manufacturer} · ${getPressureDropTargetFlowDisplayName(entry)}`;
+    name.className = 'min-w-0 break-words leading-relaxed';
+    name.textContent = getPressureDropTargetFlowDisplayName(entry);
+    name.title = `${entry.manufacturer} · ${entry.model}`;
     const size = document.createElement('span');
-    size.className = 'min-w-0 break-words text-slate-500 dark:text-slate-400';
+    size.className = 'inline-block max-w-full text-slate-500 dark:text-slate-400';
     appendPressureDropSizeLabel(size, identity);
     if (configuration === 'Dual-lumen VV ECMO') size.appendChild(document.createTextNode(' · Dual-lumen VV ECMO'));
     const value = document.createElement('span');
@@ -7445,11 +7500,15 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
       value.title = `${value.title ? value.title + ' · ' : ''}${limitLabel}. Source: ${result.manufacturerLimit.source}`;
     }
     const explored = document.createElement('span');
-    explored.className = 'shrink-0 whitespace-nowrap text-xs tabular-nums text-sky-700 dark:text-sky-300';
-    explored.textContent = 'Explore: —';
-    const exploreWarning = document.createElement('span');
-    exploreWarning.className = 'hidden basis-full min-w-0 whitespace-normal break-words text-xs';
-    if (result.series) exploredCells.push({ readout: explored, warning: exploreWarning });
+    explored.className = 'min-w-0 text-right text-xs tabular-nums text-accent-700 dark:text-accent-300';
+    explored.setAttribute('role', 'cell');
+    explored.textContent = result.interpolationResult.state === 'no_points' ? 'No curve' : '—';
+    const flowCell = document.createElement('span');
+    flowCell.className = 'text-right tabular-nums text-slate-500 dark:text-slate-400';
+    flowCell.setAttribute('role', 'cell');
+    flowCell.textContent = '—';
+    if (result.series) { exploredCells.push(explored); flowCells.push(flowCell); }
+    else explored.textContent = result.unavailableReason || 'No curve';
     const status = document.createElement('span');
     status.className = 'shrink-0 rounded-full bg-slate-100 dark:bg-primary-800 px-2 py-0.5 text-[11px]';
     status.textContent = limitLabel ? 'Above verified SKU max' : getPressureDropTargetFlowStatusText(result);
@@ -7469,14 +7528,22 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     remove.setAttribute('aria-label', `Remove ${entry.manufacturer} ${entry.model} ${identity} from chart`);
     remove.addEventListener('click', () => onRemove(key));
     const identityGroup = document.createElement('div');
-    identityGroup.className = 'flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1';
-    identityGroup.append(swatch, rank, name, size);
-    const valuesGroup = document.createElement('div');
-    valuesGroup.className = 'flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:justify-end';
-    valuesGroup.append(value, explored, exploreWarning, status);
-    if (source) valuesGroup.appendChild(source);
-    valuesGroup.appendChild(remove);
-    item.append(identityGroup, valuesGroup);
+    identityGroup.className = 'flex min-w-0 items-start gap-2';
+    identityGroup.setAttribute('role', 'cell');
+    const productName = document.createElement('span');
+    productName.className = 'min-w-0 break-words leading-relaxed';
+    productName.append(name, document.createTextNode(' · '), size);
+    if (result.lumenLabel) productName.appendChild(document.createTextNode(' · Drainage'));
+    const limitNote = document.createElement('span');
+    limitNote.className = `block min-w-0 whitespace-normal break-words text-[11px]${limitLabel ? ' text-amber-700 dark:text-amber-300' : ' hidden'}`;
+    limitNote.textContent = limitLabel;
+    if (result.series) limitCells.push(limitNote);
+    if (source) { source.className += ' ml-1'; productName.appendChild(source); }
+    productName.appendChild(remove);
+    productName.appendChild(limitNote);
+    identityGroup.append(swatch, productName);
+    identityGroup.title = `${entry.manufacturer} · ${value.textContent} · ${status.textContent}${limitLabel ? ` · ${limitLabel}` : ''}`;
+    item.append(identityGroup, flowCell, explored);
     legend.appendChild(item);
   });
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -7485,14 +7552,13 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
   svg.setAttribute('aria-label', 'Selected manufacturer pressure-flow curves. Product identities and target estimates are listed below.');
   svg.classList.add('block', 'w-full', 'h-auto', 'text-slate-500', 'dark:text-slate-300');
   // Full product names wrap in the HTML legend, avoiding overlap in the SVG.
-  drawPressureDropSeriesChart(svg, series, flow, estimates, { curveMode: 'linear', showRawPoints, showLegend: false, showTargetFlowLine: true });
+  drawPressureDropSeriesChart(svg, series, flow, estimates, { curveMode: 'linear', showLegend: false, showTargetFlowLine: true });
   const exploreControls = document.createElement('div');
-  panel.appendChild(exploreControls);
-  panel.append(svg, legend);
-  attachPressureDropChartExplorer(panel, svg, series, flow, onCommitFlow, exploreControls, exploredCells);
+  panel.append(svg, exploreControls, resultTable);
+  attachPressureDropChartExplorer(panel, svg, series, flow, onCommitFlow, exploreControls, exploredCells, flowCells, limitCells);
   const note = document.createElement('p');
   note.className = 'text-xs text-slate-500 dark:text-slate-400';
-  note.textContent = 'Digitized curve range ≠ manufacturer max flow. Check the product source.';
+  note.textContent = 'Hover or touch-drag: 0.1 L/min steps · Click or tap to pin/unpin · ΔP: mmHg (linear interpolation within source range). Digitized curve range ≠ manufacturer max flow. Check the product source.';
   if (!estimates.some(estimate => hasValidPressureDropEstimate([estimate]))) {
     note.textContent += ' No selected curve has an in-range estimate at this target flow.';
   }
@@ -7716,6 +7782,7 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
   };
   const render = () => {
     const focusedProductKey = document.activeElement?.dataset.productKey;
+    const listScrollTop = controls.results.scrollTop;
     const flow = parsePressureDropTargetFlow(controls.flow.value);
     const searchedEntries = activeSearchQuery ? searchPressureDropCatalog(entries, activeSearchQuery) : null;
     const rows = searchedEntries
@@ -7749,8 +7816,9 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
     }));
     if (focusedProductKey) {
       Array.from(controls.results.querySelectorAll('input[type="checkbox"]'))
-        .find(input => input.dataset.productKey === focusedProductKey)?.focus();
+        .find(input => input.dataset.productKey === focusedProductKey)?.focus({ preventScroll: true });
     }
+    controls.results.scrollTop = listScrollTop;
     controls.chart.innerHTML = '';
     const selectedEntries = selectedKeys.map(key => entries.find(entry => getPressureDropTargetFlowKey(entry) === key));
     if (selectedEntries.length) controls.chart.appendChild(createPressureDropTargetFlowChart(selectedEntries, flow, showRawPoints,
@@ -7766,6 +7834,11 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
         if (controls.view.dataset.analyticsReady === 'true' && typeof window !== 'undefined') {
           window.perfusionCalculatorAnalytics?.complete('cannula_pressure_drop');
         }
+      }, () => {
+        selectedKeys = [];
+        render();
+        controls.results.scrollTop = 0;
+        controls.results.focus();
       }));
     else {
       const prompt = document.createElement('p');
@@ -10187,19 +10260,16 @@ window.addEventListener('DOMContentLoaded', () => {
     gdpIds.forEach(id => {
       const x = el(id);
       if (x) {
-        x.addEventListener('input', () => {
+        const updateGdpInput = () => {
           lastChangedId = id;
           if (id === 'bsa') {
             bsaManualOverride = true;
             setText('bsa-hint', el('bsa').value ? 'manual' : 'auto-calc');
           }
           updateGDP();
-        });
-
-        if (id === 'bsa-method') x.addEventListener('change', () => {
-          lastChangedId = id;
-          updateGDP();
-        });
+        };
+        x.addEventListener('input', updateGdpInput);
+        x.addEventListener('change', updateGdpInput);
       }
     });
 

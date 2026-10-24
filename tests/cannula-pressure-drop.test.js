@@ -1586,6 +1586,8 @@ assert(renderedSvg.innerHTML.includes('stroke-dasharray="7 4"'), 'Drainage path 
 assert(!renderedSvg.innerHTML.includes('Empty leading series; Target flow'), 'Empty series must not receive another series estimate.');
 assert(renderedSvg.innerHTML.includes('Flow [L/min]') && renderedSvg.innerHTML.includes('Pressure drop [mmHg]'), 'Rendered axes must retain bracketed units.');
 assert.strictEqual(new Set(Array.from(chartRuntime.productColors)).size, 4, 'Product indexes must map to distinct colors.');
+assert.deepStrictEqual(Array.from(chartRuntime.productColors), ['#1e40af', '#2563eb', '#38a3e0', '#8ac9ed'],
+  'Compared curves use four distinct blue-to-sky intensities anchored to the favicon blue.');
 
 const visibleRawPointsSvg = { dataset: {}, innerHTML: '' };
 const visibleSeries = [
@@ -2833,14 +2835,34 @@ function rowCheckbox(row) { return pressureDescendants(row, node => node.type ==
 const initialKeys = currentRows().map(row => row.dataset.productKey);
 assert.strictEqual(initialKeys.length, 28);
 assert(currentRows().some(row => row.textContent.includes('Out of range')));
+targetNodes['pressure-drop-target-results'].scrollTop = 180;
 for (const row of currentRows().slice(0, 4)) {
   const box = rowCheckbox(row);
   box.focus(); box.checked = true; box.dispatch('change');
   assert.strictEqual(targetTestDocument.activeElement.dataset.productKey, row.dataset.productKey, 'Selection rerender preserves keyboard focus');
+  assert.strictEqual(targetNodes['pressure-drop-target-results'].scrollTop, 180, 'Selecting a curve preserves the list scroll position.');
 }
 targetTestDocument.activeElement = null;
 assert.strictEqual(currentRows().filter(row => rowCheckbox(row).checked).length, 4);
 assert(currentRows().filter(row => !rowCheckbox(row).checked).every(row => rowCheckbox(row).disabled));
+const chartReset = pressureDescendants(targetNodes['pressure-drop-target-chart'],
+  node => node.tagName === 'button' && node.attributes['aria-label'] === 'Reset selected cannulas')[0];
+assert(chartReset, 'Selected curves expose a Reset button in the chart header.');
+chartReset.dispatch('click');
+assert(currentRows().every(row => !rowCheckbox(row).checked && !rowCheckbox(row).disabled),
+  'Reset clears all curve selections and makes every eligible cannula selectable again.');
+assert.strictEqual(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'svg').length, 0);
+assert.strictEqual(targetFlowInput.value, '4.5', 'Reset preserves the target flow.');
+assert.strictEqual(locationInput.value, 'femoral', 'Reset preserves the active filters.');
+assert.strictEqual(targetNodes['pressure-drop-target-results'].scrollTop, 0);
+assert.strictEqual(targetTestDocument.activeElement, targetNodes['pressure-drop-target-results'],
+  'Reset returns focus to the selection list for the next comparison.');
+for (const row of currentRows().slice(0, 4)) {
+  const box = rowCheckbox(row);
+  box.checked = true; box.dispatch('change');
+}
+assert.strictEqual(currentRows().filter(row => rowCheckbox(row).checked).length, 4,
+  'Cannulas can be selected again immediately after reset.');
 const targetSort = targetNodes['pressure-drop-target-sort'];
 targetSort.value = 'size'; targetSort.dispatch('change');
 assert.strictEqual(currentRows().filter(row => rowCheckbox(row).checked).length, 4);
@@ -3034,24 +3056,24 @@ let committedExploration = null;
 const exploringChart = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[0], targetFixtures[2]], 4.5, false,
   () => {}, () => {}, targetFixtures, value => { committedExploration = value; });
 const exploringSvg = pressureDescendants(exploringChart, node => node.tagName === 'svg')[0];
-const chartReadout = pressureDescendants(exploringChart, node => node.textContent.startsWith('Target: '))[0];
+const chartReadout = pressureDescendants(exploringChart, node => node.tagName === 'p' && node.textContent.startsWith('Flow '))[0];
 const chartSlider = pressureDescendants(exploringChart, node => node.type === 'range')[0];
 // Use a separate chart for slider-only layout checks: input pins the flow,
 // which must not change the hover/pointer tests below.
 const layoutChart = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[0]], 4.5, false, () => {}, () => {});
 const layoutSlider = pressureDescendants(layoutChart, node => node.type === 'range')[0];
-// Mobile regression: the Target occupies a full row so changing the Explore
-// result from single- to double-digit mmHg never moves Explore up/down.
+// Mobile regression: fixed Flow/pressure columns keep the identity stationary
+// when the pressure value gains a digit. Target details stay in the tooltip.
 const exploringLegendItem = pressureDescendants(layoutChart, node => node.tagName === 'li')[0];
 const exploringTargetLabel = pressureDescendants(exploringLegendItem,
-  node => node.tagName === 'span' && node.textContent.startsWith('Target: '))[0];
+  node => node.title?.includes('Target: '))[0];
 const exploringValueLabel = pressureDescendants(exploringLegendItem,
-  node => node.tagName === 'span' && node.textContent.startsWith('Explore: '))[0];
-assert(exploringTargetLabel?.className.split(' ').includes('basis-full'),
-  'Target estimate must always occupy its own complete legend row.');
-assert(exploringValueLabel?.className.split(' ').includes('whitespace-nowrap') &&
-  exploringValueLabel.className.split(' ').includes('shrink-0'),
-  'Explore must stay together at the start of the following legend row.');
+  node => node.attributes['aria-label']?.startsWith('Explore: '))[0];
+assert.strictEqual(exploringTargetLabel?.attributes.role, 'cell',
+  'Target details belong to the identity cell and must not resize the numeric columns.');
+assert(exploringLegendItem.className.includes('grid-cols-[minmax(0,1fr)_2.5rem_4rem]'));
+assert(exploringValueLabel?.className.split(' ').includes('whitespace-nowrap'),
+  'Numeric Explore values must stay together in their fixed pressure column.');
 const stableExplorerClass = exploringValueLabel.className;
 
 const blankTargetChart = targetRuntime.createPressureDropTargetFlowChart([targetFixtures[0]], NaN, false, () => {}, () => {});
@@ -3059,17 +3081,17 @@ const blankTargetItem = pressureDescendants(blankTargetChart, node => node.tagNa
 const blankSlider = pressureDescendants(blankTargetChart, node => node.type === 'range')[0];
 const blankCommit = pressureDescendants(blankTargetChart,
   node => node.tagName === 'button' && node.textContent === 'Use as target flow')[0];
-assert(blankTargetItem.textContent.includes('Target: Enter a positive target flow'));
-assert(blankTargetItem.textContent.includes('Enter flow'));
+assert(pressureDescendants(blankTargetItem, node => node.title?.includes('Target: Enter a positive target flow')).length);
+assert(!blankTargetItem.textContent.includes('Enter flow'), 'An unset target must not clutter the live exploration readout.');
 assert(!blankTargetItem.textContent.includes('Out of range'), 'An unset target must not be labeled as a source-range violation.');
 assert(blankSlider && Number(blankSlider.min) > 0, 'Explorer must start at a positive tenth-step when the target input is blank.');
 assert(blankCommit && (!blankCommit.disabled || Number(blankSlider.min) > 0),
   'The commit control must not accept a zero or negative flow.');
 assert(chartSlider && chartSlider.attributes['aria-label'].includes('0.1 L/min'));
 layoutSlider.value = '1.0'; layoutSlider.dispatch('input');
-assert(exploringValueLabel.textContent.includes('Explore: 10.0 mmHg'));
+assert.strictEqual(exploringValueLabel.textContent, '10.0');
 layoutSlider.value = '1.1'; layoutSlider.dispatch('input');
-assert(exploringValueLabel.textContent.includes('Explore: 12.0 mmHg'));
+assert.strictEqual(exploringValueLabel.textContent, '12.0');
 assert.strictEqual(exploringValueLabel.className, stableExplorerClass,
   'Explore must retain its single stable row and layout classes when digits change.');
 
@@ -3083,16 +3105,16 @@ const warningChart = targetRuntime.createPressureDropTargetFlowChart([optiflowWa
 const warningSlider = pressureDescendants(warningChart, node => node.type === 'range')[0];
 warningSlider.value = '8.3'; warningSlider.dispatch('input');
 const warningReadout = pressureDescendants(warningChart,
-  node => node.tagName === 'span' && node.textContent.startsWith('Explore: '))[0];
+  node => node.attributes['aria-label']?.startsWith('Explore: '))[0];
 const warningMessage = pressureDescendants(warningChart,
-  node => node.tagName === 'span' && node.textContent.includes('Above verified SKU max'))[0];
-assert.strictEqual(warningReadout.textContent, 'Explore: 41.8 mmHg',
+  node => node.tagName === 'span' && node.className.split(' ').includes('text-[11px]') && node.textContent.includes('Above verified SKU max'))[0];
+assert.strictEqual(warningReadout.textContent, '41.8',
   'The numeric Explore value must be isolated from the long manufacturer warning.');
 assert(warningReadout.className.split(' ').includes('whitespace-nowrap'));
 assert(warningMessage?.textContent.includes('other variants unverified'));
 assert(warningMessage.className.split(' ').includes('whitespace-normal') &&
   warningMessage.className.split(' ').includes('break-words') &&
-  warningMessage.className.split(' ').includes('basis-full') &&
+  warningMessage.className.split(' ').includes('block') &&
   !warningMessage.className.split(' ').includes('hidden'),
   'The full manufacturer-limit warning must wrap on its own line.');
 assert(!warningMessage.className.split(' ').includes('whitespace-nowrap') &&
@@ -3110,22 +3132,42 @@ assert(!warningMessage.className.split(' ').includes('text-amber-700') &&
 
 assert.strictEqual(exploringSvg.dataset.minFlow, '0');
 exploringSvg.dispatch('pointermove', { clientX: 58 + 344 * (4.1 / 5) });
-assert(chartReadout.textContent.includes('Target: 4.5 L/min · Exploring: 4.1 L/min'));
+assert.strictEqual(chartReadout.textContent, 'Flow 4.10 L/min · Exploring');
+assert.strictEqual(chartReadout.title, 'Target: 4.5 L/min');
 assert(exploringChart.textContent.includes('Out of range'), 'Each curve keeps its own source domain');
 assert.strictEqual(committedExploration, null, 'Pointer movement does not commit a target');
 exploringSvg.dispatch('pointerdown', { pointerType: 'mouse', clientX: 58 + 344 * (3.2 / 5) });
-assert(chartReadout.textContent.includes('Pinned: 3.2 L/min'), 'Click pins the selected chart flow.');
+assert.strictEqual(chartReadout.textContent, 'Flow 3.20 L/min · Pinned', 'Click pins the selected chart flow.');
 exploringSvg.dispatch('pointermove', { pointerType: 'mouse', clientX: 58 + 344 * (4.4 / 5) });
-assert(chartReadout.textContent.includes('Pinned: 3.2 L/min'), 'Moving toward the Apply button must not change pinned flow.');
+assert.strictEqual(chartReadout.textContent, 'Flow 3.20 L/min · Pinned', 'Moving toward the Apply button must not change pinned flow.');
 const usePinnedFlow = pressureDescendants(exploringChart, node => node.textContent === 'Use as target flow')[0];
 usePinnedFlow.dispatch('click');
 assert.strictEqual(committedExploration, 3.2, 'Apply uses the pinned flow, not the last mouse position.');
+exploringSvg.dispatch('pointerdown', { pointerType: 'mouse', clientX: 58 + 344 * (3.2 / 5) });
+assert.strictEqual(chartReadout.textContent, 'Flow 3.20 L/min · Exploring', 'A second click releases the pinned flow.');
+exploringSvg.dispatch('pointermove', { pointerType: 'mouse', clientX: 58 + 344 * (4 / 5) });
+assert.strictEqual(chartReadout.textContent, 'Flow 4.00 L/min · Exploring', 'Hover resumes after unpinning.');
+assert(pressureDescendants(exploringChart, node => node.attributes['aria-label'] === 'Explore: 70.0 mmHg').length,
+  'The pressure readout resumes updating with the explored flow.');
+assert.strictEqual(committedExploration, 3.2, 'Unpinning and hovering must not change the committed target.');
+exploringSvg.dispatch('pointerdown', { pointerType: 'mouse', clientX: 58 + 344 * (4 / 5) });
+assert.strictEqual(chartReadout.textContent, 'Flow 4.00 L/min · Pinned', 'Another click can pin again.');
 exploringSvg.dispatch('pointerdown', { pointerType: 'touch', clientX: 58 + 344 * (3.6 / 5) });
 exploringSvg.dispatch('pointermove', { pointerType: 'touch', clientX: 58 + 344 * (3.8 / 5) });
 exploringSvg.dispatch('pointerup', { pointerType: 'touch', clientX: 58 + 344 * (3.8 / 5) });
-assert(chartReadout.textContent.includes('Pinned: 3.8 L/min'), 'Touch release pins the final dragged flow.');
+assert.strictEqual(chartReadout.textContent, 'Flow 3.80 L/min · Pinned', 'Touch release pins the final dragged flow.');
+exploringSvg.dispatch('pointerdown', { pointerType: 'touch', clientX: 58 + 344 * (3.8 / 5) });
+exploringSvg.dispatch('pointerup', { pointerType: 'touch', clientX: 58 + 344 * (3.8 / 5) });
+assert.strictEqual(chartReadout.textContent, 'Flow 3.80 L/min · Exploring', 'A second tap releases the pinned flow.');
+exploringSvg.dispatch('pointerdown', { pointerType: 'touch', clientX: 58 + 344 * (3.2 / 5) });
+exploringSvg.dispatch('pointerup', { pointerType: 'touch', clientX: 58 + 344 * (3.2 / 5) });
+assert.strictEqual(chartReadout.textContent, 'Flow 3.20 L/min · Pinned', 'A tap can pin again.');
+exploringSvg.dispatch('pointerdown', { pointerType: 'touch', clientX: 58 + 344 * (3.2 / 5) });
+exploringSvg.dispatch('pointercancel');
+assert.strictEqual(chartReadout.textContent, 'Flow 3.20 L/min · Pinned', 'Cancelled touch scrolling restores the prior pin state.');
 chartSlider.value = '4.0'; chartSlider.dispatch('input');
-assert(exploringChart.textContent.includes('Explore: 70.0 mmHg'), 'Keyboard slider resolves exact source points');
+assert(pressureDescendants(exploringChart, node => node.textContent === '70.0' && node.attributes['aria-label'] === 'Explore: 70.0 mmHg').length,
+  'Keyboard slider resolves exact source points with units in its accessible label.');
 assert(pressureDescendants(exploringChart, node => node.title?.includes('Signed pressure: +70.0 mmHg')).length >= 2,
   'Each series preserves its own signed interpolation details');
 const useFlow = pressureDescendants(exploringChart, node => node.textContent === 'Use as target flow')[0];
@@ -3135,17 +3177,27 @@ assert(avalonExploration.textContent.includes('Drainage') && !avalonExploration.
 assert(overlaySvg.innerHTML.includes('data-target-flow-line="true"'));
 assert.strictEqual((overlaySvg.innerHTML.match(/data-series-id=/g) || []).length, 2);
 assert(overlaySvg.innerHTML.includes('Signed pressure: +80.0 mmHg') && overlaySvg.innerHTML.includes('Signed pressure: +45.0 mmHg'));
-assert.strictEqual((overlaySvg.innerHTML.match(/data-raw-pressure-point=/g) || []).length, 4);
+assert.strictEqual((overlaySvg.innerHTML.match(/data-raw-pressure-point=/g) || []).length, 0, 'Explorer no longer exposes raw digitized points.');
+assert(!pressureDescendants(overlay, node => node.type === 'checkbox').length, 'Raw-point checkbox is removed.');
 const externalLegend = pressureDescendants(overlay, node => node.tagName === 'li');
-assert(externalLegend[0].textContent.includes('Medtronic · A') && externalLegend[0].textContent.includes('19 Fr'));
-assert(externalLegend[1].textContent.includes('Getinge / Maquet · B') && externalLegend[1].textContent.includes('21 Fr'));
+externalLegend.forEach(row => {
+  assert.strictEqual(row.attributes.role, 'row');
+  assert.strictEqual(row.children.filter(node => node.attributes.role === 'cell').length, 3);
+  assert(row.className.includes('grid-cols-[minmax(0,1fr)_2.5rem_4rem]'),
+    'Flow and pressure reserve fixed column widths rather than resizing with their text.');
+});
+assert(externalLegend[0].textContent.includes('A') && externalLegend[0].textContent.includes('19 Fr'));
+assert(externalLegend[1].textContent.includes('B') && externalLegend[1].textContent.includes('21 Fr'));
+assert(pressureDescendants(externalLegend[0], node => node.title?.includes('Medtronic')).length);
+assert(pressureDescendants(externalLegend[1], node => node.title?.includes('Getinge / Maquet')).length);
 assert.strictEqual(externalLegend[0].dataset.productKey, targetRuntime.getPressureDropTargetFlowKey(targetFixtures[0]));
 assert.strictEqual(pressureDescendants(externalLegend[0], node => node.style.backgroundColor)[0].style.backgroundColor, chartRuntime.productColors[0]);
 const compactOverlay = targetRuntime.createPressureDropTargetFlowChart(
   [{ ...highArterial, sourceUrl: 'https://example.com/catalog.pdf' }, venousHighMagnitude, highArterial], 5, false, () => {}, () => {});
 const compactItems = pressureDescendants(compactOverlay, node => node.tagName === 'li');
 assert.strictEqual(compactItems.length, 3);
-assert(compactItems[0].textContent.includes('120.0 mmHg') && compactItems[0].textContent.includes('Exact'));
+assert(pressureDescendants(compactItems[0], node => node.textContent === '120.0').length);
+assert(pressureDescendants(compactItems[0], node => node.title?.includes('Exact')).length);
 assert(!compactItems[0].textContent.includes('signed pressure') && !compactItems[0].textContent.includes('High pressure drop warning'));
 assert(pressureDescendants(compactItems[0], node => node.title?.includes('Signed pressure: +120.0 mmHg')).length);
 assert(pressureDescendants(compactItems[0], node => node.className.includes('text-amber-700')).length);
@@ -3161,11 +3213,13 @@ compactRemove.dispatch('click');
 assert.strictEqual(removedKey, targetRuntime.getPressureDropTargetFlowKey(highArterial));
 const outOfRangeOverlay = targetRuntime.createPressureDropTargetFlowChart([highArterial], 6, false, () => {}, () => {});
 const outOfRangeItem = pressureDescendants(outOfRangeOverlay, node => node.tagName === 'li')[0];
-assert(outOfRangeItem.textContent.includes('Out of range'));
-assert(!pressureDescendants(outOfRangeItem, node => node.className.includes('text-amber-700')).length);
+assert(pressureDescendants(outOfRangeItem, node => node.title?.includes('Out of range')).length,
+  'An out-of-range target remains available in target details.');
+assert(pressureDescendants(outOfRangeItem, node => node.textContent === '120.0' && node.className.includes('text-amber-700')).length,
+  'The explorer clamps to the source domain and warns on the currently explored arterial pressure.');
 const noCurveOverlay = targetRuntime.createPressureDropTargetFlowChart([{ ...highArterial, points: [] }], 5, false, () => {}, () => {});
 const noCurveItem = pressureDescendants(noCurveOverlay, node => node.tagName === 'li')[0];
-assert(noCurveItem.textContent.includes('Target: No digitized curve'));
+assert(pressureDescendants(noCurveItem, node => node.title?.includes('Target: No digitized curve')).length);
 assert(noCurveItem.textContent.includes('No curve'));
 assert(!noCurveItem.textContent.includes('Out of range'), 'Missing curve data must remain distinct from a range violation.');
 
