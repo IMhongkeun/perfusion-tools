@@ -3684,14 +3684,14 @@ function buildTimeRowHtml(row, index) {
     <div class="time-row rounded-2xl border border-slate-100 dark:border-primary-800/60 bg-white/70 dark:bg-primary-900/40 p-3 space-y-3" data-row-id="${row.id}" data-time-event-type="${row.eventType}">
       <div class="flex items-center gap-2">
         <div class="text-[11px] text-slate-500 dark:text-slate-400">#${rowNumber}</div>
-        <input id="time-label-${row.id}" type="text" inputmode="text" value="${defaultLabel}" placeholder="${placeholder}" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+        <input id="time-label-${row.id}" type="text" inputmode="text" value="${defaultLabel}" placeholder="${placeholder}" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-1.5 text-xs focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
         ${canRemove ? `<button type="button" class="time-remove-row rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-2 py-1 text-[11px] font-semibold text-slate-500 dark:text-slate-300 hover:border-rose-300 hover:text-rose-600" data-row-id="${row.id}">Remove</button>` : ''}
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         <div class="flex flex-col gap-1">
           <span class="text-[11px] text-slate-500 dark:text-slate-400">Start time</span>
           <div class="flex items-center gap-2">
-            <input id="time-start-${row.id}" type="text" inputmode="numeric" placeholder="HH:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+            <input id="time-start-${row.id}" type="text" inputmode="numeric" placeholder="HH:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
             <button id="time-start-now-${row.id}" type="button" class="time-start-now p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500" data-row-id="${row.id}">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /></svg>
             </button>
@@ -3700,7 +3700,7 @@ function buildTimeRowHtml(row, index) {
         <div class="flex flex-col gap-1">
           <span class="text-[11px] text-slate-500 dark:text-slate-400">End time</span>
           <div class="flex items-center gap-2">
-            <input id="time-end-${row.id}" type="text" inputmode="numeric" placeholder="HH:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
+            <input id="time-end-${row.id}" type="text" inputmode="numeric" placeholder="HH:mm" class="w-full rounded-xl border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none" />
             <button id="time-end-now-${row.id}" type="button" class="time-end-now p-2 rounded-lg border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 hover:bg-slate-100 dark:hover:bg-primary-700 text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-500" data-row-id="${row.id}">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /></svg>
             </button>
