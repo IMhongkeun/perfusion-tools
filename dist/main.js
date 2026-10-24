@@ -1369,7 +1369,7 @@ function formatSignedPressureDrop(value, decimals = 1) {
   return `${roundedValue > 0 ? '+' : ''}${roundedValue.toFixed(decimals)}`;
 }
 
-const PRESSURE_DROP_PRODUCT_COLORS = ['#005b63', '#00838d', '#2aa6ad', '#80c3c6'];
+const PRESSURE_DROP_PRODUCT_COLORS = ['#1e40af', '#2563eb', '#38a3e0', '#8ac9ed'];
 
 function getPressureDropLegendLayout(entryCount, columns = 2) {
   const safeEntryCount = Math.max(0, Math.floor(entryCount));

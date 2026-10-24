@@ -1586,8 +1586,8 @@ assert(renderedSvg.innerHTML.includes('stroke-dasharray="7 4"'), 'Drainage path 
 assert(!renderedSvg.innerHTML.includes('Empty leading series; Target flow'), 'Empty series must not receive another series estimate.');
 assert(renderedSvg.innerHTML.includes('Flow [L/min]') && renderedSvg.innerHTML.includes('Pressure drop [mmHg]'), 'Rendered axes must retain bracketed units.');
 assert.strictEqual(new Set(Array.from(chartRuntime.productColors)).size, 4, 'Product indexes must map to distinct colors.');
-assert.deepStrictEqual(Array.from(chartRuntime.productColors), ['#005b63', '#00838d', '#2aa6ad', '#80c3c6'],
-  'Compared curves use the same teal hue family at four distinct intensities.');
+assert.deepStrictEqual(Array.from(chartRuntime.productColors), ['#1e40af', '#2563eb', '#38a3e0', '#8ac9ed'],
+  'Compared curves use four distinct blue-to-sky intensities anchored to the favicon blue.');
 
 const visibleRawPointsSvg = { dataset: {}, innerHTML: '' };
 const visibleSeries = [
