@@ -7419,13 +7419,25 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
   update(canExploreOnSlider ? initialFlow : minimum);
 }
 
-function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPointsChange, onRemove, catalogEntries = entries, onCommitFlow) {
+function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPointsChange, onRemove, catalogEntries = entries, onCommitFlow, onReset) {
   const panel = document.createElement('article');
   panel.className = 'min-w-0 rounded-xl border border-slate-200 dark:border-primary-800 p-3 sm:p-4 space-y-3';
   const heading = document.createElement('h3');
   heading.className = 'text-sm font-semibold text-primary-900 dark:text-white';
   heading.textContent = 'Selected pressure-flow curves';
-  panel.appendChild(heading);
+  const header = document.createElement('div');
+  header.className = 'flex min-w-0 items-center justify-between gap-3';
+  header.appendChild(heading);
+  if (onReset) {
+    const reset = document.createElement('button');
+    reset.type = 'button';
+    reset.textContent = 'Reset';
+    reset.className = 'inline-flex min-h-9 shrink-0 items-center justify-center rounded-lg border border-slate-300 dark:border-primary-600 px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-300 hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500';
+    reset.setAttribute('aria-label', 'Reset selected cannulas');
+    reset.addEventListener('click', onReset);
+    header.appendChild(reset);
+  }
+  panel.appendChild(header);
   const series = [], estimates = [], exploredCells = [], flowCells = [], limitCells = [];
   const legend = document.createElement('ol');
   const resultTable = document.createElement('div');
@@ -7822,6 +7834,11 @@ function initPressureDropTargetFlowComparison(entries, onStatus, onSingleLookup)
         if (controls.view.dataset.analyticsReady === 'true' && typeof window !== 'undefined') {
           window.perfusionCalculatorAnalytics?.complete('cannula_pressure_drop');
         }
+      }, () => {
+        selectedKeys = [];
+        render();
+        controls.results.scrollTop = 0;
+        controls.results.focus();
       }));
     else {
       const prompt = document.createElement('p');

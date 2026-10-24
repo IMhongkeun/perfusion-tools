@@ -2845,6 +2845,24 @@ for (const row of currentRows().slice(0, 4)) {
 targetTestDocument.activeElement = null;
 assert.strictEqual(currentRows().filter(row => rowCheckbox(row).checked).length, 4);
 assert(currentRows().filter(row => !rowCheckbox(row).checked).every(row => rowCheckbox(row).disabled));
+const chartReset = pressureDescendants(targetNodes['pressure-drop-target-chart'],
+  node => node.tagName === 'button' && node.attributes['aria-label'] === 'Reset selected cannulas')[0];
+assert(chartReset, 'Selected curves expose a Reset button in the chart header.');
+chartReset.dispatch('click');
+assert(currentRows().every(row => !rowCheckbox(row).checked && !rowCheckbox(row).disabled),
+  'Reset clears all curve selections and makes every eligible cannula selectable again.');
+assert.strictEqual(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'svg').length, 0);
+assert.strictEqual(targetFlowInput.value, '4.5', 'Reset preserves the target flow.');
+assert.strictEqual(locationInput.value, 'femoral', 'Reset preserves the active filters.');
+assert.strictEqual(targetNodes['pressure-drop-target-results'].scrollTop, 0);
+assert.strictEqual(targetTestDocument.activeElement, targetNodes['pressure-drop-target-results'],
+  'Reset returns focus to the selection list for the next comparison.');
+for (const row of currentRows().slice(0, 4)) {
+  const box = rowCheckbox(row);
+  box.checked = true; box.dispatch('change');
+}
+assert.strictEqual(currentRows().filter(row => rowCheckbox(row).checked).length, 4,
+  'Cannulas can be selected again immediately after reset.');
 const targetSort = targetNodes['pressure-drop-target-sort'];
 targetSort.value = 'size'; targetSort.dispatch('change');
 assert.strictEqual(currentRows().filter(row => rowCheckbox(row).checked).length, 4);
