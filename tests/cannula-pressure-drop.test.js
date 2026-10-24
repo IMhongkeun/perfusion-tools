@@ -3125,10 +3125,28 @@ assert.strictEqual(chartReadout.textContent, 'Flow 3.20 L/min · Pinned', 'Movin
 const usePinnedFlow = pressureDescendants(exploringChart, node => node.textContent === 'Use as target flow')[0];
 usePinnedFlow.dispatch('click');
 assert.strictEqual(committedExploration, 3.2, 'Apply uses the pinned flow, not the last mouse position.');
+exploringSvg.dispatch('pointerdown', { pointerType: 'mouse', clientX: 58 + 344 * (3.2 / 5) });
+assert.strictEqual(chartReadout.textContent, 'Flow 3.20 L/min · Exploring', 'A second click releases the pinned flow.');
+exploringSvg.dispatch('pointermove', { pointerType: 'mouse', clientX: 58 + 344 * (4 / 5) });
+assert.strictEqual(chartReadout.textContent, 'Flow 4.00 L/min · Exploring', 'Hover resumes after unpinning.');
+assert(pressureDescendants(exploringChart, node => node.attributes['aria-label'] === 'Explore: 70.0 mmHg').length,
+  'The pressure readout resumes updating with the explored flow.');
+assert.strictEqual(committedExploration, 3.2, 'Unpinning and hovering must not change the committed target.');
+exploringSvg.dispatch('pointerdown', { pointerType: 'mouse', clientX: 58 + 344 * (4 / 5) });
+assert.strictEqual(chartReadout.textContent, 'Flow 4.00 L/min · Pinned', 'Another click can pin again.');
 exploringSvg.dispatch('pointerdown', { pointerType: 'touch', clientX: 58 + 344 * (3.6 / 5) });
 exploringSvg.dispatch('pointermove', { pointerType: 'touch', clientX: 58 + 344 * (3.8 / 5) });
 exploringSvg.dispatch('pointerup', { pointerType: 'touch', clientX: 58 + 344 * (3.8 / 5) });
 assert.strictEqual(chartReadout.textContent, 'Flow 3.80 L/min · Pinned', 'Touch release pins the final dragged flow.');
+exploringSvg.dispatch('pointerdown', { pointerType: 'touch', clientX: 58 + 344 * (3.8 / 5) });
+exploringSvg.dispatch('pointerup', { pointerType: 'touch', clientX: 58 + 344 * (3.8 / 5) });
+assert.strictEqual(chartReadout.textContent, 'Flow 3.80 L/min · Exploring', 'A second tap releases the pinned flow.');
+exploringSvg.dispatch('pointerdown', { pointerType: 'touch', clientX: 58 + 344 * (3.2 / 5) });
+exploringSvg.dispatch('pointerup', { pointerType: 'touch', clientX: 58 + 344 * (3.2 / 5) });
+assert.strictEqual(chartReadout.textContent, 'Flow 3.20 L/min · Pinned', 'A tap can pin again.');
+exploringSvg.dispatch('pointerdown', { pointerType: 'touch', clientX: 58 + 344 * (3.2 / 5) });
+exploringSvg.dispatch('pointercancel');
+assert.strictEqual(chartReadout.textContent, 'Flow 3.20 L/min · Pinned', 'Cancelled touch scrolling restores the prior pin state.');
 chartSlider.value = '4.0'; chartSlider.dispatch('input');
 assert(pressureDescendants(exploringChart, node => node.textContent === '70.0' && node.attributes['aria-label'] === 'Explore: 70.0 mmHg').length,
   'Keyboard slider resolves exact source points with units in its accessible label.');

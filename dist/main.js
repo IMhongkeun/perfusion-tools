@@ -7325,6 +7325,9 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
   let exploredFlow = null;
   let pinnedFlow = false;
   let touchDragging = false;
+  let touchStartedPinned = false;
+  let touchStartX = 0;
+  let touchMoved = false;
   const update = flow => {
     exploredFlow = flow;
     const x = left + ((flow - minimum) / Math.max(maximum - minimum, 0.0001)) * (right - left);
@@ -7368,24 +7371,40 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
   };
   svg.style.touchAction = 'pan-y';
   const flowAtPointer = event => getPressureDropExploredFlow(event.clientX, svg.getBoundingClientRect(), svg.dataset);
-  // Hover previews values; a desktop click pins the flow so moving the
-  // pointer to "Use as target flow" cannot inadvertently change the choice.
+  // Click or tap toggles pinning. A touch drag pins its final flow, while
+  // unpinning restores hover exploration without committing a target.
   svg.addEventListener('pointermove', event => {
+    if (touchDragging && Math.abs(event.clientX - touchStartX) > 4) touchMoved = true;
     if (!pinnedFlow || touchDragging) update(flowAtPointer(event));
   });
   svg.addEventListener('pointerdown', event => {
+    if (event.button > 0) return;
     touchDragging = event.pointerType === 'touch';
-    pinnedFlow = !touchDragging;
+    if (touchDragging) {
+      touchStartedPinned = pinnedFlow;
+      touchStartX = event.clientX;
+      touchMoved = false;
+      pinnedFlow = false;
+    } else {
+      pinnedFlow = !pinnedFlow;
+    }
     update(flowAtPointer(event));
   });
   svg.addEventListener('pointerup', event => {
     if (touchDragging) {
       touchDragging = false;
-      pinnedFlow = true;
+      const dragged = touchMoved || Math.abs(event.clientX - touchStartX) > 4;
+      pinnedFlow = dragged || !touchStartedPinned;
       update(flowAtPointer(event));
     }
   });
-  svg.addEventListener('pointercancel', () => { touchDragging = false; });
+  svg.addEventListener('pointercancel', () => {
+    if (touchDragging) {
+      touchDragging = false;
+      pinnedFlow = touchStartedPinned;
+      update(exploredFlow);
+    }
+  });
   // Slider remains the accessible 0.1 L/min control and pins its selection.
   slider.addEventListener('input', () => {
     pinnedFlow = true;
@@ -7527,7 +7546,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
   attachPressureDropChartExplorer(panel, svg, series, flow, onCommitFlow, exploreControls, exploredCells, flowCells, limitCells);
   const note = document.createElement('p');
   note.className = 'text-xs text-slate-500 dark:text-slate-400';
-  note.textContent = 'Hover or touch-drag: 0.1 L/min steps · ΔP: mmHg (linear interpolation within source range). Digitized curve range ≠ manufacturer max flow. Check the product source.';
+  note.textContent = 'Hover or touch-drag: 0.1 L/min steps · Click or tap to pin/unpin · ΔP: mmHg (linear interpolation within source range). Digitized curve range ≠ manufacturer max flow. Check the product source.';
   if (!estimates.some(estimate => hasValidPressureDropEstimate([estimate]))) {
     note.textContent += ' No selected curve has an in-range estimate at this target flow.';
   }
