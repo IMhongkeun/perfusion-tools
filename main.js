@@ -10260,19 +10260,16 @@ window.addEventListener('DOMContentLoaded', () => {
     gdpIds.forEach(id => {
       const x = el(id);
       if (x) {
-        x.addEventListener('input', () => {
+        const updateGdpInput = () => {
           lastChangedId = id;
           if (id === 'bsa') {
             bsaManualOverride = true;
             setText('bsa-hint', el('bsa').value ? 'manual' : 'auto-calc');
           }
           updateGDP();
-        });
-
-        if (id === 'bsa-method') x.addEventListener('change', () => {
-          lastChangedId = id;
-          updateGDP();
-        });
+        };
+        x.addEventListener('input', updateGdpInput);
+        x.addEventListener('change', updateGdpInput);
       }
     });
 
