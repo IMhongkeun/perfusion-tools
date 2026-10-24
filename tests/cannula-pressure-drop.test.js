@@ -2714,9 +2714,9 @@ const hlsCompact = targetRuntime.createPressureDropTargetFlowChart(
   pressureDropData.filter(entry => ['PAL 1923', 'PAL 2123'].includes(entry.cannulaOrderCode)),
   4.1, false, () => {}, () => {}, pressureDropData);
 const hlsRows = pressureDescendants(hlsCompact, node => node.tagName === 'li');
-assert.deepStrictEqual(hlsRows.map(node => node.textContent.match(/\\d+ Fr/)?.[0]), ['19 Fr', '21 Fr']);
+assert.deepStrictEqual(hlsRows.map(node => node.textContent.match(/\d+ Fr/)?.[0]), ['19 Fr', '21 Fr']);
 for (const row of hlsRows) {
-  assert(!/PAL 19|PAL 21|6\\.3 mm|7\\.0 mm|23 cm|HLS Arterial Cannula/.test(row.textContent),
+  assert(!/PAL 19|PAL 21|6\.3 mm|7\.0 mm|23 cm|HLS Arterial Cannula/.test(row.textContent),
     'HLS legend must show Fr without SKU, length, mm or model.');
 }
 const pas1315 = pressureDropData.find(entry => entry.cannulaOrderCode === 'PAS 1315');
