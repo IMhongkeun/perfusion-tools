@@ -9206,6 +9206,7 @@ function populatePhnModelOptions() {
     modelSelect.appendChild(option);
   });
   modelSelect.value = window.PhnCalculator.zScoreModels[currentValue] ? currentValue : PHN_DEFAULT_MODEL_KEY;
+  refreshMobileSelectionSummary(modelSelect);
 }
 
 function populatePhnStructureOptions(preferredKey = '') {
@@ -9249,6 +9250,7 @@ function populatePhnStructureOptions(preferredKey = '') {
     : (structures.some((structure) => structure.key === currentValue) ? currentValue : (structures[0] ? structures[0].key : ''));
   structureSelect.value = nextStructure;
   phnZScoreState.selectedStructure = nextStructure;
+  refreshMobileSelectionSummary(structureSelect);
 }
 
 function updatePhnMeasuredStructureOptions() {
@@ -9754,6 +9756,15 @@ function initCalculatorAnalytics() {
 }
 
 // Mobile layout helpers only: no clinical inputs are stored or transmitted.
+function refreshMobileSelectionSummary(select) {
+  const summary = el(`${select.id}-selection-summary`);
+  if (!summary) return;
+  const option = select.options[select.selectedIndex];
+  const label = option?.textContent.trim() || '';
+  summary.textContent = label;
+  summary.hidden = !select.value || label.length < 24;
+}
+
 function initMobileCalculatorLayout() {
   document.querySelectorAll('select[data-selection-summary]').forEach(select => {
     const summary = document.createElement('p');
@@ -9762,12 +9773,7 @@ function initMobileCalculatorLayout() {
     const descriptions = (select.getAttribute('aria-describedby') || '').split(' ').filter(Boolean);
     select.setAttribute('aria-describedby', [...descriptions, summary.id].join(' '));
     select.insertAdjacentElement('afterend', summary);
-    const update = () => {
-      const option = select.options[select.selectedIndex];
-      const label = option?.textContent.trim() || '';
-      summary.textContent = label;
-      summary.hidden = !select.value || label.length < 24;
-    };
+    const update = () => refreshMobileSelectionSummary(select);
     select.addEventListener('change', update);
     update();
   });
