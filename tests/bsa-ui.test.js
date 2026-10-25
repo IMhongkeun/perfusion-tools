@@ -446,7 +446,7 @@ assert(standaloneInvalidBranch.includes("obesityBadge.textContent = 'Obese BMI �
 assert(standaloneInvalidBranch.includes("if (bmi25FlowCard) bmi25FlowCard.classList.add('hidden');"), 'updateStandaloneBsa invalid branch should hide BMI 25 reference card.');
 assert(standaloneInvalidBranch.includes("if (bmi25ReferenceBsaEl) bmi25ReferenceBsaEl.textContent = '—';"), 'updateStandaloneBsa invalid branch should clear BMI 25 reference BSA text.');
 assert(standaloneInvalidBranch.includes("if (bmi25ReferenceWeightEl) bmi25ReferenceWeightEl.textContent = '—';"), 'updateStandaloneBsa invalid branch should clear BMI 25 reference weight text.');
-assert(updateStandaloneBsaSource.includes("resultEl.textContent = v ? v.toFixed(2) : '0.00';"), 'updateStandaloneBsa should clear primary BSA output when computeBSA returns 0.');
+assert(updateStandaloneBsaSource.includes("resultEl.textContent = v ? v.toFixed(2) : '—';"), 'Invalid or empty input should show an empty BSA result rather than a numeric zero.');
 assert(updateStandaloneBsaSource.includes("resultDisplay.textContent = v ? `${v.toFixed(2)} m²` : '—';"), 'updateStandaloneBsa should clear formatted BSA output when computeBSA returns 0.');
 assert(updateStandaloneBsaSource.includes('updateBsaFlowList(v, w);'), 'updateStandaloneBsa should always delegate flow-list refresh after invalid input.');
 const updateBsaFlowListSource = mainJs.slice(mainJs.indexOf('function updateBsaFlowList'), mainJs.indexOf('function updateStandaloneBsa'));

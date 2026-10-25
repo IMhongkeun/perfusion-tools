@@ -2618,7 +2618,7 @@ const avalonTable = targetRuntime.createPressureDropTargetFlowTable(avalonRows.s
 assert(avalonTable.textContent.includes('Dual-lumen VV ECMO'));
 assert(pressureDescendants(avalonTable, node => node.attributes['aria-label']?.includes('Drainage ΔP')).length);
 const avalonChart = targetRuntime.createPressureDropTargetFlowChart([avalonProducts[0]], 1, false, () => {}, () => {}, pressureDropData);
-assert(!avalonChart.textContent.includes('Dual-lumen VV ECMO'), 'Chart legend is Fr-only.');
+assert(!avalonChart.textContent.includes('Dual-lumen VV ECMO'), 'Compact legend does not repeat configuration metadata.');
 assert(pressureDescendants(avalonChart, node => node.tagName === 'button' &&
   node.attributes['aria-label']?.includes('Avalon')).length, 'Avalon identity remains accessible.');
 assert(!pressureDescendants(avalonChart, node => node.tagName === 'svg')[0].innerHTML.includes('Infusion'));
@@ -2716,8 +2716,9 @@ const hlsCompact = targetRuntime.createPressureDropTargetFlowChart(
 const hlsRows = pressureDescendants(hlsCompact, node => node.tagName === 'li');
 assert.deepStrictEqual(hlsRows.map(node => node.textContent.match(/\d+ Fr/)?.[0]), ['19 Fr', '21 Fr']);
 for (const row of hlsRows) {
-  assert(!/PAL 19|PAL 21|6\.3 mm|7\.0 mm|23 cm|HLS Arterial Cannula/.test(row.textContent),
-    'HLS legend must show Fr without SKU, length, mm or model.');
+  assert(row.textContent.includes('HLS Arterial Cannula'), 'Model name must remain visible alongside the French size.');
+  assert(!/PAL 19|PAL 21|6\.3 mm|7\.0 mm|23 cm/.test(row.textContent),
+    'HLS legend must show model and Fr without SKU, length or mm.');
 }
 const pas1315 = pressureDropData.find(entry => entry.cannulaOrderCode === 'PAS 1315');
 assert(pas1315 && pas1315.size.includes('13 Fr') && pas1315.size.includes('15 cm'),
@@ -3199,8 +3200,8 @@ externalLegend.forEach(row => {
   assert(row.className.includes('grid-cols-[minmax(0,1fr)_2.5rem_4rem]'),
     'Flow and pressure reserve fixed column widths rather than resizing with their text.');
 });
-assert(externalLegend[0].textContent.includes('19 Fr') && !externalLegend[0].textContent.includes('A'));
-assert(externalLegend[1].textContent.includes('21 Fr') && !externalLegend[1].textContent.includes('B'));
+assert(externalLegend[0].textContent.includes('19 Fr') && externalLegend[0].textContent.includes('A'));
+assert(externalLegend[1].textContent.includes('21 Fr') && externalLegend[1].textContent.includes('B'));
 assert(pressureDescendants(externalLegend[0], node => node.title?.includes('Medtronic')).length);
 assert(pressureDescendants(externalLegend[1], node => node.title?.includes('Getinge / Maquet')).length);
 assert.strictEqual(externalLegend[0].dataset.productKey, targetRuntime.getPressureDropTargetFlowKey(targetFixtures[0]));
@@ -3383,7 +3384,7 @@ const feedbackNodes = Object.fromEntries([
   'pressure-drop-target-results', 'pressure-drop-results'
 ].map(id => [id, new PressureTestNode()]));
 const feedbackVisible = node => Boolean(node && !node.classList.contains('hidden'));
-const feedbackContextSource = mainJs.slice(mainJs.indexOf('const FEEDBACK_RESULT_CONTEXTS ='), mainJs.indexOf('const FEEDBACK_STORAGE_KEY'));
+const feedbackContextSource = mainJs.slice(mainJs.indexOf('const FEEDBACK_RESULT_CONTEXTS ='), mainJs.indexOf('function normalizeFeedbackPath'));
 const feedbackRuntime = vm.runInNewContext([
   pressureProductionFunction('resolvePressureDropFeedbackContext'),
   feedbackContextSource,
@@ -3432,43 +3433,16 @@ feedbackNodes['pressure-drop-target-view'].className = '';
 feedbackNodes['pressure-drop-single-view'].className = 'hidden';
 assert.strictEqual(feedbackRuntime.resolveFeedbackResultContext('/cannula-pressure-drop/').isReady(), false);
 
-let existingFeedbackCard = null;
-let insertedFeedbackCards = 0;
-const feedbackEventHandlers = {};
-const feedbackTimers = [];
-for (const id of ['pressure-drop-target-view', 'pressure-drop-single-view']) {
-  feedbackNodes[id].insertAdjacentHTML = () => { insertedFeedbackCards += 1; existingFeedbackCard = new PressureTestNode(); };
+assert(!mainJs.includes('function initFeedbackCard('), 'Retired rating UI cannot attach prompt listeners.');
+assert(!mainJs.includes('data-feedback-rating'), 'Rating buttons cannot be reintroduced in calculator markup.');
+const guideDiagrams = [...pressureDropPageHtml.matchAll(/<svg viewBox="0 0 360 150"[\s\S]*?<\/svg>/g)].map(match => match[0]);
+assert.strictEqual(guideDiagrams.length, 2, 'Arterial and venous guides share the same viewport for aligned component labels.');
+for (const [index, type] of ['arterial', 'venous'].entries()) {
+  assert(new RegExp(`data-pressure-sensor="${type}"[^>]*r="6" fill="currentColor"`).test(guideDiagrams[index]),
+    'Both pressure sensors must use the same filled-circle symbol.');
 }
-const feedbackRoot = { addEventListener: (type, handler) => { feedbackEventHandlers[type] = handler; } };
-const initFeedbackRuntime = vm.runInNewContext(`${pressureProductionFunction('initFeedbackCard')}; initFeedbackCard`, {
-  window: { location: { pathname: '/cannula-pressure-drop/' } },
-  location: { hostname: 'example.com' },
-  normalizeFeedbackPath: path => path,
-  FEEDBACK_CALCULATOR_ROUTES: { '/cannula-pressure-drop/': 'cannula_pressure_drop' },
-  FEEDBACK_MIN_DWELL_MS: 0,
-  resolveFeedbackResultContext: feedbackRuntime.resolveFeedbackResultContext,
-  document: { querySelector: selector => selector === '.feedback-card' ? existingFeedbackCard : selector === 'main' ? feedbackRoot : null },
-  setTimeout: handler => { feedbackTimers.push(handler); },
-  canShowFeedbackPrompt: () => true,
-  getFeedbackCardMarkup: () => '<section class="feedback-card"></section>',
-  getFeedbackPromptId: () => 'prompt',
-  bindFeedbackCard: () => {}
-});
-initFeedbackRuntime();
-const feedbackInteraction = { isTrusted: true, target: { closest: () => ({}) } };
-feedbackNodes['pressure-drop-target-view'].dataset.analyticsReady = 'false';
-feedbackEventHandlers.input(feedbackInteraction);
-feedbackTimers.splice(0).forEach(callback => callback());
-assert.strictEqual(insertedFeedbackCards, 0, 'Filter-only target results cannot trigger a prompt');
-feedbackNodes['pressure-drop-target-view'].dataset.analyticsReady = 'true';
-feedbackEventHandlers.input(feedbackInteraction);
-feedbackTimers.splice(0).forEach(callback => callback());
-assert.strictEqual(insertedFeedbackCards, 1);
-feedbackNodes['cannula-pressure-drop-page'].dataset.pressureDropView = 'single';
-feedbackNodes['pressure-drop-target-view'].className = 'hidden';
-feedbackNodes['pressure-drop-single-view'].className = '';
-feedbackNodes['pressure-drop-single-view'].dataset.analyticsReady = 'true';
-feedbackEventHandlers.change(feedbackInteraction);
-feedbackTimers.splice(0).forEach(callback => callback());
-assert.strictEqual(insertedFeedbackCards, 1, 'An existing card must not be duplicated after a view switch');
-console.log('Pressure-drop active-view feedback anchoring, readiness and single-card regressions passed.');
+assert(guideDiagrams[1].includes('immediately before the reservoir'), 'Venous sensor location must be documented accessibly.');
+assert(guideDiagrams[1].includes('data-height-reference="patient-to-fluid-level"'), 'Height must reference patient and fluid levels.');
+const heightArrowheads = guideDiagrams[1].match(/<path data-height-arrowheads="solid"[^>]*>/)?.[0];
+assert(heightArrowheads && !heightArrowheads.includes('stroke-dasharray'), 'Height arrowheads must stay solid independently of the dashed shaft.');
+console.log('Pressure-drop active-view analytics readiness and retired-feedback regressions passed.');

@@ -382,6 +382,7 @@
   </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/cannula-pressure-drop/#webpage","url":"https://perfusiontools.com/cannula-pressure-drop/","name":"Cannula Pressure Drop Calculator | CPB & Perfusion Flow Resistance","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalGuideline","name":"Manufacturer pressure-flow data reference for CPB and perfusion cannula pressure drop"},"description":"Estimate cannula pressure drop from manufacturer pressure-flow data for perfusion cannulas. Compare arterial, venous, femoral, and aortic cannula flow resistance with model-specific limitations.","keywords":["cannula pressure drop","arterial cannula pressure drop","venous cannula pressure drop","CPB cannula reference","manufacturer pressure drop curve","pressure-flow reference","flow resistance","linear interpolation"],"dateModified":"2026-07-08"},{"@type":"FAQPage","@id":"https://perfusiontools.com/cannula-pressure-drop/#faq","mainEntity":[{"@type":"Question","name":"What is cannula pressure drop?","acceptedAnswer":{"@type":"Answer","text":"Cannula pressure drop is the pressure difference across a cannula at a given flow. It reflects cannula flow resistance and depends on cannula size, geometry, flow rate, fluid properties, and measurement conditions."}},{"@type":"Question","name":"How is pressure drop estimated on this page?","acceptedAnswer":{"@type":"Answer","text":"The estimate is based on available manufacturer pressure-flow data points. When the entered flow falls between two data points, the page uses linear interpolation between adjacent points. It should be interpreted as a reference estimate for that specific dataset."}},{"@type":"Question","name":"Can this calculator be used outside the listed flow range?","acceptedAnswer":{"@type":"Answer","text":"No. Estimates should not be extrapolated beyond the available manufacturer data range. If the entered flow is below or above the dataset range, the result should be treated as out of range rather than a reliable estimate."}},{"@type":"Question","name":"Does this replace manufacturer instructions or clinical judgment?","acceptedAnswer":{"@type":"Answer","text":"No. This tool is a reference aid only. Cannula selection and interpretation of pressure should follow manufacturer instructions, institutional practice, patient anatomy, surgical approach, circuit setup, and clinical judgment."}},{"@type":"Question","name":"Why can measured circuit pressure differ from the chart value?","acceptedAnswer":{"@type":"Answer","text":"Actual measured pressure can differ because of blood viscosity, hematocrit, temperature, tubing and connector resistance, cannula position, kinking, partial obstruction, vessel size, drainage or return conditions, sensor location, and measurement technique."}}]}]}</script>
   <script src="/analytics.js"></script>
+  <link rel="stylesheet" href="/mobile.css" />
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
@@ -490,17 +491,18 @@
               <div class="grid gap-3 lg:grid-cols-2">
                 <article class="min-w-0 rounded-lg bg-slate-50 dark:bg-primary-800/50 p-3 space-y-3">
                   <h4 class="text-sm font-semibold text-accent-700 dark:text-accent-300">Arterial cannula</h4>
-                  <svg viewBox="0 0 320 92" role="img" aria-labelledby="arterial-pressure-diagram-title" class="block w-full text-accent-700 dark:text-accent-300">
-                    <title id="arterial-pressure-diagram-title">Blood flows from the arterial line pressure sensor through tubing and the cannula to the patient.</title>
-                    <path d="M22 42H292m-8-5 8 5-8 5" fill="none" stroke="currentColor" stroke-width="2" />
-                    <circle cx="22" cy="42" r="6" fill="currentColor" />
-                    <rect x="77" y="31" width="58" height="22" rx="7" fill="currentColor" fill-opacity=".12" stroke="currentColor" />
-                    <path d="M178 36h44l14 6-14 6h-44z" fill="currentColor" fill-opacity=".2" stroke="currentColor" />
-                    <text x="22" y="18" text-anchor="middle" font-size="11" fill="currentColor">Pressure</text>
-                    <text x="22" y="75" text-anchor="middle" font-size="11" fill="currentColor">sensor</text>
-                    <text x="106" y="75" text-anchor="middle" font-size="11" fill="currentColor">Tubing</text>
-                    <text x="203" y="75" text-anchor="middle" font-size="11" fill="currentColor">Cannula</text>
-                    <text x="291" y="75" text-anchor="middle" font-size="11" fill="currentColor">Patient</text>
+                  <svg viewBox="0 0 360 150" role="img" aria-labelledby="arterial-pressure-diagram-title" class="pressure-guide-diagram block w-full text-accent-700 dark:text-accent-300">
+                    <title id="arterial-pressure-diagram-title">Blood flows from the arterial line pressure sensor through tubing and the cannula to the patient. Labels are above each component; the filled circle marks the pressure sensor.</title>
+                    <path d="M38 48H328m-9-6 9 6-9 6" fill="none" stroke="currentColor" stroke-width="2" />
+                    <circle data-pressure-sensor="arterial" cx="38" cy="48" r="6" fill="currentColor" />
+                    <rect x="102" y="37" width="58" height="22" rx="7" fill="currentColor" fill-opacity=".12" stroke="currentColor" />
+                    <path d="M200 42h44l14 6-14 6h-44z" fill="currentColor" fill-opacity=".2" stroke="currentColor" />
+                    <g font-size="14" fill="currentColor" text-anchor="middle">
+                      <text x="38" y="22">Sensor</text>
+                      <text x="131" y="22">Tubing</text>
+                      <text x="229" y="22">Cannula</text>
+                      <text x="313" y="22">Patient</text>
+                    </g>
                   </svg>
                   <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 px-3 py-2 text-xs leading-relaxed">
                     <p class="font-semibold text-primary-900 dark:text-white">Estimated arterial line pressure ≈</p>
@@ -510,19 +512,26 @@
                 </article>
                 <article class="min-w-0 rounded-lg bg-slate-50 dark:bg-primary-800/50 p-3 space-y-3">
                   <h4 class="text-sm font-semibold text-accent-700 dark:text-accent-300">Venous cannula</h4>
-                  <svg viewBox="0 0 320 112" role="img" aria-labelledby="venous-pressure-diagram-title" class="block w-full text-accent-700 dark:text-accent-300">
-                    <title id="venous-pressure-diagram-title">Blood drains from the patient through the venous cannula and tubing to a lower reservoir. The height difference provides drainage head.</title>
-                    <path d="M24 30h158q20 0 20 20v21h62m-8-5 8 5-8 5" fill="none" stroke="currentColor" stroke-width="2" />
-                    <circle cx="24" cy="30" r="6" fill="currentColor" />
-                    <path d="M119 24H82l-13 6 13 6h37z" fill="currentColor" fill-opacity=".2" stroke="currentColor" />
-                    <rect x="128" y="19" width="50" height="22" rx="7" fill="currentColor" fill-opacity=".12" stroke="currentColor" />
-                    <path d="M264 57v35h40V57m-37 23h34" fill="none" stroke="currentColor" stroke-width="2" />
-                    <path d="M232 30v50m-4-46 4-4 4 4m-8 42 4 4 4-4" fill="none" stroke="currentColor" stroke-dasharray="3 3" />
-                    <text x="26" y="13" text-anchor="middle" font-size="11" fill="currentColor">Patient</text>
-                    <text x="93" y="54" text-anchor="middle" font-size="11" fill="currentColor">Cannula</text>
-                    <text x="153" y="13" text-anchor="middle" font-size="11" fill="currentColor">Tubing</text>
-                    <text x="240" y="52" font-size="11" fill="currentColor">Δh</text>
-                    <text x="283" y="108" text-anchor="middle" font-size="11" fill="currentColor">Reservoir</text>
+                  <svg viewBox="0 0 360 150" role="img" aria-labelledby="venous-pressure-diagram-title" class="pressure-guide-diagram block w-full text-accent-700 dark:text-accent-300">
+                    <title id="venous-pressure-diagram-title">Blood drains from the patient through the venous cannula and tubing, past a pressure sensor immediately before the reservoir. Delta h spans from the patient reference level to the reservoir fluid level. The sensor uses the same filled circle as the arterial diagram.</title>
+                    <path d="M26 48H216q14 0 14 14v20q0 14 14 14h78m-9-6 9 6-9 6" fill="none" stroke="currentColor" stroke-width="2" />
+                    <path d="M64 42h40v12H64l-14-6z" fill="currentColor" fill-opacity=".2" stroke="currentColor" />
+                    <rect x="139" y="37" width="50" height="22" rx="7" fill="currentColor" fill-opacity=".12" stroke="currentColor" />
+                    <circle data-pressure-sensor="venous" cx="244" cy="96" r="6" fill="currentColor" />
+                    <path d="M304 88v44h32V88m-29 23h26" fill="none" stroke="currentColor" stroke-width="2" />
+                    <g data-height-reference="patient-to-fluid-level" stroke="currentColor" stroke-width="1.5" fill="none">
+                      <path d="M270 48H350M336 111H350" stroke-dasharray="4 3" stroke-opacity=".55" />
+                      <path d="M348 55V104" stroke-dasharray="4 3" />
+                    </g>
+                    <path data-height-arrowheads="solid" d="M344 56L348 48L352 56ZM344 103L348 111L352 103Z" fill="currentColor" />
+                    <g font-size="14" fill="currentColor" text-anchor="middle">
+                      <text x="26" y="22">Patient</text>
+                      <text x="87" y="22">Cannula</text>
+                      <text x="164" y="22">Tubing</text>
+                      <text x="244" y="76">Sensor</text>
+                      <text x="316" y="76">Reservoir</text>
+                      <text x="342" y="30">Δh</text>
+                    </g>
                   </svg>
                   <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 px-3 py-2 text-xs leading-relaxed">
                     <p class="font-semibold text-primary-900 dark:text-white">Resistance to overcome</p>
@@ -821,3 +830,4 @@
   <script src="/main.js"></script>
 </body>
 </html>
+

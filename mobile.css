@@ -1,0 +1,83 @@
+/* Shared presentation rules for the existing static calculators. */
+.result-unit { display: inline-block; white-space: nowrap; }
+.target-action { display: block; }
+.target-action + .target-action { margin-top: .25rem; }
+.selection-summary, .table-scroll-hint {
+  margin-top: .4rem;
+  font-size: .75rem;
+  line-height: 1.5;
+  color: #475569;
+  overflow-wrap: anywhere;
+}
+.dark .selection-summary, .dark .table-scroll-hint { color: #cbd5e1; }
+.selection-summary[hidden], .table-scroll-hint[hidden] { display: none; }
+.calculator-intro-details > summary {
+  cursor: pointer;
+  padding: .65rem 0;
+  font-size: .875rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.calculator-intro-details > summary:focus-visible,
+main [role="region"][tabindex="0"]:focus-visible {
+  outline: 2px solid #0891b2;
+  outline-offset: 3px;
+  border-radius: .5rem;
+}
+
+@media (max-width: 768px) {
+  main { min-width: 0; }
+  main .p-6 { padding: 1rem; }
+  main .calculator-lower-section { padding: .875rem; }
+  main .calculator-lower-panel { padding: .75rem; }
+  #page-heading {
+    font-size: clamp(1.25rem, 5.8vw, 1.5rem);
+    line-height: 1.35;
+    text-wrap: balance;
+    overflow-wrap: normal;
+  }
+  main h2, main h3 { text-wrap: balance; }
+  main pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  main input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  main select { min-width: 0; max-width: 100%; min-height: 44px; }
+  main button:not([aria-label]) { min-height: 44px; }
+  main .result-pair { flex-direction: column; align-items: flex-start; gap: .25rem; }
+  main .result-pair > :last-child { text-align: left; overflow-wrap: anywhere; }
+  #hep2-protamine-mg, #hep2-protamine-rounded { white-space: nowrap; }
+  #lbm-flow-rows td, #view-lbm table th { padding-left: .5rem; padding-right: .5rem; }
+  #lbm-flow-rows td { white-space: nowrap; }
+  #view-lbm table th { text-transform: none; letter-spacing: normal; }
+  #bsa-flow-list:empty, #bsa-flow-list:has(> p:only-child),
+  #bsa-bmi25-flow-list:empty, #bsa-bmi25-flow-list:has(> p:only-child) { min-height: 0; }
+  #target-pill-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #target-pill-row > button { padding: .5rem .25rem; min-height: 44px; }
+  #target-custom-pill { grid-column: 1 / -1; }
+  #target-custom { min-width: 3rem; }
+  #view-do2i .gdp-temp-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #view-do2i .gdp-temp-summary > label { grid-column: 1 / -1; }
+  #view-do2i .gdp-temp-summary .gdp-temp-tile { padding: .5rem; }
+  #view-do2i .gdp-flow-comparison > div {
+    grid-template-columns: minmax(0, 1.2fr) minmax(3.75rem, .9fr) minmax(0, 1.1fr);
+    gap: .5rem;
+    padding-left: .5rem;
+    padding-right: .5rem;
+    letter-spacing: normal;
+  }
+  #view-do2i .gdp-flow-comparison :is(#normothermia-flow, #corrected-flow-table) { white-space: nowrap; }
+  #view-unit-converter [data-unit-tab] { padding: .5rem .25rem; font-size: .75rem; }
+  #view-unit-converter :has(> [data-unit-tab]) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .25rem; }
+  #view-unit-converter :has(> [data-tubing-inch]) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .375rem; }
+  #view-unit-converter [data-tubing-inch] { padding-left: .25rem; padding-right: .25rem; white-space: nowrap; }
+  #view-quick-reference [role="tablist"] { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .375rem; }
+  #view-quick-reference [role="tab"] { padding: .5rem .25rem; min-height: 44px; }
+  #view-timecalc .time-mode-btn { min-height: 44px; }
+  #pressure-drop-target-chart { padding: .625rem; }
+  #pressure-drop-target-chart [role="row"] { column-gap: .375rem; }
+  #pressure-drop-target-chart .cannula-comparison-model { font-size: .75rem; line-height: 1.4; }
+  #pressure-drop-interpretation, #pressure-drop-interpretation article { padding: .5rem; }
+}
+
+@media (max-width: 360px) {
+  .priming-dimensions { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .priming-dimensions > :first-child { grid-column: 1 / -1; }
+}
