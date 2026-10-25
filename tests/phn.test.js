@@ -490,7 +490,15 @@ function testPhnBrowserDomInteraction() {
       tagName: tagName.toUpperCase(),
       value: '',
       textContent: '',
-      innerHTML: '',
+      _innerHTML: '',
+      get innerHTML() { return this._innerHTML; },
+      set innerHTML(value) { this._innerHTML = value; this.children = []; },
+      get options() { return this.children.flatMap(child => child.tagName === 'OPTGROUP' ? child.children : [child]); },
+      get selectedIndex() { return this.options.findIndex(option => option.value === this.value); },
+      attributes: {},
+      getAttribute(name) { return this.attributes[name] || null; },
+      setAttribute(name, value) { this.attributes[name] = value; },
+      insertAdjacentElement(position, node) { elements[node.id] = node; },
       classList: {
         _classes: new Set(),
         add(c) { this._classes.add(c); },
@@ -537,6 +545,8 @@ function testPhnBrowserDomInteraction() {
     document: {
       getElementById: (id) => elements[id] || null,
       createElement: (tag) => makeEl('anon_' + Math.random(), tag),
+      querySelectorAll: selector => selector === 'select[data-selection-summary]'
+        ? [elements['phn-model-select'], elements['phn-structure-select']] : [],
       addEventListener: () => {}
     },
     el: (id) => elements[id] || null,
@@ -554,6 +564,7 @@ function testPhnBrowserDomInteraction() {
   assert(start >= 0 && end > start && regStart > 0 && regEnd > regStart, 'PHN blocks must be extractable');
 
   vm.runInNewContext(
+    mainJsSource.slice(mainJsSource.indexOf('function refreshMobileSelectionSummary('), mainJsSource.indexOf('const BACK_TO_TOP_SCROLL_THRESHOLD_PX')) + '\n' +
     mainJsSource.slice(start, end) + '\n' + mainJsSource.slice(regStart, regEnd),
     context
   );
@@ -660,6 +671,36 @@ function testPhnBrowserDomInteraction() {
   assert(elements['phn-structure-definition'].textContent.includes('Lopez et al. JASE 2021 Table 3'), 'LVESD 2021 reference note must update');
   assert.strictEqual(elements['phn-bsa-input'].value, '1.2', 'BSA input must be preserved across LVEDD->LVESD');
   assert.strictEqual(elements['phn-target-z'].value, '2.0', 'Target Z input must be preserved across LVEDD->LVESD');
+
+  // Dependent selects change programmatically without a structure change event.
+  context.initMobileCalculatorLayout();
+  const structureSelect = elements['phn-structure-select'];
+  const structureSummary = elements['phn-structure-select-selection-summary'];
+  structureSelect.value = 'LMCA';
+  structureSelect.dispatch('change');
+  assert.strictEqual(structureSummary.textContent, 'Left main coronary artery (LMCA)');
+  assert.strictEqual(structureSummary.hidden, false);
+  let structureChangeCount = 0;
+  structureSelect.addEventListener('change', () => { structureChangeCount++; });
+  elements['phn-model-select'].value = 'detroitPettersen2008';
+  elements['phn-model-select'].dispatch('change');
+  assert.strictEqual(structureSelect.value, 'RVDD');
+  assert.strictEqual(structureSummary.textContent, structureSelect.options[structureSelect.selectedIndex].textContent);
+  assert(!structureSummary.textContent.includes('LMCA'), 'The accessible description must not retain the old anatomy.');
+  assert.strictEqual(structureSummary.textContent, 'RVDd');
+  assert.strictEqual(structureSummary.hidden, true, 'Short replacement labels hide the obsolete long summary.');
+  assert.strictEqual(structureChangeCount, 0, 'Summary refresh must not synthesize clinical input events.');
+  assert(structureSelect.getAttribute('aria-describedby').split(' ').includes(structureSummary.id));
+  const modelSummary = elements['phn-model-select-selection-summary'];
+  assert.strictEqual(modelSummary.textContent, 'Detroit / Pettersen 2008');
+  assert.strictEqual(modelSummary.hidden, false, 'The full Detroit model label remains visible.');
+  elements['phn-model-select'].value = 'phnLopez';
+  elements['phn-model-select'].dispatch('change');
+  context.populatePhnStructureOptions('LMCA');
+  assert.strictEqual(structureSummary.textContent, 'Left main coronary artery (LMCA)', 'Direct option population also refreshes the summary.');
+  assert.strictEqual(structureSummary.hidden, false, 'Long replacement labels become visible again.');
+  assert.strictEqual(structureChangeCount, 0);
 }
 
 run();
+

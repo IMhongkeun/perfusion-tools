@@ -35,7 +35,7 @@ const socialTitle = staticTitle;
 const socialDescription = staticDescription;
 const routeDescription = staticDescription;
 const headingDescription = 'Calculate BSA first, then estimate indexed pump flow targets (CI 1.0-3.0) for clinical perfusion planning.';
-const h1 = 'BSA Calculator for Perfusion Flow Guidance in CPB';
+const h1 = 'BSA Calculator for CPB Flow';
 
 for (const exactMarkup of [
   `<title>${staticTitle}</title>`,

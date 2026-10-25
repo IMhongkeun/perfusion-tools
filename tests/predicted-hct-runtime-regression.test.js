@@ -553,8 +553,10 @@ function runStateTransitionTests(exports) {
   exports.updateHct();
   assert.strictEqual(exports.elements.pred_hct_result.innerHTML, '30.0%');
   assert(!exports.elements['target-hct-cards'].classList.contains('hidden'), 'Target scenario cards should be visible for target 35');
-  assert(exports.elements.target_rbc_only.innerHTML.includes('Add RBC 1,300 mL'));
-  assert(exports.elements.target_hfuf_only.innerHTML.includes('Remove HF/UF 929 mL'));
+  assert(exports.elements.target_rbc_only.innerHTML.replace(/<[^>]*>/g, '').includes('Add RBC 1,300 mL'));
+  assert(exports.elements.target_rbc_only.innerHTML.includes('<span class="result-unit">1,300 mL</span>'),
+    'Target volume and unit must remain a single mobile layout token.');
+  assert(exports.elements.target_hfuf_only.innerHTML.replace(/<[^>]*>/g, '').includes('Remove HF/UF 929 mL'));
   setValues(exports, { onpump_ebv_coef: 0 });
   exports.updateHct();
   assert.strictEqual(exports.elements.ebv.innerHTML, '—');
@@ -567,7 +569,7 @@ function runStateTransitionTests(exports) {
   setValues(exports, { onpump_ebv_coef: 70 });
   exports.updateHct();
   assert.strictEqual(exports.elements.pred_hct_result.innerHTML, '30.0%');
-  assert(exports.elements.target_rbc_only.innerHTML.includes('Add RBC 1,300 mL'));
+  assert(exports.elements.target_rbc_only.innerHTML.replace(/<[^>]*>/g, '').includes('Add RBC 1,300 mL'));
   setValues(exports, { onpump_ebv_coef: -1 });
   exports.updateHct();
   assert.strictEqual(exports.elements.pred_hct.innerHTML, '—');
@@ -591,7 +593,7 @@ function runStateTransitionTests(exports) {
   setValues(exports, { target_hct: 35 });
   exports.updateHct();
   assert(!exports.elements['target-hct-cards'].classList.contains('hidden'), 'Target scenario cards should restore for target 35');
-  assert(exports.elements.target_rbc_only.innerHTML.includes('Add RBC 1,300 mL'));
+  assert(exports.elements.target_rbc_only.innerHTML.replace(/<[^>]*>/g, '').includes('Add RBC 1,300 mL'));
   setValues(exports, { onpump_removed: 6500 });
   exports.updateHct();
   assert.strictEqual(exports.elements.pred_hct.innerHTML, '—');
@@ -604,7 +606,7 @@ function runStateTransitionTests(exports) {
   exports.updateHct();
   assert.strictEqual(exports.elements.pred_hct_result.innerHTML, '30.0%');
   assert(!exports.elements['target-hct-cards'].classList.contains('hidden'), 'Target scenario cards should restore after final volume becomes valid');
-  assert(exports.elements.target_rbc_only.innerHTML.includes('Add RBC 1,300 mL'));
+  assert(exports.elements.target_rbc_only.innerHTML.replace(/<[^>]*>/g, '').includes('Add RBC 1,300 mL'));
 
   setValues(exports, { current_hct: 101 });
   exports.updateHct();

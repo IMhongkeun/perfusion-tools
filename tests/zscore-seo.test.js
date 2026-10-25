@@ -33,7 +33,7 @@ function run() {
 
   assert(html.includes('<title>Pediatric Echocardiography Z-Score Calculator | PHN/Lopez & Detroit</title>'), 'z-score title should target pediatric echocardiography and supported models');
   assert(html.includes('Calculate pediatric echocardiography Z-scores using PHN/Lopez and Detroit models. Includes BSA method, reference notes, and model-specific limitations.'), 'z-score meta description should mention PHN/Lopez, Detroit, BSA notes, and limitations');
-  assert(html.includes('<h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Pediatric Echocardiography Z-Score Calculator</h1>'), 'visible H1 should use Pediatric Echocardiography Z-Score Calculator');
+  assert(html.includes('<h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Pediatric Echocardiography Z‑Score Calculator</h1>'), 'visible H1 should use Pediatric Echocardiography Z-Score Calculator');
   assert(html.includes('<link rel="canonical" href="https://perfusiontools.com/z-score/" />'), 'z-score canonical should remain /z-score/');
   assert(html.includes('PHN / Lopez 2017'), 'top copy should mention PHN / Lopez 2017');
   assert(html.includes('Detroit / Pettersen 2008'), 'top copy should mention Detroit / Pettersen 2008');

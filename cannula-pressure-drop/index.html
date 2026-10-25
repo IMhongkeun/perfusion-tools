@@ -382,6 +382,7 @@
   </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/cannula-pressure-drop/#webpage","url":"https://perfusiontools.com/cannula-pressure-drop/","name":"Cannula Pressure Drop Calculator | CPB & Perfusion Flow Resistance","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalGuideline","name":"Manufacturer pressure-flow data reference for CPB and perfusion cannula pressure drop"},"description":"Estimate cannula pressure drop from manufacturer pressure-flow data for perfusion cannulas. Compare arterial, venous, femoral, and aortic cannula flow resistance with model-specific limitations.","keywords":["cannula pressure drop","arterial cannula pressure drop","venous cannula pressure drop","CPB cannula reference","manufacturer pressure drop curve","pressure-flow reference","flow resistance","linear interpolation"],"dateModified":"2026-07-08"},{"@type":"FAQPage","@id":"https://perfusiontools.com/cannula-pressure-drop/#faq","mainEntity":[{"@type":"Question","name":"What is cannula pressure drop?","acceptedAnswer":{"@type":"Answer","text":"Cannula pressure drop is the pressure difference across a cannula at a given flow. It reflects cannula flow resistance and depends on cannula size, geometry, flow rate, fluid properties, and measurement conditions."}},{"@type":"Question","name":"How is pressure drop estimated on this page?","acceptedAnswer":{"@type":"Answer","text":"The estimate is based on available manufacturer pressure-flow data points. When the entered flow falls between two data points, the page uses linear interpolation between adjacent points. It should be interpreted as a reference estimate for that specific dataset."}},{"@type":"Question","name":"Can this calculator be used outside the listed flow range?","acceptedAnswer":{"@type":"Answer","text":"No. Estimates should not be extrapolated beyond the available manufacturer data range. If the entered flow is below or above the dataset range, the result should be treated as out of range rather than a reliable estimate."}},{"@type":"Question","name":"Does this replace manufacturer instructions or clinical judgment?","acceptedAnswer":{"@type":"Answer","text":"No. This tool is a reference aid only. Cannula selection and interpretation of pressure should follow manufacturer instructions, institutional practice, patient anatomy, surgical approach, circuit setup, and clinical judgment."}},{"@type":"Question","name":"Why can measured circuit pressure differ from the chart value?","acceptedAnswer":{"@type":"Answer","text":"Actual measured pressure can differ because of blood viscosity, hematocrit, temperature, tubing and connector resistance, cannula position, kinking, partial obstruction, vessel size, drainage or return conditions, sensor location, and measurement technique."}}]}]}</script>
   <script src="/analytics.js"></script>
+  <link rel="stylesheet" href="/mobile.css" />
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 dark:bg-primary-950 dark:text-slate-100 pb-[var(--bottom-nav-height)] md:pb-0 flex flex-col">
   <header class="fixed top-0 w-full z-40 bg-white/95 dark:bg-primary-900/95 backdrop-blur border-b border-slate-200 dark:border-primary-800 text-primary-900 dark:text-white shadow-md">
@@ -436,18 +437,15 @@
             <div>
               <h2 class="text-base font-semibold text-primary-900 dark:text-white">Pressure-flow reference</h2>
             </div>
-            <span id="pressure-drop-result-status" class="inline-flex w-fit rounded-full border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1 text-xs font-semibold text-slate-600 dark:text-slate-300">Preparing lookup</span>
+            <span id="pressure-drop-result-status" class="inline-flex w-fit rounded-full border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 px-3 py-1 text-xs font-semibold text-slate-600 dark:text-slate-300">Loading cannulas</span>
           </div>
 
-          <div class="flex flex-wrap gap-1 rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-800 p-1 text-sm font-semibold" role="group" aria-label="Pressure-flow workflow">
-            <button id="pressure-drop-target-tab" type="button" aria-controls="pressure-drop-target-view" aria-pressed="false" class="rounded-lg px-3 py-2 text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-accent-500">Compare at Target Flow</button>
-            <button id="pressure-drop-single-tab" aria-controls="pressure-drop-single-view" aria-pressed="true" type="button" class="rounded-lg px-3 py-2 bg-white dark:bg-primary-900 text-accent-700 dark:text-accent-300 shadow-sm">Single lookup</button>
-          </div>
-
-          <div id="pressure-drop-target-view" class="hidden min-w-0 space-y-4">
+          <p id="pressure-drop-loading" class="text-sm text-slate-500" role="status">Loading manufacturer pressure-drop references…</p>
+          <p id="pressure-drop-error" class="hidden text-sm text-rose-700 dark:text-rose-300" role="alert">Pressure drop data could not be loaded. Please try again.</p>
+          <div id="pressure-drop-target-view" class="min-w-0 space-y-4">
             <div class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/40 p-4 space-y-3">
               <div class="min-w-0">
-                <label for="pressure-drop-catalog-search" class="block text-xs font-semibold text-slate-600 dark:text-slate-300">Search all cannulas</label>
+                <label for="pressure-drop-catalog-search" class="block text-xs font-semibold text-slate-600 dark:text-slate-300">Search cannulas</label>
                 <div class="relative mt-1"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="absolute left-3 top-2.5 h-4 w-4 text-slate-500"><circle cx="11" cy="11" r="7" /><path d="m16 16 5 5" /></svg><input id="pressure-drop-catalog-search" type="search" autocomplete="off" placeholder="Model, code or size" aria-controls="pressure-drop-catalog-matches" class="w-full min-w-0 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 pl-9 pr-3 py-2 text-sm dark:text-white focus:ring-2 focus:ring-accent-500" /></div>
                 <div id="pressure-drop-catalog-matches" role="listbox" aria-label="Matching cannulas" class="hidden mt-1 max-h-64 overflow-y-auto rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 shadow-lg"></div>
               </div>
@@ -458,7 +456,7 @@
                 </div>
                 <div class="min-w-0 space-y-1">
                   <label for="pressure-drop-target-category" class="block text-xs font-semibold text-slate-600 dark:text-slate-300">Cannula category</label>
-                  <select id="pressure-drop-target-category" class="w-full min-w-0 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"><option value="arterial">Arterial</option><option value="venous">Venous</option></select>
+                  <select id="pressure-drop-target-category" class="w-full min-w-0 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"><option value="">All categories (Arterial &amp; Venous)</option><option value="arterial">Arterial</option><option value="venous">Venous</option></select>
                 </div>
                 <div class="min-w-0 space-y-1">
                   <label for="pressure-drop-target-location" class="block text-xs font-semibold text-slate-600 dark:text-slate-300">Cannulation location</label>
@@ -474,7 +472,7 @@
                 </div>
                 <div class="min-w-0 space-y-1">
                   <label for="pressure-drop-target-sort" class="block text-xs font-semibold text-slate-600 dark:text-slate-300">Sort results</label>
-                  <select id="pressure-drop-target-sort" class="w-full min-w-0 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"><option value="pressure">Lowest ΔP magnitude</option><option value="size">Size ascending (Fr)</option><option value="manufacturer">Manufacturer</option><option value="model">Family / model</option></select>
+                  <select id="pressure-drop-target-sort" class="w-full min-w-0 rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"><option value="catalog">Medtronic first · HLS last</option><option value="pressure">Lowest ΔP magnitude</option><option value="size">Size ascending (Fr)</option><option value="manufacturer">Manufacturer</option><option value="model">Family / model</option></select>
                 </div>
               </div>
               <p class="text-xs text-slate-500 dark:text-slate-400">Manufacturer curve estimates only · Not a clinical suitability rating. <a href="#pressure-drop-methodology" class="text-accent-700 dark:text-accent-300 underline">Methodology &amp; limits</a></p>
@@ -483,24 +481,27 @@
             <p id="pressure-drop-target-location-note" class="text-xs text-slate-600 dark:text-slate-300" role="status"></p>
             <p id="pressure-drop-target-summary" class="text-sm font-semibold text-primary-900 dark:text-white" role="status"></p>
             <p id="pressure-drop-list-hint" class="text-xs text-slate-500 dark:text-slate-400">Scroll the list to browse cannulas. Selected curves appear just below.</p>
+            <div class="pressure-drop-async-region space-y-4">
             <div id="pressure-drop-target-results" role="region" aria-label="Cannula selection list" aria-describedby="pressure-drop-list-hint" tabindex="0" class="min-w-0 max-h-72 sm:max-h-80 overflow-y-auto overscroll-y-contain space-y-3 rounded-lg pr-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500" style="scrollbar-gutter: stable;"></div>
             <div id="pressure-drop-target-chart" class="min-w-0 space-y-3"></div>
+            </div>
             <section id="pressure-drop-interpretation" aria-labelledby="pressure-drop-interpretation-title" class="rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-3 sm:p-4 space-y-3">
               <h3 id="pressure-drop-interpretation-title" class="text-sm font-semibold text-primary-900 dark:text-white">From cannula ΔP to circuit pressure</h3>
               <div class="grid gap-3 lg:grid-cols-2">
                 <article class="min-w-0 rounded-lg bg-slate-50 dark:bg-primary-800/50 p-3 space-y-3">
                   <h4 class="text-sm font-semibold text-accent-700 dark:text-accent-300">Arterial cannula</h4>
-                  <svg viewBox="0 0 320 92" role="img" aria-labelledby="arterial-pressure-diagram-title" class="block w-full text-accent-700 dark:text-accent-300">
-                    <title id="arterial-pressure-diagram-title">Blood flows from the arterial line pressure sensor through tubing and the cannula to the patient.</title>
-                    <path d="M22 42H292m-8-5 8 5-8 5" fill="none" stroke="currentColor" stroke-width="2" />
-                    <circle cx="22" cy="42" r="6" fill="currentColor" />
-                    <rect x="77" y="31" width="58" height="22" rx="7" fill="currentColor" fill-opacity=".12" stroke="currentColor" />
-                    <path d="M178 36h44l14 6-14 6h-44z" fill="currentColor" fill-opacity=".2" stroke="currentColor" />
-                    <text x="22" y="18" text-anchor="middle" font-size="11" fill="currentColor">Pressure</text>
-                    <text x="22" y="75" text-anchor="middle" font-size="11" fill="currentColor">sensor</text>
-                    <text x="106" y="75" text-anchor="middle" font-size="11" fill="currentColor">Tubing</text>
-                    <text x="203" y="75" text-anchor="middle" font-size="11" fill="currentColor">Cannula</text>
-                    <text x="291" y="75" text-anchor="middle" font-size="11" fill="currentColor">Patient</text>
+                  <svg viewBox="0 0 360 150" role="img" aria-labelledby="arterial-pressure-diagram-title" class="pressure-guide-diagram block w-full text-accent-700 dark:text-accent-300">
+                    <title id="arterial-pressure-diagram-title">Blood flows from the arterial line pressure sensor through tubing and the cannula to the patient. Labels are above each component; the filled circle marks the pressure sensor.</title>
+                    <path d="M38 48H328m-9-6 9 6-9 6" fill="none" stroke="currentColor" stroke-width="2" />
+                    <circle data-pressure-sensor="arterial" cx="38" cy="48" r="6" fill="currentColor" />
+                    <rect x="102" y="37" width="58" height="22" rx="7" fill="currentColor" fill-opacity=".12" stroke="currentColor" />
+                    <path d="M200 42h44l14 6-14 6h-44z" fill="currentColor" fill-opacity=".2" stroke="currentColor" />
+                    <g font-size="14" fill="currentColor" text-anchor="middle">
+                      <text x="38" y="22">Sensor</text>
+                      <text x="131" y="22">Tubing</text>
+                      <text x="229" y="22">Cannula</text>
+                      <text x="313" y="22">Patient</text>
+                    </g>
                   </svg>
                   <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 px-3 py-2 text-xs leading-relaxed">
                     <p class="font-semibold text-primary-900 dark:text-white">Estimated arterial line pressure ≈</p>
@@ -510,19 +511,26 @@
                 </article>
                 <article class="min-w-0 rounded-lg bg-slate-50 dark:bg-primary-800/50 p-3 space-y-3">
                   <h4 class="text-sm font-semibold text-accent-700 dark:text-accent-300">Venous cannula</h4>
-                  <svg viewBox="0 0 320 112" role="img" aria-labelledby="venous-pressure-diagram-title" class="block w-full text-accent-700 dark:text-accent-300">
-                    <title id="venous-pressure-diagram-title">Blood drains from the patient through the venous cannula and tubing to a lower reservoir. The height difference provides drainage head.</title>
-                    <path d="M24 30h158q20 0 20 20v21h62m-8-5 8 5-8 5" fill="none" stroke="currentColor" stroke-width="2" />
-                    <circle cx="24" cy="30" r="6" fill="currentColor" />
-                    <path d="M119 24H82l-13 6 13 6h37z" fill="currentColor" fill-opacity=".2" stroke="currentColor" />
-                    <rect x="128" y="19" width="50" height="22" rx="7" fill="currentColor" fill-opacity=".12" stroke="currentColor" />
-                    <path d="M264 57v35h40V57m-37 23h34" fill="none" stroke="currentColor" stroke-width="2" />
-                    <path d="M232 30v50m-4-46 4-4 4 4m-8 42 4 4 4-4" fill="none" stroke="currentColor" stroke-dasharray="3 3" />
-                    <text x="26" y="13" text-anchor="middle" font-size="11" fill="currentColor">Patient</text>
-                    <text x="93" y="54" text-anchor="middle" font-size="11" fill="currentColor">Cannula</text>
-                    <text x="153" y="13" text-anchor="middle" font-size="11" fill="currentColor">Tubing</text>
-                    <text x="240" y="52" font-size="11" fill="currentColor">Δh</text>
-                    <text x="283" y="108" text-anchor="middle" font-size="11" fill="currentColor">Reservoir</text>
+                  <svg viewBox="0 0 360 150" role="img" aria-labelledby="venous-pressure-diagram-title" class="pressure-guide-diagram block w-full text-accent-700 dark:text-accent-300">
+                    <title id="venous-pressure-diagram-title">Blood drains from the patient through the venous cannula and tubing, past a pressure sensor immediately before the reservoir. Delta h spans from the patient reference level to the reservoir fluid level. The sensor uses the same filled circle as the arterial diagram.</title>
+                    <path d="M26 48H216q14 0 14 14v20q0 14 14 14h78m-9-6 9 6-9 6" fill="none" stroke="currentColor" stroke-width="2" />
+                    <path d="M64 42h40v12H64l-14-6z" fill="currentColor" fill-opacity=".2" stroke="currentColor" />
+                    <rect x="139" y="37" width="50" height="22" rx="7" fill="currentColor" fill-opacity=".12" stroke="currentColor" />
+                    <circle data-pressure-sensor="venous" cx="244" cy="96" r="6" fill="currentColor" />
+                    <path d="M304 88v44h32V88m-29 23h26" fill="none" stroke="currentColor" stroke-width="2" />
+                    <g data-height-reference="patient-to-fluid-level" stroke="currentColor" stroke-width="1.5" fill="none">
+                      <path d="M270 48H350M336 111H350" stroke-dasharray="4 3" stroke-opacity=".55" />
+                      <path d="M348 55V104" stroke-dasharray="4 3" />
+                    </g>
+                    <path data-height-arrowheads="solid" d="M344 56L348 48L352 56ZM344 103L348 111L352 103Z" fill="currentColor" />
+                    <g font-size="14" fill="currentColor" text-anchor="middle">
+                      <text x="26" y="22">Patient</text>
+                      <text x="87" y="22">Cannula</text>
+                      <text x="164" y="22">Tubing</text>
+                      <text x="244" y="122">Sensor</text>
+                      <text x="316" y="76">Reservoir</text>
+                      <text x="342" y="30">Δh</text>
+                    </g>
                   </svg>
                   <div class="rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-900 px-3 py-2 text-xs leading-relaxed">
                     <p class="font-semibold text-primary-900 dark:text-white">Resistance to overcome</p>
@@ -537,56 +545,6 @@
             </section>
           </div>
 
-          <div id="pressure-drop-single-view" class="space-y-5">
-          <div id="pressure-drop-filter-panel" class="rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50/80 dark:bg-primary-900/40 p-4 space-y-4">
-            <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-              <label class="block space-y-1">
-                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Manufacturer</span>
-                <select id="pressure-drop-page-manufacturer" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"></select>
-              </label>
-              <label class="block space-y-1">
-                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Category / type</span>
-                <select id="pressure-drop-page-category" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"></select>
-              </label>
-              <label class="block space-y-1">
-                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Model / cannula</span>
-                <select id="pressure-drop-page-model" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"></select>
-              </label>
-              <label class="block space-y-1">
-                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Size Fr</span>
-                <select id="pressure-drop-page-size" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white"></select>
-              </label>
-              <label id="pressure-drop-page-connection-wrap" class="hidden block space-y-1">
-                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Connection site</span>
-                <select id="pressure-drop-page-connection" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white disabled:opacity-60"></select>
-              </label>
-              <label class="block space-y-1">
-                <span class="text-xs tracking-wider text-slate-500 dark:text-slate-400">Flow rate (L/min)</span>
-                <input id="pressure-drop-page-flow" type="text" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="Enter flow rate" class="w-full rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none dark:text-white" />
-              </label>
-            </div>
-            <div class="flex flex-wrap items-center gap-3">
-              <button id="pressure-drop-page-reset" type="button" class="inline-flex min-h-10 items-center justify-center rounded-lg border border-slate-200 dark:border-primary-700 bg-white dark:bg-primary-800 px-3 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:border-accent-500/40 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">Reset lookup</button>
-              <a href="#pressure-drop-methodology" class="text-xs text-slate-500 dark:text-slate-400 underline">How estimates are calculated</a>
-            </div>
-          </div>
-
-          <div class="pressure-drop-async-region space-y-4">
-          <div id="pressure-drop-loading" class="rounded-xl border border-dashed border-slate-300 dark:border-primary-700 bg-slate-50/80 dark:bg-primary-900/40 p-4 text-sm text-slate-600 dark:text-slate-300">
-            Loading manufacturer pressure-drop references…
-          </div>
-
-          <div id="pressure-drop-error" class="hidden rounded-xl border border-rose-200 dark:border-rose-500/40 bg-rose-50 dark:bg-rose-500/10 p-4 text-sm text-rose-700 dark:text-rose-200">
-            Pressure drop data could not be rendered. Please try again later or confirm the dataset file is available.
-          </div>
-
-          <div id="pressure-drop-empty" class="hidden rounded-xl border border-slate-200 dark:border-primary-800 bg-slate-50 dark:bg-primary-900/40 p-4 text-sm text-slate-600 dark:text-slate-300">
-            No pressure drop references are available for the current lookup selection. Reset the lookup or choose another cannula.
-          </div>
-
-          <div id="pressure-drop-results" class="space-y-4"></div>
-          </div>
-          </div>
 
         </section>
 
@@ -821,3 +779,4 @@
   <script src="/main.js"></script>
 </body>
 </html>
+

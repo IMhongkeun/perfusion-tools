@@ -37,7 +37,8 @@ nonCommentLines.forEach((line) => {
 
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 assert(
-  /cp\s+ads\.txt\s+dist\//.test(packageJson.scripts.build),
+  packageJson.scripts.build === 'node scripts/build.js' &&
+    fs.readFileSync(path.join(repoRoot, 'scripts', 'build.js'), 'utf8').includes("'ads.txt'"),
   'Build script should copy ads.txt into dist/.'
 );
 
