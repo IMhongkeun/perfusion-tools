@@ -506,9 +506,7 @@ assert(
 );
 assert(
   mainJs.includes("selectNode.dispatchEvent(new Event('change', { bubbles: true }))") &&
-  mainJs.includes("['manufacturer', controls.manufacturerSelect]") &&
-  mainJs.includes("['model', controls.modelSelect]") &&
-  mainJs.includes("['category', controls.categorySelect]"),
+  mainJs.includes("[controls.category, controls.location, controls.manufacturer, controls.model].forEach(select => select.addEventListener('change'"),
   'Searchable model combobox should preserve existing select-driven filtering for model and category/type controls.'
 );
 const pressureDropPageHtml = fs.readFileSync(path.join(__dirname, '..', 'cannula-pressure-drop', 'index.html'), 'utf8');
@@ -537,11 +535,12 @@ assert(
   'Cannula pressure-drop page should expose unique title, description, and exact canonical URL metadata.'
 );
 assert(
-  pressureDropPageHtml.includes('id="pressure-drop-single-tab"') &&
-  pressureDropPageHtml.includes('id="pressure-drop-target-tab"') &&
+  !pressureDropPageHtml.includes('id="pressure-drop-single-tab"') &&
+  !pressureDropPageHtml.includes('id="pressure-drop-target-tab"') &&
+  !pressureDropPageHtml.includes('id="pressure-drop-single-view"') &&
   pressureDropPageHtml.includes('id="pressure-drop-target-location-note"') &&
   !pressureDropPageHtml.includes('pressure-drop-compare-'),
-  'Only target-flow comparison and single lookup remain; location fallback has a visible note.'
+  'A single comparison screen remains with no workflow tabs or single lookup panel.'
 );
 const heroStart = pressureDropPageHtml.indexOf('id="page-heading"');
 const calculatorStart = pressureDropPageHtml.indexOf('id="pressure-drop-reference-root"');
@@ -2935,8 +2934,7 @@ assert.strictEqual(familyInput.value, '');
 assert.strictEqual(pressureDescendants(targetNodes['pressure-drop-target-chart'], node => node.tagName === 'li').length, 0);
 assert.strictEqual(targetFlowInput.value, '1');
 
-let specialtySelection = null;
-const searchController = targetRuntime.initPressureDropTargetFlowComparison(pressureDropData, () => {}, entry => { specialtySelection = entry; });
+const searchController = targetRuntime.initPressureDropTargetFlowComparison(pressureDropData, () => {});
 const catalogSearch = targetNodes['pressure-drop-catalog-search'];
 const catalogMatches = targetNodes['pressure-drop-catalog-matches'];
 catalogSearch.value = 'Medtronic'; catalogSearch.dispatch('input');
@@ -2972,7 +2970,7 @@ const eligible15FrArterial = exact15FrEntries.filter(entry => {
 });
 for (const spelling of ['15Fr', '15 Fr']) {
   catalogSearch.value = spelling; catalogSearch.dispatch('input');
-  assert.deepStrictEqual(new Set(catalogMatches.children.map(node => node.dataset.productKey)), exact15FrKeys,
+  assert.deepStrictEqual(new Set(catalogMatches.children.map(node => node.dataset.productKey)), new Set(exact15FrEntries.filter(entry => classifyComparison(entry).eligible).map(targetRuntime.getPressureDropTargetFlowKey)),
     `Autocomplete must show the exact same 15 Fr products for "${spelling}".`);
   assert(!catalogMatches.children.some(node => node.dataset.productKey === targetRuntime.getPressureDropTargetFlowKey(pas1315)),
     'Autocomplete must exclude the 13 Fr HLS cannula with 15 cm length.');
@@ -3026,11 +3024,9 @@ catalogSearch.value = specialty.cannulaOrderCode; catalogSearch.dispatch('input'
 catalogSearch.dispatch('keydown', { key: 'Enter' });
 assert.strictEqual(currentRows().length, 0, 'Specialty-only Enter search has no standard comparison rows.');
 assert(!catalogMatches.classList.contains('hidden'), 'Specialty suggestions remain available after Enter.');
-const specialtyChoice = catalogMatches.children.find(item => item.dataset.productKey === targetRuntime.getPressureDropTargetFlowKey(specialty));
-assert(specialtyChoice, 'The matching Specialty cannula remains directly selectable.');
-specialtyChoice.dispatch('click');
-assert.strictEqual(specialtySelection, specialty, 'Specialty uses the existing Single Lookup route');
-assert.strictEqual(targetFlowInput.value, '1');
+assert(!catalogMatches.children.some(item => item.dataset.productKey === targetRuntime.getPressureDropTargetFlowKey(specialty)),
+  'Specialty-only lookup entries do not offer a removed workflow.');
+
 targetNodes['pressure-drop-target-category'].value = 'venous'; targetNodes['pressure-drop-target-category'].dispatch('change');
 locationInput.value = 'central'; locationInput.dispatch('change');
 manufacturerInput.value = ''; manufacturerInput.dispatch('change');
@@ -3351,31 +3347,25 @@ combo.close(); combo.open(); combo.close(); combo.open();
 assert.strictEqual(combo.panel.style.top, '100%', 'Repeated open/close cycles recalculate placement');
 console.log('Searchable target model selector keyboard, search, dismissal and containment regressions passed.');
 
-const switchStart = mainJs.indexOf('    const setPressureDropView = (view) => {');
-const switchSource = mainJs.slice(switchStart, mainJs.indexOf('\n    [', switchStart));
-const switchPage = new PressureTestNode();
-const switchPanels = { single: new PressureTestNode(), target: new PressureTestNode() };
-const switchTabs = { single: new PressureTestNode(), target: new PressureTestNode() };
-const switchRenders = [];
-const switchView = vm.runInNewContext(`let activePressureDropView = 'single'; ${switchSource}; setPressureDropView`, {
-  page: switchPage, status: new PressureTestNode(),
-  singleView: switchPanels.single, singleTab: switchTabs.single,
-  targetView: switchPanels.target, targetTab: switchTabs.target,
-  targetComparison: { refresh: () => switchRenders.push('target') },
-  render: () => switchRenders.push('single')
-});
-for (const mode of ['target', 'single', 'target']) {
-  Object.values(switchPanels).forEach(panel => { panel.dataset.analyticsReady = 'true'; });
-  switchView(mode);
-  assert.strictEqual(switchPage.dataset.pressureDropView, mode);
-  Object.entries(switchPanels).forEach(([name, panel]) => {
-    assert.strictEqual(panel.classList.contains('hidden'), name !== mode);
-    if (name !== mode) assert.strictEqual(panel.dataset.analyticsReady, 'false');
-    assert.strictEqual(switchTabs[name].attributes['aria-pressed'], String(name === mode));
-  });
-}
-assert.deepStrictEqual(switchRenders, ['target', 'single', 'target']);
-console.log('Pressure-drop mode switching and inactive readiness regressions passed.');
+assert(mainJs.includes("page.dataset.pressureDropView = 'target'"), 'The surviving screen keeps target-flow analytics readiness.');
+assert(pressureDropPageHtml.includes('<text x="244" y="122">Sensor</text>'), 'Venous sensor label sits below the line.');
+assert(pressureDropPageHtml.includes('<option value="">All categories (Arterial &amp; Venous)</option>'), 'All categories is the first option.');
+targetNodes['pressure-drop-target-category'].value = '';
+targetNodes['pressure-drop-target-category'].dispatch('change');
+manufacturerInput.value = ''; manufacturerInput.dispatch('change');
+familyInput.value = ''; familyInput.dispatch('change');
+locationInput.value = ''; locationInput.dispatch('change');
+assert.strictEqual(currentRows().length, targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: '' }).length,
+  'All categories renders arterial and venous rows together.');
+catalogSearch.value = 'Medtronic'; catalogSearch.dispatch('input'); catalogSearch.dispatch('keydown', { key: 'Enter' });
+assert.strictEqual(currentRows().length, targetRuntime.getPressureDropTargetFlowMatches(pressureDropData, { category: '', manufacturer: 'Medtronic' }).length,
+  'All categories also applies to committed searches.');
+catalogSearch.dispatch('keydown', { key: 'Escape' });
+const allCategoryRows = targetRuntime.getPressureDropTargetFlowRows(pressureDropData, { category: '' }, 2, 'catalog');
+assert(allCategoryRows.some(row => classifyComparison(row.entry).category === 'arterial'));
+assert(allCategoryRows.some(row => classifyComparison(row.entry).category === 'venous'));
+const catalogRank = row => /\bHLS\b/i.test(row.entry.model) ? 2 : row.entry.manufacturer === 'Medtronic' ? 0 : 1;
+assert(allCategoryRows.every((row, index) => !index || catalogRank(allCategoryRows[index - 1]) <= catalogRank(row)), 'Default catalog puts Medtronic first and HLS last.');
 
 // Execute the production feedback resolver with the active view and its real
 // readiness contract. The feedback card itself remains unique across modes.
