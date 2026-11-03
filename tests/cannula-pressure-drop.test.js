@@ -1945,6 +1945,24 @@ const mc2AdjustedSvg = pressureDescendants(mc2AdjustedChart, node => node.tagNam
 assert.strictEqual(mc2AdjustedSvg.dataset.maxFlow, '6');
 assert(mc2AdjustedSvg.innerHTML.includes('data-endpoint-adjusted="true"'));
 assert(mc2AdjustedChart.textContent.includes('≈'), 'Estimated values must remain visibly approximate.');
+// Codex review regression: the live slider/explorer must not present a
+// 6.0 L/min endpoint estimate as if it were an original manufacturer point.
+const mc2AdjustedSlider = pressureDescendants(mc2AdjustedChart, node => node.type === 'range')[0];
+const mc2ExplorerCell = pressureDescendants(mc2AdjustedChart,
+  node => node.attributes['aria-label']?.startsWith('Explore: '))[0];
+assert(mc2AdjustedSlider && mc2ExplorerCell);
+mc2AdjustedSlider.value = '5.0'; mc2AdjustedSlider.dispatch('input');
+assert(!mc2ExplorerCell.textContent.startsWith('≈ '), 'Ordinary within-range exploration must not show ≈.');
+assert(mc2ExplorerCell.title.startsWith('Signed pressure:'), 'Unadjusted tooltip stays unchanged.');
+mc2AdjustedSlider.value = '6.0'; mc2AdjustedSlider.dispatch('input');
+assert.strictEqual(mc2ExplorerCell.textContent, '≈ 11.8');
+assert(mc2ExplorerCell.attributes['aria-label'].includes('Explore: ≈ 11.8 mmHg'));
+assert(mc2ExplorerCell.attributes['aria-label'].includes('Estimated at verified chart endpoint'));
+assert(mc2ExplorerCell.title.includes('≈ Estimated endpoint pressure: +11.8 mmHg'));
+assert(mc2ExplorerCell.title.includes('beyond digitized points'));
+mc2AdjustedSlider.value = '5.0'; mc2AdjustedSlider.dispatch('input');
+assert(!mc2ExplorerCell.textContent.includes('≈') && !mc2ExplorerCell.title.includes('Estimated'),
+  'Approximate labeling must clear when returning to a normal in-range flow.');
 assert(!pressureDropData.some(entry => entry.cannulaOrderCode === '91236C'),
   'Do not substitute another size curve for missing 36/46 Fr CSV');
 assert(!mc2Entries.some(entry => /^912(?:28|40|46|51)$/.test(entry.cannulaOrderCode)),
