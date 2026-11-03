@@ -1902,6 +1902,7 @@ for (const [size, code, counterpart, range, first, middle, last, digest] of mc2T
   assert(item.digitizationNote.includes('not the separate Oval Body chart'));
   assert(item.digitizationNote.includes('No fitted curve, smoothing, synthetic (0,0) anchor, or extrapolation'));
   assert.strictEqual(item.referenceFlowRangeLabel, range);
+  assert.strictEqual(item.verifiedChartMaxFlowLMin ?? null, code === '91228C' ? null : 6);
   assert.strictEqual(item.points.length, 32);
   const point = pair => ({ flow: pair[0], pressureDrop: pair[1] });
   assert.deepStrictEqual(item.points[0], point(first));
@@ -1921,10 +1922,47 @@ for (const [size, code, counterpart, range, first, middle, last, digest] of mc2T
   assert.strictEqual(classification.location, 'central');
   assert(targetRuntime.searchPressureDropCatalog(pressureDropData, code).includes(item));
   assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(item, first[0] - 0.001).inRange, false);
-  assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(item, last[0] + 0.001).inRange, false);
-  assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(item, last[0]).inRange, true);
+  const afterLast = targetRuntime.getPressureDropTargetFlowResult(item, last[0] + 0.001);
+  if (code === '91228C') {
+    assert.strictEqual(afterLast.inRange, false, 'Unverified 28/36 Fr must remain bounded by the digitized points.');
+    assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(item, 6).inRange, false);
+  } else {
+    assert.strictEqual(afterLast.interpolationResult.state, 'endpoint_adjusted');
+    const endpoint = targetRuntime.getPressureDropTargetFlowResult(item, 6);
+    const previous = item.points.at(-2);
+    const slope = (last[1] - previous.pressureDrop) / (last[0] - previous.flow);
+    assert(endpoint.inRange && endpoint.interpolationResult.state === 'endpoint_adjusted');
+    assert(Math.abs(endpoint.interpolationResult.value - (last[1] + slope * (6 - last[0]))) < 1e-9);
+    assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(item, 6.001).interpolationResult.state, 'out_of_range');
+  }
+  assert.strictEqual(targetRuntime.getPressureDropTargetFlowResult(item, last[0]).interpolationResult.state, 'exact');
 }
 assert.strictEqual(mc2Digests.size, 4, 'Different MC2 Fr pairs must not share an unrelated size curve');
+const mc2Adjusted = mc2Entries.find(entry => entry.cannulaOrderCode === '91240C');
+const mc2AdjustedChart = targetRuntime.createPressureDropTargetFlowChart([mc2Adjusted], 6, false,
+  () => {}, () => {}, pressureDropData);
+const mc2AdjustedSvg = pressureDescendants(mc2AdjustedChart, node => node.tagName === 'svg')[0];
+assert.strictEqual(mc2AdjustedSvg.dataset.maxFlow, '6');
+assert(mc2AdjustedSvg.innerHTML.includes('data-endpoint-adjusted="true"'));
+assert(mc2AdjustedChart.textContent.includes('≈'), 'Estimated values must remain visibly approximate.');
+// Codex review regression: the live slider/explorer must not present a
+// 6.0 L/min endpoint estimate as if it were an original manufacturer point.
+const mc2AdjustedSlider = pressureDescendants(mc2AdjustedChart, node => node.type === 'range')[0];
+const mc2ExplorerCell = pressureDescendants(mc2AdjustedChart,
+  node => node.attributes['aria-label']?.startsWith('Explore: '))[0];
+assert(mc2AdjustedSlider && mc2ExplorerCell);
+mc2AdjustedSlider.value = '5.0'; mc2AdjustedSlider.dispatch('input');
+assert(!mc2ExplorerCell.textContent.startsWith('≈ '), 'Ordinary within-range exploration must not show ≈.');
+assert(mc2ExplorerCell.title.startsWith('Signed pressure:'), 'Unadjusted tooltip stays unchanged.');
+mc2AdjustedSlider.value = '6.0'; mc2AdjustedSlider.dispatch('input');
+assert.strictEqual(mc2ExplorerCell.textContent, '≈ 11.8');
+assert(mc2ExplorerCell.attributes['aria-label'].includes('Explore: ≈ 11.8 mmHg'));
+assert(mc2ExplorerCell.attributes['aria-label'].includes('Estimated at verified chart endpoint'));
+assert(mc2ExplorerCell.title.includes('≈ Estimated endpoint pressure: +11.8 mmHg'));
+assert(mc2ExplorerCell.title.includes('beyond digitized points'));
+mc2AdjustedSlider.value = '5.0'; mc2AdjustedSlider.dispatch('input');
+assert(!mc2ExplorerCell.textContent.includes('≈') && !mc2ExplorerCell.title.includes('Estimated'),
+  'Approximate labeling must clear when returning to a normal in-range flow.');
 assert(!pressureDropData.some(entry => entry.cannulaOrderCode === '91236C'),
   'Do not substitute another size curve for missing 36/46 Fr CSV');
 assert(!mc2Entries.some(entry => /^912(?:28|40|46|51)$/.test(entry.cannulaOrderCode)),

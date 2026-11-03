@@ -1225,6 +1225,9 @@ function getPressureDropSeries(entry) {
 }
 
 const PRESSURE_DROP_EXACT_FLOW_TOLERANCE = 1e-6;
+// Allow limited estimates only to verified source chart endpoints.
+const PRESSURE_DROP_ENDPOINT_MAX_GAP_L_MIN = 0.05;
+const PRESSURE_DROP_ENDPOINT_EPSILON = 1e-9;
 
 function getValidPressureDropPoints(points) {
   if (!Array.isArray(points)) return [];
@@ -1239,14 +1242,41 @@ function findExactPressureDropPoint(points, targetFlow) {
   return validPoints.find(point => Math.abs(point.flow - targetFlow) <= PRESSURE_DROP_EXACT_FLOW_TOLERANCE + Number.EPSILON) || null;
 }
 
-function interpolatePressureDrop(points, targetFlow) {
+function getPressureDropVerifiedEndpointFlow(entry, points) {
+  const verifiedFlow = entry?.verifiedChartMaxFlowLMin;
+  const validPoints = getValidPressureDropPoints(points);
+  if (!Number.isFinite(verifiedFlow) || validPoints.length < 2) return null;
+  const gap = verifiedFlow - validPoints[validPoints.length - 1].flow;
+  // A shared chart axis alone is not sufficient: verify each specific product's endpoint.
+  return gap > 0 && gap <= PRESSURE_DROP_ENDPOINT_MAX_GAP_L_MIN + PRESSURE_DROP_ENDPOINT_EPSILON
+    ? verifiedFlow : null;
+}
+
+function interpolatePressureDrop(points, targetFlow, verifiedChartMaxFlow = null) {
   if (!Number.isFinite(targetFlow)) return { state: 'invalid', value: null };
   const validPoints = getValidPressureDropPoints(points);
   if (!validPoints.length) return { state: 'no_points', value: null };
-
   const minFlow = validPoints[0].flow;
   const maxFlow = validPoints[validPoints.length - 1].flow;
-  if (targetFlow < minFlow || targetFlow > maxFlow) return { state: 'out_of_range', value: null, minFlow, maxFlow };
+  if (targetFlow < minFlow) return { state: 'out_of_range', value: null, minFlow, maxFlow };
+  if (targetFlow > maxFlow) {
+    const gap = verifiedChartMaxFlow - maxFlow;
+    if (validPoints.length >= 2 && Number.isFinite(verifiedChartMaxFlow) &&
+      gap > 0 && gap <= PRESSURE_DROP_ENDPOINT_MAX_GAP_L_MIN + PRESSURE_DROP_ENDPOINT_EPSILON &&
+      targetFlow <= verifiedChartMaxFlow + PRESSURE_DROP_ENDPOINT_EPSILON) {
+      const last = validPoints[validPoints.length - 1];
+      const previous = validPoints[validPoints.length - 2];
+      const width = last.flow - previous.flow;
+      if (width > 0) {
+        // Limited endpoint extrapolation only; never add a fabricated manufacturer point.
+        const slope = (last.pressureDrop - previous.pressureDrop) / width;
+        const estimate = last.pressureDrop + slope * (targetFlow - last.flow);
+        if (Number.isFinite(estimate)) return { state: 'endpoint_adjusted', value: estimate,
+          minFlow, maxFlow, verifiedChartMaxFlow };
+      }
+    }
+    return { state: 'out_of_range', value: null, minFlow, maxFlow };
+  }
   // Exact raw manufacturer points take priority over fitted or interpolated estimates.
   const exactPoint = findExactPressureDropPoint(validPoints, targetFlow);
   if (exactPoint) return { state: 'exact', value: exactPoint.pressureDrop, flow: exactPoint.flow, minFlow, maxFlow };
@@ -1254,14 +1284,16 @@ function interpolatePressureDrop(points, targetFlow) {
     const left = validPoints[i]; const right = validPoints[i + 1];
     if (targetFlow > left.flow && targetFlow < right.flow) {
       const ratio = (targetFlow - left.flow) / (right.flow - left.flow);
-      // Linear interpolation between adjacent manufacturer curve points:
-      // estimatedPressureDrop = y1 + ((flow - x1) / (x2 - x1)) * (y2 - y1).
+      // Linear interpolation between adjacent raw manufacturer chart points.
       return { state: 'interpolated', value: left.pressureDrop + ((right.pressureDrop - left.pressureDrop) * ratio), minFlow, maxFlow };
     }
   }
   return { state: 'out_of_range', value: null, minFlow, maxFlow };
 }
 
+function interpolatePressureDropForEntry(entry, points, targetFlow) {
+  return interpolatePressureDrop(points, targetFlow, getPressureDropVerifiedEndpointFlow(entry, points));
+}
 function fitPressureDropPowerLaw(points) {
   const positivePoints = getValidPressureDropPoints(points).filter(point => point.flow > 0 && point.pressureDrop > 0);
   if (positivePoints.length < 2) return null;
@@ -1401,12 +1433,14 @@ function drawPressureDropSeriesChart(svgNode, pressureSeries, targetFlow, estima
   const padding = { left: 58, right: 18, top: legendLayout.topPadding, bottom: 42 };
   const allPoints = renderedSeries.flatMap(item => item.points);
   const minFlow = Math.min(...allPoints.map(point => point.flow));
-  const maxFlow = Math.max(...allPoints.map(point => point.flow));
+  const verifiedEndpointFlows = renderedSeries.map(item => item.endpointMaxFlow).filter(Number.isFinite);
+  const maxFlow = Math.max(...allPoints.map(point => point.flow), ...verifiedEndpointFlows);
   const rawMinDrop = Math.min(...allPoints.map(point => point.pressureDrop));
   const rawMaxDrop = Math.max(...allPoints.map(point => point.pressureDrop));
+  const adjustedDrops = renderedSeries.filter(item => item.estimate?.state === 'endpoint_adjusted' && Number.isFinite(item.estimate.value)).map(item => item.estimate.value);
   const crossesZero = rawMinDrop < 0 && rawMaxDrop > 0;
-  const minDrop = rawMinDrop < 0 ? rawMinDrop : 0;
-  const maxDrop = rawMaxDrop > 0 ? rawMaxDrop : 0;
+  const minDrop = Math.min(0, rawMinDrop, ...adjustedDrops);
+  const maxDrop = Math.max(0, rawMaxDrop, ...adjustedDrops);
   const pressureRange = Math.max(maxDrop - minDrop, 1);
   const scaleX = flow => padding.left + ((flow - minFlow) / Math.max(maxFlow - minFlow, 0.0001)) * (width - padding.left - padding.right);
   const scaleY = drop => height - padding.bottom - ((drop - minDrop) / pressureRange) * (height - padding.top - padding.bottom);
@@ -1429,14 +1463,17 @@ function drawPressureDropSeriesChart(svgNode, pressureSeries, targetFlow, estima
     const rawPointMarkers = showRawPoints
       ? item.points.map(point => `<circle data-raw-pressure-point="true" cx="${scaleX(point.flow).toFixed(1)}" cy="${scaleY(point.pressureDrop).toFixed(1)}" r="2" fill="white" stroke="${color}" stroke-width="1.2"><title>${displayLabel}; Flow: ${point.flow.toFixed(2)} L/min; Signed pressure: ${formatSignedPressureDrop(point.pressureDrop)} mmHg</title></circle>`).join('')
       : '';
-    return `<g aria-label="${displayLabel} pressure series"><path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"${dash} />${rawPointMarkers}</g>`;
+    const lastPoint = item.points[item.points.length - 1];
+    const endpointLine = item.estimate?.state === 'endpoint_adjusted' && Number.isFinite(targetFlow)
+      ? `<line data-endpoint-adjusted="true" x1="${scaleX(lastPoint.flow).toFixed(1)}" y1="${scaleY(lastPoint.pressureDrop).toFixed(1)}" x2="${scaleX(targetFlow).toFixed(1)}" y2="${scaleY(item.estimate.value).toFixed(1)}" stroke="${color}" stroke-width="2" stroke-dasharray="3 3" />` : '';
+    return `<g aria-label="${displayLabel} pressure series"><path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"${dash} />${rawPointMarkers}${endpointLine}</g>`;
   }).join('');
   const zeroLine = crossesZero ? `<line data-zero-pressure-line="true" x1="${padding.left}" y1="${scaleY(0).toFixed(1)}" x2="${plotRight}" y2="${scaleY(0).toFixed(1)}" stroke="currentColor" stroke-opacity="0.75" stroke-width="1.5" />` : '';
   const targetMarkers = renderedSeries.map((item, index) => {
     if (!Number.isFinite(targetFlow) || !Number.isFinite(item.estimate?.value)) return '';
     const color = getColor(item, index);
     const displayLabel = item.displayLabel || item.label;
-    return `<circle data-series-id="${item.id || item.originalIndex}" cx="${scaleX(targetFlow).toFixed(1)}" cy="${scaleY(item.estimate.value).toFixed(1)}" r="4" fill="${color}" stroke="white" stroke-width="1.5"><title>${displayLabel}; Target flow: ${targetFlow.toFixed(2)} L/min; Signed pressure: ${formatSignedPressureDrop(item.estimate.value)} mmHg</title></circle>`;
+    return `<circle data-series-id="${item.id || item.originalIndex}" cx="${scaleX(targetFlow).toFixed(1)}" cy="${scaleY(item.estimate.value).toFixed(1)}" r="4" fill="${color}" stroke="white" stroke-width="1.5"><title>${displayLabel}; Target flow: ${targetFlow.toFixed(2)} L/min; ${item.estimate?.state === 'endpoint_adjusted' ? '≈ Estimated' : 'Signed'} pressure: ${formatSignedPressureDrop(item.estimate.value)} mmHg</title></circle>`;
   }).join('');
   const legend = options.showLegend === false ? '' : renderedSeries.map((item, index) => {
     const position = legendLayout.positions[index];
@@ -1672,7 +1709,7 @@ function updatePressureDropReference() {
   const targetFlowText = targetFlowInput.value.trim();
   const hasTargetFlow = targetFlowText !== '';
   const targetFlow = hasTargetFlow ? parseFloat(targetFlowText) : NaN;
-  const result = hasTargetFlow ? interpolatePressureDrop(validPoints, targetFlow) : { state: 'invalid', value: null };
+  const result = hasTargetFlow ? interpolatePressureDropForEntry(match, validPoints, targetFlow) : { state: 'invalid', value: null };
   const useLinearOnly = match.interpolationMode === 'linear';
   const curveModel = useLinearOnly ? null : createPressureDropCurveModel(validPoints);
   const chartOptions = useLinearOnly ? { curveMode: 'linear' } : {};
@@ -1700,15 +1737,15 @@ function updatePressureDropReference() {
     return;
   }
 
-  if (result.state === 'exact' || result.state === 'interpolated') {
-    const estimatedPressureDrop = result.state === 'exact' ? result.value : (curveModel ? curveModel.estimate(targetFlow) : result.value);
+  if (result.state === 'exact' || result.state === 'interpolated' || result.state === 'endpoint_adjusted') {
+    const estimatedPressureDrop = result.state === 'interpolated' && curveModel ? curveModel.estimate(targetFlow) : result.value;
     const markerFlow = result.state === 'exact' && Number.isFinite(result.flow) ? result.flow : targetFlow;
-    estimateValue.textContent = estimatedPressureDrop.toFixed(1);
+    estimateValue.textContent = (result.state === 'endpoint_adjusted' ? '≈ ' : '') + estimatedPressureDrop.toFixed(1);
     estimateContext.textContent = `at ${targetFlow.toFixed(1)} L/min`;
     estimateCard.classList.remove('hidden');
-    rangeStatus.textContent = 'Target flow within digitized chart range.';
+    rangeStatus.textContent = result.state === 'endpoint_adjusted' ? '≈ Limited estimate to verified manufacturer chart boundary (not a source point).' : 'Target flow within digitized chart range.';
     statusMessage.textContent = getPressureDropPanelNote(match, true);
-    drawPressureDropChart(chartNode, validPoints, markerFlow, estimatedPressureDrop, chartOptions);
+    drawPressureDropSeriesChart(chartNode, [{ id: 'pressure-drop', label: 'Pressure drop', points: validPoints, endpointMaxFlow: getPressureDropVerifiedEndpointFlow(match, validPoints) }], markerFlow, [{ ...result, value: estimatedPressureDrop }], chartOptions);
     return;
   }
 
@@ -6757,12 +6794,14 @@ function createPressureDropCandidateList(candidates, onSelect) {
 function getPressureDropResultStateText(result) {
   if (result?.state === 'exact') return 'Exact manufacturer source point.';
   if (result?.state === 'interpolated') return 'Adjacent-point linear interpolation.';
+  if (result?.state === 'endpoint_adjusted') return '≈ Limited estimate from final two curve points (≤0.05 L/min; verified chart boundary).';
   if (result?.state === 'out_of_range') return 'Out of source range. No extrapolation.';
   if (result?.state === 'no_points') return 'No source curve data available for this series.';
   return 'Enter a valid target flow. No calculation performed.';
 }
 
 function getPressureDropResultValueText(result) {
+  if (result?.state === 'endpoint_adjusted') return `≈ ${formatSignedPressureDrop(result.value)} mmHg`;
   if (result?.state === 'exact' || result?.state === 'interpolated') return `${formatSignedPressureDrop(result.value)} mmHg`;
   if (result?.state === 'out_of_range') return 'Out of source range';
   if (result?.state === 'no_points') return 'No source data';
@@ -6815,13 +6854,12 @@ function createPressureDropRawPointsToggle(checked, onChange, id) {
 function createPressureDropChartPanel(entry, flowValue, interpolationResults, showRawPoints, onRawPointsChange) {
   const panel = document.createElement('article'); panel.className = 'self-start h-fit rounded-xl border border-slate-200 dark:border-primary-800 bg-white dark:bg-primary-900/30 p-4 space-y-3';
   const series = getPressureDropSeries(entry);
-  const chartSeries = series.map(item => ({ ...item, colorIndex: 0 }));
+  const chartSeries = series.map(item => ({ ...item, colorIndex: 0, endpointMaxFlow: getPressureDropVerifiedEndpointFlow(entry, item.points) }));
   const header = document.createElement('div'); header.innerHTML = `<h3 class="text-sm font-semibold text-primary-900 dark:text-white">Pressure-flow curve</h3><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Digitized manufacturer points are connected with straight line segments.</p>`;
   const svgWrap = document.createElement('div'); svgWrap.className = 'flex w-full items-center justify-center overflow-hidden rounded-lg bg-slate-50/60 dark:bg-primary-900/40 px-1 py-1 sm:px-2';
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('viewBox', '0 0 420 200'); svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', `${entry.manufacturer} ${entry.model} ${entry.size || ''} pressure-flow curves. ${series.map((item, index) => `${item.label}: ${getPressureDropResultStateText(interpolationResults[index])}`).join(' ')}`); svg.classList.add('block', 'w-full', 'h-auto', 'text-slate-500', 'dark:text-slate-300');
   const estimates = interpolationResults;
-  if (series.length === 1) drawPressureDropChart(svg, entry.points, Number.isFinite(estimates[0]?.value) ? flowValue : NaN, estimates[0]?.value, { curveMode: 'linear', showRawPoints });
-  else drawPressureDropSeriesChart(svg, chartSeries, flowValue, estimates, { curveMode: 'linear', showRawPoints });
+  drawPressureDropSeriesChart(svg, chartSeries, flowValue, estimates, { curveMode: 'linear', showRawPoints });
   svgWrap.appendChild(svg); panel.append(header, svgWrap); return panel;
 }
 
@@ -6884,7 +6922,7 @@ function createPressureDropSelectedSummary(entry) {
 }
 
 function createPressureDropLookupResult(entry, flowInputValue, flowValue, onFlowInput, showRawPoints, onRawPointsChange) {
-  const interpolationResults = getPressureDropSeries(entry).map(series => interpolatePressureDrop(series.points, flowValue));
+  const interpolationResults = getPressureDropSeries(entry).map(series => interpolatePressureDropForEntry(entry, series.points, flowValue));
   const wrap = document.createElement('div'); wrap.className = 'space-y-4';
   wrap.appendChild(createPressureDropEstimateCard(entry, flowInputValue, flowValue, interpolationResults, onFlowInput));
   wrap.appendChild(createPressureDropChartPanel(entry, flowValue, interpolationResults, showRawPoints, onRawPointsChange));
@@ -6935,7 +6973,7 @@ function shouldApplyPressureDropHighWarning(entry) {
 function getPressureDropComparisonResult(entry, flowValue) {
   const seriesResults = getPressureDropSeries(entry).map(series => {
     const validPoints = getValidPressureDropPoints(series.points);
-    const interpolationResult = interpolatePressureDrop(series.points, flowValue);
+    const interpolationResult = interpolatePressureDropForEntry(entry, series.points, flowValue);
     const valueText = getPressureDropResultValueText(interpolationResult);
     return {
       series,
@@ -6946,7 +6984,7 @@ function getPressureDropComparisonResult(entry, flowValue) {
     };
   });
   const isOutOfRange = seriesResults.some(item => item.interpolationResult.state === 'out_of_range');
-  const validResults = seriesResults.filter(item => item.interpolationResult.state === 'exact' || item.interpolationResult.state === 'interpolated');
+  const validResults = seriesResults.filter(item => hasValidPressureDropEstimate([item.interpolationResult]));
   const isHighPressure = validResults.some(item => shouldApplyPressureDropHighWarning(entry) && item.interpolationResult.value > 100);
   return {
     seriesResults,
@@ -6958,7 +6996,7 @@ function getPressureDropComparisonResult(entry, flowValue) {
 }
 
 function hasValidPressureDropEstimate(interpolationResults) {
-  return interpolationResults.some(result => result?.state === 'exact' || result?.state === 'interpolated');
+  return interpolationResults.some(result => result?.state === 'exact' || result?.state === 'interpolated' || result?.state === 'endpoint_adjusted');
 }
 
 function isPressureDropAnalyticsReady(activeView, singleView, targetView) {
@@ -7271,7 +7309,7 @@ function updatePressureDropTargetFlowSelection(selectedKeys, key, checked, eligi
 }
 
 function getPressureDropTargetFlowValueText(result) {
-  if (result.inRange) return `${result.magnitude.toFixed(1)} mmHg`;
+  if (result.inRange) return `${result.interpolationResult.state === 'endpoint_adjusted' ? '≈ ' : ''}${result.magnitude.toFixed(1)} mmHg`;
   if (result.unavailableReason) return 'Not comparable';
   if (result.interpolationResult.state === 'out_of_range') return 'Out of source range';
   if (result.interpolationResult.state === 'no_points') return 'No digitized curve';
@@ -7280,7 +7318,7 @@ function getPressureDropTargetFlowValueText(result) {
 
 function getPressureDropTargetFlowStatusText(result) {
   if (result.unavailableReason) return 'Not comparable';
-  if (result.inRange) return result.interpolationResult.state === 'exact' ? 'Exact' : 'Interpolated';
+  if (result.inRange) return result.interpolationResult.state === 'endpoint_adjusted' ? '≈ Endpoint-adjusted' : (result.interpolationResult.state === 'exact' ? 'Exact' : 'Interpolated');
   if (result.interpolationResult.state === 'out_of_range') return 'Out of range';
   if (result.interpolationResult.state === 'no_points') return 'No curve';
   return 'Enter flow';
@@ -7344,7 +7382,7 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
     readout.textContent = `Flow ${flow.toFixed(2)} L/min · ${pinnedFlow ? 'Pinned' : 'Exploring'}`;
     readout.title = `Target: ${Number.isFinite(committedFlow) ? `${committedFlow} L/min` : 'not set'}`;
     series.forEach((item, index) => {
-      const result = interpolatePressureDrop(item.points, flow);
+      const result = interpolatePressureDropForEntry(item.entry, item.points, flow);
       const valid = hasValidPressureDropEstimate([result]);
       markers[index].style.display = valid ? '' : 'none';
       if (valid) {
@@ -7355,8 +7393,10 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
       if (cell) {
         const limit = getPressureDropManufacturerFlowLimit(item.entry, flow);
         const limitText = getPressureDropManufacturerLimitLabel(limit);
-        cell.textContent = valid ? Math.abs(result.value).toFixed(1) : (result.state === 'no_points' ? 'No curve' : 'Out of range');
-        cell.setAttribute('aria-label', `Explore: ${cell.textContent}${valid ? ' mmHg' : ''}${limitText ? ` · ${limitText}` : ''}`);
+        const endpointEstimate = valid && result.state === 'endpoint_adjusted';
+        const endpointNote = endpointEstimate ? ' · Estimated at verified chart endpoint (≤0.05 L/min beyond digitized points)' : '';
+        cell.textContent = valid ? `${endpointEstimate ? '≈ ' : ''}${Math.abs(result.value).toFixed(1)}` : (result.state === 'no_points' ? 'No curve' : 'Out of range');
+        cell.setAttribute('aria-label', `Explore: ${cell.textContent}${valid ? ' mmHg' : ''}${endpointNote}${limitText ? ` · ${limitText}` : ''}`);
         if (flowCells[index]) flowCells[index].textContent = flow.toFixed(2);
         if (limitCells[index]) {
           limitCells[index].textContent = limitText;
@@ -7367,7 +7407,7 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
         const isHighPressure = valid && shouldApplyPressureDropHighWarning(item.entry) && Math.abs(result.value) > 100;
         cell.classList.toggle('font-semibold', valid);
         cell.classList.toggle('whitespace-nowrap', valid);
-        cell.title = valid ? `Signed pressure: ${formatSignedPressureDrop(result.value)} mmHg${isHighPressure ? '; High pressure drop warning (>100 mmHg).' : ''}${limitText ? `; ${limitText}. Source: ${limit.source}` : ''}` : 'Outside the digitized source range; no extrapolation.';
+        cell.title = valid ? `${endpointEstimate ? '≈ Estimated endpoint pressure' : 'Signed pressure'}: ${formatSignedPressureDrop(result.value)} mmHg${endpointNote}${isHighPressure ? '; High pressure drop warning (>100 mmHg).' : ''}${limitText ? `; ${limitText}. Source: ${limit.source}` : ''}` : 'Outside the digitized source range; no extrapolation.';
         cell.classList.toggle('text-amber-700', Boolean(limitText) || isHighPressure);
         cell.classList.toggle('dark:text-amber-300', Boolean(limitText) || isHighPressure);
       }
@@ -7375,7 +7415,7 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
     if (canExploreOnSlider) slider.value = String(Math.max(Number(slider.min), Math.min(Number(slider.max), flow)));
     commit.disabled = !Number.isFinite(flow) || flow <= 0 || !canExploreOnSlider ||
       Math.abs(flow * 10 - Math.round(flow * 10)) > 1e-8 ||
-      !series.some(item => hasValidPressureDropEstimate([interpolatePressureDrop(item.points, flow)]));
+      !series.some(item => hasValidPressureDropEstimate([interpolatePressureDropForEntry(item.entry, item.points, flow)]));
     commit.setAttribute('aria-disabled', String(commit.disabled));
   };
   svg.style.touchAction = 'pan-y';
@@ -7489,7 +7529,8 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     if (result.series) {
       series.push({ ...result.series, entry, id: encodeURIComponent(key), colorIndex: index,
         displayLabel: `${index + 1} · ${entry.manufacturer} · ${entry.model} · ${identity}${result.lumenLabel ? ' · Drainage' : ''}`,
-        exploreLabel: `${index + 1}. ${entry.manufacturer} · ${getPressureDropTargetFlowDisplayName(entry)} · ${identity}${result.lumenLabel ? ' · Drainage' : ''}` });
+        exploreLabel: `${index + 1}. ${entry.manufacturer} · ${getPressureDropTargetFlowDisplayName(entry)} · ${identity}${result.lumenLabel ? ' · Drainage' : ''}`,
+        endpointMaxFlow: getPressureDropVerifiedEndpointFlow(entry, result.series.points) });
       estimates.push(result.interpolationResult);
     }
     const item = document.createElement('li');
@@ -7510,7 +7551,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     frLabel.title = `${entry.manufacturer} · ${entry.model} · ${identity}${result.lumenLabel ? ' · Drainage' : ''}`;
     const value = document.createElement('span');
     value.className = `basis-full min-w-0 tabular-nums font-semibold ${result.isHighPressure && result.inRange ? 'text-amber-700 dark:text-amber-300' : 'text-primary-900 dark:text-white'}`;
-    value.textContent = result.inRange ? `Target: ${result.lumenLabel ? 'Drainage ' : ''}${result.magnitude.toFixed(1)} mmHg`
+    value.textContent = result.inRange ? `Target: ${result.lumenLabel ? 'Drainage ' : ''}${result.interpolationResult.state === 'endpoint_adjusted' ? '≈ ' : ''}${result.magnitude.toFixed(1)} mmHg`
       : `Target: ${result.unavailableReason || getPressureDropTargetFlowValueText(result)}`;
     if (result.inRange) value.title = `Signed pressure: ${formatSignedPressureDrop(result.interpolationResult.value)} mmHg`;
     if (result.isHighPressure && result.inRange) value.setAttribute('aria-label', `${value.textContent}. ${result.warningText}`);
@@ -7579,7 +7620,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
   attachPressureDropChartExplorer(panel, svg, series, flow, onCommitFlow, exploreControls, exploredCells, flowCells, limitCells);
   const note = document.createElement('p');
   note.className = 'text-xs text-slate-500 dark:text-slate-400';
-  note.textContent = 'Hover or touch-drag: 0.1 L/min steps · Click or tap to pin/unpin · ΔP: mmHg (linear interpolation within source range). Digitized curve range ≠ manufacturer max flow. Check the product source.';
+  note.textContent = 'Hover or touch-drag: 0.1 L/min steps · Click or tap to pin/unpin · ΔP: mmHg (linear interpolation between source points). ≈ indicates a ≤0.05 L/min endpoint estimate, only to a verified chart boundary. Raw source points are unchanged.';
   if (!estimates.some(estimate => hasValidPressureDropEstimate([estimate]))) {
     note.textContent += ' No selected curve has an in-range estimate at this target flow.';
   }
@@ -7698,7 +7739,7 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
     detailBody.className = 'mt-2 space-y-2 break-words text-slate-600 dark:text-slate-300';
     const status = document.createElement('p');
     const statusText = result.inRange
-      ? (result.interpolationResult.state === 'exact' ? 'Exact source point' : 'Interpolated')
+      ? (result.interpolationResult.state === 'endpoint_adjusted' ? '≈ Estimated at verified chart endpoint (≤0.05 L/min)' : (result.interpolationResult.state === 'exact' ? 'Exact source point' : 'Interpolated'))
       : (result.interpolationResult.state === 'out_of_range' ? 'Out of range' : getPressureDropTargetFlowValueText(result));
     status.textContent = `Source range: ${result.rangeText || '—'} · ${statusText}`;
     detailBody.appendChild(status);
