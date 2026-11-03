@@ -151,6 +151,11 @@
       padding: 0.125rem 0.5rem;
     }
 
+    @media (max-width: 639px) {
+      #target-hct-cards, #target-dilution-card { padding: 0.75rem; }
+      #target-hct-cards .onpump-result-summary__row { padding: 0.625rem 0; }
+    }
+
     /* Shared expanded lower-section pattern for methodology, FAQ, references, and related tools */
     .calculator-lower-section {
       border-radius: 1rem;
@@ -625,7 +630,7 @@
                   </div>
                 </div>
               </div>
-              <div id="target-hct-helper-section" class="sm:col-span-2 rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-900/40 p-4 space-y-3">
+              <div id="target-hct-helper-section" class="sm:col-span-2 rounded-xl border border-slate-200 dark:border-primary-700 bg-slate-50 dark:bg-primary-900/40 p-3 sm:p-4 space-y-3">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <p class="text-sm font-bold text-primary-900 dark:text-accent-400">Target Hct helper</p>
