@@ -7393,8 +7393,10 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
       if (cell) {
         const limit = getPressureDropManufacturerFlowLimit(item.entry, flow);
         const limitText = getPressureDropManufacturerLimitLabel(limit);
-        cell.textContent = valid ? Math.abs(result.value).toFixed(1) : (result.state === 'no_points' ? 'No curve' : 'Out of range');
-        cell.setAttribute('aria-label', `Explore: ${cell.textContent}${valid ? ' mmHg' : ''}${limitText ? ` · ${limitText}` : ''}`);
+        const endpointEstimate = valid && result.state === 'endpoint_adjusted';
+        const endpointNote = endpointEstimate ? ' · Estimated at verified chart endpoint (≤0.05 L/min beyond digitized points)' : '';
+        cell.textContent = valid ? `${endpointEstimate ? '≈ ' : ''}${Math.abs(result.value).toFixed(1)}` : (result.state === 'no_points' ? 'No curve' : 'Out of range');
+        cell.setAttribute('aria-label', `Explore: ${cell.textContent}${valid ? ' mmHg' : ''}${endpointNote}${limitText ? ` · ${limitText}` : ''}`);
         if (flowCells[index]) flowCells[index].textContent = flow.toFixed(2);
         if (limitCells[index]) {
           limitCells[index].textContent = limitText;
@@ -7405,7 +7407,7 @@ function attachPressureDropChartExplorer(panel, svg, series, committedFlow, onCo
         const isHighPressure = valid && shouldApplyPressureDropHighWarning(item.entry) && Math.abs(result.value) > 100;
         cell.classList.toggle('font-semibold', valid);
         cell.classList.toggle('whitespace-nowrap', valid);
-        cell.title = valid ? `Signed pressure: ${formatSignedPressureDrop(result.value)} mmHg${isHighPressure ? '; High pressure drop warning (>100 mmHg).' : ''}${limitText ? `; ${limitText}. Source: ${limit.source}` : ''}` : 'Outside the digitized source range; no extrapolation.';
+        cell.title = valid ? `${endpointEstimate ? '≈ Estimated endpoint pressure' : 'Signed pressure'}: ${formatSignedPressureDrop(result.value)} mmHg${endpointNote}${isHighPressure ? '; High pressure drop warning (>100 mmHg).' : ''}${limitText ? `; ${limitText}. Source: ${limit.source}` : ''}` : 'Outside the digitized source range; no extrapolation.';
         cell.classList.toggle('text-amber-700', Boolean(limitText) || isHighPressure);
         cell.classList.toggle('dark:text-amber-300', Boolean(limitText) || isHighPressure);
       }
