@@ -7493,7 +7493,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     const reset = document.createElement('button');
     reset.type = 'button';
     reset.textContent = 'Reset';
-    reset.className = 'inline-flex min-h-9 shrink-0 items-center justify-center rounded-lg border border-slate-300 dark:border-primary-600 px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-300 hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500';
+    reset.className = 'inline-flex min-h-11 sm:min-h-9 shrink-0 items-center justify-center rounded-lg border border-slate-300 dark:border-primary-600 px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-300 hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500';
     reset.setAttribute('aria-label', 'Reset selected cannulas');
     reset.addEventListener('click', onReset);
     header.appendChild(reset);
@@ -7584,7 +7584,7 @@ function createPressureDropTargetFlowChart(entries, flow, showRawPoints, onRawPo
     }
     const remove = document.createElement('button');
     remove.type = 'button';
-    remove.className = 'inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-lg text-slate-500 dark:text-slate-300 hover:text-rose-600 focus:ring-2 focus:ring-accent-500';
+    remove.className = 'inline-flex h-11 w-11 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-full text-lg text-slate-500 dark:text-slate-300 hover:text-rose-600 focus:ring-2 focus:ring-accent-500';
     remove.textContent = '×';
     remove.setAttribute('aria-label', `Remove ${entry.manufacturer} ${entry.model} ${identity} from chart`);
     remove.addEventListener('click', () => onRemove(key));
@@ -7658,7 +7658,7 @@ function createPressureDropTargetFlowTable(rows, selectedKeys, onSelect) {
     const selectCell = document.createElement('div');
     selectCell.className = 'col-start-1 row-start-1 row-span-2 lg:row-span-1';
     const label = document.createElement('label');
-    label.className = 'inline-flex min-h-9 min-w-9 items-start pt-1 cursor-pointer md:items-center md:pt-0';
+    label.className = 'inline-flex min-h-11 min-w-11 md:min-h-9 md:min-w-9 items-start pt-1 cursor-pointer md:items-center md:pt-0';
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.dataset.productKey = key;
