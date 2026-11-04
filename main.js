@@ -161,6 +161,7 @@ const CALCULATOR_REGISTRY = [
   { path: '/unit-converter/', category: 'time', icon: '↔', title: 'Unit Converter', description: 'Common perfusion pressure, flow, and blood-gas units.' },
   { path: '/z-score/', category: 'pediatric', icon: 'Z', title: 'Pediatric Echo Z-score', description: 'Published pediatric cardiac-dimension references.' }
 ];
+const FEATURED_CALCULATOR_ROUTES = ['/bsa/', '/gdp/', '/predicted-hct/', '/cannula-pressure-drop/'];
 
 const HOME_COPY = {
   recent: 'Recently used',
@@ -256,6 +257,16 @@ function renderCalculatorDirectory() {
   });
 }
 
+function renderFeaturedCalculators() {
+  const list = document.getElementById('featured-calculator-list');
+  if (!list || list.childElementCount) return;
+  FEATURED_CALCULATOR_ROUTES.map(getCalculatorByRoute).filter(Boolean).forEach(calculator => {
+    const item = createCalculatorListItem(calculator);
+    item.firstElementChild.classList.add('pt-tool-card');
+    list.appendChild(item);
+  });
+}
+
 function renderRecentCalculators(routes = readRecentCalculatorRoutes()) {
   const section = document.getElementById('recent-calculators');
   const list = document.getElementById('recent-calculator-list');
@@ -297,6 +308,7 @@ let initialHomeDiscoveryRendered = false;
 
 function renderInitialHomeDiscovery(allowInactiveHome = false) {
   if ((!allowInactiveHome && !isHomeCalculatorDirectoryContext()) || initialHomeDiscoveryRendered) return;
+  renderFeaturedCalculators();
   renderCalculatorDirectory();
   renderRecentCalculators();
   initialHomeDiscoveryRendered = true;
@@ -511,14 +523,17 @@ function initMobileCalculatorNav() {
   const nav = document.querySelector('[data-mobile-calculator-nav]');
   if (!nav) return;
   const pendingScroll = consumeMobileCalculatorNavScroll();
+  const currentRoute = normalizeMobileCalculatorRoute(window.location.pathname);
 
   nav.querySelectorAll('a[href]').forEach((link) => {
+    const linkRoute = normalizeMobileCalculatorRoute(new URL(link.href, window.location.origin).pathname);
+    if (linkRoute === currentRoute) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
     link.addEventListener('click', (event) => saveMobileCalculatorNavScroll(nav, link, event));
   });
 
   requestAnimationFrame(() => {
     if (nav.scrollWidth <= nav.clientWidth) return;
-    const currentRoute = normalizeMobileCalculatorRoute(window.location.pathname);
     if (pendingScroll && pendingScroll.destination === currentRoute) {
       const maxScroll = Math.max(0, nav.scrollWidth - nav.clientWidth);
       nav.scrollLeft = Math.min(pendingScroll.scrollLeft, maxScroll);
@@ -9419,6 +9434,10 @@ function getActivePath() {
   const rawPath = window.location.pathname || '/';
   const normalizedPath = window.normalizeRoute ? window.normalizeRoute(rawPath) : rawPath;
 
+  // The Home directory anchor is a section link, not a legacy hash route.
+  if ((normalizedPath === '/' || normalizedPath === '/index.html') && window.location.hash === '#all-calculators-heading') {
+    return '/';
+  }
   if ((normalizedPath === '/' || normalizedPath === '/index.html') && window.location.hash) {
     const legacy = window.normalizeRoute ? window.normalizeRoute(window.location.hash) : window.location.hash.replace('#', '/');
     history.replaceState({}, '', legacy);
@@ -9481,6 +9500,7 @@ function route() {
   else if (path.includes('terms')) { showSection('view-terms'); key = 'terms'; }
   else if (path.includes('contact')) { showSection('view-contact'); key = 'contact'; }
   else { showSection('view-home'); key = 'home'; }
+  document.body.classList.toggle('pt-home-active', key === 'home');
 
   // A session that started on an informational route populates Home on first visit.
   if (key === 'home') renderInitialHomeDiscovery(true);
@@ -9505,10 +9525,12 @@ function route() {
   if (hasHomeView) {
     document.querySelectorAll('.nav-link, .sidebar-link').forEach(l => {
       l.classList.remove('bg-primary-800', 'text-accent-400', 'bg-slate-100', 'text-primary-900', 'text-accent-600', 'border', 'border-slate-200', 'border-primary-900', 'dark:border-primary-700', 'bg-primary-700', 'dark:bg-primary-800', 'dark:text-accent-400');
+      l.removeAttribute('aria-current');
     });
     document.querySelectorAll('[id^="mob-"]').forEach(l => {
       l.classList.remove('text-accent-600', 'dark:text-accent-400');
       l.classList.add('text-slate-400', 'dark:text-slate-500');
+      l.removeAttribute('aria-current');
     });
 
     updateMetaForRoute(path || '/');
@@ -9516,15 +9538,22 @@ function route() {
     let sideEl = null;
     if (key && navMap[key]) {
       const navEl = el(navMap[key][0]);
-      if (navEl) navEl.classList.add('bg-slate-100', 'text-primary-900', 'border', 'border-slate-200', 'dark:bg-primary-800', 'dark:text-accent-400', 'dark:border-primary-700');
+      if (navEl) {
+        navEl.classList.add('bg-slate-100', 'text-primary-900', 'border', 'border-slate-200', 'dark:bg-primary-800', 'dark:text-accent-400', 'dark:border-primary-700');
+        navEl.setAttribute('aria-current', 'page');
+      }
 
       sideEl = el(navMap[key][1]);
-      if (sideEl) sideEl.classList.add('bg-slate-100', 'text-accent-600', 'dark:bg-primary-800', 'dark:text-accent-400');
+      if (sideEl) {
+        sideEl.classList.add('bg-slate-100', 'text-accent-600', 'dark:bg-primary-800', 'dark:text-accent-400');
+        sideEl.setAttribute('aria-current', 'page');
+      }
 
       const mobEl = el(navMap[key][2]);
       if (mobEl) {
         mobEl.classList.remove('text-slate-400', 'dark:text-slate-500');
         mobEl.classList.add('text-accent-600', 'dark:text-accent-400');
+        mobEl.setAttribute('aria-current', 'page');
       }
     }
   }
@@ -9554,6 +9583,7 @@ function route() {
 // -----------------------------
 function resetScrollToTop() {
   if (shouldPreserveQuickReferenceHashScroll()) return;
+  if (window.location.hash === '#all-calculators-heading' && isHomeCalculatorDirectoryContext()) return;
 
   window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   document.documentElement.scrollTop = 0;
@@ -9903,7 +9933,7 @@ window.addEventListener('DOMContentLoaded', () => {
   initBackToTopButton();
   initCalculatorDiscovery();
   const primaryTopNav = el('nav-home') ? el('nav-home').closest('nav') : null;
-  if (primaryTopNav) {
+  if (primaryTopNav && !primaryTopNav.classList.contains('pt-primary-nav')) {
     primaryTopNav.classList.add('overflow-x-auto', 'whitespace-nowrap', 'max-w-[68%]', 'pr-1');
     attachTopNavOverflowArrow(primaryTopNav, 'top-nav-main-next');
   }

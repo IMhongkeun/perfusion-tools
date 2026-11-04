@@ -90,9 +90,10 @@ const discoveryBlock = mainJs.slice(
   mainJs.indexOf('\nfunction initCalculatorDiscovery()')
 );
 function createDiscoveryHarness(isInitialHome) {
-  const calls = { directory: 0, recent: 0 };
+  const calls = { featured: 0, directory: 0, recent: 0 };
   const context = {
     isHomeCalculatorDirectoryContext: () => isInitialHome,
+    renderFeaturedCalculators: () => { calls.featured += 1; },
     renderCalculatorDirectory: () => { calls.directory += 1; },
     renderRecentCalculators: () => { calls.recent += 1; }
   };
@@ -104,14 +105,14 @@ function createDiscoveryHarness(isInitialHome) {
 const initialHomeHarness = createDiscoveryHarness(true);
 initialHomeHarness.renderHome();
 initialHomeHarness.renderHome();
-assert.deepStrictEqual(initialHomeHarness.calls, { directory: 1, recent: 1 }, 'Initial Home discovery should render once during startup.');
+assert.deepStrictEqual(initialHomeHarness.calls, { featured: 1, directory: 1, recent: 1 }, 'Initial Home discovery should render once during startup.');
 
 const informationalHarness = createDiscoveryHarness(false);
 informationalHarness.renderHome();
-assert.deepStrictEqual(informationalHarness.calls, { directory: 0, recent: 0 }, 'Informational startup must not render inactive Home discovery.');
+assert.deepStrictEqual(informationalHarness.calls, { featured: 0, directory: 0, recent: 0 }, 'Informational startup must not render inactive Home discovery.');
 informationalHarness.renderHome(true);
 informationalHarness.renderHome(true);
-assert.deepStrictEqual(informationalHarness.calls, { directory: 1, recent: 1 }, 'First SPA visit to Home should populate discovery exactly once.');
+assert.deepStrictEqual(informationalHarness.calls, { featured: 1, directory: 1, recent: 1 }, 'First SPA visit to Home should populate discovery exactly once.');
 
 assert(
   mainJs.includes("document.documentElement.classList.remove('initial-home-route');") &&

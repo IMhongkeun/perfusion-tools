@@ -34,6 +34,7 @@ class FakeElement {
     this.isConnected = true;
     this.listeners = new Map();
     this.classList = {
+      add: name => { this.className = [...new Set([...this.className.split(/\s+/).filter(Boolean), name])].join(' '); },
       toggle: (name, force) => {
         const classes = new Set(this.className.split(/\s+/).filter(Boolean));
         const enabled = force === undefined ? !classes.has(name) : force;
@@ -43,6 +44,8 @@ class FakeElement {
       contains: name => this.className.split(/\s+/).includes(name)
     };
   }
+  get firstElementChild() { return this.children[0] || null; }
+  get childElementCount() { return this.children.length; }
   setAttribute(name, value) { this.attributes.set(name, String(value)); }
   getAttribute(name) { return this.attributes.get(name) || null; }
   appendChild(child) { child.parentElement = this; this.children.push(child); return child; }
@@ -70,6 +73,7 @@ function makeContext(storage, { browserLanguage = 'en', pathname = '/', includeH
     return element;
   };
   if (includeHome) {
+    addElement('featured-calculator-list', 'ul');
     addElement('calculator-category-list', 'div');
     addElement('all-calculators-heading', 'h2');
     addElement('recent-calculators', 'section', 'hidden');
@@ -90,7 +94,7 @@ function makeContext(storage, { browserLanguage = 'en', pathname = '/', includeH
   };
   const context = { document, navigator: { language: browserLanguage }, window, console };
   vm.createContext(context);
-  vm.runInContext(`${block}\nthis.api = { CALCULATOR_REGISTRY, HOME_COPY, readRecentCalculatorRoutes, saveVisitedCalculator, clearRecentCalculatorRoutes, getCalculatorByRoute, createCalculatorRow, createCalculatorListItem, renderCalculatorDirectory, renderRecentCalculators, initCalculatorDiscovery, initCalculatorDiscoveryPageshow, handleCalculatorDiscoveryPageshow };`, context);
+  vm.runInContext(`${block}\nthis.api = { CALCULATOR_REGISTRY, FEATURED_CALCULATOR_ROUTES, HOME_COPY, readRecentCalculatorRoutes, saveVisitedCalculator, clearRecentCalculatorRoutes, getCalculatorByRoute, createCalculatorRow, createCalculatorListItem, renderCalculatorDirectory, renderFeaturedCalculators, renderRecentCalculators, initCalculatorDiscovery, initCalculatorDiscoveryPageshow, handleCalculatorDiscoveryPageshow };`, context);
   return { context, api: context.api, elements, window, windowListeners, document };
 }
 
@@ -126,10 +130,12 @@ const key = 'perfusiontools_recent_calculators';
 {
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   const { api } = makeContext(makeStorage());
-  assert(html.includes('id="recent-calculators" class="hidden"'), 'first-time Recent section starts hidden');
+  assert(/id="recent-calculators" class="hidden(?:\s|\")/.test(html), 'first-time Recent section starts hidden');
   assert(html.includes('id="calculator-category-list"'), 'full categorized directory mount exists');
+  assert(html.includes('id="featured-calculator-list"'), 'featured tools mount exists');
   assert(!/<input[^>]+type=["']search/i.test(html), 'home has no search field');
   assert.strictEqual(new Set(api.CALCULATOR_REGISTRY.map(item => item.path)).size, api.CALCULATOR_REGISTRY.length, 'registry routes are unique');
+  assert(api.FEATURED_CALCULATOR_ROUTES.every(route => api.getCalculatorByRoute(route)), 'all featured routes resolve through the full registry');
   assert(api.CALCULATOR_REGISTRY.every(item => /^\/[a-z0-9-]+\/$/.test(item.path)), 'registry routes are canonical');
   assert.strictEqual(api.HOME_COPY.recent, 'Recently used');
   assert.strictEqual(api.HOME_COPY.clear, 'Clear recent');
@@ -163,6 +169,11 @@ const key = 'perfusiontools_recent_calculators';
   assert.strictEqual(item.children[0].getAttribute('role'), null, 'native anchor role is not overridden');
 
   api.renderCalculatorDirectory();
+  api.renderFeaturedCalculators();
+  const featuredList = item.ownerDocument.getElementById('featured-calculator-list');
+  assert.deepStrictEqual(featuredList.children.map(entry => entry.firstElementChild.href), Array.from(api.FEATURED_CALCULATOR_ROUTES), 'featured cards link to the existing routes in editorial order');
+  api.renderFeaturedCalculators();
+  assert.strictEqual(featuredList.childElementCount, 4, 'rerender does not duplicate featured links');
   const fullContainer = api.createCalculatorRow(api.CALCULATOR_REGISTRY[0]).ownerDocument.getElementById('calculator-category-list');
   assert(fullContainer.children.length > 0, 'full directory remains rendered');
   fullContainer.children.forEach(section => {

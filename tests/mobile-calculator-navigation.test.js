@@ -51,6 +51,9 @@ function createHarness({ storedValue = null, storageError = null, navPresent = t
     offsetWidth: 72,
     target: attributes.target || '',
     hasAttribute(name) { return Boolean(attributes[name]); },
+    setAttribute(name, value) { attributes[name] = value; },
+    removeAttribute(name) { delete attributes[name]; },
+    getAttribute(name) { return attributes[name] || null; },
     addEventListener(type, handler) { listeners.set(href, { type, handler }); }
   });
   const links = [
@@ -113,6 +116,8 @@ function createHarness({ storedValue = null, storageError = null, navPresent = t
 {
   const { api, links, listeners, nav, stored } = createHarness();
   api.initMobileCalculatorNav();
+  assert.strictEqual(links[1].getAttribute('aria-current'), 'page', 'The active calculator is exposed to assistive technology.');
+  assert.strictEqual(links[2].getAttribute('aria-current'), null, 'Inactive calculators are not marked current.');
   nav.scrollLeft = 275;
   const clickEvent = { button: 0, defaultPrevented: false, ctrlKey: false, metaKey: false, shiftKey: false, altKey: false };
   listeners.get(links[1].href).handler(clickEvent);
