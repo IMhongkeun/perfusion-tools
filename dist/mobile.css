@@ -1,4 +1,62 @@
 /* Shared presentation rules for the existing static calculators. */
+/* PerfusionTools visual foundation. Existing calculator layouts keep their markup. */
+:root {
+  --pt-page: #f8f7f2;
+  --pt-surface: #fff;
+  --pt-ink: #243f3a;
+  --pt-muted: #52675f;
+  --pt-primary: #24443f;
+  --pt-primary-hover: #315c54;
+  --pt-accent: #35695c;
+  --pt-soft: #e8efe7;
+  --pt-border: #d7e2d8;
+  --pt-focus: #286d5c;
+  --pt-disabled: #e5ebe5;
+  --pt-status: #35695c;
+  --pt-shadow: 0 3px 16px rgb(25 55 44 / 5%);
+  --pt-radius: .875rem;
+  --pt-space: 1rem;
+  --pt-content-width: 72rem;
+}
+.dark {
+  --pt-page: #101d1b;
+  --pt-surface: #1b2c29;
+  --pt-ink: #f1f6f1;
+  --pt-muted: #c1d0c8;
+  --pt-primary: #d9e9df;
+  --pt-primary-hover: #b8d6c5;
+  --pt-accent: #a8d4bc;
+  --pt-soft: #274038;
+  --pt-border: #426056;
+  --pt-focus: #a8d4bc;
+  --pt-disabled: #34453f;
+  --pt-status: #a8d4bc;
+  --pt-shadow: 0 3px 16px rgb(0 0 0 / 12%);
+}
+.pt-surface { background: var(--pt-surface); color: var(--pt-ink); border: 1px solid var(--pt-border); border-radius: var(--pt-radius); box-shadow: var(--pt-shadow); }
+.pt-section-title { color: var(--pt-ink); font-size: clamp(1.4rem, 2.5vw, 2rem); line-height: 1.2; font-weight: 700; letter-spacing: -.025em; }
+.pt-description { color: var(--pt-muted); line-height: 1.6; }
+.pt-eyebrow { color: var(--pt-accent); font-size: .72rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+.pt-button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: .65rem 1.1rem; border: 1px solid transparent; border-radius: .65rem; font-size: .875rem; font-weight: 650; text-align: center; transition: background-color .15s ease, border-color .15s ease, color .15s ease; }
+.pt-button-primary { background: #24443f; color: #fff; }
+.pt-button-primary:hover { background: #315c54; }
+.dark .pt-button-primary { background: #a8d4bc; color: #10231d; }
+.dark .pt-button-primary:hover { background: #c5e4d0; }
+.pt-button-secondary { background: var(--pt-surface); color: var(--pt-ink); border-color: var(--pt-border); }
+.pt-button-secondary:hover, .pt-nav-link:hover, .pt-tool-card:hover { background: var(--pt-soft); }
+.pt-tool-card { display: flex; align-items: center; gap: .85rem; min-height: 72px; padding: .85rem; background: var(--pt-surface); color: var(--pt-ink); border: 1px solid var(--pt-border); border-radius: var(--pt-radius); transition: background-color .15s ease, border-color .15s ease; }
+.pt-tool-card:hover { border-color: var(--pt-accent); }
+.pt-category { color: var(--pt-muted); font-size: .72rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+.pt-nav-link { display: inline-flex; align-items: center; min-height: 44px; padding: .55rem .8rem; border-radius: .6rem; color: var(--pt-muted); font-size: .875rem; font-weight: 600; }
+.pt-nav-link[aria-current="page"] { color: var(--pt-ink); background: var(--pt-soft); }
+.pt-search { min-height: 44px; width: 100%; padding: .65rem .85rem; background: var(--pt-surface); color: var(--pt-ink); border: 1px solid var(--pt-border); border-radius: .65rem; }
+.pt-search::placeholder { color: var(--pt-muted); }
+.pt-empty, .pt-info-panel { padding: var(--pt-space); background: var(--pt-soft); color: var(--pt-ink); border: 1px solid var(--pt-border); border-radius: var(--pt-radius); }
+.pt-button:disabled { background: var(--pt-disabled); color: var(--pt-muted); cursor: not-allowed; }
+:where(.pt-button, .pt-tool-card, .pt-nav-link, .pt-search):focus-visible { outline: 3px solid var(--pt-focus); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  :where(.pt-button, .pt-tool-card) { transition: none; }
+}
 .result-unit { display: inline-block; white-space: nowrap; }
 .target-action { display: block; }
 .target-action + .target-action { margin-top: .25rem; }
