@@ -128,6 +128,8 @@ html.initial-home-route #route-intro, .pt-home-active #route-intro { display: no
   .pt-hero-art { display: none; }
   .pt-section-heading { display: block; }
   .pt-section-heading > .pt-description { max-width: none; margin-top: .3rem; text-align: left; }
+  .pt-reference-panel { display: block; }
+  .pt-reference-panel .pt-button { margin-top: 1rem; }
 }
 @media (max-width: 767px) {
   .pt-brand-copy small { font-size: .5rem; }
@@ -135,8 +137,6 @@ html.initial-home-route #route-intro, .pt-home-active #route-intro { display: no
   .pt-hero { padding: 1.15rem; }
   .pt-hero-title { font-size: clamp(1.8rem, 8vw, 2.4rem); }
   .pt-featured-grid, .pt-home .calculator-category-grid { grid-template-columns: 1fr; }
-  .pt-reference-panel { display: block; }
-  .pt-reference-panel .pt-button { margin-top: 1rem; }
 }
 .result-unit { display: inline-block; white-space: nowrap; }
 .target-action { display: block; }

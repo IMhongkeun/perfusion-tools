@@ -149,17 +149,17 @@ let calculatorDiscoveryPageshowInitialized = false;
 
 // Shared source of truth for the home directory and recent-route validation.
 const CALCULATOR_REGISTRY = [
-  { path: '/gdp/', category: 'flow', icon: 'O₂', title: 'DO₂i / GDP Calculator', description: 'Indexed oxygen delivery and required pump-flow targets.' },
+  { path: '/gdp/', category: 'flow', icon: 'O₂', title: 'DO₂i / GDP Calculator', description: 'Indexed oxygen delivery and target pump flow.' },
   { path: '/bsa/', category: 'flow', icon: 'BSA', title: 'BSA Calculator', description: 'Body surface area for indexed perfusion planning.' },
-  { path: '/lbm/', category: 'flow', icon: 'LBM', title: 'Lean Body Mass Calculator', description: 'Lean body mass and dosing-weight references.' },
-  { path: '/predicted-hct/', category: 'blood', icon: 'Hct', title: 'Predicted Hematocrit', description: 'Post-prime dilutional Hct for CPB planning.' },
+  { path: '/lbm/', category: 'flow', icon: 'LBM', title: 'Lean Body Mass Calculator', description: 'Lean body mass and dosing weight references.' },
+  { path: '/predicted-hct/', category: 'blood', icon: 'Hct', title: 'Predicted Hematocrit', description: 'Estimated hematocrit after CPB priming.' },
   { path: '/priming-volume/', category: 'blood', icon: 'mL', title: 'Priming Volume Calculator', description: 'Tubing prime volume from inner diameter and length.' },
   { path: '/heparin/', category: 'anticoagulation', icon: 'ACT', title: 'Heparin Calculator', description: 'Adult CPB heparin and protamine planning support.' },
-  { path: '/cannula-pressure-drop/', category: 'circuit', icon: 'ΔP', title: 'Cannula Pressure Drop', description: 'Browse 224 manufacturer pressure-flow datasets for cannula selection.' },
+  { path: '/cannula-pressure-drop/', category: 'circuit', icon: 'ΔP', title: 'Cannula Pressure Drop', description: 'Explore 224 manufacturer cannula pressure and flow datasets.' },
   { path: '/quick-reference/', category: 'circuit', icon: 'CPB', title: 'Quick Reference', description: 'Concise CPB and ECMO clinical reference tables.' },
-  { path: '/timecalc/', category: 'time', icon: 'min', title: 'Time Calculator', description: 'Elapsed bypass, cross-clamp, and case intervals.' },
-  { path: '/unit-converter/', category: 'time', icon: '↔', title: 'Unit Converter', description: 'Common perfusion pressure, flow, and blood-gas units.' },
-  { path: '/z-score/', category: 'pediatric', icon: 'Z', title: 'Pediatric Echo Z-score', description: 'Published pediatric cardiac-dimension references.' }
+  { path: '/timecalc/', category: 'time', icon: 'min', title: 'Time Calculator', description: 'Track bypass, aortic cross clamp, and case intervals.' },
+  { path: '/unit-converter/', category: 'time', icon: '↔', title: 'Unit Converter', description: 'Convert perfusion pressure, flow, and blood gas units.' },
+  { path: '/z-score/', category: 'pediatric', icon: 'Z', title: 'Pediatric Echo Z-score', description: 'Published pediatric cardiac dimension references.' }
 ];
 const FEATURED_CALCULATOR_ROUTES = ['/bsa/', '/gdp/', '/predicted-hct/', '/cannula-pressure-drop/'];
 

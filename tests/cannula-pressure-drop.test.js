@@ -963,7 +963,7 @@ for (const [size, outerDiameterMm, overallLengthCm, tipLengthCm, singlesCode, ki
   assert.deepStrictEqual(shapeFindings, [], `${size} should have no curve-shape QC findings.`);
 }
 const livaNovaDatasetCount = pressureDropData.filter(entry => entry.manufacturer === 'LivaNova').length;
-assert(mainJs.includes(`Browse ${pressureDropData.length} manufacturer pressure-flow datasets for cannula selection.`));
+assert(mainJs.includes(`Explore ${pressureDropData.length} manufacturer cannula pressure and flow datasets.`));
 
 const retrogradeF14Model = 'Retrograde Cardioplegia Cannulae — Self-Inflating PVC Balloon';
 const retrogradeF14Entries = pressureDropData.filter(entry => entry.manufacturer === 'LivaNova' &&
