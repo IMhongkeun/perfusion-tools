@@ -14,6 +14,7 @@ const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 const distIndexHtml = fs.readFileSync(path.join(repoRoot, 'dist', 'index.html'), 'utf8');
 const bsaHtml = fs.readFileSync(path.join(repoRoot, 'bsa', 'index.html'), 'utf8');
 const distBsaHtml = fs.readFileSync(path.join(repoRoot, 'dist', 'bsa', 'index.html'), 'utf8');
+const researchHtml = fs.readFileSync(path.join(repoRoot, 'research', 'index.html'), 'utf8');
 
 const expectedIndexablePaths = [
   '/',
@@ -27,6 +28,7 @@ const expectedIndexablePaths = [
   '/timecalc/',
   '/unit-converter/',
   '/quick-reference/',
+  '/research/',
   '/cannula-pressure-drop/'
 ];
 
@@ -88,6 +90,11 @@ assertSitemapUrls(rootSitemap, 'Root');
 assertSitemapUrls(distSitemap, 'Dist');
 assert.strictEqual(rootSitemap, distSitemap, 'Root and dist sitemap.xml should stay synchronized.');
 assert.strictEqual(indexHtml, distIndexHtml, 'Root and dist index.html should stay synchronized.');
+assert.strictEqual(researchHtml, fs.readFileSync(path.join(repoRoot, 'dist', 'research', 'index.html'), 'utf8'));
+assert(indexHtml.includes('href="/research/"'), 'Home should link to weekly research.');
+assert(researchHtml.includes('October 26 – November 1, 2026'), 'Research issue should show its publication window.');
+assert.strictEqual((researchHtml.match(/pubmed\.ncbi\.nlm\.nih\.gov\/\d+\//g) || []).length, 5,
+  'Each selected study should link to its PubMed record.');
 
 const bsaUrl = 'https://perfusiontools.com/bsa/';
 const rootBsaLastmod = getLastmodForLoc(rootSitemap, bsaUrl);

@@ -38,6 +38,7 @@ for (const file of pages) {
   assert(html.includes('pt-header-inner'), file + ': expected shared header alignment');
   assert(html.includes('pt-app-shell'), file + ': expected shared full-width app shell');
   assert(html.includes('pt-primary-nav hidden md:flex'), file + ': desktop nav should be pre-rendered');
+  assert(html.includes('href="/research/"'), file + ': weekly research should be reachable from desktop navigation');
 }
 assert(js.includes('PerfusionToolsRecentCalculators'), 'Use existing recent history implementation');
 assert(!js.includes('fetch('), 'Favorite actions must not make network requests');
@@ -226,6 +227,8 @@ favoriteOption.handlers.click[0]();
 assert(accordion.hidden, 'Selecting an expanded category a second time closes it');
 assert(workspaceNav.descendants().some(item => item.tagName === 'A' && item.href === '/info/' &&
   item.className.includes('pt-sidebar-footer-link')), 'About uses the same navigation styling');
+assert(workspaceNav.descendants().some(item => item.getAttribute('href') === '/research/' &&
+  item.className.includes('pt-sidebar-footer-link')), 'Weekly Research is available in the sidebar');
 const footerHome = workspaceNav.descendants().find(item => item.tagName === 'A' && item.href === '/');
 const footerAbout = workspaceNav.descendants().find(item => item.tagName === 'A' && item.href === '/info/');
 uiWindow.location.pathname = '/';

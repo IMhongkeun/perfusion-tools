@@ -231,8 +231,11 @@
       links.appendChild(link);
     };
     appendFooterLink(homeLink, 'Home', '⌂');
+    const researchLink = document.createElement('a');
+    researchLink.setAttribute('href', '/research/');
+    appendFooterLink(researchLink, 'Weekly Research', '▤');
     appendFooterLink(infoLink, 'About', 'ⓘ');
-    sidebarFooterLinks = [homeLink, infoLink].filter(Boolean);
+    sidebarFooterLinks = [homeLink, researchLink, infoLink].filter(Boolean);
     nav.appendChild(links);
     aside.replaceChildren(nav);
     renderSidebar();
