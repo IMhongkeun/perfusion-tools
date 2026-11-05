@@ -5,14 +5,14 @@
   --pt-surface: #fff;
   --pt-ink: #0f172a;
   --pt-muted: #52637a;
-  --pt-primary: #127f88;
-  --pt-primary-hover: #0e6870;
-  --pt-accent: #168c96;
-  --pt-soft: #eaf7f6;
-  --pt-border: #dbe8e8;
-  --pt-focus: #168c96;
+  --pt-primary: #216e9d;
+  --pt-primary-hover: #185c88;
+  --pt-accent: #277fad;
+  --pt-soft: #edf5fc;
+  --pt-border: #dbe7f1;
+  --pt-focus: #278ab8;
   --pt-disabled: #e2e8f0;
-  --pt-status: #168c96;
+  --pt-status: #277fad;
   --pt-shadow: 0 4px 14px rgb(15 23 42 / 5%);
   --pt-radius: .875rem;
   --pt-space: 1rem;
@@ -23,14 +23,14 @@
   --pt-surface: #111e33;
   --pt-ink: #f1f5f9;
   --pt-muted: #b8c7d9;
-  --pt-primary: #76d9d7;
-  --pt-primary-hover: #a4e5e2;
-  --pt-accent: #68d8d5;
-  --pt-soft: #17343a;
-  --pt-border: #34525a;
-  --pt-focus: #68d8d5;
+  --pt-primary: #8bd7ef;
+  --pt-primary-hover: #b4e7f7;
+  --pt-accent: #7dd4f1;
+  --pt-soft: #1a314a;
+  --pt-border: #38516a;
+  --pt-focus: #7dd4f1;
   --pt-disabled: #334155;
-  --pt-status: #68d8d5;
+  --pt-status: #7dd4f1;
   --pt-shadow: 0 4px 14px rgb(0 0 0 / 16%);
 }
 .pt-surface { background: var(--pt-surface); color: var(--pt-ink); border: 1px solid var(--pt-border); border-radius: var(--pt-radius); box-shadow: var(--pt-shadow); }
@@ -38,10 +38,10 @@
 .pt-description { color: var(--pt-muted); line-height: 1.6; }
 .pt-eyebrow { color: var(--pt-accent); font-size: .72rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
 .pt-button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: .65rem 1.1rem; border: 1px solid transparent; border-radius: .65rem; font-size: .875rem; font-weight: 650; text-align: center; transition: background-color .15s ease, border-color .15s ease, color .15s ease; }
-.pt-button-primary { background: #127f88; color: #fff; }
-.pt-button-primary:hover { background: #0e6870; }
-.dark .pt-button-primary { background: #76d9d7; color: #0b1220; }
-.dark .pt-button-primary:hover { background: #a4e5e2; }
+.pt-button-primary { background: #216e9d; color: #fff; }
+.pt-button-primary:hover { background: #185c88; }
+.dark .pt-button-primary { background: #8bd7ef; color: #0b1220; }
+.dark .pt-button-primary:hover { background: #b4e7f7; }
 .pt-button-secondary { background: var(--pt-surface); color: var(--pt-ink); border-color: var(--pt-border); }
 .pt-button-secondary:hover, .pt-nav-link:hover, .pt-tool-card:hover { background: var(--pt-soft); }
 .pt-tool-card { display: flex; align-items: center; gap: .85rem; min-height: 72px; padding: .85rem; background: var(--pt-surface); color: var(--pt-ink); border: 1px solid var(--pt-border); border-radius: var(--pt-radius); transition: background-color .15s ease, border-color .15s ease; }
@@ -84,7 +84,7 @@ html.initial-home-route #route-intro, .pt-home-active #route-intro { display: no
 .pt-art-ring { position: absolute; border: 1px solid #93b9eb; border-radius: 50%; }
 .pt-art-ring-outer { width: 150px; height: 150px; top: 2px; right: 5%; }
 .pt-art-ring-inner { width: 102px; height: 102px; top: 26px; right: calc(5% + 24px); background: rgb(255 255 255 / 32%); }
-.pt-art-line { position: absolute; top: 76px; right: 0; width: 95%; height: 2px; transform: rotate(-21deg); background: #168c96; opacity: .45; }
+.pt-art-line { position: absolute; top: 76px; right: 0; width: 95%; height: 2px; transform: rotate(-21deg); background: #277fad; opacity: .45; }
 .pt-art-dot { position: absolute; width: 10px; height: 10px; border-radius: 50%; background: #06b6d4; }
 .pt-art-dot-one { top: 21px; right: calc(5% + 72px); }
 .pt-art-dot-two { top: 120px; right: 22%; }
@@ -300,7 +300,7 @@ html:not(.dark) body { background-color: var(--pt-page); }
   min-height: 42px; border-radius: .5rem; padding: .4rem; font-size: .79rem;
   color: var(--pt-muted); background: var(--pt-soft);
 }
-.pt-mobile-workspace-tabs button[aria-pressed="true"] { color: #fff; background: #127f88; font-weight: 700; }
+.pt-mobile-workspace-tabs button[aria-pressed="true"] { color: #fff; background: #216e9d; font-weight: 700; }
 .pt-mobile-workspace-results { display: grid; gap: .2rem; }
 .pt-mobile-workspace-item { display: flex; align-items: center; border-bottom: 1px solid var(--pt-border); }
 .pt-mobile-workspace-item:last-child { border-bottom: 0; }
@@ -330,11 +330,11 @@ html:not(.dark) body { background-color: var(--pt-page); }
   color: var(--pt-primary-hover);
   font-weight: 700;
 }
-.pt-sidebar-option:hover { background: #f0f9f8; color: #127f88; }
+.pt-sidebar-option:hover { background: #f0f6fc; color: #216e9d; }
 .dark .pt-sidebar-option:hover { background: var(--pt-soft); color: var(--pt-accent); }
 .pt-sidebar-results-title { margin-bottom: .25rem; padding: 0 .45rem; }
 .pt-sidebar-tool-link { min-height: 40px; padding-left: .45rem; }
-.pt-sidebar-tool-entry:hover { background: #f1f9f8; }
+.pt-sidebar-tool-entry:hover { background: #f1f7fc; }
 .dark .pt-sidebar-tool-entry:hover { background: var(--pt-soft); }
 .pt-sidebar-footer { margin-top: .65rem; padding-top: .55rem; }
 .pt-sidebar-footer-link {
@@ -358,4 +358,68 @@ html:not(.dark) :is(
 ):not(:disabled):not([readonly]):not([aria-readonly="true"]):not(.bg-transparent) {
   background-color: #fff;
   color: #0f172a;
+}
+
+
+/* Consistent site shell and static header across the calculator directory.
+   The shell must fill the shared outer width rather than shrink-wrap narrow
+   calculators; content has the same max width and horizontal starting point. */
+.pt-app-shell { width: 100%; min-width: 0; }
+.pt-app-shell > main {
+  width: 100%;
+  max-width: 56rem;
+  min-width: 0;
+  margin-inline: auto;
+}
+header .pt-header-inner { position: relative; width: 100%; }
+@media (min-width: 768px) {
+  header .pt-header-inner > .pt-primary-nav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .25rem;
+    white-space: nowrap;
+  }
+}
+.pt-primary-nav .pt-nav-link {
+  min-height: 44px;
+  padding: .55rem .85rem;
+  font-size: 1rem;
+  font-weight: 650;
+  color: var(--pt-muted);
+  border-radius: .6rem;
+}
+.pt-primary-nav .pt-nav-link:hover,
+.pt-primary-nav .pt-nav-link:focus-visible { color: var(--pt-primary); background: var(--pt-soft); }
+.pt-primary-nav .pt-nav-link[aria-current="page"] { color: var(--pt-primary); background: var(--pt-soft); }
+@media (min-width: 768px) {
+  .pt-brand-copy strong { font-size: 1.075rem; }
+  .pt-brand-copy small { font-size: .61rem; }
+}
+.pt-sidebar-label { font-size: .72rem; }
+.pt-sidebar-option, .pt-sidebar-footer-link { font-size: .92rem; line-height: 1.4; }
+.pt-sidebar-tool-link { font-size: .87rem; line-height: 1.4; }
+.pt-sidebar-results-title, .pt-sidebar-empty { font-size: .8rem; }
+.pt-sidebar-option { min-height: 44px; }
+.pt-sidebar-footer-link { min-height: 44px; }
+.pt-home .pt-description { font-size: .95rem; }
+.pt-home .calculator-directory-row .text-sm { font-size: .94rem; }
+.pt-home .calculator-directory-row .text-xs { font-size: .82rem; }
+.pt-search-label { font-size: .94rem; }
+.pt-search-field input { font-size: 1rem; }
+.pt-app-shell > main :is(p, label).text-sm { font-size: .95rem; }
+.pt-app-shell > main :is(p, label).text-xs { font-size: .81rem; }
+
+/* Animated expandable category content, without library dependencies.
+   The actual animation is triggered when the panel changes parent in JS. */
+.pt-sidebar-inline-results {
+  overflow: clip;
+  transform-origin: top;
+  will-change: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pt-sidebar-inline-results { transition: none; animation: none; }
 }

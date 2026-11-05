@@ -25,6 +25,7 @@
   let inMemoryFavorites = [];
   let storageWriteFailed = false;
   let selectedView = 'none';
+  let lastRenderedView = null;
   let sidebarResults = null;
   let sidebarTitle = null;
   let sidebarPanel = null;
@@ -255,6 +256,8 @@
       if (expanded) activeButton = button;
     });
     // The same list follows its category, Favorites, or Recently used trigger.
+    const viewChanged = lastRenderedView !== null && lastRenderedView !== selectedView;
+    lastRenderedView = selectedView;
     sidebarPanel.hidden = !activeButton;
     if (activeButton) activeButton.after(sidebarPanel);
     if (!activeButton) {
@@ -275,6 +278,17 @@
         ? 'No favorites yet. Select a star on a calculator.'
         : 'No recent calculators in this browser.';
       sidebarResults.appendChild(empty);
+    }
+    // Animate only genuine category transitions; ordinary favorites/route
+    // refreshes must not repeatedly animate or add extra layout work.
+    const reducedMotion = typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (viewChanged && !reducedMotion && typeof sidebarPanel.animate === 'function') {
+      sidebarPanel.animate(
+        [{ opacity: 0, transform: 'translateY(-8px)' },
+         { opacity: 1, transform: 'translateY(0)' }],
+        { duration: 180, easing: 'cubic-bezier(.2,.7,.2,1)' }
+      );
     }
     updateStarStates();
   }
