@@ -1,7 +1,7 @@
 /* Shared presentation rules for the existing static calculators. */
 /* PerfusionTools visual foundation. Existing calculator layouts keep their markup. */
 :root {
-  --pt-page: #f5f8ff;
+  --pt-page: #ffffff;
   --pt-surface: #fff;
   --pt-ink: #0f172a;
   --pt-muted: #52637a;
