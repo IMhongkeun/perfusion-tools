@@ -24,7 +24,8 @@ assert(css.includes(':not(:disabled):not([readonly]):not([aria-readonly="true"])
   'White input rule must not misrepresent disabled or readonly calculator controls.');
 assert(js.includes('activeButton.after(sidebarPanel)'), 'Expanded tools should move immediately below the selected category.');
 assert(js.includes("controls.className = 'pt-header-controls'"),
-  'Favorite, My Tools and theme controls must use one right-aligned group.');
+  'My Tools and theme controls must use one right-aligned group.');
+assert(css.includes('.pt-calculator-title-row'), 'Calculator title and favorite control need a shared row.');
 assert(js.includes("selectedView === key ? 'none' : key"), 'Clicking an expanded category should collapse it.');
 for (const file of pages) {
   const html = fs.readFileSync(path.join(root, file), 'utf8');
@@ -153,8 +154,11 @@ for (const route of ['/', '/bsa/', '/gdp/', '/info/']) {
 const workspaceHeader = new AccordionElement();
 const themeButton = new AccordionElement('button');
 workspaceHeader.append(themeButton);
+const pageTitleContainer = new AccordionElement();
+const pageHeading = new AccordionElement('h1');
+pageTitleContainer.append(pageHeading);
 const workspaceBody = new AccordionElement('body');
-workspaceBody.append(workspaceAside, workspaceHeader);
+workspaceBody.append(workspaceAside, workspaceHeader, pageTitleContainer);
 const uiLocalStorage = new Map();
 const uiSessionStorage = new Map();
 const uiWindow = {
@@ -183,6 +187,7 @@ const uiDocument = {
   getElementById(id) {
     if (id === 'desktop-sidebar') return workspaceAside;
     if (id === 'theme-toggle') return themeButton;
+    if (id === 'page-heading') return pageHeading;
     return null;
   },
   querySelectorAll(selector) {
@@ -198,26 +203,38 @@ const headerControls = workspaceHeader.descendants().find(item => item.className
 assert(headerControls, 'Header action group must be initialized on a calculator page.');
 assert.equal(themeButton.parentElement, headerControls,
   'Theme button should be inside the same group as calculator favorites.');
-assert(headerControls.descendants().some(item => item.className.includes('pt-header-favorite')),
-  'Favorite star should be grouped with the theme control.');
+assert(!headerControls.descendants().some(item => item.className.includes('pt-page-favorite')),
+  'Favorite star should no longer appear in the site header.');
+const titleRow = pageTitleContainer.children[0];
+const pageStar = titleRow.children[1];
+assert.equal(titleRow.className, 'pt-calculator-title-row');
+assert.equal(titleRow.children[0], pageHeading);
+assert(pageStar.className.includes('pt-page-favorite'),
+  'Favorite star should appear beside the calculator title.');
+assert.equal(pageStar.getAttribute('data-pt-favorite-path'), '/bsa/');
 const workspaceNav = workspaceAside.children[0];
 const buttons = workspaceNav.descendants().filter(item => item.getAttribute('data-pt-sidebar-view') !== null);
 const flowOption = buttons.find(item => item.getAttribute('data-pt-sidebar-view') === 'flow');
 const favoriteOption = buttons.find(item => item.getAttribute('data-pt-sidebar-view') === 'favorites');
 const accordion = workspaceNav.descendants().find(item => item.id === 'pt-sidebar-inline-panel');
+const accordionTitle = accordion.children[0];
 let animationCount = 0;
 accordion.animate = () => { animationCount += 1; return { cancel() {} }; };
 uiWindow.matchMedia = () => ({ matches: false });
 assert(accordion && accordion.hidden, 'Accordion should initially be collapsed');
 flowOption.handlers.click[0]();
+assert.equal(accordionTitle.textContent, 'Flow & Oxygenation', 'Category title should omit the tool count.');
 assert.equal(animationCount, 1, 'Opening a category animates once.');
 assert.equal(flowOption.getAttribute('aria-expanded'), 'true');
 assert.equal(workspaceNav.children.indexOf(accordion), workspaceNav.children.indexOf(flowOption) + 1,
   'Expanded flow calculators appear immediately below their category');
 assert.equal(accordion.descendants().filter(item => item.tagName === 'A' && item.href === '/bsa/').length, 1);
 uiWindow.PerfusionToolsFavorites.toggleFavorite('/bsa/');
+assert.equal(pageStar.getAttribute('aria-pressed'), 'true',
+  'Calculator title star should reflect the saved favorite.');
 assert.equal(animationCount, 1, 'Updating favorites does not replay the opening animation.');
 favoriteOption.handlers.click[0]();
+assert.equal(accordionTitle.textContent, 'Favorites', 'Favorites title should omit the tool count.');
 assert.equal(animationCount, 2, 'Switching categories animates the new list.');
 assert.equal(workspaceNav.children.indexOf(accordion), workspaceNav.children.indexOf(favoriteOption) + 1,
   'Favorites appear immediately beneath the Favorites control');
@@ -238,6 +255,7 @@ uiWindow.matchMedia = () => ({ matches: true });
 const recentOption = buttons.find(item => item.getAttribute('data-pt-sidebar-view') === 'recent');
 const lastAnimationCount = animationCount;
 recentOption.handlers.click[0]();
+assert.equal(accordionTitle.textContent, 'Recently used', 'Recent title should omit the tool count.');
 assert.equal(animationCount, lastAnimationCount, 'Reduced-motion preference disables category animation.');
 
 
