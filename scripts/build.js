@@ -14,7 +14,7 @@ fs.rmSync(output, { recursive: true, force: true });
 const pages = ['bsa', 'gdp', 'heparin', 'predicted-hct', 'lbm', 'timecalc',
   'z-score', 'quick-reference', 'cannula-pressure-drop', 'priming-volume', 'unit-converter', 'admin/feedback'];
 for (const directory of ['', 'data', ...pages]) fs.mkdirSync(path.join(output, directory), { recursive: true });
-for (const file of ['index.html', 'main.js', 'analytics.js', 'mobile.css', '_redirects',
+for (const file of ['index.html', 'main.js', 'tool-workspace.js', 'analytics.js', 'mobile.css', '_redirects',
   'favicon.svg', 'ads.txt', 'data/cannula-pressure-drop.json', ...pages.map(page => `${page}/index.html`)]) {
   fs.copyFileSync(path.join(root, file), path.join(output, file));
 }
