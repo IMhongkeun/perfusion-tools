@@ -72,7 +72,7 @@ html.initial-home-route #route-intro, .pt-home-active #route-intro { display: no
 .dark .pt-brand-accent { color: #22d3ee; }
 .pt-brand-copy small { margin-top: .22rem; color: var(--pt-muted); font-size: .55rem; letter-spacing: .045em; white-space: nowrap; }
 .pt-primary-nav { align-items: center; gap: .15rem; }
-.pt-primary-nav .nav-link.bg-slate-100, .pt-primary-nav .nav-link.dark\\:bg-primary-800 { background: var(--pt-soft); color: var(--pt-ink); border-color: transparent; }
+.pt-primary-nav .nav-link.bg-slate-100, .pt-primary-nav .nav-link.dark\:bg-primary-800 { background: var(--pt-soft); color: var(--pt-ink); border-color: transparent; }
 .pt-home-active header, .pt-home-active footer, .dark .pt-home-active header, .dark .pt-home-active footer { background: var(--pt-surface); border-color: var(--pt-border); }
 .pt-home-active #desktop-sidebar { background: var(--pt-page); border-color: var(--pt-border); }
 .pt-hero { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(130px, .4fr); align-items: center; gap: clamp(.5rem, 2vw, 1.5rem); min-height: 200px; padding: clamp(1.2rem, 3vw, 2rem); background: var(--pt-soft); border: 1px solid var(--pt-border); border-radius: 1rem; overflow: hidden; }
@@ -97,8 +97,8 @@ html.initial-home-route #route-intro, .pt-home-active #route-intro { display: no
 .pt-home .calculator-directory-row { border-color: var(--pt-border); background: var(--pt-surface); color: var(--pt-ink); box-shadow: var(--pt-shadow); }
 .pt-home .calculator-directory-row:hover { border-color: var(--pt-accent); background: var(--pt-soft); }
 .pt-home .calculator-directory-row:focus-visible { outline-color: var(--pt-focus); }
-.pt-home .calculator-directory-row .text-primary-900, .pt-home .calculator-directory-row .dark\\:text-white { color: var(--pt-ink); }
-.pt-home .calculator-directory-row .text-slate-600, .pt-home .calculator-directory-row .dark\\:text-slate-300 { color: var(--pt-muted); }
+.pt-home .calculator-directory-row .text-primary-900, .pt-home .calculator-directory-row .dark\:text-white { color: var(--pt-ink); }
+.pt-home .calculator-directory-row .text-slate-600, .pt-home .calculator-directory-row .dark\:text-slate-300 { color: var(--pt-muted); }
 .pt-home .calculator-directory-icon, .dark .pt-home .calculator-directory-icon { background: var(--pt-soft); color: var(--pt-accent); }
 .pt-home .calculator-directory-chevron { color: var(--pt-accent); font-size: 1.4rem; }
 .pt-home .calculator-category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
