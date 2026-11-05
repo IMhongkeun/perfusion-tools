@@ -268,7 +268,7 @@
     const items = selectedTools();
     const choice = categories.find(category => category.key === selectedView);
     const label = choice ? choice.label : (selectedView === 'favorites' ? 'Favorites' : 'Recently used');
-    sidebarTitle.textContent = label + ' · ' + items.length;
+    sidebarTitle.textContent = label;
     const rows = items.map(tool => toolEntry(tool, originalSidebarLinks.get(tool.path)));
     sidebarResults.replaceChildren(...rows);
     if (!rows.length) {

@@ -205,11 +205,13 @@ const buttons = workspaceNav.descendants().filter(item => item.getAttribute('dat
 const flowOption = buttons.find(item => item.getAttribute('data-pt-sidebar-view') === 'flow');
 const favoriteOption = buttons.find(item => item.getAttribute('data-pt-sidebar-view') === 'favorites');
 const accordion = workspaceNav.descendants().find(item => item.id === 'pt-sidebar-inline-panel');
+const accordionTitle = accordion.children[0];
 let animationCount = 0;
 accordion.animate = () => { animationCount += 1; return { cancel() {} }; };
 uiWindow.matchMedia = () => ({ matches: false });
 assert(accordion && accordion.hidden, 'Accordion should initially be collapsed');
 flowOption.handlers.click[0]();
+assert.equal(accordionTitle.textContent, 'Flow & Oxygenation', 'Category title should omit the tool count.');
 assert.equal(animationCount, 1, 'Opening a category animates once.');
 assert.equal(flowOption.getAttribute('aria-expanded'), 'true');
 assert.equal(workspaceNav.children.indexOf(accordion), workspaceNav.children.indexOf(flowOption) + 1,
@@ -218,6 +220,7 @@ assert.equal(accordion.descendants().filter(item => item.tagName === 'A' && item
 uiWindow.PerfusionToolsFavorites.toggleFavorite('/bsa/');
 assert.equal(animationCount, 1, 'Updating favorites does not replay the opening animation.');
 favoriteOption.handlers.click[0]();
+assert.equal(accordionTitle.textContent, 'Favorites', 'Favorites title should omit the tool count.');
 assert.equal(animationCount, 2, 'Switching categories animates the new list.');
 assert.equal(workspaceNav.children.indexOf(accordion), workspaceNav.children.indexOf(favoriteOption) + 1,
   'Favorites appear immediately beneath the Favorites control');
@@ -238,6 +241,7 @@ uiWindow.matchMedia = () => ({ matches: true });
 const recentOption = buttons.find(item => item.getAttribute('data-pt-sidebar-view') === 'recent');
 const lastAnimationCount = animationCount;
 recentOption.handlers.click[0]();
+assert.equal(accordionTitle.textContent, 'Recently used', 'Recent title should omit the tool count.');
 assert.equal(animationCount, lastAnimationCount, 'Reduced-motion preference disables category animation.');
 
 
