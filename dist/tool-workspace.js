@@ -369,7 +369,10 @@
     if (!headerRow || !registry.length) return;
     const star = starButton(registry[0].path, 'pt-header-favorite');
     star.hidden = true;
-    headerRow.insertBefore(star, themeButton);
+    const controls = document.createElement('div');
+    controls.className = 'pt-header-controls';
+    headerRow.insertBefore(controls, themeButton);
+    controls.appendChild(star);
     headerStar = star;
     updateHeaderStar();
 
@@ -380,7 +383,7 @@
     button.setAttribute('aria-controls', 'pt-mobile-workspace-panel');
     button.setAttribute('aria-expanded', 'false');
     button.innerHTML = '<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M5 5h14v15l-7-4-7 4z"/></svg>';
-    headerRow.insertBefore(button, themeButton);
+    controls.append(button, themeButton);
     mobileToggle = button;
 
     const panel = document.createElement('section');

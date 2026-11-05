@@ -23,6 +23,8 @@ assert(js.includes("window.matchMedia('(prefers-reduced-motion: reduce)').matche
 assert(css.includes(':not(:disabled):not([readonly]):not([aria-readonly="true"])'),
   'White input rule must not misrepresent disabled or readonly calculator controls.');
 assert(js.includes('activeButton.after(sidebarPanel)'), 'Expanded tools should move immediately below the selected category.');
+assert(js.includes("controls.className = 'pt-header-controls'"),
+  'Favorite, My Tools and theme controls must use one right-aligned group.');
 assert(js.includes("selectedView === key ? 'none' : key"), 'Clicking an expanded category should collapse it.');
 for (const file of pages) {
   const html = fs.readFileSync(path.join(root, file), 'utf8');
@@ -192,6 +194,12 @@ const uiDocument = {
   addEventListener() {}
 };
 vm.runInNewContext(js, { window: uiWindow, document: uiDocument, console });
+const headerControls = workspaceHeader.descendants().find(item => item.className === 'pt-header-controls');
+assert(headerControls, 'Header action group must be initialized on a calculator page.');
+assert.equal(themeButton.parentElement, headerControls,
+  'Theme button should be inside the same group as calculator favorites.');
+assert(headerControls.descendants().some(item => item.className.includes('pt-header-favorite')),
+  'Favorite star should be grouped with the theme control.');
 const workspaceNav = workspaceAside.children[0];
 const buttons = workspaceNav.descendants().filter(item => item.getAttribute('data-pt-sidebar-view') !== null);
 const flowOption = buttons.find(item => item.getAttribute('data-pt-sidebar-view') === 'flow');

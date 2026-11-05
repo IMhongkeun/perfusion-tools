@@ -448,3 +448,32 @@ header .pt-header-inner > #theme-toggle:hover { background-color: var(--pt-soft)
 @media (max-width: 767px) {
   header .pt-header-inner > #theme-toggle { flex-basis: 38px; width: 38px; height: 38px; }
 }
+
+/* Keep dynamic header actions as one non-shrinking flex group.
+   Centered desktop links never share a flex track with the favorite star. */
+header .pt-header-inner > .pt-header-controls {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .15rem;
+  margin-left: auto;
+  position: relative;
+  z-index: 1;
+}
+header .pt-header-controls > #theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  border-radius: 50%;
+}
+header .pt-header-controls > #theme-toggle:hover {
+  background: var(--pt-soft);
+  color: var(--pt-accent);
+}
+@media (max-width: 767px) {
+  header .pt-header-controls > #theme-toggle { flex-basis: 38px; width: 38px; height: 38px; }
+}
