@@ -45,6 +45,18 @@ for (const file of pages) {
   }
   assert(html.includes('pt-header-pages lg:hidden'), file + ': missing narrow-screen page menu');
 }
+const researchHtml = fs.readFileSync(path.join(root, 'research/index.html'), 'utf8');
+assert(researchHtml.indexOf('id="week-2026-11-01"') < researchHtml.indexOf('id="week-2026-10-25"'),
+  'Weekly research should show the newest week first.');
+assert(researchHtml.includes('<details class="research-archive">'),
+  'Older research weeks should have a collapsible archive.');
+const archivedWeek = researchHtml.match(/id="week-2026-10-25"[\s\S]*?<\/details>/)?.[0];
+assert(archivedWeek && (archivedWeek.match(/<article class="research-card">/g) || []).length === 5,
+  'The archived week should contain five study cards.');
+for (const pmid of ['42926135', '42906575', '42940214', '42911832', '42899414']) {
+  assert(archivedWeek.includes('https://pubmed.ncbi.nlm.nih.gov/' + pmid + '/'),
+    'The archived week should link to PMID ' + pmid);
+}
 assert(js.includes('PerfusionToolsRecentCalculators'), 'Use existing recent history implementation');
 assert(!js.includes('fetch('), 'Favorite actions must not make network requests');
 const saved = new Map();

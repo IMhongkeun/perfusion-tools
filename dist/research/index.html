@@ -321,6 +321,17 @@
     .research-card .research-result { color: var(--pt-ink); }
     .research-card a { display: inline-flex; align-items: center; min-height: 44px; margin-top: .5rem; color: var(--pt-primary-hover); font-size: .9rem; font-weight: 700; }
     .research-card a:focus-visible { outline: 2px solid var(--pt-focus); outline-offset: 3px; }
+    .research-archive { border: 1px solid var(--pt-border); border-radius: .9rem; background: var(--pt-surface); }
+    .research-archive summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.2rem 1.4rem; cursor: pointer; list-style: none; }
+    .research-archive summary::-webkit-details-marker { display: none; }
+    .research-archive summary:hover { background: var(--pt-soft); }
+    .research-archive .research-week { margin: 0; }
+    .research-archive-action { color: var(--pt-primary-hover); font-size: .85rem; font-weight: 700; white-space: nowrap; }
+    .research-archive .research-archive-action--close { display: none; }
+    .research-archive[open] .research-archive-action--open { display: none; }
+    .research-archive[open] .research-archive-action--close { display: inline; }
+    .research-archive .research-list { padding: 0 1rem 1rem; }
+    @media (max-width: 389px) { .research-archive summary { align-items: flex-start; flex-direction: column; gap: .3rem; } }
     .research-note { padding: 1rem 1.2rem; border: 1px solid var(--pt-border); border-radius: .8rem; color: var(--pt-muted); font-size: .85rem; line-height: 1.6; }
   </style>
   <script src="/analytics.js"></script>
@@ -429,7 +440,49 @@
         </article></li>
       </ol>
     </section>
-    <p class="research-note">Selected for relevance to CPB and ECMO practice, not as a complete list of the week's publications. These summaries are based on abstracts and are for education; they are not treatment recommendations.</p>
+    <section aria-labelledby="week-2026-10-25">
+      <details class="research-archive">
+        <summary><h2 id="week-2026-10-25" class="research-week">October 19–25, 2026</h2><span class="research-archive-action research-archive-action--open" aria-hidden="true">Show studies ↓</span><span class="research-archive-action research-archive-action--close" aria-hidden="true">Hide studies ↑</span></summary>
+        <ol class="research-list">
+          <li><article class="research-card">
+            <div class="research-meta"><span>ECPR</span><span>Nationwide observational study</span><span>October 25</span></div>
+            <h3>Does ECPR timing affect outcomes after cardiac arrest?</h3>
+            <p>A nationwide analysis followed 58,668 people with refractory out-of-hospital cardiac arrest; 909 received ECPR. It compared patients still in refractory arrest at the same decision times.</p>
+            <p class="research-result">The abstract reports an association between ECPR and better 30-day survival and neurological outcomes at each time point, including after 60 minutes. The observational design cannot establish that ECPR caused the difference.</p>
+            <a href="https://pubmed.ncbi.nlm.nih.gov/42926135/" rel="noopener noreferrer" target="_blank">Read the PubMed record (PMID 42926135) →</a>
+          </article></li>
+          <li><article class="research-card">
+            <div class="research-meta"><span>ECMO · Lung transplant</span><span>Retrospective cohort</span><span>October 21</span></div>
+            <h3>Age and outcomes after ECMO bridging to lung transplant</h3>
+            <p>A single-center cohort included 115 adults listed for lung transplantation while on ECMO; 93 underwent transplantation. The researchers compared recipients younger than 50 with those aged 50 or older.</p>
+            <p class="research-result">Five-year graft survival was 77% in the younger group and 44% in the older group. Age 50 or older was associated with higher adjusted graft-loss risk, but this study cannot define an age cutoff for individual patients.</p>
+            <a href="https://pubmed.ncbi.nlm.nih.gov/42906575/" rel="noopener noreferrer" target="_blank">Read the PubMed record (PMID 42906575) →</a>
+          </article></li>
+          <li><article class="research-card">
+            <div class="research-meta"><span>VA-ECMO · Cannulation</span><span>Retrospective cohort</span><span>October 21</span></div>
+            <h3>Axillary versus femoral arterial cannulation after heart transplant</h3>
+            <p>In 42 heart transplant recipients receiving peripheral VA-ECMO for primary graft dysfunction, 17 had axillary Dacron-graft cannulation and 25 had direct femoral cannulation.</p>
+            <p class="research-result">Cannulation-related complications occurred in 0 of 17 and 3 of 25 patients, respectively. The difference was not statistically significant; neither were differences in ECMO weaning or survival to discharge.</p>
+            <a href="https://pubmed.ncbi.nlm.nih.gov/42940214/" rel="noopener noreferrer" target="_blank">Read the PubMed record (PMID 42940214) →</a>
+          </article></li>
+          <li><article class="research-card">
+            <div class="research-meta"><span>Aortic surgery · CPB</span><span>Retrospective study</span><span>October 22</span></div>
+            <h3>Hypothermia level during emergency aortic surgery</h3>
+            <p>A single-center study compared temperature strategies in 175 emergency operations for acute aortic syndrome; most patients underwent hemiarch repair.</p>
+            <p class="research-result">In the hemiarch subgroup, warmer temperatures were associated with less stroke and shorter intensive care stays. The four-category comparison did not remain significant after adjustment; a separate analysis using 24°C as the cutoff found lower adjusted stroke risk above 24°C.</p>
+            <a href="https://pubmed.ncbi.nlm.nih.gov/42911832/" rel="noopener noreferrer" target="_blank">Read the PubMed record (PMID 42911832) →</a>
+          </article></li>
+          <li><article class="research-card">
+            <div class="research-meta"><span>Extracorporeal circulation</span><span>Retrospective imaging study</span><span>October 20</span></div>
+            <h3>Cerebral microbleeds after surgery with extracorporeal circulation</h3>
+            <p>Researchers reviewed brain MRI scans in 111 people with heritable connective tissue disorders and compared cerebral microbleeds with their surgical histories.</p>
+            <p class="research-result">All 58 patients exposed to surgery with extracorporeal circulation had microbleeds, compared with four people who had not undergone surgery. Microbleed burden increased with repeat procedures and longer extracorporeal circulation exposure; the study did not measure clinical neurological outcomes.</p>
+            <a href="https://pubmed.ncbi.nlm.nih.gov/42899414/" rel="noopener noreferrer" target="_blank">Read the PubMed record (PMID 42899414) →</a>
+          </article></li>
+        </ol>
+      </details>
+    </section>
+    <p class="research-note">Selected for relevance to CPB and ECMO practice, not as a complete list of each week's publications. These summaries are based on abstracts and are for education; they are not treatment recommendations.</p>
     </main>
   </div>
 

@@ -93,7 +93,8 @@ assert.strictEqual(indexHtml, distIndexHtml, 'Root and dist index.html should st
 assert.strictEqual(researchHtml, fs.readFileSync(path.join(repoRoot, 'dist', 'research', 'index.html'), 'utf8'));
 assert(indexHtml.includes('href="/research/"'), 'Home should link to weekly research.');
 assert(researchHtml.includes('October 26 – November 1, 2026'), 'Research issue should show its publication window.');
-assert.strictEqual((researchHtml.match(/pubmed\.ncbi\.nlm\.nih\.gov\/\d+\//g) || []).length, 5,
+assert(researchHtml.includes('October 19–25, 2026'), 'Research archive should show its publication window.');
+assert.strictEqual((researchHtml.match(/pubmed\.ncbi\.nlm\.nih\.gov\/\d+\//g) || []).length, 10,
   'Each selected study should link to its PubMed record.');
 
 const bsaUrl = 'https://perfusiontools.com/bsa/';
