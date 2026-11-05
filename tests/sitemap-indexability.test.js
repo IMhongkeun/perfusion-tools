@@ -170,7 +170,7 @@ const infoMeta = assertRouteMetaIncludes(indexHtml, '/info', ['canonicalPath: "/
 assert(!infoMeta.includes('canonicalPath: "/info/"'), '/info metadata should not self-canonicalize.');
 assert(indexHtml.includes('<a href="/quick-reference/" data-route id="nav-quick-reference"'), 'Top navigation should link to the existing clinical reference.');
 assert(indexHtml.includes('<a href="/#all-calculators-heading"'), 'Top navigation should link to the current calculator directory.');
-assert(indexHtml.includes('<a href="/info/" data-route id="side-info"'), 'Sidebar navigation should keep the /info/ link.');
+assert(indexHtml.includes('<a href="/info/" id="nav-info"'), 'Header navigation should keep the /info/ link.');
 assert(indexHtml.includes('<a href="/info/" data-route id="mob-info"'), 'Mobile navigation should keep the /info/ link.');
 
 assert(indexHtml.includes('animate-pulse-flow'), 'The original animated blue brand mark should remain on the homepage.');

@@ -31,7 +31,6 @@
   let sidebarPanel = null;
   let sidebarButtons = [];
   let originalSidebarLinks = new Map();
-  let sidebarFooterLinks = [];
   let mobilePanel = null;
   let mobileToggle = null;
   let mobileView = 'favorites';
@@ -176,8 +175,6 @@
     const aside = document.getElementById('desktop-sidebar');
     if (!aside || !registry.length) return;
     const originalLinks = Array.from(aside.querySelectorAll('a[href]'));
-    const homeLink = originalLinks.find(a => a.getAttribute('href') === '/');
-    const infoLink = originalLinks.find(a => (a.getAttribute('href') || '').startsWith('/info'));
     originalSidebarLinks = new Map(originalLinks
       .filter(link => byPath.has(link.getAttribute('href')))
       .map(link => [link.getAttribute('href'), link]));
@@ -215,43 +212,12 @@
     sidebarTitle = title;
     sidebarPanel = results;
 
-    const links = document.createElement('div');
-    links.className = 'pt-sidebar-footer';
-    const appendFooterLink = (link, label, symbol) => {
-      if (!link) return;
-      link.className = 'sidebar-link pt-sidebar-footer-link';
-      link.replaceChildren();
-      const icon = document.createElement('span');
-      icon.className = 'pt-sidebar-symbol';
-      icon.setAttribute('aria-hidden', 'true');
-      icon.textContent = symbol;
-      const text = document.createElement('span');
-      text.textContent = label;
-      link.append(icon, text);
-      links.appendChild(link);
-    };
-    appendFooterLink(homeLink, 'Home', '⌂');
-    const researchLink = document.createElement('a');
-    researchLink.setAttribute('href', '/research/');
-    appendFooterLink(researchLink, 'Weekly Research', '▤');
-    appendFooterLink(infoLink, 'About', 'ⓘ');
-    sidebarFooterLinks = [homeLink, researchLink, infoLink].filter(Boolean);
-    nav.appendChild(links);
     aside.replaceChildren(nav);
     renderSidebar();
   }
 
   function renderSidebar() {
     if (!sidebarResults || !sidebarTitle || !sidebarPanel) return;
-    const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
-    sidebarFooterLinks.forEach(link => {
-      const href = link.getAttribute('href');
-      const active = href === '/' ? (currentPath === '/' || currentPath === '/index.html')
-        : href === '/research/' ? currentPath === '/research'
-        : href.startsWith('/info') && currentPath === '/info';
-      if (active) link.setAttribute('aria-current', 'page');
-      else link.removeAttribute('aria-current');
-    });
     let activeButton = null;
     sidebarButtons.forEach(button => {
       const expanded = button.getAttribute('data-pt-sidebar-view') === selectedView;
@@ -272,7 +238,7 @@
     const items = selectedTools();
     const choice = categories.find(category => category.key === selectedView);
     const label = choice ? choice.label : (selectedView === 'favorites' ? 'Favorites' : 'Recently used');
-    sidebarTitle.textContent = label + ' · ' + items.length;
+    sidebarTitle.textContent = label;
     const rows = items.map(tool => toolEntry(tool, originalSidebarLinks.get(tool.path)));
     sidebarResults.replaceChildren(...rows);
     if (!rows.length) {
