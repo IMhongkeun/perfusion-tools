@@ -6,12 +6,20 @@ const vm = require('node:vm');
 const root = path.join(__dirname, '..');
 const js = fs.readFileSync(path.join(root, 'tool-workspace.js'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'mobile.css'), 'utf8');
-const pages = ['index.html', 'bsa/index.html', 'gdp/index.html', 'heparin/index.html', 'predicted-hct/index.html', 'lbm/index.html', 'timecalc/index.html', 'z-score/index.html', 'quick-reference/index.html', 'cannula-pressure-drop/index.html', 'priming-volume/index.html', 'unit-converter/index.html'];
+const pages = ['index.html', 'bsa/index.html', 'gdp/index.html', 'heparin/index.html', 'predicted-hct/index.html', 'lbm/index.html', 'timecalc/index.html', 'z-score/index.html', 'quick-reference/index.html', 'cannula-pressure-drop/index.html', 'priming-volume/index.html', 'unit-converter/index.html', 'phn-echo/index.html'];
 assert.equal(js, fs.readFileSync(path.join(root, 'dist/tool-workspace.js'), 'utf8'));
 assert.equal(css, fs.readFileSync(path.join(root, 'dist/mobile.css'), 'utf8'));
 assert(css.includes('--pt-page: #ffffff;'));
-assert(css.includes('--pt-accent: #168c96;'), 'Light mode should use a subtle teal accent.');
+assert(css.includes('--pt-accent: #277fad;'), 'Light mode should use a soft blue accent.');
 assert(css.includes('.pt-sidebar-inline-results'), 'Categories should render an inline sublist.');
+assert(css.includes('.pt-app-shell > main') && css.includes('max-width: 56rem'),
+  'Home and standalone calculators must share a main content width.');
+assert(css.includes('header .pt-header-inner > .pt-brand'),
+  'All page headers must keep the animated brand anchored left.');
+assert(css.includes('.pt-sidebar-option, .pt-sidebar-footer-link { font-size: .92rem'),
+  'Navigation typography must be improved for desktop readability.');
+assert(js.includes("window.matchMedia('(prefers-reduced-motion: reduce)').matches"),
+  'Category motion must respect reduced motion settings.');
 assert(css.includes(':not(:disabled):not([readonly]):not([aria-readonly="true"])'),
   'White input rule must not misrepresent disabled or readonly calculator controls.');
 assert(js.includes('activeButton.after(sidebarPanel)'), 'Expanded tools should move immediately below the selected category.');
@@ -25,6 +33,9 @@ for (const file of pages) {
   assert(html.includes('id="desktop-sidebar"'), file + ': missing sidebar');
   assert(html.includes('data-mobile-calculator-nav'), file + ': missing mobile navigation');
   assert(html.includes('animate-pulse-flow'), file + ': missing animated brand');
+  assert(html.includes('pt-header-inner'), file + ': expected shared header alignment');
+  assert(html.includes('pt-app-shell'), file + ': expected shared full-width app shell');
+  assert(html.includes('pt-primary-nav hidden md:flex'), file + ': desktop nav should be pre-rendered');
 }
 assert(js.includes('PerfusionToolsRecentCalculators'), 'Use existing recent history implementation');
 assert(!js.includes('fetch('), 'Favorite actions must not make network requests');

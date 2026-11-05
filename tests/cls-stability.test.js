@@ -59,21 +59,28 @@ assert(
   'BSA should retain one concise first-paint desktop navigation, separate from calculator links.'
 );
 
-const placeholderPages = [
-  'cannula-pressure-drop/index.html', 'gdp/index.html',
-  'heparin/index.html', 'lbm/index.html', 'phn-echo/index.html',
-  'predicted-hct/index.html', 'priming-volume/index.html',
-  'quick-reference/index.html', 'timecalc/index.html',
-  'unit-converter/index.html', 'z-score/index.html'
+const sharedPages = [
+  'index.html', 'bsa/index.html', 'lbm/index.html', 'gdp/index.html',
+  'heparin/index.html', 'predicted-hct/index.html',
+  'priming-volume/index.html', 'timecalc/index.html',
+  'z-score/index.html', 'phn-echo/index.html',
+  'quick-reference/index.html', 'cannula-pressure-drop/index.html',
+  'unit-converter/index.html'
 ];
-placeholderPages.forEach(relativePath => {
+const homeNav = home.match(/<nav class="pt-primary-nav[^"]*"[\s\S]*?<\/nav>/)?.[0];
+assert(homeNav, 'Home must render the complete desktop navigation at first paint.');
+for (const relativePath of sharedPages) {
   const html = read(relativePath);
-  assert(
-    html.includes('id="global-top-nav"') && html.indexOf('id="global-top-nav"') < html.indexOf('id="theme-toggle"'),
-    `${relativePath} should reserve one desktop navigation slot before the theme control.`
-  );
-  assert.strictEqual((html.match(/id="global-top-nav"/g) || []).length, 1, `${relativePath} should not contain duplicate top navigation.`);
-});
+  const header = html.slice(html.indexOf('<header'), html.indexOf('</header>') + '</header>'.length);
+  const nav = header.match(/<nav class="pt-primary-nav[^"]*"[\s\S]*?<\/nav>/)?.[0];
+  assert.strictEqual(nav, homeNav, relativePath + ': first-paint desktop nav must be identical to Home.');
+  assert.strictEqual((header.match(/<nav(?:\s|>)/g) || []).length, 1,
+    relativePath + ': exactly one desktop navigation landmark.');
+  assert(header.includes('pt-header-inner'), relativePath + ': common header alignment');
+  assert(html.includes('pt-app-shell'), relativePath + ': full-width common page shell');
+  assert(html.includes('animate-pulse-flow'), relativePath + ': animated brand stays present');
+  assert(!header.includes('id="global-top-nav"'), relativePath + ': no late-mounted desktop placeholder');
+}
 
 const mainJs = read('main.js');
 assert(

@@ -423,3 +423,28 @@ header .pt-header-inner { position: relative; width: 100%; }
 @media (prefers-reduced-motion: reduce) {
   .pt-sidebar-inline-results { transition: none; animation: none; }
 }
+
+
+/* The animated logo stays on the left; the bookmark and theme controls form
+   a stable right-hand cluster on all calculator and landing pages. */
+header .pt-header-inner { display: flex; justify-content: flex-start; align-items: center; gap: .25rem; }
+header .pt-header-inner > .pt-brand { margin-right: auto; }
+header .pt-header-inner > #theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  border-radius: 50%;
+}
+header .pt-header-inner > #theme-toggle:hover { background-color: var(--pt-soft); color: var(--pt-accent); }
+.pt-app-shell > #desktop-sidebar {
+  align-self: start;
+  height: calc(100dvh - var(--header-height));
+  max-height: calc(100dvh - var(--header-height));
+  overflow-y: auto;
+}
+@media (max-width: 767px) {
+  header .pt-header-inner > #theme-toggle { flex-basis: 38px; width: 38px; height: 38px; }
+}
