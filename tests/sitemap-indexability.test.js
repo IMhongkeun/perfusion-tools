@@ -166,6 +166,18 @@ assert(indexHtml.includes('<a href="/#all-calculators-heading"'), 'Top navigatio
 assert(indexHtml.includes('<a href="/info/" data-route id="side-info"'), 'Sidebar navigation should keep the /info/ link.');
 assert(indexHtml.includes('<a href="/info/" data-route id="mob-info"'), 'Mobile navigation should keep the /info/ link.');
 
+assert(indexHtml.includes('animate-pulse-flow'), 'The original animated blue brand mark should remain on the homepage.');
+assert(indexHtml.includes('id="pt-tool-search"') && indexHtml.includes('data-clarity-mask="true"'),
+  'The homepage search must be usable and masked in Clarity.');
+assert(indexHtml.includes('window.PerfusionToolsCalculatorRegistry'),
+  'Homepage search should reuse the existing calculator registry.');
+assert(indexHtml.includes('id="featured-calculator-list"') && indexHtml.includes('id="calculator-category-list"'),
+  'Quick Access and the complete calculator directory must remain visible.');
+const toolSearchScript = indexHtml.match(/<script>\s*renderInitialHomeDiscovery\(\);([\s\S]*?)<\/script>/)?.[1];
+assert(toolSearchScript, 'Homepage search initialization script should exist.');
+assert.doesNotThrow(() => new vm.Script(toolSearchScript), 'Homepage search script must have valid JavaScript syntax.');
+
+
 assertRouteMetaIncludes(indexHtml, '/privacy', ['canonicalPath: "/privacy/"', 'robots: "noindex,follow"']);
 assertRouteMetaIncludes(indexHtml, '/terms', ['canonicalPath: "/terms/"', 'robots: "noindex,follow"']);
 assertRouteMetaIncludes(indexHtml, '/contact', ['canonicalPath: "/contact/"', 'robots: "noindex,follow"']);
