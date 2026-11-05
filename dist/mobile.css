@@ -1,4 +1,62 @@
 /* Shared presentation rules for the existing static calculators. */
+/* PerfusionTools visual foundation. Existing calculator layouts keep their markup. */
+:root {
+  --pt-page: #ffffff;
+  --pt-surface: #fff;
+  --pt-ink: #0f172a;
+  --pt-muted: #52637a;
+  --pt-primary: #216e9d;
+  --pt-primary-hover: #185c88;
+  --pt-accent: #277fad;
+  --pt-soft: #edf5fc;
+  --pt-border: #dbe7f1;
+  --pt-focus: #278ab8;
+  --pt-disabled: #e2e8f0;
+  --pt-status: #277fad;
+  --pt-shadow: 0 4px 14px rgb(15 23 42 / 5%);
+  --pt-radius: .875rem;
+  --pt-space: 1rem;
+  --pt-content-width: 72rem;
+}
+.dark {
+  --pt-page: #0b1220;
+  --pt-surface: #111e33;
+  --pt-ink: #f1f5f9;
+  --pt-muted: #b8c7d9;
+  --pt-primary: #8bd7ef;
+  --pt-primary-hover: #b4e7f7;
+  --pt-accent: #7dd4f1;
+  --pt-soft: #1a314a;
+  --pt-border: #38516a;
+  --pt-focus: #7dd4f1;
+  --pt-disabled: #334155;
+  --pt-status: #7dd4f1;
+  --pt-shadow: 0 4px 14px rgb(0 0 0 / 16%);
+}
+.pt-surface { background: var(--pt-surface); color: var(--pt-ink); border: 1px solid var(--pt-border); border-radius: var(--pt-radius); box-shadow: var(--pt-shadow); }
+.pt-section-title { color: var(--pt-ink); font-size: clamp(1.4rem, 2.5vw, 2rem); line-height: 1.2; font-weight: 700; letter-spacing: -.025em; }
+.pt-description { color: var(--pt-muted); line-height: 1.6; }
+.pt-eyebrow { color: var(--pt-accent); font-size: .72rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+.pt-button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: .65rem 1.1rem; border: 1px solid transparent; border-radius: .65rem; font-size: .875rem; font-weight: 650; text-align: center; transition: background-color .15s ease, border-color .15s ease, color .15s ease; }
+.pt-button-primary { background: #216e9d; color: #fff; }
+.pt-button-primary:hover { background: #185c88; }
+.dark .pt-button-primary { background: #8bd7ef; color: #0b1220; }
+.dark .pt-button-primary:hover { background: #b4e7f7; }
+.pt-button-secondary { background: var(--pt-surface); color: var(--pt-ink); border-color: var(--pt-border); }
+.pt-button-secondary:hover, .pt-nav-link:hover, .pt-tool-card:hover { background: var(--pt-soft); }
+.pt-tool-card { display: flex; align-items: center; gap: .85rem; min-height: 72px; padding: .85rem; background: var(--pt-surface); color: var(--pt-ink); border: 1px solid var(--pt-border); border-radius: var(--pt-radius); transition: background-color .15s ease, border-color .15s ease; }
+.pt-tool-card:hover { border-color: var(--pt-accent); }
+.pt-category { color: var(--pt-muted); font-size: .72rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+.pt-nav-link { display: inline-flex; align-items: center; min-height: 44px; padding: .55rem .8rem; border-radius: .6rem; color: var(--pt-muted); font-size: .875rem; font-weight: 600; }
+.pt-nav-link[aria-current="page"] { color: var(--pt-ink); background: var(--pt-soft); }
+.pt-search { min-height: 44px; width: 100%; padding: .65rem .85rem; background: var(--pt-surface); color: var(--pt-ink); border: 1px solid var(--pt-border); border-radius: .65rem; }
+.pt-search::placeholder { color: var(--pt-muted); }
+.pt-empty, .pt-info-panel { padding: var(--pt-space); background: var(--pt-soft); color: var(--pt-ink); border: 1px solid var(--pt-border); border-radius: var(--pt-radius); }
+.pt-button:disabled { background: var(--pt-disabled); color: var(--pt-muted); cursor: not-allowed; }
+:where(.pt-button, .pt-tool-card, .pt-nav-link, .pt-search):focus-visible { outline: 3px solid var(--pt-focus); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  :where(.pt-button, .pt-tool-card) { transition: none; }
+}
 .result-unit { display: inline-block; white-space: nowrap; }
 .target-action { display: block; }
 .target-action + .target-action { margin-top: .25rem; }
@@ -80,4 +138,17 @@ main [role="region"][tabindex="0"]:focus-visible {
 @media (max-width: 360px) {
   .priming-dimensions { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .priming-dimensions > :first-child { grid-column: 1 / -1; }
+}
+
+
+/* Light-mode editable fields must look editable, not disabled. Preserve
+   readonly, disabled, transparent inline inputs, sliders and dark mode. */
+html:not(.dark) :is(
+  input:not([type]), input[type="number"], input[type="text"],
+  input[type="search"], input[type="date"], input[type="time"],
+  input[type="datetime-local"], input[type="email"], input[type="tel"],
+  textarea, select
+):not(:disabled):not([readonly]):not([aria-readonly="true"]):not(.bg-transparent) {
+  background-color: #fff;
+  color: #0f172a;
 }
