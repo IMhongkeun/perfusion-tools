@@ -30,6 +30,7 @@
   let sidebarPanel = null;
   let sidebarButtons = [];
   let originalSidebarLinks = new Map();
+  let sidebarFooterLinks = [];
   let mobilePanel = null;
   let mobileToggle = null;
   let mobileView = 'favorites';
@@ -230,6 +231,7 @@
     };
     appendFooterLink(homeLink, 'Home', '⌂');
     appendFooterLink(infoLink, 'About', 'ⓘ');
+    sidebarFooterLinks = [homeLink, infoLink].filter(Boolean);
     nav.appendChild(links);
     aside.replaceChildren(nav);
     renderSidebar();
@@ -237,6 +239,14 @@
 
   function renderSidebar() {
     if (!sidebarResults || !sidebarTitle || !sidebarPanel) return;
+    const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
+    sidebarFooterLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      const active = href === '/' ? (currentPath === '/' || currentPath === '/index.html')
+        : href.startsWith('/info') && currentPath === '/info';
+      if (active) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
     let activeButton = null;
     sidebarButtons.forEach(button => {
       const expanded = button.getAttribute('data-pt-sidebar-view') === selectedView;

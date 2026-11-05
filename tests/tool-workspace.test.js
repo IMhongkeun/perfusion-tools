@@ -201,5 +201,14 @@ favoriteOption.handlers.click[0]();
 assert(accordion.hidden, 'Selecting an expanded category a second time closes it');
 assert(workspaceNav.descendants().some(item => item.tagName === 'A' && item.href === '/info/' &&
   item.className.includes('pt-sidebar-footer-link')), 'About uses the same navigation styling');
+const footerHome = workspaceNav.descendants().find(item => item.tagName === 'A' && item.href === '/');
+const footerAbout = workspaceNav.descendants().find(item => item.tagName === 'A' && item.href === '/info/');
+uiWindow.location.pathname = '/';
+flowOption.handlers.click[0]();
+assert.equal(footerHome.getAttribute('aria-current'), 'page', 'Home footer link highlights on Home.');
+uiWindow.location.pathname = '/info/';
+flowOption.handlers.click[0]();
+assert.equal(footerAbout.getAttribute('aria-current'), 'page', 'About footer link highlights on About.');
+
 
 console.log('Tool workspace and favorites tests passed.');
