@@ -78,4 +78,128 @@ assert.equal(routeContext.getActivePath(), '/', 'All Calculators section must pr
 assert(mainSource.includes("['#all-calculators-heading', '#featured-tools-heading'].includes(window.location.hash)"),
   'Scroll reset should preserve both Home section anchors.');
 
+
+// Exercise the actual desktop accordion with a minimal DOM harness rather
+// than relying only on source-string checks.
+class AccordionElement {
+  constructor(tag = 'div') {
+    this.tagName = tag.toUpperCase();
+    this.children = [];
+    this.attrs = {};
+    this.handlers = {};
+    this.parentElement = null;
+    this.hidden = false;
+    this.className = '';
+    this.textContent = '';
+  }
+  append(...items) {
+    for (const item of items) {
+      if (item.parentElement) item.parentElement.children =
+        item.parentElement.children.filter(existing => existing !== item);
+      this.children.push(item);
+      item.parentElement = this;
+    }
+  }
+  appendChild(child) { this.append(child); return child; }
+  replaceChildren(...items) { this.children.forEach(item => { item.parentElement = null; }); this.children = []; this.append(...items); }
+  after(node) {
+    const parent = this.parentElement;
+    assert(parent, 'Accordion button must have a parent');
+    if (node.parentElement) node.parentElement.children =
+      node.parentElement.children.filter(item => item !== node);
+    parent.children.splice(parent.children.indexOf(this) + 1, 0, node);
+    node.parentElement = parent;
+  }
+  insertBefore(node, reference) {
+    if (node.parentElement) node.parentElement.children =
+      node.parentElement.children.filter(item => item !== node);
+    const index = this.children.indexOf(reference);
+    this.children.splice(index >= 0 ? index : this.children.length, 0, node);
+    node.parentElement = this;
+  }
+  addEventListener(event, callback) { (this.handlers[event] ||= []).push(callback); }
+  setAttribute(name, value) { this.attrs[name] = String(value); }
+  getAttribute(name) { return this.attrs[name] ?? null; }
+  removeAttribute(name) { delete this.attrs[name]; }
+  descendants() { return this.children.flatMap(child => [child, ...child.descendants()]); }
+  querySelectorAll(selector) {
+    if (selector === 'a[href]') return this.descendants().filter(node => node.tagName === 'A' && node.href);
+    return [];
+  }
+  querySelector() { return null; }
+  contains(node) { return this === node || this.descendants().includes(node); }
+  focus() {}
+}
+const workspaceAside = new AccordionElement('aside');
+for (const route of ['/', '/bsa/', '/gdp/', '/info/']) {
+  const link = new AccordionElement('a');
+  link.href = route;
+  link.setAttribute('href', route);
+  workspaceAside.append(link);
+}
+const workspaceHeader = new AccordionElement();
+const themeButton = new AccordionElement('button');
+workspaceHeader.append(themeButton);
+const workspaceBody = new AccordionElement('body');
+workspaceBody.append(workspaceAside, workspaceHeader);
+const uiLocalStorage = new Map();
+const uiSessionStorage = new Map();
+const uiWindow = {
+  location: { pathname: '/bsa/' },
+  PerfusionToolsCalculatorRegistry: [
+    { path: '/bsa/', title: 'BSA Calculator', category: 'flow' },
+    { path: '/gdp/', title: 'GDP Calculator', category: 'flow' }
+  ],
+  PerfusionToolsRecentCalculators: { readRecentCalculatorRoutes: () => ['/gdp/'] },
+  localStorage: {
+    getItem: key => uiLocalStorage.get(key) ?? null,
+    setItem: (key, value) => uiLocalStorage.set(key, value)
+  },
+  sessionStorage: {
+    getItem: key => uiSessionStorage.get(key) ?? null,
+    setItem: (key, value) => uiSessionStorage.set(key, value),
+    removeItem: key => uiSessionStorage.delete(key)
+  },
+  addEventListener() {},
+  setTimeout: callback => callback()
+};
+const uiDocument = {
+  readyState: 'complete',
+  body: workspaceBody,
+  createElement: tag => new AccordionElement(tag),
+  getElementById(id) {
+    if (id === 'desktop-sidebar') return workspaceAside;
+    if (id === 'theme-toggle') return themeButton;
+    return null;
+  },
+  querySelectorAll(selector) {
+    if (selector === '[data-pt-favorite-path]') {
+      return workspaceBody.descendants().filter(item => item.getAttribute('data-pt-favorite-path'));
+    }
+    return [];
+  },
+  addEventListener() {}
+};
+vm.runInNewContext(js, { window: uiWindow, document: uiDocument, console });
+const workspaceNav = workspaceAside.children[0];
+const buttons = workspaceNav.descendants().filter(item => item.getAttribute('data-pt-sidebar-view') !== null);
+const flowOption = buttons.find(item => item.getAttribute('data-pt-sidebar-view') === 'flow');
+const favoriteOption = buttons.find(item => item.getAttribute('data-pt-sidebar-view') === 'favorites');
+const accordion = workspaceNav.descendants().find(item => item.id === 'pt-sidebar-inline-panel');
+assert(accordion && accordion.hidden, 'Accordion should initially be collapsed');
+flowOption.handlers.click[0]();
+assert.equal(flowOption.getAttribute('aria-expanded'), 'true');
+assert.equal(workspaceNav.children.indexOf(accordion), workspaceNav.children.indexOf(flowOption) + 1,
+  'Expanded flow calculators appear immediately below their category');
+assert.equal(accordion.descendants().filter(item => item.tagName === 'A' && item.href === '/bsa/').length, 1);
+uiWindow.PerfusionToolsFavorites.toggleFavorite('/bsa/');
+favoriteOption.handlers.click[0]();
+assert.equal(workspaceNav.children.indexOf(accordion), workspaceNav.children.indexOf(favoriteOption) + 1,
+  'Favorites appear immediately beneath the Favorites control');
+assert.equal(accordion.descendants().filter(item => item.tagName === 'A' && item.href === '/bsa/').length, 1);
+favoriteOption.handlers.click[0]();
+assert(accordion.hidden, 'Selecting an expanded category a second time closes it');
+assert(workspaceNav.descendants().some(item => item.tagName === 'A' && item.href === '/info/' &&
+  item.className.includes('pt-sidebar-footer-link')), 'About uses the same navigation styling');
+
 console.log('Tool workspace and favorites tests passed.');

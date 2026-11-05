@@ -369,25 +369,10 @@ function initStandaloneTopNav() {
   }
 
   const renderTopNavItem = (item) => {
-    const baseLinkClasses = 'nav-link px-4 py-2 rounded-full border transition-colors';
-    const getLinkMarkup = (linkItem, compact = false) => {
-      const normalizedItemPath = linkItem.path.length > 1 && linkItem.path.endsWith('/')
-        ? linkItem.path.slice(0, -1)
-        : linkItem.path;
-      const isActive = currentPath === normalizedItemPath;
-      const activeClasses = isActive
-        ? 'bg-slate-100 text-accent-600 dark:bg-primary-800 dark:text-accent-400 border-slate-200 dark:border-primary-700'
-        : 'border-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary-800 hover:border-slate-200 dark:hover:border-primary-700 hover:text-primary-900 dark:hover:text-accent-400';
-      const padding = compact ? 'px-3 py-2' : 'px-4 py-2';
-      return `<a href="${linkItem.path}" class="${baseLinkClasses} ${padding} ${activeClasses}">${linkItem.label}</a>`;
-    };
-
-    if (Array.isArray(item.items)) {
-      const childLinks = item.items.map(child => getLinkMarkup(child, true)).join('');
-      return `<span class="hidden lg:inline-flex items-center pl-2 pr-1 text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500">${item.label}</span>${childLinks}`;
-    }
-
-    return getLinkMarkup(item);
+    const normalizedItemPath = item.path.endsWith('/') && item.path !== '/'
+      ? item.path.slice(0, -1) : item.path;
+    const isActive = currentPath === normalizedItemPath;
+    return `<a href="${item.path}" class="nav-link pt-nav-link"${isActive ? ' aria-current="page"' : ''}>${item.label}</a>`;
   };
 
   // Desktop categories live in the sidebar; preserve TOP_NAV_ITEMS for mobile.
@@ -397,7 +382,7 @@ function initStandaloneTopNav() {
   ];
   nav.innerHTML = desktopItems.map(renderTopNavItem).join('');
 
-  attachTopNavOverflowArrow(nav, 'global-top-nav-next');
+  // Two concise links fit the desktop header; no overflow arrow is needed.
 }
 
 function attachTopNavOverflowArrow(nav, buttonId) {
