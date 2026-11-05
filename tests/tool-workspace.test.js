@@ -6,7 +6,7 @@ const vm = require('node:vm');
 const root = path.join(__dirname, '..');
 const js = fs.readFileSync(path.join(root, 'tool-workspace.js'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'mobile.css'), 'utf8');
-const pages = ['index.html', 'bsa/index.html', 'gdp/index.html', 'heparin/index.html', 'predicted-hct/index.html', 'lbm/index.html', 'timecalc/index.html', 'z-score/index.html', 'quick-reference/index.html', 'cannula-pressure-drop/index.html', 'priming-volume/index.html', 'unit-converter/index.html'];
+const pages = ['index.html', 'bsa/index.html', 'gdp/index.html', 'heparin/index.html', 'predicted-hct/index.html', 'lbm/index.html', 'timecalc/index.html', 'z-score/index.html', 'quick-reference/index.html', 'research/index.html', 'cannula-pressure-drop/index.html', 'priming-volume/index.html', 'unit-converter/index.html'];
 assert.equal(js, fs.readFileSync(path.join(root, 'dist/tool-workspace.js'), 'utf8'));
 assert.equal(css, fs.readFileSync(path.join(root, 'dist/mobile.css'), 'utf8'));
 assert(css.includes('--pt-page: #ffffff;'));
@@ -16,7 +16,7 @@ assert(css.includes('.pt-app-shell > main') && css.includes('max-width: 56rem'),
   'Home and standalone calculators must share a main content width.');
 assert(css.includes('header .pt-header-inner > .pt-brand'),
   'All page headers must keep the animated brand anchored left.');
-assert(css.includes('.pt-sidebar-option, .pt-sidebar-footer-link { font-size: .92rem'),
+assert(css.includes('.pt-sidebar-option { font-size: .92rem'),
   'Navigation typography must be improved for desktop readability.');
 assert(js.includes("window.matchMedia('(prefers-reduced-motion: reduce)').matches"),
   'Category motion must respect reduced motion settings.');
@@ -36,8 +36,31 @@ for (const file of pages) {
   assert(html.includes('data-mobile-calculator-nav'), file + ': missing mobile navigation');
   assert(html.includes('animate-pulse-flow'), file + ': missing animated brand');
   assert(html.includes('pt-header-inner'), file + ': expected shared header alignment');
+  assert(!html.includes('CLINICAL TOOLS &amp; KNOWLEDGE'), file + ': brand subtitle should be removed');
   assert(html.includes('pt-app-shell'), file + ': expected shared full-width app shell');
-  assert(html.includes('pt-primary-nav hidden md:flex'), file + ': desktop nav should be pre-rendered');
+  assert(html.includes('pt-primary-nav hidden lg:flex'), file + ': desktop nav should be pre-rendered');
+  const headerNav = html.match(/<nav class="pt-primary-nav[^>]*>([\s\S]*?)<\/nav>/)?.[1];
+  assert(headerNav, file + ': missing header navigation');
+  for (const href of ['/', '/research/', '/info/']) {
+    assert(headerNav.includes('href="' + href + '"'), file + ': missing header link to ' + href);
+  }
+  assert(html.includes('pt-header-pages lg:hidden'), file + ': missing narrow-screen page menu');
+  assert(/<a href="\/"[^>]*id="brand-home"[^>]*class="pt-brand"/.test(html),
+    file + ': the brand icon and name should link to Home');
+}
+assert(css.includes('.pt-header-pages { flex: 0 0 auto; order: 2; }'),
+  'The narrow-screen page menu should follow the header action buttons.');
+const researchHtml = fs.readFileSync(path.join(root, 'research/index.html'), 'utf8');
+assert(researchHtml.indexOf('id="week-2026-11-01"') < researchHtml.indexOf('id="week-2026-10-25"'),
+  'Weekly research should show the newest week first.');
+assert(researchHtml.includes('<details class="research-archive">'),
+  'Older research weeks should have a collapsible archive.');
+const archivedWeek = researchHtml.match(/id="week-2026-10-25"[\s\S]*?<\/details>/)?.[0];
+assert(archivedWeek && (archivedWeek.match(/<article class="research-card">/g) || []).length === 5,
+  'The archived week should contain five study cards.');
+for (const pmid of ['42926135', '42906575', '42940214', '42911832', '42899414']) {
+  assert(archivedWeek.includes('https://pubmed.ncbi.nlm.nih.gov/' + pmid + '/'),
+    'The archived week should link to PMID ' + pmid);
 }
 assert(js.includes('PerfusionToolsRecentCalculators'), 'Use existing recent history implementation');
 assert(!js.includes('fetch('), 'Favorite actions must not make network requests');
@@ -90,6 +113,8 @@ routeContext.window.location.hash = '#all-calculators-heading';
 assert.equal(routeContext.getActivePath(), '/', 'All Calculators section must preserve the Home route.');
 assert(mainSource.includes("['#all-calculators-heading', '#featured-tools-heading'].includes(window.location.hash)"),
   'Scroll reset should preserve both Home section anchors.');
+assert(mainSource.includes("link.id === 'brand-home'"),
+  'Returning Home through the brand should scroll to the top.');
 
 
 // Exercise the actual desktop accordion with a minimal DOM harness rather
@@ -224,16 +249,16 @@ assert.equal(workspaceNav.children.indexOf(accordion), workspaceNav.children.ind
 assert.equal(accordion.descendants().filter(item => item.tagName === 'A' && item.href === '/bsa/').length, 1);
 favoriteOption.handlers.click[0]();
 assert(accordion.hidden, 'Selecting an expanded category a second time closes it');
-assert(workspaceNav.descendants().some(item => item.tagName === 'A' && item.href === '/info/' &&
-  item.className.includes('pt-sidebar-footer-link')), 'About uses the same navigation styling');
-const footerHome = workspaceNav.descendants().find(item => item.tagName === 'A' && item.href === '/');
-const footerAbout = workspaceNav.descendants().find(item => item.tagName === 'A' && item.href === '/info/');
-uiWindow.location.pathname = '/';
-flowOption.handlers.click[0]();
-assert.equal(footerHome.getAttribute('aria-current'), 'page', 'Home footer link highlights on Home.');
-uiWindow.location.pathname = '/info/';
-flowOption.handlers.click[0]();
-assert.equal(footerAbout.getAttribute('aria-current'), 'page', 'About footer link highlights on About.');
+for (const href of ['/', '/research/', '/info/']) {
+  assert(!workspaceNav.descendants().some(item => item.tagName === 'A' && item.getAttribute('href') === href),
+    href + ' belongs in the header, not the sidebar');
+}
+assert(!workspaceNav.descendants().some(item => item.className === 'pt-sidebar-results-title'),
+  'Expanded lists should not repeat category names above their items.');
+for (const option of [flowOption, favoriteOption]) {
+  option.handlers.click[0]();
+  assert.equal(accordion.children.length, 1, 'Expanded lists should contain only the item list.');
+}
 uiWindow.matchMedia = () => ({ matches: true });
 const recentOption = buttons.find(item => item.getAttribute('data-pt-sidebar-view') === 'recent');
 const lastAnimationCount = animationCount;

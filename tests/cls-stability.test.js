@@ -49,7 +49,8 @@ assert(
 
 const bsa = read('bsa/index.html');
 const bsaHeader = bsa.slice(bsa.indexOf('<header'), bsa.indexOf('</header>') + '</header>'.length);
-assert.strictEqual((bsaHeader.match(/<nav(?:\s|>)/g) || []).length, 1, 'BSA should contain one desktop header navigation landmark.');
+assert.strictEqual((bsaHeader.match(/<nav(?:\s|>)/g) || []).length, 2,
+  'BSA should contain desktop and narrow-screen header navigation landmarks.');
 assert(!bsaHeader.includes('id="global-top-nav"'), 'BSA should not contain an inert standalone navigation placeholder.');
 assert(
   bsaHeader.includes('href="/#all-calculators-heading"') &&
@@ -78,8 +79,8 @@ for (const relativePath of sharedPages) {
   const header = html.slice(html.indexOf('<header'), html.indexOf('</header>') + '</header>'.length);
   const nav = header.match(/<nav class="pt-primary-nav[^"]*"[\s\S]*?<\/nav>/)?.[0];
   assert.strictEqual(nav, homeNav, relativePath + ': first-paint desktop nav must be identical to Home.');
-  assert.strictEqual((header.match(/<nav(?:\s|>)/g) || []).length, 1,
-    relativePath + ': exactly one desktop navigation landmark.');
+  assert.strictEqual((header.match(/<nav(?:\s|>)/g) || []).length, 2,
+    relativePath + ': desktop and narrow-screen navigation landmarks.');
   assert(header.includes('pt-header-inner'), relativePath + ': common header alignment');
   assert(html.includes('pt-app-shell'), relativePath + ': full-width common page shell');
   assert(html.includes('animate-pulse-flow'), relativePath + ': animated brand stays present');
@@ -97,8 +98,9 @@ assert(
 const homeHeader = home.slice(home.indexOf('<header'), home.indexOf('</header>') + '</header>'.length);
 assert(homeHeader.includes('href="/#all-calculators-heading"') && homeHeader.includes('href="/quick-reference/"'),
   'Home top navigation should contain Calculators and Clinical Reference.');
-assert(!homeHeader.includes('id="nav-bsa"') && !homeHeader.includes('id="nav-home"'),
-  'The homepage top navigation should not duplicate the left-side tool directory.');
+assert(!homeHeader.includes('id="nav-bsa"') && homeHeader.includes('id="nav-home"') &&
+  homeHeader.includes('id="nav-info"'),
+  'Home and About should appear in the header without adding calculator links.');
 assert(mainJs.includes('const desktopItems = [') && mainJs.includes('MOBILE_CALCULATOR_ROUTES = new Set(TOP_NAV_ITEMS'),
   'Desktop simplification must not remove established mobile calculator routes.');
 
