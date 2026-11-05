@@ -34,13 +34,19 @@
   let headerStar = null;
 
   function readFavorites() {
+    let stored;
     try {
-      const parsed = JSON.parse(window.localStorage.getItem(favoriteStorageKey) || '[]');
+      stored = window.localStorage.getItem(favoriteStorageKey);
+    } catch (_) {
+      return inMemoryFavorites.slice();
+    }
+    try {
+      const parsed = JSON.parse(stored || '[]');
       if (!Array.isArray(parsed)) return [];
       const valid = parsed.filter(path => typeof path === 'string' && byPath.has(path));
       return [...new Set(valid)].slice(0, registry.length);
     } catch (_) {
-      return inMemoryFavorites.slice();
+      return [];
     }
   }
 
