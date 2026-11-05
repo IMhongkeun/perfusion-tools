@@ -35,7 +35,7 @@
   let mobilePanel = null;
   let mobileToggle = null;
   let mobileView = 'favorites';
-  let headerStar = null;
+  let pageStar = null;
 
   function readFavorites() {
     if (storageWriteFailed) return inMemoryFavorites.slice();
@@ -315,11 +315,11 @@
     return registry.find(tool => tool.path === path || tool.path.slice(0, -1) === path) || null;
   }
 
-  function updateHeaderStar() {
-    if (!headerStar) return;
+  function updatePageStar() {
+    if (!pageStar) return;
     const tool = currentTool();
-    headerStar.hidden = !tool;
-    if (tool) headerStar.setAttribute('data-pt-favorite-path', tool.path);
+    pageStar.hidden = !tool;
+    if (tool) pageStar.setAttribute('data-pt-favorite-path', tool.path);
     updateStarStates();
   }
 
@@ -367,14 +367,20 @@
     const themeButton = document.getElementById('theme-toggle');
     const headerRow = themeButton && themeButton.parentElement;
     if (!headerRow || !registry.length) return;
-    const star = starButton(registry[0].path, 'pt-header-favorite');
-    star.hidden = true;
+    const pageHeading = document.getElementById('page-heading');
+    if (pageHeading) {
+      const titleRow = document.createElement('div');
+      titleRow.className = 'pt-calculator-title-row';
+      pageHeading.parentElement.insertBefore(titleRow, pageHeading);
+      const star = starButton(registry[0].path, 'pt-page-favorite');
+      star.hidden = true;
+      titleRow.append(pageHeading, star);
+      pageStar = star;
+      updatePageStar();
+    }
     const controls = document.createElement('div');
     controls.className = 'pt-header-controls';
     headerRow.insertBefore(controls, themeButton);
-    controls.appendChild(star);
-    headerStar = star;
-    updateHeaderStar();
 
     const button = document.createElement('button');
     button.type = 'button';
@@ -434,7 +440,7 @@
   function refreshWorkspace() {
     renderSidebar();
     decorateHomeCards();
-    updateHeaderStar();
+    updatePageStar();
     if (mobilePanel && !mobilePanel.hidden) mobileLinks();
   }
 
@@ -443,6 +449,11 @@
     setupSidebar();
     setupHeaderTools();
     decorateHomeCards();
+    const pageHeading = document.getElementById('page-heading');
+    if (pageHeading && typeof MutationObserver !== 'undefined') {
+      const observer = new MutationObserver(updatePageStar);
+      observer.observe(pageHeading, { childList: true, characterData: true, subtree: true });
+    }
     // The SPA can populate Home when navigating back from an informational view.
     const home = document.getElementById('view-home');
     if (home && typeof MutationObserver !== 'undefined') {
