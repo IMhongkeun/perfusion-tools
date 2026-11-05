@@ -36,6 +36,7 @@ for (const file of pages) {
   assert(html.includes('data-mobile-calculator-nav'), file + ': missing mobile navigation');
   assert(html.includes('animate-pulse-flow'), file + ': missing animated brand');
   assert(html.includes('pt-header-inner'), file + ': expected shared header alignment');
+  assert(!html.includes('CLINICAL TOOLS &amp; KNOWLEDGE'), file + ': brand subtitle should be removed');
   assert(html.includes('pt-app-shell'), file + ': expected shared full-width app shell');
   assert(html.includes('pt-primary-nav hidden lg:flex'), file + ': desktop nav should be pre-rendered');
   const headerNav = html.match(/<nav class="pt-primary-nav[^>]*>([\s\S]*?)<\/nav>/)?.[1];
