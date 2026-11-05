@@ -57,6 +57,87 @@
 @media (prefers-reduced-motion: reduce) {
   :where(.pt-button, .pt-tool-card) { transition: none; }
 }
+/* Homepage utility workspace; calculator internals retain their established presentation. */
+html.initial-home-route #route-intro, .pt-home-active #route-intro { display: none; }
+.initial-home-route #view-home.pt-home.hidden { display: grid; }
+.initial-home-route body, body.pt-home-active, .dark body.pt-home-active { background: var(--pt-page); color: var(--pt-ink); }
+.initial-home-route main, .pt-home-active main { max-width: var(--pt-content-width); }
+.pt-home { display: grid; gap: clamp(1.25rem, 2.6vw, 2rem); padding-bottom: 1rem; }
+.pt-home.hidden { display: none; }
+.pt-brand { display: inline-flex; align-items: center; gap: .65rem; min-width: 0; color: var(--pt-ink); text-decoration: none; }
+.pt-brand-mark { position: relative; display: flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; flex: 0 0 2rem; }
+.pt-brand-copy { display: flex; flex-direction: column; line-height: 1.1; }
+.pt-brand-copy strong { font-size: 1rem; letter-spacing: -.025em; white-space: nowrap; }
+.pt-brand-accent { color: #0369a1; }
+.dark .pt-brand-accent { color: #22d3ee; }
+.pt-brand-copy small { margin-top: .22rem; color: var(--pt-muted); font-size: .55rem; letter-spacing: .045em; white-space: nowrap; }
+.pt-primary-nav { align-items: center; gap: .15rem; }
+.pt-primary-nav .nav-link.bg-slate-100, .pt-primary-nav .nav-link.dark\:bg-primary-800 { background: var(--pt-soft); color: var(--pt-ink); border-color: transparent; }
+.pt-home-active header, .pt-home-active footer, .dark .pt-home-active header, .dark .pt-home-active footer { background: var(--pt-surface); border-color: var(--pt-border); }
+.pt-home-active #desktop-sidebar { background: var(--pt-page); border-color: var(--pt-border); }
+.pt-hero { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(130px, .4fr); align-items: center; gap: clamp(.5rem, 2vw, 1.5rem); min-height: 200px; padding: clamp(1.2rem, 3vw, 2rem); background: var(--pt-soft); border: 1px solid var(--pt-border); border-radius: 1rem; overflow: hidden; }
+.pt-hero-title { max-width: 21ch; margin-top: .45rem; color: var(--pt-ink); font-size: clamp(1.9rem, 3.2vw, 3rem); font-weight: 750; line-height: 1.1; letter-spacing: -.045em; text-wrap: balance; }
+.pt-hero-description { max-width: 37rem; margin-top: .6rem; font-size: .93rem; }
+.pt-hero-actions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.1rem; }
+.pt-hero-actions .pt-button { gap: .5rem; }
+.pt-hero-art { position: relative; height: 158px; overflow: hidden; }
+.pt-art-ring { position: absolute; border: 1px solid #93b9eb; border-radius: 50%; }
+.pt-art-ring-outer { width: 150px; height: 150px; top: 2px; right: 5%; }
+.pt-art-ring-inner { width: 102px; height: 102px; top: 26px; right: calc(5% + 24px); background: rgb(255 255 255 / 32%); }
+.pt-art-line { position: absolute; top: 76px; right: 0; width: 95%; height: 2px; transform: rotate(-21deg); background: #277fad; opacity: .45; }
+.pt-art-dot { position: absolute; width: 10px; height: 10px; border-radius: 50%; background: #06b6d4; }
+.pt-art-dot-one { top: 21px; right: calc(5% + 72px); }
+.pt-art-dot-two { top: 120px; right: 22%; }
+.pt-art-caption { position: absolute; bottom: .1rem; right: 0; color: var(--pt-muted); font-size: .52rem; letter-spacing: .1em; }
+.pt-home-section { min-width: 0; }
+.pt-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: .85rem; }
+.pt-section-heading > .pt-description { max-width: 17rem; font-size: .82rem; text-align: right; }
+.pt-section-heading .pt-section-title { margin-top: .25rem; }
+.pt-featured-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+.pt-home .calculator-directory-row { border-color: var(--pt-border); background: var(--pt-surface); color: var(--pt-ink); box-shadow: var(--pt-shadow); }
+.pt-home .calculator-directory-row:hover { border-color: var(--pt-accent); background: var(--pt-soft); }
+.pt-home .calculator-directory-row:focus-visible { outline-color: var(--pt-focus); }
+.pt-home .calculator-directory-row .text-primary-900, .pt-home .calculator-directory-row .dark\:text-white { color: var(--pt-ink); }
+.pt-home .calculator-directory-row .text-slate-600, .pt-home .calculator-directory-row .dark\:text-slate-300 { color: var(--pt-muted); }
+.pt-home .calculator-directory-icon, .dark .pt-home .calculator-directory-icon { background: var(--pt-soft); color: var(--pt-accent); }
+.pt-home .calculator-directory-chevron { color: var(--pt-accent); font-size: 1.4rem; }
+.pt-home .calculator-category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.pt-home #all-calculators-heading, .pt-home #featured-tools-heading { scroll-margin-top: calc(var(--header-height) + 1rem); }
+.pt-search-label { display: block; margin-bottom: .5rem; color: var(--pt-ink); font-size: .85rem; font-weight: 700; }
+.pt-search-field { display: flex; align-items: center; gap: .65rem; min-height: 48px; padding: .5rem .85rem; background: var(--pt-surface); border: 1px solid var(--pt-border); border-radius: .75rem; color: var(--pt-muted); box-shadow: var(--pt-shadow); }
+.pt-search-field:focus-within { border-color: var(--pt-accent); outline: 2px solid var(--pt-focus); outline-offset: 1px; }
+.pt-search-field input { flex: 1; width: 100%; min-width: 0; padding: .1rem 0; border: 0; outline: 0; background: transparent; color: var(--pt-ink); font-size: .9rem; }
+.pt-search-field input::placeholder { color: var(--pt-muted); opacity: .9; }
+.pt-search-hint { margin-top: .35rem; color: var(--pt-muted); font-size: .73rem; }
+.pt-search-results { margin-top: .55rem; padding: .35rem; background: var(--pt-surface); border: 1px solid var(--pt-border); border-radius: .75rem; box-shadow: var(--pt-shadow); }
+.pt-search-results[hidden] { display: none; }
+.pt-search-list { display: grid; gap: .15rem; }
+.pt-search-result-link { display: flex; flex-direction: column; gap: .15rem; padding: .55rem .65rem; border-radius: .5rem; color: var(--pt-ink); text-decoration: none; }
+.pt-search-result-link span { color: var(--pt-muted); font-size: .78rem; }
+.pt-search-result-link:hover, .pt-search-result-link:focus-visible { background: var(--pt-soft); outline-color: var(--pt-focus); }
+.pt-reference-panel { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.2rem; background: var(--pt-soft); border: 1px solid var(--pt-border); border-radius: var(--pt-radius); }
+.pt-reference-panel .pt-description { margin-top: .4rem; }
+.pt-reference-panel .pt-button { flex: 0 0 auto; gap: .5rem; }
+.pt-safety-note { font-size: .8rem; }
+.pt-safety-note .pt-description { margin-top: .25rem; }
+@media (prefers-reduced-motion: reduce) {
+  .pt-brand .animate-pulse-flow, .pt-brand .animate-ping { animation: none !important; }
+}
+@media (max-width: 1023px) {
+  .pt-hero { grid-template-columns: 1fr; min-height: 0; }
+  .pt-hero-art { display: none; }
+  .pt-section-heading { display: block; }
+  .pt-section-heading > .pt-description { max-width: none; margin-top: .3rem; text-align: left; }
+}
+@media (max-width: 767px) {
+  .pt-brand-copy small { font-size: .5rem; }
+  .pt-home { gap: 1.35rem; }
+  .pt-hero { padding: 1.15rem; }
+  .pt-hero-title { font-size: clamp(1.8rem, 8vw, 2.4rem); }
+  .pt-featured-grid, .pt-home .calculator-category-grid { grid-template-columns: 1fr; }
+  .pt-reference-panel { display: block; }
+  .pt-reference-panel .pt-button { margin-top: 1rem; }
+}
 .result-unit { display: inline-block; white-space: nowrap; }
 .target-action { display: block; }
 .target-action + .target-action { margin-top: .25rem; }
@@ -141,8 +222,134 @@ main [role="region"][tabindex="0"]:focus-visible {
 }
 
 
-/* Light-mode editable fields must look editable, not disabled. Preserve
-   readonly, disabled, transparent inline inputs, sliders and dark mode. */
+/* Shared tool workspace. No clinical calculator component styles are changed. */
+html:not(.dark) body { background-color: var(--pt-page); }
+#desktop-sidebar { background-color: var(--pt-surface); border-color: var(--pt-border); }
+.pt-sidebar-workspace { display: grid; gap: .15rem; }
+.pt-sidebar-label {
+  margin: 1rem 0 .3rem; padding: 0 .6rem; color: var(--pt-muted);
+  font-size: .66rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase;
+}
+.pt-sidebar-label:first-child { margin-top: 0; }
+.pt-sidebar-option {
+  display: flex; align-items: center; gap: .6rem; min-height: 40px; width: 100%;
+  padding: .5rem .7rem; border: 1px solid transparent; border-radius: .6rem;
+  background: transparent; color: var(--pt-muted); text-align: left;
+  font-size: .82rem; font-weight: 550; cursor: pointer;
+}
+.pt-sidebar-symbol { display: inline-flex; align-items: center; justify-content: center; width: 1.2rem; color: var(--pt-accent); font-size: .85rem; }
+.pt-sidebar-option:hover, .pt-sidebar-footer-link:hover { background: var(--pt-soft); color: var(--pt-ink); }
+.pt-sidebar-option[aria-pressed="true"] { background: var(--pt-soft); color: var(--pt-accent); font-weight: 750; }
+.pt-sidebar-results { margin-top: .75rem; padding-top: .7rem; border-top: 1px solid var(--pt-border); }
+.pt-sidebar-results-title { padding: 0 .6rem; margin-bottom: .45rem; font-size: .69rem; font-weight: 700; color: var(--pt-muted); }
+.pt-sidebar-list { display: grid; gap: .15rem; }
+.pt-sidebar-tool-entry { display: flex; min-width: 0; align-items: center; gap: .1rem; border-radius: .6rem; }
+.pt-sidebar-tool-entry:hover { background: var(--pt-soft); }
+.pt-sidebar-tool-link {
+  display: flex; flex: 1; min-width: 0; align-items: center; min-height: 38px;
+  padding: .4rem .5rem .4rem .7rem; overflow-wrap: anywhere;
+  color: var(--pt-ink); font-size: .77rem; font-weight: 500; text-decoration: none;
+}
+.pt-sidebar-tool-link:hover { color: var(--pt-accent); }
+.pt-sidebar-tool-link[aria-current="page"] {
+  color: var(--pt-accent); font-weight: 750;
+}
+.pt-sidebar-footer { display: grid; gap: .15rem; margin-top: .7rem; padding-top: .7rem; border-top: 1px solid var(--pt-border); }
+.pt-sidebar-footer-link { padding: .55rem .7rem; color: var(--pt-muted); border-radius: .6rem; font-size: .78rem; text-decoration: none; }
+.pt-sidebar-empty { padding: .6rem .7rem; color: var(--pt-muted); font-size: .77rem; line-height: 1.55; }
+.pt-favorite-button {
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  width: 36px; height: 36px; border-radius: .55rem; border: 1px solid transparent;
+  background: transparent; color: var(--pt-muted); cursor: pointer;
+}
+.pt-favorite-button:hover { color: var(--pt-accent); background: var(--pt-soft); }
+.pt-favorite-button[aria-pressed="true"] { color: var(--pt-accent); }
+.pt-favorite-button[aria-pressed="true"] svg { fill: var(--pt-accent); }
+.pt-favorite-button:focus-visible, .pt-sidebar-option:focus-visible,
+.pt-sidebar-tool-link:focus-visible, .pt-mobile-workspace-toggle:focus-visible,
+.pt-mobile-workspace-tabs button:focus-visible {
+  outline: 2px solid var(--pt-focus); outline-offset: 2px;
+}
+.pt-sidebar-star { width: 32px; height: 34px; }
+.pt-header-favorite { width: 38px; height: 38px; }
+.pt-header-favorite[hidden] { display: none; }
+.pt-favorite-card-wrap { position: relative; }
+.pt-favorite-card-wrap .calculator-directory-row { padding-right: 3rem; }
+.pt-favorite-card-wrap .calculator-directory-chevron { display: none; }
+.pt-favorite-card-wrap .pt-card-star {
+  position: absolute; top: 50%; right: .6rem; transform: translateY(-50%);
+  width: 36px; height: 36px; z-index: 1;
+}
+.pt-mobile-workspace-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; flex-shrink: 0; border: 0; border-radius: .6rem;
+  color: var(--pt-ink); background: transparent;
+}
+.pt-mobile-workspace-toggle:hover, .pt-mobile-workspace-toggle[aria-expanded="true"] { background: var(--pt-soft); }
+.pt-mobile-workspace-panel {
+  position: fixed; top: calc(var(--header-height) + .45rem); right: .75rem; left: .75rem;
+  max-width: 430px; margin-left: auto; z-index: 60;
+  padding: .75rem; border: 1px solid var(--pt-border); border-radius: .9rem;
+  background: var(--pt-surface); color: var(--pt-ink);
+  box-shadow: 0 12px 40px rgb(15 23 42 / 16%);
+  max-height: min(65vh, 480px); overflow-y: auto;
+}
+.pt-mobile-workspace-panel[hidden] { display: none; }
+.pt-mobile-workspace-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; margin-bottom: .6rem; }
+.pt-mobile-workspace-tabs button {
+  min-height: 42px; border-radius: .5rem; padding: .4rem; font-size: .79rem;
+  color: var(--pt-muted); background: var(--pt-soft);
+}
+.pt-mobile-workspace-tabs button[aria-pressed="true"] { color: #fff; background: #216e9d; font-weight: 700; }
+.pt-mobile-workspace-results { display: grid; gap: .2rem; }
+.pt-mobile-workspace-item { display: flex; align-items: center; border-bottom: 1px solid var(--pt-border); }
+.pt-mobile-workspace-item:last-child { border-bottom: 0; }
+.pt-mobile-workspace-item a {
+  display: flex; align-items: center; flex: 1; min-height: 44px;
+  padding: .6rem .55rem; color: var(--pt-ink); font-size: .84rem;
+}
+.pt-mobile-workspace-item a:hover { color: var(--pt-accent); }
+@media (min-width: 768px) {
+  .pt-mobile-workspace-toggle, .pt-mobile-workspace-panel { display: none !important; }
+}
+@media (max-width: 389px) {
+  .pt-brand-copy small { display: none; }
+  .pt-header-favorite, .pt-mobile-workspace-toggle { width: 34px; }
+}
+
+
+/* Category detail appears immediately below the expanded category, rather
+   than in a second results area at the end of the sidebar. */
+.pt-sidebar-inline-results {
+  margin: .15rem 0 .5rem .45rem;
+  padding: .25rem 0 .3rem .55rem;
+  border-left: 2px solid var(--pt-border);
+}
+.pt-sidebar-option[aria-expanded="true"] {
+  background: var(--pt-soft);
+  color: var(--pt-primary-hover);
+  font-weight: 700;
+}
+.pt-sidebar-option:hover { background: #f0f6fc; color: #216e9d; }
+.dark .pt-sidebar-option:hover { background: var(--pt-soft); color: var(--pt-accent); }
+.pt-sidebar-results-title { margin-bottom: .25rem; padding: 0 .45rem; }
+.pt-sidebar-tool-link { min-height: 40px; padding-left: .45rem; }
+.pt-sidebar-tool-entry:hover { background: #f1f7fc; }
+.dark .pt-sidebar-tool-entry:hover { background: var(--pt-soft); }
+.pt-sidebar-footer { margin-top: .65rem; padding-top: .55rem; }
+.pt-sidebar-footer-link {
+  display: flex; align-items: center; gap: .6rem; min-height: 40px;
+  padding: .5rem .7rem; border: 1px solid transparent;
+  border-radius: .6rem; color: var(--pt-muted); font-size: .82rem;
+  font-weight: 550; text-decoration: none;
+}
+.pt-sidebar-footer-link[aria-current="page"] {
+  background: var(--pt-soft); color: var(--pt-primary-hover); font-weight: 700;
+}
+.pt-sidebar-footer-link .pt-sidebar-symbol { color: var(--pt-accent); }
+
+/* Editable fields (e.g. BSA and LBM height/weight) are white.
+   Preserve unavailable/derived controls, ranges and inline transparent fields. */
 html:not(.dark) :is(
   input:not([type]), input[type="number"], input[type="text"],
   input[type="search"], input[type="date"], input[type="time"],
@@ -151,4 +358,122 @@ html:not(.dark) :is(
 ):not(:disabled):not([readonly]):not([aria-readonly="true"]):not(.bg-transparent) {
   background-color: #fff;
   color: #0f172a;
+}
+
+
+/* Consistent site shell and static header across the calculator directory.
+   The shell must fill the shared outer width rather than shrink-wrap narrow
+   calculators; content has the same max width and horizontal starting point. */
+.pt-app-shell { width: 100%; min-width: 0; }
+.pt-app-shell > main {
+  width: 100%;
+  max-width: 56rem;
+  min-width: 0;
+  margin-inline: auto;
+}
+header .pt-header-inner { position: relative; width: 100%; }
+@media (min-width: 768px) {
+  header .pt-header-inner > .pt-primary-nav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .25rem;
+    white-space: nowrap;
+  }
+}
+.pt-primary-nav .pt-nav-link {
+  min-height: 44px;
+  padding: .55rem .85rem;
+  font-size: 1rem;
+  font-weight: 650;
+  color: var(--pt-muted);
+  border-radius: .6rem;
+}
+.pt-primary-nav .pt-nav-link:hover,
+.pt-primary-nav .pt-nav-link:focus-visible { color: var(--pt-primary); background: var(--pt-soft); }
+.pt-primary-nav .pt-nav-link[aria-current="page"] { color: var(--pt-primary); background: var(--pt-soft); }
+@media (min-width: 768px) {
+  .pt-brand-copy strong { font-size: 1.075rem; }
+  .pt-brand-copy small { font-size: .61rem; }
+}
+.pt-sidebar-label { font-size: .72rem; }
+.pt-sidebar-option, .pt-sidebar-footer-link { font-size: .92rem; line-height: 1.4; }
+.pt-sidebar-tool-link { font-size: .87rem; line-height: 1.4; }
+.pt-sidebar-results-title, .pt-sidebar-empty { font-size: .8rem; }
+.pt-sidebar-option { min-height: 44px; }
+.pt-sidebar-footer-link { min-height: 44px; }
+.pt-home .pt-description { font-size: .95rem; }
+.pt-home .calculator-directory-row .text-sm { font-size: .94rem; }
+.pt-home .calculator-directory-row .text-xs { font-size: .82rem; }
+.pt-search-label { font-size: .94rem; }
+.pt-search-field input { font-size: 1rem; }
+.pt-app-shell > main :is(p, label).text-sm { font-size: .95rem; }
+.pt-app-shell > main :is(p, label).text-xs { font-size: .81rem; }
+
+/* Animated expandable category content, without library dependencies.
+   The actual animation is triggered when the panel changes parent in JS. */
+.pt-sidebar-inline-results {
+  overflow: clip;
+  transform-origin: top;
+  will-change: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pt-sidebar-inline-results { transition: none; animation: none; }
+}
+
+
+/* The animated logo stays on the left; the bookmark and theme controls form
+   a stable right-hand cluster on all calculator and landing pages. */
+header .pt-header-inner { display: flex; justify-content: flex-start; align-items: center; gap: .25rem; }
+header .pt-header-inner > .pt-brand { margin-right: auto; }
+header .pt-header-inner > #theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  border-radius: 50%;
+}
+header .pt-header-inner > #theme-toggle:hover { background-color: var(--pt-soft); color: var(--pt-accent); }
+.pt-app-shell > #desktop-sidebar {
+  align-self: start;
+  height: calc(100dvh - var(--header-height));
+  max-height: calc(100dvh - var(--header-height));
+  overflow-y: auto;
+}
+@media (max-width: 767px) {
+  header .pt-header-inner > #theme-toggle { flex-basis: 38px; width: 38px; height: 38px; }
+}
+
+/* Keep dynamic header actions as one non-shrinking flex group.
+   Centered desktop links never share a flex track with the favorite star. */
+header .pt-header-inner > .pt-header-controls {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .15rem;
+  margin-left: auto;
+  position: relative;
+  z-index: 1;
+}
+header .pt-header-controls > #theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  border-radius: 50%;
+}
+header .pt-header-controls > #theme-toggle:hover {
+  background: var(--pt-soft);
+  color: var(--pt-accent);
+}
+@media (max-width: 767px) {
+  header .pt-header-controls > #theme-toggle { flex-basis: 38px; width: 38px; height: 38px; }
 }

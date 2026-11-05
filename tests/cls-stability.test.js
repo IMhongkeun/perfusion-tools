@@ -52,25 +52,39 @@ const bsaHeader = bsa.slice(bsa.indexOf('<header'), bsa.indexOf('</header>') + '
 assert.strictEqual((bsaHeader.match(/<nav(?:\s|>)/g) || []).length, 1, 'BSA should contain one desktop header navigation landmark.');
 assert(!bsaHeader.includes('id="global-top-nav"'), 'BSA should not contain an inert standalone navigation placeholder.');
 assert(
-  bsaHeader.indexOf('id="nav-home"') !== -1 && bsaHeader.indexOf('id="nav-home"') < bsaHeader.indexOf('id="theme-toggle"'),
-  'BSA should retain its complete first-paint navigation before the theme control.'
+  bsaHeader.includes('href="/#all-calculators-heading"') &&
+  bsaHeader.includes('href="/quick-reference/"') &&
+  bsaHeader.indexOf('href="/#all-calculators-heading"') < bsaHeader.indexOf('id="theme-toggle"') &&
+  !bsaHeader.includes('id="nav-bsa"'),
+  'BSA should retain one concise first-paint desktop navigation, separate from calculator links.'
 );
 
-const placeholderPages = [
-  'cannula-pressure-drop/index.html', 'gdp/index.html',
-  'heparin/index.html', 'lbm/index.html', 'phn-echo/index.html',
-  'predicted-hct/index.html', 'priming-volume/index.html',
-  'quick-reference/index.html', 'timecalc/index.html',
-  'unit-converter/index.html', 'z-score/index.html'
+const sharedPages = [
+  'index.html', 'bsa/index.html', 'lbm/index.html', 'gdp/index.html',
+  'heparin/index.html', 'predicted-hct/index.html',
+  'priming-volume/index.html', 'timecalc/index.html',
+  'z-score/index.html',
+  'quick-reference/index.html', 'cannula-pressure-drop/index.html',
+  'unit-converter/index.html'
 ];
-placeholderPages.forEach(relativePath => {
+// Legacy /phn-echo/ is a redirect to /z-score/ and is not built as an HTML page.
+const redirectRules = read('_redirects');
+assert(/\/phn-echo\/\s+\/z-score\/\s+301/.test(redirectRules),
+  'Legacy pediatric echo remains redirected to the canonical Z-score calculator.');
+const homeNav = home.match(/<nav class="pt-primary-nav[^"]*"[\s\S]*?<\/nav>/)?.[0];
+assert(homeNav, 'Home must render the complete desktop navigation at first paint.');
+for (const relativePath of sharedPages) {
   const html = read(relativePath);
-  assert(
-    html.includes('id="global-top-nav"') && html.indexOf('id="global-top-nav"') < html.indexOf('id="theme-toggle"'),
-    `${relativePath} should reserve one desktop navigation slot before the theme control.`
-  );
-  assert.strictEqual((html.match(/id="global-top-nav"/g) || []).length, 1, `${relativePath} should not contain duplicate top navigation.`);
-});
+  const header = html.slice(html.indexOf('<header'), html.indexOf('</header>') + '</header>'.length);
+  const nav = header.match(/<nav class="pt-primary-nav[^"]*"[\s\S]*?<\/nav>/)?.[0];
+  assert.strictEqual(nav, homeNav, relativePath + ': first-paint desktop nav must be identical to Home.');
+  assert.strictEqual((header.match(/<nav(?:\s|>)/g) || []).length, 1,
+    relativePath + ': exactly one desktop navigation landmark.');
+  assert(header.includes('pt-header-inner'), relativePath + ': common header alignment');
+  assert(html.includes('pt-app-shell'), relativePath + ': full-width common page shell');
+  assert(html.includes('animate-pulse-flow'), relativePath + ': animated brand stays present');
+  assert(!header.includes('id="global-top-nav"'), relativePath + ': no late-mounted desktop placeholder');
+}
 
 const mainJs = read('main.js');
 assert(
@@ -79,6 +93,15 @@ assert(
   mainJs.includes("if (!nav) {") && mainJs.includes("headerRow.insertBefore(nav, themeBtn)"),
   'Fallback navigation should retain matching sizing and only insert when the placeholder is absent.'
 );
+
+const homeHeader = home.slice(home.indexOf('<header'), home.indexOf('</header>') + '</header>'.length);
+assert(homeHeader.includes('href="/#all-calculators-heading"') && homeHeader.includes('href="/quick-reference/"'),
+  'Home top navigation should contain Calculators and Clinical Reference.');
+assert(!homeHeader.includes('id="nav-bsa"') && !homeHeader.includes('id="nav-home"'),
+  'The homepage top navigation should not duplicate the left-side tool directory.');
+assert(mainJs.includes('const desktopItems = [') && mainJs.includes('MOBILE_CALCULATOR_ROUTES = new Set(TOP_NAV_ITEMS'),
+  'Desktop simplification must not remove established mobile calculator routes.');
+
 assert(
   mainJs.includes("document.documentElement.classList.remove('root-route-pending')") &&
   mainJs.includes('renderInitialHomeDiscovery();'),
@@ -90,9 +113,10 @@ const discoveryBlock = mainJs.slice(
   mainJs.indexOf('\nfunction initCalculatorDiscovery()')
 );
 function createDiscoveryHarness(isInitialHome) {
-  const calls = { directory: 0, recent: 0 };
+  const calls = { featured: 0, directory: 0, recent: 0 };
   const context = {
     isHomeCalculatorDirectoryContext: () => isInitialHome,
+    renderFeaturedCalculators: () => { calls.featured += 1; },
     renderCalculatorDirectory: () => { calls.directory += 1; },
     renderRecentCalculators: () => { calls.recent += 1; }
   };
@@ -104,14 +128,14 @@ function createDiscoveryHarness(isInitialHome) {
 const initialHomeHarness = createDiscoveryHarness(true);
 initialHomeHarness.renderHome();
 initialHomeHarness.renderHome();
-assert.deepStrictEqual(initialHomeHarness.calls, { directory: 1, recent: 1 }, 'Initial Home discovery should render once during startup.');
+assert.deepStrictEqual(initialHomeHarness.calls, { featured: 1, directory: 1, recent: 1 }, 'Initial Home discovery should render once during startup.');
 
 const informationalHarness = createDiscoveryHarness(false);
 informationalHarness.renderHome();
-assert.deepStrictEqual(informationalHarness.calls, { directory: 0, recent: 0 }, 'Informational startup must not render inactive Home discovery.');
+assert.deepStrictEqual(informationalHarness.calls, { featured: 0, directory: 0, recent: 0 }, 'Informational startup must not render inactive Home discovery.');
 informationalHarness.renderHome(true);
 informationalHarness.renderHome(true);
-assert.deepStrictEqual(informationalHarness.calls, { directory: 1, recent: 1 }, 'First SPA visit to Home should populate discovery exactly once.');
+assert.deepStrictEqual(informationalHarness.calls, { featured: 1, directory: 1, recent: 1 }, 'First SPA visit to Home should populate discovery exactly once.');
 
 assert(
   mainJs.includes("document.documentElement.classList.remove('initial-home-route');") &&
