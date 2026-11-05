@@ -1,47 +1,47 @@
 /* Shared presentation rules for the existing static calculators. */
 /* PerfusionTools visual foundation. Existing calculator layouts keep their markup. */
 :root {
-  --pt-page: #f8f7f2;
+  --pt-page: #f5f8ff;
   --pt-surface: #fff;
-  --pt-ink: #243f3a;
-  --pt-muted: #52675f;
-  --pt-primary: #24443f;
-  --pt-primary-hover: #315c54;
-  --pt-accent: #35695c;
-  --pt-soft: #e8efe7;
-  --pt-border: #d7e2d8;
-  --pt-focus: #286d5c;
-  --pt-disabled: #e5ebe5;
-  --pt-status: #35695c;
-  --pt-shadow: 0 3px 16px rgb(25 55 44 / 5%);
+  --pt-ink: #0f172a;
+  --pt-muted: #52637a;
+  --pt-primary: #1d4ed8;
+  --pt-primary-hover: #1e40af;
+  --pt-accent: #2563eb;
+  --pt-soft: #eaf1ff;
+  --pt-border: #d7e2f4;
+  --pt-focus: #2563eb;
+  --pt-disabled: #e2e8f0;
+  --pt-status: #2563eb;
+  --pt-shadow: 0 4px 14px rgb(15 23 42 / 5%);
   --pt-radius: .875rem;
   --pt-space: 1rem;
   --pt-content-width: 72rem;
 }
 .dark {
-  --pt-page: #101d1b;
-  --pt-surface: #1b2c29;
-  --pt-ink: #f1f6f1;
-  --pt-muted: #c1d0c8;
-  --pt-primary: #d9e9df;
-  --pt-primary-hover: #b8d6c5;
-  --pt-accent: #a8d4bc;
-  --pt-soft: #274038;
-  --pt-border: #426056;
-  --pt-focus: #a8d4bc;
-  --pt-disabled: #34453f;
-  --pt-status: #a8d4bc;
-  --pt-shadow: 0 3px 16px rgb(0 0 0 / 12%);
+  --pt-page: #0b1220;
+  --pt-surface: #111e33;
+  --pt-ink: #f1f5f9;
+  --pt-muted: #b8c7d9;
+  --pt-primary: #60a5fa;
+  --pt-primary-hover: #93c5fd;
+  --pt-accent: #67e8f9;
+  --pt-soft: #192c49;
+  --pt-border: #354760;
+  --pt-focus: #67e8f9;
+  --pt-disabled: #334155;
+  --pt-status: #67e8f9;
+  --pt-shadow: 0 4px 14px rgb(0 0 0 / 16%);
 }
 .pt-surface { background: var(--pt-surface); color: var(--pt-ink); border: 1px solid var(--pt-border); border-radius: var(--pt-radius); box-shadow: var(--pt-shadow); }
 .pt-section-title { color: var(--pt-ink); font-size: clamp(1.4rem, 2.5vw, 2rem); line-height: 1.2; font-weight: 700; letter-spacing: -.025em; }
 .pt-description { color: var(--pt-muted); line-height: 1.6; }
 .pt-eyebrow { color: var(--pt-accent); font-size: .72rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
 .pt-button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: .65rem 1.1rem; border: 1px solid transparent; border-radius: .65rem; font-size: .875rem; font-weight: 650; text-align: center; transition: background-color .15s ease, border-color .15s ease, color .15s ease; }
-.pt-button-primary { background: #24443f; color: #fff; }
-.pt-button-primary:hover { background: #315c54; }
-.dark .pt-button-primary { background: #a8d4bc; color: #10231d; }
-.dark .pt-button-primary:hover { background: #c5e4d0; }
+.pt-button-primary { background: #1d4ed8; color: #fff; }
+.pt-button-primary:hover { background: #1e40af; }
+.dark .pt-button-primary { background: #60a5fa; color: #0b1220; }
+.dark .pt-button-primary:hover { background: #93c5fd; }
 .pt-button-secondary { background: var(--pt-surface); color: var(--pt-ink); border-color: var(--pt-border); }
 .pt-button-secondary:hover, .pt-nav-link:hover, .pt-tool-card:hover { background: var(--pt-soft); }
 .pt-tool-card { display: flex; align-items: center; gap: .85rem; min-height: 72px; padding: .85rem; background: var(--pt-surface); color: var(--pt-ink); border: 1px solid var(--pt-border); border-radius: var(--pt-radius); transition: background-color .15s ease, border-color .15s ease; }
