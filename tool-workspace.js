@@ -27,7 +27,6 @@
   let selectedView = 'none';
   let lastRenderedView = null;
   let sidebarResults = null;
-  let sidebarTitle = null;
   let sidebarPanel = null;
   let sidebarButtons = [];
   let originalSidebarLinks = new Map();
@@ -201,15 +200,12 @@
     results.id = 'pt-sidebar-inline-panel';
     results.className = 'pt-sidebar-results pt-sidebar-inline-results';
     results.setAttribute('aria-label', 'Expanded calculator list');
-    const title = document.createElement('p');
-    title.className = 'pt-sidebar-results-title';
     const list = document.createElement('div');
     list.id = 'pt-sidebar-result-list';
     list.className = 'pt-sidebar-list';
-    results.append(title, list);
+    results.appendChild(list);
     nav.appendChild(results);
     sidebarResults = list;
-    sidebarTitle = title;
     sidebarPanel = results;
 
     aside.replaceChildren(nav);
@@ -217,7 +213,7 @@
   }
 
   function renderSidebar() {
-    if (!sidebarResults || !sidebarTitle || !sidebarPanel) return;
+    if (!sidebarResults || !sidebarPanel) return;
     let activeButton = null;
     sidebarButtons.forEach(button => {
       const expanded = button.getAttribute('data-pt-sidebar-view') === selectedView;
@@ -236,9 +232,6 @@
       return;
     }
     const items = selectedTools();
-    const choice = categories.find(category => category.key === selectedView);
-    const label = choice ? choice.label : (selectedView === 'favorites' ? 'Favorites' : 'Recently used');
-    sidebarTitle.textContent = label;
     const rows = items.map(tool => toolEntry(tool, originalSidebarLinks.get(tool.path)));
     sidebarResults.replaceChildren(...rows);
     if (!rows.length) {

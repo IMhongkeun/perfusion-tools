@@ -234,10 +234,11 @@ for (const href of ['/', '/research/', '/info/']) {
   assert(!workspaceNav.descendants().some(item => item.tagName === 'A' && item.getAttribute('href') === href),
     href + ' belongs in the header, not the sidebar');
 }
-const sidebarTitle = workspaceNav.descendants().find(item => item.className === 'pt-sidebar-results-title');
-for (const [option, expected] of [[flowOption, 'Flow & Oxygenation'], [favoriteOption, 'Favorites']]) {
+assert(!workspaceNav.descendants().some(item => item.className === 'pt-sidebar-results-title'),
+  'Expanded lists should not repeat category names above their items.');
+for (const option of [flowOption, favoriteOption]) {
   option.handlers.click[0]();
-  assert.equal(sidebarTitle.textContent, expected, 'Expanded category titles should omit counts.');
+  assert.equal(accordion.children.length, 1, 'Expanded lists should contain only the item list.');
 }
 uiWindow.matchMedia = () => ({ matches: true });
 const recentOption = buttons.find(item => item.getAttribute('data-pt-sidebar-view') === 'recent');

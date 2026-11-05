@@ -241,7 +241,6 @@ html:not(.dark) body { background-color: var(--pt-page); }
 .pt-sidebar-option:hover { background: var(--pt-soft); color: var(--pt-ink); }
 .pt-sidebar-option[aria-pressed="true"] { background: var(--pt-soft); color: var(--pt-accent); font-weight: 750; }
 .pt-sidebar-results { margin-top: .75rem; padding-top: .7rem; border-top: 1px solid var(--pt-border); }
-.pt-sidebar-results-title { padding: 0 .6rem; margin-bottom: .45rem; font-size: .69rem; font-weight: 700; color: var(--pt-muted); }
 .pt-sidebar-list { display: grid; gap: .15rem; }
 .pt-sidebar-tool-entry { display: flex; min-width: 0; align-items: center; gap: .1rem; border-radius: .6rem; }
 .pt-sidebar-tool-entry:hover { background: var(--pt-soft); }
@@ -330,7 +329,6 @@ html:not(.dark) body { background-color: var(--pt-page); }
 }
 .pt-sidebar-option:hover { background: #f0f6fc; color: #216e9d; }
 .dark .pt-sidebar-option:hover { background: var(--pt-soft); color: var(--pt-accent); }
-.pt-sidebar-results-title { margin-bottom: .25rem; padding: 0 .45rem; }
 .pt-sidebar-tool-link { min-height: 40px; padding-left: .45rem; }
 .pt-sidebar-tool-entry:hover { background: #f1f7fc; }
 .dark .pt-sidebar-tool-entry:hover { background: var(--pt-soft); }
@@ -413,7 +411,7 @@ header .pt-header-inner { position: relative; width: 100%; }
 .pt-sidebar-label { font-size: .72rem; }
 .pt-sidebar-option { font-size: .92rem; line-height: 1.4; }
 .pt-sidebar-tool-link { font-size: .87rem; line-height: 1.4; }
-.pt-sidebar-results-title, .pt-sidebar-empty { font-size: .8rem; }
+.pt-sidebar-empty { font-size: .8rem; }
 .pt-sidebar-option { min-height: 44px; }
 .pt-home .pt-description { font-size: .95rem; }
 .pt-home .calculator-directory-row .text-sm { font-size: .94rem; }
