@@ -360,7 +360,11 @@
       const opening = panel.hidden;
       panel.hidden = !opening;
       button.setAttribute('aria-expanded', String(opening));
-      if (opening) mobileLinks();
+      if (opening) {
+        mobileLinks();
+        const firstTab = panel.querySelector('[data-pt-mobile-view="favorites"]');
+        if (firstTab) firstTab.focus();
+      }
     });
     document.addEventListener('click', event => {
       if (!panel.hidden && !panel.contains(event.target) && !button.contains(event.target)) {
@@ -387,9 +391,14 @@
     // The SPA can populate Home when navigating back from an informational view.
     const home = document.getElementById('view-home');
     if (home && typeof MutationObserver !== 'undefined') {
-      const observer = new MutationObserver(() => decorateHomeCards());
+      const observer = new MutationObserver(() => refreshWorkspace());
       observer.observe(home, { childList: true, subtree: true });
     }
+    document.addEventListener('click', event => {
+      if (event.target.closest('#clear-recent-calculators')) {
+        window.setTimeout(refreshWorkspace, 0);
+      }
+    });
     window.addEventListener('pageshow', refreshWorkspace);
     window.addEventListener('popstate', refreshWorkspace);
     window.addEventListener('storage', event => {
