@@ -44,6 +44,8 @@ for (const file of pages) {
     assert(headerNav.includes('href="' + href + '"'), file + ': missing header link to ' + href);
   }
   assert(html.includes('pt-header-pages lg:hidden'), file + ': missing narrow-screen page menu');
+  assert(/<a href="\/"[^>]*id="brand-home"[^>]*class="pt-brand"/.test(html),
+    file + ': the brand icon and name should link to Home');
 }
 const researchHtml = fs.readFileSync(path.join(root, 'research/index.html'), 'utf8');
 assert(researchHtml.indexOf('id="week-2026-11-01"') < researchHtml.indexOf('id="week-2026-10-25"'),
@@ -108,6 +110,8 @@ routeContext.window.location.hash = '#all-calculators-heading';
 assert.equal(routeContext.getActivePath(), '/', 'All Calculators section must preserve the Home route.');
 assert(mainSource.includes("['#all-calculators-heading', '#featured-tools-heading'].includes(window.location.hash)"),
   'Scroll reset should preserve both Home section anchors.');
+assert(mainSource.includes("link.id === 'brand-home'"),
+  'Returning Home through the brand should scroll to the top.');
 
 
 // Exercise the actual desktop accordion with a minimal DOM harness rather

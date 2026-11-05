@@ -9984,7 +9984,7 @@ window.addEventListener('DOMContentLoaded', () => {
           return;
         }
         e.preventDefault();
-        const shouldResetScrollTop = link.classList.contains('nav-link');
+        const shouldResetScrollTop = link.classList.contains('nav-link') || link.id === 'brand-home';
         navigateTo(href, { resetScrollTop: shouldResetScrollTop });
       }
     });
