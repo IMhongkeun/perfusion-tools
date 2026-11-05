@@ -52,8 +52,11 @@ const bsaHeader = bsa.slice(bsa.indexOf('<header'), bsa.indexOf('</header>') + '
 assert.strictEqual((bsaHeader.match(/<nav(?:\s|>)/g) || []).length, 1, 'BSA should contain one desktop header navigation landmark.');
 assert(!bsaHeader.includes('id="global-top-nav"'), 'BSA should not contain an inert standalone navigation placeholder.');
 assert(
-  bsaHeader.indexOf('id="nav-home"') !== -1 && bsaHeader.indexOf('id="nav-home"') < bsaHeader.indexOf('id="theme-toggle"'),
-  'BSA should retain its complete first-paint navigation before the theme control.'
+  bsaHeader.includes('href="/#all-calculators-heading"') &&
+  bsaHeader.includes('href="/quick-reference/"') &&
+  bsaHeader.indexOf('href="/#all-calculators-heading"') < bsaHeader.indexOf('id="theme-toggle"') &&
+  !bsaHeader.includes('id="nav-bsa"'),
+  'BSA should retain one concise first-paint desktop navigation, separate from calculator links.'
 );
 
 const placeholderPages = [
@@ -79,6 +82,15 @@ assert(
   mainJs.includes("if (!nav) {") && mainJs.includes("headerRow.insertBefore(nav, themeBtn)"),
   'Fallback navigation should retain matching sizing and only insert when the placeholder is absent.'
 );
+
+const homeHeader = home.slice(home.indexOf('<header'), home.indexOf('</header>') + '</header>'.length);
+assert(homeHeader.includes('href="/#all-calculators-heading"') && homeHeader.includes('href="/quick-reference/"'),
+  'Home top navigation should contain Calculators and Clinical Reference.');
+assert(!homeHeader.includes('id="nav-bsa"') && !homeHeader.includes('id="nav-home"'),
+  'The homepage top navigation should not duplicate the left-side tool directory.');
+assert(mainJs.includes('const desktopItems = [') && mainJs.includes('MOBILE_CALCULATOR_ROUTES = new Set(TOP_NAV_ITEMS'),
+  'Desktop simplification must not remove established mobile calculator routes.');
+
 assert(
   mainJs.includes("document.documentElement.classList.remove('root-route-pending')") &&
   mainJs.includes('renderInitialHomeDiscovery();'),

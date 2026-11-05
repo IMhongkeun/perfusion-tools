@@ -24,9 +24,10 @@
 
   let inMemoryFavorites = [];
   let storageWriteFailed = false;
-  let selectedView = 'all';
+  let selectedView = 'none';
   let sidebarResults = null;
   let sidebarTitle = null;
+  let sidebarPanel = null;
   let sidebarButtons = [];
   let originalSidebarLinks = new Map();
   let mobilePanel = null;
@@ -155,9 +156,14 @@
     const name = document.createElement('span');
     name.textContent = label;
     button.append(symbol, name);
+    button.setAttribute('aria-controls', 'pt-sidebar-inline-panel');
+    button.setAttribute('aria-expanded', 'false');
     button.addEventListener('click', () => {
-      selectedView = key;
-      try { window.sessionStorage.setItem(sidebarStorageKey, key); } catch (_) {}
+      selectedView = selectedView === key ? 'none' : key;
+      try {
+        if (selectedView === 'none') window.sessionStorage.removeItem(sidebarStorageKey);
+        else window.sessionStorage.setItem(sidebarStorageKey, selectedView);
+      } catch (_) {}
       renderSidebar();
     });
     sidebarButtons.push(button);
@@ -193,8 +199,9 @@
     nav.appendChild(sidebarOption('recent', 'Recently used', '◷'));
 
     const results = document.createElement('section');
-    results.className = 'pt-sidebar-results';
-    results.setAttribute('aria-label', 'Selected calculator list');
+    results.id = 'pt-sidebar-inline-panel';
+    results.className = 'pt-sidebar-results pt-sidebar-inline-results';
+    results.setAttribute('aria-label', 'Expanded calculator list');
     const title = document.createElement('p');
     title.className = 'pt-sidebar-results-title';
     const list = document.createElement('div');
@@ -204,30 +211,47 @@
     nav.appendChild(results);
     sidebarResults = list;
     sidebarTitle = title;
+    sidebarPanel = results;
 
     const links = document.createElement('div');
     links.className = 'pt-sidebar-footer';
-    if (homeLink) {
-      homeLink.className = 'sidebar-link pt-sidebar-footer-link';
-      homeLink.textContent = 'Home';
-      links.appendChild(homeLink);
-    }
-    if (infoLink) {
-      infoLink.className = 'sidebar-link pt-sidebar-footer-link';
-      infoLink.textContent = 'About';
-      links.appendChild(infoLink);
-    }
+    const appendFooterLink = (link, label, symbol) => {
+      if (!link) return;
+      link.className = 'sidebar-link pt-sidebar-footer-link';
+      link.replaceChildren();
+      const icon = document.createElement('span');
+      icon.className = 'pt-sidebar-symbol';
+      icon.setAttribute('aria-hidden', 'true');
+      icon.textContent = symbol;
+      const text = document.createElement('span');
+      text.textContent = label;
+      link.append(icon, text);
+      links.appendChild(link);
+    };
+    appendFooterLink(homeLink, 'Home', '⌂');
+    appendFooterLink(infoLink, 'About', 'ⓘ');
     nav.appendChild(links);
     aside.replaceChildren(nav);
     renderSidebar();
   }
 
   function renderSidebar() {
-    if (!sidebarResults || !sidebarTitle) return;
+    if (!sidebarResults || !sidebarTitle || !sidebarPanel) return;
+    let activeButton = null;
     sidebarButtons.forEach(button => {
-      button.setAttribute('aria-pressed',
-        String(button.getAttribute('data-pt-sidebar-view') === selectedView));
+      const expanded = button.getAttribute('data-pt-sidebar-view') === selectedView;
+      button.setAttribute('aria-expanded', String(expanded));
+      button.setAttribute('aria-pressed', String(expanded));
+      if (expanded) activeButton = button;
     });
+    // The same list follows its category, Favorites, or Recently used trigger.
+    sidebarPanel.hidden = !activeButton;
+    if (activeButton) activeButton.after(sidebarPanel);
+    if (!activeButton) {
+      sidebarResults.replaceChildren();
+      updateStarStates();
+      return;
+    }
     const items = selectedTools();
     const choice = categories.find(category => category.key === selectedView);
     const label = choice ? choice.label : (selectedView === 'favorites' ? 'Favorites' : 'Recently used');

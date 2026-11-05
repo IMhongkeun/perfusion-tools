@@ -350,7 +350,7 @@ const TOP_NAV_ITEMS = [
 
 function initStandaloneTopNav() {
   // The integrated homepage already ships its own full top nav.
-  if (el('nav-home')) return;
+  if (document.querySelector('header .pt-primary-nav')) return;
 
   const headerRow = document.querySelector('header .max-w-7xl');
   const themeBtn = el('theme-toggle');
@@ -390,7 +390,12 @@ function initStandaloneTopNav() {
     return getLinkMarkup(item);
   };
 
-  nav.innerHTML = TOP_NAV_ITEMS.map(renderTopNavItem).join('');
+  // Desktop categories live in the sidebar; preserve TOP_NAV_ITEMS for mobile.
+  const desktopItems = [
+    { path: '/#all-calculators-heading', label: 'Calculators' },
+    { path: '/quick-reference/', label: 'Clinical Reference' }
+  ];
+  nav.innerHTML = desktopItems.map(renderTopNavItem).join('');
 
   attachTopNavOverflowArrow(nav, 'global-top-nav-next');
 }

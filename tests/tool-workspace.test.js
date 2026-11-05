@@ -10,6 +10,12 @@ const pages = ['index.html', 'bsa/index.html', 'gdp/index.html', 'heparin/index.
 assert.equal(js, fs.readFileSync(path.join(root, 'dist/tool-workspace.js'), 'utf8'));
 assert.equal(css, fs.readFileSync(path.join(root, 'dist/mobile.css'), 'utf8'));
 assert(css.includes('--pt-page: #ffffff;'));
+assert(css.includes('--pt-accent: #168c96;'), 'Light mode should use a subtle teal accent.');
+assert(css.includes('.pt-sidebar-inline-results'), 'Categories should render an inline sublist.');
+assert(css.includes(':not(:disabled):not([readonly]):not([aria-readonly="true"])'),
+  'White input rule must not misrepresent disabled or readonly calculator controls.');
+assert(js.includes('activeButton.after(sidebarPanel)'), 'Expanded tools should move immediately below the selected category.');
+assert(js.includes("selectedView === key ? 'none' : key"), 'Clicking an expanded category should collapse it.');
 for (const file of pages) {
   const html = fs.readFileSync(path.join(root, file), 'utf8');
   assert.equal(html, fs.readFileSync(path.join(root, 'dist', file), 'utf8'), file + ': source/dist mismatch');

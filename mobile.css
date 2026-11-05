@@ -5,14 +5,14 @@
   --pt-surface: #fff;
   --pt-ink: #0f172a;
   --pt-muted: #52637a;
-  --pt-primary: #1d4ed8;
-  --pt-primary-hover: #1e40af;
-  --pt-accent: #2563eb;
-  --pt-soft: #eaf1ff;
-  --pt-border: #d7e2f4;
-  --pt-focus: #2563eb;
+  --pt-primary: #127f88;
+  --pt-primary-hover: #0e6870;
+  --pt-accent: #168c96;
+  --pt-soft: #eaf7f6;
+  --pt-border: #dbe8e8;
+  --pt-focus: #168c96;
   --pt-disabled: #e2e8f0;
-  --pt-status: #2563eb;
+  --pt-status: #168c96;
   --pt-shadow: 0 4px 14px rgb(15 23 42 / 5%);
   --pt-radius: .875rem;
   --pt-space: 1rem;
@@ -23,14 +23,14 @@
   --pt-surface: #111e33;
   --pt-ink: #f1f5f9;
   --pt-muted: #b8c7d9;
-  --pt-primary: #60a5fa;
-  --pt-primary-hover: #93c5fd;
-  --pt-accent: #67e8f9;
-  --pt-soft: #192c49;
-  --pt-border: #354760;
-  --pt-focus: #67e8f9;
+  --pt-primary: #76d9d7;
+  --pt-primary-hover: #a4e5e2;
+  --pt-accent: #68d8d5;
+  --pt-soft: #17343a;
+  --pt-border: #34525a;
+  --pt-focus: #68d8d5;
   --pt-disabled: #334155;
-  --pt-status: #67e8f9;
+  --pt-status: #68d8d5;
   --pt-shadow: 0 4px 14px rgb(0 0 0 / 16%);
 }
 .pt-surface { background: var(--pt-surface); color: var(--pt-ink); border: 1px solid var(--pt-border); border-radius: var(--pt-radius); box-shadow: var(--pt-shadow); }
@@ -38,10 +38,10 @@
 .pt-description { color: var(--pt-muted); line-height: 1.6; }
 .pt-eyebrow { color: var(--pt-accent); font-size: .72rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
 .pt-button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: .65rem 1.1rem; border: 1px solid transparent; border-radius: .65rem; font-size: .875rem; font-weight: 650; text-align: center; transition: background-color .15s ease, border-color .15s ease, color .15s ease; }
-.pt-button-primary { background: #24443f; color: #fff; }
-.pt-button-primary:hover { background: #315c54; }
-.dark .pt-button-primary { background: #a8d4bc; color: #10231d; }
-.dark .pt-button-primary:hover { background: #c5e4d0; }
+.pt-button-primary { background: #127f88; color: #fff; }
+.pt-button-primary:hover { background: #0e6870; }
+.dark .pt-button-primary { background: #76d9d7; color: #0b1220; }
+.dark .pt-button-primary:hover { background: #a4e5e2; }
 .pt-button-secondary { background: var(--pt-surface); color: var(--pt-ink); border-color: var(--pt-border); }
 .pt-button-secondary:hover, .pt-nav-link:hover, .pt-tool-card:hover { background: var(--pt-soft); }
 .pt-tool-card { display: flex; align-items: center; gap: .85rem; min-height: 72px; padding: .85rem; background: var(--pt-surface); color: var(--pt-ink); border: 1px solid var(--pt-border); border-radius: var(--pt-radius); transition: background-color .15s ease, border-color .15s ease; }
@@ -84,7 +84,7 @@ html.initial-home-route #route-intro, .pt-home-active #route-intro { display: no
 .pt-art-ring { position: absolute; border: 1px solid #93b9eb; border-radius: 50%; }
 .pt-art-ring-outer { width: 150px; height: 150px; top: 2px; right: 5%; }
 .pt-art-ring-inner { width: 102px; height: 102px; top: 26px; right: calc(5% + 24px); background: rgb(255 255 255 / 32%); }
-.pt-art-line { position: absolute; top: 76px; right: 0; width: 95%; height: 2px; transform: rotate(-21deg); background: #2563eb; opacity: .5; }
+.pt-art-line { position: absolute; top: 76px; right: 0; width: 95%; height: 2px; transform: rotate(-21deg); background: #168c96; opacity: .45; }
 .pt-art-dot { position: absolute; width: 10px; height: 10px; border-radius: 50%; background: #06b6d4; }
 .pt-art-dot-one { top: 21px; right: calc(5% + 72px); }
 .pt-art-dot-two { top: 120px; right: 22%; }
@@ -300,7 +300,7 @@ html:not(.dark) body { background-color: var(--pt-page); }
   min-height: 42px; border-radius: .5rem; padding: .4rem; font-size: .79rem;
   color: var(--pt-muted); background: var(--pt-soft);
 }
-.pt-mobile-workspace-tabs button[aria-pressed="true"] { color: #fff; background: #2563eb; font-weight: 700; }
+.pt-mobile-workspace-tabs button[aria-pressed="true"] { color: #fff; background: #127f88; font-weight: 700; }
 .pt-mobile-workspace-results { display: grid; gap: .2rem; }
 .pt-mobile-workspace-item { display: flex; align-items: center; border-bottom: 1px solid var(--pt-border); }
 .pt-mobile-workspace-item:last-child { border-bottom: 0; }
@@ -315,4 +315,47 @@ html:not(.dark) body { background-color: var(--pt-page); }
 @media (max-width: 389px) {
   .pt-brand-copy small { display: none; }
   .pt-header-favorite, .pt-mobile-workspace-toggle { width: 34px; }
+}
+
+
+/* Category detail appears immediately below the expanded category, rather
+   than in a second results area at the end of the sidebar. */
+.pt-sidebar-inline-results {
+  margin: .15rem 0 .5rem .45rem;
+  padding: .25rem 0 .3rem .55rem;
+  border-left: 2px solid var(--pt-border);
+}
+.pt-sidebar-option[aria-expanded="true"] {
+  background: var(--pt-soft);
+  color: var(--pt-primary-hover);
+  font-weight: 700;
+}
+.pt-sidebar-option:hover { background: #f0f9f8; color: #127f88; }
+.dark .pt-sidebar-option:hover { background: var(--pt-soft); color: var(--pt-accent); }
+.pt-sidebar-results-title { margin-bottom: .25rem; padding: 0 .45rem; }
+.pt-sidebar-tool-link { min-height: 40px; padding-left: .45rem; }
+.pt-sidebar-tool-entry:hover { background: #f1f9f8; }
+.dark .pt-sidebar-tool-entry:hover { background: var(--pt-soft); }
+.pt-sidebar-footer { margin-top: .65rem; padding-top: .55rem; }
+.pt-sidebar-footer-link {
+  display: flex; align-items: center; gap: .6rem; min-height: 40px;
+  padding: .5rem .7rem; border: 1px solid transparent;
+  border-radius: .6rem; color: var(--pt-muted); font-size: .82rem;
+  font-weight: 550; text-decoration: none;
+}
+.pt-sidebar-footer-link[aria-current="page"] {
+  background: var(--pt-soft); color: var(--pt-primary-hover); font-weight: 700;
+}
+.pt-sidebar-footer-link .pt-sidebar-symbol { color: var(--pt-accent); }
+
+/* Editable fields (e.g. BSA and LBM height/weight) are white.
+   Preserve unavailable/derived controls, ranges and inline transparent fields. */
+html:not(.dark) :is(
+  input:not([type]), input[type="number"], input[type="text"],
+  input[type="search"], input[type="date"], input[type="time"],
+  input[type="datetime-local"], input[type="email"], input[type="tel"],
+  textarea, select
+):not(:disabled):not([readonly]):not([aria-readonly="true"]):not(.bg-transparent) {
+  background-color: #fff;
+  color: #0f172a;
 }
