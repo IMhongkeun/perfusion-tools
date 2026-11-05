@@ -63,10 +63,14 @@ const sharedPages = [
   'index.html', 'bsa/index.html', 'lbm/index.html', 'gdp/index.html',
   'heparin/index.html', 'predicted-hct/index.html',
   'priming-volume/index.html', 'timecalc/index.html',
-  'z-score/index.html', 'phn-echo/index.html',
+  'z-score/index.html',
   'quick-reference/index.html', 'cannula-pressure-drop/index.html',
   'unit-converter/index.html'
 ];
+// Legacy /phn-echo/ is a redirect to /z-score/ and is not built as an HTML page.
+const redirectRules = read('_redirects');
+assert(/\/phn-echo\/\s+\/z-score\/\s+301/.test(redirectRules),
+  'Legacy pediatric echo remains redirected to the canonical Z-score calculator.');
 const homeNav = home.match(/<nav class="pt-primary-nav[^"]*"[\s\S]*?<\/nav>/)?.[0];
 assert(homeNav, 'Home must render the complete desktop navigation at first paint.');
 for (const relativePath of sharedPages) {

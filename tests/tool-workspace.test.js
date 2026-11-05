@@ -6,7 +6,7 @@ const vm = require('node:vm');
 const root = path.join(__dirname, '..');
 const js = fs.readFileSync(path.join(root, 'tool-workspace.js'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'mobile.css'), 'utf8');
-const pages = ['index.html', 'bsa/index.html', 'gdp/index.html', 'heparin/index.html', 'predicted-hct/index.html', 'lbm/index.html', 'timecalc/index.html', 'z-score/index.html', 'quick-reference/index.html', 'cannula-pressure-drop/index.html', 'priming-volume/index.html', 'unit-converter/index.html', 'phn-echo/index.html'];
+const pages = ['index.html', 'bsa/index.html', 'gdp/index.html', 'heparin/index.html', 'predicted-hct/index.html', 'lbm/index.html', 'timecalc/index.html', 'z-score/index.html', 'quick-reference/index.html', 'cannula-pressure-drop/index.html', 'priming-volume/index.html', 'unit-converter/index.html'];
 assert.equal(js, fs.readFileSync(path.join(root, 'dist/tool-workspace.js'), 'utf8'));
 assert.equal(css, fs.readFileSync(path.join(root, 'dist/mobile.css'), 'utf8'));
 assert(css.includes('--pt-page: #ffffff;'));
