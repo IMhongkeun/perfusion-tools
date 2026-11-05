@@ -47,6 +47,8 @@ for (const file of pages) {
   assert(/<a href="\/"[^>]*id="brand-home"[^>]*class="pt-brand"/.test(html),
     file + ': the brand icon and name should link to Home');
 }
+assert(css.includes('.pt-header-pages { flex: 0 0 auto; order: 2; }'),
+  'The narrow-screen page menu should follow the header action buttons.');
 const researchHtml = fs.readFileSync(path.join(root, 'research/index.html'), 'utf8');
 assert(researchHtml.indexOf('id="week-2026-11-01"') < researchHtml.indexOf('id="week-2026-10-25"'),
   'Weekly research should show the newest week first.');

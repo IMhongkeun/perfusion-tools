@@ -311,6 +311,8 @@ html:not(.dark) body { background-color: var(--pt-page); }
 }
 @media (max-width: 389px) {
   .pt-brand-copy small { display: none; }
+  .pt-brand { gap: .35rem; }
+  .pt-brand-copy strong { font-size: .82rem; }
   .pt-header-favorite, .pt-mobile-workspace-toggle { width: 34px; }
 }
 
@@ -383,7 +385,7 @@ header .pt-header-inner { position: relative; width: 100%; }
 .pt-primary-nav .pt-nav-link:hover,
 .pt-primary-nav .pt-nav-link:focus-visible { color: var(--pt-primary); background: var(--pt-soft); }
 .pt-primary-nav .pt-nav-link[aria-current="page"] { color: var(--pt-primary); background: var(--pt-soft); }
-.pt-header-pages { flex: 0 0 auto; }
+.pt-header-pages { flex: 0 0 auto; order: 2; }
 .pt-header-pages > summary {
   display: grid; place-items: center; width: 40px; height: 40px;
   border-radius: .6rem; color: var(--pt-ink); cursor: pointer; list-style: none;
