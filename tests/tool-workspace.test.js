@@ -40,4 +40,36 @@ saved.set(fav.favoriteStorageKey, JSON.stringify(['/gdp/', '/gdp/', '/invalid/']
 assert.deepEqual(Array.from(fav.readFavorites()), ['/gdp/']);
 saved.set(fav.favoriteStorageKey, 'broken-json');
 assert.deepEqual(Array.from(fav.readFavorites()), []);
+
+const noWriteWindow = {
+  PerfusionToolsCalculatorRegistry: [{ path: '/bsa/', title: 'BSA Calculator' }],
+  localStorage: {
+    getItem() { return '[]'; },
+    setItem() { throw new Error('Quota exceeded'); }
+  }
+};
+vm.runInNewContext(js, { window: noWriteWindow, document, console });
+noWriteWindow.PerfusionToolsFavorites.toggleFavorite('/bsa/');
+assert.deepEqual(Array.from(noWriteWindow.PerfusionToolsFavorites.readFavorites()), ['/bsa/'],
+  'A readable but write-protected localStorage must fall back to in-page favorites.');
+
+const mainSource = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
+const routeStart = mainSource.indexOf('function getActivePath()');
+const routeEnd = mainSource.indexOf('\nfunction navigateTo(', routeStart);
+assert(routeStart >= 0 && routeEnd > routeStart, 'Home route resolution function should remain accessible.');
+const routeContext = {
+  window: {
+    location: { pathname: '/', hash: '#featured-tools-heading' },
+    normalizeRoute(value) { return value; }
+  },
+  history: { replaceState() { throw new Error('An in-page section must not become a route'); } }
+};
+vm.createContext(routeContext);
+vm.runInContext(mainSource.slice(routeStart, routeEnd), routeContext);
+assert.equal(routeContext.getActivePath(), '/', 'Quick Access section must preserve the Home route.');
+routeContext.window.location.hash = '#all-calculators-heading';
+assert.equal(routeContext.getActivePath(), '/', 'All Calculators section must preserve the Home route.');
+assert(mainSource.includes("['#all-calculators-heading', '#featured-tools-heading'].includes(window.location.hash)"),
+  'Scroll reset should preserve both Home section anchors.');
+
 console.log('Tool workspace and favorites tests passed.');

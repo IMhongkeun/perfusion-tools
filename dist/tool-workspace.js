@@ -23,6 +23,7 @@
   ];
 
   let inMemoryFavorites = [];
+  let storageWriteFailed = false;
   let selectedView = 'all';
   let sidebarResults = null;
   let sidebarTitle = null;
@@ -34,6 +35,7 @@
   let headerStar = null;
 
   function readFavorites() {
+    if (storageWriteFailed) return inMemoryFavorites.slice();
     let stored;
     try {
       stored = window.localStorage.getItem(favoriteStorageKey);
@@ -55,7 +57,9 @@
     inMemoryFavorites = valid;
     try {
       window.localStorage.setItem(favoriteStorageKey, JSON.stringify(valid));
+      storageWriteFailed = false;
     } catch (_) {
+      storageWriteFailed = true;
       // In private or restricted browsers, favorites work for this page only.
     }
   }

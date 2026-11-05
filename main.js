@@ -9434,8 +9434,9 @@ function getActivePath() {
   const rawPath = window.location.pathname || '/';
   const normalizedPath = window.normalizeRoute ? window.normalizeRoute(rawPath) : rawPath;
 
-  // The Home directory anchor is a section link, not a legacy hash route.
-  if ((normalizedPath === '/' || normalizedPath === '/index.html') && window.location.hash === '#all-calculators-heading') {
+  // Real Home section anchors must never be interpreted as legacy SPA routes.
+  const homeSectionHashes = new Set(['#all-calculators-heading', '#featured-tools-heading']);
+  if ((normalizedPath === '/' || normalizedPath === '/index.html') && homeSectionHashes.has(window.location.hash)) {
     return '/';
   }
   if ((normalizedPath === '/' || normalizedPath === '/index.html') && window.location.hash) {
@@ -9583,7 +9584,7 @@ function route() {
 // -----------------------------
 function resetScrollToTop() {
   if (shouldPreserveQuickReferenceHashScroll()) return;
-  if (window.location.hash === '#all-calculators-heading' && isHomeCalculatorDirectoryContext()) return;
+  if (['#all-calculators-heading', '#featured-tools-heading'].includes(window.location.hash) && isHomeCalculatorDirectoryContext()) return;
 
   window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   document.documentElement.scrollTop = 0;
