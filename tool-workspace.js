@@ -247,6 +247,7 @@
     sidebarFooterLinks.forEach(link => {
       const href = link.getAttribute('href');
       const active = href === '/' ? (currentPath === '/' || currentPath === '/index.html')
+        : href === '/research/' ? currentPath === '/research'
         : href.startsWith('/info') && currentPath === '/info';
       if (active) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');

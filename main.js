@@ -9486,6 +9486,7 @@ function route() {
   else if (path.includes('unit-converter')) { showSection('view-unit-converter'); key = 'unit-converter'; }
   else if (path.includes('cannula-pressure-drop')) { key = 'cannula-pressure-drop'; }
   else if (path.includes('quick-reference')) { showSection('view-quick-reference'); key = 'quick-reference'; }
+  else if (path.includes('research')) { key = 'research'; }
   else if (path.includes('info')) { showSection('view-info'); key = 'info'; }
   else if (path.includes('privacy')) { showSection('view-privacy'); key = 'privacy'; }
   else if (path.includes('terms')) { showSection('view-terms'); key = 'terms'; }
