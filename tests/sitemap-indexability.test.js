@@ -94,8 +94,15 @@ assert.strictEqual(researchHtml, fs.readFileSync(path.join(repoRoot, 'dist', 're
 assert(indexHtml.includes('href="/research/"'), 'Home should link to weekly research.');
 assert(researchHtml.includes('November 2–8, 2026'), 'Research issue should show its current publication window.');
 assert(researchHtml.includes('October 26 – November 1, 2026'), 'Research archive should show the previous publication window.');
-assert.strictEqual((researchHtml.match(/pubmed\.ncbi\.nlm\.nih\.gov\/\d+\//g) || []).length, 11,
-  'Each selected study should link to its PubMed record.');
+const researchCards = Array.from(
+  researchHtml.matchAll(/<article class="research-card">([\\s\\S]*?)<\\/article>/g),
+  match => match[1]
+);
+assert(researchCards.length > 0, 'Research page should contain at least one selected study.');
+researchCards.forEach((card, index) => {
+  const pubMedLinks = card.match(/href="https:\/\/pubmed\.ncbi\.nlm\.nih\.gov\/\d+\/"/g) || [];
+  assert.strictEqual(pubMedLinks.length, 1, `Research study card ${index + 1} should link to exactly one PubMed record.`);
+});
 
 const bsaUrl = 'https://perfusiontools.com/bsa/';
 const rootBsaLastmod = getLastmodForLoc(rootSitemap, bsaUrl);
