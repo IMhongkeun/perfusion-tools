@@ -95,7 +95,7 @@ assert(indexHtml.includes('href="/research/"'), 'Home should link to weekly rese
 assert(researchHtml.includes('November 2–8, 2026'), 'Research issue should show its current publication window.');
 assert(researchHtml.includes('October 26 – November 1, 2026'), 'Research archive should show the previous publication window.');
 const researchCards = Array.from(
-  researchHtml.matchAll(/<article class="research-card">([\\s\\S]*?)<\\/article>/g),
+  researchHtml.matchAll(/<article class="research-card">([\s\S]*?)<\/article>/g),
   match => match[1]
 );
 assert(researchCards.length > 0, 'Research page should contain at least one selected study.');
