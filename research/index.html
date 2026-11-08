@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>Weekly CPB &amp; ECMO Research | Perfusion Tools</title>
-  <meta name="description" content="A short, abstract-based selection of recent CPB and ECMO studies with links to the original PubMed records." />
+  <meta name="description" content="A weekly perfusionist briefing on new CPB and ECMO research, with key findings, practical takeaways, limitations, and original PubMed links." />
   <meta name="theme-color" content="#f8fafc" id="theme-color-meta" />
   <link rel="canonical" href="https://perfusiontools.com/research/" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Weekly CPB &amp; ECMO Research | Perfusion Tools" />
-  <meta property="og:description" content="Abstract-based highlights of recent CPB and ECMO studies with links to PubMed." />
+  <meta property="og:description" content="Weekly CPB and ECMO research briefings for perfusion practice, with clinical takeaways, limitations, and PubMed links." />
   <meta property="og:url" content="https://perfusiontools.com/research/" />
   <meta name="twitter:title" content="Weekly CPB &amp; ECMO Research | Perfusion Tools" />
-  <meta name="twitter:description" content="Abstract-based highlights of recent CPB and ECMO studies with links to PubMed." />
+  <meta name="twitter:description" content="Weekly CPB and ECMO research briefings for perfusion practice, with clinical takeaways, limitations, and PubMed links." />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -301,14 +301,14 @@
       '/research/': {
         title: 'Weekly CPB & ECMO Research | Perfusion Tools',
         h1: 'Weekly CPB & ECMO Research',
-        description: 'A short, abstract-based selection of recent CPB and ECMO studies with links to the original PubMed records.',
-        headingDescription: 'A short selection of recently published studies. Each highlight reports only what the PubMed abstract says. Open the original record for details.',
+        description: 'A weekly perfusionist briefing on new CPB and ECMO studies with practical takeaways and original PubMed links.',
+        headingDescription: 'A weekly, abstract-based briefing of newly published CPB and ECMO research, organized around what matters at the pump: key findings, practice relevance, and study limitations.',
         canonicalPath: '/research/'
       }
     };
     window.routeMeta = routeMeta;
   </script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Weekly CPB & ECMO Research","url":"https://perfusiontools.com/research/","dateModified":"2026-11-05","description":"Abstract-based highlights of recent CPB and ECMO studies."}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Weekly CPB & ECMO Research","url":"https://perfusiontools.com/research/","dateModified":"2026-11-08","description":"Weekly perfusionist briefings of newly published CPB and ECMO research."}</script>
   <style>
     .research-eyebrow { margin: 0 0 .4rem; color: var(--pt-accent); font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
     .research-week { margin: 0 0 1rem; color: var(--pt-ink); font-size: 1.3rem; font-weight: 700; }
@@ -319,6 +319,17 @@
     .research-card h3 { margin: 0 0 .6rem; color: var(--pt-ink); font-size: 1.15rem; font-weight: 700; line-height: 1.35; }
     .research-card p { margin: .4rem 0; color: var(--pt-muted); font-size: .92rem; line-height: 1.6; }
     .research-card .research-result { color: var(--pt-ink); }
+    .research-week-summary { margin-bottom: 1rem; padding: 1rem 1.1rem; border: 1px solid var(--pt-border); border-left: 4px solid var(--pt-accent); border-radius: .8rem; background: var(--pt-soft); color: var(--pt-muted); font-size: .9rem; line-height: 1.6; }
+    .research-week-summary strong { color: var(--pt-ink); }
+    .research-score-row { display: flex; flex-wrap: wrap; gap: .45rem; margin: .1rem 0 .85rem; }
+    .research-score { display: inline-flex; align-items: center; padding: .28rem .6rem; border: 1px solid var(--pt-border); border-radius: 999px; background: var(--pt-soft); color: var(--pt-ink); font-size: .75rem; font-weight: 700; }
+    .research-priority-high { border-color: rgba(6, 182, 212, .35); background: rgba(6, 182, 212, .08); color: var(--pt-primary-hover); }
+    .research-section-label { margin-top: .8rem !important; color: var(--pt-ink) !important; font-size: .78rem !important; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+    .research-bullets { margin: .35rem 0 .1rem; padding-left: 1.15rem; color: var(--pt-muted); font-size: .9rem; line-height: 1.6; list-style: disc; }
+    .research-bullets li + li { margin-top: .3rem; }
+    .research-takeaway { margin-top: .85rem; padding: .85rem 1rem; border-radius: .75rem; background: rgba(6, 182, 212, .07); color: var(--pt-ink); font-size: .9rem; line-height: 1.6; }
+    .research-takeaway strong { color: var(--pt-primary-hover); }
+    .research-limitations { margin-top: .75rem !important; padding-top: .75rem; border-top: 1px solid var(--pt-border); font-size: .84rem !important; }
     .research-card a { display: inline-flex; align-items: center; min-height: 44px; margin-top: .5rem; color: var(--pt-primary-hover); font-size: .9rem; font-weight: 700; }
     .research-card a:focus-visible { outline: 2px solid var(--pt-focus); outline-offset: 3px; }
     .research-archive { border: 1px solid var(--pt-border); border-radius: .9rem; background: var(--pt-surface); }
@@ -395,14 +406,45 @@
     <main class="p-4 md:p-8 max-w-3xl mx-auto w-full space-y-8">
       <section class="bg-white dark:bg-primary-900 rounded-2xl shadow-card dark:shadow-none border border-slate-200 dark:border-primary-800 overflow-hidden">
         <div class="p-6 space-y-3">
-          <p class="research-eyebrow">Selected studies · Abstract-based</p>
+          <p class="research-eyebrow">Weekly evidence briefing · Abstract-based</p>
           <h1 id="page-heading" class="text-2xl font-bold text-primary-900 dark:text-white">Weekly CPB &amp; ECMO Research</h1>
-          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">A short selection of recently published studies. Each highlight reports only what the PubMed abstract says. Open the original record for details.</p>
+          <p id="page-subtitle" class="text-sm text-slate-600 dark:text-slate-300">New CPB and ECMO research, briefed for perfusion practice: what the study found, why it matters, what to watch at the pump, and where the evidence is still weak.</p>
         </div>
       </section>
-    <section aria-labelledby="week-2026-11-01">
-      <h2 id="week-2026-11-01" class="research-week">October 26 – November 1, 2026</h2>
+    <section aria-labelledby="week-2026-11-08">
+      <h2 id="week-2026-11-08" class="research-week">November 2–8, 2026</h2>
+      <div class="research-week-summary">
+        <strong>This week's signal:</strong> one newly published study met our relevance and date criteria. Rather than padding the list with older papers that only appeared in a November issue, this briefing focuses on the strongest new clinical signal: criteria-based ECMO use during lung transplantation and early neurologic complications.
+      </div>
       <ol class="research-list">
+        <li><article class="research-card">
+          <div class="research-meta"><span>Lung transplant · ECMO/CPB</span><span>Retrospective cohort</span><span>Transplantation</span><span>November 2</span></div>
+          <div class="research-score-row"><span class="research-score research-priority-high">Priority: High</span><span class="research-score">Clinical usefulness: 4.2/5</span></div>
+          <h3>Criteria-based ECMO during lung transplantation was associated with fewer ischemic strokes</h3>
+          <p><strong>Study:</strong> <em>Incidence and Risk Factors for Early Major Neurologic Complications in Lung Transplantation: From Restrictive Cardiopulmonary Bypass to ECMO by Criteria.</em></p>
+          <p><strong>Design:</strong> Single-center retrospective cohort of 389 lung transplant recipients, comparing an earlier restrictive-CPB era (2012–2017; n=288) with a later criteria-based ECMO era (2022–2024; n=101).</p>
+
+          <p class="research-section-label">Key findings</p>
+          <ul class="research-bullets">
+            <li>Early major neurologic complications occurred in 10% versus 5% of patients; the difference in the proportion of affected patients was not statistically significant (P=0.152).</li>
+            <li>Total neurologic events were substantially more frequent in the earlier cohort (78 vs 8 events; incidence rate ratio 3.5, 95% CI 1.7–7.4).</li>
+            <li>Ischemic stroke was lower with criteria-based ECMO use: 2% versus 9% (P=0.022).</li>
+            <li>Intraoperative mechanical circulatory support was used more often in the ECMO-era cohort (43% vs 20%).</li>
+            <li>The apparent neurologic benefit came with trade-offs: greater intraoperative blood loss (2489 vs 1861 mL) and more severe primary graft dysfunction at 24 and 72 hours.</li>
+          </ul>
+
+          <div class="research-takeaway"><strong>Perfusionist briefing:</strong> This does not mean ECMO should routinely replace CPB for every lung transplant. The useful signal is that a predefined, criteria-based support strategy may reduce exposure to unstable hypoxemia and cerebral hypoperfusion while avoiding CPB when it is not required. If ECMO is chosen, cerebral oxygenation, upper-body gas exchange, cannula position and flow, anticoagulation, blood loss, and graft reperfusion all remain part of the same safety problem.</div>
+
+          <p class="research-limitations"><strong>Limitations:</strong> The two groups came from different eras, so surgical technique, donor/recipient selection, ICU care, transfusion practice, and ECMO experience may all have changed. The later cohort was also older and had more cardiopulmonary comorbidity. This is hypothesis-generating evidence, not proof that ECMO itself caused the lower stroke rate.</p>
+
+          <a href="https://pubmed.ncbi.nlm.nih.gov/42968367/" rel="noopener noreferrer" target="_blank">Read the PubMed record (PMID 42968367) →</a>
+        </article></li>
+      </ol>
+    </section>
+    <section aria-labelledby="week-2026-11-01">
+      <details class="research-archive">
+        <summary><h2 id="week-2026-11-01" class="research-week">October 26 – November 1, 2026</h2><span class="research-archive-action research-archive-action--open" aria-hidden="true">Show studies ↓</span><span class="research-archive-action research-archive-action--close" aria-hidden="true">Hide studies ↑</span></summary>
+        <ol class="research-list">
         <li><article class="research-card">
           <div class="research-meta"><span>VA-ECMO</span><span>Randomized mechanistic trial</span><span>October 31</span></div>
           <h3>IABP and microaxial pumps during VA-ECMO</h3>
@@ -438,7 +480,8 @@
           <p class="research-result">Postoperative atrial fibrillation occurred in 43% and 40% of patients, respectively (adjusted P=0.989). The trial did not show a reduction in its primary outcome.</p>
           <a href="https://pubmed.ncbi.nlm.nih.gov/42960736/" rel="noopener noreferrer" target="_blank">Read the PubMed record (PMID 42960736) →</a>
         </article></li>
-      </ol>
+        </ol>
+      </details>
     </section>
     <section aria-labelledby="week-2026-10-25">
       <details class="research-archive">
