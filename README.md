@@ -55,9 +55,8 @@ Clinical decisions must always be made by qualified healthcare professionals bas
 
 ---
 
-## Contributing
-Contributions, bug reports, and feature suggestions are welcome!  
-Please open an issue or submit a pull request on GitHub.
+## Feedback
+Bug reports and feature suggestions are welcome through the feedback form on each calculator page or by email at admin@perfusiontools.com.
 
 ---
 
