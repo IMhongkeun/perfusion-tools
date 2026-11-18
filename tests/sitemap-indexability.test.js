@@ -92,7 +92,10 @@ assert.strictEqual(rootSitemap, distSitemap, 'Root and dist sitemap.xml should s
 assert.strictEqual(indexHtml, distIndexHtml, 'Root and dist index.html should stay synchronized.');
 assert.strictEqual(researchHtml, fs.readFileSync(path.join(repoRoot, 'dist', 'research', 'index.html'), 'utf8'));
 assert(indexHtml.includes('href="/research/"'), 'Home should link to weekly research.');
-assert(researchHtml.includes('November 2–8, 2026'), 'Research issue should show its current publication window.');
+assert(researchHtml.includes('November 9–15, 2026'), 'Research issue should show its current briefing window.');
+assert(researchHtml.includes('November 2–8, 2026'), 'Research archive should preserve the preceding week.');
+assert(researchHtml.includes('PMID 42985492') && researchHtml.includes('PMID 42684926'), 'Research archive should link both studies reviewed in the November 15 briefing.');
+assert(researchHtml.includes('First published September 30') && researchHtml.includes('First published September 2'), 'Revisited studies must clearly retain their actual first-online publication dates.');
 assert(researchHtml.includes('October 26 – November 1, 2026'), 'Research archive should show the previous publication window.');
 const researchCards = Array.from(
   researchHtml.matchAll(/<article class="research-card">([\s\S]*?)<\/article>/g),
