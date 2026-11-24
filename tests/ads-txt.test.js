@@ -76,5 +76,16 @@ assert(privacySection.includes('Google Analytics 4 and Microsoft Clarity'), 'Pri
 assert(privacySection.includes('does not currently provide an on-site cookie consent manager'), 'Privacy policy must not imply a consent manager already exists.');
 assert(privacySection.includes('Google-certified consent management platform'), 'Future advertising must account for consent requirements.');
 assert(privacySection.includes('Clinical calculators will remain free of advertising scripts'), 'Clinical calculator advertising isolation must remain explicit.');
+assert(privacySection.includes('current calculator pages do not display feedback prompts'), 'Privacy policy must distinguish retired feedback prompts from retained records and legacy endpoints.');
+assert(privacySection.includes('optional comment and email address'), 'Legacy feedback disclosures must include the optional email field.');
+assert(privacySection.includes('Cloudflare Web Analytics'), 'Privacy policy must disclose hosting analytics observed on the deployed site.');
+
+// Google's advertising crawlers must be able to fetch the authorization file
+// and representative content from both the tracked and built robots policies.
+for (const robotsPath of ['robots.txt', 'dist/robots.txt']) {
+  const robots = fs.readFileSync(path.join(repoRoot, robotsPath), 'utf8');
+  assert(/^User-agent:\s*\*\s*$/mi.test(robots) && /^Allow:\s*\/\s*$/mi.test(robots), `${robotsPath} must allow public crawling.`);
+  assert(!/^Disallow:\s*\S+/mi.test(robots), `${robotsPath} must not block AdSense crawler access.`);
+}
 
 console.log('All ads.txt and inactive AdSense preparation tests passed.');
