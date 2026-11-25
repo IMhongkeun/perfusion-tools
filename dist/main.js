@@ -9554,7 +9554,9 @@ function route() {
   document.documentElement.classList.remove('root-route-pending');
 
   const topResetRoutes = new Set(['timecalc', 'unit-converter', 'quick-reference', 'info']);
-  if (topResetRoutes.has(key) && !shouldPreserveQuickReferenceHashScroll()) {
+  if (getResearchFragmentTarget()) {
+    resetScrollToTop();
+  } else if (topResetRoutes.has(key) && !shouldPreserveQuickReferenceHashScroll()) {
     requestAnimationFrame(() => {
       window.scrollTo({ top: 0, behavior: 'auto' });
       document.documentElement.scrollTop = 0;
@@ -9573,7 +9575,27 @@ function route() {
 // -----------------------------
 // Event Wiring
 // -----------------------------
+function getResearchFragmentTarget() {
+  const pathname = window.location.pathname || '/';
+  let id;
+  try {
+    id = decodeURIComponent((window.location.hash || '').slice(1));
+  } catch (_) {
+    return null;
+  }
+  const isResearchPage = /^\/research(?:\/\d{4}-\d{2}-\d{2})?\/?$/.test(pathname);
+  const isResearchTarget = /^(?:pmid-\d+|week-\d{4}-\d{2}-\d{2})$/.test(id);
+  const isEditorialTarget = /^\/info\/?$/.test(pathname) && id === 'editorial-methodology';
+  return ((isResearchPage && isResearchTarget) || isEditorialTarget) ? el(id) : null;
+}
+
 function resetScrollToTop() {
+  const researchTarget = getResearchFragmentTarget();
+  if (researchTarget) {
+    // About's target is initially hidden until route() reveals the informational view.
+    requestAnimationFrame(() => researchTarget.scrollIntoView({ block: 'start', behavior: 'instant' }));
+    return;
+  }
   if (shouldPreserveQuickReferenceHashScroll()) return;
   if (['#all-calculators-heading', '#featured-tools-heading'].includes(window.location.hash) && isHomeCalculatorDirectoryContext()) return;
 
