@@ -53,9 +53,9 @@ assert(css.includes('.pt-header-pages { flex: 0 0 auto; order: 2; }'),
 const researchHtml = fs.readFileSync(path.join(root, 'research/index.html'), 'utf8');
 assert(researchHtml.indexOf('id="week-2026-11-01"') < researchHtml.indexOf('id="week-2026-10-25"'),
   'Weekly research should show the newest week first.');
-assert(researchHtml.includes('<details class="research-archive">'),
-  'Older research weeks should have a collapsible archive.');
-const archivedWeek = researchHtml.match(/id="week-2026-10-25"[\s\S]*?<\/details>/)?.[0];
+assert(researchHtml.includes('href="/research/2026-10-25/"'),
+  'Older research weeks should have a crawlable archive link.');
+const archivedWeek = fs.readFileSync(path.join(root, 'research/2026-10-25/index.html'), 'utf8');
 assert(archivedWeek && (archivedWeek.match(/<article class="research-card">/g) || []).length === 5,
   'The archived week should contain five study cards.');
 for (const pmid of ['42926135', '42906575', '42940214', '42911832', '42899414']) {

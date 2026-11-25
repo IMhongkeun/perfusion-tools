@@ -1,0 +1,18 @@
+{
+  "gdp": {
+    "label": "GDP Calculator: oxygen delivery context",
+    "description": "Explore calculated oxygen delivery alongside these research discussions of perfusion and lactate. These studies do not validate the calculator or establish treatment targets.",
+    "entries": [
+      { "issue": "2026-11-15", "entry": "pmid-42684926" },
+      { "issue": "2026-11-01", "entry": "pmid-42956360" }
+    ]
+  },
+  "cannula-pressure-drop": {
+    "label": "Cannula Pressure Drop: technical flow and pressure reference",
+    "description": "Consult technical flow and pressure curves alongside research about cannulation. Bench curves do not select an ECMO configuration or establish clinical superiority.",
+    "entries": [
+      { "issue": "2026-11-15", "entry": "pmid-42985492" },
+      { "issue": "2026-10-25", "entry": "pmid-42940214" }
+    ]
+  }
+}

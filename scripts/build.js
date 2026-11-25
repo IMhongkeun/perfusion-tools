@@ -5,7 +5,9 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { generateSitemap } = require('../generate-sitemap');
+const { generateResearch } = require('./generate-research');
 const root = path.resolve(__dirname, '..');
+const researchPages = generateResearch(root);
 const output = path.join(root, 'dist');
 if (path.dirname(output) !== root || path.basename(output) !== 'dist') {
   throw new Error('Build output must remain the repository dist directory.');
@@ -17,6 +19,11 @@ for (const directory of ['', 'data', ...pages]) fs.mkdirSync(path.join(output, d
 for (const file of ['index.html', 'main.js', 'tool-workspace.js', 'analytics.js', 'mobile.css', '_redirects',
   'favicon.svg', 'ads.txt', 'data/cannula-pressure-drop.json', ...pages.map(page => `${page}/index.html`)]) {
   fs.copyFileSync(path.join(root, file), path.join(output, file));
+}
+for (const route of researchPages.keys()) {
+  const directory = route.slice(1);
+  fs.mkdirSync(path.join(output, directory), { recursive: true });
+  fs.copyFileSync(path.join(root, directory, 'index.html'), path.join(output, directory, 'index.html'));
 }
 fs.writeFileSync(path.join(output, 'robots.txt'), 'User-agent: *\nAllow: /\nSitemap: https://perfusiontools.com/sitemap.xml\n');
 const sitemap = generateSitemap(root);

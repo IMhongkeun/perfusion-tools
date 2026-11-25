@@ -14,4 +14,5 @@ const sitemapPaths = [
   '/cannula-pressure-drop/'
 ];
 
-module.exports = sitemapPaths;
+const { loadIssues, issuePath } = require('./scripts/research-content');
+module.exports = [...sitemapPaths, ...loadIssues().map(issuePath)];
