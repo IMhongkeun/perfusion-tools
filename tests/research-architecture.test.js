@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
 const crypto = require('node:crypto');
+const vm = require('node:vm');
 const { execFileSync } = require('node:child_process');
 const { loadIssues, validateIssues, validateToolLinks, issuePath, issueTitle, issueDescription } = require('../scripts/research-content');
 const { renderResearch } = require('../scripts/generate-research');
@@ -22,6 +23,45 @@ const schema = html => [...html.matchAll(/<script type="application\/ld\+json">(
   const value = JSON.parse(match[1]);
   return value['@graph'] || [value];
 });
+
+function unusedFixtureDate(publishedIssues) {
+  const latestDate = publishedIssues.map(issue => issue.date).sort().at(-1);
+  const date = new Date(`${latestDate}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + 7);
+  return date.toISOString().slice(0, 10);
+}
+
+function assertReviewScopes(issue, html) {
+  for (const entry of issue.entries) {
+    const card = html.slice(html.indexOf(`id="${entry.id}"`)).split('</article>')[0];
+    if (entry.sourceReview) {
+      const label = entry.sourceReview.scope === 'abstract' ? 'Abstract reviewed' : 'Full text reviewed';
+      assert(card.includes(`Source review: ${label}`), `${entry.id}: render its documented review scope.`);
+    } else {
+      assert(!card.includes('Source review:'), `${entry.id}: do not infer an undocumented review scope.`);
+    }
+  }
+}
+
+function buildOutputHashes(directory) {
+  const hashes = {};
+  function collect(relative) {
+    const target = path.join(directory, relative);
+    if (fs.statSync(target).isDirectory()) {
+      for (const name of fs.readdirSync(target).sort()) collect(path.join(relative, name));
+    } else {
+      hashes[relative] = sha256(fs.readFileSync(target));
+    }
+  }
+  for (const relative of ['research', 'dist', '_redirects', 'sitemap.xml']) collect(relative);
+  return hashes;
+}
+
+const fixtureDate = unusedFixtureDate(issues);
+assert(!issues.some(issue => issue.date === fixtureDate));
+assert.equal(unusedFixtureDate([...issues].reverse()), fixtureDate, 'Fixture dates must be deterministic regardless of input order.');
+assert(unusedFixtureDate([...issues, { date: fixtureDate }]) > fixtureDate,
+  'Publishing the previously selected fixture date must select a later unused date.');
 
 // Frozen hashes were captured from the pre-migration HTML, not from the renderer.
 assert.equal(baseline.length, 5);
@@ -78,7 +118,7 @@ for (let index = 0; index < issues.length; index++) {
     assert(html.includes(entry.html), 'Substantive original HTML must be present without JavaScript or interaction.');
     assert.equal((html.match(new RegExp(`href="https://pubmed\\.ncbi\\.nlm\\.nih\\.gov/${entry.id.slice(5)}/"`, 'g')) || []).length, 1);
   }
-  assert(!html.includes('Source review:'), 'Historical source-review scope must stay unknown.');
+  assertReviewScopes(issue, html);
   if (issues[index + 1]) assert(html.includes(`rel="prev" href="${issuePath(issues[index + 1])}"`));
   else assert(!html.includes('rel="prev"'));
   if (issues[index - 1]) assert(html.includes(`rel="next" href="${issuePath(issues[index - 1])}"`));
@@ -125,6 +165,7 @@ assert.throws(() => validateIssues([...issues, issues[0]]), /duplicate/);
 assert.throws(() => validateIssues([{ ...issues[0], entries: [] }]), /Incomplete/);
 assert.throws(() => validateIssues([{ ...issues[0], date: '2026-02-30' }]), /Invalid/);
 const reviewed = structuredClone(issues[0]);
+reviewed.date = fixtureDate;
 reviewed.entries[0].sourceReview = { scope: 'abstract', evidence: 'Documented abstract review in an editorial record.' };
 assert(renderResearch(template, [reviewed], {}).get(issuePath(reviewed)).includes('Source review: Abstract reviewed'));
 reviewed.entries[0].sourceReview.scope = 'full-text';
@@ -153,24 +194,32 @@ try {
     fs.cpSync(path.join(root, item.name), path.join(temporary, item.name), { recursive: true });
   }
   const future = structuredClone(issues[0]);
-  future.date = '2026-11-29';
-  future.period = 'November 23–29, 2026 (test fixture)';
+  future.date = fixtureDate;
+  future.period = `Synthetic weekly issue ending ${fixtureDate} (test fixture)`;
+  // Keep reviewed and unreviewed entries together, even if the latest real issue has only one entry.
+  future.entries = structuredClone([...new Map(issues.flatMap(issue => issue.entries).map(entry => [entry.id, entry])).values()].slice(0, 3));
+  future.entries[0].sourceReview = { scope: 'abstract', evidence: 'Abstract review recorded for this test fixture.' };
+  future.entries[1].sourceReview = { scope: 'full-text', evidence: 'Full-text review recorded for this test fixture.' };
+  delete future.entries[2].sourceReview;
+  const futureRoute = issuePath(future);
   const fixtureIssues = [future, ...issues];
   fs.writeFileSync(path.join(temporary, 'data/research-issues.json'), JSON.stringify(fixtureIssues));
   execFileSync(process.execPath, ['scripts/build.js'], { cwd: temporary, stdio: 'pipe' });
-  const futureHtml = fs.readFileSync(path.join(temporary, 'dist/research/2026-11-29/index.html'), 'utf8');
-  assert(futureHtml.includes('<time datetime="2026-11-29">2026-11-29</time>'));
-  assert(fs.readFileSync(path.join(temporary, 'dist/research/index.html'), 'utf8').includes('href="/research/2026-11-29/"'));
-  assert(fs.readFileSync(path.join(temporary, 'dist/sitemap.xml'), 'utf8').includes('<loc>https://perfusiontools.com/research/2026-11-29/</loc>'));
+  const futureHtml = fs.readFileSync(path.join(temporary, 'dist', futureRoute, 'index.html'), 'utf8');
+  assert(futureHtml.includes(`<time datetime="${fixtureDate}">${fixtureDate}</time>`));
+  assertReviewScopes(future, futureHtml);
+  assert.equal((futureHtml.match(/Source review:/g) || []).length, 2);
+  assert(fs.readFileSync(path.join(temporary, 'dist/research/index.html'), 'utf8').includes(`href="${futureRoute}"`));
+  assert(fs.readFileSync(path.join(temporary, 'dist/sitemap.xml'), 'utf8').includes(`<loc>https://perfusiontools.com${futureRoute}</loc>`));
   const redirects = fs.readFileSync(path.join(temporary, 'dist/_redirects'), 'utf8');
-  assert(redirects.includes('/research/2026-11-29 /research/2026-11-29/ 301'));
-  const firstBuild = fs.readFileSync(path.join(temporary, 'dist/gdp/index.html'), 'utf8');
+  assert(redirects.includes(`${futureRoute.slice(0, -1)} ${futureRoute} 301`));
+  const firstBuild = buildOutputHashes(temporary);
   execFileSync(process.execPath, ['scripts/build.js'], { cwd: temporary, stdio: 'pipe' });
-  assert.equal(fs.readFileSync(path.join(temporary, 'dist/gdp/index.html'), 'utf8'), firstBuild, 'Repeated builds must not duplicate related references.');
+  assert.deepEqual(buildOutputHashes(temporary), firstBuild, 'Every generated research, sitemap, redirect and dist asset must remain deterministic.');
   fs.writeFileSync(path.join(temporary, 'data/research-tool-links.json'), '{}');
   fs.writeFileSync(path.join(temporary, 'data/research-issues.json'), JSON.stringify(issues));
   execFileSync(process.execPath, ['scripts/build.js'], { cwd: temporary, stdio: 'pipe' });
-  assert(!fs.existsSync(path.join(temporary, 'research/2026-11-29')));
+  assert(!fs.existsSync(path.join(temporary, futureRoute)));
   assert(!fs.readFileSync(path.join(temporary, 'dist/gdp/index.html'), 'utf8').includes('RELATED_RESEARCH_START'));
 } finally {
   const resolved = path.resolve(temporary);
@@ -179,4 +228,87 @@ try {
   fs.rmSync(resolved, { recursive: true, force: true });
 }
 
-console.log(`Research architecture tests passed: ${issues.length} issues, ${issues.reduce((total, issue) => total + issue.entries.length, 0)} entries preserved; future publication build verified.`);
+// Execute the actual routing and scroll lifecycle code, including the initially hidden About view.
+const mainJs = read('main.js');
+const routeSource = mainJs.slice(mainJs.indexOf('function route() {'), mainJs.indexOf('// Event Wiring'));
+const scrollSource = mainJs.slice(mainJs.indexOf('function getResearchFragmentTarget()'), mainJs.indexOf('const FEEDBACK_CALCULATOR_ROUTES'));
+const bootstrapStart = mainJs.indexOf("window.addEventListener('DOMContentLoaded'");
+const bootstrapSource = mainJs.slice(bootstrapStart, mainJs.indexOf('  initStandaloneTopNav();', bootstrapStart)) + '});';
+
+function scrollHarness(pathname, hash, { hasTarget = true, quickReference = false, homeDirectory = false } = {}) {
+  const handlers = new Map();
+  const frames = [];
+  const timers = [];
+  const topResets = [];
+  const fragmentScrolls = [];
+  const classes = new Set(['hidden']);
+  const infoView = { classList: { add: value => classes.add(value), remove: value => classes.delete(value) } };
+  const target = { scrollIntoView(options) {
+    if (pathname.startsWith('/info')) assert(!classes.has('hidden'), 'Editorial target must be revealed before scrolling.');
+    fragmentScrolls.push(options);
+  } };
+  let id;
+  try { id = decodeURIComponent(hash.slice(1)); } catch (_) { id = null; }
+  const elements = new Map([['view-info', infoView]]);
+  if (hasTarget && id) elements.set(id, target);
+  const context = {
+    el: id => elements.get(id) || null,
+    getActivePath: () => pathname,
+    shouldPreserveQuickReferenceHashScroll: () => quickReference,
+    isHomeCalculatorDirectoryContext: () => homeDirectory,
+    removeLegacyBsaPatientPayload() {},
+    renderInitialHomeDiscovery() {},
+    initQuickReference() {},
+    requestAnimationFrame: callback => frames.push(callback),
+    setTimeout: callback => timers.push(callback),
+    history: { scrollRestoration: 'auto' },
+    window: { location: { pathname, hash }, scrollTo: (...args) => topResets.push(args),
+      addEventListener: (name, callback) => handlers.set(name, callback) },
+    document: { getElementById: id => elements.get(id) || null,
+      documentElement: { style: {}, classList: { remove() {} }, scrollTop: 700 },
+      body: { classList: { toggle() {} }, scrollTop: 700 } }
+  };
+  vm.runInNewContext(routeSource + scrollSource + bootstrapSource, context);
+  function flush() {
+    while (timers.length || frames.length) {
+      while (timers.length) timers.shift()();
+      while (frames.length) frames.shift()();
+    }
+  }
+  handlers.get('DOMContentLoaded')();
+  context.route();
+  flush();
+  for (const event of ['load', 'pageshow', 'popstate']) {
+    handlers.get(event)();
+    flush();
+  }
+  return { topResets, fragmentScrolls };
+}
+
+for (const [pathname, hash] of [
+  ['/research/2026-11-22/', '#pmid-43051000'],
+  ['/research/', '#week-2026-11-15'],
+  ['/research/2026-11-22/', '#%70mid-43051000'],
+  ['/info/', '#editorial-methodology'],
+  ['/info', '#editorial-methodology']
+]) {
+  const result = scrollHarness(pathname, hash);
+  assert.equal(result.topResets.length, 0, `${pathname}${hash}: lifecycle handlers must not erase the selected fragment.`);
+  assert(result.fragmentScrolls.length >= 4, 'Restore the visible fragment through DOMContentLoaded, load, pageshow and popstate.');
+  assert(result.fragmentScrolls.every(options => options.block === 'start'));
+}
+for (const [pathname, hash, options] of [
+  ['/research/2026-11-22/', '#pmid-0', { hasTarget: false }],
+  ['/research/', '#%broken', {}],
+  ['/gdp/', '#pmid-43051000', {}],
+  ['/info/', '#not-an-editorial-target', {}],
+  ['/timecalc/', '', {}]
+]) {
+  const result = scrollHarness(pathname, hash, options);
+  assert(result.topResets.length > 0, 'Unrelated or missing targets retain existing reset behavior.');
+  assert.equal(result.fragmentScrolls.length, 0);
+}
+assert.equal(scrollHarness('/quick-reference/', '#ecmo', { quickReference: true }).topResets.length, 0);
+assert.equal(scrollHarness('/', '#all-calculators-heading', { homeDirectory: true }).topResets.length, 0);
+
+console.log(`Research architecture tests passed: ${issues.length} issues, ${issues.reduce((total, issue) => total + issue.entries.length, 0)} entries preserved; reviewed/unreviewed publication and fragment lifecycles verified.`);
