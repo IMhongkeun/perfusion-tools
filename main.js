@@ -5481,6 +5481,8 @@ function setupContactActions() {
  * @property {{label: string, rangeLabel: string, unitLabel: string, range: {min: number, max: number}}=} miniCalculator
  * @property {{id: string, label: string, pediatric: string, adult: string, notes?: string, highlight?: string}[]=} tableRows
  * @property {string=} checklist
+ * @property {string=} durationColumnLabel
+ * @property {string=} footnote
  */
 
 /** @type {{tabs: QuickReferenceTab[]}} */
@@ -5528,10 +5530,10 @@ window.quickReferenceData = {
           {
             id: 'acp-adult-duration',
             title: 'Duration',
-            value: 'Up to 80',
-            unit: 'min (reference)',
-            notes: 'Varies by center/monitoring/bilateral ACP',
-            info: 'Reported durations vary; if >40–50 min, consider bilateral ACP.',
+            value: 'Up to ~80',
+            unit: 'min (observed)',
+            notes: 'Elective observational data; not a safety limit',
+            info: 'In 2,008 elective arch cases with ACP, circulatory arrest up to at least 80 min was not associated with a significant increase in mortality or permanent stroke. No universal safe limit is established. If >40–50 min is expected, consider bilateral ACP.',
             lastReviewed: '2026-11-27'
           },
           {
@@ -5557,7 +5559,7 @@ window.quickReferenceData = {
             value: '40–80',
             unit: 'mL/kg/min',
             notes: 'Reference 50–64',
-            info: 'Neonates: ~46 ± 6 mL/kg/min; <30 mL/kg/min risks hypoxic injury.',
+            info: 'Mean 46 ± 6 mL/kg/min at ~25°C in children <5 y (72% neonates); 56.6 ± 10.6 mL/kg/min at 18°C in neonates. <30 mL/kg/min is inadequate for many patients.',
             lastReviewed: '2026-11-27',
             range: { min: 40, max: 80 }
           },
@@ -5589,9 +5591,10 @@ window.quickReferenceData = {
           {
             id: 'acp-peds-duration',
             title: 'Duration',
-            value: '20–48',
-            unit: 'min (reference)',
-            info: 'Up to ~123 min reported; >45 min DHCA avoidance is common.',
+            value: 'No fixed limit',
+            unit: '',
+            notes: 'Observed: median 48 (10–123) at ~25°C; 71 ± 28 at 18°C',
+            info: 'No universal safe ACP duration is established. Observed times vary with protocol and temperature.',
             lastReviewed: '2026-11-27'
           },
           {
@@ -5621,10 +5624,10 @@ window.quickReferenceData = {
         {
           id: 'rcp-svc-pressure',
           title: 'SVC pressure',
-          value: '20–30',
+          value: '~20–25',
           unit: 'mmHg',
-          notes: 'Target 20–25',
-          info: 'Excess pressure increases brain edema risk.',
+          notes: 'Maintenance reference',
+          info: 'Pressure-regulated RCP; adjust to measurement site and neuromonitoring. Excess pressure increases brain edema risk.',
           lastReviewed: '2026-11-27'
         },
           {
@@ -5632,7 +5635,7 @@ window.quickReferenceData = {
             title: 'Flow rate',
             value: '300–500',
             unit: 'mL/min',
-            notes: 'Pressure-driven (SVC <25)',
+            notes: 'Pressure-driven (SVC ~20–25)',
             info: 'Flow is titrated to pressure; 300–500 mL/min is commonly cited.',
             lastReviewed: '2026-11-27'
           },
@@ -5650,28 +5653,30 @@ window.quickReferenceData = {
     {
       id: 'tca',
       label: 'HCA',
-      headerTitle: 'HCA by Temperature (Conservative Estimates)',
+      headerTitle: 'HCA by Temperature (Model Estimates, HCA Alone)',
+      durationColumnLabel: 'Model estimate (min)',
+      footnote: 'Durations are cerebral-metabolism model estimates for hypothermic circulatory arrest without cerebral perfusion (McCullough 1999: Q10 2.3, 5 min assumed at 37°C; published points 30°C ≈9, 25°C ≈14, 20°C ≈21, 15°C ≈31, 10°C ≈45 min). Range endpoints are calculated from the same model. They are not validated safe limits; arrest with ACP/RCP is reported for longer. Categories follow EACTS 2024 Table 3 (core rectal/bladder temperature); the 2013 consensus uses nasopharyngeal temperature.',
       tableRows: [
         {
           id: 'hca-28-30',
-          temperature: '28–30<br>(Mild–Moderate)',
-          duration: '10–15 (conservative)',
+          temperature: '28–30<br>(Mild)',
+          duration: '~9–11',
           notes: '<strong>MHCA + ACP</strong> ≤40 min possible; shorter CPB time, less coagulopathy',
           severity: 'safe',
           tooltip: 'Mild-moderate hypothermia with ACP can extend safe duration.'
         },
         {
           id: 'hca-24-28',
-          temperature: '24–28 (Moderate)',
-          duration: '15–20 (conservative)',
+          temperature: '24–28<br>(High-moderate)',
+          duration: '~11–15',
           notes: '<strong>ACP/RCP required</strong>; recent trend with lower stroke risk',
           severity: 'caution',
           tooltip: 'Moderate hypothermia commonly paired with ACP/RCP.'
         },
         {
           id: 'hca-20-24',
-          temperature: '20–24<br>(Low–Moderate)',
-          duration: '20–30',
+          temperature: '20–24<br>(Low-moderate)',
+          duration: '~15–21',
           notes: '<strong>ACP</strong> shows non-inferior cognitive outcomes vs DHCA',
           severity: 'caution',
           tooltip: 'Low-moderate ranges benefit from ACP support.'
@@ -5679,15 +5684,15 @@ window.quickReferenceData = {
         {
           id: 'hca-18-20',
           temperature: '18–20 (Deep)',
-          duration: '~30 (conservative; up to 40 with caution)',
+          duration: '~21–24 (guideline: isolated deep HCA ≤30–40)',
           notes: 'Isolated DHCA: limit 30; >40 ↑ neurologic injury risk',
           severity: 'high',
           tooltip: 'Deep hypothermia has higher risk beyond 30–40 minutes.'
         },
         {
           id: 'hca-<18',
-          temperature: '<18 (Profound)',
-          duration: '30–45',
+          temperature: '<18<br>(Deep; profound ≤14)',
+          duration: '~24 at 18°C, ~31 at 15°C, ~45 at 10°C',
           notes: 'High coagulopathy risk; rarely used',
           severity: 'high',
           tooltip: 'Profound hypothermia is uncommon due to bleeding risk.'
@@ -5700,12 +5705,12 @@ window.quickReferenceData = {
       intro: {
         title: 'MUF (Modified Ultrafiltration)',
         subtitle: 'Post-CPB hemoconcentration & fluid removal',
-        guidance: '(Pediatric strongly recommended / Adult selective)'
+        guidance: '(Pediatric: consider unless contraindicated / Adult: high-risk or anaemic patients)'
       },
       tableColumns: {
         label: 'Parameter',
-        pediatric: 'Pediatric (Strongly Recommended)',
-        adult: 'Adult (Selective Use)',
+        pediatric: 'Pediatric (Consider unless contraindicated)',
+        adult: 'Adult (High-risk or anaemic)',
         notes: 'Notes'
       },
       miniCalculator: {
@@ -5717,9 +5722,9 @@ window.quickReferenceData = {
       tableRows: [
         {
           id: 'muf-flow-rate',
-          label: 'Flow Rate',
+          label: 'Blood flow through filter',
           pediatric: '10–20 mL/kg/min',
-          adult: '150–300 mL/min',
+          adult: '150–300 mL/min (study protocol)',
           notes: 'Start slow, titrate to hemodynamics',
           highlight: 'pediatric'
         },
@@ -5735,7 +5740,7 @@ window.quickReferenceData = {
           id: 'muf-target-hct',
           label: 'Target Hct',
           pediatric: '≥35–40%',
-          adult: '≥30–35%',
+          adult: 'No established endpoint',
           notes: 'Or minimize transfusion/bleeding',
           highlight: 'pediatric'
         },
@@ -6079,7 +6084,7 @@ function renderHcaTable(panel, tab) {
     <thead class="bg-slate-50 dark:bg-primary-900/70 text-slate-600 dark:text-slate-300">
       <tr>
         <th class="text-left px-3 py-2">Temperature (°C)</th>
-        <th class="text-left px-3 py-2">Safe Duration (min)</th>
+        <th class="text-left px-3 py-2">${tab.durationColumnLabel || 'Safe Duration (min)'}</th>
         <th class="text-left px-3 py-2">Notes</th>
       </tr>
     </thead>
@@ -6114,6 +6119,13 @@ function renderHcaTable(panel, tab) {
   table.appendChild(tbody);
   tableWrap.appendChild(table);
   panel.appendChild(tableWrap);
+
+  if (tab.footnote) {
+    const footnote = document.createElement('p');
+    footnote.className = 'text-xs text-slate-500 dark:text-slate-400';
+    footnote.textContent = tab.footnote;
+    panel.appendChild(footnote);
+  }
 
   return;
 }

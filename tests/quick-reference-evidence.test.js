@@ -40,6 +40,25 @@ assert(cardDates.length > 0, 'At least one tab card should carry a lastReviewed 
 const latestCardDate = cardDates.sort().slice(-1)[0];
 assert.strictEqual(reviewedMatch[1], latestCardDate, 'Static review date should match the latest lastReviewed date in the data.');
 
+// Displayed values must follow the evidence review (2026-11-27).
+const tabsById = Object.fromEntries(data.tabs.map(tab => [tab.id, tab]));
+const hcaTab = tabsById.tca;
+assert(hcaTab.durationColumnLabel && /model/i.test(hcaTab.durationColumnLabel), 'HCA durations should be labeled as model estimates.');
+assert(hcaTab.footnote && hcaTab.footnote.includes('McCullough'), 'HCA table should cite the model source in its footnote.');
+hcaTab.tableRows.forEach(row => {
+  assert(!/<18[^)]*\(Profound\)/.test(row.temperature), 'Profound should not be defined as <18°C.');
+  assert(!/conservative/i.test(row.duration), 'HCA durations should not be described as conservative safe limits.');
+});
+const rcpPressure = tabsById.rcp.cards.find(card => card.id === 'rcp-svc-pressure');
+assert.strictEqual(rcpPressure.value, '~20–25', 'RCP SVC pressure should show the ~20–25 mmHg maintenance reference.');
+const pediatricDuration = tabsById.acp.profiles.pediatric.find(card => card.id === 'acp-peds-duration');
+assert.strictEqual(pediatricDuration.value, 'No fixed limit', 'Pediatric ACP duration should not show an unsourced fixed range.');
+const mufTab = tabsById.muf;
+assert(!/strongly recommended/i.test(mufTab.tableColumns.pediatric), 'Pediatric MUF should follow the current "should be considered" wording.');
+const mufHct = mufTab.tableRows.find(row => row.id === 'muf-target-hct');
+assert.strictEqual(mufHct.adult, 'No established endpoint', 'Adult MUF should not show an unsourced Hct endpoint.');
+assert(mainJs.includes("tab.durationColumnLabel || 'Safe Duration (min)'"), 'HCA table should render the data-driven duration column label.');
+
 // Evidence section structure.
 assert(pageHtml.includes('id="quick-reference-evidence"'), 'Sources & evidence levels section should exist.');
 for (const groupTitle of ['ACP — adult', 'ACP — pediatric', 'RCP', 'HCA', 'MUF']) {
