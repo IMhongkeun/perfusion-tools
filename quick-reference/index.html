@@ -153,6 +153,29 @@
       gap: 0.75rem;
     }
     .calculator-faq-item { margin-top: 0; }
+    /* Evidence-level tags for the Quick Reference sources section */
+    .qr-evidence {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 9999px;
+      border: 1px solid;
+      padding: 0 0.5rem;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      line-height: 1.25rem;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    .qr-evidence-guideline { border-color: #a7f3d0; background: #ecfdf5; color: #047857; }
+    .dark .qr-evidence-guideline { border-color: #065f46; background: rgba(6, 78, 59, 0.3); color: #6ee7b7; }
+    .qr-evidence-published { border-color: #cbd5e1; background: #f8fafc; color: #334155; }
+    .dark .qr-evidence-published { border-color: #334155; background: rgba(30, 41, 59, 0.5); color: #cbd5e1; }
+    .qr-evidence-practice { border-color: #fcd34d; background: #fffbeb; color: #92400e; }
+    .dark .qr-evidence-practice { border-color: #92400e; background: rgba(120, 53, 15, 0.3); color: #fcd34d; }
+    .qr-evidence-group > summary { cursor: pointer; font-weight: 600; color: #334155; }
+    .dark .qr-evidence-group > summary { color: #e2e8f0; }
+    .qr-evidence-list { list-style: none !important; padding-left: 0 !important; }
+    .qr-evidence-list > li + li { margin-top: 0.6rem; }
     .calculator-faq-answer {
       margin-top: 0.2rem;
       color: #64748b;
@@ -344,7 +367,7 @@
     window.applyRouteMeta = applyRouteMeta;
     window.addEventListener('load', () => applyRouteMeta('/quick-reference/'));
   </script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/quick-reference/#webpage","url":"https://perfusiontools.com/quick-reference/","name":"Perfusion Quick Reference Guide – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalGuideline","name":"CPB and ECMO bedside quick reference"},"dateModified":"2026-04-10"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://perfusiontools.com/#organization","name":"Perfusion Tools","url":"https://perfusiontools.com","logo":{"@type":"ImageObject","url":"https://perfusiontools.com/favicon.svg"}},{"@type":"MedicalWebPage","@id":"https://perfusiontools.com/quick-reference/#webpage","url":"https://perfusiontools.com/quick-reference/","name":"Perfusion Quick Reference Guide – Perfusion Tools","isPartOf":{"@id":"https://perfusiontools.com/#website"},"about":{"@type":"MedicalGuideline","name":"CPB and ECMO bedside quick reference"},"dateModified":"2026-11-27"}]}</script>
   <script src="/analytics.js"></script>
   <link rel="stylesheet" href="/mobile.css" />
 </head>
@@ -417,6 +440,7 @@
             <h2 class="text-xl font-semibold tracking-tight text-primary-900 dark:text-white">Quick Reference</h2>
             <p class="text-sm text-slate-600 dark:text-slate-300">Fast intraoperative lookup (reference only)</p>
             <p class="text-xs text-slate-500 dark:text-slate-400">Follow institutional protocols and patient monitoring; educational use only.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Evidence last reviewed: <span id="quick-reference-last-reviewed">2026-11-27</span> · <a href="#quick-reference-evidence" class="text-accent-600 dark:text-accent-400 underline">Sources &amp; evidence levels</a></p>
           </div>
 
           <div class="space-y-4">
@@ -442,14 +466,14 @@
                   <li>Ranges vary by protocol, patient physiology, and monitoring targets.</li>
                   <li>Always integrate pressure, NIRS/EEG, and lab trends when titrating flow.</li>
                   <li>This tool is not a medical device and does not replace clinical judgment.</li>
-                  <li>Content is data-driven for easy updates and includes last-reviewed dates.</li>
+                  <li>Content is data-driven for easy updates; the evidence review date and the source of each value are listed under <a href="#quick-reference-evidence" class="text-accent-600 dark:text-accent-400 underline">Sources &amp; evidence levels</a>.</li>
                   <li>Educational use only; follow institutional and surgeon-directed protocols.</li>
                 </ul>
               </div>
               <div class="space-y-1">
                 <p class="font-semibold mb-1">ACP right radial pressure rationale</p>
                 <ul class="list-disc pl-4 space-y-1">
-                  <li>Most studies and protocols (Annals of Thoracic Surgery, EJCTS, AmSECT) use right radial artery pressure as a surrogate for cerebral perfusion pressure.</li>
+                  <li>Right radial artery pressure is commonly used as a surrogate for cerebral perfusion pressure during unilateral ACP (e.g., Kazui technique; right axillary cannulation in the 2024 EACTS/EACTAIC/EBCP guideline, section 5.1).</li>
                   <li>Unilateral ACP (often via innominate or right axillary/subclavian) directly supplies the right carotid/right brain.</li>
                   <li>Consensus target: adjust flow to keep right radial pressure ~40–60 mmHg (or 40–70).</li>
                   <li>Left radial artery pressure can be lower due to collateral flow and may under-represent left-sided perfusion during unilateral ACP.</li>
@@ -462,18 +486,18 @@
                   <li>Perfusion pressure: 40–60 mmHg (right radial artery reference).</li>
                   <li>Temperature: 23–28°C moderate hypothermia.</li>
                   <li>pH management: Alpha-stat to support cerebral autoregulation.</li>
-                  <li>Duration: up to ~80 min reported in selected/elective cases; varies by center, monitoring, and bilateral ACP—if &gt;40–50 min, consider bilateral ACP.</li>
+                  <li>Duration: no universal safe limit is established. Circulatory arrest up to ~80 min with ACP was reported without a significant increase in mortality or stroke in an elective observational registry—if &gt;40–50 min is expected, consider bilateral ACP.</li>
                   <li>Monitoring: NIRS/EEG with baseline/trend and bilateral symmetry emphasis.</li>
                 </ul>
               </div>
               <div class="space-y-1">
                 <p class="font-semibold mb-1">ACP detail (pediatric reference)</p>
                 <ul class="list-disc pl-4 space-y-1">
-                  <li>Flow rate: 40–80 mL/kg/min (reference ~50–64); neonates ~46 ± 6 mL/kg/min.</li>
+                  <li>Flow rate: 40–80 mL/kg/min (reference ~50–64). Observed means: 46 ± 6 mL/kg/min at ~25°C in children &lt;5 y (72% neonates); 56.6 ± 10.6 mL/kg/min at 18°C in neonates.</li>
                   <li>Perfusion pressure: titrate (often 20–25 mmHg reported; higher MAP targets used in some centers).</li>
                   <li>Perfusate temp: 18–25°C; many ACP programs favor ~25°C moderate hypothermia.</li>
                   <li>pH management: pH-stat is frequently used for neonatal/infant cerebral protection during hypothermia.</li>
-                  <li>Duration: ~20–48 min (reference); prolonged times reported in selected cases—if longer expected, avoid DHCA when possible and plan ACP strategy.</li>
+                  <li>Duration: no universal safe limit is established. Observed ACP times: median 48 min (range 10–123) at ~25°C; mean 71 ± 28 min (range 5–121) at 18°C—plan the ACP strategy and avoid DHCA when possible.</li>
                   <li>Monitoring: Bilateral NIRS (trend-focused) ± EEG; TCD optional (availability dependent).</li>
                   <li>Hct: neonatal/infant arch ACP + hypothermia commonly uses <strong>~30–35%</strong> as a reference range.</li>
                   <li>Higher Hct raises O₂ content but increases viscosity—adjust with pressure/flow plus NIRS/EEG response and follow institutional protocols.</li>
@@ -482,8 +506,8 @@
               <div class="space-y-1">
                 <p class="font-semibold mb-1">RCP detail (reference)</p>
                 <ul class="list-disc pl-4 space-y-1">
-                  <li>SVC pressure: 20–30 mmHg (target 20–25); excessive pressure risks brain edema.</li>
-                  <li>Flow: pressure-driven; 300–500 mL/min commonly cited to maintain SVC pressure &lt;25.</li>
+                  <li>SVC pressure: maintenance reference ~20–25 mmHg; adjust to the measurement site and neuromonitoring. Excessive pressure risks brain edema.</li>
+                  <li>Flow: pressure-driven; 300–500 mL/min commonly cited to maintain SVC pressure ~20–25 mmHg.</li>
                   <li>Monitoring: NIRS/EEG with baseline/trend focus and bilateral symmetry.</li>
                   <li>TCD can be added to track cerebral blood flow velocity.</li>
                 </ul>
@@ -493,26 +517,134 @@
                 <ul class="list-disc pl-4 space-y-1">
                   <li>Varies by center, patient factors (age, comorbidities), neuromonitoring (NIRS baseline/trend with EEG), and use of ACP/RCP.</li>
                   <li>Always minimize circulatory arrest time.</li>
-                  <li>Cooling time: at least 20–50 min; Rewarming: ≤0.5°C/min recommended.</li>
-                  <li>Reference: 2024 EACTS/EACTAIC/EBCP Guidelines (conservative estimates).</li>
+                  <li>Cooling time: at least 20–50 min (practice range; no guideline minimum identified).</li>
+                  <li>Rewarming: ≤0.5°C/min is reasonable when arterial outlet temperature is ≥30°C (STS/SCA/AmSECT 2015, Class IIa, Level B). The 2024 EACTS/EACTAIC/EBCP guideline gives no numeric rewarming rate.</li>
+                  <li>Table times are historical cerebral-metabolism model estimates for arrest without cerebral perfusion (McCullough 1999), not clinically validated safe limits. Values marked * are calculated with the same model assumptions (5 min tolerated at 37°C; Q<sub>10</sub> 2.3): time = 5 × 2.3<sup>(37 − T)/10</sup> min. Temperature categories follow the 2024 EACTS/EACTAIC/EBCP guideline (core rectal/bladder temperature). See Sources &amp; evidence levels below.</li>
+                  <li>Hypothermia-only arrest estimates do not directly apply when ACP is used. Assess cerebral protection using perfusion adequacy and neuromonitoring. If lower-body perfusion is interrupted, consider lower-body ischemic time separately. Temperature alone does not define a universal safe duration.</li>
                   <li>Follow institutional protocols and patient monitoring; educational use only.</li>
                 </ul>
               </div>
               <div class="space-y-1">
                 <p class="font-semibold mb-1">MUF detail (clinical reference)</p>
                 <ul class="list-disc pl-4 space-y-1">
-                  <li><strong>Role / Indication:</strong> Pediatric &amp; congenital: Recommended when no contraindications exist. Adult: Selective use for blood conservation and volume management.</li>
-                  <li><strong>Flow rate (typical practice):</strong> Pediatric: 10–20 mL/kg/min. Adult: 150–300 mL/min. Neonates/low-weight infants: Avoid abrupt flow changes; titrate carefully to monitoring trends.</li>
+                  <li><strong>Role / Indication:</strong> Pediatric &amp; congenital: Consider when no contraindications exist (AmSECT Guideline 16.1). Adult: Recommended in high-risk or anaemic patients to reduce bleeding and transfusion (2024 EACTS/EACTAIC/EBCP, Class I, Level A).</li>
+                  <li><strong>Blood flow through the filter:</strong> Pediatric: 10–20 mL/kg/min. Adult: 150–300 mL/min in a study protocol. Filtrate removal rate is a separate setting. Neonates/low-weight infants: Avoid abrupt flow changes; titrate carefully to monitoring trends.</li>
                   <li><strong>Monitoring / Titration (practical):</strong> Titrate MUF to NIRS + CVP + arterial pressure trends and overall hemodynamics.</li>
                   <li><strong>Core safety rule (critical):</strong> Maintain positive arterial line pressure at all times to reduce air entrainment/embolism risk. Practical controls may include shunt/clamp management and centrifugal pump RPM adjustments to preserve a favorable pressure gradient.</li>
-                  <li><strong>Duration / Endpoint:</strong> Typical duration: 10–20 min (adult commonly ~10–15 min). Continue until target Hct and/or desired net fluid removal is achieved; adjust to hemodynamics and monitoring trends. Suggested Hct endpoints (reference): Pediatric ≥35–40%; Adult ≥30–35%.</li>
+                  <li><strong>Duration / Endpoint:</strong> Typical duration: 10–20 min (adult commonly ~10–15 min). Continue until target Hct and/or desired net fluid removal is achieved; adjust to hemodynamics and monitoring trends. Suggested Hct endpoint (reference): Pediatric ≥35–40%. Adult: no established hematocrit endpoint.</li>
                   <li><strong>Stop criteria (immediate):</strong> Air detected / air entrainment risk. Inability to maintain positive arterial line pressure. Hemodynamic instability.</li>
                   <li><strong>Anticoagulation:</strong> Maintain adequate anticoagulation throughout MUF (commonly with ACT monitoring).</li>
                   <li><strong>Inflammation mediator removal (current perspective):</strong> MUF may reduce circulating cytokines (e.g., IL-6, IL-8), but evidence for meaningful improvement in hard clinical outcomes is limited. Practical emphasis remains fluid removal + hemoconcentration.</li>
                   <li><strong>Edema / neurologic note (pediatric):</strong> Supports reduction of generalized edema and may reduce cerebral water content, potentially benefiting neurologic recovery.</li>
                   <li><strong>Temperature management:</strong> Blood can cool in the external MUF loop; for runs &gt;~10 min, monitor core temperature and consider using a heat exchanger to prevent unintended hypothermia.</li>
-                  <li><strong>References:</strong> AmSECT Pediatric &amp; Congenital Standards and Guidelines (2019, section 16.1). 2024 EACTS/EACTAIC/EBCP Adult CPB Guidelines (blood conservation/ultrafiltration-related sections).</li>
+                  <li><strong>References:</strong> AmSECT Standards and Guidelines for Pediatric and Congenital Perfusion Practice (2019, Guideline 16.1 "should be utilized"; current update: "should be considered", unless contraindicated). 2024 EACTS/EACTAIC/EBCP Adult CPB Guidelines (section 7.4, ultrafiltration: Class I, Level A). See Sources &amp; evidence levels below.</li>
                 </ul>
+              </div>
+            </div>
+          </section>
+
+          <section id="quick-reference-evidence" aria-labelledby="quick-reference-evidence-title" class="calculator-lower-section scroll-mt-24">
+            <h2 id="quick-reference-evidence-title" class="calculator-lower-title">Sources &amp; evidence levels</h2>
+            <div class="calculator-lower-panel">
+              <p>Evidence last reviewed: <strong>2026-11-27</strong>. Each value shown in the cards is tagged by where it comes from. Tags describe the source type, not the strength of evidence or a treatment target.</p>
+              <ul class="qr-evidence-list">
+                <li><span class="qr-evidence qr-evidence-guideline">Guideline</span> Stated in a society guideline. Recommendation class and level are given when the guideline assigns one; otherwise the value comes from the guideline text.</li>
+                <li><span class="qr-evidence qr-evidence-published">Published</span> Reported in a peer-reviewed study, review, or expert consensus.</li>
+                <li><span class="qr-evidence qr-evidence-practice">Practice range</span> No primary source was identified in the latest review. Treat as a practice convention and confirm against institutional protocol.</li>
+              </ul>
+
+              <details class="qr-evidence-group">
+                <summary>ACP — adult</summary>
+                <ul class="qr-evidence-list mt-2">
+                  <li><strong>Flow 8–12 mL/kg/min (≈0.6 mL/min/g brain)</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>Misfeld 2013 <a href="#qr-ref-5" class="text-accent-600 dark:text-accent-400 underline">[5]</a>. Other reported ranges: 10 mL/kg/min (Kazui) <a href="#qr-ref-9" class="text-accent-600 dark:text-accent-400 underline">[9]</a>; 6–10 mL/kg/min <a href="#qr-ref-6" class="text-accent-600 dark:text-accent-400 underline">[6]</a>; 10–15 mL/kg/min in the 2024 EACTS/EACTAIC/EBCP guideline text <a href="#qr-ref-1" class="text-accent-600 dark:text-accent-400 underline">[1]</a>.</li>
+                  <li><strong>Perfusion pressure 40–60 mmHg (or 40–70)</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>40–60 mmHg <a href="#qr-ref-5" class="text-accent-600 dark:text-accent-400 underline">[5]</a><a href="#qr-ref-6" class="text-accent-600 dark:text-accent-400 underline">[6]</a>; 40–70 mmHg right radial (Kazui) <a href="#qr-ref-9" class="text-accent-600 dark:text-accent-400 underline">[9]</a>. The 2024 EACTS/EACTAIC/EBCP guideline text cites a right radial pressure of 40–80 mmHg <a href="#qr-ref-1" class="text-accent-600 dark:text-accent-400 underline">[1]</a>.</li>
+                  <li><strong>Perfusate temperature 23–28°C</strong> <span class="qr-evidence qr-evidence-published">Published</span> <span class="qr-evidence qr-evidence-guideline">Guideline</span><br>Brain perfused at 23–28°C <a href="#qr-ref-5" class="text-accent-600 dark:text-accent-400 underline">[5]</a>. Circulatory arrest under moderate hypothermia (20.1–28°C) combined with ACP should be considered for arch reconstruction (Class IIa, Level B) <a href="#qr-ref-1" class="text-accent-600 dark:text-accent-400 underline">[1]</a>.</li>
+                  <li><strong>pH management: alpha-stat</strong> <span class="qr-evidence qr-evidence-guideline">Guideline</span><br>Alpha-stat favored over pH-stat in adults under high-moderate hypothermia (Class IIa, Level B) <a href="#qr-ref-1" class="text-accent-600 dark:text-accent-400 underline">[1]</a>.</li>
+                  <li><strong>Duration up to ~80 min (observed)</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>Observational registry of 2,008 elective arch operations with ACP: circulatory arrest up to at least 80 min was not associated with significant increases in mortality or permanent stroke <a href="#qr-ref-18" class="text-accent-600 dark:text-accent-400 underline">[18]</a>. This is an observed range in elective surgery, not an established universal safety limit. Pooled series: unilateral ACP about 30–50 min vs bilateral 86 to more than 164 min; bilateral perfusion is best documented once ACP is expected to exceed 40–50 min <a href="#qr-ref-8" class="text-accent-600 dark:text-accent-400 underline">[8]</a><a href="#qr-ref-5" class="text-accent-600 dark:text-accent-400 underline">[5]</a>.</li>
+                  <li><strong>Monitoring: NIRS, EEG</strong> <span class="qr-evidence qr-evidence-guideline">Guideline</span><br>Bilateral NIRS is recommended in arch surgery or DHCA (Class I, Level C); transcranial Doppler may be considered (Class IIb, Level C) <a href="#qr-ref-1" class="text-accent-600 dark:text-accent-400 underline">[1]</a>.</li>
+                  <li><strong>Hct 25–30%</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>Review-based protocol <a href="#qr-ref-7" class="text-accent-600 dark:text-accent-400 underline">[7]</a>. The 2024 EACTS/EACTAIC/EBCP guideline text suggests Hb &gt;7.5 g/dL and Hct &gt;22% during arch surgery <a href="#qr-ref-1" class="text-accent-600 dark:text-accent-400 underline">[1]</a>.</li>
+                </ul>
+              </details>
+
+              <details class="qr-evidence-group">
+                <summary>ACP — pediatric</summary>
+                <ul class="qr-evidence-list mt-2">
+                  <li><strong>Flow 40–80 mL/kg/min (reference 50–64)</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>At least 40 mL/kg/min guided by neuromonitoring; published flows range 20–94 mL/kg/min; earlier series medians 63–64 mL/kg/min <a href="#qr-ref-10" class="text-accent-600 dark:text-accent-400 underline">[10]</a>. Neonatal series using 40–80 mL/kg/min, mean 56.6 ± 10.6 mL/kg/min <a href="#qr-ref-11" class="text-accent-600 dark:text-accent-400 underline">[11]</a>.</li>
+                  <li><strong>Observed mean 46 ± 6 mL/kg/min (~25°C)</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>Mean ACP flow 46 ± 6 mL/kg/min (target 40–60) in 61 children under 5 years, 72% aged ≤1 month, with ACP at about 25°C and pH-stat <a href="#qr-ref-19" class="text-accent-600 dark:text-accent-400 underline">[19]</a>. This is a mixed neonatal/pediatric cohort, not neonates only. A different protocol at 18°C with NIRS/TCD-guided flow reported 56.6 ± 10.6 mL/kg/min <a href="#qr-ref-11" class="text-accent-600 dark:text-accent-400 underline">[11]</a>; see also 57 ± 11 mL/kg/min <a href="#qr-ref-10" class="text-accent-600 dark:text-accent-400 underline">[10]</a>.</li>
+                  <li><strong>&lt;30 mL/kg/min risks hypoxic injury</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>Flows below 30 mL/kg/min are inadequate for many patients, and below about 40 mL/kg/min may be inadequate; no single injury threshold is defined <a href="#qr-ref-10" class="text-accent-600 dark:text-accent-400 underline">[10]</a>.</li>
+                  <li><strong>Perfusion pressure: titrate (often 20–25 mmHg)</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>Reported radial pressures about 20–33 mmHg; right radial pressure ran about 10 mmHg higher than left <a href="#qr-ref-10" class="text-accent-600 dark:text-accent-400 underline">[10]</a>. Another series targeted an age-appropriate MAP of 25–55 mmHg <a href="#qr-ref-19" class="text-accent-600 dark:text-accent-400 underline">[19]</a>.</li>
+                  <li><strong>Perfusate temperature 18–25°C</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>ACP at 18°C <a href="#qr-ref-10" class="text-accent-600 dark:text-accent-400 underline">[10]</a><a href="#qr-ref-11" class="text-accent-600 dark:text-accent-400 underline">[11]</a> and at 25.0 ± 0.9°C (rectal) <a href="#qr-ref-19" class="text-accent-600 dark:text-accent-400 underline">[19]</a>. A source stating that "many programs favor ~25°C" was not identified.</li>
+                  <li><strong>pH management: pH-stat</strong> <span class="qr-evidence qr-evidence-guideline">Guideline</span><br>pH-stat should be considered for neonates and infants undergoing hypothermia during CPB (AmSECT pediatric 2025 update, Guideline 9.1) <a href="#qr-ref-15" class="text-accent-600 dark:text-accent-400 underline">[15]</a>; used throughout bypass in <a href="#qr-ref-10" class="text-accent-600 dark:text-accent-400 underline">[10]</a>.</li>
+                  <li><strong>Duration: no fixed limit</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>No universal safe duration is established. The previous 20–48 min range had no identified source and was removed. Observed ACP times: median 48 min (range 10–123) at about 25°C <a href="#qr-ref-19" class="text-accent-600 dark:text-accent-400 underline">[19]</a>; mean 71 ± 28 min (range 5–121) at 18°C <a href="#qr-ref-11" class="text-accent-600 dark:text-accent-400 underline">[11]</a>; 76 ± 24 min <a href="#qr-ref-10" class="text-accent-600 dark:text-accent-400 underline">[10]</a>.</li>
+                  <li><strong>Hct 30–35%</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>Hct 30–35% during bypass and cooling <a href="#qr-ref-10" class="text-accent-600 dark:text-accent-400 underline">[10]</a>.</li>
+                </ul>
+              </details>
+
+              <details class="qr-evidence-group">
+                <summary>RCP</summary>
+                <ul class="qr-evidence-list mt-2">
+                  <li><strong>SVC pressure ~20–25 mmHg (maintenance)</strong> <span class="qr-evidence qr-evidence-published">Published</span> <span class="qr-evidence qr-evidence-guideline">Guideline</span><br>Pressure-regulated RCP is favored over flow-regulated RCP to reduce the risk of brain edema <a href="#qr-ref-12" class="text-accent-600 dark:text-accent-400 underline">[12]</a>. In a canine study, 25 mmHg was the optimal venous pressure; cerebral blood flow did not rise further between 25 and 35 mmHg <a href="#qr-ref-13" class="text-accent-600 dark:text-accent-400 underline">[13]</a>. The 2024 EACTS/EACTAIC/EBCP guideline text cites an internal jugular vein pressure of 20 mmHg <a href="#qr-ref-1" class="text-accent-600 dark:text-accent-400 underline">[1]</a>.</li>
+                  <li><strong>Flow 300–500 mL/min</strong> <span class="qr-evidence qr-evidence-guideline">Guideline</span><br>Guideline text: 100–500 mL/min, set to maintain the target venous pressure (no recommendation class) <a href="#qr-ref-1" class="text-accent-600 dark:text-accent-400 underline">[1]</a>.</li>
+                  <li><strong>Monitoring: NIRS, EEG</strong> <span class="qr-evidence qr-evidence-guideline">Guideline</span><br>Bilateral NIRS is recommended in arch surgery or DHCA (Class I, Level C) <a href="#qr-ref-1" class="text-accent-600 dark:text-accent-400 underline">[1]</a>.</li>
+                </ul>
+              </details>
+
+              <details class="qr-evidence-group">
+                <summary>HCA</summary>
+                <ul class="qr-evidence-list mt-2">
+                  <li><strong>Temperature categories</strong> <span class="qr-evidence qr-evidence-published">Published</span> <span class="qr-evidence qr-evidence-guideline">Guideline</span><br>Expert consensus (nasopharyngeal temperature): profound ≤14°C, deep 14.1–20°C, moderate 20.1–28°C, mild 28.1–34°C <a href="#qr-ref-3" class="text-accent-600 dark:text-accent-400 underline">[3]</a>. The 2024 EACTS/EACTAIC/EBCP guideline (Table 3, core rectal/bladder temperature) lists deep 14.1–20°C, low-moderate 20.1–24°C, high-moderate 24.1–28°C and mild 28.1–34°C <a href="#qr-ref-1" class="text-accent-600 dark:text-accent-400 underline">[1]</a>. The two use different measurement sites. The table uses the EACTS categories.</li>
+                  <li><strong>Model-estimated arrest time without cerebral perfusion</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>Historical model estimates, not clinically validated safe limits, and not limits for arrest with ACP. A cerebral-metabolism model (Q<sub>10</sub> 2.3, assuming 5 min is safe at 37°C) estimates about 9 min at 30°C, 14 min at 25°C, 21 min at 20°C, 31 min at 15°C, and 45 min at 10°C without cerebral perfusion <a href="#qr-ref-4" class="text-accent-600 dark:text-accent-400 underline">[4]</a>. Values marked * in the table (28, 24 and 18°C) are calculated with the same assumptions: time = 5 × 2.3<sup>(37 − T)/10</sup> min, rounded to whole minutes. Guideline text: isolated deep hypothermic arrest should not exceed 30–40 min <a href="#qr-ref-1" class="text-accent-600 dark:text-accent-400 underline">[1]</a>.</li>
+                  <li><strong>Cooling time, CPB time and bleeding at warmer temperatures</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>Not shown as a benefit in the table. In a small nonrandomized series of acute type A dissection (n = 74), 30°C with subclavian ACP (n = 18) was compared with 20–24°C using RCP (n = 18) or ACP (n = 38). CPB time was reported as significantly shorter (no values given), and 24-h chest-tube drainage was lower (703 ± 338 vs 1178 ± 820 and 1447 ± 802 mL) in the 30°C group <a href="#qr-ref-22" class="text-accent-600 dark:text-accent-400 underline">[22]</a>. Temperature and cerebral perfusion strategy differed together between groups, and transfusion was not reported. In the GOT ICE randomized trial (n = 282, mostly hemiarch, all with unilateral ACP; ≤20.0, 20.1–24.0 and 24.1–28.0°C), cooling time was shorter in the warmer groups (median 31 and 35 vs 42 min), but total CPB time was similar (158, 156 and 161 min). Total blood products were lower in the warmer groups (1442 and 1744 vs 2102 mL), without a higher rate of re-exploration for bleeding in the deep group <a href="#qr-ref-23" class="text-accent-600 dark:text-accent-400 underline">[23]</a>. The trial did not test temperatures above 28°C. Bleeding and transfusion outcomes are not the same as coagulopathy, and coagulation tests were not reported in the sources reviewed here.</li>
+                  <li><strong>Coagulopathy and use of deeper hypothermia</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>Not shown as a temperature-specific risk in the table. A meta-analysis of nine mostly observational studies (n = 1,783) describes a potential association between deep hypothermic arrest and coagulopathy, notes that greater systemic morbidity with deep hypothermia has not been conclusively validated clinically, and found comparable reoperation for bleeding (DHCA 10.9% vs moderate HCA with ACP 13.3%; OR 0.85, 95% CI 0.43–1.69); blood loss and transfusion were not pooled <a href="#qr-ref-24" class="text-accent-600 dark:text-accent-400 underline">[24]</a>. In the GOT ICE trial (≤28°C), the deep group received more blood products without a higher re-exploration rate, and temperatures below 18°C were not analyzed separately <a href="#qr-ref-23" class="text-accent-600 dark:text-accent-400 underline">[23]</a>. Coagulation tests were not reported in these sources. The consensus statement describes profound hypothermia (≤14°C) as not frequently used; this does not apply to the 14.1–18°C deep range <a href="#qr-ref-3" class="text-accent-600 dark:text-accent-400 underline">[3]</a>.</li>
+                  <li><strong>Cooling time at least 20–50 min</strong> <span class="qr-evidence qr-evidence-practice">Practice range</span><br>No guideline minimum cooling time was identified. The guideline text limits the heat exchanger to arterial inflow gradient to 10°C <a href="#qr-ref-1" class="text-accent-600 dark:text-accent-400 underline">[1]</a>.</li>
+                  <li><strong>Rewarming ≤0.5°C/min</strong> <span class="qr-evidence qr-evidence-guideline">Guideline</span><br>Reasonable when arterial outlet temperature is ≥30°C, with an arterial outlet to venous inflow gradient ≤4°C (both Class IIa, Level B) <a href="#qr-ref-2" class="text-accent-600 dark:text-accent-400 underline">[2]</a>. Cap arterial outlet temperature at 37°C (Class I, Level A) <a href="#qr-ref-1" class="text-accent-600 dark:text-accent-400 underline">[1]</a>.</li>
+                </ul>
+              </details>
+
+              <details class="qr-evidence-group">
+                <summary>MUF</summary>
+                <ul class="qr-evidence-list mt-2">
+                  <li><strong>Pediatric: consider unless contraindicated</strong> <span class="qr-evidence qr-evidence-guideline">Guideline</span><br>The 2019 standards stated that MUF "should be utilized (unless contraindicated)" <a href="#qr-ref-14" class="text-accent-600 dark:text-accent-400 underline">[14]</a>. The current update changed Guideline 16.1 to "should be considered (unless contraindicated)" and gives no flow, duration, or hematocrit endpoint <a href="#qr-ref-15" class="text-accent-600 dark:text-accent-400 underline">[15]</a>.</li>
+                  <li><strong>Adult: selective use</strong> <span class="qr-evidence qr-evidence-guideline">Guideline</span><br>MUF, or conventional ultrafiltration combined with MUF, is recommended in high-risk or anaemic patients to reduce chest-tube bleeding and transfusion (Class I, Level A) <a href="#qr-ref-1" class="text-accent-600 dark:text-accent-400 underline">[1]</a>.</li>
+                  <li><strong>Pediatric flow 10–20 mL/kg/min</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>Reported 10–15 mL/kg/min <a href="#qr-ref-16" class="text-accent-600 dark:text-accent-400 underline">[16]</a> and 10–30 mL/kg/min (veno-venous method) <a href="#qr-ref-17" class="text-accent-600 dark:text-accent-400 underline">[17]</a>.</li>
+                  <li><strong>Pediatric duration 10–20 min; Hct ≥35–40%</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>MUF completed in 12.7 ± 1.7 min in one series <a href="#qr-ref-17" class="text-accent-600 dark:text-accent-400 underline">[17]</a>; target Hct 35% in a review <a href="#qr-ref-16" class="text-accent-600 dark:text-accent-400 underline">[16]</a>. A source for the 40% upper value was not identified.</li>
+                  <li><strong>Adult flow 150–300 mL/min, duration 10–15 min</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>Study protocols, not guideline values: blood flow 150–300 mL/min through the filter for 10 min after CPB in adults with CKD undergoing CABG <a href="#qr-ref-20" class="text-accent-600 dark:text-accent-400 underline">[20]</a>; MUF for 15 min after CPB in elective CABG <a href="#qr-ref-21" class="text-accent-600 dark:text-accent-400 underline">[21]</a>. Blood flow through the filter and filtrate removal rate are different quantities.</li>
+                  <li><strong>Adult Hct: no established endpoint</strong> <span class="qr-evidence qr-evidence-practice">Practice range</span><br>No source was identified for a general adult MUF hematocrit endpoint, so the previous ≥30–35% value was removed.</li>
+                  <li><strong>A-V MUF preferred</strong> <span class="qr-evidence qr-evidence-practice">Practice range</span><br>Arteriovenous MUF is the common configuration; veno-venous MUF is also described <a href="#qr-ref-17" class="text-accent-600 dark:text-accent-400 underline">[17]</a>.</li>
+                  <li><strong>Inflammatory mediators</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>Reductions in IL-6, IL-8 and other mediators are reported, but results are mixed <a href="#qr-ref-16" class="text-accent-600 dark:text-accent-400 underline">[16]</a>; the guideline describes inflammatory-marker evidence in adults as inconsistent <a href="#qr-ref-1" class="text-accent-600 dark:text-accent-400 underline">[1]</a>.</li>
+                  <li><strong>Cerebral water content note</strong> <span class="qr-evidence qr-evidence-practice">Practice range</span><br>No primary source identified in the latest review.</li>
+                  <li><strong>Safety: arterial line pressure, heat exchanger</strong> <span class="qr-evidence qr-evidence-published">Published</span><br>Continuous arterial line pressure monitoring and a heat exchanger in the MUF circuit are listed among MUF safety measures <a href="#qr-ref-16" class="text-accent-600 dark:text-accent-400 underline">[16]</a>.</li>
+                </ul>
+              </details>
+
+              <div>
+                <p class="calculator-lower-subheading">References</p>
+                <ol class="mt-1 space-y-1">
+                  <li id="qr-ref-1" class="scroll-mt-24">Wahba A, Kunst G, De Somer F, et al. 2024 EACTS/EACTAIC/EBCP Guidelines on cardiopulmonary bypass in adult cardiac surgery. Eur J Cardiothorac Surg. 2025;67(2):ezae354. Sections 5.1, 7.4, 7.6, 10.1–10.3. <a href="https://pubmed.ncbi.nlm.nih.gov/39949326/" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">PubMed</a> · <a href="https://doi.org/10.1093/ejcts/ezae354" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-2" class="scroll-mt-24">Engelman R, Baker RA, Likosky DS, et al. The Society of Thoracic Surgeons, The Society of Cardiovascular Anesthesiologists, and The American Society of ExtraCorporeal Technology: clinical practice guidelines for cardiopulmonary bypass—temperature management during cardiopulmonary bypass. J Extra Corpor Technol. 2015;47(3):145-154. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4631211/" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">PMC</a> · <a href="https://doi.org/10.1051/ject/201547145" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-3" class="scroll-mt-24">Yan TD, Bannon PG, Bavaria J, et al. Consensus on hypothermia in aortic arch surgery. Ann Cardiothorac Surg. 2013;2(2):163-168. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3741830/" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">PMC</a> · <a href="https://doi.org/10.3978/j.issn.2225-319X.2013.03.03" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-4" class="scroll-mt-24">McCullough JN, Zhang N, Reich DL, et al. Cerebral metabolic suppression during hypothermic circulatory arrest in humans. Ann Thorac Surg. 1999;67(6):1895-1899. <a href="https://doi.org/10.1016/S0003-4975(99)00441-5" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-5" class="scroll-mt-24">Misfeld M, Mohr FW, Etz CD. Best strategy for cerebral protection in arch surgery – antegrade selective cerebral perfusion and adequate hypothermia. Ann Cardiothorac Surg. 2013;2(3):331-338. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3741862/" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">PMC</a></li>
+                  <li id="qr-ref-6" class="scroll-mt-24">Spielvogel D, Tang GHL. Selective cerebral perfusion for cerebral protection: what we do know. Ann Cardiothorac Surg. 2013;2(3):326-330. <a href="https://doi.org/10.3978/j.issn.2225-319X.2013.03.02" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-7" class="scroll-mt-24">Spielvogel D, Kai M, Tang GHL, Malekan R, Lansman SL. Selective cerebral perfusion: a review of the evidence. J Thorac Cardiovasc Surg. 2013;145(3 Suppl):S59-S62.</li>
+                  <li id="qr-ref-8" class="scroll-mt-24">Malvindi PG, Scrascia G, Vitale N. Is unilateral antegrade cerebral perfusion equivalent to bilateral cerebral perfusion for patients undergoing aortic arch surgery? Interact Cardiovasc Thorac Surg. 2008;7(5):891-897. <a href="https://doi.org/10.1510/icvts.2008.184184" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-9" class="scroll-mt-24">Cerebral protection in hemi-aortic arch surgery. Ann Cardiothorac Surg. 2013;2(2):239-244 (summarizes the Kazui technique: 10 mL/kg/min, 40–70 mmHg). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3741844/" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">PMC</a> · <a href="https://doi.org/10.3978/j.issn.2225-319X.2013.02.04" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-10" class="scroll-mt-24">Fraser CD Jr, Andropoulos DB. Principles of antegrade cerebral perfusion during arch reconstruction in newborns/infants. Semin Thorac Cardiovasc Surg Pediatr Card Surg Annu. 2008:61-68. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2531241/" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">PMC</a> · <a href="https://doi.org/10.1053/j.pcsu.2007.12.005" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-11" class="scroll-mt-24">Neurodevelopmental outcomes after regional cerebral perfusion with neuromonitoring for neonatal aortic arch reconstruction. Ann Thorac Surg. 2013;95(2):648-654. <a href="https://pubmed.ncbi.nlm.nih.gov/22766302/" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">PubMed</a> · <a href="https://doi.org/10.1016/j.athoracsur.2012.04.070" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-12" class="scroll-mt-24">Ueda Y. A reappraisal of retrograde cerebral perfusion. Ann Cardiothorac Surg. 2013;2(3). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3741850/" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">PMC</a></li>
+                  <li id="qr-ref-13" class="scroll-mt-24">Usui A, et al. Determination of optimum retrograde cerebral perfusion conditions. J Thorac Cardiovasc Surg. 1994;107:300-308.</li>
+                  <li id="qr-ref-14" class="scroll-mt-24">American Society of ExtraCorporeal Technology. Standards and Guidelines for Pediatric and Congenital Perfusion Practice (2019), Standard 16, Guideline 16.1. Development summary: Oldeen ME, Angona RE, Hodge A, Klein T. World J Pediatr Congenit Heart Surg. 2021;12(1):84-92. <a href="https://doi.org/10.1177/2150135120956938" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-15" class="scroll-mt-24">Oldeen ME, Striker CW, Angona R, et al. The American Society of ExtraCorporeal Technology Standards and Guidelines for Pediatric and Congenital Perfusion Practice: 2025 update. J Extra Corpor Technol. 2026;58:211-216. <a href="https://amsect.org/LinkClick.aspx?fileticket=BOQNMkPK0KY%3D&amp;portalid=0" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">AmSECT PDF</a> · <a href="https://doi.org/10.1051/ject/2026012" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-16" class="scroll-mt-24">Ziyaeifard M, Alizadehasl A, Massoumi G. Modified ultrafiltration during cardiopulmonary bypass and postoperative course of pediatric cardiac surgery. Res Cardiovasc Med. 2014;3(2):e17830. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4253790/" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">PMC</a> · <a href="https://doi.org/10.5812/cardiovascmed.17830" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-17" class="scroll-mt-24">LaLone BJ, Turrentine MW, Bando K, et al. Modified ultrafiltration after congenital heart surgery: a veno-venous method using a dual-lumen hemodialysis catheter. J Extra Corpor Technol. 2000;32(2):95-102. <a href="https://doi.org/10.1051/ject/2000322095" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-18" class="scroll-mt-24">Keeling WB, Tian D, Farrington W, et al. Prolonged periods of antegrade cerebral perfusion are safe during elective arch surgery. Ann Thorac Surg. 2023;115(2):387-394. <a href="https://pubmed.ncbi.nlm.nih.gov/35697114/" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">PubMed</a></li>
+                  <li id="qr-ref-19" class="scroll-mt-24">Gupta B, Dodge-Khatami A, Tucker J, et al. Antegrade cerebral perfusion at 25°C for arch reconstruction in newborns and children preserves perioperative cerebral oxygenation and serum creatinine. Transl Pediatr. 2016;5(3):114-124. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5035759/" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">PMC</a> · <a href="https://doi.org/10.21037/tp.2016.06.03" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-20" class="scroll-mt-24">Phothikun A, Nawarawong W, Tantraworasin A, et al. The outcomes of ultrafiltration in on-pump versus off-pump coronary artery bypass grafting in patients with renal impairment. J Cardiothorac Surg. 2022;17:219. <a href="https://doi.org/10.1186/s13019-022-01976-7" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-21" class="scroll-mt-24">Grünenfelder J, Zünd G, Schoeberlein A, et al. Modified ultrafiltration lowers adhesion molecule and cytokine levels after cardiopulmonary bypass without clinical relevance in adults. Eur J Cardiothorac Surg. 2000;17(1):77-83. <a href="https://doi.org/10.1016/S1010-7940(99)00355-3" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-22" class="scroll-mt-24">Moderate hypothermia (30°C) for surgery of acute type A aortic dissection. Thorac Cardiovasc Surg. 2005;53(2):74-79. <a href="https://pubmed.ncbi.nlm.nih.gov/15786004/" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">PubMed</a> · <a href="https://doi.org/10.1055/s-2004-830458" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-23" class="scroll-mt-24">Hughes GC, Chen EP, Browndyke JN, et al. Cognitive effects of body temperature during hypothermic circulatory arrest (GOT ICE trial): a randomized clinical trial comparing outcomes following aortic arch surgery. Circulation. 2024;149(9):658-668. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10922813/" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">PMC</a> · <a href="https://doi.org/10.1161/CIRCULATIONAHA.123.067022" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                  <li id="qr-ref-24" class="scroll-mt-24">Tian DH, Wan B, Bannon PG, et al. A meta-analysis of deep hypothermic circulatory arrest versus moderate hypothermic circulatory arrest with selective antegrade cerebral perfusion. Ann Cardiothorac Surg. 2013;2(2):148-158. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3741839/" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">PMC</a> · <a href="https://doi.org/10.3978/j.issn.2225-319X.2013.03.13" target="_blank" rel="noopener noreferrer" class="text-accent-600 dark:text-accent-400 underline">DOI</a></li>
+                </ol>
               </div>
             </div>
           </section>
