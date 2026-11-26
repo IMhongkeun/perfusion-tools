@@ -48,7 +48,7 @@ window.quickReferenceData = {
             value: '8–12',
             unit: 'mL/kg/min',
             info: 'High-flow may increase cerebral edema risk; titrate with monitoring.',
-            lastReviewed: '2024-11-15',
+            lastReviewed: '2026-11-27',
             range: { min: 8, max: 12 }
           },
           {
@@ -57,7 +57,7 @@ window.quickReferenceData = {
             value: '40–60',
             unit: 'mmHg',
             info: 'Right radial artery pressure reference.',
-            lastReviewed: '2024-11-15'
+            lastReviewed: '2026-11-27'
           },
           {
             id: 'acp-adult-temp',
@@ -66,7 +66,7 @@ window.quickReferenceData = {
             unit: '°C',
             notes: 'Moderate hypothermia',
             info: 'Moderate hypothermia is often favored over deep for neurologic outcomes.',
-            lastReviewed: '2024-11-15'
+            lastReviewed: '2026-11-27'
           },
           {
             id: 'acp-adult-ph',
@@ -74,7 +74,7 @@ window.quickReferenceData = {
             value: 'Alpha-stat',
             unit: '',
             info: 'Preserves cerebral autoregulation; reduces embolization risk.',
-            lastReviewed: '2024-11-15'
+            lastReviewed: '2026-11-27'
           },
           {
             id: 'acp-adult-duration',
@@ -83,7 +83,7 @@ window.quickReferenceData = {
             unit: 'min (reference)',
             notes: 'Varies by center/monitoring/bilateral ACP',
             info: 'Reported durations vary; if >40–50 min, consider bilateral ACP.',
-            lastReviewed: '2024-11-15'
+            lastReviewed: '2026-11-27'
           },
           {
             id: 'acp-adult-monitoring',
@@ -91,14 +91,14 @@ window.quickReferenceData = {
             value: 'NIRS (rSO₂), EEG',
             unit: '',
             info: 'Confirm left-right balance with bilateral NIRS.',
-            lastReviewed: '2024-11-15'
+            lastReviewed: '2026-11-27'
           },
           {
             id: 'acp-adult-hct',
             title: 'Hct',
             value: '25–30',
             unit: '%',
-            lastReviewed: '2024-11-15'
+            lastReviewed: '2026-11-27'
           }
         ],
         pediatric: [
@@ -109,7 +109,7 @@ window.quickReferenceData = {
             unit: 'mL/kg/min',
             notes: 'Reference 50–64',
             info: 'Neonates: ~46 ± 6 mL/kg/min; <30 mL/kg/min risks hypoxic injury.',
-            lastReviewed: '2024-11-15',
+            lastReviewed: '2026-11-27',
             range: { min: 40, max: 80 }
           },
           {
@@ -119,7 +119,7 @@ window.quickReferenceData = {
             unit: '',
             notes: 'Often 20–25 mmHg reported',
             info: 'Higher MAP targets are used in some centers; adjust per protocol/monitoring site.',
-            lastReviewed: '2024-11-15'
+            lastReviewed: '2026-11-27'
           },
           {
             id: 'acp-peds-temp',
@@ -127,7 +127,7 @@ window.quickReferenceData = {
             value: '18–25',
             unit: '°C',
             info: '25°C moderate hypothermia preserves rSO₂; moderate often favored vs deep.',
-            lastReviewed: '2024-11-15'
+            lastReviewed: '2026-11-27'
           },
           {
             id: 'acp-peds-ph',
@@ -135,7 +135,7 @@ window.quickReferenceData = {
             value: 'pH-stat',
             unit: '',
             info: 'Often preferred in neonates/infants for cerebral protection.',
-            lastReviewed: '2024-11-15'
+            lastReviewed: '2026-11-27'
           },
           {
             id: 'acp-peds-duration',
@@ -143,7 +143,7 @@ window.quickReferenceData = {
             value: '20–48',
             unit: 'min (reference)',
             info: 'Up to ~123 min reported; >45 min DHCA avoidance is common.',
-            lastReviewed: '2024-11-15'
+            lastReviewed: '2026-11-27'
           },
           {
             id: 'acp-peds-monitoring',
@@ -152,7 +152,7 @@ window.quickReferenceData = {
             unit: '',
             notes: 'TCD optional',
             info: 'Use baseline/trend changes and bilateral symmetry rather than absolute values.',
-            lastReviewed: '2024-11-15'
+            lastReviewed: '2026-11-27'
           },
           {
             id: 'acp-peds-hct',
@@ -160,7 +160,7 @@ window.quickReferenceData = {
             value: '30–35',
             unit: '%',
             info: 'Neonatal/infant arch ACP + hypothermia commonly uses Hct 30–35% (adjust per protocol/NIRS/EEG).',
-            lastReviewed: '2024-11-15'
+            lastReviewed: '2026-11-27'
           }
         ]
       }
@@ -176,7 +176,7 @@ window.quickReferenceData = {
           unit: 'mmHg',
           notes: 'Target 20–25',
           info: 'Excess pressure increases brain edema risk.',
-          lastReviewed: '2024-11-15'
+          lastReviewed: '2026-11-27'
         },
           {
             id: 'rcp-flow',
@@ -185,7 +185,7 @@ window.quickReferenceData = {
             unit: 'mL/min',
             notes: 'Pressure-driven (SVC <25)',
             info: 'Flow is titrated to pressure; 300–500 mL/min is commonly cited.',
-            lastReviewed: '2024-11-15'
+            lastReviewed: '2026-11-27'
           },
           {
             id: 'rcp-monitoring',
@@ -194,7 +194,7 @@ window.quickReferenceData = {
             unit: '',
             notes: 'TCD optional',
             info: 'Use baseline/trend changes and bilateral symmetry rather than absolute values.',
-            lastReviewed: '2024-11-15'
+            lastReviewed: '2026-11-27'
           }
       ]
     },
