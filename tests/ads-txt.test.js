@@ -15,6 +15,7 @@ const rootAdsTxt = fs.readFileSync(rootAdsPath, 'utf8');
 const distAdsTxt = fs.readFileSync(distAdsPath, 'utf8');
 
 assert.strictEqual(distAdsTxt, rootAdsTxt, 'Dist ads.txt should exactly match root ads.txt.');
+assert.strictEqual(rootAdsTxt.trim(), `google.com, ${expectedPublisherId}, DIRECT, f08c47fec0942fa0`, 'ads.txt must authorize only the intended direct Google publisher.');
 assert(rootAdsTxt.trim().length > 0, 'ads.txt should not be empty.');
 assert(!/<(?:!doctype\s+html|html|head|body|script|meta)\b/i.test(rootAdsTxt), 'ads.txt should not contain HTML.');
 assert(rootAdsTxt.includes(expectedPublisherId), 'ads.txt publisher ID should not be changed.');
@@ -42,4 +43,49 @@ assert(
   'Build script should copy ads.txt into dist/.'
 );
 
-console.log('All ads.txt asset tests passed.');
+// Check delivered assets as well as source: a script in any shared JS file or
+// copied page could otherwise start advertising on clinical calculator routes.
+function checkRuntimeAssets(directory, requireMetadata) {
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    if (['.git', 'node_modules', 'dist', 'tests', 'scripts', 'docs', 'next-examples', 'functions'].includes(entry.name)) continue;
+    const filePath = path.join(directory, entry.name);
+    if (entry.isDirectory()) {
+      checkRuntimeAssets(filePath, requireMetadata);
+      continue;
+    }
+    if (!/\.(html|js)$/i.test(entry.name)) continue;
+    const contents = fs.readFileSync(filePath, 'utf8');
+    assert(!/adsbygoogle|googlesyndication\.com|doubleclick\.net|googleadservices\.com|fundingchoicesmessages\.google\.com/i.test(contents), `${filePath} must not load or invoke advertising code, pixels, or connections.`);
+    assert(!/<ins\b[^>]*\bdata-ad-(?:client|slot)\s*=/i.test(contents), `${filePath} must not contain an active ad slot.`);
+    if (!requireMetadata || !/<head\b/i.test(contents)) continue;
+    const head = contents.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1];
+    assert(head, `${filePath} must have a complete head.`);
+    const metaTags = head.match(/<meta\b[^>]*\bname=["']google-adsense-account["'][^>]*>/gi) || [];
+    assert.strictEqual(metaTags.length, 1, `${filePath} must contain exactly one server-visible AdSense verification tag in head.`);
+    assert(metaTags[0].includes(`content="ca-${expectedPublisherId}"`), `${filePath} must use the intended AdSense account.`);
+  }
+}
+
+checkRuntimeAssets(repoRoot, true);
+checkRuntimeAssets(path.join(repoRoot, 'dist'), true);
+
+const privacyHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
+const privacySection = privacyHtml.slice(privacyHtml.indexOf('id="view-privacy"'), privacyHtml.indexOf('id="view-terms"'));
+assert(privacySection.includes('We do not load AdSense advertising scripts'), 'Privacy policy must describe the current inactive advertising state.');
+assert(privacySection.includes('Google Analytics 4 and Microsoft Clarity'), 'Privacy policy must disclose existing analytics separately from advertising.');
+assert(privacySection.includes('does not currently provide an on-site cookie consent manager'), 'Privacy policy must not imply a consent manager already exists.');
+assert(privacySection.includes('Google-certified consent management platform'), 'Future advertising must account for consent requirements.');
+assert(privacySection.includes('Clinical calculators will remain free of advertising scripts'), 'Clinical calculator advertising isolation must remain explicit.');
+assert(privacySection.includes('current calculator pages do not display feedback prompts'), 'Privacy policy must distinguish retired feedback prompts from retained records and legacy endpoints.');
+assert(privacySection.includes('optional comment and email address'), 'Legacy feedback disclosures must include the optional email field.');
+assert(privacySection.includes('Cloudflare Web Analytics'), 'Privacy policy must disclose hosting analytics observed on the deployed site.');
+
+// Google's advertising crawlers must be able to fetch the authorization file
+// and representative content from both the tracked and built robots policies.
+for (const robotsPath of ['robots.txt', 'dist/robots.txt']) {
+  const robots = fs.readFileSync(path.join(repoRoot, robotsPath), 'utf8');
+  assert(/^User-agent:\s*\*\s*$/mi.test(robots) && /^Allow:\s*\/\s*$/mi.test(robots), `${robotsPath} must allow public crawling.`);
+  assert(!/^Disallow:\s*\S+/mi.test(robots), `${robotsPath} must not block AdSense crawler access.`);
+}
+
+console.log('All ads.txt and inactive AdSense preparation tests passed.');

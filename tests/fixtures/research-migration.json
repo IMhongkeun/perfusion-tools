@@ -1,0 +1,109 @@
+[
+  {
+    "date": "2026-11-22",
+    "period": "November 16\u201322, 2026",
+    "summarySha256": "b50fde316a0f0f736bfef4e44c08d7649095765df00867693c282e3b7a64ca0c",
+    "entries": [
+      {
+        "id": "pmid-43049872",
+        "sha256": "a5ffeb0d5a12e3988f10f5f4d5de3540989db43d4e4f32aab69d37c9be007d90"
+      },
+      {
+        "id": "pmid-43051000",
+        "sha256": "29ea50d3f0e50c6e50ba88454a2f588cafd6c7488bcc00f4395cffda913d6b24"
+      },
+      {
+        "id": "pmid-43043809",
+        "sha256": "d1d261a31079c6a7ad571d1b99cb40f9c97662e0b9fc79f38ba368b68a7d7ae5"
+      },
+      {
+        "id": "pmid-43050695",
+        "sha256": "a1ae4f5159dfd2b7f7e524d10a374c4a28473c074e516346f42f79d6022f510b"
+      },
+      {
+        "id": "pmid-43044255",
+        "sha256": "f0be698679014a46a609a8fe2397d4f223fd21ca1f33cf9775ac9696fd0739f1"
+      }
+    ]
+  },
+  {
+    "date": "2026-11-15",
+    "period": "November 9\u201315, 2026",
+    "summarySha256": "ed1ddb1c7e9045f13a113b6f27ce0f20267a9f7652e49402dbf24a35103958f2",
+    "entries": [
+      {
+        "id": "pmid-42985492",
+        "sha256": "a75c58ac26af55a592ab367482212bf4eba9af161587c3562234184bc977da52"
+      },
+      {
+        "id": "pmid-42684926",
+        "sha256": "78667a308527a906fcdfca254d97d9689f29da718ca8e45588df83818ee7b6a4"
+      }
+    ]
+  },
+  {
+    "date": "2026-11-08",
+    "period": "November 2\u20138, 2026",
+    "summarySha256": "8244f0724dff3e080b5e8965923211fb6272ce3d6b46fb3307dd6d8b87a5fb63",
+    "entries": [
+      {
+        "id": "pmid-42968367",
+        "sha256": "0b6e29e14fb9642d3a3198950c47b29ffa2ed58d44872fa44483e04898ad8ed5"
+      }
+    ]
+  },
+  {
+    "date": "2026-11-01",
+    "period": "October 26 \u2013 November 1, 2026",
+    "summarySha256": "e60ceb41aad075ff860ec96e7b57cfc0c10d96551e997126a7aa315f20d3deb4",
+    "entries": [
+      {
+        "id": "pmid-42966011",
+        "sha256": "7050f213ab7a96b02916483aa15f941b4c3a114d8fa54362c39222d48abc9027"
+      },
+      {
+        "id": "pmid-42956360",
+        "sha256": "74d5fedd223d478a65c974e276c3a8e0e1136bee3d1637062e2581e438879c85"
+      },
+      {
+        "id": "pmid-42960751",
+        "sha256": "bb50dc27f37c8ac2aec48bc24743c071362f71140d37f812c979b637b41f28ce"
+      },
+      {
+        "id": "pmid-42951894",
+        "sha256": "76e62168485a693e48b30dcac8424456d77c0897b4a808ad28b51a5c1d6dac3e"
+      },
+      {
+        "id": "pmid-42960736",
+        "sha256": "3ba00e7793b57cf72cd67664deecdf0a62a545ba0f3d9b6f69c5e89e91af36ef"
+      }
+    ]
+  },
+  {
+    "date": "2026-10-25",
+    "period": "October 19\u201325, 2026",
+    "summarySha256": "d6bb0b126ad629cf78298f5342517e708adede7d942591a2ba31e3bd5de425bf",
+    "entries": [
+      {
+        "id": "pmid-42926135",
+        "sha256": "e6c8ea93efedd4b8efa465b1b319d7db8e0da8b178165ea60414a341880043a0"
+      },
+      {
+        "id": "pmid-42911832",
+        "sha256": "a6c64069d9b91b7e801a830bd82e7808f214537772813e849d4c695bfed0bba8"
+      },
+      {
+        "id": "pmid-42899414",
+        "sha256": "cd4a7f4dac1cb095534dd2cec0b1d04247767836fbadd848bdaba7caba6048c9"
+      },
+      {
+        "id": "pmid-42940214",
+        "sha256": "86637cec243bba843c951a44160f7c9eb701e404c54481c39b3d9eb87ee6b33f"
+      },
+      {
+        "id": "pmid-42906575",
+        "sha256": "9a75e52a6a08629d9d5fe8dde37fe59986c26dde1427e4689b76e4efd5ec636e"
+      }
+    ]
+  }
+]

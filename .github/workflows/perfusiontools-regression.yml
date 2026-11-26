@@ -2,7 +2,6 @@ name: PerfusionTools regression checks
 on:
   push:
     branches:
-      - codex/perfusiontools-v2-homepage-navigation
       - main
   pull_request:
   workflow_dispatch:

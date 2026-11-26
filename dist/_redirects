@@ -44,3 +44,11 @@ https://www.perfusiontools.com/*  https://perfusiontools.com/:splat   301!
 
 /terms      /             200
 /terms/     /             200
+
+# RESEARCH_REDIRECTS_START
+/research/2026-11-22 /research/2026-11-22/ 301
+/research/2026-11-15 /research/2026-11-15/ 301
+/research/2026-11-08 /research/2026-11-08/ 301
+/research/2026-11-01 /research/2026-11-01/ 301
+/research/2026-10-25 /research/2026-10-25/ 301
+# RESEARCH_REDIRECTS_END

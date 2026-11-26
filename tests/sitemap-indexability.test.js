@@ -5,6 +5,9 @@ const vm = require('vm');
 const { createRequire } = require('module');
 const sitemapPaths = require('../sitemap-paths');
 const { generateSitemap, getPageLastmod } = require('../generate-sitemap');
+const { loadIssues, issuePath } = require('../scripts/research-content');
+const researchIssues = loadIssues();
+const researchIssueHtml = researchIssues.map(issue => fs.readFileSync(path.join(__dirname, '..', issuePath(issue), 'index.html'), 'utf8')).join('\n');
 
 const repoRoot = path.join(__dirname, '..');
 const rootSitemap = fs.readFileSync(path.join(repoRoot, 'sitemap.xml'), 'utf8');
@@ -29,7 +32,8 @@ const expectedIndexablePaths = [
   '/unit-converter/',
   '/quick-reference/',
   '/research/',
-  '/cannula-pressure-drop/'
+  '/cannula-pressure-drop/',
+  ...researchIssues.map(issuePath)
 ];
 
 function extractLocs(xml) {
@@ -92,10 +96,16 @@ assert.strictEqual(rootSitemap, distSitemap, 'Root and dist sitemap.xml should s
 assert.strictEqual(indexHtml, distIndexHtml, 'Root and dist index.html should stay synchronized.');
 assert.strictEqual(researchHtml, fs.readFileSync(path.join(repoRoot, 'dist', 'research', 'index.html'), 'utf8'));
 assert(indexHtml.includes('href="/research/"'), 'Home should link to weekly research.');
-assert(researchHtml.includes('November 2–8, 2026'), 'Research issue should show its current publication window.');
+assert(researchHtml.includes('November 16–22, 2026'), 'Research issue should show its current briefing window.');
+assert(researchHtml.includes('November 9–15, 2026'), 'Research archive should preserve the preceding week.');
+['43049872', '43051000', '43043809', '43050695', '43044255'].forEach((pmid) => {
+  assert(researchIssueHtml.includes(`PMID ${pmid}`), `Current research briefing should link PMID ${pmid}.`);
+});
+assert(researchIssueHtml.includes('PMID 42985492') && researchIssueHtml.includes('PMID 42684926'), 'Research archive should link both studies reviewed in the November 15 briefing.');
+assert(researchIssueHtml.includes('First published September 30') && researchIssueHtml.includes('First published September 2'), 'Revisited studies must clearly retain their actual first-online publication dates.');
 assert(researchHtml.includes('October 26 – November 1, 2026'), 'Research archive should show the previous publication window.');
 const researchCards = Array.from(
-  researchHtml.matchAll(/<article class="research-card">([\s\S]*?)<\/article>/g),
+  researchIssueHtml.matchAll(/<article class="research-card">([\s\S]*?)<\/article>/g),
   match => match[1]
 );
 assert(researchCards.length > 0, 'Research page should contain at least one selected study.');
