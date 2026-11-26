@@ -33,7 +33,7 @@
  * @property {{id: string, label: string, pediatric: string, adult: string, notes?: string, highlight?: string}[]=} tableRows
  * @property {string=} checklist
  * @property {string=} durationColumnLabel
- * @property {string=} footnote
+ * @property {string[]=} footnotes
  */
 
 /** @type {{tabs: QuickReferenceTab[]}} */
@@ -204,48 +204,42 @@ window.quickReferenceData = {
     {
       id: 'tca',
       label: 'HCA',
-      headerTitle: 'HCA by Temperature (Model Estimates, HCA Alone)',
-      durationColumnLabel: 'Model estimate (min)',
-      footnote: 'Durations are cerebral-metabolism model estimates for hypothermic circulatory arrest without cerebral perfusion (McCullough 1999: Q10 2.3, 5 min assumed at 37°C; published points 30°C ≈9, 25°C ≈14, 20°C ≈21, 15°C ≈31, 10°C ≈45 min). Range endpoints are calculated from the same model. They are not validated safe limits; arrest with ACP/RCP is reported for longer. Categories follow EACTS 2024 Table 3 (core rectal/bladder temperature); the 2013 consensus uses nasopharyngeal temperature.',
+      headerTitle: 'HCA by Temperature',
+      durationColumnLabel: 'Model-estimated arrest time without cerebral perfusion',
+      footnotes: [
+        'Historical cerebral-metabolism model estimates (McCullough 1999), not clinically validated safe limits. Values in minutes. Published model points: 30°C ≈9, 25°C ≈14, 20°C ≈21, 15°C ≈31, 10°C ≈45. *Calculated here with the same model assumptions (5 min tolerated at 37°C; cerebral Q10 2.3): time = 5 × 2.3^((37 − T)/10), rounded to whole minutes. Temperature categories follow EACTS 2024 Table 3 (core rectal/bladder temperature); the 2013 consensus uses nasopharyngeal temperature.',
+        'Hypothermia-only arrest estimates do not directly apply when ACP is used. Assess cerebral protection using perfusion adequacy and neuromonitoring. If lower-body perfusion is interrupted, consider lower-body ischemic time separately. Temperature alone does not define a universal safe duration.'
+      ],
       tableRows: [
         {
           id: 'hca-28-30',
           temperature: '28–30<br>(Mild)',
-          duration: '~9–11',
-          notes: '<strong>MHCA + ACP</strong> ≤40 min possible; shorter CPB time, less coagulopathy',
-          severity: 'safe',
-          tooltip: 'Mild-moderate hypothermia with ACP can extend safe duration.'
+          duration: '~9 (30°C) to ~11* (28°C)',
+          notes: 'Shorter CPB time, less coagulopathy'
         },
         {
           id: 'hca-24-28',
           temperature: '24–28<br>(High-moderate)',
-          duration: '~11–15',
-          notes: '<strong>ACP/RCP required</strong>; recent trend with lower stroke risk',
-          severity: 'caution',
-          tooltip: 'Moderate hypothermia commonly paired with ACP/RCP.'
+          duration: '~11* (28°C), ~14 (25°C), ~15* (24°C)',
+          notes: '—'
         },
         {
           id: 'hca-20-24',
           temperature: '20–24<br>(Low-moderate)',
-          duration: '~15–21',
-          notes: '<strong>ACP</strong> shows non-inferior cognitive outcomes vs DHCA',
-          severity: 'caution',
-          tooltip: 'Low-moderate ranges benefit from ACP support.'
+          duration: '~15* (24°C) to ~21 (20°C)',
+          notes: '—'
         },
         {
           id: 'hca-18-20',
           temperature: '18–20 (Deep)',
-          duration: '~21–24 (guideline: isolated deep HCA ≤30–40)',
-          notes: 'Isolated DHCA: limit 30; >40 ↑ neurologic injury risk',
-          severity: 'high',
-          tooltip: 'Deep hypothermia has higher risk beyond 30–40 minutes.'
+          duration: '~21 (20°C) to ~24* (18°C)',
+          notes: 'Guideline text: isolated deep HCA should not exceed 30–40 min (EACTS 2024)'
         },
         {
           id: 'hca-<18',
           temperature: '<18<br>(Deep; profound ≤14)',
-          duration: '~24 at 18°C, ~31 at 15°C, ~45 at 10°C',
+          duration: '~24* (18°C), ~31 (15°C), ~45 (10°C)',
           notes: 'High coagulopathy risk; rarely used',
-          severity: 'high',
           tooltip: 'Profound hypothermia is uncommon due to bleeding risk.'
         }
       ]

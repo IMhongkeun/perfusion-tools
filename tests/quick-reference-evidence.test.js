@@ -43,12 +43,18 @@ assert.strictEqual(reviewedMatch[1], latestCardDate, 'Static review date should 
 // Displayed values must follow the evidence review (2026-11-27).
 const tabsById = Object.fromEntries(data.tabs.map(tab => [tab.id, tab]));
 const hcaTab = tabsById.tca;
-assert(hcaTab.durationColumnLabel && /model/i.test(hcaTab.durationColumnLabel), 'HCA durations should be labeled as model estimates.');
-assert(hcaTab.footnote && hcaTab.footnote.includes('McCullough'), 'HCA table should cite the model source in its footnote.');
+assert.strictEqual(hcaTab.durationColumnLabel, 'Model-estimated arrest time without cerebral perfusion', 'HCA time column should be labeled as a model estimate without cerebral perfusion.');
+const hcaFootnotes = (hcaTab.footnotes || []).join(' ');
+assert(hcaFootnotes.includes('McCullough') && hcaFootnotes.includes('not clinically validated'), 'HCA footnote should cite the model and state it is not a validated limit.');
+assert(hcaFootnotes.includes('5 × 2.3^((37 − T)/10)'), 'HCA footnote should state how calculated values were derived.');
+assert(hcaFootnotes.includes('do not directly apply when ACP is used'), 'HCA footnote should separate hypothermia-only estimates from ACP.');
 hcaTab.tableRows.forEach(row => {
   assert(!/<18[^)]*\(Profound\)/.test(row.temperature), 'Profound should not be defined as <18°C.');
   assert(!/conservative/i.test(row.duration), 'HCA durations should not be described as conservative safe limits.');
+  assert(!('severity' in row), 'HCA rows should not carry safe/caution/high severity markers.');
+  assert(!/≤40 min possible/.test(row.notes), 'HCA notes should not combine temperature and ACP time into a safety claim.');
 });
+assert(!/severityMap|rounded-full \$\{severityClass\}/.test(mainJs), 'HCA table should not render severity color dots.');
 const rcpPressure = tabsById.rcp.cards.find(card => card.id === 'rcp-svc-pressure');
 assert.strictEqual(rcpPressure.value, '~20–25', 'RCP SVC pressure should show the ~20–25 mmHg maintenance reference.');
 const pediatricDuration = tabsById.acp.profiles.pediatric.find(card => card.id === 'acp-peds-duration');
