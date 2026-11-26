@@ -239,8 +239,7 @@ window.quickReferenceData = {
           id: 'hca-<18',
           temperature: '<18<br>(Deep; profound ≤14)',
           duration: '~24* (18°C), ~31 (15°C), ~45 (10°C)',
-          notes: 'High coagulopathy risk; rarely used',
-          tooltip: 'Profound hypothermia is uncommon due to bleeding risk.'
+          notes: '—'
         }
       ]
     },
