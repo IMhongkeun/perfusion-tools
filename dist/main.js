@@ -5664,7 +5664,7 @@ window.quickReferenceData = {
           id: 'hca-28-30',
           temperature: '28–30<br>(Mild)',
           duration: '~9 (30°C) to ~11* (28°C)',
-          notes: 'Shorter CPB time, less coagulopathy'
+          notes: '—'
         },
         {
           id: 'hca-24-28',

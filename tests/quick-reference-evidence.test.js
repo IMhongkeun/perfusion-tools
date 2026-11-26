@@ -53,6 +53,7 @@ hcaTab.tableRows.forEach(row => {
   assert(!/conservative/i.test(row.duration), 'HCA durations should not be described as conservative safe limits.');
   assert(!('severity' in row), 'HCA rows should not carry safe/caution/high severity markers.');
   assert(!/≤40 min possible/.test(row.notes), 'HCA notes should not combine temperature and ACP time into a safety claim.');
+  assert(!/shorter CPB time|less coagulopathy/i.test(row.notes), 'HCA summary rows should not present comparative benefits of a temperature range.');
 });
 assert(!/severityMap|rounded-full \$\{severityClass\}/.test(mainJs), 'HCA table should not render severity color dots.');
 const rcpPressure = tabsById.rcp.cards.find(card => card.id === 'rcp-svc-pressure');
