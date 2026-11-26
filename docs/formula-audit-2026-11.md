@@ -4,6 +4,7 @@
 - 감사 브랜치: `audit/formula-verification-2026-11`
 - 성격: **감사 전용.** 수식, 계수, 단위, 임계값, 기본값, 참조 데이터, UI는 변경하지 않았다. 이 문서 한 개만 추가했다.
 - 실행 환경: Node.js v22, `npm ci && npm run build && TZ=UTC npm test` (작업 전·후 모두 통과)
+- 후속 갱신: 2026-11-27, `main` @ `ff5ecd2` 기준으로 조치 현황을 반영했다(아래 「후속 조치 현황」). 본문의 판정과 집계는 2026-11-10 감사 시점 그대로 두었다.
 
 ## 0. 읽는 법
 
@@ -43,11 +44,44 @@
 
 ---
 
+## 후속 조치 현황 (2026-11-27 갱신)
+
+본문 판정은 감사 시점(2026-11-10) 기록으로 그대로 둔다. 이후 머지된 PR로 달라진 항목만 여기에 적는다.
+
+- `quickReferenceData.js`는 #217에서 삭제됐다(어디서도 로드되지 않던 중복 파일). Quick Reference 데이터는 이제 `main.js`의 `window.quickReferenceData` 한 곳에만 있다. 본문의 `quickReferenceData.js:줄번호`는 감사 시점 위치다.
+
+### 해결 또는 부분 해결
+
+| 항목 | 감사 시점 | 현재 상태 | 조치 PR |
+|---|---|---|---|
+| QR-2 HCA 온도별 시간 표 (High) | ❓ "Conservative Estimates", EACTS 2024를 출처로 표기 | **해결.** 열 이름을 "Model-estimated arrest time without cerebral perfusion"으로 바꾸고, 값을 McCullough 1999 모델값(30°C ≈9, 25°C ≈14, 20°C ≈21, 15°C ≈31, 10°C ≈45분)으로 교체했다. 모델값 사이 온도는 같은 가정(37°C 5분, Q₁₀ 2.3)으로 계산해 *로 표시했다. "임상적으로 검증된 안전 한계가 아님"과 "ACP 사용 시 직접 적용되지 않음" 각주를 달았다. 온도 구분은 EACTS 2024 Table 3을 따르고, "isolated deep HCA ≤30–40 min"은 가이드라인 문구로 18–20°C 비고에 옮겼다. 안전·주의 색 표시는 없앴다. | #216 |
+| QR-1 ACP·RCP 카드 출처 (Medium) | ❓ 카드별 출처 없음, 학술지 이름만 표기 | **해결.** 페이지 하단 "Sources & evidence levels"에서 값마다 출처(PubMed·PMC·DOI 링크)와 근거 수준(Guideline / Published / Practice range)을 표시한다. 카드 데이터의 `references` 필드를 채우는 방식이 아니라 별도 근거 섹션으로 연결했다. 근거 검토일 2026-11-27이 화면에 표시된다. 일부 수치 표기는 출처에 맞게 바꿨다(예: RCP SVC 압력 → ~20–25 mmHg 유지 참고값). | #216, #217 |
+| QR-3 MUF 수치 (Low) | ❓ AmSECT 2019·EACTS 2024 미접근 | **해결.** 소아 MUF는 AmSECT 16.1 현행 문구("should be considered", 금기 제외), 성인 MUF는 EACTS 2024(Class I, Level A; 고위험·빈혈 환자)로 출처를 특정했다. 근거 없는 소아 목표 Hct 상한(40%)은 빼고 "~35% (reported target)"로 바꿨다. 성인에는 확립된 Hct 목표가 없다고 표기했다. | #216, #217 |
+| QR-4 냉각 20–50분·재가온 ≤0.5°C/min (Low) | ❓ 출처 문구 없음 | **부분 해결.** 재가온 ≤0.5°C/min은 STS/SCA/AmSECT 2015(Class IIa, Level B; 동맥 출구 ≥30°C)로 출처를 특정했고, EACTS 2024에는 수치 기준이 없다고 적었다. 냉각 20–50분은 "Practice range; no guideline minimum identified"로 표시만 했고 1차 출처는 찾지 못했다. | #216 |
+
+### 미해결 (2026-11-27 `main` 기준 코드·문구 변경 없음)
+
+| 항목 | 심각도 | 내용 |
+|---|---|---|
+| GDP-5 | Medium | 온도 보정 Q₁₀ = 2.2(`GDP_Q10`)의 출처 없음 |
+| GDP-7 | Medium | ±10% 상태 구간 라벨과 범례 불일치 |
+| HEP-3 | Medium | 비만 ABW 0.4 / 0.3 계수 근거 미확인 |
+| Z-3 | Medium | PHN LVESD 계수 출처(Lopez 2021) 미대조 |
+| Z-7 | Medium | Detroit 21개 구조물 계수 원문 미대조 |
+| Z-8 | Medium | Detroit 모델 BSA 공식 원문 미확인 |
+| CAN-2 | Medium | "외삽 없음" 문구와 0.05 L/min 끝점 선형 연장 동작 불일치 |
+
+Low 항목 32건 가운데 QR-3·QR-4 외에는 별도 조치가 없었다.
+
+---
+
 ## 1. High · Medium 항목 (수정 방향은 제안일 뿐이며 코드는 변경하지 않음)
 
 ### High
 
 #### QR-2. Quick Reference HCA 안전 시간 표 — 출처 확인 불가, "conservative" 표기가 비교 자료와 맞지 않음
+
+> **2026-11-27 갱신: #216에서 해결.** 「후속 조치 현황」 참조. 아래는 감사 시점 기록이다.
 
 - 위치: `quickReferenceData.js:202-247`, `quick-reference/index.html:491-497`
 - 표기: 표 제목 "HCA by Temperature (Conservative Estimates)", 주석 "Reference: 2024 EACTS/EACTAIC/EBCP Guidelines (conservative estimates)".
@@ -146,6 +180,8 @@
 
 #### QR-1. Quick Reference ACP·RCP 카드 — 카드별 출처 없음
 
+> **2026-11-27 갱신: #216·#217에서 해결.** 「후속 조치 현황」 참조. 아래는 감사 시점 기록이다.
+
 - 위치: `quickReferenceData.js:40-200`
 - 확인 결과: 스키마에 `references` 필드가 있지만 채워진 카드가 없다. `lastReviewed`는 전부 `2024-11-15`다. 페이지 본문은 "Annals of Thoracic Surgery, EJCTS, AmSECT"처럼 학술지 이름만 든다. 성인 ACP 8–12 mL/kg/min, 40–60 mmHg, 23–28°C, 소아 40–80 mL/kg/min, RCP SVC 압력 20–30 mmHg, 300–500 mL/min 등은 개별 출처를 특정할 수 없어 대조하지 못했다.
 - 판정: ❓ 출처 확인 불가 / Medium
@@ -218,10 +254,10 @@
 | Time | TIME-3 Live 모드 설명 문구 | ⚠️ | Low | `timecalc/index.html:566-569` | – |
 | Time | TIME-4 이식 총 허혈 시간 | ✅ | – | `main.js:5056-5091` | 코드 주석 |
 | Time | TIME-5 허혈 시간 정의·심장 총 허혈 미표시 | 🔶 | Low | `main.js:5255, 5264-5265` | 기관별 정의 |
-| Quick Ref | QR-1 ACP·RCP 카드 수치 | ❓ | **Medium** | `quickReferenceData.js:40-200` | 카드별 출처 없음 |
-| Quick Ref | QR-2 HCA 온도별 안전 시간 | ❓ | **High** | `quickReferenceData.js:202-247` | McCullough 1999와 비교 |
-| Quick Ref | QR-3 MUF 수치 | ❓ | Low | `quickReferenceData.js:248-312` | AmSECT 2019 등 (미접근) |
-| Quick Ref | QR-4 냉각 20–50분·재가온 ≤0.5°C/min | ❓ | Low | `quick-reference/index.html:495` | 미접근 |
+| Quick Ref | QR-1 ACP·RCP 카드 수치 | ❓ | **Medium** | `quickReferenceData.js:40-200` | 카드별 출처 없음 → 해결(#216·#217) |
+| Quick Ref | QR-2 HCA 온도별 안전 시간 | ❓ | **High** | `quickReferenceData.js:202-247` | McCullough 1999와 비교 → 해결(#216) |
+| Quick Ref | QR-3 MUF 수치 | ❓ | Low | `quickReferenceData.js:248-312` | AmSECT 2019 등 (미접근) → 해결(#216·#217) |
+| Quick Ref | QR-4 냉각 20–50분·재가온 ≤0.5°C/min | ❓ | Low | `quick-reference/index.html:495` | 미접근 → 부분 해결(#216) |
 | Quick Ref | QR-5 ACP·MUF 미니 계산 | ✅ | – | `main.js:5873-5879, 5971-5974` | 정의식 |
 
 데이터 이상치 목록(판정 대상 아님)은 3.9절에 있다.
