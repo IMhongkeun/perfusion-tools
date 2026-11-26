@@ -126,9 +126,10 @@ function run() {
   assert.strictEqual(pendingRowSummary({ label: 'Rewarming' }), 'Rewarming: —', 'a titled added event should immediately join the summary');
   assert.strictEqual(pendingRowSummary({ label: '' }), null, 'an untitled added event should not add an ambiguous summary line');
 
+  // Local-time epochs: the summary formats epochs with local hours, so fixtures must be local too.
   const stoppedLiveState = {
-    startAtEpoch: Date.UTC(2026, 0, 1, 9, 12, 59),
-    endAtEpoch: Date.UTC(2026, 0, 1, 12, 4, 0),
+    startAtEpoch: new Date(2026, 0, 1, 9, 12, 59).getTime(),
+    endAtEpoch: new Date(2026, 0, 1, 12, 4, 0).getTime(),
     running: false
   };
   const stoppedLiveSummary = rowSummary({ label: 'CPB / Pump time', startInput: '09:12', endInput: '12:04', state: stoppedLiveState });
@@ -142,8 +143,8 @@ function run() {
   assert.strictEqual(overriddenSummary, 'CPB / Pump time: 09:13–12:04 (171 min / 02:51)', 'manual override should fall back to HH:mm calculation when inputs no longer match epoch display');
 
   const midnightState = {
-    startAtEpoch: Date.UTC(2026, 0, 1, 23, 45, 30),
-    endAtEpoch: Date.UTC(2026, 0, 2, 0, 15, 0),
+    startAtEpoch: new Date(2026, 0, 1, 23, 45, 30).getTime(),
+    endAtEpoch: new Date(2026, 0, 2, 0, 15, 0).getTime(),
     running: false
   };
   const midnightSummary = rowSummary({ label: 'Event 3', startInput: '23:45', endInput: '00:15', state: midnightState });

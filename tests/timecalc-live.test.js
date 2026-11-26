@@ -93,7 +93,8 @@ function run() {
   assert.strictEqual(liveDuration(100000, 100000 + (7 * 60000) + 30000), '00:07:30 (7 min)', 'live duration should show exact HH:MM:SS with floored minute summary');
   assert.strictEqual(liveDuration(100000, 100000 + 34000), '00:00:34 (<1 min)', 'live duration under one minute should not round up to 1 min');
   assert.strictEqual(liveDuration(100000, 100000 + 94000), '00:01:34 (1 min)', 'live duration should floor charting minutes for elapsed seconds');
-  const liveCrossMidnight = liveStoppedCrossMidnight(Date.UTC(2026, 0, 1, 23, 45), Date.UTC(2026, 0, 2, 0, 15));
+  // Local-time epochs: formatEpochToHHMM reads local hours, so the fixture must be local too.
+  const liveCrossMidnight = liveStoppedCrossMidnight(new Date(2026, 0, 1, 23, 45).getTime(), new Date(2026, 0, 2, 0, 15).getTime());
   assert.strictEqual(liveCrossMidnight.startDisplay, '23:45', 'live stopped cross-midnight start display should stay 24-hour clock time');
   assert.strictEqual(liveCrossMidnight.endDisplay, '00:15', 'live stopped cross-midnight end display should stay 24-hour clock time');
   assert.strictEqual(liveCrossMidnight.duration, '00:30:00 (30 min)', 'live stopped cross-midnight duration should use epoch difference');
