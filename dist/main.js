@@ -5498,7 +5498,7 @@ window.quickReferenceData = {
             title: 'Flow rate',
             value: '8–12',
             unit: 'mL/kg/min',
-            info: 'High-flow may increase cerebral edema risk; titrate with monitoring.',
+            info: 'Both underperfusion and overperfusion impaired neurologic function in experimental studies; titrate with monitoring.',
             lastReviewed: '2026-11-27',
             range: { min: 8, max: 12 }
           },
@@ -5516,7 +5516,7 @@ window.quickReferenceData = {
             value: '23–28',
             unit: '°C',
             notes: 'Moderate hypothermia',
-            info: 'Moderate hypothermia is often favored over deep for neurologic outcomes.',
+            info: 'Circulatory arrest at moderate hypothermia (20.1–28°C) with ACP should be considered for arch reconstruction (EACTS 2024, Class IIa, Level B).',
             lastReviewed: '2026-11-27'
           },
           {
@@ -5524,7 +5524,7 @@ window.quickReferenceData = {
             title: 'pH management',
             value: 'Alpha-stat',
             unit: '',
-            info: 'Preserves cerebral autoregulation; reduces embolization risk.',
+            info: 'Favored over pH-stat in adults under high-moderate hypothermia (EACTS 2024, Class IIa, Level B); reported to preserve cerebral autoregulation.',
             lastReviewed: '2026-11-27'
           },
           {
@@ -5577,7 +5577,7 @@ window.quickReferenceData = {
             title: 'Perfusate temp',
             value: '18–25',
             unit: '°C',
-            info: '25°C moderate hypothermia preserves rSO₂; moderate often favored vs deep.',
+            info: 'Reported ACP temperatures range from 18°C to ~25°C. One cohort at ~25°C reported preserved cerebral oxygenation; deep hypothermia with ACP has been typical in North American practice.',
             lastReviewed: '2026-11-27'
           },
           {
@@ -5585,7 +5585,7 @@ window.quickReferenceData = {
             title: 'pH management',
             value: 'pH-stat',
             unit: '',
-            info: 'Often preferred in neonates/infants for cerebral protection.',
+            info: 'Should be considered for neonates and infants undergoing hypothermia during CPB (AmSECT pediatric Guideline 9.1).',
             lastReviewed: '2026-11-27'
           },
           {
@@ -5732,7 +5732,7 @@ window.quickReferenceData = {
         {
           id: 'muf-target-hct',
           label: 'Target Hct',
-          pediatric: '≥35–40%',
+          pediatric: '~35% (reported target)',
           adult: 'No established endpoint',
           notes: 'Or minimize transfusion/bleeding',
           highlight: 'pediatric'
@@ -5740,9 +5740,9 @@ window.quickReferenceData = {
         {
           id: 'muf-circuit',
           label: 'Circuit',
-          pediatric: 'A-V MUF (preferred)',
-          adult: 'A-V or similar',
-          notes: 'Heat exchanger required',
+          pediatric: 'A-V or V-V MUF',
+          adult: 'A-V (cited studies)',
+          notes: 'Heat exchanger in the MUF circuit is a listed safety measure',
           highlight: 'pediatric'
         },
         {

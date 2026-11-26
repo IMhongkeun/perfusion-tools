@@ -83,7 +83,7 @@ function run() {
   assert.strictEqual(minimalRows.length, 4, 'case storage should keep dynamic row structure for restore');
   assert(!JSON.stringify(minimalRows).includes('Patient Jane Doe'), 'case storage should not include user-entered labels or PHI');
   assert(!JSON.stringify(minimalRows).includes('08:00'), 'case storage should not include raw startDisplay/manual input values');
-  assert.strictEqual(formatEpochToHHMM(Date.UTC(2026, 0, 1, 8, 5)), '08:05', 'restored display should be regenerated from epoch as HH:MM');
+  assert.strictEqual(formatEpochToHHMM(new Date(2026, 0, 1, 8, 5).getTime()), '08:05', 'restored display should be regenerated from epoch as HH:MM');
   const cleared = clearCaseData({ preferences, caseData, legacyLiveTimers: caseData, legacyCardioplegiaReminder: caseData.cardioplegia });
   assert.strictEqual(cleared.caseData, null, 'New case should clear case data');
   assert.deepStrictEqual(cleared.preferences, preferences, 'New case should keep interval/mode preferences');

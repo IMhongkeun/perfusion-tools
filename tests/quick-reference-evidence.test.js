@@ -9,7 +9,6 @@ const root = path.join(__dirname, '..');
 const pageHtml = fs.readFileSync(path.join(root, 'quick-reference', 'index.html'), 'utf8');
 const distPageHtml = fs.readFileSync(path.join(root, 'dist', 'quick-reference', 'index.html'), 'utf8');
 const mainJs = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
-const dataJs = fs.readFileSync(path.join(root, 'quickReferenceData.js'), 'utf8');
 
 function extractQuickReferenceDataBlock(source) {
   const match = source.match(/^window\.quickReferenceData = \{[\s\S]*?^\};/m);
@@ -23,10 +22,9 @@ function loadQuickReferenceData(block) {
   return sandbox.window.quickReferenceData;
 }
 
-// The bundled copy in main.js and the standalone data file must stay identical.
+// main.js is the single source of quick reference data.
 const mainBlock = extractQuickReferenceDataBlock(mainJs);
-const dataBlock = extractQuickReferenceDataBlock(dataJs);
-assert.strictEqual(mainBlock, dataBlock, 'main.js and quickReferenceData.js quick reference data should match.');
+assert(!fs.existsSync(path.join(root, 'quickReferenceData.js')), 'The unused standalone quickReferenceData.js copy should not return.');
 
 // The visible review date must match what initQuickReference() writes into the same element.
 const reviewedMatch = pageHtml.match(/<span id="quick-reference-last-reviewed">([0-9-]+)<\/span>/);
@@ -66,6 +64,13 @@ assert(!/strongly recommended/i.test(mufTab.tableColumns.pediatric), 'Pediatric 
 const mufHct = mufTab.tableRows.find(row => row.id === 'muf-target-hct');
 assert.strictEqual(mufHct.adult, 'No established endpoint', 'Adult MUF should not show an unsourced Hct endpoint.');
 assert(mainJs.includes("tab.durationColumnLabel || 'Safe Duration (min)'"), 'HCA table should render the data-driven duration column label.');
+
+// Phrases removed in the 2026-11-27 cleanup should not return.
+for (const phrase of ['reduces embolization risk', 'often favored over deep', 'moderate often favored vs deep', 'Often preferred in neonates', 'A-V MUF (preferred)', 'Heat exchanger required', '≥35–40%']) {
+  assert(!mainBlock.includes(phrase), `Unsourced phrase should not return to quick reference data: ${phrase}`);
+}
+assert(!pageHtml.includes('cerebral water content, potentially'), 'Unsourced cerebral water claim should not return.');
+assert(!pageHtml.includes('many ACP programs favor'), 'Unsourced pediatric temperature claim should not return.');
 
 // Evidence section structure.
 assert(pageHtml.includes('id="quick-reference-evidence"'), 'Sources & evidence levels section should exist.');
