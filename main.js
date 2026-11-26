@@ -9452,6 +9452,33 @@ function navigateTo(path, options = {}) {
 }
 
 
+// Circuit Pressure & Drainage prototype: CPB/ECMO toggle and one scenario card at a time.
+function initCircuitPressurePage() {
+  const page = el('circuit-pressure-page');
+  if (!page) return;
+  const toggles = Array.from(page.querySelectorAll('[data-cp-circuit-toggle]'));
+  const panels = Array.from(page.querySelectorAll('[data-cp-panel]'));
+  const scenarios = Array.from(page.querySelectorAll('[data-cp-scenario]'));
+  const cards = Array.from(page.querySelectorAll('[data-cp-card]'));
+
+  const selectScenario = (id) => {
+    scenarios.forEach(button => button.setAttribute('aria-pressed', String(button.getAttribute('data-cp-scenario') === id)));
+    cards.forEach(card => card.classList.toggle('hidden', card.getAttribute('data-cp-card') !== id));
+  };
+
+  const selectCircuit = (circuit) => {
+    toggles.forEach(button => button.setAttribute('aria-pressed', String(button.getAttribute('data-cp-circuit-toggle') === circuit)));
+    panels.forEach(panel => panel.classList.toggle('hidden', panel.getAttribute('data-cp-circuit') !== circuit));
+    scenarios.forEach(button => button.classList.toggle('hidden', button.getAttribute('data-cp-circuit') !== circuit));
+    const first = scenarios.find(button => button.getAttribute('data-cp-circuit') === circuit);
+    selectScenario(first ? first.getAttribute('data-cp-scenario') : '');
+  };
+
+  toggles.forEach(button => button.addEventListener('click', () => selectCircuit(button.getAttribute('data-cp-circuit-toggle'))));
+  scenarios.forEach(button => button.addEventListener('click', () => selectScenario(button.getAttribute('data-cp-scenario'))));
+  selectCircuit('cpb');
+}
+
 function route() {
   const path = getActivePath();
   // First-paint Home visibility must not override the router after startup.
@@ -9478,6 +9505,7 @@ function route() {
   else if (path.includes('timecalc')) { showSection('view-timecalc'); key = 'timecalc'; }
   else if (path.includes('unit-converter')) { showSection('view-unit-converter'); key = 'unit-converter'; }
   else if (path.includes('cannula-pressure-drop')) { key = 'cannula-pressure-drop'; }
+  else if (path.includes('circuit-pressure')) { key = 'circuit-pressure'; }
   else if (path.includes('quick-reference')) { showSection('view-quick-reference'); key = 'quick-reference'; }
   else if (path.includes('research')) { key = 'research'; }
   else if (path.includes('info')) { showSection('view-info'); key = 'info'; }
@@ -10011,6 +10039,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   route();
   if (hasCannulaPressureDropPage) initCannulaPressureDropPage();
+  if (hasElement('circuit-pressure-page')) initCircuitPressurePage();
 
   if (hasGdpCalculator) {
     // GDP event listeners
